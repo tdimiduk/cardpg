@@ -27,8 +27,7 @@ import Frontend.Card
 frontend :: Frontend (R FrontendRoute)
 frontend = Frontend
   { _frontend_head = do
-      el "title" $ text "Obelisk Minimal Example"
-      elAttr "script" ("type" =: "application/javascript" <> "src" =: $(static "lib.js")) blank
+      el "title" $ text "basic-fighter"
       elAttr "link" ("href" =: $(static "main.css") <> "type" =: "text/css" <> "rel" =: "stylesheet") blank
   , _frontend_body = do
       maybeCards <- getConfig "common/basic-fighter.csv"
@@ -36,7 +35,7 @@ frontend = Frontend
         Nothing -> text "could not read cards"
         Just cardLines -> case decodeByName (LBS.fromStrict cardLines) of
           Left err -> text $ T.pack err
-          Right (_header, cards) -> mapM_ card cards
+          Right (_header, cards) -> divClass "cards" $ mapM_ card cards
       -- let powerAttack = Card "Power Attack" 4 2 1 1 "Cost: 2, Requires: Weapon" "Red Attack: Strength X+3"
 
       -- el "div" $ do

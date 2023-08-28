@@ -9,12 +9,13 @@ import GHC.Generics
 
 data Card = Card
   { name :: Text
-  , red :: Int
-  , yellow :: Int
-  , blue :: Maybe Int
-  , green :: Maybe Int
+  , red :: Text
+  , yellow :: Text
+  , blue :: Text
   , cost :: Maybe Text
-  , body :: Text
+  , action :: Maybe Text
+  , effect :: Maybe Text
+  , details :: Maybe Text
 
   }
   deriving stock (Generic, Show)

@@ -27,20 +27,28 @@ mtshow (Just t) = tshow t
 
 rectSize = (20, 20)
 
-
 card :: DomBuilder t m => Card -> m ()
-card (Card name red yellow blue green cost bodyText) = do
-  svgEl "svg" (widthHeight 200 300) $ do
-    rect' ("stroke" =: "black" <> fill "transparent" <> widthHeight' (<> "%") 100 100 <> roundCorners 10)
-    cardText 40 15 name
-    resourceSymbol (rnx, tny) red (\c -> rectC c rectSize (fill "red" <> roundCorners 3))
-    resourceSymbol (lnx, tny) yellow (\c -> star c rectSize (fill "yellow"))
-    resourceSymbol (lnx, bny) (fromMaybe 0 green) (\c -> circle' c 10 (fill "green"))
-    resourceSymbol (rnx, bny) (fromMaybe 0 blue) (\c -> rectC c rectSize (fill "rgb(80, 80, 255)" <> roundCorners 3 <> rotate c 45))
-    case cost of
+card = cardHtml
+
+maybeText :: DomBuilder t m => Maybe Text -> m ()
+maybeText Nothing = blank
+maybeText (Just t) = text t
+
+cardHtml :: DomBuilder t m => Card -> m ()
+cardHtml (Card name red yellow blue cost action effect details) = divClass "card" $ do
+  divClass "name" $ text name
+  divClass "art" blank
+  divClass "cost" $ maybeText $ fmap ("Cost:" <>) cost
+  divClass "textbox" $ do
+    divClass "action" $ maybeText action
+    divClass "effect" $ maybeText effect
+    case details of
       Nothing -> blank
-      (Just c) -> cardText 5 140 $ "Cost: " <> c
-    textBlock 5 145 bodyText
+      Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
+  divClass "numbers" $ do
+    divClass "red" $ text red
+    divClass "yellow" $ text yellow
+    divClass "blue" $ text blue
 
 star center size attrs = do
   rectC center size (attrs <> roundCorners 2)

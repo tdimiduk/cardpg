@@ -1,3 +1,73 @@
-p {
-  color: red;  
+.name {
+  padding: 3mm;
+  padding-top: 2mm;
+  padding-bottom: 1mm;
 }
+.card {
+  width: 60mm;
+  height: 85mm;
+  outline: solid 0.2mm;
+  break-inside: avoid;
+  margin: 0.5mm;
+}
+
+.art {
+  height: 33mm;
+}
+
+.cost {
+  min-height: 1em;
+  padding: 1mm;
+}
+
+.textbox {
+  height: 30mm;
+  padding: 1mm;
+}
+
+.numbers {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 2mm;
+  margin-right: 2mm;
+}
+
+.cards {
+  display: flex;
+  flex: 60mm;
+  flex-wrap: wrap;
+}
+
+.red {
+  outline: solid 1px;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+}
+
+.blue {
+  outline: solid 1px;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  border-radius: 0.5em;
+}
+
+#diamond {
+      width: 0;
+      height: 0;
+      border: 50px solid transparent;
+      border-bottom-color: red;
+      position: relative;
+      top: -50px;
+    }
+    #diamond:after {
+      content: '';
+      position: absolute;
+      left: -50px;
+      top: 50px;
+      width: 0;
+      height: 0;
+      border: 50px solid transparent;
+      border-top-color: red;
+    }
