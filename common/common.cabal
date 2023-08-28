@@ -1,0 +1,49 @@
+name: common
+version: 0.1
+cabal-version: >= 1.2
+build-type: Simple
+
+library
+  hs-source-dirs: src
+  build-depends: base
+               , obelisk-route
+               , mtl
+               , text
+               , aeson
+               , cassava
+
+  default-extensions:
+    ConstraintKinds
+    DataKinds
+    DeriveGeneric
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    OverloadedStrings
+    QuantifiedConstraints
+    RankNTypes
+    RecursiveDo
+    ScopedTypeVariables
+    StandaloneDeriving
+    TupleSections
+    TypeApplications
+    TypeFamilies
+    DerivingStrategies
+  exposed-modules:
+    Common.Api
+    Common.Card
+    Common.Route
+    Common.Util
+  ghc-options: -Wall -O -fno-show-valid-hole-fits
+               -- unsafe code
+               -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields
+               -- unneeded code
+               -Widentities -Wredundant-constraints
+  if impl(ghc >= 8.8)
+    ghc-options:
+               -Wmissing-deriving-strategies
