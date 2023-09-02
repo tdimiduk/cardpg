@@ -31,8 +31,7 @@ data BackendRoute :: * -> * where
 
 data FrontendRoute :: * -> * where
   FrontendRoute_Main :: FrontendRoute ()
-  -- This type is used to define frontend routes, i.e. ones for which the backend will serve the frontend.
-  FrontendRoute_Deck :: FrontendRoute Text
+  FrontendRoute_Deck :: FrontendRoute (Maybe Text)
 
 fullRouteEncoder
   :: Encoder (Either Text) Identity (R (FullRoute BackendRoute FrontendRoute)) PageName
@@ -42,7 +41,7 @@ fullRouteEncoder = mkFullRouteEncoder
       BackendRoute_Missing -> PathSegment "missing" $ unitEncoder mempty)
   (\case
       FrontendRoute_Main -> PathEnd $ unitEncoder mempty
-      FrontendRoute_Deck -> PathSegment "deck" $ singlePathSegmentEncoder
+      FrontendRoute_Deck -> PathSegment "deck" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder
   )
 
 
