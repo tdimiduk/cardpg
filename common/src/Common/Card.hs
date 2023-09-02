@@ -12,10 +12,13 @@ data Card = Card
   , red :: Text
   , yellow :: Text
   , blue :: Text
+  , keywordProvide
   , cost :: Maybe Text
+  , keywordCost :: Maybe Text
   , action :: Maybe Text
   , effect :: Maybe Text
   , details :: Maybe Text
+
 
   }
   deriving stock (Generic, Show)

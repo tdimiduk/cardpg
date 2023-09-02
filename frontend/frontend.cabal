@@ -18,6 +18,7 @@ library
                , containers
                , text-builder
                , bytestring
+               , mono-traversable
 
   default-extensions:
     ConstraintKinds

@@ -1,14 +1,19 @@
 .name {
-  padding: 3mm;
-  padding-top: 2mm;
-  padding-bottom: 1mm;
+  font-size: 10;
 }
+
+body {
+  margin: 0;
+}
+
 .card {
-  width: 60mm;
-  height: 85mm;
+  width: 58mm;
+  height: 83mm;
   outline: solid 0.2mm;
   break-inside: avoid;
-  margin: 0.5mm;
+  display: flex;
+  flex-direction: column;
+  padding: 4mm;
 }
 
 .art {
@@ -17,19 +22,29 @@
 
 .cost {
   min-height: 1em;
-  padding: 1mm;
+  outline: solid .2mm;
+  padding: .1mm;
+  padding-left: .5mm;
+  margin-bottom: .5mm;
+  border-radius: 1mm;
+  font-size: 8;
 }
 
 .textbox {
-  height: 30mm;
-  padding: 1mm;
+  flex-grow: 1;
+}
+
+.keywords {
+  text-align: center;
+  outline: solid .2mm;
+  border-radius: 1mm;
+  padding: .1mm;
 }
 
 .numbers {
   display: flex;
   justify-content: space-between;
-  margin-left: 2mm;
-  margin-right: 2mm;
+  padding-top: 1mm;
 }
 
 .cards {
@@ -56,18 +71,4 @@
 #diamond {
       width: 0;
       height: 0;
-      border: 50px solid transparent;
-      border-bottom-color: red;
-      position: relative;
-      top: -50px;
-    }
-    #diamond:after {
-      content: '';
-      position: absolute;
-      left: -50px;
-      top: 50px;
-      width: 0;
-      height: 0;
-      border: 50px solid transparent;
-      border-top-color: red;
-    }
+      border-:

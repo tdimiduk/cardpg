@@ -1,7 +1,6 @@
 module Frontend.Card where
 
 import Data.Text (Text, splitOn, strip)
-import Data.Maybe (fromMaybe)
 
 import Reflex.Dom.Core
 
@@ -22,9 +21,11 @@ tny = 15
 bny :: Double
 bny = 285
 
+mtshow :: Show a => Maybe a -> Text
 mtshow Nothing = ""
 mtshow (Just t) = tshow t
 
+rectSize :: (Integer, Integer)
 rectSize = (20, 20)
 
 card :: DomBuilder t m => Card -> m ()
@@ -35,16 +36,21 @@ maybeText Nothing = blank
 maybeText (Just t) = text t
 
 cardHtml :: DomBuilder t m => Card -> m ()
-cardHtml (Card name red yellow blue cost action effect details) = divClass "card" $ do
+cardHtml (Card name red yellow blue keywordProvide cost keywordCost action effect details) = divClass "card" $ do
   divClass "name" $ text name
   divClass "art" blank
-  divClass "cost" $ maybeText $ fmap ("Cost:" <>) cost
+  case (cost, keywordCost) of
+    (Nothing, Nothing) -> blank
+    (Just c, Nothing) -> divClass "cost" $ text $ "Cost: " <> c
+    (Nothing, Just k) -> divClass "cost" $ text $ "Cost: " <> k
+    (Just c, Just k) -> divClass "cost" $ text $ "Cost: " <> c <> ", " <> k
   divClass "textbox" $ do
     divClass "action" $ maybeText action
     divClass "effect" $ maybeText effect
     case details of
       Nothing -> blank
       Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
+  divClass "keywords" $ maybeText keywordProvide
   divClass "numbers" $ do
     divClass "red" $ text red
     divClass "yellow" $ text yellow
