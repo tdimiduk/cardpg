@@ -1,6 +1,5 @@
 module Frontend.Svg where
 
-import qualified Text.Builder as B
 import Data.Map qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -117,15 +116,6 @@ rect xy wh attrs = rect' (xyPair id xy <> uncurry widthHeight wh <> attrs)
 
 rectC :: DomBuilder t m => (Double, Double) -> (Double, Double) -> ElAttrs -> m ()
 rectC (x, y) (width, height) = rect (x - width/2, y - height/2) (width, height)
-
-mkPoint :: Int -> Int -> B.Builder
-mkPoint x y = B.decimal x <> B.text "," <> B.decimal y
-
-mkPoints :: [(Int, Int)] -> (Int, Int) -> B.Builder
-mkPoints points (x, y) =  B.intercalate " " $ fmap (\(a, b) -> mkPoint (a+x) (b+y)) points
-
-mkPolygon :: (DomBuilder t m) => [(Int, Int)] -> (Int, Int) -> ElAttrs -> m ()
-mkPolygon points center attrs = svgEl "polygon" (attrs <> "points" =: (B.run (mkPoints points center))) blank
 
 pathPoint :: (Double, Double) -> Text
 pathPoint (x, y) = tshow x <> "," <> tshow y

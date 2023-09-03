@@ -5,16 +5,13 @@
 
 module Frontend where
 
-import Control.Lens
 import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
 import Data.ByteString (ByteString)
-import qualified Data.ByteString.Lazy as LBS
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
-import Data.Csv
 import Prelude hiding (filter)
 
 import Obelisk.Configs
@@ -25,6 +22,7 @@ import Obelisk.Generated.Static
 
 import Reflex.Dom.Core
 
+import Common.Card (readCardsCsv)
 import Common.Route
 
 import Frontend.Card
@@ -79,6 +77,6 @@ cardsWidget (Just deck) = do
     Just cardLines -> renderCards cardLines
 
 renderCards :: DomBuilder t m => ByteString -> m ()
-renderCards cardLines = case decodeByName (LBS.fromStrict cardLines) of
+renderCards cardLines = case readCardsCsv cardLines of
   Left err -> text $ T.pack err
   Right (_header, cards) -> divClass "cards" $ mapM_ card cards

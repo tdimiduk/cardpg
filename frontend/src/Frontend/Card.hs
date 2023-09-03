@@ -77,14 +77,6 @@ cardText x y t = svgEl "text" (xyPair id (x, y) <> "dominant-baseline" =: "middl
 cardNum :: DomBuilder t m => Double -> Double -> Text -> m ()
 cardNum x y t = svgEl "text" (xyPair id (x, y) <> "text-anchor" =: "middle" <> "dominant-baseline" =: "middle" ) (text t)
 
-mkStar :: (DomBuilder t m) => Text -> (Int, Int) -> m ()
-mkStar color center = do
-  mkPolygon trianglePoints center c
-  mkPolygon trianglePoints center (c <> rotate center 180)
-  where
-    c = "color" =: color
-
-
 trianglePoints :: [(Int, Int)]
 trianglePoints = [(0,-40), (20, 0), (40,40), (-40,40)]
 
