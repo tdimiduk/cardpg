@@ -103,6 +103,7 @@ line (x1, y1) (x2, y2) w =
 xyPair :: (Text -> Text) -> (Double, Double) -> ElAttrs
 xyPair mkKey (x, y) = (mkKey "x") =: tshow x <> (mkKey "y") =: tshow y
 
+xymm :: (Double, Double) -> ElAttrs
 xymm = xyPair (<> "mm")
 
 rxy :: (Double, Double) -> ElAttrs

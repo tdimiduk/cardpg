@@ -68,6 +68,11 @@ body {
   border-radius: 0.5em;
 }
 
+textarea {
+  width: 90%;
+  min-height: 40em;
+}
+
 #diamond {
       width: 0;
       height: 0;
