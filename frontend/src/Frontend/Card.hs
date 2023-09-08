@@ -56,19 +56,31 @@ cardHtml (Card name red yellow blue keywordProvide cost keywordCost action effec
     divClass "yellow" $ text yellow
     divClass "blue" $ text blue
 
+star ::
+  DomBuilder t m
+  => (Double, Double)
+  -> (Double, Double)
+  -> ElAttrs
+  -> m ()
 star center size attrs = do
   rectC center size (attrs <> roundCorners 2)
   rectC center size (attrs <> roundCorners 2 <> rotate center 45)
 
+resourceSymbol ::
+  (DomBuilder t m, Show a1)
+  => (Double, Double)
+  -> a1
+  -> ((Double, Double)-> m ())
+  -> m ()
 resourceSymbol (x, y) number symbol = el "g" $ do
   symbol (x, y)
   cardNum x (y+2) (tshow number)
 
 textBlock :: DomBuilder t m => Double -> Double -> Text -> m ()
-textBlock x y t = svgEl "text" (xyPair id (x, y) <> "font-size" =: "0.8em") (mapM_ renderLine (zip [1..] lines))
+textBlock x y t = svgEl "text" (xyPair id (x, y) <> "font-size" =: "0.8em") (mapM_ renderLine blocks)
   where
-    lines = splitOn ";" t
-    renderLine (i, l) = svgEl "tspan" ("dy" =: "18" <> "x" =: tshow x) (text $ strip l)
+    blocks = splitOn ";" t
+    renderLine l = svgEl "tspan" ("dy" =: "18" <> "x" =: tshow x) (text $ strip l)
 
 
 cardText :: DomBuilder t m => Double -> Double -> Text -> m ()

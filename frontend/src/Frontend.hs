@@ -2,13 +2,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TupleSections #-}
 
 module Frontend where
 
 import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
 import Data.ByteString (ByteString)
-import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
@@ -27,17 +27,25 @@ import Common.Route
 
 import Frontend.Card
 
+data DeckType = StandardDeck | AdhocDeck
+
 deckFromRoute
   :: ( MonadFix m
      , MonadHold t m
      , Adjustable t m
      )
-  => RoutedT t (R FrontendRoute) m (Dynamic t (Maybe Text))
+  => RoutedT t (R FrontendRoute) m (Dynamic t (Maybe (Text, DeckType)))
 deckFromRoute = do
   r <- subRoute $ \case
-    FrontendRoute_Main -> pure $ pure Nothing
-    FrontendRoute_Deck -> askRoute
+    FrontendRoute_Main -> pure $ (constDyn Nothing)
+    FrontendRoute_Deck -> do
+      md <- askRoute
+      pure (fmap (,StandardDeck) <$> md)
+    FrontendRoute_Adhoc -> do
+      md <- askRoute
+      pure (fmap (, AdhocDeck) <$> md)
   pure $ join r
+
 
 -- This runs in a monad that can be run on the client or the server.
 -- To run code in a pure client or pure server context, use one of the
@@ -46,7 +54,7 @@ frontend :: Frontend (R FrontendRoute)
 frontend = Frontend
   { _frontend_head = do
       deck <- deckFromRoute
-      el "title" $ dynText $ fromMaybe "CaRdPG" <$> deck
+      el "title" $ dynText $ maybe "CaRdPG" fst <$> deck
       elAttr "link" ("href" =: $(static "main.css") <> "type" =: "text/css" <> "rel" =: "stylesheet") blank
   , _frontend_body = do
       deck <- deckFromRoute
@@ -56,7 +64,7 @@ frontend = Frontend
 nonEmptyText :: Text -> Maybe Text
 nonEmptyText t = if T.null (T.strip t) then Nothing else Just (T.strip t)
 
-cardsWidget :: (DomBuilder t m, HasConfigs m, MonadFix m, MonadHold t m) => Maybe Text -> m ()
+cardsWidget :: (DomBuilder t m, HasConfigs m, MonadFix m, MonadHold t m) => Maybe (Text, DeckType) -> m ()
 cardsWidget Nothing = do
   _ <- workflow (cw Nothing)
   pure ()
@@ -70,7 +78,7 @@ cardsWidget Nothing = do
     cw (Just csv) = Workflow $ do
       renderCards csv
       pure ((), never)
-cardsWidget (Just deck) = do
+cardsWidget (Just (deck, _)) = do
   maybeCards <- getConfig $ "common/" <> deck <> ".csv"
   case maybeCards of
     Nothing -> text "could not read cards"
