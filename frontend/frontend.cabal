@@ -17,6 +17,7 @@ library
                , text
                , containers
                , bytestring
+               , vector
 
   default-extensions:
     ConstraintKinds
