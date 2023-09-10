@@ -1,6 +1,7 @@
 module Frontend.Card where
 
 import Data.Text (Text, splitOn, strip)
+import qualified Data.Vector as V
 
 import Reflex.Dom.Core
 
@@ -55,6 +56,13 @@ cardHtml (Card name red yellow blue keywordProvide cost keywordCost action effec
     divClass "red" $ text red
     divClass "yellow" $ text yellow
     divClass "blue" $ text blue
+
+
+adhocCard :: DomBuilder t m => AdhocCard -> m ()
+adhocCard (AdhocCard name blocks) = divClass "card" $ do
+  divClass "name" $ text name
+  divClass "art" blank
+  divClass "textbox" $ V.mapM_ (divClass "block" . text) blocks
 
 star ::
   DomBuilder t m

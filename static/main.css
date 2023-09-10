@@ -7,7 +7,7 @@ body {
 }
 
 .card {
-  width: 58mm;
+  width: 56mm;
   height: 83mm;
   outline: solid 0.2mm;
   break-inside: avoid;

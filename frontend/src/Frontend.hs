@@ -22,7 +22,7 @@ import Obelisk.Generated.Static
 
 import Reflex.Dom.Core
 
-import Common.Card (readCardsCsv)
+import Common.Card (readCardsCsv, readAdhocCardsCsv)
 import Common.Route
 
 import Frontend.Card
@@ -78,13 +78,20 @@ cardsWidget Nothing = do
     cw (Just csv) = Workflow $ do
       renderCards csv
       pure ((), never)
-cardsWidget (Just (deck, _)) = do
+cardsWidget (Just (deck, deckType)) = do
   maybeCards <- getConfig $ "common/" <> deck <> ".csv"
   case maybeCards of
     Nothing -> text "could not read cards"
-    Just cardLines -> renderCards cardLines
+    Just cardLines -> case deckType of
+      StandardDeck -> renderCards cardLines
+      AdhocDeck -> renderAdhocCards cardLines
 
 renderCards :: DomBuilder t m => ByteString -> m ()
 renderCards cardLines = case readCardsCsv cardLines of
   Left err -> text $ T.pack err
   Right (_header, cards) -> divClass "cards" $ mapM_ card cards
+
+renderAdhocCards :: DomBuilder t m => ByteString -> m ()
+renderAdhocCards cardLines = case readAdhocCardsCsv cardLines of
+  Left err -> text $ T.pack err
+  Right cards -> divClass "cards" $ mapM_ adhocCard cards
