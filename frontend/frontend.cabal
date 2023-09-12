@@ -18,6 +18,8 @@ library
                , containers
                , bytestring
                , vector
+               , cassava
+               , either
 
   default-extensions:
     ConstraintKinds
