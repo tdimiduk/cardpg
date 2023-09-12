@@ -10,6 +10,7 @@ import Data.Csv
 import Data.Text (Text)
 import qualified Data.Text.Encoding as T
 import qualified Data.Vector as V
+import GHC.Base (ord)
 import GHC.Generics
 
 data Card = Card
@@ -53,8 +54,16 @@ instance FromRecord AdhocCard where
     | length v > 1 = AdhocCard <$> v .! 0 <*> pure (T.decodeUtf8 <$> V.drop 1 v)
     | otherwise = mzero
 
-readCardsCsv :: ByteString -> Either String (Header, V.Vector Card)
-readCardsCsv = decodeByName . LBS.fromStrict
+type InputDelimeter = DecodeOptions
 
-readAdhocCardsCsv :: ByteString -> Either String (V.Vector AdhocCard)
-readAdhocCardsCsv = decode HasHeader . LBS.fromStrict
+csv :: InputDelimeter
+csv = defaultDecodeOptions
+
+tsv :: InputDelimeter
+tsv = defaultDecodeOptions { decDelimiter = fromIntegral (ord '\t') }
+
+readStandardCards :: DecodeOptions -> ByteString -> Either String (V.Vector Card)
+readStandardCards options = fmap snd . decodeByNameWith options . LBS.fromStrict
+
+readAdhocCards :: HasHeader -> DecodeOptions -> ByteString -> Either String (V.Vector AdhocCard)
+readAdhocCards hasHeader options = decodeWith options hasHeader . LBS.fromStrict

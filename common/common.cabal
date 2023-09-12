@@ -13,6 +13,7 @@ library
                , aeson
                , cassava
                , vector
+               , either
 
   default-extensions:
     ConstraintKinds
