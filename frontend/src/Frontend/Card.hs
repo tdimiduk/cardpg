@@ -1,7 +1,8 @@
 module Frontend.Card where
 
-import Data.Text (Text, splitOn, strip)
+import Data.Text (Text, splitOn, strip, intercalate)
 import qualified Data.Vector as V
+import Witherable
 
 import Reflex.Dom.Core
 
@@ -37,25 +38,30 @@ maybeText Nothing = blank
 maybeText (Just t) = text t
 
 cardHtml :: DomBuilder t m => Card -> m ()
-cardHtml (Card name red yellow blue keywordProvide cost keywordCost action effect details) = divClass "card" $ do
+cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
   divClass "name" $ text name
   divClass "art" blank
-  case (cost, keywordCost) of
-    (Nothing, Nothing) -> blank
-    (Just c, Nothing) -> divClass "cost" $ text $ "Cost: " <> c
-    (Nothing, Just k) -> divClass "cost" $ text $ "Cost: " <> k
-    (Just c, Just k) -> divClass "cost" $ text $ "Cost: " <> c <> ", " <> k
-  divClass "textbox" $ do
+  costLine cost
+  textboxArea textbox
+  resourcesArea resources
+
+costLine :: DomBuilder t m => Cost -> m ()
+costLine (Cost Nothing Nothing) = blank
+costLine (Cost c k) = divClass "cost" (text $ "Cost: " <> intercalate ", " (catMaybes [c, k]))
+
+resourcesArea (Resources red yellow blue keywordProvide) = do
+  maybe blank (divClass "keywords" . text) keywordProvide
+  divClass "numbers" $ do
+    divClass "red" $ maybeText red
+    divClass "yellow" $ maybeText yellow
+    divClass "blue" $ maybeText blue
+
+textboxArea (Textbox action effect details) = divClass "textbox" $ do
     divClass "action" $ maybeText action
     divClass "effect" $ maybeText effect
     case details of
       Nothing -> blank
       Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
-  divClass "keywords" $ maybeText keywordProvide
-  divClass "numbers" $ do
-    divClass "red" $ text red
-    divClass "yellow" $ text yellow
-    divClass "blue" $ text blue
 
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()

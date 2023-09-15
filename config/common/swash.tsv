@@ -1,0 +1,27 @@
+actor	name	red	yellow	blue	keywordProvide	cost	keywordCost	action	effect	details
+swashbuckler	leather armor				armored			Light Armor: 1 flip on defense; +1 fatigue on reshuffle		
+swashbuckler	rapier				pierce					
+swashbuckler	Feint	1	3	3		1		attack |y|: strength = |y| + 4	Target must expend 1/2/4 cards to defend against you next turn	
+swashbuckler	Footwork	3	3	1						When spent on attack can also spend to defend one attack
+swashbuckler	False Charge	4	2	2		2		attack |x|: strength = |y| + 5	Minor: Stun 2 recover resources spent	
+swashbuckler	Fence	2	3	2		2		attack |y|: strength = |y|	basic wound	you may apply this and it's resources to any defense this round
+swashbuckler	Mind Games	2	4	3		1		attack |z|: strength = |z| + 3; ignore armor	Discard your hand	
+swashbuckler	Inspire	4	3	1		0		Action: Your allies attacks get +4 strength this turn		
+swashbuckler	Trick	2	3	4		0		attack |z|: strength = |y| + 1; ignore armor	Target must expend 1/2/4 cards to attack next turn, you draw a card if they do not	
+swashbuckler	Precise Strike	1	4	3		2		attack |y|: strength = |y|	basic wound	ignore 1 armor
+swashbuckler	Parry	3	4	3				defend |x| or |y|: strength |y| + 1		
+swashbuckler	Athletics	4	4	2						
+swashbuckler	Trip	2	3	2		1		Attack |y|: strength |y| + 3	minor: knockdown, major: knockdown + daze, critical: knockdown + daze + stun 2	
+swashbuckler	Efficient Attack	2	3	2		2		attack |y|: strength |y|	basic wound	reclaim 1 resourse from this attack to hand
+swashbuckler	Bouy Spirits	4	2	3		1		Action: An ally recovers 2 cards from spent to hand		
+swashbuckler	Stop Thrust	2	3	2		1		attack |y|: strength = |y| if they attack you + 3	basic wound	
+swashbuckler	I've got a plan	3	1	5		1		You and your allies get +4 on actions (including defense)		
+swashbuckler	Not there anymore	2	4	3				Defend |x|: strength |y|; you can use this whole defense against any number of attacks this round		
+swashbuckler	Flashing blade	2	3	1		0		attack |y|: strength = |y| + 1	basic wound	
+swashbuckler	Quick Attack	2	3	2		1		attack |y|: strength = |y| +1	basic wound	
+swashbuckler	Make Opportunity	3	3	3				defend: you may use this as a resource to attack next turn		
+swashbuckler	Reliable Attack	2	2	3		1		attack |y|: strength = |y| + 1	basic wound	Option: recover to hand then expend your first draw
+swashbuckler	Patter	2	5	2						
+swashbuckler	Tales of Heroics	4	3	3		1		Action: you or an ally draws 2 extra cards this turn		
+swashbuckler	Gymnastics	3	5	1						
+swashbuckler	Disarming Humor	4	3	4						

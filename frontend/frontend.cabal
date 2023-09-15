@@ -20,6 +20,7 @@ library
                , vector
                , cassava
                , either
+               , witherable
 
   default-extensions:
     ConstraintKinds

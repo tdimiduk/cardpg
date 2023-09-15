@@ -13,7 +13,7 @@ import Data.Csv (HasHeader(..))
 import Data.Either.Combinators
 import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Text.Encoding (encodeUtf8)
+import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import qualified Data.Vector as V
 import Prelude hiding (filter)
 
@@ -26,13 +26,14 @@ import Obelisk.Generated.Static
 import Reflex.Dom.Core
 
 import Common.Card
+import Common.CardParser
 import Common.Route
 
 import Frontend.Card
 
 data DeckType = StandardDeck | AdhocDeck
 
-data Deck = Standard (V.Vector Card) | Adhoc (V.Vector AdhocCard)
+data Deck = Standard [Card] | Adhoc (V.Vector AdhocCard)
 
 deckFromRoute
   :: ( MonadFix m
@@ -66,9 +67,6 @@ frontend = Frontend
       dyn_ $ cardsWidget <$> deck
   }
 
-nonEmptyText :: Text -> Maybe Text
-nonEmptyText t = if T.null (T.strip t) then Nothing else Just (T.strip t)
-
 cardsWidget :: (DomBuilder t m, HasConfigs m, MonadFix m, MonadHold t m) => Maybe (Text, DeckType) -> m ()
 cardsWidget Nothing = do
   _ <- workflow (cw Nothing)
@@ -79,34 +77,32 @@ cardsWidget Nothing = do
       render <- button "Render Standard"
       renderAdhoc <- button "Render Adhoc"
       input <- divClass "cardsInput" $ textAreaElement $ def
-      let inputText = fmap encodeUtf8 <$> (current $ nonEmptyText <$> (_textAreaElement_value input))
-          parse =  (leftmost [mapRight Standard . readStandardCards tsv <$> tagMaybe inputText render,
-                              mapRight Adhoc . readAdhocCards NoHeader tsv <$> tagMaybe inputText renderAdhoc])
+      let inputText = (current $ nonEmptyText <$> (_textAreaElement_value input))
+          parse =  (leftmost [mapRight Standard . parseCards "pasted input" <$> traceEvent "pasted" (tagMaybe inputText render),
+                              mapRight Adhoc . readAdhocCards NoHeader tsv . encodeUtf8 <$> tagMaybe (inputText) renderAdhoc])
           (err, cards) = fanEither parse
-      widgetHold_ blank (text . T.pack <$> err)
+      widgetHold_ blank (el "pre" . text . T.pack <$> err)
       pure $ ((), cw . Just <$> cards)
     cw (Just input) = Workflow $ do
       renderDeck input
       pure ((), never)
-cardsWidget (Just (deck, deckType)) = do
-  maybeCards <- getConfig $ "common/" <> deck <> ".csv"
+cardsWidget (Just (deckName, deckType)) = do
+  let deck = "common/" <> deckName <> ".tsv"
+  maybeCards <- getConfig deck
   case maybeCards of
-    Nothing -> text "could not read cards"
+    Nothing -> text $ "could not read " <> deck
     Just cardLines -> case deckType of
-      StandardDeck -> renderCards csv cardLines
-      AdhocDeck -> renderAdhocCards csv cardLines
+      StandardDeck -> case parseCards (T.unpack deck) (decodeUtf8 cardLines) of
+        Left err -> text $ T.pack err
+        Right deck -> renderDeck $ Standard deck
+      AdhocDeck -> renderAdhocCards cardLines
 
 renderDeck :: DomBuilder t m => Deck -> m ()
 renderDeck deck = divClass "cards" $ case deck of
-  Standard cards -> V.mapM_ card cards
+  Standard cards -> mapM_ card cards
   Adhoc cards -> V.mapM_ adhocCard cards
 
-renderCards :: DomBuilder t m => InputDelimeter -> ByteString -> m ()
-renderCards del cardLines = case readStandardCards del cardLines of
-  Left err -> text $ T.pack err
-  Right (cards) -> divClass "cards" $ mapM_ card cards
-
-renderAdhocCards :: DomBuilder t m => InputDelimeter -> ByteString -> m ()
-renderAdhocCards del cardLines = case readAdhocCards HasHeader del cardLines of
+renderAdhocCards :: DomBuilder t m => ByteString -> m ()
+renderAdhocCards cardLines = case readAdhocCards HasHeader tsv cardLines of
   Left err -> text $ T.pack err
   Right cards -> divClass "cards" $ mapM_ adhocCard cards

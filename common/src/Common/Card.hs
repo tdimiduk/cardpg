@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Common.Card where
 
@@ -6,41 +7,47 @@ import Control.Monad (mzero)
 import Data.Aeson (ToJSON, FromJSON)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LBS
-import Data.Csv
+import Data.Csv (ToNamedRecord, FromNamedRecord, parseNamedRecord, FromRecord, parseRecord, DecodeOptions(..), HasHeader(..), (.:), (.!), defaultDecodeOptions, decodeByNameWith, decodeWith)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as T
 import qualified Data.Vector as V
 import GHC.Base (ord)
 import GHC.Generics
 
+
 data Card = Card
-  { _name :: Text
-  , _red :: Text
-  , _yellow :: Text
-  , _blue :: Text
-  , _keywordProvide
-  , _cost :: Maybe Text
+  { _actor :: Text
+  , _name :: Text
+  , _resources :: Resources
+  , _cost :: Cost
+  , _textbox :: Textbox
+  }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
+data Resources = Resources
+  { _red :: Maybe Text
+  , _yellow :: Maybe Text
+  , _blue :: Maybe Text
+  , _keywordProvide :: Maybe Text
+  }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
+data Cost = Cost
+  { _cards :: Maybe Text
   , _keywordCost :: Maybe Text
-  , _action :: Maybe Text
+  }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
+data Textbox = Textbox
+  { _action :: Maybe Text
   , _effect :: Maybe Text
   , _details :: Maybe Text
   }
-  deriving stock (Generic, Show)
+  deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
-
-instance ToNamedRecord Card
-instance FromNamedRecord Card where
-  parseNamedRecord m = Card
-    <$> m .: "name"
-    <*> m .: "red"
-    <*> m .: "yellow"
-    <*> m .: "blue"
-    <*> m .: "keywordProvide"
-    <*> m .: "cost"
-    <*> m .: "keywordCost"
-    <*> m .: "action"
-    <*> m .: "effect"
-    <*> m .: "details"
 
 data AdhocCard = AdhocCard
   { _ahcName :: Text
@@ -62,8 +69,6 @@ csv = defaultDecodeOptions
 tsv :: InputDelimeter
 tsv = defaultDecodeOptions { decDelimiter = fromIntegral (ord '\t') }
 
-readStandardCards :: DecodeOptions -> ByteString -> Either String (V.Vector Card)
-readStandardCards options = fmap snd . decodeByNameWith options . LBS.fromStrict
-
 readAdhocCards :: HasHeader -> DecodeOptions -> ByteString -> Either String (V.Vector AdhocCard)
 readAdhocCards hasHeader options = decodeWith options hasHeader . LBS.fromStrict
+
