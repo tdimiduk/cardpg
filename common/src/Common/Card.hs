@@ -7,7 +7,7 @@ import Control.Monad (mzero)
 import Data.Aeson (ToJSON, FromJSON)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LBS
-import Data.Csv (ToNamedRecord, FromNamedRecord, parseNamedRecord, FromRecord, parseRecord, DecodeOptions(..), HasHeader(..), (.:), (.!), defaultDecodeOptions, decodeByNameWith, decodeWith)
+import Data.Csv (FromRecord, parseRecord, DecodeOptions(..), HasHeader(..), (.!), defaultDecodeOptions, decodeWith)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as T
 import qualified Data.Vector as V
@@ -48,6 +48,16 @@ data Textbox = Textbox
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
+
+data ResourceType = Red | Yellow | Blue
+
+data Action = GeneralAction Text
+  | Attack
+    { _resistedBy :: ResourceType
+    , _strengthBy :: ResourceType
+    , _plus :: Int
+    , _otherText :: Text
+    }
 
 data AdhocCard = AdhocCard
   { _ahcName :: Text

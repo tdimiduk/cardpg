@@ -87,12 +87,12 @@ cardsWidget Nothing = do
       renderDeck input
       pure ((), never)
 cardsWidget (Just (deckName, deckType)) = do
-  let deck = "common/" <> deckName <> ".tsv"
-  maybeCards <- getConfig deck
+  let deckPath = "common/" <> deckName <> ".tsv"
+  maybeCards <- getConfig deckPath
   case maybeCards of
-    Nothing -> text $ "could not read " <> deck
+    Nothing -> text $ "could not read " <> deckPath
     Just cardLines -> case deckType of
-      StandardDeck -> case parseCards (T.unpack deck) (decodeUtf8 cardLines) of
+      StandardDeck -> case parseCards (T.unpack deckName) (decodeUtf8 cardLines) of
         Left err -> text $ T.pack err
         Right deck -> renderDeck $ Standard deck
       AdhocDeck -> renderAdhocCards cardLines

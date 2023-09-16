@@ -49,6 +49,7 @@ costLine :: DomBuilder t m => Cost -> m ()
 costLine (Cost Nothing Nothing) = blank
 costLine (Cost c k) = divClass "cost" (text $ "Cost: " <> intercalate ", " (catMaybes [c, k]))
 
+resourcesArea :: DomBuilder t m => Resources -> m ()
 resourcesArea (Resources red yellow blue keywordProvide) = do
   maybe blank (divClass "keywords" . text) keywordProvide
   divClass "numbers" $ do
@@ -56,6 +57,7 @@ resourcesArea (Resources red yellow blue keywordProvide) = do
     divClass "yellow" $ maybeText yellow
     divClass "blue" $ maybeText blue
 
+textboxArea :: DomBuilder t m => Textbox -> m ()
 textboxArea (Textbox action effect details) = divClass "textbox" $ do
     divClass "action" $ maybeText action
     divClass "effect" $ maybeText effect

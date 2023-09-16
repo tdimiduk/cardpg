@@ -4,6 +4,8 @@
 module Common.CardParser
   ( parseCards
   , nonEmptyText
+  , readAndParse
+  , readAndParseTest
   )
   where
 
@@ -106,6 +108,7 @@ parseFile = do
   _ <- eof
   pure c
 
+parseCards :: String -> Text -> Either String [Card]
 parseCards context = mapLeft errorBundlePretty . runParser parseFile context
 
 readAndParse :: FilePath -> IO (Either String [Card])
@@ -113,6 +116,7 @@ readAndParse name = do
   f <- T.readFile name
   pure $ mapLeft errorBundlePretty $ runParser parseFile name f
 
+readAndParseTest :: FilePath -> IO ()
 readAndParseTest name = do
   f <- T.readFile name
   parseTest parseFile f
