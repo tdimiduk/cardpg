@@ -53,9 +53,9 @@ resourcesArea :: DomBuilder t m => Resources -> m ()
 resourcesArea (Resources red yellow blue keywordProvide) = do
   maybe blank (divClass "keywords" . text) keywordProvide
   divClass "numbers" $ do
-    divClass "red" $ maybeText red
-    divClass "yellow" $ maybeText yellow
-    divClass "blue" $ maybeText blue
+    resourceSymbol Red red
+    resourceSymbol Yellow yellow
+    resourceSymbol Blue blue
 
 textboxArea :: DomBuilder t m => Textbox -> m ()
 textboxArea (Textbox action effect details) = divClass "textbox" $ do
@@ -64,6 +64,13 @@ textboxArea (Textbox action effect details) = divClass "textbox" $ do
     case details of
       Nothing -> blank
       Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
+
+resourceSymbol :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
+resourceSymbol Red t = elClass "span" "red" $ maybeText t
+resourceSymbol Yellow t = elClass "span" "yellow" $ maybeText t
+resourceSymbol Blue t = elClass "span" "blue-container" $ do
+  elClass "span" "blue-text" $ maybeText t
+  elClass "span" "blue" blank
 
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()
@@ -81,16 +88,6 @@ star ::
 star center size attrs = do
   rectC center size (attrs <> roundCorners 2)
   rectC center size (attrs <> roundCorners 2 <> rotate center 45)
-
-resourceSymbol ::
-  (DomBuilder t m, Show a1)
-  => (Double, Double)
-  -> a1
-  -> ((Double, Double)-> m ())
-  -> m ()
-resourceSymbol (x, y) number symbol = el "g" $ do
-  symbol (x, y)
-  cardNum x (y+2) (tshow number)
 
 textBlock :: DomBuilder t m => Double -> Double -> Text -> m ()
 textBlock x y t = svgEl "text" (xyPair id (x, y) <> "font-size" =: "0.8em") (mapM_ renderLine blocks)

@@ -54,19 +54,55 @@ body {
 }
 
 .red {
-  outline: solid 1px;
-  width: 1em;
-  height: 1em;
+  outline: solid 2px red;
+  padding-bottom: 0.1em;
   text-align: center;
+  border-radius: 0.1em;
 }
 
-.blue {
-  outline: solid 1px;
-  width: 1em;
-  height: 1em;
+.yellow {
+  outline: solid 2px gold;
+  padding-bottom: 0.1em;
   text-align: center;
   border-radius: 0.5em;
 }
+
+.blue {
+  outline: solid 2px blue;
+  transform: rotate(-45deg);
+  border-radius: 0.1em;
+}
+
+.blue-container {
+  width: .8em;
+  height: .8em;
+  display: inline-grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.blue-container > * {
+  grid-column-start: 1;
+  grid-row-start: 1;
+}
+
+.blue-text {
+  justify-self: center;
+  text-align: center;
+  margin-bottom: .2em;
+  margin-left: .1em;
+}
+
+.numbers span {
+  width: 1em;
+  height: 1em;
+}
+
+.blue-container span {
+  width: .8em;
+  height: .8em;
+}
+
 
 textarea {
   width: 90%;

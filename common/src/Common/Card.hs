@@ -14,7 +14,6 @@ import qualified Data.Vector as V
 import GHC.Base (ord)
 import GHC.Generics
 
-
 data Card = Card
   { _actor :: Text
   , _name :: Text
@@ -50,6 +49,8 @@ data Textbox = Textbox
   deriving anyclass (ToJSON, FromJSON)
 
 data ResourceType = Red | Yellow | Blue
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
 
 data Action = GeneralAction Text
   | Attack
@@ -58,6 +59,8 @@ data Action = GeneralAction Text
     , _plus :: Int
     , _otherText :: Text
     }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
 
 data AdhocCard = AdhocCard
   { _ahcName :: Text
