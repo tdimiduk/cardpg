@@ -51,7 +51,7 @@ svg :: DomBuilder t m => Double -> Double -> m a -> m a
 svg width height = svgEl "svg" (widthHeight width height)
 
 svg' :: DomBuilder t m => Double -> Double -> m a -> m a
-svg' vw vh = elClass "div" "svg-container" . svgEl "svg" ("viewBox" =: ("0 0 " <> tshow vw <> " " <> tshow vh) <> "width" =: "100%" <> "height" =: "100%")
+svg' vw vh = svgEl "svg" ("viewBox" =: ("0 0 " <> tshow vw <> " " <> tshow vh) <> "width" =: "100%" <> "height" =: "100%")
 
 path :: DomBuilder t m => [(Double, Double)] -> [Text] -> m ()
 path points style =
@@ -129,36 +129,8 @@ fillNone = "fill:none"
 rotate :: Show a => (a, a) -> Double -> ElAttrs
 rotate (cx, cy) r = "transform" =: ("rotate(" <> tshow r <> "," <> tshow cx <> "," <> tshow cy <> ")")
 
-strokeWidth :: Double -> Text
-strokeWidth w = "stroke-width:" <> tshow w
-
-arrowStyle :: Double -> [Text]
-arrowStyle w = [strokeGray, strokeWidth w, fillNone]
-
-data Direction = Up | Down deriving stock (Eq)
-
-upArrow :: DomBuilder t m => m ()
-upArrow = arrow Up
-
-downArrow :: DomBuilder t m => m ()
-downArrow = arrow Down
-
-arrow :: DomBuilder t m => Direction -> m ()
-arrow dir = do
-  svg' width height $
-    path
-      [ (0, endPoint),
-        (halfWidth, middlePoint),
-        (width, endPoint)
-      ]
-      (arrowStyle w)
-  where
-    width = 100
-    height = 70
-    halfWidth = width / 2
-    w = 10
-    middlePoint = if dir == Down then height - w else w
-    endPoint = if dir == Down then w else height - w
+strokeWidth :: Double -> ElAttrs
+strokeWidth w = "stroke-width" =: tshow w
 
 -- | See https://remixicon.com for icon name values to use
 icon :: DomBuilder t m => Text -> m ()

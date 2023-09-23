@@ -36,9 +36,12 @@ body {
 
 .keywords {
   text-align: center;
-  outline: solid .2mm;
+}
+
+span.keywords {
   border-radius: 1mm;
   padding: .1mm;
+  outline: solid .2mm;
 }
 
 .numbers {
@@ -69,26 +72,28 @@ body {
 }
 
 .resource-container {
-  display: inline-grid;
-  justify-items: center;
-  vertical-align: middle;
   fill: none;
 }
 
 div.resource-container {
+  display: inline-grid;
+  align-items: center;
   text-align: center;
 }
 
 .resource-container > * {
   grid-column-start: 1;
   grid-row-start: 1;
-  justify-items: center;
-  align-items: center;
-  vertical-align: middle;
 }
 
 .resource-container svg {
-  vertical-align: text-top;
+  width: 24px;
+  height: auto;
+}
+
+.textbox svg {
+  height: 0.8em;
+  width: auto;
 }
 
 div.resource-text {

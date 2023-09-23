@@ -29,9 +29,6 @@ mtshow :: Show a => Maybe a -> Text
 mtshow Nothing = ""
 mtshow (Just t) = tshow t
 
-rectSize :: (Integer, Integer)
-rectSize = (20, 20)
-
 card :: DomBuilder t m => Card -> m ()
 card = cardHtml
 
@@ -53,7 +50,7 @@ costLine (Cost c k) = divClass "cost" (text $ "Cost: " <> intercalate ", " (catM
 
 resourcesArea :: DomBuilder t m => Resources -> m ()
 resourcesArea (Resources red yellow blue keywordProvide) = do
-  maybe blank (divClass "keywords" . text) keywordProvide
+  maybe blank (divClass "keywords" . elClass "span" "keywords" . text) keywordProvide
   divClass "numbers" $ do
     resourceSymbol Red red
     resourceSymbol Yellow yellow
@@ -87,17 +84,19 @@ action (Just a) = divClass "action" $ case a of
 
 
 resourceSymbol :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
-resourceSymbol r t = elClass container "resource-container" $ do
-  elClass container "resource-text" $ maybeText t
-  elClass container (T.toLower (tshow r)) $ svg size size $ case r of
-    Red -> rectC (c, c) (size-2, size-2) mempty
-    Yellow -> circle (c, c) (size/2 -2) (-2)
-    Blue -> rectC (c, c) (size * rectScale, size * rectScale) (rotate (c, c) 45 <> "stroke-width" =: "2")
+resourceSymbol r t = elClass container ("resource-container " <> (T.toLower (tshow r))) $ do
+  mapM_ (elClass container "resource-text"  . text) t
+  svg' size size $ case r of
+    Red -> rectC (c, c) (rectSize, rectSize) (strokeWidth w)
+    Yellow -> circle (c, c) (size - c - w) w
+    Blue -> rectC (c, c) (diamondSize, diamondSize) (rotate (c, c) 45 <> strokeWidth w)
   where
     container = if isNothing t then "span" else "div"
-    size = if isNothing t then 12 else 24
-    rectScale = 0.65
-    c = size / 2
+    size = 100
+    diamondSize = 65
+    rectSize = 80
+    w = 10
+    c = 50
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()
 adhocCard (AdhocCard name blocks) = divClass "card" $ do

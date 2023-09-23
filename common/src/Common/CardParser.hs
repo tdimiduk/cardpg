@@ -25,26 +25,6 @@ type Parser = Parsec Void Text
 
 data CardType = CardStandard | CardAdhoc deriving stock Show
 
--- Lexer setup
-
-spaceConsumer :: Parser ()
-spaceConsumer = L.space hspace1 empty empty
-
-lexeme :: Parser a -> Parser a
-lexeme = L.lexeme spaceConsumer
-
-int :: Parser Int
-int = lexeme L.decimal
-
-signedInt :: Parser Int
-signedInt = L.signed spaceConsumer int
-
-symbol :: Text -> Parser Text
-symbol = L.symbol spaceConsumer
-
-symbol' :: Text -> Parser Text
-symbol' = L.symbol' spaceConsumer
-
 sep :: Char
 sep = '\t'
 
@@ -76,10 +56,17 @@ fieldBody :: Parser Text
 fieldBody = label "field body" $ quoted <|> unquotedFieldBody
 
 field :: Parser Text
-field = label "field" $ lexeme fieldBody
+field = label "field" $ do
+  f <- fieldBody
+  _ <- optional tab
+  pure f
 
 optionalField :: Parser (Maybe Text)
-optionalField = label "optional field" $ lexeme $ optional fieldBody
+optionalField = label "optional field" $do
+  f <- optional fieldBody
+  _ <- optional tab
+  pure f
+
 
 resources :: Parser Resources
 resources = label "resources" $ do
@@ -91,29 +78,49 @@ resources = label "resources" $ do
 
 textbox :: Parser Textbox
 textbox = label "textbox" $ do
-  _action <- lexeme $ optional action
+  _action <- optional action
+  _ <- tab
   _effect <- label "effect" optionalField
   _details <- label "details" optionalField
   pure Textbox {..}
 
 resourceSymbol :: Parser ResourceType
-resourceSymbol = lexeme $ do
-  _ <- symbol "|"
+resourceSymbol = do
+  _ <- char '|'
   r <- Red <$ char 'x' <|> Yellow <$ char 'y' <|> Blue <$ char 'z'
-  _ <- symbol "|"
+  _ <- char '|'
+  _ <- optional $ char ' '
   pure r
+
+negativeInt :: Parser Int
+negativeInt = do
+  _ <- char '-'
+  _ <- optional $ char ' '
+  n <- L.decimal
+  pure $ n * (-1)
+
+
+plusModifier :: Parser Int
+plusModifier = L.decimal <|> negativeInt <|> pure 0
 
 action :: Parser Action
 action = label "action"
   (  do
-       _ <- symbol' "attack"
+       _ <- string' "attack"
+       _ <- optional $ char ' '
        _resistedBy <- resourceSymbol
-       _ <- symbol ":"
-       _ <- symbol' "strength"
-       _ <- optional $ symbol "="
+       _ <- string ":"
+       _ <- optional $ char ' '
+       _ <- string' "strength"
+       _ <- optional $ char ' '
+       _ <- optional $ string "="
+       _ <- optional $ char ' '
        _strengthBy <- resourceSymbol
-       _plus <- fromMaybe 0 <$> optional signedInt
-       _otherText <- lexeme $ optional unquotedFieldBody
+       _ <- optional $ char ' '
+       _plus <- plusModifier
+       _ <- optional $ char ' '
+       _otherText <- optional unquotedFieldBody
+       _ <- many $ char ' '
        pure Attack {..}
 
   <|> GeneralAction <$> unquotedFieldBody
@@ -132,6 +139,7 @@ card = label "card" $ do
   _resources <- resources
   _cost <- cost
   _textbox <- textbox
+  hspace
   pure Card {..}
 
 blankCard :: Parser Card

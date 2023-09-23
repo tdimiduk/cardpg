@@ -17,7 +17,7 @@ wizard	Force Dart	2	3	3	arcane	2	arcane	attack |x|: strength |z| + 2, ranged	bas
 wizard	Force Punch	3	2	3	arcane	3	arcane	attack |x|: strength |z| + 4																	
 wizard	Rend Spirit	2	2	4	arcane	4	arcane	attack |z|: strength |z| + 4	Basic death wound																
 wizard	Hex bolt	2	3	4	arcane	1	arcane	attack |z|: strength |z| + 2	Curse 1/3/5																
-wizard	Incremental Polymorph	3	3	3	arcane	2	arcane	attack |x|: strength |z|	Minor: Caster picks curse 1 attack or defense; Major: curse 1; Grave: You're a newt	You may leave this as state. Upkeep: expend this or place your draw under this and a +1 on top and repeat the attack next turn															 
+wizard	Incremental Polymorph	3	3	3	arcane	2	arcane	attack |x|: strength |z|, you may leave this as state	Minor: Caster picks curse 1 attack or defense; Major: curse 1; Grave: You're a newt	Upkeep: expend this or place your draw under this and a +1 on top and repeat the attack next turn															 
 wizard	Overwhelm Essense	4	2	3	arcane	2+	arcane	attack |x|: strength |z| + 2																	
 wizard	Elven Lore	2	3	5																					
 wizard	Elven Patience	3	4	4																					
