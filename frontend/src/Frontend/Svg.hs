@@ -68,7 +68,7 @@ fill :: Text -> ElAttrs
 fill c = "fill" =: c
 
 circle :: DomBuilder t m => (Double, Double) -> Double -> Double -> m ()
-circle center r w = circle' center r ("stroke-width" =: tshow w <> "stroke" =: "black" <> "fill" =: "none" <> "preserveAspectRatio" =: "none")
+circle center r w = circle' center r ("stroke-width" =: tshow w <> "stroke" =: "gold" <> "fill" =: "none" <> "preserveAspectRatio" =: "none")
 
 circle' :: DomBuilder t m => (Double, Double) -> Double -> ElAttrs -> m ()
 circle' center r a =
@@ -164,17 +164,3 @@ arrow dir = do
 icon :: DomBuilder t m => Text -> m ()
 icon name = elClass "i" ("ri-" <> name) blank
 
-searchGlass :: DomBuilder t m => m ()
-searchGlass = icon "search-2-line"
-
-threeDots' :: DomBuilder t m => m ()
-threeDots' = svg' size height $ do
-  circle' (2 * r, cx) r mempty
-  circle' (half, cx) r mempty
-  circle' (size - 2 * r, cx) r mempty
-  where
-    size = 100
-    r = 8
-    height = size / 2.5
-    half = size / 2
-    cx = height / 2

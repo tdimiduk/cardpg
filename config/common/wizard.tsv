@@ -5,14 +5,14 @@ wizard	Blinding Beams	2	4	3	arcane	4	arcane	attack |y|: strength |z| + 2, attack
 wizard	Make sneeze	2	4	3	arcane	1	arcane	Attack |z| : strength |z| + 3 ignore armor	Minor discard their hand																
 wizard	Slow ray	2	3	3	arcane	2	arcane	attack |y|: strength |z| + 2																	
 wizard	Mind Crush	1	1	4	arcane, mind	4	arcane	attack |z|: strength |z|, ignore armor	basic mind wound																
-wizard	Mirror Image	2	3	3	arcane, illusion	2+	arcane	action: place this as state with it's resources under it		Expend this or a card under it to degrade a wound															
-wizard	Dominate	1	1	5	arcane	5	arcane	attack |z| ignore armor: strength |z|	Minor: Target's next attack is expended without effect, Major: caster picks next attack's target, Grave: Caster picks who target attacks until removed																
+wizard	Mirror Image	2	3	3	arcane, illusion	2	arcane	action: place this as state with it's resources under it		Expend this or a card under it to degrade a wound															
+wizard	Dominate	1	1	5	arcane	5	arcane	attack |z|: strength |z| ignore armor	Minor: Target's next attack is expended without effect, Major: caster picks next attack's target, Grave: Caster picks who target attacks until removed																
 wizard	Ghostform	1	3	2	arcane		arcane	Action play out	If you are attacked ignore the numbers from 2 cards in the attack	If you were attacked expend this during upkeep, if not recover it to your hand															
 wizard	Flicker	1	3	5	arcane		arcane	Action play this out	You can use this or other blue cards twice to defend this turn against |x|, |y| or |z|	Recover this to hand if you did not defend this turn, expend it if you did															
 wizard	Telekenetic Shove	5	2	3	arcane	1	arcane	attack |x|: strength |z| + 2	minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun 2																
 wizard	Shield of Force	4	3	2	arcane		arcane			When you defend with this, recover all other cards used in the defense															
-wizard	Haste	2	5	2	arcane	2+	arcane	Play this as state on a character with it's resources under it	Each upkeep draw 2 extra cards and expend this or one card from under it																
-wizard	Ogre Strength	5	1	3	arcane	2+	arcane	Play this as state on a character with it's resources under it	When making an |x|, add +2 on each card spent, expend this or a card under it																
+wizard	Haste	2	5	2	arcane	2	arcane	Play this as state on a character with it's resources under it	Each upkeep draw 2 extra cards and expend this or one card from under it																
+wizard	Ogre Strength	5	1	3	arcane	2	arcane	Play this as state on a character with it's resources under it	When making an |x|, add +2 on each card spent, expend this or a card under it																
 wizard	Force Dart	2	3	3	arcane	2	arcane	attack |x|: strength |z| + 2, ranged	basic wound																
 wizard	Force Punch	3	2	3	arcane	3	arcane	attack |x|: strength |z| + 4																	
 wizard	Rend Spirit	2	2	4	arcane	4	arcane	attack |z|: strength |z| + 4	Basic death wound																

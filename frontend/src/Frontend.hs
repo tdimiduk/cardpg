@@ -93,7 +93,7 @@ cardsWidget (Just (deckName, deckType)) = do
     Nothing -> text $ "could not read " <> deckPath
     Just cardLines -> case deckType of
       StandardDeck -> case parseCards (T.unpack deckName) (decodeUtf8 cardLines) of
-        Left err -> text $ T.pack err
+        Left err -> el "pre" $ text $ T.pack err
         Right deck -> renderDeck $ Standard deck
       AdhocDeck -> renderAdhocCards cardLines
 

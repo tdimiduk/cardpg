@@ -43,6 +43,7 @@ body {
 
 .numbers {
   display: flex;
+  height: 1.2em;
   justify-content: space-between;
   padding-top: 1mm;
 }
@@ -54,55 +55,57 @@ body {
 }
 
 .red {
-  outline: solid 2px red;
-  padding-bottom: 0.1em;
+  stroke: red;
   text-align: center;
-  border-radius: 0.1em;
 }
 
 .yellow {
-  outline: solid 2px gold;
-  padding-bottom: 0.1em;
-  text-align: center;
-  border-radius: 0.5em;
+  stroke: gold;
+  vertical-align: middle;
 }
 
 .blue {
-  outline: solid 2px blue;
-  transform: rotate(-45deg);
-  border-radius: 0.1em;
+  stroke: blue;
 }
 
-.blue-container {
-  width: .8em;
-  height: .8em;
+.resource-container {
   display: inline-grid;
   justify-items: center;
-  align-items: center;
+  vertical-align: middle;
+  fill: none;
 }
 
-.blue-container > * {
+div.resource-container {
+  text-align: center;
+}
+
+.resource-container > * {
   grid-column-start: 1;
   grid-row-start: 1;
+  justify-items: center;
+  align-items: center;
+  vertical-align: middle;
 }
 
-.blue-text {
-  justify-self: center;
-  text-align: center;
-  margin-bottom: .2em;
-  margin-left: .1em;
+.resource-container svg {
+  vertical-align: text-top;
+}
+
+div.resource-text {
+  margin-top: 0.6px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .numbers span {
   width: 1em;
   height: 1em;
 }
-
-.blue-container span {
-  width: .8em;
-  height: .8em;
-}
-
 
 textarea {
   width: 90%;

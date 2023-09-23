@@ -41,7 +41,7 @@ data Cost = Cost
   deriving anyclass (ToJSON, FromJSON)
 
 data Textbox = Textbox
-  { _action :: Maybe Text
+  { _action :: Maybe Action
   , _effect :: Maybe Text
   , _details :: Maybe Text
   }
@@ -57,7 +57,7 @@ data Action = GeneralAction Text
     { _resistedBy :: ResourceType
     , _strengthBy :: ResourceType
     , _plus :: Int
-    , _otherText :: Text
+    , _otherText :: Maybe Text
     }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)

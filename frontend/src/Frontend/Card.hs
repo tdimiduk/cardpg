@@ -1,6 +1,8 @@
 module Frontend.Card where
 
+import Data.Maybe (isNothing)
 import Data.Text (Text, splitOn, strip, intercalate)
+import qualified Data.Text as T
 import qualified Data.Vector as V
 import Witherable
 
@@ -58,20 +60,44 @@ resourcesArea (Resources red yellow blue keywordProvide) = do
     resourceSymbol Blue blue
 
 textboxArea :: DomBuilder t m => Textbox -> m ()
-textboxArea (Textbox action effect details) = divClass "textbox" $ do
-    divClass "action" $ maybeText action
-    divClass "effect" $ maybeText effect
-    case details of
-      Nothing -> blank
-      Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
+textboxArea (Textbox a effect details) = divClass "textbox" $ do
+  action a
+  divClass "effect" $ maybeText effect
+  case details of
+    Nothing -> blank
+    Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
+
+renderModifier :: DomBuilder t m => Int -> m ()
+renderModifier x
+  | x == 0 = blank
+  | x > 0 = text "+" >> text (tshow x)
+  | otherwise = text (tshow x)
+
+action :: DomBuilder t m => Maybe Action -> m ()
+action Nothing = blank
+action (Just a) = divClass "action" $ case a of
+  GeneralAction t -> text t
+  Attack resistBy strengthBy strengthPlus otherText -> do
+    text "Attack "
+    resourceSymbol resistBy Nothing
+    text ": strength = "
+    resourceSymbol strengthBy Nothing
+    renderModifier strengthPlus
+    maybeText otherText
+
 
 resourceSymbol :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
-resourceSymbol Red t = elClass "span" "red" $ maybeText t
-resourceSymbol Yellow t = elClass "span" "yellow" $ maybeText t
-resourceSymbol Blue t = elClass "span" "blue-container" $ do
-  elClass "span" "blue-text" $ maybeText t
-  elClass "span" "blue" blank
-
+resourceSymbol r t = elClass container "resource-container" $ do
+  elClass container "resource-text" $ maybeText t
+  elClass container (T.toLower (tshow r)) $ svg size size $ case r of
+    Red -> rectC (c, c) (size-2, size-2) mempty
+    Yellow -> circle (c, c) (size/2 -2) (-2)
+    Blue -> rectC (c, c) (size * rectScale, size * rectScale) (rotate (c, c) 45 <> "stroke-width" =: "2")
+  where
+    container = if isNothing t then "span" else "div"
+    size = if isNothing t then 12 else 24
+    rectScale = 0.65
+    c = size / 2
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()
 adhocCard (AdhocCard name blocks) = divClass "card" $ do
