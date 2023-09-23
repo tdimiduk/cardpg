@@ -138,34 +138,8 @@ adhocCard (AdhocCard name blocks) = divClass "card" $ do
   divClass "art" blank
   divClass "textbox" $ V.mapM_ (divClass "block" . text) blocks
 
-star ::
-  DomBuilder t m
-  => (Double, Double)
-  -> (Double, Double)
-  -> ElAttrs
-  -> m ()
-star center size attrs = do
-  rectC center size (attrs <> roundCorners 2)
-  rectC center size (attrs <> roundCorners 2 <> rotate center 45)
-
 textBlock :: DomBuilder t m => Double -> Double -> Text -> m ()
 textBlock x y t = svgEl "text" (xyPair id (x, y) <> "font-size" =: "0.8em") (mapM_ renderLine blocks)
   where
     blocks = splitOn ";" t
     renderLine l = svgEl "tspan" ("dy" =: "18" <> "x" =: tshow x) (text $ strip l)
-
-
-cardText :: DomBuilder t m => Double -> Double -> Text -> m ()
-cardText x y t = svgEl "text" (xyPair id (x, y) <> "dominant-baseline" =: "middle") (text t)
-
-cardNum :: DomBuilder t m => Double -> Double -> Text -> m ()
-cardNum x y t = svgEl "text" (xyPair id (x, y) <> "text-anchor" =: "middle" <> "dominant-baseline" =: "middle" ) (text t)
-
-trianglePoints :: [(Int, Int)]
-trianglePoints = [(0,-40), (20, 0), (40,40), (-40,40)]
-
-roundCorners :: Double -> ElAttrs
-roundCorners x = rxy (x, x)
-
-starPath :: Text
-starPath = "M7.5 0.25 L9.375 6 h5.625 L10.375 9.25 L12.25 14.875 L7.5 11.375 L2.75 14.875 L4.625 9.25 L0 6 h5.625 Z"

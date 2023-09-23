@@ -132,6 +132,14 @@ rotate (cx, cy) r = "transform" =: ("rotate(" <> tshow r <> "," <> tshow cx <> "
 strokeWidth :: Double -> ElAttrs
 strokeWidth w = "stroke-width" =: tshow w
 
+star :: DomBuilder t m => ElAttrs -> m ()
+star attrs= svgEl "path" (attrs <> d) blank
+  where
+    d = "d" =: ("M " <> p 50 2 <> p 70 30 <> p 98 40 <> p 80 65 <> p 82 98
+      <> p 50 85 <> p 18 98 <> p 20 65 <> p 2 40 <> p 30 30 <> "Z")
+    p :: Int -> Int -> Text
+    p x y = tshow x <> "," <> tshow y <> " "
+
 -- | See https://remixicon.com for icon name values to use
 icon :: DomBuilder t m => Text -> m ()
 icon name = elClass "i" ("ri-" <> name) blank
