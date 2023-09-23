@@ -71,6 +71,12 @@ optionalField = label "optional field" $do
   _ <- optional tab
   pure f
 
+optionalFancyField :: Parser (Maybe FancyText)
+optionalFancyField = label "optional fancy field" $ do
+  f <- optional fancyText
+  _ <- optional tab
+  pure f
+
 
 resources :: Parser Resources
 resources = label "resources" $ do
@@ -84,16 +90,21 @@ textbox :: Parser Textbox
 textbox = label "textbox" $ do
   _action <- optional action
   _ <- tab
-  _effect <- label "effect" optionalField
-  _details <- label "details" optionalField
+  _effect <- label "effect" optionalFancyField
+  _details <- label "details" optionalFancyField
   pure Textbox {..}
 
 resourceSymbol :: Parser ResourceType
 resourceSymbol = do
+  r <- resourceSymbol'
+  _ <- optional $ char ' '
+  pure r
+
+resourceSymbol' :: Parser ResourceType
+resourceSymbol' = do
   _ <- char '|'
   r <- Red <$ char 'x' <|> Yellow <$ char 'y' <|> Blue <$ char 'z'
   _ <- char '|'
-  _ <- optional $ char ' '
   pure r
 
 negativeInt :: Parser Int
@@ -103,6 +114,11 @@ negativeInt = do
   n <- L.decimal
   pure $ n * (-1)
 
+fancyText :: Parser FancyText
+fancyText = FancyText <$> many (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
+  where
+    fancyTextToken = FancyTextToken <$> takeWhile1P (Just "fancy text token")
+      (\x -> x /= sep && x /= '\n' && x /= '\r' && x /= '|')
 
 plusModifier :: Parser Int
 plusModifier = L.decimal <|> negativeInt <|> pure 0
@@ -158,9 +174,7 @@ action = label "action"
         _ <- string' "defend:"
         optionalSpace
         SpecialDefend <$> unquotedFieldBody
-
-
-  <|> GeneralAction <$> unquotedFieldBody
+  <|> GeneralAction <$> fancyText
   )
 cost :: Parser Cost
 cost = label "cost" $ do

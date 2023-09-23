@@ -43,8 +43,8 @@ data Cost = Cost
 
 data Textbox = Textbox
   { _action :: Maybe Action
-  , _effect :: Maybe Text
-  , _details :: Maybe Text
+  , _effect :: Maybe FancyText
+  , _details :: Maybe FancyText
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
@@ -53,7 +53,7 @@ data ResourceType = Red | Yellow | Blue
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-data Action = GeneralAction Text
+data Action = GeneralAction FancyText
   | Attack
     { _resistedBy :: ResourceType
     , _strengthBy :: ResourceType
@@ -67,6 +67,14 @@ data Action = GeneralAction Text
     , _dText :: Maybe Text
     }
   | SpecialDefend Text
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
+data FancyToken = FancyTextToken Text | ResourceToken ResourceType
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
+data FancyText = FancyText [FancyToken]
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 

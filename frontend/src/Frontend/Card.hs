@@ -60,16 +60,20 @@ resourcesArea (Resources red yellow blue keywordProvide) = do
 textboxArea :: DomBuilder t m => Textbox -> m ()
 textboxArea (Textbox a effect details) = divClass "textbox" $ do
   action a
-  divClass "effect" $ maybeText effect
-  case details of
-    Nothing -> blank
-    Just d -> mapM_ (divClass "details" . text) (splitOn ";" d)
+  mapM_ (divClass "effect" . fancyText) effect
+  mapM_ (divClass "details" . fancyText) details
 
 renderModifier :: DomBuilder t m => Int -> m ()
 renderModifier x
   | x == 0 = blank
   | x > 0 = text "+" >> text (tshow x)
   | otherwise = text (tshow x)
+
+fancyText :: DomBuilder t m => FancyText -> m ()
+fancyText (FancyText tokens) = mapM_ render tokens
+  where
+    render (FancyTextToken t) = text t
+    render (ResourceToken t) = resourceSymbol t
 
 renderDefendsList :: DomBuilder t m => NonEmpty ResourceType -> m ()
 renderDefendsList (a :| [b, c]) = do
@@ -90,7 +94,7 @@ renderDefendsList _ = text "error: too many resources"
 action :: DomBuilder t m => Maybe Action -> m ()
 action Nothing = blank
 action (Just a) = divClass "action" $ case a of
-  GeneralAction t -> text t
+  GeneralAction t -> fancyText t
   Attack resistBy strengthBy strengthPlus otherText -> do
     text "Attack "
     resourceSymbol resistBy
