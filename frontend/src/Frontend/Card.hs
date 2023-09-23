@@ -1,6 +1,7 @@
 module Frontend.Card where
 
 import Data.Maybe (isNothing)
+import Data.List.NonEmpty (NonEmpty(..))
 import Data.Text (Text, splitOn, strip, intercalate)
 import qualified Data.Text as T
 import qualified Data.Vector as V
@@ -52,9 +53,9 @@ resourcesArea :: DomBuilder t m => Resources -> m ()
 resourcesArea (Resources red yellow blue keywordProvide) = do
   maybe blank (divClass "keywords" . elClass "span" "keywords" . text) keywordProvide
   divClass "numbers" $ do
-    resourceSymbol Red red
-    resourceSymbol Yellow yellow
-    resourceSymbol Blue blue
+    resourceSymbol' Red red
+    resourceSymbol' Yellow yellow
+    resourceSymbol' Blue blue
 
 textboxArea :: DomBuilder t m => Textbox -> m ()
 textboxArea (Textbox a effect details) = divClass "textbox" $ do
@@ -70,21 +71,50 @@ renderModifier x
   | x > 0 = text "+" >> text (tshow x)
   | otherwise = text (tshow x)
 
+renderDefendsList :: DomBuilder t m => NonEmpty ResourceType -> m ()
+renderDefendsList (a :| [b, c]) = do
+  resourceSymbol a
+  text ", "
+  resourceSymbol b
+  text " or "
+  resourceSymbol c
+renderDefendsList (a :| [b]) = do
+  resourceSymbol a
+  text " or "
+  resourceSymbol b
+renderDefendsList (a :| []) = do
+  resourceSymbol a
+renderDefendsList _ = text "error: too many resources"
+
+
 action :: DomBuilder t m => Maybe Action -> m ()
 action Nothing = blank
 action (Just a) = divClass "action" $ case a of
   GeneralAction t -> text t
   Attack resistBy strengthBy strengthPlus otherText -> do
     text "Attack "
-    resourceSymbol resistBy Nothing
+    resourceSymbol resistBy
     text ": strength = "
-    resourceSymbol strengthBy Nothing
+    resourceSymbol strengthBy
     renderModifier strengthPlus
     maybeText otherText
+  StandardDefend resists resistsWith strMod otherText -> do
+    text "Defend "
+    renderDefendsList resists
+    text ": strength = "
+    resourceSymbol resistsWith
+    renderModifier strMod
+    maybeText otherText
+  SpecialDefend t -> do
+    text "Defend: "
+    text t
 
 
-resourceSymbol :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
-resourceSymbol r t = elClass container ("resource-container " <> (T.toLower (tshow r))) $ do
+resourceSymbol :: DomBuilder t m => ResourceType -> m ()
+resourceSymbol a = resourceSymbol' a Nothing
+
+resourceSymbol' :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
+resourceSymbol' r t = elClass container ("resource-container " <> (T.toLower (tshow r))) $ do
   mapM_ (elClass container "resource-text"  . text) t
   svg' size size $ case r of
     Red -> rectC (c, c) (rectSize, rectSize) (strokeWidth w)

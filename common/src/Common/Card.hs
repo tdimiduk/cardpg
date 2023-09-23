@@ -8,6 +8,7 @@ import Data.Aeson (ToJSON, FromJSON)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as LBS
 import Data.Csv (FromRecord, parseRecord, DecodeOptions(..), HasHeader(..), (.!), defaultDecodeOptions, decodeWith)
+import Data.List.NonEmpty (NonEmpty)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as T
 import qualified Data.Vector as V
@@ -56,9 +57,16 @@ data Action = GeneralAction Text
   | Attack
     { _resistedBy :: ResourceType
     , _strengthBy :: ResourceType
-    , _plus :: Int
-    , _otherText :: Maybe Text
+    , _aMod :: Int
+    , _aText :: Maybe Text
     }
+  | StandardDefend
+    { _resists :: NonEmpty ResourceType
+    , _resistWith :: ResourceType
+    , _dMod :: Int
+    , _dText :: Maybe Text
+    }
+  | SpecialDefend Text
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 

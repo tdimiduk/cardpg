@@ -9,8 +9,9 @@ module Common.CardParser
   )
   where
 
+import Control.Monad (void)
 import Data.Either.Combinators
-import Data.Maybe
+import Data.List.NonEmpty (NonEmpty(..))
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
@@ -27,6 +28,9 @@ data CardType = CardStandard | CardAdhoc deriving stock Show
 
 sep :: Char
 sep = '\t'
+
+optionalSpace :: Parser ()
+optionalSpace = void $ optional $ char ' '
 
 header :: Parser CardType
 header = do
@@ -103,25 +107,58 @@ negativeInt = do
 plusModifier :: Parser Int
 plusModifier = L.decimal <|> negativeInt <|> pure 0
 
+orSep :: Parser ()
+orSep = do
+  _ <- optional $ char ' '
+  _ <- () <$ string ", or" <|> () <$ string "or" <|> () <$ char ','
+  void $ optional $ char ' '
+
+standardDefend :: Parser Action
+standardDefend = do
+        _ <- string' "defend"
+        optionalSpace
+        d <- resourceSymbol
+        _ <- optional orSep
+        ds <- resourceSymbol `sepBy` orSep
+        let _resists = d :| ds
+        _ <- string ":"
+        optionalSpace
+        _ <- string' "strength"
+        optionalSpace
+        _ <- optional $ string "="
+        optionalSpace
+        _resistWith <- resourceSymbol
+        optionalSpace
+        _dMod <- plusModifier
+        optionalSpace
+        _dText <- optional unquotedFieldBody
+        pure StandardDefend {..}
+
+
 action :: Parser Action
 action = label "action"
-  (  do
-       _ <- string' "attack"
-       _ <- optional $ char ' '
-       _resistedBy <- resourceSymbol
-       _ <- string ":"
-       _ <- optional $ char ' '
-       _ <- string' "strength"
-       _ <- optional $ char ' '
-       _ <- optional $ string "="
-       _ <- optional $ char ' '
-       _strengthBy <- resourceSymbol
-       _ <- optional $ char ' '
-       _plus <- plusModifier
-       _ <- optional $ char ' '
-       _otherText <- optional unquotedFieldBody
-       _ <- many $ char ' '
-       pure Attack {..}
+  (   do
+        _ <- string' "attack"
+        optionalSpace
+        _resistedBy <- resourceSymbol
+        _ <- string ":"
+        optionalSpace
+        _ <- string' "strength"
+        optionalSpace
+        _ <- optional $ string "="
+        optionalSpace
+        _strengthBy <- resourceSymbol
+        optionalSpace
+        _aMod <- plusModifier
+        optionalSpace
+        _aText <- optional unquotedFieldBody
+        _ <- many $ char ' '
+        pure Attack {..}
+  <|> try standardDefend <|> do
+        _ <- string' "defend:"
+        optionalSpace
+        SpecialDefend <$> unquotedFieldBody
+
 
   <|> GeneralAction <$> unquotedFieldBody
   )
