@@ -29,76 +29,89 @@ data CardType = CardStandard | CardAdhoc deriving stock Show
 sep :: Char
 sep = '\t'
 
-optionalSpace :: Parser ()
-optionalSpace = void $ optional $ char ' '
-
 header :: Parser CardType
 header = do
-  _ <- optional (string' "actor")
-  _ <- char sep
-  _ <- string' "name"
-  _ <- char sep
+  _ <- tsvField $ string' "actor"
+  _ <- tsvField $ string' "name"
   r <- optional $ string' "red"
-  _ <- many $ anySingleBut '\n'
-  _ <- newline
+  _ <- takeWhileP (Just "rest of header") notLineEnd
+  _ <- eol
   pure $ case r of
     Just _ -> CardStandard
     Nothing -> CardAdhoc
 
-quoted :: Parser Text
-quoted = do
-  let quoteChar = '"'
-  _ <- char quoteChar <?> "opening quote"
-  v <- takeWhile1P (Just "quoted field") (\x -> x /= quoteChar)
-  _ <- char quoteChar <?> "closing quote"
-  pure v
-
-unquotedFieldBody :: Parser Text
-unquotedFieldBody = takeWhile1P (Just "unquoted field") (\x -> x /= sep && x /= '\n' && x /= '\r')
-
-fieldBody :: Parser Text
-fieldBody = label "field body" $ quoted <|> unquotedFieldBody
-
-field :: Parser Text
-field = label "field" $ do
-  f <- fieldBody
-  _ <- optional tab
-  pure f
-
-optionalField :: Parser (Maybe Text)
-optionalField = label "optional field" $do
-  f <- optional fieldBody
-  _ <- optional tab
-  pure f
-
-optionalFancyField :: Parser (Maybe FancyText)
-optionalFancyField = label "optional fancy field" $ do
-  f <- optional fancyText
-  _ <- optional tab
-  pure f
-
+card :: Parser Card
+card = label "card" $ do
+  _actor <- label "actor" $ tsvField textTillTab
+  _name <- label "name" $ tsvField textTillTab
+  _resources <- resources
+  _cost <- cost
+  _textbox <- textbox
+  label "trailing whitespace for card" hspace
+  pure Card {..}
 
 resources :: Parser Resources
 resources = label "resources" $ do
-    _red <- label "red" optionalField
-    _yellow <- label "yellow" optionalField
-    _blue <- label "blue" optionalField
-    _keywordProvide <- label "keywords provided" optionalField
+    _red <- label "red" $ tsvField $ optional textTillTab
+    _yellow <- label "yellow" $ tsvField $ optional textTillTab
+    _blue <- label "blue" $ tsvField $ optional textTillTab
+    _keywordProvide <- label "keywords provided" $ tsvField $ optional textTillTab
     pure Resources {..}
+
+cost :: Parser Cost
+cost = label "cost" $ do
+  _cards <- label "cost" $ tsvField $ optional $ textTillTab
+  _keywordCost <- label "required keywords" $ tsvField $ optional $ textTillTab
+  pure Cost {..}
 
 textbox :: Parser Textbox
 textbox = label "textbox" $ do
-  _action <- optional action
-  _ <- tab
-  _effect <- label "effect" optionalFancyField
-  _details <- label "details" optionalFancyField
+  _action <- tsvField $ optional action
+  _effect <- label "effect" $ tsvField $ optional fancyText
+  _details <- label "details" $ tsvField $ optional fancyText
   pure Textbox {..}
 
+action :: Parser Action
+action = label "action"
+  (   attack
+  <|> defend
+  <|> GeneralAction <$> fancyText
+  )
+
+attack :: Parser Action
+attack = label "attack" $ do
+  _ <- string' "attack "
+  _resistedBy <- resourceSymbol
+  _ <- ots $ string ":"
+  _ <- ots $ string' "strength"
+  _ <- ots $ optional $ string "="
+  _strengthBy <- ots $ resourceSymbol
+  _aMod <- ots $ plusModifier
+  _aText <- optional textTillTab
+  pure Attack {..}
+
+defend :: Parser Action
+defend = try standardDefend <|> do
+  _ <- ots $ string' "defend:"
+  SpecialDefend <$> textTillTab
+
+notLineEnd :: Char -> Bool
+notLineEnd x = x /= '\n' && x /= '\r'
+
+notFieldEnd :: Char -> Bool
+notFieldEnd x =  x /= sep && notLineEnd x
+
+textTillTab :: Parser Text
+textTillTab = takeWhile1P (Just "tab terminated text") (notFieldEnd)
+
+optionalTrailing :: Parser t -> Parser p -> Parser p
+optionalTrailing t p = p <* optional t
+
+tsvField :: Parser p -> Parser p
+tsvField = label "tsv field" . optionalTrailing tab
+
 resourceSymbol :: Parser ResourceType
-resourceSymbol = do
-  r <- resourceSymbol'
-  _ <- optional $ char ' '
-  pure r
+resourceSymbol = ots $ resourceSymbol'
 
 resourceSymbol' :: Parser ResourceType
 resourceSymbol' = do
@@ -109,89 +122,38 @@ resourceSymbol' = do
 
 negativeInt :: Parser Int
 negativeInt = do
-  _ <- char '-'
-  _ <- optional $ char ' '
+  _ <- ots $ char '-'
   n <- L.decimal
   pure $ n * (-1)
 
 fancyText :: Parser FancyText
-fancyText = FancyText <$> many (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
+fancyText = FancyText <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
   where
     fancyTextToken = FancyTextToken <$> takeWhile1P (Just "fancy text token")
-      (\x -> x /= sep && x /= '\n' && x /= '\r' && x /= '|')
+      (\x -> notFieldEnd x && x /= '|')
 
 plusModifier :: Parser Int
 plusModifier = L.decimal <|> negativeInt <|> pure 0
 
 orSep :: Parser ()
-orSep = do
-  _ <- optional $ char ' '
-  _ <- () <$ string ", or" <|> () <$ string "or" <|> () <$ char ','
-  void $ optional $ char ' '
+orSep = void $ ots $ () <$ string ", or" <|> () <$ string " or" <|> () <$ char ','
+
+ots :: Parser p -> Parser p
+ots = optionalTrailing (char ' ')
 
 standardDefend :: Parser Action
-standardDefend = do
-        _ <- string' "defend"
-        optionalSpace
-        d <- resourceSymbol
-        _ <- optional orSep
-        ds <- resourceSymbol `sepBy` orSep
-        let _resists = d :| ds
-        _ <- string ":"
-        optionalSpace
-        _ <- string' "strength"
-        optionalSpace
-        _ <- optional $ string "="
-        optionalSpace
-        _resistWith <- resourceSymbol
-        optionalSpace
-        _dMod <- plusModifier
-        optionalSpace
-        _dText <- optional unquotedFieldBody
-        pure StandardDefend {..}
-
-
-action :: Parser Action
-action = label "action"
-  (   do
-        _ <- string' "attack"
-        optionalSpace
-        _resistedBy <- resourceSymbol
-        _ <- string ":"
-        optionalSpace
-        _ <- string' "strength"
-        optionalSpace
-        _ <- optional $ string "="
-        optionalSpace
-        _strengthBy <- resourceSymbol
-        optionalSpace
-        _aMod <- plusModifier
-        optionalSpace
-        _aText <- optional unquotedFieldBody
-        _ <- many $ char ' '
-        pure Attack {..}
-  <|> try standardDefend <|> do
-        _ <- string' "defend:"
-        optionalSpace
-        SpecialDefend <$> unquotedFieldBody
-  <|> GeneralAction <$> fancyText
-  )
-cost :: Parser Cost
-cost = label "cost" $ do
-  _cards <- label "cost" optionalField
-  _keywordCost <- label "required keywords" optionalField
-  pure Cost {..}
-
-
-card :: Parser Card
-card = label "card" $ do
-  _actor <- label "actor" $ field
-  _name <- label "name" $ field
-  _resources <- resources
-  _cost <- cost
-  _textbox <- textbox
-  hspace
-  pure Card {..}
+standardDefend = label "standard defense" $ do
+  _ <- string' "defend "
+  d <- optionalTrailing orSep resourceSymbol
+  ds <- resourceSymbol `sepBy` orSep
+  let _resists = d :| ds
+  _ <- ots $ string ":"
+  _ <- ots $ string' "strength"
+  _ <- ots $ optional $ string "="
+  _resistWith <- ots $ resourceSymbol
+  _dMod <- ots $ plusModifier
+  _dText <- optional textTillTab
+  pure StandardDefend {..}
 
 blankCard :: Parser Card
 blankCard = label "blank card" $ do
