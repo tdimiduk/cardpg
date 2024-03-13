@@ -59,12 +59,10 @@ span.keywords {
 
 .red {
   stroke: red;
-  text-align: center;
 }
 
 .yellow {
   stroke: gold;
-  vertical-align: middle;
 }
 
 .blue {
@@ -73,6 +71,7 @@ span.keywords {
 
 .resource-container {
   fill: none;
+  vertical-align: middle;
 }
 
 div.resource-container {

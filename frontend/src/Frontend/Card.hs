@@ -98,17 +98,17 @@ action (Just a) = divClass "action" $ case a of
   Attack resistBy strengthBy strengthPlus otherText -> do
     text "Attack "
     resourceSymbol resistBy
-    text ": strength = "
+    text ": "
     resourceSymbol strengthBy
     renderModifier strengthPlus
-    maybeText otherText
+    maybeText (fmap (" " <>) otherText)
   StandardDefend resists resistsWith strMod otherText -> do
     text "Defend "
     renderDefendsList resists
     text ": strength = "
     resourceSymbol resistsWith
     renderModifier strMod
-    maybeText otherText
+    maybeText (fmap (" " <>) otherText)
   SpecialDefend t -> do
     text "Defend: "
     text t

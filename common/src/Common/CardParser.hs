@@ -126,6 +126,11 @@ negativeInt = do
   n <- L.decimal
   pure $ n * (-1)
 
+plusInt :: Parser Int
+plusInt = do
+  _ <- ots $ char '+'
+  ots L.decimal
+
 fancyText :: Parser FancyText
 fancyText = FancyText <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
   where
@@ -133,13 +138,13 @@ fancyText = FancyText <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextT
       (\x -> notFieldEnd x && x /= '|')
 
 plusModifier :: Parser Int
-plusModifier = L.decimal <|> negativeInt <|> pure 0
+plusModifier = plusInt <|> L.decimal <|> negativeInt <|> pure 0
 
 orSep :: Parser ()
 orSep = void $ ots $ () <$ string ", or" <|> () <$ string " or" <|> () <$ char ','
 
 ots :: Parser p -> Parser p
-ots = optionalTrailing (char ' ')
+ots = optionalTrailing hspace
 
 standardDefend :: Parser Action
 standardDefend = label "standard defense" $ do
