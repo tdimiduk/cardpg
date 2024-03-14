@@ -1,10 +1,11 @@
 actor	name	red	yellow	blue	keywordProvide	cost	keywordCost	action	effect	details	notes
-squire	Breastplate and Mail				armored, heavy, deflecting			Heavy Armor: flip up to 2 cards on defense; +2 fatigue on reshuffle			
+squire	Breastplate and Mail				armored, heavy, deflecting			Heavy Armor: flip up to 2 cards on defense	2 extra fatigue on reshuffle		
 squire	Great Hammer				impact, pierce, large weapon						
-squire	Rattling blow	3	2	2		2	impact	attack |x|: strength = |x| + 2		If defender adds cards with armor, stun 1	
+squire	Waterskin				4 uses			Action (10 minutes): Consume 1 use, remove 1 fatigue from your deck	Regain all uses if you can refill this with clean water		
+squire	Rattling blow	3	2	2		2	impact	attack |x|: strength = |x| + 2	basic wound	If defender adds cards with armor, stun 1	
 squire	Power Attack	4	2	2		2		attack |x|: strength = |x| + 3	basic wound		
-squire	Armor Deflect	2	3	2			heavy armor			|x| or |y| +2 defense from anywhere if you have hard armor	
-squire	Crushing blow	3	2	2		2	impact	attack |x|: strength |x| +1, ignore one armor			
+squire	Armor Deflect	2	3	2						|x| or |y| +2 defense from anywhere if you have deflecting armor	
+squire	Crushing blow	3	2	2		2	impact	attack |x|: strength |x| +1, ignore one armor	basic wound		
 squire	Attack	3	2	2		1		attack |x|: strength |x| + 2	basic wound		
 squire	Ring the Bell	3	2	2		1	impact	attack |x|: strength |x|, ignore armor	stun 2/5/10		
 squire	Athletics	4	4	2						Action: Move 8, recover this to your hand	 
@@ -13,11 +14,11 @@ squire	Backswing	3	2	1		1, attacked last turn	weapon	attack |x|: strength = |x| 
 squire	Power Attack	4	2	2		2		attack |x|: strength = |x| + 3	basic wound		
 squire	Wind up	3	2	3		0		action: you may use this as a resource to attack next turn at +3			
 squire	Endure	3	2	2						strength +2 when used to defend from anywhere	
-squire	Crush through	4	2	2		3	impact, large weapon	attack |x|: strength = |x| + 2, non |x| defends at -2	basic wound		
-squire	Opportunistic Kick	3	3	2		0		attack |x|: strength = |x| + 3	Minor: daze 1, Major: Minor wound, Critical: major wound		
+squire	Crush through	4	2	2		3	impact, large weapon	attack |x|: strength = |x| + 2, non |x| defends at -2	crushing wound		
+squire	Opportunistic Kick	3	3	2		0		attack |x|: strength = |x| + 3	Minor: daze 1; Major: Minor wound; Critical: major wound		
 squire	Gauntlet Punch	3	3	2		1	heavy armor	attack |x|: strength = |x| + 1	basic wound		
 squire	Make Opportunity	3	3	3				defend: you may use this as a resource to attack next turn			
-squire	Knockdown	3	3	3		2		attack |x|: strength = |x| + 2	minor: knockdown, major: knockdown + stun 2, critical: knockdown + stun 6		
+squire	Knockdown	3	3	3		2		attack |x|: strength = |x| + 2	Minor: knockdown; Major: knockdown + stun 2; Critical: knockdown + stun 6		
 squire	Rebound	3	3	3		1		attack |x|: strength = |x|	basic wound	If this does not deliver a wound, recover it's resource	
 squire	Sunder Armor	4	2	2		2	axe or hammer	attack |x|: strength |x| + 2, ignore 1 armor	Armor damage (on any success)		
 squire	Inspire	4	3	1		0		Action: Your allies attacks get +4 strength this turn			

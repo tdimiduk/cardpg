@@ -1,161 +1,214 @@
-actor	name	red	yellow	blue	keywordProvide	cost	keywordCost	action	effect	details
-Zombie	Zombie	x	x	x				Always attacks or blocks if possible 	draws only 1 card per turn	light armor; spend to fatigue
-Zombie	Shamble at	2	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	2	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	2	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	5	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	5	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	5	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	5	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	5	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	5	0	0		2		attack |x|: strength = |x| + 3	basic wound	
-Zombie	Shamble at	6	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Ogre	Ogre									
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Punch	5	4	2		2		attack |x|: strength |x| + 4	basic wound	
+Ogre	Smash	6	3	2		3		attack |x|: strength |x| + 5	basic wound	
+Ogre	Smash	6	3	2		3		attack |x|: strength |x| + 5	basic wound	
+Ogre	Smash	6	3	2		3		attack |x|: strength |x| + 5	basic wound	
+Ogre	Smash	6	3	2		3		attack |x|: strength |x| + 5	basic wound	
+Ogre	Smash	6	3	2		3		attack |x|: strength |x| + 5	basic wound	
+Ogre	Stomp	5	3	2		2		attack |x|: strength |x| + 3	basic wound	
+Ogre	Stomp	5	3	2		2		attack |x|: strength |x| + 3	basic wound	
+Ogre	Stomp	5	3	2		2		attack |x|: strength |x| + 3	basic wound	
+Ogre	Stomp	5	3	2		2		attack |x|: strength |x| + 3	basic wound	
+Ogre	Stomp	5	3	2		2		attack |x|: strength |x| + 3	basic wound	
+Ogre	Throw Rock	4	6	2		3		attack |x|: strength |x| + 2	basic wound	5m range
+Ogre	Throw Rock	4	6	2		3		attack |x|: strength |x| + 2	basic wound	5m range
+Ogre	Throw Rock	4	6	2		3		attack |x|: strength |x| + 2	basic wound	5m range
+Ogre	Ogre Strength	8	2	2						
+Ogre	Ogre Strength	8	2	2						
+Ogre	Ogre Strength	8	2	2						
+Ogre	Ogre Strength	8	2	2						
 										
 										
-Spark Dragon	Spark Dragon	x	y	z	Lightning, Fire, Teeth, Claws, Wings			light armor		
-Spark Dragon	Zap	3	8	3		1	Lightning	attack |y|: strength = |y| + 4	basic wound	
-Spark Dragon	Zap	3	8	3		1	Lightning	attack |y|: strength = |y| + 4	basic wound	
-Spark Dragon	Zap	3	8	3		1	Lightning	attack |y|: strength = |y| + 4	basic wound	
-Spark Dragon	Bite	6	4	3		2	Teeth	attack |x|: strength = |x| + 6	basic wound	
-Spark Dragon	Bite	6	4	3		2	Teeth	attack |x|: strength = |x| + 6	basic wound	
-Spark Dragon	Bite	6	4	3		2	Teeth	attack |x|: strength = |x| + 6	basic wound	
-Spark Dragon	Claw	4	5	3		1	Claws	attack |y|: strength = |y| + 5	basic wound	
-Spark Dragon	Claw	4	5	3		1	Claws	attack |y|: strength = |y| + 5	basic wound	
-Spark Dragon	Claw	4	5	3		1	Claws	attack |y|: strength = |y| + 5	basic wound	
-Spark Dragon	Claw	4	5	3		1	Claws	attack |y|: strength = |y| + 5	basic wound	
-Spark Dragon	Claw	4	5	3		1	Claws	attack |y|: strength = |y| + 5	basic wound	
-Spark Dragon	Claw	4	5	3		1	Claws	attack |y|: strength = |y| + 5	basic wound	
-Spark Dragon	Burn	8	3	3		1	Fire	attack |x|: strength = |x| + 4	basic wound	
-Spark Dragon	Burn	8	3	3		1	Fire	attack |x|: strength = |x| + 4	basic wound	
-Spark Dragon	Burn	8	3	3		1	Fire	attack |x|: strength = |x| + 4	basic wound	
-Spark Dragon	Fire spray	5	4	3		2	Fire	attack |x|: strength = |x| + 3	basic wound	affects all enemies
-Spark Dragon	Pounce	3	6	3		3	Claws	attack |y|: strength = |y| + 8	basic wound	Can be used as a resourse for a claw attack next round
-Spark Dragon	Pounce	3	6	3		3	Claws	attack |y|: strength = |y| + 8	basic wound	Can be used as a resourse for a claw attack next round
-Spark Dragon	Dive Bomb	0	10	0		2	Wings	attack |y|: strength = |y| + 2	basic wound	
-Spark Dragon	Shock bite	5	6	3		3	Teeth Lightning	attack |y|: strength = |y| - 4	basic wound	also attack |x|: strength = |x| - 6
-Spark Dragon	Too hot to touch	6	4	3		1	Fire	attack |x|: strength = |x|	basic wound	when used in defense can be played as an attack next round
-Spark Dragon	Electrified	4	6	3		1	Lightning	attack |y|: strength = |y|	basic wound	when used in defense can be played as an attack next round
-Spark Dragon	Zoom	7	9	5						
-Spark Dragon	Dragon scales	9	7	5						
+Sky Zombie	Sky Zombie							Always attacks or blocks if possible, defends every attack with red	draws only 1 card per turn	
+Sky Zombie	Swat	2	0	0		1		attack |x|: strength = |x| + 2	basic wound	
+Sky Zombie	Swat	2	0	0		1		attack |x|: strength = |x| + 2	basic wound	
+Sky Zombie	Swat	2	0	0		1		attack |x|: strength = |x| + 2	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Life Leech	5	0	0		4		attack |x|: strength = |x| + 3 ignore armor	basic wound	
+Sky Zombie	Life Leech	6	0	0		4		attack |x|: strength = |x| + 3 ignore armor	basic wound	
 										
 										
-Goblin	Goblin	x	y	z	Sword			All attacks copy per goblin	Attack with random card	Light armor
-Goblin	Poke with stick	2	2	1		2	Sword	attack |x|: strength = |x| - 1	basic wound	
-Goblin	Poke with stick	2	2	1		2	Sword	attack |x|: strength = |x| - 1	basic wound	
-Goblin	Poke with stick	2	2	1		2	Sword	attack |x|: strength = |x| - 1	basic wound	
-Goblin	Poke with stick	2	2	1		2	Sword	attack |x|: strength = |x| - 1	basic wound	
-Goblin	Poke with stick	2	2	1		2	Sword	attack |x|: strength = |x| - 1	basic wound	
-Goblin	Poke with stick	2	2	1		2	Sword	attack |x|: strength = |x| - 1	basic wound	
-Goblin	Slash with stick	1	2	1		2	Sword	attack |x|: strength = |x| + 1	basic wound	
-Goblin	Slash with stick	1	2	1		2	Sword	attack |x|: strength = |x| + 1	basic wound	
-Goblin	Slash with stick	1	2	1		2	Sword	attack |x|: strength = |x| + 1	basic wound	
-Goblin	Slash with stick	1	2	1		2	Sword	attack |x|: strength = |x| + 1	basic wound	
-Goblin	Slash with stick	1	2	1		2	Sword	attack |x|: strength = |x| + 1	basic wound	
-Goblin	Slash with stick	1	2	1		2	Sword	attack |x|: strength = |x| + 1	basic wound	
-Goblin	Whack	3	1	1		1	Sword	attack |x|: strength = |x| - 2	basic wound	
-Goblin	Whack	3	1	1		1	Sword	attack |x|: strength = |x| - 2	basic wound	
-Goblin	Whack	3	1	1		1	Sword	attack |x|: strength = |x| - 2	basic wound	
-Goblin	Whack	3	1	1		1	Sword	attack |x|: strength = |x| - 2	basic wound	
-Goblin	Whack	3	1	1		1	Sword	attack |x|: strength = |x| - 2	basic wound	
-Goblin	Whack	3	1	1		1	Sword	attack |x|: strength = |x| - 2	basic wound	
-Goblin	Mob	1	2	1		2		attack |x|: strength = |x| - 1	basic wound	each sucessive attack +1 strength
-Goblin	Mob	1	2	1		2		attack |x|: strength = |x| - 1	basic wound	each sucessive attack +1 strength
-Goblin	Mob	1	2	1		2		attack |x|: strength = |x| - 1	basic wound	each sucessive attack +1 strength
-Goblin	Mob	1	2	1		2		attack |x|: strength = |x| - 1	basic wound	each sucessive attack +1 strength
-Goblin	Mob	1	2	1		2		attack |x|: strength = |x| - 1	basic wound	each sucessive attack +1 strength
-Goblin	Mob	1	2	1		2		attack |x|: strength = |x| - 1	basic wound	each sucessive attack +1 strength
+Sky Zombie	Sky Zombie							Always attacks or blocks if possible, defends every attack with red	draws only 1 card per turn	
+Sky Zombie	Swat	2	0	0		1		attack |x|: strength = |x| + 2	basic wound	
+Sky Zombie	Swat	2	0	0		1		attack |x|: strength = |x| + 2	basic wound	
+Sky Zombie	Swat	2	0	0		1		attack |x|: strength = |x| + 2	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Bite	3	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Smash	4	0	0		2		attack |x|: strength = |x| + 3	basic wound	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Howling Wind Strike	5	0	0		3		attack |x|: strength = |x| + 3	basic wound + Stun 2	
+Sky Zombie	Life Leech	5	0	0		4		attack |x|: strength = |x| + 3 ignore armor	basic wound	
+Sky Zombie	Life Leech	6	0	0		4		attack |x|: strength = |x| + 3 ignore armor	basic wound	
 										
 										
-Wolf	Wolf	x	y	z	Teeth Claws			No armor		
-Wolf	Bite	1	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	2	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	2	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	2	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	3	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	3	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	3	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	4	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	4	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Bite	5	2	2		2		attack |x|: strength = |x| + 4	basic wound	
-Wolf	Claw	1	3	2		2		attack |x|: strength = |x| + 2	basic wound	2 + when spent to defend
-Wolf	Claw	1	3	2		2		attack |x|: strength = |x| + 2	basic wound	2 + when spent to defend
-Wolf	Claw	2	3	2		2		attack |x|: strength = |x| + 2	basic wound	2 + when spent to defend
-Wolf	Claw	3	3	2		2		attack |x|: strength = |x| + 2	basic wound	2 + when spent to defend
-Wolf	Claw	4	3	2		2		attack |x|: strength = |x| + 2	basic wound	2 + when spent to defend
-Wolf	Pounce	1	4	2		3		attack |x|: strength = |x| + 2	basic wound	
-Wolf	Pounce	2	4	2		3		attack |x|: strength = |x| + 2	basic wound	
-Wolf	Pounce	3	4	2		3		attack |x|: strength = |x| + 2	basic wound	
-Wolf	Pounce	4	4	2		3		attack |x|: strength = |x| + 2	basic wound	
-Wolf	Pounce	5	4	2		3		attack |x|: strength = |x| + 2	basic wound	
-Wolf	Pack attack	2	4	2		1		attack |x|: strength = |x| + 2	basic wound	Other wolves attacking this round +1
-Wolf	Pack attack	3	4	2		1		attack |x|: strength = |x| + 2	basic wound	Other wolves attacking this round +1
-Wolf	Pack attack	5	4	2		1		attack |x|: strength = |x| + 2	basic wound	Other wolves attacking this round +1
-Wolf	Pack attack	6	4	2		1		attack |x|: strength = |x| + 2	basic wound	Other wolves attacking this round +1
+Weakness Warrior	Weakness Warrior				Sword, Shield					
+Weakness Warrior	Slash	4	3	2		2	Sword	attack |x|: strength |x| + 3		
+Weakness Warrior	Weakness Slash	4	2	4		2	Sword	attack |x|: strength |x| + 3	Basic wound + -1,-2,-4 to red on all cards	
+Weakness Warrior	Shield Weakness	4	2	3			Shield	Defend : |x| or |z| with |x|	State : Attacker next attack at -4 strength	
+Weakness Warrior	Paralyzing Slash	5	1	5		3	Sword	attack |x|: strength |x| + 5	Basic wound + -2,-4, paralyzed to red on all cards	
+Weakness Warrior	Strength	6	2	3						
+Weakness Warrior	Magic	2	3	6						
+Weakness Warrior	weakening poke	3	4	4		0	Sword	attack |x|: strength |x|  ignore armor	-1,-2,-4 to red on all cards	
+Weakness Warrior	Weakening whack	4	3	4		2	Sword	attack |x|: strength |x|  ignore armor	-1,-2,-4 to red on all cards	
+Weakness Warrior	Slash	4	3	2		2	Sword	attack |x|: strength |x| + 3		
+Weakness Warrior	Weakness Slash	4	2	4		2	Sword	attack |x|: strength |x| + 3	Basic wound + -1,-2,-4 to red on all cards	
+Weakness Warrior	Shield Weakness	4	2	3			Shield	Defend : |x| or |z| with |x|	State : Attacker next attack at -4 strength	
+Weakness Warrior	Paralyzing Slash	5	1	5		3	Sword	attack |x|: strength |x| + 5	Basic wound + -2,-4, paralyzed to red on all cards	
+Weakness Warrior	Strength	6	2	3						
+Weakness Warrior	Magic	2	3	6						
+Weakness Warrior	weakening poke	3	4	4		0	Sword	attack |x|: strength |x|  ignore armor	-1,-2,-4 to red on all cards	
+Weakness Warrior	Weakening whack	4	3	4		2	Sword	attack |x|: strength |x|  ignore armor	-1,-2,-4 to red on all cards	
+Weakness Warrior	Slash	4	3	2		2	Sword	attack |x|: strength |x| + 3		
+Weakness Warrior	Weakness Slash	4	2	4		2	Sword	attack |x|: strength |x| + 3	Basic wound + -1,-2,-4 to red on all cards	
+Weakness Warrior	Shield Weakness	4	2	3			Shield	Defend : |x| or |z| with |x|	State : Attacker next attack at -4 strength	
+Weakness Warrior	Paralyzing Slash	5	1	5		3	Sword	attack |x|: strength |x| + 5	Basic wound + -2,-4, paralyzed to red on all cards	
+Weakness Warrior	Strength	6	2	3						
+Weakness Warrior	Magic	2	3	6						
+Weakness Warrior	weakening poke	3	4	4		0	Sword	attack |x|: strength |x|  ignore armor	-1,-2,-4 to red on all cards	
+Weakness Warrior	Weakening whack	4	3	4		2	Sword	attack |x|: strength |x|  ignore armor	-1,-2,-4 to red on all cards	
 										
 										
-Troll	Troll	x	x	z				light armor recover 1 cards to bottom of deck per ukpeep		
-Troll	Smash	6	4	2		3		attack |x|: strength = |x| + 6		
-Troll	Smash	6	4	2		3		attack |x|: strength = |x| + 6		
-Troll	Smash	6	4	2		3		attack |x|: strength = |x| + 6		
-Troll	Smash	6	4	2		3		attack |x|: strength = |x| + 6		
-Troll	Punch	8	4	2		2		attack |x|: strength = |x| + 4		
-Troll	Punch	8	4	2		2		attack |x|: strength = |x| + 4		
-Troll	Punch	8	4	2		2		attack |x|: strength = |x| + 4		
-Troll	Punch	8	4	2		2		attack |x|: strength = |x| + 4		
-Troll	Claw	6	6	2		1		attack |x|: strength = |x| + 4		
-Troll	Claw	6	6	2		1		attack |x|: strength = |x| + 4		
-Troll	Claw	6	6	2		1		attack |x|: strength = |x| + 4		
-Troll	Claw	6	6	2		1		attack |x|: strength = |x| + 4		
-Troll	Rend	8	8	3		3		attack |x|: strength = |x| + 8		
-Troll	Rend	8	8	3		3		attack |x|: strength = |x| + 8		
-Troll	Rend	8	8	3		3		attack |x|: strength = |x| + 8		
-Troll	Brutish strength	12	4	2						
-Troll	Brutish strength	12	4	2						
-Troll	Brutish strength	12	4	2						
-Troll	Thick hide	6	2	4		1+		defend: this and all resources spent with it remain as state and spend to protect against the next attack as well		
-Troll	Thick hide	6	2	4		1+		defend: this and all resources spent with it remain as state and spend to protect against the next attack as well		
-Troll	Troll healing	6	6	4		1		recover 4 cards from exhausted to deck		
-Troll	Troll healing	6	6	4		1		recover 4 cards from exhausted to deck		
-Troll	Close wounds	6	6	6		1/3		Spend to recover 1 minor wound or; spend 3 to recover 1 major wound		
-Troll	Close wounds	6	6	6		1/3		Spend to recover 1 minor wound or; spend 3 to recover 1 major wound		
+Cave Bat	Cave Bat							no armor		
+Cave Bat	Bite	2	4	2		1		Attack |y|: strength = |y| +1	basic wound	
+Cave Bat	Wing slap	3	3	2		0		Attack |y|: strength = |y| 	basic wound	
+Cave Bat	Dive Bomb	4	2	3		2		Attack |y|: strength = |y| +4	basic wound	
+Cave Bat	Fly into the shadows	2	3	5				Action: Defend |x| or |y| with |y| + 3		
+Cave Bat	Flit	2	5	4						
+Cave Bat	Dodge	3	5	2				Defend |x| or |y| with |y| from anywhere		
+Cave Bat	bat's speed	3	6	3						
+Cave Bat	Bite	2	4	2		1		Attack |y|: strength = |y| +1	basic wound	
+Cave Bat	Wing slap	3	3	2		0		Attack |y|: strength = |y| 	basic wound	
+Cave Bat	Dive Bomb	4	2	3		2		Attack |y|: strength = |y| +4	basic wound	
+Cave Bat	Fly into the shadows	2	3	5				Action: Defend |x| or |y| with |y| + 3		
+Cave Bat	Flit	2	5	4						
+Cave Bat	Dodge	3	5	2				Defend |x| or |y| with |y| from anywhere		
+Cave Bat	bat's speed	3	6	3						
+Cave Bat	Bite	2	4	2		1		Attack |y|: strength = |y| +1	basic wound	
+Cave Bat	Wing slap	3	3	2		0		Attack |y|: strength = |y| 	basic wound	
+Cave Bat	Dive Bomb	4	2	3		2		Attack |y|: strength = |y| +4	basic wound	
+Cave Bat	Fly into the shadows	2	3	5				Action: Defend |x| or |y| with |y| + 3		
+Cave Bat	Flit	2	5	4						
+Cave Bat	Dodge	3	5	2				Defend |x| or |y| with |y| from anywhere		
+Cave Bat	bat's speed	3	6	3						
+Cave Bat	Bite	2	4	2		1		Attack |y|: strength = |y| +1	basic wound	
+Cave Bat	Wing slap	3	3	2		0		Attack |y|: strength = |y| 	basic wound	
+Cave Bat	Dive Bomb	4	2	3		2		Attack |y|: strength = |y| +4	basic wound	
 										
 										
-Lizard Warrior	Lizard Warrior				Heavy Weapon, Sword, Teeth, Scales			Light armor		
-Lizard Warrior	Slash	3	2	2		1		attack |x|: strength |x| + 2	basic wound	
-Lizard Warrior	Slash	3	2	2		1		attack |x|: strength |x| + 2	basic wound	
-Lizard Warrior	Slash	3	2	2		1		attack |x|: strength |x| + 2	basic wound	
-Lizard Warrior	Slash	3	2	2		1		attack |x|: strength |x| + 2	basic wound	
-Lizard Warrior	Bite	3	3	1		0		attack |x|: strength |x| + 2	basic wound	
-Lizard Warrior	Bite	3	3	1		0		attack |x|: strength |x| + 2	basic wound	
-Lizard Warrior	Power Attack	4	2	2		2	heavy weapon	attack |x|: strength = |x| + 3	basic wound	
-Lizard Warrior	Power Attack	4	2	2		2	heavy weapon	attack |x|: strength = |x| + 3	basic wound	
-Lizard Warrior	Hack	3	2	1		3		attack |x|: strength = |x| + 5	basic wound	
-Lizard Warrior	Hack	3	2	1		3		attack |x|: strength = |x| + 5	basic wound	
-Lizard Warrior	Chop	2	3	1		1		attack |x|: strength |x| + 4	basic wound	
-Lizard Warrior	Chop	2	3	1		1		attack |x|: strength |x| + 4	basic wound	
-Lizard Warrior	Chop	2	3	1		1		attack |x|: strength |x| + 4	basic wound	
-Lizard Warrior	Scaly skin	4	3	1				defense +2 when spent on defense	basic wound	
-Lizard Warrior	Scaly skin	4	3	1				defense +2 when spent on defense	basic wound	
-Lizard Warrior	Lizard strength	5	2	1						
-Lizard Warrior	Lizard strength	5	2	1						
-Lizard Warrior	Lizard strength	5	2	1						
-Lizard Warrior	Athletics	4	4	2						
-Lizard Warrior	Athletics	4	4	2						
-Lizard Warrior	Skitter	2	5	2						
-Lizard Warrior	Skitter	2	5	2						
-Lizard Warrior	Monitor the situation	3	3	4		1		Draw 2 cards, recover 2 from spent		
-Lizard Warrior	Monitor the situation	3	3	4		1		Draw 2 cards, recover 2 from spent		
+Infernal Troglodyte	Infernal Troglodyte				claws, teeth, blindsight			Light Armor		
+Infernal Troglodyte	claw	3	3	2		1		attack |x|: strength |x| + 3		
+Infernal Troglodyte	rake	4	2	2		2		attack |x|: strength |x| + 4		
+Infernal Troglodyte	Bite	2	2	3		2		attack |x|: strength |x| + 2		
+Infernal Troglodyte	skitter	2	5	3						
+Infernal Troglodyte	blindsight	1	1	5						get +2 to defend against light based attacks
+Infernal Troglodyte	Trogle	4	2	2						
+Infernal Troglodyte	claw	3	3	2		1		attack |x|: strength |x| + 3		
+Infernal Troglodyte	rake	4	2	2		2		attack |x|: strength |x| + 4		
+Infernal Troglodyte	Bite	2	2	3		2		attack |x|: strength |x| + 2		
+Infernal Troglodyte	skitter	2	5	3						
+Infernal Troglodyte	blindsight	1	1	5						get +2 to defend against light based attacks
+Infernal Troglodyte	Trogle	4	2	2						
+Infernal Troglodyte	claw	3	3	2		1		attack |x|: strength |x| + 3		
+Infernal Troglodyte	rake	4	2	2		2		attack |x|: strength |x| + 4		
+Infernal Troglodyte	Bite	2	2	3		2		attack |x|: strength |x| + 2		
+Infernal Troglodyte	skitter	2	5	3						
+Infernal Troglodyte	blindsight	1	1	5						get +2 to defend against light based attacks
+Infernal Troglodyte	Trogle	4	2	2						
+Infernal Troglodyte	claw	3	3	2		1		attack |x|: strength |x| + 3		
+Infernal Troglodyte	rake	4	2	2		2		attack |x|: strength |x| + 4		
+Infernal Troglodyte	Bite	2	2	3		2		attack |x|: strength |x| + 2		
+Infernal Troglodyte	skitter	2	5	3						
+Infernal Troglodyte	blindsight	1	1	5						get +2 to defend against light based attacks
+Infernal Troglodyte	Trogle	4	2	2						
+										
+										
+Minotaur	Minotaur				Axe			Light Armor		
+Minotaur	Chop	8	3	2		3		attack |x|: strength = |x| + 6	basic wound	
+Minotaur	Gore	7	2	2		2		attack |x|: strength = |x| + 5	basic wound	
+Minotaur	Slash	6	4	2		1		attack |x|: strength = |x| + 4	basic wound	
+Minotaur	Die	9	1	6		5		attack |x|: strength = |x| + 7	basic wound	ignore armor
+Minotaur	Horn poke	4	6	4		0		attack |x|: strength = |x| + 3	basic wound	
+Minotaur	Lose in a labyrinth	4	4	8		0		attack |z|: strength = |z| + 8	Stun 1,4,10	
+Minotaur	Minotaur's cunning	4	5	8						
+Minotaur	Maze Runner	5	6	4						
+Minotaur	Bovine strength	10	2	2					basic wound	
+Minotaur	Chop	8	3	2		3		attack |x|: strength = |x| + 6	basic wound	
+Minotaur	Gore	7	2	2		2		attack |x|: strength = |x| + 5	basic wound	
+Minotaur	Slash	6	4	2		1		attack |x|: strength = |x| + 4	basic wound	
+Minotaur	Die	9	1	6		5		attack |x|: strength = |x| + 7	basic wound	ignore armor
+Minotaur	Horn poke	4	6	4		0		attack |x|: strength = |x| + 3	basic wound	
+Minotaur	Lose in a labyrinth	4	4	8		0		attack |z|: strength = |z| + 8	Stun 1,4,10	
+Minotaur	Minotaur's cunning	4	5	8						
+Minotaur	Maze Runner	5	6	4						
+Minotaur	Bovine strength	10	2	2						
+Minotaur	Bovine strength	10	2	2						
+Minotaur	Bovine strength	10	2	2						
+Minotaur	Slash	6	4	2		1		attack |x|: strength = |x| + 4	basic wound	
+Minotaur	Slash	6	4	2		1		attack |x|: strength = |x| + 4	basic wound	
+Minotaur	Horn poke	4	6	4		0		attack |x|: strength = |x| + 3	basic wound	
+Minotaur	Gore	7	2	2		2		attack |x|: strength = |x| + 5	basic wound	
+										
+										
+Shadowed one	Shadowed one							No armor		
+Shadowed one	Blade of darkness	4	2	5		2		attack |x| : strength |z| + 3		
+Shadowed one	Summon dragon	3	3	3		3		attack |x| : strength |z| this turn and next turn		
+Shadowed one	Curse	2	3	6		2		attack |z| : strength |z| + 1	curse 1	ignore armor
+Shadowed one	Dark strength	6	4	6						
+Shadowed one	Magical power	3	3	8						
+Shadowed one	Go invisible	2	2	4				Ignore an attack		
+Shadowed one	Flame blast	5	1	5		3		attack |x| : strength |z| + 2		Attack up to 2 people
+Shadowed one	Splinter	2	5	4		1		attack |x| : strength |z| + 1		
+Shadowed one	Blade of darkness	4	2	5		2		attack |x| : strength |z| + 3		
+Shadowed one	Summon dragon	3	3	3		3		attack |x| : strength |z| this turn and next turn		
+Shadowed one	Curse	2	3	6		2		attack |z| : strength |z| + 1	curse 1	ignore armor
+Shadowed one	Dark strength	6	4	6						
+Shadowed one	Magical power	3	3	8						
+Shadowed one	Go invisible	2	2	4				Ignore an attack		
+Shadowed one	Flame blast	5	1	5		3		attack |x| : strength |z| + 2		Attack up to 2 people
+Shadowed one	Splinter	2	5	4		1		attack |x| : strength |z| + 1		
+Shadowed one	Blade of darkness	4	2	5		2		attack |x| : strength |z| + 3		
+Shadowed one	Summon dragon	3	3	3		3		attack |x| : strength |z| this turn and next turn		
+Shadowed one	Curse	2	3	6		2		attack |z| : strength |z| + 1	curse 1	ignore armor
+Shadowed one	Dark strength	6	4	6						
+Shadowed one	Magical power	3	3	8						
+Shadowed one	Go invisible	2	2	4				Ignore an attack		
+Shadowed one	Flame blast	5	1	5		3		attack |x| : strength |z| + 2		Attack up to 2 people
+Shadowed one	Splinter	2	5	4		1		attack |x| : strength |z| + 1		

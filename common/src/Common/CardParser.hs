@@ -147,7 +147,7 @@ orSep :: Parser ()
 orSep = label "OR-like" $ void $ ots $ () <$ try (ots (char ',') >> string' "or") <|> () <$ string' "or" <|> () <$ char ','
 
 ots :: Parser p -> Parser p
-ots = optionalTrailing hspace
+ots = optionalTrailing (takeWhile1P (Just "spaces") (\x -> x == ' '))
 
 standardDefend :: Parser Action
 standardDefend = label "standard defense" $ do
