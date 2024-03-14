@@ -15,7 +15,7 @@ import Data.List.NonEmpty (NonEmpty(..))
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
-import Text.Megaparsec
+import Text.Megaparsec hiding (some, sepBy1)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Void
@@ -128,10 +128,13 @@ plusInt = do
   ots L.decimal
 
 fancyText :: Parser FancyText
-fancyText = FancyText <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
+fancyText = FancyText <$> ots fancyLine `sepBy1` ots (char ';')
+
+fancyLine :: Parser FancyLine
+fancyLine = FancyLine <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
   where
     fancyTextToken = FancyTextToken <$> takeWhile1P (Just "fancy text token")
-      (\x -> notFieldEnd x && x /= '|')
+      (\x -> notFieldEnd x && x /= '|' && x /= ';')
 
 plusModifier :: Parser Int
 plusModifier = plusInt <|> L.decimal <|> negativeInt <|> pure 0
@@ -151,10 +154,7 @@ standardDefend = label "standard defense" $ do
   pure StandardDefend {..}
 
 resists :: Parser (NonEmpty ResourceType)
-resists = label "resists group" $ do
-  d <- label "first resource" $ optionalTrailing orSep (ots resourceSymbol)
-  ds <- label "additional resoures" $ (ots resourceSymbol) `sepBy` orSep
-  pure $ d :| ds
+resists = label "resists group" $ (ots resourceSymbol) `sepBy1` orSep
 
 
 actionStrength :: Parser ActionStrength
@@ -167,6 +167,7 @@ actionStrength = label "action strength" $ do
   _asMod <- ots $ plusModifier
   pure ActionStrength {..}
 
+blankCard :: Parser Card
 blankCard = label "blank card" $ do
   hspace
   pure $ Card "placeholder" "placeholder" (Resources Nothing Nothing Nothing Nothing) (Cost Nothing Nothing) (Textbox Nothing Nothing Nothing)
@@ -195,3 +196,17 @@ readAndParseTest name = do
 
 nonEmptyText :: Text -> Maybe Text
 nonEmptyText t = if T.null (T.strip t) then Nothing else Just (T.strip t)
+
+-- Replace some combinators that have NonEmpty requirements with ones that actually return NonEmpty
+
+sepBy1 :: Parser a -> Parser sep -> Parser (NonEmpty a)
+sepBy1 p s = do
+  a <- p
+  as <- p `sepBy` s
+  pure $ a :| as
+
+some :: Parser a -> Parser (NonEmpty a)
+some p = do
+  a <- p
+  as <- many p
+  pure $ a :| as

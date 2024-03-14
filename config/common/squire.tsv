@@ -1,5 +1,5 @@
 actor	name	red	yellow	blue	keywordProvide	cost	keywordCost	action	effect	details	notes
-squire	Breastplate and Mail				armored, heavy, deflecting			Heavy Armor: flip up to 2 cards on defense, +2 fatigue on reshuffle			
+squire	Breastplate and Mail				armored, heavy, deflecting			Heavy Armor: flip up to 2 cards on defense; +2 fatigue on reshuffle			
 squire	Great Hammer				impact, pierce, large weapon						
 squire	Rattling blow	3	2	2		2	impact	attack |x|: strength = |x| + 2		If defender adds cards with armor, stun 1	
 squire	Power Attack	4	2	2		2		attack |x|: strength = |x| + 3	basic wound		

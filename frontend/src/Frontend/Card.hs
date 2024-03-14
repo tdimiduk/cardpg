@@ -71,10 +71,15 @@ renderModifier x
   | otherwise = text (tshow x)
 
 fancyText :: DomBuilder t m => FancyText -> m ()
-fancyText (FancyText tokens) = mapM_ render tokens
+fancyText (FancyText ls) = mapM_ (elClass "div" "text-line" . fancyLine) ls
+
+fancyLine :: DomBuilder t m => FancyLine -> m ()
+fancyLine (FancyLine tokens) = mapM_ render tokens
   where
     render (FancyTextToken t) = text t
     render (ResourceToken t) = resourceSymbol t
+
+
 
 renderDefendsList :: DomBuilder t m => NonEmpty ResourceType -> m ()
 renderDefendsList (a :| [b, c]) = do

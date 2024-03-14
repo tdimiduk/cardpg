@@ -79,7 +79,11 @@ data FancyToken = FancyTextToken Text | ResourceToken ResourceType
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-data FancyText = FancyText [FancyToken]
+data FancyText = FancyText (NonEmpty FancyLine)
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
+data FancyLine = FancyLine (NonEmpty FancyToken)
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
