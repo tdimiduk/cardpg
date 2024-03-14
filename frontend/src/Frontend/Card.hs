@@ -71,15 +71,19 @@ renderModifier x
   | otherwise = text (tshow x)
 
 fancyText :: DomBuilder t m => FancyText -> m ()
-fancyText (FancyText ls) = mapM_ (elClass "div" "text-line" . fancyLine) ls
+fancyText (FancyText ls) = mapM_ fancyLine ls
+
+fancyText' :: DomBuilder t m => FancyText -> m ()
+fancyText' (FancyText (l:|ls)) = fancyLine' l >> mapM_ fancyLine ls
 
 fancyLine :: DomBuilder t m => FancyLine -> m ()
-fancyLine (FancyLine tokens) = mapM_ render tokens
+fancyLine = elClass "div" "text-line" . fancyLine'
+
+fancyLine' :: DomBuilder t m => FancyLine -> m ()
+fancyLine' (FancyLine tokens) = mapM_ render tokens
   where
     render (FancyTextToken t) = text t
     render (ResourceToken t) = resourceSymbol t
-
-
 
 renderDefendsList :: DomBuilder t m => NonEmpty ResourceType -> m ()
 renderDefendsList (a :| [b, c]) = do
@@ -110,17 +114,16 @@ action (Just a) = divClass "action" $ case a of
     resourceSymbol resistBy
     text ": "
     actionStrength strength
-    maybeText (fmap (" " <>) otherText)
+    maybe blank fancyText' otherText
   StandardDefend resists strength otherText -> do
     text "Defend "
     renderDefendsList resists
-    text ": strength = "
+    text ": "
     actionStrength strength
-    maybeText (fmap (" " <>) otherText)
+    maybe blank fancyText' otherText
   SpecialDefend t -> do
     text "Defend: "
-    text t
-
+    fancyText t
 
 resourceSymbol :: DomBuilder t m => ResourceType -> m ()
 resourceSymbol a = resourceSymbol' a Nothing

@@ -30,6 +30,9 @@ data CardType = CardStandard | CardAdhoc deriving stock Show
 sep :: Char
 sep = '\t'
 
+semicolin :: Parser Char
+semicolin = char ';'
+
 header :: Parser CardType
 header = do
   _ <- tsvField $ string' "actor"
@@ -84,13 +87,13 @@ attack = label "attack" $ do
   _ <- string' "attack "
   _resistedBy <- resourceSymbol
   _aStrength <- actionStrength
-  _aText <- optional textTillTab
+  _aText <- optional fancyText
   pure Attack {..}
 
 defend :: Parser Action
 defend = try standardDefend <|> do
   _ <- ots $ string' "defend:"
-  SpecialDefend <$> textTillTab
+  SpecialDefend <$> fancyText
 
 notLineEnd :: Char -> Bool
 notLineEnd x = x /= '\n' && x /= '\r'
@@ -151,7 +154,7 @@ standardDefend = label "standard defense" $ do
   _ <- ots $ string' "defend"
   _resists <- resists
   _dStrength <- actionStrength
-  _dText <- optional textTillTab
+  _dText <- optional fancyText
   pure StandardDefend {..}
 
 resists :: Parser (NonEmpty ResourceType)
@@ -166,6 +169,7 @@ actionStrength = label "action strength" $ do
     ots $ optional $ string "="
   _asResource <- ots $ resourceSymbol
   _asMod <- ots $ plusModifier
+  _ <- optional semicolin
   pure ActionStrength {..}
 
 blankCard :: Parser Card

@@ -64,14 +64,14 @@ data Action = GeneralAction FancyText
   | Attack
     { _resistedBy :: ResourceType
     , _aStrength :: ActionStrength
-    , _aText :: Maybe Text
+    , _aText :: Maybe FancyText
     }
   | StandardDefend
     { _resists :: NonEmpty ResourceType
     , _dStrength :: ActionStrength
-    , _dText :: Maybe Text
+    , _dText :: Maybe FancyText
     }
-  | SpecialDefend Text
+  | SpecialDefend FancyText
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
