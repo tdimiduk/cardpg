@@ -9,6 +9,7 @@ module Common.CardParser
   )
   where
 
+import Control.Applicative (liftA2)
 import Control.Monad (void)
 import Data.Either.Combinators
 import Data.List.NonEmpty (NonEmpty(..))
@@ -128,10 +129,10 @@ plusInt = do
   ots L.decimal
 
 fancyText :: Parser FancyText
-fancyText = FancyText <$> ots fancyLine `sepBy1` ots (char ';')
+fancyText = label "fancy text" $ FancyText <$> fancyLine `sepBy1` (char ';')
 
 fancyLine :: Parser FancyLine
-fancyLine = FancyLine <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
+fancyLine = label "fancy text line" $ FancyLine <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
   where
     fancyTextToken = FancyTextToken <$> takeWhile1P (Just "fancy text token")
       (\x -> notFieldEnd x && x /= '|' && x /= ';')
@@ -200,13 +201,7 @@ nonEmptyText t = if T.null (T.strip t) then Nothing else Just (T.strip t)
 -- Replace some combinators that have NonEmpty requirements with ones that actually return NonEmpty
 
 sepBy1 :: Parser a -> Parser sep -> Parser (NonEmpty a)
-sepBy1 p s = do
-  a <- p
-  as <- p `sepBy` s
-  pure $ a :| as
+sepBy1 p s = liftA2 (:|) p (many (s *> p))
 
 some :: Parser a -> Parser (NonEmpty a)
-some p = do
-  a <- p
-  as <- many p
-  pure $ a :| as
+some p = liftA2 (:|) p (many p)
