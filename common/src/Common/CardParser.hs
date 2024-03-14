@@ -82,11 +82,7 @@ attack :: Parser Action
 attack = label "attack" $ do
   _ <- string' "attack "
   _resistedBy <- resourceSymbol
-  _ <- ots $ string ":"
-  _ <- ots $ string' "strength"
-  _ <- ots $ optional $ string "="
-  _strengthBy <- ots $ resourceSymbol
-  _aMod <- ots $ plusModifier
+  _aStrength <- actionStrength
   _aText <- optional textTillTab
   pure Attack {..}
 
@@ -114,7 +110,7 @@ resourceSymbol :: Parser ResourceType
 resourceSymbol = ots $ resourceSymbol'
 
 resourceSymbol' :: Parser ResourceType
-resourceSymbol' = do
+resourceSymbol' = label "resource symbol" $ do
   _ <- char '|'
   r <- Red <$ char 'x' <|> Yellow <$ char 'y' <|> Blue <$ char 'z'
   _ <- char '|'
@@ -141,26 +137,36 @@ plusModifier :: Parser Int
 plusModifier = plusInt <|> L.decimal <|> negativeInt <|> pure 0
 
 orSep :: Parser ()
-orSep = void $ ots $ () <$ string ", or" <|> () <$ string " or" <|> () <$ char ','
+orSep = label "OR-like" $ void $ ots $ () <$ try (ots (char ',') >> string' "or") <|> () <$ string' "or" <|> () <$ char ','
 
 ots :: Parser p -> Parser p
 ots = optionalTrailing hspace
 
 standardDefend :: Parser Action
 standardDefend = label "standard defense" $ do
-  _ <- string' "defend "
-  d <- optionalTrailing orSep resourceSymbol
-  ds <- resourceSymbol `sepBy` orSep
-  let _resists = d :| ds
-  _ <- ots $ string ":"
-  _ <- ots $ string' "strength"
-  _ <- ots $ optional $ string "="
-  _resistWith <- ots $ resourceSymbol
-  _dMod <- ots $ plusModifier
+  _ <- ots $ string' "defend"
+  _resists <- resists
+  _dStrength <- actionStrength
   _dText <- optional textTillTab
   pure StandardDefend {..}
 
-blankCard :: Parser Card
+resists :: Parser (NonEmpty ResourceType)
+resists = label "resists group" $ do
+  d <- label "first resource" $ optionalTrailing orSep (ots resourceSymbol)
+  ds <- label "additional resoures" $ (ots resourceSymbol) `sepBy` orSep
+  pure $ d :| ds
+
+
+actionStrength :: Parser ActionStrength
+actionStrength = label "action strength" $ do
+  _ <- ots $ string ":"
+  _ <- optional $ do
+    _ <- ots $ string' "strength"
+    ots $ optional $ string "="
+  _asResource <- ots $ resourceSymbol
+  _asMod <- ots $ plusModifier
+  pure ActionStrength {..}
+
 blankCard = label "blank card" $ do
   hspace
   pure $ Card "placeholder" "placeholder" (Resources Nothing Nothing Nothing Nothing) (Cost Nothing Nothing) (Textbox Nothing Nothing Nothing)

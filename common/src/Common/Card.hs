@@ -53,17 +53,22 @@ data ResourceType = Red | Yellow | Blue
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
+data ActionStrength = ActionStrength
+  { _asResource :: ResourceType
+  , _asMod :: Int
+  }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
+
 data Action = GeneralAction FancyText
   | Attack
     { _resistedBy :: ResourceType
-    , _strengthBy :: ResourceType
-    , _aMod :: Int
+    , _aStrength :: ActionStrength
     , _aText :: Maybe Text
     }
   | StandardDefend
     { _resists :: NonEmpty ResourceType
-    , _resistWith :: ResourceType
-    , _dMod :: Int
+    , _dStrength :: ActionStrength
     , _dText :: Maybe Text
     }
   | SpecialDefend Text

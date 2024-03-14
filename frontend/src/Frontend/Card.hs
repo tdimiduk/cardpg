@@ -47,6 +47,7 @@ cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
 
 costLine :: DomBuilder t m => Cost -> m ()
 costLine (Cost Nothing Nothing) = blank
+costLine (Cost Nothing (Just k)) = divClass "cost" (text k)
 costLine (Cost c k) = divClass "cost" (text $ "Cost: " <> intercalate ", " (catMaybes [c, k]))
 
 resourcesArea :: DomBuilder t m => Resources -> m ()
@@ -90,24 +91,26 @@ renderDefendsList (a :| []) = do
   resourceSymbol a
 renderDefendsList _ = text "error: too many resources"
 
+actionStrength :: DomBuilder t m => ActionStrength -> m ()
+actionStrength (ActionStrength r m) = do
+  resourceSymbol r
+  renderModifier m
 
 action :: DomBuilder t m => Maybe Action -> m ()
 action Nothing = blank
 action (Just a) = divClass "action" $ case a of
   GeneralAction t -> fancyText t
-  Attack resistBy strengthBy strengthPlus otherText -> do
+  Attack resistBy strength otherText -> do
     text "Attack "
     resourceSymbol resistBy
     text ": "
-    resourceSymbol strengthBy
-    renderModifier strengthPlus
+    actionStrength strength
     maybeText (fmap (" " <>) otherText)
-  StandardDefend resists resistsWith strMod otherText -> do
+  StandardDefend resists strength otherText -> do
     text "Defend "
     renderDefendsList resists
     text ": strength = "
-    resourceSymbol resistsWith
-    renderModifier strMod
+    actionStrength strength
     maybeText (fmap (" " <>) otherText)
   SpecialDefend t -> do
     text "Defend: "
