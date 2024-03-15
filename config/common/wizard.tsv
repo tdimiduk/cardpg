@@ -1,7 +1,7 @@
 actor	name	red	yellow	blue	keywordProvide	cost	keywordCost	action	effect	details															
 wizard	Arcane Training				arcane			You can cast arcane spells as long as you are not wearing armor																	
 wizard	Quarterstaff				weapon, impact																				
-wizard	Waterskin				4 uses			Action (10 minutes): Consume 1 use, remove 1 fatigue from your deck	Regain all uses if you can refill this with clean water																
+wizard	Waterskin				4 uses			Action (10 minutes): Consume 1 use, reshuffle your expended into your deck	Regain all uses if you can refill this with clean water																
 wizard	Sleep Powder Spray	2	2	4	arcane, mind	3	arcane	attack |z|: strength |z|+1, range 3m	Minor: Stun 2; Major: Impose the Sleep Trance condition; Critical: Impose the Sleeping condition																
 wizard	Grease	3	3	3	arcane	3	arcane	attack |y|: strength |z|, ignore armor, range 10m, 2 meter radius	Minor: knockdown; Major: knockdown + stun 2; Critical: knockdown + stun 6																
 wizard	Blinding Beams	2	4	3	arcane	4	arcane	attack |y|: strength |z| + 2, attack up to 3 targets within 10m	Minor: Dazzle; Major: Blind																
@@ -10,10 +10,10 @@ wizard	Slow ray	2	3	3	arcane	2	arcane	attack |y|: strength |z| + 2, range 10m	Sl
 wizard	Mind Crush	1	1	4	arcane, mind	4	arcane	attack |z|: strength |z|, ignore armor, range 8m	basic mind wound																
 wizard	Mirror Image	2	3	3	arcane, illusion	2	arcane	Action: place this as state with it's resources under it	When you are attacked: expend a card from this to ignore the attack. Expend this when it has no resources under it	Expend this when it has no resources under it															
 wizard	Dominate	1	1	5	arcane	5	arcane	attack |z|: strength |z|, ignore armor, range 10m	Minor: Target's next attack is expended without effect; Major: caster picks next attack's target (no self, but can target "nothing"); Grave: Caster picks who target attacks until removed																
-wizard	Ghostform	1	3	2	arcane		arcane	Action play as state	If you are attacked degrade any wounds you take by two steps and expend this	Planning: recover to hand if in play as state															
+wizard	Ghostform	1	3	2	arcane		arcane	Action play as state	If you are attacked: degrade any wounds you take by two steps and expend this	Planning: recover to hand if in play as state															
 wizard	Flicker	1	3	5	arcane		arcane	defend |x|, |y|, |z|: strength = |z|	You may Defend |x|, |y|, |z|: |z| for all attacks this turn																
 wizard	Telekenetic Shove	5	2	3	arcane	1	arcane	attack |x|: strength |z| + 2, range 2m	Minor: knockdown; Major: knockdown + stun 2; Critical: knockdown + stun 6																
-wizard	Shield of Force	4	3	2	arcane		arcane			When you defend with this, recover all other cards used in the defense															
+wizard	Shield of Force	4	3	2	arcane		arcane			When you defend with this, recover to hand all other cards used in the defense															
 wizard	Haste	2	5	2	arcane	2	arcane	Play this as state on a character with it's resources under it	Each Draw, draw 2 extra cards and expend this or one card from under it																
 wizard	Ogre Strength	5	1	3	arcane	2	arcane	Play this as state on a character with it's resources under it	When making an |x|, add +2 on each card spent, expend this or a card under it																
 wizard	Force Dart	2	3	3	arcane	2	arcane	attack |x|: strength |z| + 2, range 20m	basic wound																
