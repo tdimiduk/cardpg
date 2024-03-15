@@ -1,7 +1,7 @@
 actor	name	red	yellow	blue	keywordProvide	cost	keywordCost	action	effect	details	notes
 squire	Breastplate and Mail				armored, heavy, deflecting			Heavy Armor: flip up to 2 cards on defense	2 extra fatigue on reshuffle		
 squire	Great Hammer				impact, pierce, large weapon						
-squire	Waterskin				4 uses			Action (10 minutes): Consume 1 use, remove 1 fatigue from your deck	Regain all uses if you can refill this with clean water		
+squire	Waterskin				4 uses			Action (10 minutes): Consume 1 use, reshuffle your expended into your deck	Regain all uses if you can refill this with clean water		
 squire	Rattling blow	3	2	2		2	impact	attack |x|: strength = |x| + 2	basic wound	If defender adds cards with armor, stun 1	
 squire	Power Attack	4	2	2		2		attack |x|: strength = |x| + 3	basic wound		
 squire	Armor Deflect	2	3	2						|x| or |y| +2 defense from anywhere if you have deflecting armor	
