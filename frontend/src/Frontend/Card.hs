@@ -1,8 +1,11 @@
-module Frontend.Card where
+module Frontend.Card
+  ( card
+  , adhocCard
+  ) where
 
 import Data.Maybe (isNothing)
 import Data.List.NonEmpty (NonEmpty(..))
-import Data.Text (Text, splitOn, strip, intercalate)
+import Data.Text (Text, intercalate)
 import qualified Data.Text as T
 import qualified Data.Vector as V
 import Witherable
@@ -14,28 +17,8 @@ import Common.Card
 
 import Frontend.Svg
 
-rnx :: Double
-rnx = 15
-
-lnx :: Double
-lnx = 185
-
-tny :: Double
-tny = 15
-
-bny :: Double
-bny = 285
-
-mtshow :: Show a => Maybe a -> Text
-mtshow Nothing = ""
-mtshow (Just t) = tshow t
-
 card :: DomBuilder t m => Card -> m ()
 card = cardHtml
-
-maybeText :: DomBuilder t m => Maybe Text -> m ()
-maybeText Nothing = blank
-maybeText (Just t) = text t
 
 cardHtml :: DomBuilder t m => Card -> m ()
 cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
@@ -148,9 +131,3 @@ adhocCard (AdhocCard name blocks) = divClass "card" $ do
   divClass "name" $ text name
   divClass "art" blank
   divClass "textbox" $ V.mapM_ (divClass "block" . text) blocks
-
-textBlock :: DomBuilder t m => Double -> Double -> Text -> m ()
-textBlock x y t = svgEl "text" (xyPair id (x, y) <> "font-size" =: "0.8em") (mapM_ renderLine blocks)
-  where
-    blocks = splitOn ";" t
-    renderLine l = svgEl "tspan" ("dy" =: "18" <> "x" =: tshow x) (text $ strip l)
