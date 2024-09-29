@@ -4,9 +4,7 @@ module Frontend.Card
   ) where
 
 import Data.List.NonEmpty (NonEmpty(..))
-import Data.Text (intercalate)
 import qualified Data.Vector as V
-import Witherable
 
 import Reflex.Dom.Core
 
