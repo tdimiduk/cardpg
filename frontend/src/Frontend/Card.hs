@@ -29,13 +29,9 @@ cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
     divClass "art" blank
   textboxArea textbox
 
+costSymbol :: DomBuilder t m => Cost -> m ()
 costSymbol (Cost (Just c) _) = divClass "cost" (text c)
 costSymbol (Cost Nothing _) = blank
-
-costLine :: DomBuilder t m => Cost -> m ()
-costLine (Cost Nothing Nothing) = blank
-costLine (Cost Nothing (Just k)) = divClass "cost" (text k)
-costLine (Cost c k) = divClass "cost" (text $ "Cost: " <> intercalate ", " (catMaybes [c, k]))
 
 resourcesArea :: DomBuilder t m => Resources -> m ()
 resourcesArea (Resources red yellow blue _) = do

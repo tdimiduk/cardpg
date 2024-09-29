@@ -44,11 +44,13 @@ library
     TypeApplications
     TypeFamilies
     DerivingStrategies
+
   exposed-modules:
     Frontend
     Frontend.Svg
     Frontend.Card
-    Frondend.Card.Common
+    Frontend.Card.Common
+
   ghc-options: -Wall -O -fno-show-valid-hole-fits
                -- unsafe code
                -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields
