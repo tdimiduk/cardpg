@@ -21,34 +21,38 @@ body {
 }
 
 .cost {
-  min-height: 1em;
-  outline: solid .2mm;
-  padding: .1mm;
-  padding-left: .5mm;
-  margin-bottom: .5mm;
+  display: flex;
+  /* Aim for the aspect ratio of a magic card */
+  min-height: 1.117em;
+  min-width: 0.8em;
+  outline-style: solid;
+  outline-width: 0.15em;
   border-radius: 1mm;
-  font-size: 8;
+  justify-content: center;
 }
 
 .textbox {
   flex-grow: 1;
 }
 
-.keywords {
-  text-align: center;
-}
-
-span.keywords {
-  border-radius: 1mm;
-  padding: .1mm;
-  outline: solid .2mm;
-}
-
 .numbers {
   display: flex;
-  height: 1.2em;
+  width: 1.5em;
+  flex-direction: column;
   justify-content: space-between;
-  padding-top: 1mm;
+  margin-top: 1mm;
+  margin-bottom: 2mm;
+}
+
+.numbers .resource-symbol {
+  width: 1em;
+  height: 1em;
+}
+
+.textbox .resource-symbol {
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.15em;
 }
 
 .cards {
@@ -58,56 +62,23 @@ span.keywords {
 }
 
 .red {
-  stroke: red;
+  outline-color: red;
 }
 
 .yellow {
-  stroke: gold;
+  outline-color: gold;
 }
 
 .blue {
-  stroke: blue;
+  outline-color: blue;
 }
 
-.resource-container {
-  fill: none;
+.resource-symbol {
+  display: inline-block;
   vertical-align: middle;
-}
-
-div.resource-container {
-  display: inline-grid;
-  align-items: center;
-  text-align: center;
-}
-
-.resource-container > * {
-  grid-column-start: 1;
-  grid-row-start: 1;
-}
-
-.resource-container svg {
-  width: 24px;
-  height: auto;
-}
-
-.textbox svg {
-  height: 0.8em;
-  width: auto;
-}
-
-div.resource-text {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-wrap: wrap;
-  flex-direction: column;
-}
-
-.numbers span {
-  width: 1em;
-  height: 1em;
+  outline-style: solid;
+  outline-width: 0.15em;
+  border-radius: 0.15em;
 }
 
 textarea {
@@ -115,7 +86,29 @@ textarea {
   min-height: 40em;
 }
 
-#diamond {
-      width: 0;
-      height: 0;
-      border-:
+.flex {
+  display: flex;
+}
+
+.expand {
+  flex-grow: 1;
+}
+
+.resource-number {
+  vertical-align: middle;
+  text-align: center;
+  width: inherit;
+  height: inherit;
+}
+
+.resource-symbol.blue {
+  transform:rotate(45deg);
+}
+
+.resource-symbol.blue > .resource-number {
+  transform: rotate(-45deg);
+}
+
+.resource-symbol.yellow {
+  border-radius: 50%;
+}

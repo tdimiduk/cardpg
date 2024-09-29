@@ -3,10 +3,8 @@ module Frontend.Card
   , adhocCard
   ) where
 
-import Data.Maybe (isNothing)
 import Data.List.NonEmpty (NonEmpty(..))
-import Data.Text (Text, intercalate)
-import qualified Data.Text as T
+import Data.Text (intercalate)
 import qualified Data.Vector as V
 import Witherable
 
@@ -15,18 +13,24 @@ import Reflex.Dom.Core
 import Common.Util
 import Common.Card
 
-import Frontend.Svg
+import Frontend.Card.Common
 
 card :: DomBuilder t m => Card -> m ()
 card = cardHtml
 
 cardHtml :: DomBuilder t m => Card -> m ()
 cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
-  divClass "name" $ text name
-  divClass "art" blank
-  costLine cost
+  divClass "flex" $ do
+    divClass "name" $ text name
+    divClass "expand" blank
+    costSymbol cost
+  divClass "flex" $ do
+    resourcesArea resources
+    divClass "art" blank
   textboxArea textbox
-  resourcesArea resources
+
+costSymbol (Cost (Just c) _) = divClass "cost" (text c)
+costSymbol (Cost Nothing _) = blank
 
 costLine :: DomBuilder t m => Cost -> m ()
 costLine (Cost Nothing Nothing) = blank
@@ -34,8 +38,7 @@ costLine (Cost Nothing (Just k)) = divClass "cost" (text k)
 costLine (Cost c k) = divClass "cost" (text $ "Cost: " <> intercalate ", " (catMaybes [c, k]))
 
 resourcesArea :: DomBuilder t m => Resources -> m ()
-resourcesArea (Resources red yellow blue keywordProvide) = do
-  maybe blank (divClass "keywords" . elClass "span" "keywords" . text) keywordProvide
+resourcesArea (Resources red yellow blue _) = do
   divClass "numbers" $ do
     resourceSymbol' Red red
     resourceSymbol' Yellow yellow
@@ -52,21 +55,6 @@ renderModifier x
   | x == 0 = blank
   | x > 0 = text "+" >> text (tshow x)
   | otherwise = text (tshow x)
-
-fancyText :: DomBuilder t m => FancyText -> m ()
-fancyText (FancyText ls) = mapM_ fancyLine ls
-
-fancyText' :: DomBuilder t m => FancyText -> m ()
-fancyText' (FancyText (l:|ls)) = fancyLine' l >> mapM_ fancyLine ls
-
-fancyLine :: DomBuilder t m => FancyLine -> m ()
-fancyLine = elClass "div" "text-line" . fancyLine'
-
-fancyLine' :: DomBuilder t m => FancyLine -> m ()
-fancyLine' (FancyLine tokens) = mapM_ render tokens
-  where
-    render (FancyTextToken t) = text t
-    render (ResourceToken t) = resourceSymbol t
 
 renderDefendsList :: DomBuilder t m => NonEmpty ResourceType -> m ()
 renderDefendsList (a :| [b, c]) = do
@@ -107,24 +95,6 @@ action (Just a) = divClass "action" $ case a of
   SpecialDefend t -> do
     text "Defend: "
     fancyText t
-
-resourceSymbol :: DomBuilder t m => ResourceType -> m ()
-resourceSymbol a = resourceSymbol' a Nothing
-
-resourceSymbol' :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
-resourceSymbol' r t = elClass container ("resource-container " <> (T.toLower (tshow r))) $ do
-  mapM_ (elClass container "resource-text"  . text) t
-  svg' size size $ case r of
-    Red -> rectC (c, c) (rectSize, rectSize) (strokeWidth w)
-    Yellow -> circle (c, c) (size - c - w) w
-    Blue -> rectC (c, c) (diamondSize, diamondSize) (rotate (c, c) 45 <> strokeWidth w)
-  where
-    container = if isNothing t then "span" else "div"
-    size = 100
-    diamondSize = 65
-    rectSize = 80
-    w = 10
-    c = 50
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()
 adhocCard (AdhocCard name blocks) = divClass "card" $ do

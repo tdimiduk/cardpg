@@ -8,9 +8,9 @@ squire	Armor Deflect	2	3	2						|x| or |y| +2 defense from anywhere if you have 
 squire	Crushing blow	3	2	2		2	impact	attack |x|: strength |x| +1, ignore one armor	basic wound		
 squire	Attack	3	2	2		1		attack |x|: strength |x| + 2	basic wound		
 squire	Ring the Bell	3	2	2		1	impact	attack |x|: strength |x|, ignore armor	stun 2/5/10		
-squire	Athletics	4	4	2						Action: Move 8, recover this to your hand	 
+squire	Athletics	4	4	2				Action: Move 8	recover this to your hand		
 squire	Sweeping defense	3	2	2			large weapon	defend |x| or |y|: strength = |x|+1		You may apply sweeping defense against 2 attacks (use seperate resources for each)	
-squire	Backswing	3	2	1		1, attacked last turn	weapon	attack |x|: strength = |x| + 3	basic wound		
+squire	Backswing	3	2	1		1	weapon	attack |x|: strength = |x| + 3	basic wound	You must have attacked last turn to play backswing	
 squire	Power Attack	4	2	2		2		attack |x|: strength = |x| + 3	basic wound		
 squire	Wind up	3	2	3		0		action: you may use this as a resource to attack next turn at +3			
 squire	Endure	3	2	2						strength +2 when used to defend from anywhere	
@@ -24,5 +24,5 @@ squire	Sunder Armor	4	2	2		2	axe or hammer	attack |x|: strength |x| + 2, ignore 
 squire	Inspire	4	3	1		0		Action: Your allies attacks get +4 strength this turn			
 squire	Chivalry	4	3	3						|z| + 3 when defending from anywhere	
 squire	Nobility	4	2	3						Use this card to invoke your noble privileges	
-squire	Healing Hands	3	4	3						Action: remove a bleeding card from target's deck or expended	
+squire	Healing Hands	3	4	3				Action: remove a 1 consequence from creature touched	Action: Replace a Consequence:2 with an Injury or a Consequence:3 with 5 Injury(s)	Action (1 minute): Replace an Injury card with a Fatigue card	
 squire	Interceed	3	3	3						May contribute this to an adjacent ally's defense	
