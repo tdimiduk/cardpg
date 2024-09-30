@@ -17,6 +17,7 @@ body {
 }
 
 .art {
+  flex-grow: 1;
   height: 33mm;
 }
 
@@ -33,11 +34,15 @@ body {
 
 .textbox {
   flex-grow: 1;
+  outline: solid 0.2mm;
+  margin-top: 2mm;
+  padding: 1mm;
+  border-radius: 1mm;
 }
 
 .numbers {
   display: flex;
-  width: 1.5em;
+  height: 4.5em;
   flex-direction: column;
   justify-content: space-between;
   margin-top: 1mm;
