@@ -75,6 +75,9 @@ data Action = GeneralAction FancyText
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
+asFancyText :: Text -> FancyText
+asFancyText t = FancyText (pure (FancyLine (pure (FancyTextToken t))))
+
 data FancyToken = FancyTextToken Text | ResourceToken ResourceType
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)

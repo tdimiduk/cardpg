@@ -3,6 +3,7 @@ module Frontend.Card.Common
   , fancyText'
   , resourceSymbol
   , resourceSymbol'
+  , art
   ) where
 
 import Data.List.NonEmpty (NonEmpty(..))
@@ -37,3 +38,6 @@ resourceSymbol' r t = divClass cls $
   divClass "resource-number" $ mapM_ text t
   where
     cls = "resource-symbol " <> (T.toLower (tshow r))
+
+art :: DomBuilder t m => m ()
+art = divClass "art" blank

@@ -1,6 +1,8 @@
 module Frontend.Card
   ( card
   , adhocCard
+  , textboxArea
+  , costSymbol
   ) where
 
 import Data.List.NonEmpty (NonEmpty(..))
@@ -24,7 +26,7 @@ cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
     costSymbol cost
   divClass "flex" $ do
     resourcesArea resources
-    divClass "art" blank
+    art
   textboxArea textbox
 
 costSymbol :: DomBuilder t m => Cost -> m ()

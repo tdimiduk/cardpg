@@ -4,7 +4,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TupleSections #-}
 
-module Frontend where
+module Frontend (frontend) where
 
 import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
@@ -30,6 +30,7 @@ import Common.CardParser
 import Common.Route
 
 import Frontend.Card
+import Frontend.Demo
 
 data DeckType = StandardDeck | AdhocDeck
 
@@ -43,13 +44,13 @@ deckFromRoute
   => RoutedT t (R FrontendRoute) m (Dynamic t (Maybe (Text, DeckType)))
 deckFromRoute = do
   r <- subRoute $ \case
-    FrontendRoute_Main -> pure $ (constDyn Nothing)
     FrontendRoute_Deck -> do
       md <- askRoute
       pure (fmap (,StandardDeck) <$> md)
     FrontendRoute_Adhoc -> do
       md <- askRoute
       pure (fmap (, AdhocDeck) <$> md)
+    _ -> pure $ (constDyn Nothing)
   pure $ join r
 
 
@@ -62,9 +63,16 @@ frontend = Frontend
       deck <- deckFromRoute
       el "title" $ dynText $ maybe "CaRdPG" fst <$> deck
       elAttr "link" ("href" =: $(static "main.css") <> "type" =: "text/css" <> "rel" =: "stylesheet") blank
-  , _frontend_body = do
-      deck <- deckFromRoute
-      dyn_ $ cardsWidget <$> deck
+  , _frontend_body = subRoute_ $ \case
+    FrontendRoute_Deck -> do
+      md <- askRoute
+      dyn_ $ cardsWidget <$> fmap (,StandardDeck) <$> md
+    FrontendRoute_Adhoc -> do
+      md <- askRoute
+      dyn_ $ cardsWidget <$> fmap (,AdhocDeck) <$> md
+    FrontendRoute_Main -> cardsWidget Nothing
+    FrontendRoute_Demo -> do
+      layoutOptions
   }
 
 cardsWidget :: (DomBuilder t m, HasConfigs m, MonadFix m, MonadHold t m) => Maybe (Text, DeckType) -> m ()
