@@ -1,22 +1,33 @@
 name: backend
 version: 0.1
-cabal-version: >= 1.8
+cabal-version: >= 2.0
 build-type: Simple
 
 library
   hs-source-dirs: src
   if impl(ghcjs)
     buildable: False
-  build-depends: base
-               , common
-               , frontend
-               , obelisk-backend
-               , obelisk-route
-               , cassava
+  build-depends:
+      base
+    , common
+    , frontend
+    , obelisk-backend
+    , obelisk-route
+    , cassava
+    , directory
+    , gargoyle-postgresql-connect
+    , resource-pool
+    , postgresql-simple
+    , time
+    , beam-automigrate
+    , beam-core
+    , beam-postgres
+    , time
   default-extensions:
     ConstraintKinds
     DataKinds
     DeriveGeneric
+    DerivingStrategies
     FlexibleContexts
     FlexibleInstances
     GADTs
@@ -38,6 +49,33 @@ library
     TypeFamilies
   exposed-modules:
     Backend
+    Backend.Database.Migrate
+    Backend.Database.Schema
+    Backend.Database.Types
+  default-extensions:
+    ConstraintKinds
+    DataKinds
+    DeriveGeneric
+    DeriveAnyClass
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    OverloadedStrings
+    PatternSynonyms
+    QuantifiedConstraints
+    RankNTypes
+    RecursiveDo
+    ScopedTypeVariables
+    StandaloneDeriving
+    TemplateHaskell
+    TupleSections
+    TypeApplications
+    TypeFamilies
   ghc-options: -Wall -O -fno-show-valid-hole-fits
                -- unsafe code
                -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields

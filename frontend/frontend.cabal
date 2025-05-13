@@ -50,6 +50,7 @@ library
     Frontend.Svg
     Frontend.Card
     Frontend.Card.Common
+    Frontend.Demo
 
   ghc-options: -Wall -O -fno-show-valid-hole-fits
                -- unsafe code
