@@ -9,6 +9,7 @@ import Obelisk.Backend
 import Common.Route
 
 import Backend.Database.Migrate
+import Backend.GSheets.Fetch (syncCards)
 
 data BackendEnv = BackendEnv
   { _dbPath :: String }

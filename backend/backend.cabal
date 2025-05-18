@@ -52,6 +52,7 @@ library
     Backend.Database.Migrate
     Backend.Database.Schema
     Backend.Database.Types
+    Backend.GSheets.Fetch
   default-extensions:
     ConstraintKinds
     DataKinds
