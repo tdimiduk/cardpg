@@ -1,6 +1,6 @@
 { pkgs? import <nixpkgs> {},  }:
 let
-  pythonEnv = pkgs.python3.withPackages (ps: [
+  pythonEnv = pkgs.python310.withPackages (ps: [
     ps.google-api-python-client
     ps.google-auth-httplib2
     ps.google-auth-oauthlib

@@ -3,23 +3,23 @@
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from itertools import zip_longest
-from typing import TypeVar
+from typing import TypeVar, Optional, Generic
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 T = TypeVar("T")
 
-type Input = dict[str, str | None]
+Input = dict[str, str | None]
 
-type CardParser[T] = Callable[[Input], T]
+CardParser = Callable[[Input], T]
 
 @dataclass
-class DeckSpec[T]:
+class DeckSpec(Generic[T]):
     t: type[T]
     spreadsheet_id: str
     sheet_range: str
-    parse: None | CardParser[T] = None
+    parse: None | CardParser = None
 
 
 def get_deck(s: DeckSpec[T], credentials_file: str) -> list[T]:
@@ -71,3 +71,6 @@ def read_sheet_data(
         sheet.values().get(spreadsheetId=spreadsheet_id, range=sheet_range).execute()
     )
     return result.get("values", [])
+
+if __name__ == "__main__":
+    print("running script")
