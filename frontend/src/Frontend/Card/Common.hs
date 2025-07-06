@@ -1,34 +1,18 @@
 module Frontend.Card.Common
-  ( fancyText
-  , fancyText'
+  ( renderCardText
   , resourceSymbol
   , resourceSymbol'
   , art
   ) where
 
-import Data.List.NonEmpty (NonEmpty(..))
+import Data.List.NonEmpty (toList)
 import Data.Text (Text)
 import qualified Data.Text as T
 
 import Reflex.Dom.Core
 
 import Common.Util
-import Common.Card
-
-fancyText :: DomBuilder t m => FancyText -> m ()
-fancyText (FancyText ls) = mapM_ fancyLine ls
-
-fancyText' :: DomBuilder t m => FancyText -> m ()
-fancyText' (FancyText (l:|ls)) = fancyLine' l >> mapM_ fancyLine ls
-
-fancyLine :: DomBuilder t m => FancyLine -> m ()
-fancyLine = elClass "div" "text-line" . fancyLine'
-
-fancyLine' :: DomBuilder t m => FancyLine -> m ()
-fancyLine' (FancyLine tokens) = mapM_ render tokens
-  where
-    render (FancyTextToken t) = text t
-    render (ResourceToken t) = resourceSymbol t
+import Common.Card.Common
 
 resourceSymbol :: DomBuilder t m => ResourceType -> m ()
 resourceSymbol a = resourceSymbol' a Nothing
@@ -41,3 +25,14 @@ resourceSymbol' r t = divClass cls $
 
 art :: DomBuilder t m => m ()
 art = divClass "art" blank
+
+renderCardText :: DomBuilder t m => CardText -> m ()
+renderCardText (CardText blocks) = mapM_ renderBlock blocks
+
+renderBlock :: DomBuilder t m => CardBlock -> m ()
+renderBlock (Paragraph inlines) = el "p" $ mapM_ renderInline $ toList inlines
+renderBlock ThematicBreak = el "hr" $ pure ()
+
+renderInline :: DomBuilder t m => CardInline -> m ()
+renderInline (Txt t) = text t
+renderInline (ResourceIcon t) = resourceSymbol t

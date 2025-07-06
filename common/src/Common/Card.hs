@@ -1,7 +1,20 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Common.Card where
+module Common.Card
+  ( Card(..)
+  , Resources(..)
+  , Cost(..)
+  , Textbox(..)
+  , Action(..)
+  , Attack(..)
+  , StandardDefend(..)
+  , ActionStrength(..)
+  , AdhocCard(..)
+  , ConsequenceCard(..)
+  , readAdhocCards, tsv
+  )
+where
 
 import Control.Monad (mzero)
 import Data.Aeson (ToJSON, FromJSON)
@@ -14,6 +27,9 @@ import qualified Data.Text.Encoding as T
 import qualified Data.Vector as V
 import GHC.Base (ord)
 import GHC.Generics
+import GHC.Int (Int32)
+
+import Common.Card.Common
 
 data Card = Card
   { _actor :: Text
@@ -43,13 +59,9 @@ data Cost = Cost
 
 data Textbox = Textbox
   { _action :: Maybe Action
-  , _effect :: Maybe FancyText
-  , _details :: Maybe FancyText
+  , _effect :: Maybe CardText
+  , _details :: Maybe CardText
   }
-  deriving stock (Show, Generic)
-  deriving anyclass (ToJSON, FromJSON)
-
-data ResourceType = Red | Yellow | Blue
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
@@ -60,33 +72,27 @@ data ActionStrength = ActionStrength
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-data Action = GeneralAction FancyText
-  | Attack
-    { _resistedBy :: ResourceType
-    , _aStrength :: ActionStrength
-    , _aText :: Maybe FancyText
-    }
-  | StandardDefend
-    { _resists :: NonEmpty ResourceType
-    , _dStrength :: ActionStrength
-    , _dText :: Maybe FancyText
-    }
-  | SpecialDefend FancyText
+data Action
+  = GeneralAction CardText
+  | AttackAction Attack
+  | DefendAction StandardDefend
+  | SpecialDefend CardText
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-asFancyText :: Text -> FancyText
-asFancyText t = FancyText (pure (FancyLine (pure (FancyTextToken t))))
-
-data FancyToken = FancyTextToken Text | ResourceToken ResourceType
+data Attack = Attack
+  { _resistedBy :: ResourceType
+  , _strength :: ActionStrength
+  , _text :: Maybe CardText
+  }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-data FancyText = FancyText (NonEmpty FancyLine)
-  deriving stock (Show, Generic)
-  deriving anyclass (ToJSON, FromJSON)
-
-data FancyLine = FancyLine (NonEmpty FancyToken)
+data StandardDefend = StandardDefend
+  { _resists :: NonEmpty ResourceType
+  , _strength :: ActionStrength
+  , _text :: Maybe CardText
+  }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
@@ -104,12 +110,16 @@ instance FromRecord AdhocCard where
 
 type InputDelimeter = DecodeOptions
 
-csv :: InputDelimeter
-csv = defaultDecodeOptions
-
 tsv :: InputDelimeter
 tsv = defaultDecodeOptions { decDelimiter = fromIntegral (ord '\t') }
 
 readAdhocCards :: HasHeader -> DecodeOptions -> ByteString -> Either String (V.Vector AdhocCard)
 readAdhocCards hasHeader options = decodeWith options hasHeader . LBS.fromStrict
 
+data ConsequenceCard = ConsequenceCard
+  { name :: Text
+  , severity :: Int32
+  , effect :: CardText
+  }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)

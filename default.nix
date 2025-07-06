@@ -19,7 +19,13 @@ project ./. ({ pkgs, hackGet,  ... }@args:
   {
   overrides = pkgs.lib.composeExtensions
     (pkgs.callPackage (hackGet ./dep/rhyolite) args).haskellOverrides
-    (self: super: {
+    (self: super: with pkgs.haskell.lib; {
+      reflex-gadt-api = self.callCabal2nix "reflex-gadt-api" (hackGet ./dep/reflex-gadt-api) {};
+      aeson-gadt-th = doJailbreak (self.callHackageDirect {
+        pkg = "aeson-gadt-th";
+        ver = "0.2.5.1";
+        sha256 = "sha256-pWIzmLMZ1EOgkV3D9qnVliZyhVKvPnRloUdjaYTob+Q=";
+      } { });
       backend = super.backend.overrideAttrs (oldAttrs: {
         postPatch = (oldAttrs.postPatch or "") + ''
           echo "Generating Python script path data file for backend..."

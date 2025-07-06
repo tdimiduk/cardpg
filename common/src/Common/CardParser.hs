@@ -22,6 +22,7 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Void
 
 import Common.Card
+import Common.Card.Common
 
 type Parser = Parsec Void Text
 
@@ -71,29 +72,29 @@ cost = label "cost" $ do
 textbox :: Parser Textbox
 textbox = label "textbox" $ do
   _action <- tsvField $ optional action
-  _effect <- label "effect" $ tsvField $ optional fancyText
-  _details <- label "details" $ tsvField $ optional fancyText
+  _effect <- label "effect" $ tsvField $ optional cardText
+  _details <- label "details" $ tsvField $ optional cardText
   pure Textbox {..}
 
 action :: Parser Action
 action = label "action"
-  (   attack
+  (   AttackAction <$> attack
   <|> defend
-  <|> GeneralAction <$> fancyText
+  <|> GeneralAction <$> cardText
   )
 
-attack :: Parser Action
+attack :: Parser Attack
 attack = label "attack" $ do
   _ <- string' "attack "
   _resistedBy <- resourceSymbol
-  _aStrength <- actionStrength
-  _aText <- optional fancyText
+  _strength <- actionStrength
+  _text <- optional cardText
   pure Attack {..}
 
 defend :: Parser Action
-defend = try standardDefend <|> do
+defend = try (DefendAction <$> standardDefend) <|> do
   _ <- ots $ string' "defend:"
-  SpecialDefend <$> fancyText
+  SpecialDefend <$> cardText
 
 notLineEnd :: Char -> Bool
 notLineEnd x = x /= '\n' && x /= '\r'
@@ -131,14 +132,13 @@ plusInt = do
   _ <- ots $ char '+'
   ots L.decimal
 
-fancyText :: Parser FancyText
-fancyText = label "fancy text" $ FancyText <$> fancyLine `sepBy1` (char ';')
+cardText :: Parser CardText
+cardText = label "card text" $ CardText <$> cardBlock `sepBy1` (char ';')
 
-fancyLine :: Parser FancyLine
-fancyLine = label "fancy text line" $ FancyLine <$> some (ResourceToken <$> resourceSymbol' <|> fancyTextToken)
+cardBlock :: Parser CardBlock
+cardBlock = label "card text block" $ Paragraph <$> some (ResourceIcon <$> resourceSymbol' <|> txt)
   where
-    fancyTextToken = FancyTextToken <$> takeWhile1P (Just "fancy text token")
-      (\x -> notFieldEnd x && x /= '|' && x /= ';')
+    txt = Txt <$> takeWhile1P (Just "card text token") (\x -> notFieldEnd x && x /= '|' && x /= ';')
 
 plusModifier :: Parser Int
 plusModifier = plusInt <|> L.decimal <|> negativeInt <|> pure 0
@@ -149,17 +149,16 @@ orSep = label "OR-like" $ void $ ots $ () <$ try (ots (char ',') >> string' "or"
 ots :: Parser p -> Parser p
 ots = optionalTrailing (takeWhile1P (Just "spaces") (\x -> x == ' '))
 
-standardDefend :: Parser Action
+standardDefend :: Parser StandardDefend
 standardDefend = label "standard defense" $ do
   _ <- ots $ string' "defend"
   _resists <- resists
-  _dStrength <- actionStrength
-  _dText <- optional fancyText
+  _strength <- actionStrength
+  _text <- optional cardText
   pure StandardDefend {..}
 
 resists :: Parser (NonEmpty ResourceType)
 resists = label "resists group" $ (ots resourceSymbol) `sepBy1` orSep
-
 
 actionStrength :: Parser ActionStrength
 actionStrength = label "action strength" $ do

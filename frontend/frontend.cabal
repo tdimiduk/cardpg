@@ -21,6 +21,7 @@ library
                , cassava
                , either
                , witherable
+               , generic-lens
 
   default-extensions:
     ConstraintKinds
@@ -43,14 +44,19 @@ library
     TupleSections
     TypeApplications
     TypeFamilies
-    DerivingStrategies
+    UndecidableInstances
+    DuplicateRecordFields
+    OverloadedLabels
+    DeriveTraversable
 
   exposed-modules:
     Frontend
     Frontend.Svg
     Frontend.Card
     Frontend.Card.Common
+    Frontend.Card.Consequence
     Frontend.Demo
+    Frontend.Deck
 
   ghc-options: -Wall -O -fno-show-valid-hole-fits
                -- unsafe code

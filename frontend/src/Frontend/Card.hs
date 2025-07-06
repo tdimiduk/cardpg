@@ -11,7 +11,8 @@ import qualified Data.Vector as V
 import Reflex.Dom.Core
 
 import Common.Util
-import Common.Card
+import Common.Card (Card(..), Resources(..), Cost(..), Textbox(..), ActionStrength(..), Action(..), Attack(..), StandardDefend(..), AdhocCard(..))
+import Common.Card.Common
 
 import Frontend.Card.Common
 
@@ -43,8 +44,8 @@ resourcesArea (Resources red yellow blue _) = do
 textboxArea :: DomBuilder t m => Textbox -> m ()
 textboxArea (Textbox a effect details) = divClass "textbox" $ do
   action a
-  mapM_ (divClass "effect" . fancyText) effect
-  mapM_ (divClass "details" . fancyText) details
+  mapM_ (divClass "effect" . renderCardText) effect
+  mapM_ (divClass "details" . renderCardText) details
 
 renderModifier :: DomBuilder t m => Int -> m ()
 renderModifier x
@@ -75,25 +76,31 @@ actionStrength (ActionStrength r m) = do
 action :: DomBuilder t m => Maybe Action -> m ()
 action Nothing = blank
 action (Just a) = divClass "action" $ case a of
-  GeneralAction t -> fancyText t
-  Attack resistBy strength otherText -> do
-    text "Attack "
-    resourceSymbol resistBy
-    text ": "
-    actionStrength strength
-    maybe blank fancyText' otherText
-  StandardDefend resists strength otherText -> do
-    text "Defend "
-    renderDefendsList resists
-    text ": "
-    actionStrength strength
-    maybe blank fancyText' otherText
+  GeneralAction t -> renderCardText t
+  AttackAction x -> attack x
+  DefendAction d -> standardDefend d
   SpecialDefend t -> do
     text "Defend: "
-    fancyText t
+    renderCardText t
+
+attack :: DomBuilder t m => Attack -> m ()
+attack (Attack resistBy strength otherText) = do
+  text "Attack "
+  resourceSymbol resistBy
+  text ": "
+  actionStrength strength
+  maybe blank renderCardText otherText
+
+standardDefend :: DomBuilder t m => StandardDefend -> m ()
+standardDefend (StandardDefend resists strength otherText) = do
+  text "Defend "
+  renderDefendsList resists
+  text ": "
+  actionStrength strength
+  maybe blank renderCardText otherText
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()
-adhocCard (AdhocCard name blocks) = divClass "card" $ do
-  divClass "name" $ text name
+adhocCard c = divClass "card" $ do
+  divClass "name" $ text $ _ahcName c
   divClass "art" blank
-  divClass "textbox" $ V.mapM_ (divClass "block" . text) blocks
+  divClass "textbox" $ V.mapM_ (divClass "block" . text) $ _blocks c

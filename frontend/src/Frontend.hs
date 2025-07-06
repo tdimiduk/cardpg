@@ -11,6 +11,7 @@ import Control.Monad.Fix (MonadFix)
 import Data.ByteString (ByteString)
 import Data.Csv (HasHeader(..))
 import Data.Either.Combinators
+import Data.Functor.Identity
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
@@ -24,13 +25,18 @@ import Obelisk.Route.Frontend
 import Obelisk.Generated.Static
 
 import Reflex.Dom.Core
+import Reflex.Dom.GadtApi.WebSocket
 
+import Common.Api
 import Common.Card
 import Common.CardParser
 import Common.Route
 
 import Frontend.Card
+import Frontend.Deck
 import Frontend.Demo
+
+type ValidEnc = Encoder Identity Identity (R (FullRoute BackendRoute FrontendRoute)) PageName
 
 data DeckType = StandardDeck | AdhocDeck
 
@@ -58,22 +64,58 @@ deckFromRoute = do
 -- To run code in a pure client or pure server context, use one of the
 -- `prerender` functions.
 frontend :: Frontend (R FrontendRoute)
-frontend = Frontend
-  { _frontend_head = do
-      deck <- deckFromRoute
-      el "title" $ dynText $ maybe "CaRdPG" fst <$> deck
-      elAttr "link" ("href" =: $(static "main.css") <> "type" =: "text/css" <> "rel" =: "stylesheet") blank
-  , _frontend_body = subRoute_ $ \case
-    FrontendRoute_Deck -> do
-      md <- askRoute
-      dyn_ $ cardsWidget <$> fmap (,StandardDeck) <$> md
-    FrontendRoute_Adhoc -> do
-      md <- askRoute
-      dyn_ $ cardsWidget <$> fmap (,AdhocDeck) <$> md
-    FrontendRoute_Main -> cardsWidget Nothing
-    FrontendRoute_Demo -> do
-      layoutOptions
-  }
+frontend = Frontend htmlHead htmlBody
+
+htmlHead :: ( DomBuilder t m
+            , MonadFix m
+            , MonadHold t m
+            , PostBuild t m
+            )
+         => RoutedT t (R FrontendRoute) m ()
+htmlHead = do
+  deck <- deckFromRoute
+  el "title" $ dynText $ maybe "CaRdPG" fst <$> deck
+  elAttr "link" ("href" =: $(static "main.css") <> "type" =: "text/css" <> "rel" =: "stylesheet") blank
+
+htmlBody
+  :: forall t m.
+     ( ObeliskWidget t (R FrontendRoute) m)
+  => RoutedT t (R FrontendRoute) m ()
+htmlBody = do
+  let enc :: Either Text ValidEnc = checkEncoder fullRouteEncoder
+  maybeR <- getTextConfig "common/route"
+  case (enc, maybeR) of
+    (Left _, _) -> error "routes are invalid!"
+    (_, Nothing) -> error "couldn't load common/route config file"
+    (Right validEnc, Just r) -> do
+      let apiRoute = T.replace "https://" "wss://" $ T.replace "http://" "ws://" r <>
+            renderBackendRoute validEnc (BackendRoute_WebSocket :/ ())
+      subRoute_ $ \case
+        FrontendRoute_Deck -> do
+          md <- askRoute
+          dyn_ $ cardsWidget <$> fmap (,StandardDeck) <$> md
+        FrontendRoute_Adhoc -> do
+          md <- askRoute
+          dyn_ $ cardsWidget <$> fmap (,AdhocDeck) <$> md
+        FrontendRoute_Main -> cardsWidget Nothing
+        FrontendRoute_Demo -> do
+          layoutOptions
+        FrontendRoute_Consequences -> runRequesting apiRoute $ consequencesDeck $ ConsequencesDeck "general-wound"
+
+runRequesting
+  :: forall t m r.
+     ( MonadHold t m
+     , MonadFix m
+     , PerformEvent t m
+     , Prerender t m
+     )
+  => WebSocketEndpoint
+  -> RequesterT t Api (Either Text) m r
+  -> m r
+runRequesting endpoint requester = do
+  rec (result, requests) <- runRequesterT requester responses
+      responses <- performWebSocketRequests endpoint requests
+  pure result
 
 cardsWidget :: (DomBuilder t m, HasConfigs m, MonadFix m, MonadHold t m) => Maybe (Text, DeckType) -> m ()
 cardsWidget Nothing = do

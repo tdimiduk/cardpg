@@ -1,44 +1,50 @@
 module Backend.GSheets.Fetch
-  ( syncCards )
+  ( cards
+  , SheetConsequenceCard
+  )
 where
 
 import Control.Exception (IOException, try)
 import Data.Aeson
-import Data.Either.Combinators (mapLeft)
-import Data.Text (Text, pack, unpack, strip)
-import GHC.Generics
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.Char8 as C
+import Data.Either.Combinators (mapRight)
+import Data.Int (Int32)
+import Data.Text (Text)
+import GHC.Generics (Generic)
 import System.Environment (getExecutablePath)
-import System.Process (callProcess, readProcess)
+import System.Process.Typed
 import System.FilePath ((</>), takeDirectory)
 
 getBundledScriptPath :: IO FilePath
 getBundledScriptPath = takeDirectory <$> getExecutablePath
 
-data SyncError = ProcessError IOException | ScriptBuildFailed IOException | ScriptBuildBadOutput
+data SheetConsequenceCard = SheetConsequenceCard
+  { name :: Text
+  , severity :: Int32
+  , effect :: Text
+  }
+  deriving stock Generic
+  deriving anyclass (ToJSON, FromJSON)
+
+data SyncError = ProcessError IOException | ScriptBuildFailed IOException | ScriptBuildBadOutput | DataError String
   deriving stock Show
 
-syncCards :: Maybe FilePath -> IO ()
-syncCards devRun = do
+cards :: Maybe FilePath -> IO (Either SyncError [SheetConsequenceCard])
+cards devRun = do
   let scriptName = "sync-cards-gsheet.py"
-  result :: (Either SyncError ()) <- case devRun of
+  ePath <- case devRun of
     -- In local dev (ob run) we will set this path from config and build the python package each time we run this.
-    Just d -> do
-      buildOut <- try (readProcess "/run/current-system/sw/bin/nix-build" [d] [])
-      case buildOut of
-        Left err -> pure $ Left $ ScriptBuildFailed err
-        Right path -> mapLeft ProcessError <$> try (callProcess (unpack (strip (pack path)) </> "bin" </> scriptName) [])
+    Just d -> mapRight ((</> "bin") . C.unpack . C.strip . BL.toStrict . fst) <$>
+      try (readProcess_ $ proc "/run/current-system/sw/bin/nix-build" [d])
     -- In production the script will be packaged with the backend and we use that
-    Nothing -> do
-      scriptDir <- getBundledScriptPath
-      mapLeft ProcessError <$> try (callProcess (scriptDir </> scriptName) [])
-  case result of
-    Right () -> putStrLn "synced cards from gsheets"
-    Left e -> print e
-
-data ConsequenceCard = ConsequenceCard
-  { _name :: Text
-  , _severity :: Int
-  , _effect :: Text
-  }
-  deriving stock (Show, Generic)
-  deriving anyclass (ToJSON, FromJSON)
+    Nothing -> Right <$> getBundledScriptPath
+  case ePath of
+    Left err -> pure $ Left $ ScriptBuildFailed err
+    Right path -> do
+      r <- try (readProcess_ (proc (path </> scriptName) []))
+      case r of
+        Left err -> pure $ Left $ ProcessError err
+        Right o -> case eitherDecode (fst o) of
+          Left err -> pure $ Left $ DataError err
+          Right v -> pure $ Right v

@@ -9,31 +9,36 @@ library
     buildable: False
   build-depends:
       base
-    , common
-    , frontend
-    , obelisk-backend
-    , obelisk-route
-    , obelisk-executable-config-lookup
-    , cassava
-    , directory
-    , gargoyle-postgresql-connect
-    , resource-pool
-    , postgresql-simple
-    , time
+    , aeson
     , beam-automigrate
     , beam-core
     , beam-postgres
-    , text
-    , aeson
-    , process
-    , filepath
+    , cassava
+    , common
+    , directory
     , either
+    , filepath
+    , frontend
+    , gargoyle-postgresql-connect
+    , generic-lens
+    , lens
+    , obelisk-backend
+    , obelisk-executable-config-lookup
+    , obelisk-route
+    , postgresql-simple
+    , process
+    , reflex-gadt-api
+    , resource-pool
+    , snap-core
+    , text
+    , time
+    , typed-process
+    , websockets
+    , websockets-snap
   default-extensions:
     ConstraintKinds
     DataKinds
     DeriveGeneric
-    DerivingStrategies
-    DeriveAnyClass
     FlexibleContexts
     FlexibleInstances
     GADTs
@@ -49,12 +54,16 @@ library
     RecursiveDo
     ScopedTypeVariables
     StandaloneDeriving
+    DerivingStrategies
+    DeriveAnyClass
     TemplateHaskell
     TupleSections
     TypeApplications
     TypeFamilies
+    OverloadedLabels
   exposed-modules:
     Backend
+    Backend.Api
     Backend.Database.Migrate
     Backend.Database.Schema
     Backend.Database.Types
@@ -67,9 +76,6 @@ library
   if impl(ghc >= 8.8)
     ghc-options:
                -Wmissing-deriving-strategies
-data-files:
-  generated_nix_config/python_script_path.txt
-
 executable backend
   main-is: main.hs
   hs-source-dirs: src-bin

@@ -1,9 +1,7 @@
 { pkgs? import <nixpkgs> {},  }:
 let
   pythonEnv = pkgs.python310.withPackages (ps: [
-    ps.google-api-python-client
-    ps.google-auth-httplib2
-    ps.google-auth-oauthlib
+    ps.gspread
   ]);
 in
 pkgs.stdenv.mkDerivation {

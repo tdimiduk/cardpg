@@ -4,7 +4,9 @@ import Data.Text (Text)
 
 import Reflex.Dom.Core
 
-import Common.Card
+import Common.Card (Card(..), Textbox(..), Resources(..), Cost(..), Action(..), Attack(..), ActionStrength(..))
+import Common.Card.Common
+
 import Frontend.Card
 import Frontend.Card.Common
 
@@ -27,9 +29,9 @@ demoCard name bodyText = Card
 
 demoTextbox :: Maybe Text -> Textbox
 demoTextbox d = Textbox
-  { _action = Just $ Attack Red (ActionStrength Red 1) Nothing
+  { _action = Just $ AttackAction $ Attack Red (ActionStrength Red 1) Nothing
   , _effect = Nothing
-  , _details = asFancyText <$> d
+  , _details = asCardText <$> d
   }
 
 numbers :: DomBuilder t m => Resources -> m ()

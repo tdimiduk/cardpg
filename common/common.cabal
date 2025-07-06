@@ -15,7 +15,8 @@ library
                , vector
                , either
                , megaparsec
-
+               , aeson-gadt-th
+               , constraints-extras
   default-extensions:
     ConstraintKinds
     DataKinds
@@ -23,7 +24,6 @@ library
     FlexibleContexts
     FlexibleInstances
     GADTs
-    GeneralizedNewtypeDeriving
     ImportQualifiedPost
     LambdaCase
     MultiParamTypeClasses
@@ -37,10 +37,17 @@ library
     TupleSections
     TypeApplications
     TypeFamilies
+    TypeOperators
+    UndecidableInstances
+    GeneralizedNewtypeDeriving
     DerivingStrategies
+    DeriveAnyClass
+    DuplicateRecordFields
+    OverloadedLabels
   exposed-modules:
     Common.Api
     Common.Card
+    Common.Card.Common
     Common.CardParser
     Common.Route
     Common.Util

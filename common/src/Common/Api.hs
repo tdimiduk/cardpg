@@ -1,4 +1,14 @@
+{-# Language TemplateHaskell #-}
 module Common.Api where
 
-commonStuff :: String
-commonStuff = "Here is a string defined in Common.Api"
+import Data.Text (Text)
+
+import Data.Aeson (ToJSON, FromJSON)
+
+import Common.Card
+
+newtype ConsequencesDeck = ConsequencesDeck Text
+  deriving newtype (ToJSON, FromJSON)
+
+data Api a where
+  Api_ConsequencesDeck :: ConsequencesDeck -> Api [ConsequenceCard]
