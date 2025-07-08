@@ -2,6 +2,7 @@
 module Common.Api where
 
 import Data.Text (Text)
+import           Data.Vector (Vector)
 
 import Data.Aeson (ToJSON, FromJSON)
 
@@ -11,4 +12,4 @@ newtype ConsequencesDeck = ConsequencesDeck Text
   deriving newtype (ToJSON, FromJSON)
 
 data Api a where
-  Api_ConsequencesDeck :: ConsequencesDeck -> Api [ConsequenceCard]
+  Api_ConsequencesDeck :: ConsequencesDeck -> Api (Vector ConsequenceCard)

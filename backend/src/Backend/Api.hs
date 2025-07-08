@@ -3,6 +3,7 @@ module Backend.Api where
 import qualified Control.Exception as E
 import Control.Lens
 import Data.Generics.Labels ()
+import qualified Data.Vector as V
 
 import Database.Beam
 import Database.Beam.Postgres (Connection, runBeamPostgres,  PgJSONB(..))
@@ -22,4 +23,4 @@ handle conn api = E.handle (\(E.SomeException e) -> do print e; E.throwIO e) $ c
   Api_ConsequencesDeck (ConsequencesDeck deck) -> do
     d <- runBeamPostgres conn $ runSelectReturningList $ select $ do
         relatedBy_ (_tableConsequenceCard db) ((val_ deck ==.) . _deck)
-    pure $ consequenceCardFromDb <$> d
+    pure $ consequenceCardFromDb <$> V.fromList d

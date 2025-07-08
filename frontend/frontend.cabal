@@ -22,7 +22,9 @@ library
                , either
                , witherable
                , generic-lens
-
+               , mwc-random
+               , random
+               , primitive
   default-extensions:
     ConstraintKinds
     DataKinds
