@@ -4,7 +4,7 @@ import Data.Text (Text)
 
 import Reflex.Dom.Core
 
-import Common.Card (Card(..), Textbox(..), Resources(..), Cost(..), Action(..), Attack(..), ActionStrength(..))
+import Common.Card (CoreCard(..), Textbox(..), Resources(..), Cost(..), Action(..), Attack(..), ActionStrength(..))
 import Common.Card.Common
 
 import Frontend.Card
@@ -18,8 +18,8 @@ layoutOptions = divClass "cards" $ do
   costBelowName $ demoCard "Below Name" ""
   costLeftHoriz $ demoCard "Left Horizontal" ""
 
-demoCard :: Text -> Text -> Card
-demoCard name bodyText = Card
+demoCard :: Text -> Text -> CoreCard
+demoCard name bodyText = CoreCard
   { _actor = "Demo"
   , _name = name
   , _resources = Resources (Just "3") (Just "2") (Just "4") Nothing
@@ -52,15 +52,15 @@ titleLine name cost = divClass "flex" $ do
   divClass "expand" blank
   costSymbol cost
 
-costAbove :: DomBuilder t m => Card -> m ()
-costAbove (Card _ name resources cost textbox) = divClass "card" $ do
+costAbove :: DomBuilder t m => CoreCard -> m ()
+costAbove (CoreCard _ name resources cost textbox) = divClass "card" $ do
   numbers resources
   titleLine name cost
   elClass "div" "flex" $ divClass "art-short" blank
   textboxArea textbox
 
-costRightVertical :: DomBuilder t m => Card -> m ()
-costRightVertical (Card _ name resources cost textbox) = divClass "card" $ do
+costRightVertical :: DomBuilder t m => CoreCard -> m ()
+costRightVertical (CoreCard _ name resources cost textbox) = divClass "card" $ do
   titleLine name cost
   elClass "div" "flex" $ do
     art
@@ -69,24 +69,24 @@ costRightVertical (Card _ name resources cost textbox) = divClass "card" $ do
       numbers' "flex-col h-18" resources
   textboxArea textbox
 
-costLeftVertical :: DomBuilder t m => Card -> m ()
-costLeftVertical (Card _ name resources cost textbox) = divClass "card" $ do
+costLeftVertical :: DomBuilder t m => CoreCard -> m ()
+costLeftVertical (CoreCard _ name resources cost textbox) = divClass "card" $ do
   titleLine name cost
   elClass "div" "flex" $ do
     numbers' "flex-col h-18" resources
     art
   textboxArea textbox
 
-costBelowName :: DomBuilder t m => Card -> m ()
-costBelowName (Card _ name resources cost textbox) = divClass "card" $ do
+costBelowName :: DomBuilder t m => CoreCard -> m ()
+costBelowName (CoreCard _ name resources cost textbox) = divClass "card" $ do
   titleLine name cost
   numbers resources
   elClass "div" "flex" $ divClass "art-short" blank
   textboxArea textbox
 
 
-costLeftHoriz :: DomBuilder t m => Card -> m ()
-costLeftHoriz (Card _ name resources cost textbox) = divClass "card" $ do
+costLeftHoriz :: DomBuilder t m => CoreCard -> m ()
+costLeftHoriz (CoreCard _ name resources cost textbox) = divClass "card" $ do
   titleLine name cost
   numbers' "w-18" resources
   elClass "div" "flex" $ divClass "art-short" blank

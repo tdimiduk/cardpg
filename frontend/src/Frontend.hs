@@ -41,7 +41,7 @@ type ValidEnc = Encoder Identity Identity (R (FullRoute BackendRoute FrontendRou
 
 data DeckType = StandardDeck | AdhocDeck
 
-data Deck = Standard [Card] | Adhoc (V.Vector AdhocCard)
+data Deck = Standard [CoreCard] | Adhoc (V.Vector AdhocCard)
 
 deckFromRoute
   :: ( MonadFix m

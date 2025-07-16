@@ -45,7 +45,7 @@ header = do
     Just _ -> CardStandard
     Nothing -> CardAdhoc
 
-card :: Parser Card
+card :: Parser CoreCard
 card = label "card" $ do
   _actor <- label "actor" $ tsvField textTillTab
   _name <- label "name" $ tsvField textTillTab
@@ -53,7 +53,7 @@ card = label "card" $ do
   _cost <- cost
   _textbox <- textbox
   label "trailing whitespace for card" hspace
-  pure Card {..}
+  pure CoreCard {..}
 
 resources :: Parser Resources
 resources = label "resources" $ do
@@ -171,12 +171,12 @@ actionStrength = label "action strength" $ do
   _ <- optional semicolin
   pure ActionStrength {..}
 
-blankCard :: Parser Card
+blankCard :: Parser CoreCard
 blankCard = label "blank card" $ do
   hspace
-  pure $ Card "placeholder" "placeholder" (Resources Nothing Nothing Nothing Nothing) (Cost Nothing Nothing) (Textbox Nothing Nothing Nothing)
+  pure $ CoreCard "placeholder" "placeholder" (Resources Nothing Nothing Nothing Nothing) (Cost Nothing Nothing) (Textbox Nothing Nothing Nothing)
 
-parseFile :: Parser [Card]
+parseFile :: Parser [CoreCard]
 parseFile = do
   _ <- optional header
   c <- (card <|> blankCard) `sepBy` eol
@@ -184,10 +184,10 @@ parseFile = do
   _ <- eof
   pure c
 
-parseCards :: String -> Text -> Either String [Card]
+parseCards :: String -> Text -> Either String [CoreCard]
 parseCards context = mapLeft errorBundlePretty . runParser parseFile context
 
-readAndParse :: FilePath -> IO (Either String [Card])
+readAndParse :: FilePath -> IO (Either String [CoreCard])
 readAndParse name = do
   f <- T.readFile name
   pure $ mapLeft errorBundlePretty $ runParser parseFile name f

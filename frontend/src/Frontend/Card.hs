@@ -11,16 +11,16 @@ import qualified Data.Vector as V
 import Reflex.Dom.Core
 
 import Common.Util
-import Common.Card (Card(..), Resources(..), Cost(..), Textbox(..), ActionStrength(..), Action(..), Attack(..), StandardDefend(..), AdhocCard(..))
+import Common.Card (CoreCard(..), Resources(..), Cost(..), Textbox(..), ActionStrength(..), Action(..), Attack(..), StandardDefend(..), AdhocCard(..))
 import Common.Card.Common
 
 import Frontend.Card.Common
 
-card :: DomBuilder t m => Card -> m ()
+card :: DomBuilder t m => CoreCard -> m ()
 card = cardHtml
 
-cardHtml :: DomBuilder t m => Card -> m ()
-cardHtml (Card _ name resources cost textbox) = divClass "card" $ do
+cardHtml :: DomBuilder t m => CoreCard -> m ()
+cardHtml (CoreCard _ name resources cost textbox) = divClass "card" $ do
   divClass "flex" $ do
     divClass "name" $ text name
     divClass "expand" blank

@@ -2,7 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 
 module Common.Card
-  ( Card(..)
+  ( CoreCard(..)
   , Resources(..)
   , Cost(..)
   , Textbox(..)
@@ -31,7 +31,7 @@ import GHC.Int (Int32)
 
 import Common.Card.Common
 
-data Card = Card
+data CoreCard = CoreCard
   { _actor :: Text
   , _name :: Text
   , _resources :: Resources
