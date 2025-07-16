@@ -26,6 +26,7 @@ project ./. ({ pkgs, hackGet,  ... }@args:
         ver = "0.2.5.1";
         sha256 = "sha256-pWIzmLMZ1EOgkV3D9qnVliZyhVKvPnRloUdjaYTob+Q=";
       } { });
+      beam-automigrate = self.callCabal2nix "beam-automigrate" (hackGet ./dep/beam-automigrate) {};
       backend = super.backend.overrideAttrs (oldAttrs: {
         postPatch = (oldAttrs.postPatch or "") + ''
           echo "Generating Python script path data file for backend..."

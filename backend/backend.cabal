@@ -7,34 +7,35 @@ library
   hs-source-dirs: src
   if impl(ghcjs)
     buildable: False
-  build-depends:
-      base
-    , aeson
-    , beam-automigrate
-    , beam-core
-    , beam-postgres
-    , cassava
-    , common
-    , directory
-    , either
-    , filepath
-    , frontend
-    , gargoyle-postgresql-connect
-    , generic-lens
-    , lens
-    , obelisk-backend
-    , obelisk-executable-config-lookup
-    , obelisk-route
-    , postgresql-simple
-    , process
-    , reflex-gadt-api
-    , resource-pool
-    , snap-core
-    , text
-    , time
-    , typed-process
-    , websockets
-    , websockets-snap
+  build-depends: base
+               , aeson
+               , beam-automigrate
+               , beam-core
+               , beam-postgres
+               , bytestring
+               , cassava
+               , common
+               , directory
+               , either
+               , filepath
+               , frontend
+               , gargoyle-postgresql-connect
+               , generic-lens
+               , lens
+               , obelisk-backend
+               , obelisk-executable-config-lookup
+               , obelisk-route
+               , postgresql-simple
+               , process
+               , reflex-gadt-api
+               , resource-pool
+               , snap-core
+               , text
+               , time
+               , typed-process
+               , vector
+               , websockets
+               , websockets-snap
   default-extensions:
     ConstraintKinds
     DataKinds
@@ -67,6 +68,7 @@ library
     Backend.Database.Migrate
     Backend.Database.Schema
     Backend.Database.Types
+    Backend.Database.Write
     Backend.GSheets.Fetch
   ghc-options: -Wall -O -fno-show-valid-hole-fits
                -- unsafe code
