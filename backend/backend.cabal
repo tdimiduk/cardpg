@@ -39,7 +39,10 @@ library
   default-extensions:
     ConstraintKinds
     DataKinds
+    DeriveAnyClass
     DeriveGeneric
+    DerivingStrategies
+    DuplicateRecordFields
     FlexibleContexts
     FlexibleInstances
     GADTs
@@ -48,6 +51,8 @@ library
     LambdaCase
     MultiParamTypeClasses
     MultiWayIf
+    OverloadedLabels
+    OverloadedLabels
     OverloadedStrings
     PatternSynonyms
     QuantifiedConstraints
@@ -55,16 +60,14 @@ library
     RecursiveDo
     ScopedTypeVariables
     StandaloneDeriving
-    DerivingStrategies
-    DeriveAnyClass
     TemplateHaskell
     TupleSections
     TypeApplications
     TypeFamilies
-    OverloadedLabels
   exposed-modules:
     Backend
     Backend.Api
+    Backend.Common
     Backend.Database.Migrate
     Backend.Database.Schema
     Backend.Database.Types

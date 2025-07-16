@@ -27,8 +27,6 @@ library
                , text
                , vector
                , witherable
-               , vector
-               , bytestring
   default-extensions:
     ConstraintKinds
     DataKinds
@@ -57,6 +55,7 @@ library
 
   exposed-modules:
     Frontend
+    Frontend.Admin
     Frontend.Svg
     Frontend.Card
     Frontend.Card.Common

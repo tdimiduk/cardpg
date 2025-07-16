@@ -10,7 +10,7 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C
 import Data.Either.Combinators (mapRight)
 import Data.Int (Int32)
-import Data.Text (Text)
+import Data.Text (Text, unpack)
 import GHC.Generics (Generic)
 import System.Environment (getExecutablePath)
 import System.Process.Typed
@@ -30,8 +30,8 @@ data SheetConsequenceCard = SheetConsequenceCard
 data SyncError = ProcessError IOException | ScriptBuildFailed IOException | ScriptBuildBadOutput | DataError String
   deriving stock Show
 
-cards :: Maybe FilePath -> IO (Either SyncError [SheetConsequenceCard])
-cards devRun = do
+cards :: Maybe FilePath -> Text -> Text -> IO (Either SyncError [SheetConsequenceCard])
+cards devRun docKey sheetName = do
   let scriptName = "sync-cards-gsheet.py"
   ePath <- case devRun of
     -- In local dev (ob run) we will set this path from config and build the python package each time we run this.
@@ -42,7 +42,7 @@ cards devRun = do
   case ePath of
     Left err -> pure $ Left $ ScriptBuildFailed err
     Right path -> do
-      r <- try (readProcess_ (proc (path </> scriptName) []))
+      r <- try (readProcess_ (proc (path </> scriptName) (fmap unpack [docKey, sheetName])))
       case r of
         Left err -> pure $ Left $ ProcessError err
         Right o -> case eitherDecode (fst o) of

@@ -32,6 +32,7 @@ data FrontendRoute :: * -> * where
   FrontendRoute_Adhoc :: FrontendRoute (Maybe Text)
   FrontendRoute_Demo :: FrontendRoute ()
   FrontendRoute_Consequences :: FrontendRoute ()
+  FrontendRoute_Admin :: FrontendRoute ()
 
 fullRouteEncoder
   :: Encoder (Either Text) Identity (R (FullRoute BackendRoute FrontendRoute)) PageName
@@ -49,6 +50,7 @@ fullRouteEncoder = mkFullRouteEncoder
       FrontendRoute_Adhoc -> PathSegment "adhoc" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder
       FrontendRoute_Demo -> PathSegment "demo" $ unitEncoder mempty
       FrontendRoute_Consequences -> PathSegment "consequences" $ unitEncoder mempty
+      FrontendRoute_Admin -> PathSegment "admin" $ unitEncoder mempty
   )
 
 

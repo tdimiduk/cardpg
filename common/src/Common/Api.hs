@@ -13,3 +13,5 @@ newtype ConsequencesDeck = ConsequencesDeck Text
 
 data Api a where
   Api_ConsequencesDeck :: ConsequencesDeck -> Api (Vector ConsequenceCard)
+  Api_RefreshConsequencesDeck :: ConsequencesDeck -> Api (Either Text Int)
+  Api_AddConsequencesDeck :: ConsequencesDeck -> Text -> Text -> Api (Either Text ())

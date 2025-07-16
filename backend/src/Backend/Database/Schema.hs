@@ -12,6 +12,7 @@ db = defaultDbSettings
 
 data Db f = Db
   { _tableConsequenceCard :: f (TableEntity ConsequenceCardT)
+  , _tableGSheetsRef :: f (TableEntity GSheetsReferenceT)
   }
   deriving stock Generic
   deriving anyclass (Database be)

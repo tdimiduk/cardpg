@@ -32,6 +32,7 @@ import Common.Card
 import Common.CardParser
 import Common.Route
 
+import Frontend.Admin
 import Frontend.Card
 import Frontend.Deck
 import Frontend.Demo
@@ -101,6 +102,7 @@ htmlBody = do
         FrontendRoute_Demo -> do
           layoutOptions
         FrontendRoute_Consequences -> runRequesting apiRoute $ consequencesDeck $ ConsequencesDeck "general-wound"
+        FrontendRoute_Admin -> runRequesting apiRoute admin
 
 runRequesting
   :: forall t m r.
