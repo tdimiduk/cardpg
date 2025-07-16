@@ -1,6 +1,6 @@
 module Frontend.Deck
   ( consequencesDeck
-
+  , printConsequencesDeck
   )
 where
 
@@ -45,6 +45,22 @@ data DeckState = DeckState
   { _inPlay :: Vector ConsequenceCard
   , _deck :: Vector ConsequenceCard
   }
+
+printConsequencesDeck
+  :: ( DomBuilder t m
+     , Response (Client m) ~ Either Text
+     , Request (Client m) ~ Api
+     , Requester t (Client m)
+     , Prerender t m
+     )
+  => ConsequencesDeck
+  -> m ()
+printConsequencesDeck deck = prerender_ blank $ divClass "cards" $ do
+  ps <- getPostBuild
+  (err, fetched) <- fanEither <$> requesting (Api_ConsequencesDeck deck <$ ps)
+  widgetHold_ blank (text <$> err)
+  widgetHold_ blank (mapM_ Consequence.card <$> fetched)
+
 
 allCards :: DeckState -> Vector ConsequenceCard
 allCards s = _inPlay s <> _deck s

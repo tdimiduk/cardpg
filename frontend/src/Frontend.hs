@@ -103,6 +103,12 @@ htmlBody = do
           layoutOptions
         FrontendRoute_Consequences -> runRequesting apiRoute $ consequencesDeck $ ConsequencesDeck "general-wound"
         FrontendRoute_Admin -> runRequesting apiRoute admin
+        FrontendRoute_Print -> do
+          mdeck <- askRoute
+          let
+            render Nothing = text "update the url to specify a deck name"
+            render (Just deck) = runRequesting apiRoute $ printConsequencesDeck $ ConsequencesDeck deck
+          dyn_ $ render <$> mdeck
 
 runRequesting
   :: forall t m r.
