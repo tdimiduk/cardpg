@@ -8,6 +8,7 @@ module Common.Card.Common
   , ResourceType(..)
   , ResourceValue
   , prependToFirstParagraph
+  , CardType(..)
   )
 where
 
@@ -15,6 +16,11 @@ import Data.Aeson (ToJSON, FromJSON)
 import Data.List.NonEmpty (NonEmpty(..), (<|))
 import Data.Text (Text)
 import GHC.Generics (Generic)
+
+
+data CardType = ConsequenceCardType
+  deriving stock (Read, Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)
 
 data ResourceType = Red | Yellow | Blue
   deriving stock (Show, Generic)

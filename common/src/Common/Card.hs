@@ -12,6 +12,7 @@ module Common.Card
   , ActionStrength(..)
   , AdhocCard(..)
   , ConsequenceCard(..)
+  , ConditionCard(..)
   , readAdhocCards, tsv
   )
 where
@@ -123,3 +124,9 @@ data ConsequenceCard = ConsequenceCard
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
+
+data ConditionCard = ConditionCard
+  { name :: Text
+  , effect :: CardBlocks
+  , removal :: CardBlocks
+  }

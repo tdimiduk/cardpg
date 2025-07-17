@@ -22,7 +22,7 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Void
 
 import Common.Card
-import Common.Card.Common
+import Common.Card.Common hiding (CardType)
 
 type Parser = Parsec Void Text
 

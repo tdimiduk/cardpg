@@ -14,6 +14,7 @@ import qualified Database.Beam.Postgres.Full as Pg
 
 import Common.Api
 import qualified Common.Card as Api
+import Common.Card.Common (CardType(..))
 
 import Backend.Common
 
@@ -33,22 +34,24 @@ handle conn env api = E.handle (\(E.SomeException e) -> do print e; E.throwIO e)
     d <- runBeamPostgres conn $ runSelectReturningList $ select $ do
         relatedBy_ (_tableConsequenceCard db) ((val_ deck ==.) . _deck)
     pure $ consequenceCardFromDb <$> V.fromList d
-  Api_RefreshConsequencesDeck (ConsequencesDeck deck) -> do
+  Api_RefreshDeck deck -> do
     r <- runBeamPostgres conn $ runSelectReturningList $ select $ do
       d <- relatedBy_ (_tableGSheetsRef db) ((val_ deck ==.) . view #_name)
-      pure (_key d, _sheet d)
+      pure (_key d, _sheet d, _deckCardType d)
     case r of
       [] -> pure $ Left $ deck <> " does not exist, please add it first"
-      [(docKey, sheetName)] -> do
+      [(docKey, sheetName, cardType)] -> do
         fetched <- Fetch.cards (unpack <$> _pythonScriptPath env) docKey sheetName
         print $ "fetched " <> deck <> " from gsheets"
         case fetched of
           Left err -> pure $ Left $ pack $ show err
           Right c -> do
-            runBeam conn $ replaceConsequenceCards deck c
-            pure $ Right (length fetched)
+            case maybe ConsequenceCardType id cardType of
+              ConsequenceCardType -> do
+                runBeam conn $ replaceConsequenceCards deck c
+                pure $ Right (length fetched)
       _ -> pure $ Left $ "somehow a uniqueness constraint got violated"
-  Api_AddConsequencesDeck (ConsequencesDeck deck) key sheet -> do
+  Api_AddDeck cardType deck key sheet -> do
     r <- runBeamPostgresDebug print conn $ runInsertReturningList $
       Pg.insert
         (_tableGSheetsRef db)
@@ -58,6 +61,7 @@ handle conn env api = E.handle (\(E.SomeException e) -> do print e; E.throwIO e)
               (val_ deck)
               (val_ key)
               (val_ sheet)
+              (val_ $ Just cardType)
           ]
         )
       $ Pg.onConflict (Pg.conflictingFields (\t -> t ^. #_name))

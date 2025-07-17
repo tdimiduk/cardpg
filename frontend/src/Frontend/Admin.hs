@@ -7,6 +7,7 @@ import qualified Data.Text as T
 import Reflex.Dom.Core hiding (textInput)
 
 import Common.Api
+import Common.Card.Common
 
 admin
   :: ( DomBuilder t m
@@ -22,10 +23,10 @@ admin = do
   docKey <- snd <$> textInput "Sheet Id" "sheet-id" never
   sheetName <- snd <$> textInput "sheet name" "sheet-name" never
   add <- button "add"
-  resp <- requesting $ Api_RefreshConsequencesDeck . ConsequencesDeck <$> tag (current deckName) refresh
+  resp <- requesting $ Api_RefreshDeck <$> tag (current deckName) refresh
   widgetHold_ blank $ either text (text . pack . show) <$> resp
   let
-    mkAdd name key sheet = Api_AddConsequencesDeck (ConsequencesDeck name) key sheet
+    mkAdd dn key sheet = Api_AddDeck ConsequenceCardType dn key sheet
     addSpec = ffor3 deckName docKey sheetName mkAdd
   addResp <- requesting $ tag (current addSpec) add
   widgetHold_ blank $ either text (const $ text "success") <$> addResp

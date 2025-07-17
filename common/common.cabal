@@ -20,14 +20,19 @@ library
   default-extensions:
     ConstraintKinds
     DataKinds
+    DeriveAnyClass
     DeriveGeneric
+    DerivingStrategies
+    DuplicateRecordFields
     FlexibleContexts
     FlexibleInstances
     GADTs
+    GeneralizedNewtypeDeriving
     ImportQualifiedPost
     LambdaCase
     MultiParamTypeClasses
     MultiWayIf
+    OverloadedLabels
     OverloadedStrings
     QuantifiedConstraints
     RankNTypes
@@ -39,11 +44,6 @@ library
     TypeFamilies
     TypeOperators
     UndecidableInstances
-    GeneralizedNewtypeDeriving
-    DerivingStrategies
-    DeriveAnyClass
-    DuplicateRecordFields
-    OverloadedLabels
   exposed-modules:
     Common.Api
     Common.Card

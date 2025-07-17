@@ -37,6 +37,7 @@ data GSheetsReferenceT f = GSheetsReference
   , _name :: C f Text
   , _key :: C f Text
   , _sheet :: C f Text
+  , _deckCardType :: C f (Maybe CardType)
   }
   deriving stock Generic
   deriving anyclass Beamable

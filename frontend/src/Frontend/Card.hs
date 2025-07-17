@@ -1,32 +1,35 @@
 -- Defining rendering orphans which are frontend only
 {-# options_ghc -fno-warn-orphans #-}
+{-# LANGUAGE DeriveAnyClass #-}
 
 module Frontend.Card
   ( ) where
 
+import Control.Lens hiding ((<|))
+import Data.Generics.Labels ()
 import Data.List.NonEmpty (NonEmpty(..), (<|))
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import qualified Data.Vector as V
 
 import Reflex.Dom.Core
 
 import Common.Util
-import Common.Card (CoreCard(..), Resources(..), Cost(..), Textbox(..), ActionStrength(..), Action(..), Attack(..), StandardDefend(..), AdhocCard(..))
+import Common.Card
 import Common.Card.Common
 
 import Frontend.Card.Common
 import Frontend.Html
 
 instance DomBuilder t m => Render CoreCard m where
-  render (CoreCard _ name resources cost textbox) = divClass "card" $ do
+  render c = divClass "card" $ do
     divClass "flex" $ do
-      divClass "name" $ text name
+      divClass "name" $ text $ c ^. #_name
       divClass "expand" blank
-      render cost
+      render $ c ^. #_cost
     divClass "flex" $ do
-      render resources
+      render $ c ^. #_resources
       art
-    render textbox
+    render $ c ^. #_textbox
 
 instance DomBuilder t m => Render Cost m where
   render (Cost (Just c) _) = divClass "cost" (text c)
@@ -40,10 +43,10 @@ instance DomBuilder t m => Render Resources m where
       render $ ResourceValue Blue blue
 
 instance (DomBuilder t m) => Render Textbox m where
-  render (Textbox a effect details) = divClass "textbox" $ do
-    render a
-    mapM_ (divClass "effect" . render) effect
-    mapM_ (divClass "details" . render) details
+  render t = divClass "textbox" $ do
+    render $ t ^. #_action
+    mapM_ (divClass "effect" . render) $ t ^. #_effect
+    mapM_ (divClass "details" . render) $ t ^. #_details
 
 modifierText :: Int -> Maybe Text
 modifierText x
@@ -88,3 +91,12 @@ instance DomBuilder t m => Render AdhocCard m where
     divClass "name" $ text $ _ahcName c
     divClass "art" blank
     divClass "textbox" $ V.mapM_ (divClass "block" . text) $ _blocks c
+
+instance DomBuilder t m => Render ConsequenceCard m where
+  render c = divClass "card" $ do
+    divClass "flex" $ do
+      divClass "name" $ text $ c ^. #name
+      divClass "expand" blank
+      divClass "cost" $ text $ pack $ show $ severity c
+    art
+    divClass "textbox" $ render $ c ^. #effect

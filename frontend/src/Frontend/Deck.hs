@@ -17,9 +17,9 @@ import Data.Text (Text)
 import Reflex.Dom.Core
 
 import Common.Api
-import Common.Card (ConsequenceCard(..))
 
-import qualified Frontend.Card.Consequence as Consequence
+import Frontend.Card ()
+import Frontend.Html
 
 consequencesDeck
   :: ( DomBuilder t m
@@ -38,12 +38,12 @@ consequencesDeck deck = do
     (err, fetched) <- fanEither <$> requesting (Api_ConsequencesDeck deck <$ ps)
     state <- performEvent (liftIO . reshuffleDeck gen . DeckState mempty <$> fetched)
     widgetHold_ blank (text <$> err)
-    widgetHold_ blank (consequencesDeckWidget gen <$> state)
+    widgetHold_ blank (deckInnerWidget gen <$> state)
   pure ()
 
-data DeckState = DeckState
-  { _inPlay :: Vector ConsequenceCard
-  , _deck :: Vector ConsequenceCard
+data DeckState a = DeckState
+  { _inPlay :: Vector a
+  , _deck :: Vector a
   }
 
 printConsequencesDeck
@@ -59,24 +59,25 @@ printConsequencesDeck deck = prerender_ blank $ divClass "cards" $ do
   ps <- getPostBuild
   (err, fetched) <- fanEither <$> requesting (Api_ConsequencesDeck deck <$ ps)
   widgetHold_ blank (text <$> err)
-  widgetHold_ blank (mapM_ Consequence.card <$> fetched)
+  widgetHold_ blank (mapM_ render <$> fetched)
 
 
-allCards :: DeckState -> Vector ConsequenceCard
+allCards :: DeckState a -> Vector a
 allCards s = _inPlay s <> _deck s
 
-consequencesDeckWidget
+deckInnerWidget
   :: ( DomBuilder t m
      , MonadFix m
      , MonadHold t m
      , Prerender t m
      , PostBuild t m
      , StatefulGen g IO
+     , Render a m
      )
   => g
-  -> DeckState
+  -> DeckState a
   -> m ()
-consequencesDeckWidget gen initialState = do
+deckInnerWidget gen initialState = do
   action <- divClass "flex" $ do
     draw <- button "draw"
     reshuffle <- button "reshuffle"
@@ -86,15 +87,15 @@ consequencesDeckWidget gen initialState = do
     let ePureUpdate = attachWith (\s _ -> handleDraw s) (current state) draw
     stateUpdate <- prerender (pure never) $ performEvent (liftIO . reshuffleDeck gen <$> tag (current state) reshuffle)
     state <- holdDyn initialState $ leftmost [ePureUpdate, switchDyn stateUpdate]
-  divClass "cards" $ dyn_ $ (mapM_ Consequence.card . _inPlay) <$> state
+  divClass "cards" $ dyn_ $ (mapM_ render . _inPlay) <$> state
 
-handleDraw :: DeckState -> DeckState
+handleDraw :: DeckState a -> DeckState a
 handleDraw state =
   case V.uncons (_deck state) of
     Nothing       -> DeckState (_inPlay state) mempty
     Just (c, d)   -> DeckState (V.cons c (_inPlay state)) d
 
-reshuffleDeck :: (PrimMonad m, StatefulGen g m) => g -> DeckState -> m DeckState
+reshuffleDeck :: (PrimMonad m, StatefulGen g m) => g -> DeckState a -> m (DeckState a)
 reshuffleDeck g s = do
   shuffled <- uniformShuffle (allCards s) g
   pure $ DeckState mempty shuffled

@@ -24,7 +24,7 @@ autoMigration conn = BA.tryRunMigrationsWithEditUpdate annotatedDb conn
 annotatedDb :: BA.AnnotatedDatabaseSettings Postgres Db
 annotatedDb = BA.defaultAnnotatedDbSettings defaultDbSettings
   `withDbModification` dbModification
-    { _tableGSheetsRef = mkUnique [BA.U (_name :: GSheetsReferenceT f -> C f Text)]
+    { _tableGSheetsRef = mkUnique [BA.U (_name :: GSheetsReferenceT f -> C f Text), BA.U _deckCardType]
     }
 
 mkUnique ::

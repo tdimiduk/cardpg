@@ -31,6 +31,7 @@ library
     ConstraintKinds
     DataKinds
     DeriveGeneric
+    DerivingStrategies
     FlexibleContexts
     FlexibleInstances
     GADTs
@@ -59,7 +60,6 @@ library
     Frontend.Svg
     Frontend.Card
     Frontend.Card.Common
-    Frontend.Card.Consequence
     Frontend.Deck
     Frontend.Html
 
