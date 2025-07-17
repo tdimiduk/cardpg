@@ -1,12 +1,10 @@
+-- Defining rendering orphans which are frontend only
+{-# options_ghc -fno-warn-orphans #-}
+
 module Frontend.Card.Common
-  ( renderCardBlocks
-  , renderCardText
-  , resourceSymbol
-  , resourceSymbol'
-  , art
+  ( art
   ) where
 
-import Data.List.NonEmpty (toList)
 import Data.Text (Text)
 import qualified Data.Text as T
 
@@ -15,11 +13,10 @@ import Reflex.Dom.Core
 import Common.Util
 import Common.Card.Common
 
-resourceSymbol :: DomBuilder t m => ResourceType -> m ()
-resourceSymbol a = resourceSymbol' a Nothing
+import Frontend.Html
 
-resourceSymbol' :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
-resourceSymbol' r t = divClass cls $
+resourceSymbol :: DomBuilder t m => ResourceType -> Maybe Text -> m ()
+resourceSymbol r t = divClass cls $
   divClass "resource-number" $ mapM_ text t
   where
     cls = "resource-symbol " <> (T.toLower (tshow r))
@@ -27,16 +24,11 @@ resourceSymbol' r t = divClass cls $
 art :: DomBuilder t m => m ()
 art = divClass "art" blank
 
-renderCardBlocks :: DomBuilder t m => CardBlocks -> m ()
-renderCardBlocks = mapM_ renderBlock
+instance DomBuilder t m => Render CardBlock m where
+  render (Paragraph b) = el "p" $ render b
+  render ThematicBreak = el "hr" $ pure ()
 
-renderBlock :: DomBuilder t m => CardBlock -> m ()
-renderBlock (Paragraph b) = el "p" $ renderCardText b
-renderBlock ThematicBreak = el "hr" $ pure ()
-
-renderCardText :: DomBuilder t m => CardText -> m ()
-renderCardText = mapM_ renderInline . toList
-
-renderInline :: DomBuilder t m => CardInline -> m ()
-renderInline (Txt t) = text t
-renderInline (ResourceIcon t) = resourceSymbol t
+instance DomBuilder t m => Render CardInline m where
+  render (Txt t) = text t
+  render (ResourceIcon c) = resourceSymbol c Nothing
+  render (ResourceValue c v) = resourceSymbol c v

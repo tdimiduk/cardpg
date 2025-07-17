@@ -61,6 +61,7 @@ library
     Frontend.Card.Common
     Frontend.Card.Consequence
     Frontend.Deck
+    Frontend.Html
 
   ghc-options: -Wall -O -fno-show-valid-hole-fits
                -- unsafe code

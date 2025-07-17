@@ -7,6 +7,7 @@ import Reflex.Dom.Core
 import Common.Card
 
 import Frontend.Card.Common
+import Frontend.Html
 
 card :: DomBuilder t m => ConsequenceCard -> m ()
 card c = divClass "card" $ do
@@ -15,4 +16,4 @@ card c = divClass "card" $ do
     divClass "expand" blank
     divClass "cost" $ text $ T.pack $ show $ severity c
   art
-  divClass "textbox" $ renderCardBlocks $ effect c
+  divClass "textbox" $ render $ effect c

@@ -8,7 +8,6 @@ module Frontend (frontend) where
 
 import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
-import Data.ByteString (ByteString)
 import Data.Csv (HasHeader(..))
 import Data.Either.Combinators
 import Data.Functor.Identity
@@ -33,8 +32,9 @@ import Common.CardParser
 import Common.Route
 
 import Frontend.Admin
-import Frontend.Card
+import Frontend.Card ()
 import Frontend.Deck
+import Frontend.Html
 
 type ValidEnc = Encoder Identity Identity (R (FullRoute BackendRoute FrontendRoute)) PageName
 
@@ -60,9 +60,6 @@ deckFromRoute = do
   pure $ join r
 
 
--- This runs in a monad that can be run on the client or the server.
--- To run code in a pure client or pure server context, use one of the
--- `prerender` functions.
 frontend :: Frontend (R FrontendRoute)
 frontend = Frontend htmlHead htmlBody
 
@@ -103,9 +100,9 @@ htmlBody = do
         FrontendRoute_Print -> do
           mdeck <- askRoute
           let
-            render Nothing = text "update the url to specify a deck name"
-            render (Just deck) = runRequesting apiRoute $ printConsequencesDeck $ ConsequencesDeck deck
-          dyn_ $ render <$> mdeck
+            widget Nothing = text "update the url to specify a deck name"
+            widget (Just deck) = runRequesting apiRoute $ printConsequencesDeck $ ConsequencesDeck deck
+          dyn_ $ widget <$> mdeck
 
 runRequesting
   :: forall t m r.
@@ -129,17 +126,17 @@ cardsWidget Nothing = do
   where
     cw Nothing = Workflow $ do
       text "Paste cards and hit render "
-      render <- button "Render Standard"
+      renderStandard <- button "Render Standard"
       renderAdhoc <- button "Render Adhoc"
       input <- divClass "cardsInput" $ textAreaElement $ def
       let inputText = (current $ nonEmptyText <$> (_textAreaElement_value input))
-          parse =  (leftmost [mapRight Standard . parseCards "pasted input" <$> traceEvent "pasted" (tagMaybe inputText render),
+          parse =  (leftmost [mapRight Standard . parseCards "pasted input" <$> traceEvent "pasted" (tagMaybe inputText renderStandard),
                               mapRight Adhoc . readAdhocCards NoHeader tsv . encodeUtf8 <$> tagMaybe (inputText) renderAdhoc])
           (err, cards) = fanEither parse
       widgetHold_ blank (el "pre" . text . T.pack <$> err)
       pure $ ((), cw . Just <$> cards)
     cw (Just input) = Workflow $ do
-      renderDeck input
+      render input
       pure ((), never)
 cardsWidget (Just (deckName, deckType)) = do
   let deckPath = "common/" <> deckName <> ".tsv"
@@ -149,15 +146,10 @@ cardsWidget (Just (deckName, deckType)) = do
     Just cardLines -> case deckType of
       StandardDeck -> case parseCards (T.unpack deckName) (decodeUtf8 cardLines) of
         Left err -> el "pre" $ text $ T.pack err
-        Right deck -> renderDeck $ Standard deck
-      AdhocDeck -> renderAdhocCards cardLines
+        Right deck -> render $ Standard deck
+      AdhocDeck -> render $ readAdhocCards HasHeader tsv cardLines
 
-renderDeck :: DomBuilder t m => Deck -> m ()
-renderDeck deck = divClass "cards" $ case deck of
-  Standard cards -> mapM_ card cards
-  Adhoc cards -> V.mapM_ adhocCard cards
-
-renderAdhocCards :: DomBuilder t m => ByteString -> m ()
-renderAdhocCards cardLines = case readAdhocCards HasHeader tsv cardLines of
-  Left err -> text $ T.pack err
-  Right cards -> divClass "cards" $ mapM_ adhocCard cards
+instance DomBuilder t m => Render Deck m where
+  render deck = divClass "cards" $ case deck of
+    Standard cards -> render cards
+    Adhoc cards -> render cards
