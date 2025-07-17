@@ -50,6 +50,11 @@ body {
   border-radius: 1mm;
 }
 
+.textbox p {
+  margin-top: 0;
+  margin-bottom: 0.1em;
+}
+
 .numbers {
   display: flex;
   /* height: 4.5em; */
@@ -69,6 +74,12 @@ body {
 .textbox .resource-symbol {
   width: 0.8em;
   height: 0.8em;
+  margin-right: 0.15em;
+}
+
+.textbox .resource-symbol.blue {
+  width: 0.65em;
+  height: 0.65em;
   margin-right: 0.15em;
 }
 

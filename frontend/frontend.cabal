@@ -60,7 +60,6 @@ library
     Frontend.Card
     Frontend.Card.Common
     Frontend.Card.Consequence
-    Frontend.Demo
     Frontend.Deck
 
   ghc-options: -Wall -O -fno-show-valid-hole-fits

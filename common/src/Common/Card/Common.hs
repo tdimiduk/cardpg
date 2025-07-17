@@ -1,8 +1,9 @@
 module Common.Card.Common
-  ( CardText(..)
+  ( CardBlocks
+  , CardText
   , CardBlock(..)
   , CardInline(..)
-  , asCardText
+  , asCardBlocks
   , ResourceType(..)
   )
 where
@@ -24,6 +25,9 @@ data FancyLine = FancyLine (NonEmpty FancyToken)
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
+instance Semigroup FancyLine where
+  (FancyLine a) <> (FancyLine b) = FancyLine $ a <> b
+
 data ResourceType = Red | Yellow | Blue
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
@@ -34,18 +38,15 @@ data CardInline
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
+type CardText = NonEmpty CardInline
+
 data CardBlock
-  = Paragraph (NonEmpty CardInline)
+  = Paragraph CardText
   | ThematicBreak
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-asCardText :: Text -> CardText
-asCardText t = CardText (pure $ Paragraph $ pure $ Txt t)
+asCardBlocks :: Text -> CardBlocks
+asCardBlocks t = pure $ Paragraph $ pure $ Txt t
 
-data CardText = CardText (NonEmpty CardBlock)
-  deriving stock (Show, Generic)
-  deriving anyclass (ToJSON, FromJSON)
-
-instance Semigroup CardText where
-  (CardText a) <> (CardText b) = CardText $ a <> b
+type CardBlocks = NonEmpty CardBlock

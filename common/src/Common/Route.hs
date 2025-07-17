@@ -30,7 +30,6 @@ data FrontendRoute :: * -> * where
   FrontendRoute_Main :: FrontendRoute ()
   FrontendRoute_Deck :: FrontendRoute (Maybe Text)
   FrontendRoute_Adhoc :: FrontendRoute (Maybe Text)
-  FrontendRoute_Demo :: FrontendRoute ()
   FrontendRoute_Consequences :: FrontendRoute ()
   FrontendRoute_Admin :: FrontendRoute ()
   FrontendRoute_Print :: FrontendRoute (Maybe Text)
@@ -49,7 +48,6 @@ fullRouteEncoder = mkFullRouteEncoder
       FrontendRoute_Main -> PathEnd $ unitEncoder mempty
       FrontendRoute_Deck -> PathSegment "deck" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder
       FrontendRoute_Adhoc -> PathSegment "adhoc" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder
-      FrontendRoute_Demo -> PathSegment "demo" $ unitEncoder mempty
       FrontendRoute_Consequences -> PathSegment "consequences" $ unitEncoder mempty
       FrontendRoute_Admin -> PathSegment "admin" $ unitEncoder mempty
       FrontendRoute_Print -> PathSegment "print" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder

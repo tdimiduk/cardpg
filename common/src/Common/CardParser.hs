@@ -132,8 +132,8 @@ plusInt = do
   _ <- ots $ char '+'
   ots L.decimal
 
-cardText :: Parser CardText
-cardText = label "card text" $ CardText <$> cardBlock `sepBy1` (char ';')
+cardText :: Parser CardBlocks
+cardText = label "card text" $ cardBlock `sepBy1` (char ';')
 
 cardBlock :: Parser CardBlock
 cardBlock = label "card text block" $ Paragraph <$> some (ResourceIcon <$> resourceSymbol' <|> txt)

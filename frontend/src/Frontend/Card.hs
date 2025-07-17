@@ -5,7 +5,8 @@ module Frontend.Card
   , costSymbol
   ) where
 
-import Data.List.NonEmpty (NonEmpty(..))
+import Data.List.NonEmpty (NonEmpty(..), (<|))
+import Data.Text (Text)
 import qualified Data.Vector as V
 
 import Reflex.Dom.Core
@@ -44,14 +45,14 @@ resourcesArea (Resources red yellow blue _) = do
 textboxArea :: DomBuilder t m => Textbox -> m ()
 textboxArea (Textbox a effect details) = divClass "textbox" $ do
   action a
-  mapM_ (divClass "effect" . renderCardText) effect
-  mapM_ (divClass "details" . renderCardText) details
+  mapM_ (divClass "effect" . renderCardBlocks) effect
+  mapM_ (divClass "details" . renderCardBlocks) details
 
-renderModifier :: DomBuilder t m => Int -> m ()
-renderModifier x
-  | x == 0 = blank
-  | x > 0 = text "+" >> text (tshow x)
-  | otherwise = text (tshow x)
+modifierText :: Int -> Maybe Text
+modifierText x
+  | x == 0 = Nothing
+  | x > 0 = Just $ "+" <> (tshow x)
+  | otherwise = Just $ tshow x
 
 renderDefendsList :: DomBuilder t m => NonEmpty ResourceType -> m ()
 renderDefendsList (a :| [b, c]) = do
@@ -68,36 +69,34 @@ renderDefendsList (a :| []) = do
   resourceSymbol a
 renderDefendsList _ = text "error: too many resources"
 
-actionStrength :: DomBuilder t m => ActionStrength -> m ()
-actionStrength (ActionStrength r m) = do
-  resourceSymbol r
-  renderModifier m
+actionStrength :: ActionStrength -> CardText
+actionStrength (ActionStrength r m) = ResourceIcon r :| maybe mempty (pure . Txt) (modifierText m)
 
 action :: DomBuilder t m => Maybe Action -> m ()
 action Nothing = blank
 action (Just a) = divClass "action" $ case a of
-  GeneralAction t -> renderCardText t
-  AttackAction x -> attack x
+  GeneralAction t -> renderCardBlocks t
+  AttackAction x -> renderCardBlocks $ attack x
   DefendAction d -> standardDefend d
   SpecialDefend t -> do
     text "Defend: "
-    renderCardText t
+    renderCardBlocks t
 
-attack :: DomBuilder t m => Attack -> m ()
-attack (Attack resistBy strength otherText) = do
-  text "Attack "
-  resourceSymbol resistBy
-  text ": "
-  actionStrength strength
-  maybe blank renderCardText otherText
+attack :: Attack -> CardBlocks
+attack (Attack resistBy strength otherText) = case otherText of
+  Nothing -> pure $ Paragraph main
+  Just (Paragraph start :| rest) -> Paragraph (main <> start) :| rest
+  Just t -> Paragraph main <| t
+  where
+    main = (Txt "Attack " :| [ResourceIcon resistBy, Txt ": "]) <> actionStrength strength
 
 standardDefend :: DomBuilder t m => StandardDefend -> m ()
 standardDefend (StandardDefend resists strength otherText) = do
   text "Defend "
   renderDefendsList resists
   text ": "
-  actionStrength strength
-  maybe blank renderCardText otherText
+  renderCardText $ actionStrength strength
+  maybe blank renderCardBlocks otherText
 
 adhocCard :: DomBuilder t m => AdhocCard -> m ()
 adhocCard c = divClass "card" $ do

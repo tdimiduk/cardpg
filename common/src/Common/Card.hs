@@ -59,8 +59,8 @@ data Cost = Cost
 
 data Textbox = Textbox
   { _action :: Maybe Action
-  , _effect :: Maybe CardText
-  , _details :: Maybe CardText
+  , _effect :: Maybe CardBlocks
+  , _details :: Maybe CardBlocks
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
@@ -73,17 +73,17 @@ data ActionStrength = ActionStrength
   deriving anyclass (ToJSON, FromJSON)
 
 data Action
-  = GeneralAction CardText
+  = GeneralAction CardBlocks
   | AttackAction Attack
   | DefendAction StandardDefend
-  | SpecialDefend CardText
+  | SpecialDefend CardBlocks
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
 data Attack = Attack
   { _resistedBy :: ResourceType
   , _strength :: ActionStrength
-  , _text :: Maybe CardText
+  , _text :: Maybe CardBlocks
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
@@ -91,7 +91,7 @@ data Attack = Attack
 data StandardDefend = StandardDefend
   { _resists :: NonEmpty ResourceType
   , _strength :: ActionStrength
-  , _text :: Maybe CardText
+  , _text :: Maybe CardBlocks
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
@@ -119,7 +119,7 @@ readAdhocCards hasHeader options = decodeWith options hasHeader . LBS.fromStrict
 data ConsequenceCard = ConsequenceCard
   { name :: Text
   , severity :: Int32
-  , effect :: CardText
+  , effect :: CardBlocks
   }
   deriving stock (Show, Generic)
   deriving anyclass (ToJSON, FromJSON)

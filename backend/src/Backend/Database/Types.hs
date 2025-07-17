@@ -17,7 +17,7 @@ data ConsequenceCardT f = ConsequenceCard
   { _id :: C f SerialKey
   , _name :: C f Text
   , _severity :: C f Int32
-  , _effect :: C f (PgJSONB CardText)
+  , _effect :: C f (PgJSONB CardBlocks)
   , _deck :: C f Text
   }
   deriving stock Generic

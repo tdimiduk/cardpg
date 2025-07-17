@@ -29,5 +29,5 @@ dbCard deck apiCard = ConsequenceCard
       (val_ $ apiCard ^. #name)
       (val_ $ apiCard ^. #severity)
       -- TODO: parse this text
-      (val_ $ PgJSONB $ asCardText $ apiCard ^. #effect)
+      (val_ $ PgJSONB $ asCardBlocks $ apiCard ^. #effect)
       (val_ deck)

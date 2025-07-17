@@ -1,5 +1,6 @@
 module Frontend.Card.Common
-  ( renderCardText
+  ( renderCardBlocks
+  , renderCardText
   , resourceSymbol
   , resourceSymbol'
   , art
@@ -26,12 +27,15 @@ resourceSymbol' r t = divClass cls $
 art :: DomBuilder t m => m ()
 art = divClass "art" blank
 
-renderCardText :: DomBuilder t m => CardText -> m ()
-renderCardText (CardText blocks) = mapM_ renderBlock blocks
+renderCardBlocks :: DomBuilder t m => CardBlocks -> m ()
+renderCardBlocks = mapM_ renderBlock
 
 renderBlock :: DomBuilder t m => CardBlock -> m ()
-renderBlock (Paragraph inlines) = el "p" $ mapM_ renderInline $ toList inlines
+renderBlock (Paragraph b) = el "p" $ renderCardText b
 renderBlock ThematicBreak = el "hr" $ pure ()
+
+renderCardText :: DomBuilder t m => CardText -> m ()
+renderCardText = mapM_ renderInline . toList
 
 renderInline :: DomBuilder t m => CardInline -> m ()
 renderInline (Txt t) = text t

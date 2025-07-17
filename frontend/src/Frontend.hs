@@ -35,7 +35,6 @@ import Common.Route
 import Frontend.Admin
 import Frontend.Card
 import Frontend.Deck
-import Frontend.Demo
 
 type ValidEnc = Encoder Identity Identity (R (FullRoute BackendRoute FrontendRoute)) PageName
 
@@ -99,8 +98,6 @@ htmlBody = do
           md <- askRoute
           dyn_ $ cardsWidget <$> fmap (,AdhocDeck) <$> md
         FrontendRoute_Main -> cardsWidget Nothing
-        FrontendRoute_Demo -> do
-          layoutOptions
         FrontendRoute_Consequences -> runRequesting apiRoute $ consequencesDeck $ ConsequencesDeck "general-wound"
         FrontendRoute_Admin -> runRequesting apiRoute admin
         FrontendRoute_Print -> do

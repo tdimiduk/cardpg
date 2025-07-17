@@ -15,4 +15,4 @@ card c = divClass "card" $ do
     divClass "expand" blank
     divClass "cost" $ text $ T.pack $ show $ severity c
   art
-  divClass "textbox" $ renderCardText $ effect c
+  divClass "textbox" $ renderCardBlocks $ effect c
