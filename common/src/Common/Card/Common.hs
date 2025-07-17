@@ -18,7 +18,9 @@ import Data.Text (Text)
 import GHC.Generics (Generic)
 
 
-data CardType = ConsequenceCardType
+data CardType
+  = ConsequenceCardType
+  | ConditionCardType
   deriving stock (Read, Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 

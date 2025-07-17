@@ -1,6 +1,7 @@
 module Frontend.Admin where
 
 import Control.Lens
+import Data.Either.Combinators
 import Data.Text (Text, pack)
 import qualified Data.Text as T
 
@@ -18,18 +19,20 @@ admin
      )
   => m ()
 admin = do
-  refresh <- button  "Refresh consequences deck"
+  refresh <- button  "Refresh deck"
   deckName <- snd <$> textInput "deck name" "deck-name" never
   docKey <- snd <$> textInput "Sheet Id" "sheet-id" never
   sheetName <- snd <$> textInput "sheet name" "sheet-name" never
-  add <- button "add"
+  addConsequences <- button "add consequences"
+  addCondition <- button "add conditions"
   resp <- requesting $ Api_RefreshDeck <$> tag (current deckName) refresh
-  widgetHold_ blank $ either text (text . pack . show) <$> resp
   let
-    mkAdd dn key sheet = Api_AddDeck ConsequenceCardType dn key sheet
+    mkAdd dn key sheet = \t -> Api_AddDeck t dn key sheet
     addSpec = ffor3 deckName docKey sheetName mkAdd
-  addResp <- requesting $ tag (current addSpec) add
-  widgetHold_ blank $ either text (const $ text "success") <$> addResp
+  addResp <- requesting $ attachWith ($) (current addSpec) $ leftmost [ConsequenceCardType <$ addConsequences,
+                                                            ConditionCardType <$ addCondition]
+  el "div" $ widgetHold_ blank $ either text text <$> leftmost [mapRight (pack . show) <$> resp,
+                                                                mapRight (const "success") <$> addResp]
   pure ()
 
 textInput :: (DomBuilder t m) => Text -> Text -> Event t Text -> m (Event t (), Dynamic t Text)

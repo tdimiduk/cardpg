@@ -32,6 +32,25 @@ instance Table ConsequenceCardT where
     deriving anyclass Beamable
   primaryKey = ConsequenceCardId . view #_id
 
+data ConditionCardT f = ConditionCard
+  { _id :: C f SerialKey
+  , _name :: C f Text
+  , _effect :: C f (PgJSONB CardBlocks)
+  , _removal :: C f (PgJSONB CardBlocks)
+  , _deck :: C f Text
+  }
+  deriving stock Generic
+  deriving anyclass Beamable
+
+type ConditionCard = ConditionCardT Identity
+
+instance Table ConditionCardT where
+  data PrimaryKey ConditionCardT f
+    = ConditionCardId (C f SerialKey)
+    deriving stock Generic
+    deriving anyclass Beamable
+  primaryKey = ConditionCardId . view #_id
+
 data GSheetsReferenceT f = GSheetsReference
   { _id :: C f SerialKey
   , _name :: C f Text

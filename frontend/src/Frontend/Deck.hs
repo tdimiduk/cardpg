@@ -1,6 +1,7 @@
 module Frontend.Deck
   ( consequencesDeck
   , printConsequencesDeck
+  , printConditionsDeck
   )
 where
 
@@ -53,11 +54,26 @@ printConsequencesDeck
      , Requester t (Client m)
      , Prerender t m
      )
-  => ConsequencesDeck
+  => Text
   -> m ()
 printConsequencesDeck deck = prerender_ blank $ divClass "cards" $ do
   ps <- getPostBuild
-  (err, fetched) <- fanEither <$> requesting (Api_ConsequencesDeck deck <$ ps)
+  (err, fetched) <- fanEither <$> requesting (Api_ConsequencesDeck (ConsequencesDeck deck) <$ ps)
+  widgetHold_ blank (text <$> err)
+  widgetHold_ blank (mapM_ render <$> fetched)
+
+printConditionsDeck
+  :: ( DomBuilder t m
+     , Response (Client m) ~ Either Text
+     , Request (Client m) ~ Api
+     , Requester t (Client m)
+     , Prerender t m
+     )
+  => Text
+  -> m ()
+printConditionsDeck deck = prerender_ blank $ divClass "cards" $ do
+  ps <- getPostBuild
+  (err, fetched) <- fanEither <$> requesting (Api_ConditionsDeck (ConditionsDeck deck) <$ ps)
   widgetHold_ blank (text <$> err)
   widgetHold_ blank (mapM_ render <$> fetched)
 

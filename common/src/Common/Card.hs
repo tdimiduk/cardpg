@@ -130,3 +130,5 @@ data ConditionCard = ConditionCard
   , effect :: CardBlocks
   , removal :: CardBlocks
   }
+  deriving stock (Show, Generic)
+  deriving anyclass (ToJSON, FromJSON)

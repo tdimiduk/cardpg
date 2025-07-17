@@ -59,7 +59,6 @@ deckFromRoute = do
     _ -> pure $ (constDyn Nothing)
   pure $ join r
 
-
 frontend :: Frontend (R FrontendRoute)
 frontend = Frontend htmlHead htmlBody
 
@@ -100,8 +99,11 @@ htmlBody = do
         FrontendRoute_Print -> do
           mdeck <- askRoute
           let
-            widget Nothing = text "update the url to specify a deck name"
-            widget (Just deck) = runRequesting apiRoute $ printConsequencesDeck $ ConsequencesDeck deck
+            widget (deckType, deck) = do
+              case deckType of
+                "consequences" -> runRequesting apiRoute $ printConsequencesDeck deck
+                "conditions" -> runRequesting apiRoute $ printConditionsDeck deck
+                _ -> text $ "Error unknown deck type" <> deck
           dyn_ $ widget <$> mdeck
 
 runRequesting

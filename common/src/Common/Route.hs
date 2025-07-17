@@ -3,11 +3,9 @@
 
 module Common.Route where
 
-{- -- You will probably want these imports for composing Encoders.
 import Prelude hiding (id, (.))
-import Control.Category
--}
 
+import Control.Category
 import Data.Text (Text)
 import Data.Functor.Identity
 import Data.Aeson.GADT.TH (deriveJSONGADT)
@@ -32,7 +30,7 @@ data FrontendRoute :: * -> * where
   FrontendRoute_Adhoc :: FrontendRoute (Maybe Text)
   FrontendRoute_Consequences :: FrontendRoute ()
   FrontendRoute_Admin :: FrontendRoute ()
-  FrontendRoute_Print :: FrontendRoute (Maybe Text)
+  FrontendRoute_Print :: FrontendRoute (Text :. Text)
 
 fullRouteEncoder
   :: Encoder (Either Text) Identity (R (FullRoute BackendRoute FrontendRoute)) PageName
@@ -50,7 +48,7 @@ fullRouteEncoder = mkFullRouteEncoder
       FrontendRoute_Adhoc -> PathSegment "adhoc" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder
       FrontendRoute_Consequences -> PathSegment "consequences" $ unitEncoder mempty
       FrontendRoute_Admin -> PathSegment "admin" $ unitEncoder mempty
-      FrontendRoute_Print -> PathSegment "print" $ maybeEncoder (unitEncoder mempty) singlePathSegmentEncoder
+      FrontendRoute_Print -> PathSegment "print" $ pathParamEncoder id (singlePathSegmentEncoder)
   )
 
 

@@ -1,6 +1,7 @@
 module Backend.GSheets.Fetch
   ( cards
   , SheetConsequenceCard
+  , SheetConditionCard
   )
 where
 
@@ -27,10 +28,18 @@ data SheetConsequenceCard = SheetConsequenceCard
   deriving stock Generic
   deriving anyclass (ToJSON, FromJSON)
 
+data SheetConditionCard = SheetConditionCard
+  { name :: Text
+  , effect :: Text
+  , removal :: Text
+  }
+  deriving stock Generic
+  deriving anyclass (ToJSON, FromJSON)
+
 data SyncError = ProcessError IOException | ScriptBuildFailed IOException | ScriptBuildBadOutput | DataError String
   deriving stock Show
 
-cards :: Maybe FilePath -> Text -> Text -> IO (Either SyncError [SheetConsequenceCard])
+cards :: (FromJSON c) => Maybe FilePath -> Text -> Text -> IO (Either SyncError [c])
 cards devRun docKey sheetName = do
   let scriptName = "sync-cards-gsheet.py"
   ePath <- case devRun of

@@ -28,12 +28,20 @@ consequenceCardFromDb :: ConsequenceCardT Identity -> Api.ConsequenceCard
 consequenceCardFromDb ConsequenceCard{ _name=name, _severity=severity, _effect = PgJSONB effect } =
   Api.ConsequenceCard name severity effect
 
+conditionCardFromDb :: ConditionCardT Identity -> Api.ConditionCard
+conditionCardFromDb ConditionCard{ _name=name, _effect = PgJSONB effect, _removal = PgJSONB removal } =
+    Api.ConditionCard name effect removal
+
 handle :: Connection -> BackendEnv -> Api a -> IO a
 handle conn env api = E.handle (\(E.SomeException e) -> do print e; E.throwIO e) $ case api of
   Api_ConsequencesDeck (ConsequencesDeck deck) -> do
     d <- runBeamPostgres conn $ runSelectReturningList $ select $ do
-        relatedBy_ (_tableConsequenceCard db) ((val_ deck ==.) . _deck)
+        relatedBy_ (_tableConsequenceCard db) ((val_ deck ==.) . view #_deck)
     pure $ consequenceCardFromDb <$> V.fromList d
+  Api_ConditionsDeck (ConditionsDeck deck) -> do
+    d <- runBeamPostgres conn $ runSelectReturningList $ select $ do
+        relatedBy_ (_tableConditionCard db) ((val_ deck ==.) . view #_deck)
+    pure $ conditionCardFromDb <$> V.fromList d
   Api_RefreshDeck deck -> do
     r <- runBeamPostgres conn $ runSelectReturningList $ select $ do
       d <- relatedBy_ (_tableGSheetsRef db) ((val_ deck ==.) . view #_name)
@@ -41,14 +49,22 @@ handle conn env api = E.handle (\(E.SomeException e) -> do print e; E.throwIO e)
     case r of
       [] -> pure $ Left $ deck <> " does not exist, please add it first"
       [(docKey, sheetName, cardType)] -> do
-        fetched <- Fetch.cards (unpack <$> _pythonScriptPath env) docKey sheetName
-        print $ "fetched " <> deck <> " from gsheets"
-        case fetched of
-          Left err -> pure $ Left $ pack $ show err
-          Right c -> do
-            case maybe ConsequenceCardType id cardType of
-              ConsequenceCardType -> do
+        case maybe ConsequenceCardType id cardType of
+          ConsequenceCardType -> do
+            fetched <- Fetch.cards (unpack <$> _pythonScriptPath env) docKey sheetName
+            print $ "fetched " <> deck <> " from gsheets"
+            case fetched of
+              Left err -> pure $ Left $ pack $ show err
+              Right c -> do
                 runBeam conn $ replaceConsequenceCards deck c
+                pure $ Right (length fetched)
+          ConditionCardType -> do
+            fetched <- Fetch.cards (unpack <$> _pythonScriptPath env) docKey sheetName
+            print $ "fetched " <> deck <> " from gsheets"
+            case fetched of
+              Left err -> pure $ Left $ pack $ show err
+              Right c -> do
+                runBeam conn $ replaceConditionCards deck c
                 pure $ Right (length fetched)
       _ -> pure $ Left $ "somehow a uniqueness constraint got violated"
   Api_AddDeck cardType deck key sheet -> do
@@ -64,7 +80,7 @@ handle conn env api = E.handle (\(E.SomeException e) -> do print e; E.throwIO e)
               (val_ $ Just cardType)
           ]
         )
-      $ Pg.onConflict (Pg.conflictingFields (\t -> t ^. #_name))
+      $ Pg.onConflict (Pg.conflictingFields (\t -> (t ^. #_name, t ^. #_deckCardType )))
         (onConflictUpdateInstead (\f -> (_key f, _sheet f)))
     case r of
       [] -> pure $ Left "failed to insert"

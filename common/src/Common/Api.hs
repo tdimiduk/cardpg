@@ -12,8 +12,12 @@ import Common.Card.Common
 newtype ConsequencesDeck = ConsequencesDeck Text
   deriving newtype (ToJSON, FromJSON)
 
+newtype ConditionsDeck = ConditionsDeck Text
+  deriving newtype (ToJSON, FromJSON)
+
 data Api a where
   Api_ConsequencesDeck :: ConsequencesDeck -> Api (Vector ConsequenceCard)
+  Api_ConditionsDeck :: ConditionsDeck -> Api (Vector ConditionCard)
   Api_RefreshDeck :: Text -> Api (Either Text Int)
   Api_AddDeck :: CardType -> Text -> Text -> Text -> Api (Either Text ())
 

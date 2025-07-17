@@ -100,3 +100,12 @@ instance DomBuilder t m => Render ConsequenceCard m where
       divClass "cost" $ text $ pack $ show $ severity c
     art
     divClass "textbox" $ render $ c ^. #effect
+
+instance DomBuilder t m => Render ConditionCard m where
+  render c = divClass "card" $ do
+    divClass "flex" $ do
+      divClass "name" $ text $ c ^. #name
+    art
+    divClass "textbox" $ do
+      divClass "effect" $ render $ c ^. #effect
+      divClass "removal" $ render $ c ^. #removal
