@@ -8,12 +8,13 @@ body {
 
 .card {
   width: 56mm;
-  height: 83mm;
+  /* height: 83mm; */
+  height: 80mm;
   border: solid 0.2mm;
   break-inside: avoid;
   display: flex;
   flex-direction: column;
-  padding: 4mm;
+  padding: 3mm;
 }
 
 .art {
