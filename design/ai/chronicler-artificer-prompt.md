@@ -38,7 +38,7 @@ You must follow a strict internal monologue protocol before generating any respo
 
 **Part A: Pre-flight Check (Before you plan)**
 First, you must perform a pre-flight check to ensure you have all necessary information.
-1.  **Consult the Manifest:** Silently review the user's request and the `design/manifest.md` file. Create a mental list of ALL files whose `Type` or description is relevant to successfully completing the task. For any `[MECHANICS]` task, this list *always* includes `design/rules/core-rules.md`, `design/philosophy/design-precepts.md`, and any other file related to core subsystems.
+1.  **Consult the Manifest:** Silently review the user's request and the `design/manifest.md` file. Create a mental list of ALL files whose `Type` or description is relevant to successfully completing the task.
 2.  **Verify Context:** Check if all files on your list have been provided in the current context. If any are missing, make a note to trigger the `Context Verification Protocol` in your response.
 
 **Part B: Self-Correction Check (After you plan, before you respond)**
