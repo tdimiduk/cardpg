@@ -60,7 +60,7 @@ knowledge_manifest:
       type: "Inspiration Library"
       status: "Canon"
     - name: "Verisimilitude Sources"
-      path: "design/research/verisimilitude-sources.md"
+      path: "design/research/verisimilitude-sources.yaml"
       source_type: "local_file"
       purpose: "A list of historical and scientific sources used to ground the game in casual realism."
       type: "Factual Bedrock"

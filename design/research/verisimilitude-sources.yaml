@@ -1,0 +1,120 @@
+# Preamble: Factual Bedrock for Design
+# This document is the master index of all verisimilitude sources for the project.
+# Its use is governed by the Knowledge Manifest Protocol.
+# Its purpose is to provide a shared factual basis for our mechanics.
+
+document_purpose: >
+  This is a designer-facing document intended for internal use.
+  It serves as a living list and a starting point for our factual research.
+  It contains an initial collection of high-quality historical, medical, and scientific sources
+  that model the *kind* of evidence we should use to ground our design in "Casual Realism."
+  Its purpose is to provide a shared factual basis for our mechanics and to grow over time
+  as we discover new, relevant sources.
+
+---
+
+modeling_armor_weapons_combat:
+  description: >
+    Information on the effectiveness, construction, and historical context of different armor types.
+  sources:
+    primary_academic_museum:
+      - type: article
+        author: 'A. Williams'
+        title: '"The Knight and the Blast Furnace"'
+        description: >
+          Cited for quantitative data on the energy (in joules) required to penetrate different types of armor,
+          particularly the surprising effectiveness of gambesons against cuts.
+      - type: organization
+        organization: 'The Wallace Collection, London'
+        description: 'Referenced for information on Gothic-style armor.'
+      - type: organization
+        organization: 'The Metropolitan Museum of Art'
+        title: '"Arms and Armor in Medieval Europe"'
+        description: 'A general source for the evolution of armor from the early Middle Ages through the Renaissance.'
+      - type: manual_series
+        title: 'Fechtbücher (Combat Manuals) of Fiore dei Liberi, Hans Talhoffer, etc.'
+        description: >
+          Primary sources for understanding the specific techniques used in armored combat (Harnischfechten),
+          including grappling (Ringen), half-swording, and targeting gaps.
+    online_compilations_blogs:
+      - type: website
+        publication: 'TheCollector.com'
+        description: 'For articles on the evolution of armor from maille to plate.'
+      - type: website
+        publication: 'A Collection of Unmitigated Pedantry (acoup.blog)'
+        description: >
+          For detailed analysis and myth-busting regarding the effectiveness of different armor types,
+          particularly gambesons.
+      - type: website
+        publication: 'Chivalry Today (chivalrytoday.com)'
+        description: 'For articles on the evolution of armor through different medieval periods.'
+      - type: community
+        community: 'myArmoury.com & r/AskHistorians, r/ArmsandArmor'
+        description: >
+          Community forums and subreddits used to find discussions from historical enthusiasts and amateur experts,
+          particularly regarding gambesons vs. blunt trauma and the effectiveness of swords.
+
+---
+
+modeling_physical_costs_of_effort:
+  description: >
+    Covers the real-world physical impact of combat and sustained alertness.
+  sources:
+    primary_scientific_journals_concepts:
+      - type: journal
+        publication: 'Proceedings of the Royal Society B: Biological Sciences'
+        description: >
+          Specifically for the 2011 study on the metabolic cost of locomotion in medieval armor,
+          which provided the "more than double the energy cost" statistic and highlighted the respiratory strain
+          of wearing a helmet.
+      - type: concept
+        concept: 'ATP-PCr (Phosphagen) System'
+        description: >
+          The core physiological concept used to analyze the fatigue from short, explosive bursts of activity
+          (like a 20-second combat round).
+      - type: concept
+        concept: 'Anaerobic Glycolysis'
+        description: >
+          The physiological concept for analyzing fatigue from sustained, high-intensity work lasting around a minute
+          (like the "archer" or "kata" scenario).
+    modern_military_psychological_research:
+      - type: research_field
+        title: 'Studies on Soldier Load and Metabolic Cost'
+        description: >
+          Research on modern infantry used as an analogue for understanding the energy expenditure of carrying heavy gear
+          for long periods.
+      - type: concept
+        concept: 'Vigilance Decrement'
+        description: >
+          The psychological principle explaining the degradation of attention and perception during long periods of
+          high-alertness (like a 6-hour patrol).
+      - type: concept
+        concept: 'Stress Hormones (Cortisol, Adrenaline)'
+        description: >
+          Used to analyze the physiological cost of hypervigilance and the "crash" that follows a prolonged period of stress.
+
+---
+
+modeling_injury_damage_harm:
+  description: >
+    Informed our discussion on damage types and the effects of injuries.
+  sources:
+    core_medical_principles:
+      - type: concept
+        concept: 'Penetrating vs. Blunt Force Trauma'
+        description: >
+          The fundamental distinction used in modern emergency medicine to classify injuries. This was the basis for
+          our initial proposal to move beyond the classic RPG damage types.
+      - type: concept
+        concept: 'Hemorrhage, Organ Damage, Infection'
+        description: 'The three primary concerns of penetrating trauma.'
+      - type: concept
+        concept: 'Skeletal Damage, Internal Organ Damage, Neurological Trauma'
+        description: 'The three primary concerns of blunt force trauma.'
+    modern_analogues_weapon_effects:
+      - type: analogue
+        title: 'Shark-Diving Suits'
+        description: 'Used as a modern analogue for the effectiveness of maille against biting attacks.'
+      - type: analogue
+        title: 'Faraday Cages'
+        description: 'Used to explain the protective effect of metal armor against lightning strikes.'
