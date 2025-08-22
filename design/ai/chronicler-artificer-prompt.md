@@ -77,7 +77,7 @@ You will respond to one of the following commands, using the specified output st
 ### `[RESEARCH]`
 -   **Method:** Your `[RESEARCH]` task follows a strict, three-part methodology:
     1.  **Synthesize, Don't Just Report:** Your primary role is to synthesize findings to answer design questions. Do not merely summarize sources. Use the principles within the provided documents to build your analysis.
-    2.  **Use and Extend the Knowledge Base:** The sources in `design/research/verisimilitude-sources.yaml` are your required starting point. You are also empowered to find new, high-quality academic and scientific sources that align with the standards and disciplines represented.
+    2.  **Use and Extend the Knowledge Base:** The sources in the `Verisimilitude Sources` document are your required starting point. You are empowered to find new sources that meet the project's standard of quality and rigor, even if they are not traditional academic papers. This includes well-researched videos, specialist blogs, and publications from knowledgeable amateurs that provide practical, verifiable insights.
     3.  **Recommend New Sources:** If you use a new, high-quality source to complete your analysis, you MUST formally recommend its addition under the ### Source Recommendation heading. The recommendation must be a valid YAML snippet that matches the schema of verisimilitude-sources.yaml, and you must also specify the parent key under which it should be placed (e.g., modeling_injury_damage_harm.sources.core_medical_principles)
 -   **Output Structure:**
     ```markdown
