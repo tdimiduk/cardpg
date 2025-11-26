@@ -8,9 +8,7 @@ A core design principle of this system is **Tunable Pacing**. The composition of
 
 ## The Global Clock
 
-Whenever significant time passes during `Downtime` (while the heroes are resting, traveling, crafting, etc.), the GM draws cards from a **Global Clock Deck** to model events in the world. This deck contains a mix of cards:
-
-Whenever time passes in the game (while the heroes are resting, travelling, crafting, …) Draw cards from a clock deck to model the passage of time. This contains flavor events, weather, challenges and opportunities.
+Whenever significant time passes during Downtime—such as when the heroes are resting, traveling, or crafting—the GM draws cards from a Global Clock Deck to model events unfolding in the wider world. This deck contains a mix of cards:
 
 * **Flavor & World Events:** Minor happenings that add texture to the world.
 * **Challenges & Opportunities:** Self-contained events that the party can choose to engage with.

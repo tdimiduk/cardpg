@@ -1,12 +1,12 @@
-Every significant action in the game is associated with one of three Colors: Red, Yellow, or Blue. This Color represents the core approach of the action—be it forceful, finessed, or planned. When you perform an action, its Color tells you which value on your cards to use. Use this document as a comprehensive guide to determine the Color of any action you wish to take.
+Every significant action in the game is associated with one of three `Color`s: Red, `Yellow`, or Blue. This `Color` represents the core approach of the action—be it forceful, finessed, or planned. When you perform an action, its `Color` tells you which value on your cards to use. Use this document as a comprehensive guide to determine the `Color` of any action you wish to take.
 
-* **Red:** Force, Endurance, Presence, Passion, Dominion
-* **Yellow:** Speed, Precision, Perception, Cunning, Finesse
-* **Blue:** Intellect, Planning, Discipline, Lore, Intrigue
+* `Red`: Force, Endurance, Presence, Passion, Dominion
+* `Yellow`: Speed, Precision, Perception, Cunning, Finesse
+* `Blue`: Intellect, Planning, Discipline, Lore, Intrigue
 
 ### **Combat Pillar**
 
-* **Red**
+* `Red`
   * Channel Raw Magic: Wield untamed magic that requires immense stamina and willpower to control.
   * Hold a Position: Hold a narrow pass, a doorway, or a defensive line against an overwhelming force to protect others or buy time.
   * Land a Mighty Blow: Make a powerful attack with a heavy weapon or sheer physical might.
@@ -16,7 +16,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Push Through Pain: Ignore the staggering effect of a blow to land a counter-attack.
   * Command, order or Inspire
   * Wrest Control: Forcibly commanding a summoned or bound entity that is trying to break free.
-* **Yellow**
+* `Yellow`
   * Administer Aid: Apply battlefield first aid or perform a precise action to stabilize a wounded person.
   * Attack with Precision: Make a fast, precise strike or a carefully aimed shot at a weak point.
   * Avoid Harm: Deftly dodge an attack, parry a blow, or navigate a hazardous area.
@@ -24,7 +24,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Disarm or Sunder: Make a precise, targeted strike intended not to harm, but to disarm an opponent or break their armor.
   * Make a Lightning Draw: Draw a weapon and strike in a single, fluid motion.
   * Use Tactical Magic: Employ a quick, simple magical effect mid-combat for a tactical advantage.
-* **Blue**
+* `Blue`
   * Analyze and Connect Clues: Deduce an opponent's attack pattern during a fight.
   * Assess Fighting Style: Quickly recall lore about a specific martial tradition or creature's fighting style to predict its next move.
   * Command and Coordinate: Analyze a battlefield and coordinate allies' actions mid-combat.
@@ -33,7 +33,7 @@ Every significant action in the game is associated with one of three Colors: Red
 
 ### **Exploration Pillar**
 
-* **Red**
+* `Red`
   * Break/Dismantle: Smash through doors, shatter obstacles, or otherwise apply force to break something.
   * Carry a Burden: Physically carry a heavy load or a wounded comrade over a long distance.
   * Claim Territory: Perform a ritual or display of power to pacify minor spirits, claim a territory as your own, or intimidate the local fauna into leaving you be.
@@ -41,7 +41,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Follow an Instinct: Trust a powerful gut feeling to guide you toward a hidden path or object, even when it defies logic.
   * Forage and Survive: Find sustenance in a harsh environment or survive alone in a desolate landscape through grim determination.
   * Tame a Beast: Break or tame a wild animal, or ride a dangerous, untamed mount.
-* **Yellow**
+* `Yellow`
   * Create False Trail: Use your knowledge of the wilds and your enemy's tracking methods to create a convincing false trail to throw them off your scent.
   * Disrupt a Ritual: Identify the key moment in a complex ritual and act with precision to ruin it.
   * Employ a Specific Bane: Use a unique item, like a source of bright light or a specific substance, to repel or harm a particular foe.
@@ -50,7 +50,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Set up Camp: Establishing a defensible camp, including setting watch-posts and snares.
   * Tread Lightly: Move with extreme care and precision to navigate a delicate environment, like a room full of traps or a crumbling ruin, without setting anything off.
   * Pick a lock
-* **Blue**
+* `Blue`
   * Chart Treacherous Paths: Divining a safe route through a magically warped or shifting landscape.
   * Comprehend the Alien: Attempt to understand the motives or nature of a creature that operates on non-human logic.
   * Interpret and Decipher: Correctly understand cryptic prophecies, ancient runes, or complex maps.
@@ -62,7 +62,7 @@ Every significant action in the game is associated with one of three Colors: Red
 
 ### **Social Pillar**
 
-* **Red**
+* `Red`
   * Appeal to Passion: Make a heartfelt appeal based on a deeply held belief (honor, vengeance, justice) to inspire loyalty or sway the undecided.
   * Assert Dominance: Use a commanding presence or a display of brute force to frighten, coerce, or cow others into submission.
   * Build a reputation
@@ -73,7 +73,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Overwhelm the Senses: Creating a massive, chaotic diversion to manipulate attention.
   * Rally a Militia: Inspire and train commoners to defend their homes.
   * Make an impression (Good, bad, terrifying, …)
-* **Yellow**
+* `Yellow`
   * Assess a Situation: Quickly read a room's mood or spot the signs of a coming betrayal.
   * Build a Relationship: Spend quality time with another character (PC or NPC) to strengthen a personal bond.
   * Con and Deceive: Use wit, charm, fast-talking, or outright lies to persuade, distract, or trick someone.
@@ -88,7 +88,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Plant a Rumor: Carefully craft and spread a targeted rumor to manipulate public opinion or an individual's beliefs.
   * Make a technically demanding performance; Sing or play on an instrument a fast or tricky passage of music, juggle, tumble, …
   * Subtle Poisoning: Administering a slow-acting or hard-to-detect poison.
-* **Blue**
+* `Blue`
   * Engage in a Standoff: Using psychological pressure in a tense standoff to force an opponent to act first.
   * Gain Leverage: Scheme to uncover a rival's secret or create a compromising situation to be used for blackmail or influence.
   * Influence and Inspire: Give a rousing speech to instill hope, persuade an ancient power, or win a formal debate with logic.
@@ -102,7 +102,7 @@ Every significant action in the game is associated with one of three Colors: Red
 
 ### **Downtime Pillar**
 
-* **Red**
+* `Red`
   * Endure Hardship: Withstand the long-term effects of torture, a corrupting influence, a draining ritual, or a powerful curse through sheer fortitude.
   * Establish a Faction: Write the core tenets of a new organization (a mercenary company, a cult, a thieves' guild) and recruit its first members.
   * Indulge Vice (Force): Recover from stress by engaging in carousing, competitive brawling, or feats of strength.
@@ -112,7 +112,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Recruit Followers: Seek out and hire retainers, mercenaries, or other followers to build out your crew or personal guard.
   * Resist Domination: Actively fighting off a persistent supernatural attempt to control one's mind or body.
   * Train a Skill: Undergo a regimen of intense physical practice to improve your combat abilities or physical prowess.
-* **Yellow**
+* `Yellow`
   * Acquire Asset: Use your contacts and cunning to temporarily borrow, rent, or steal a special piece of equipment or expertise.
   * Build an Information Network: Spend time and resources to establish a web of informants in a settlement that you can call upon later to gather information.
   * Carouse: Spend money lavishly in public to make connections, gather rumors, and build reputation, risking complications.
@@ -122,7 +122,7 @@ Every significant action in the game is associated with one of three Colors: Red
   * Practice an Art: Dedicate yourself to practicing a specific art form (painting, calligraphy, music) to improve your skill or create a masterpiece.
   * Quickly Appraise: Swiftly and accurately assessing the value of treasure.
   * Reduce Scrutiny: Put out feelers, bribe officials, or spread misinformation to lower your notoriety with a faction.
-* **Blue**
+* `Blue`
   * Conduct Magical Research: Attempt to create a new spell, alchemical formula, or magical ritual through dedicated study and experimentation.
   * Heal a Spiritual Wound: Use unique empathy and knowledge to treat a lingering injury of the mind or soul.
   * Indulge Vice (Intellect): Recover from stress by engaging in obsessive research, philosophical debate, or collecting rare lore.

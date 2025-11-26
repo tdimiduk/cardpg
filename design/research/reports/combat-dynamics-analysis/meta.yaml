@@ -1,0 +1,8 @@
+report_date: 2025-09-26
+generation_details:
+  tool: "Gemini 2.5 Pro with Deep Research"
+  prompt_file: "prompt.md"
+relationships:
+  - type: "data_superseded_by"
+    target_id: "report-combat-locomotion"
+    note: "Data on metabolic costs and mobility penalties should be deferred to the newer report."

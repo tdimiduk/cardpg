@@ -1,0 +1,5 @@
+{
+  "name": "CaRdPG VTT",
+  "description": "A virtual tabletop for RPGs featuring interactive maps, token management, and real-time dice rolling.",
+  "requestFramePermissions": []
+}

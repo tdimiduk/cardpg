@@ -1,0 +1,132 @@
+- id: heat-up
+  name: Heat Up
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 3, yellow: 2, blue: 2 }
+  cost: { resources: 1, keywords: [Fire] }
+  stance:
+    duration: "Battle"
+  effects:
+    - "Add +1 to all attacks."
+
+- id: fire-blast
+  name: Fire Blast
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 3, yellow: 2, blue: 4 }
+  cost: { resources: 4, keywords: [Fire] }
+  attack:
+    color: Red
+    power: "|z| + 5"
+  flavor: "Ignites nonliving burnable things on fire."
+
+- id: magical-abilities
+  name: Magical Abilities
+  type: Ability
+  owner: Vallhach
+  stats: { red: 1, yellow: 1, blue: 6 }
+  # No active effect listed in CSV, likely a pure stat card
+
+- id: lightning-speed
+  name: Lightning Speed
+  type: Ability
+  owner: Vallhach
+  tags: [Lightning]
+  stats: { red: 2, yellow: 5, blue: 2 }
+
+- id: overheated
+  name: Overheated
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 5, yellow: 2, blue: 2 }
+
+- id: light-on-fire
+  name: Light On Fire
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 4, yellow: 2, blue: 4 }
+  effects:
+    - "Ignites nonliving burnable things on fire."
+
+- id: sunlight
+  name: Sunlight
+  type: Ability
+  owner: Vallhach
+  tags: [Sun]
+  stats: { red: 2, yellow: 4, blue: 4 }
+  flavor: "Causes the character to glow."
+  
+- id: supercharged
+  name: Supercharged
+  type: Ability
+  owner: Vallhach
+  tags: [Lightning]
+  stats: { red: 2, yellow: 5, blue: 1 }
+  prime:
+    duration: "1 round"
+    trigger: "When anyone attacks you"
+    reaction:
+      attack:
+        color: Red
+        power: 10
+  effects:
+    - "At the end of resolution expend this if it triggered, otherwise recover to hand."
+
+- id: haste
+  name: Haste
+  type: Ability
+  owner: Vallhach
+  tags: [Lightning]
+  stats: { red: 1, yellow: 5, blue: 2 }
+  cost: { resources: 3, keywords: [Lightning] }
+  channel:
+    duration: "4 turns"
+  effects:
+    - "Up to 4 target creatures draw an extra card per turn."
+
+- id: magma-missile
+  name: Magma Missile
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 2, yellow: 1, blue: 4 }
+  cost: { resources: 3, keywords: [Fire] }
+  channel:
+    duration: "Until empty"
+  attack:
+    color: Red
+    power: "|z|"
+  effects:
+    - "Attacks each round removing one card from stack each turn until empty."
+
+- id: the-floor-is-lava
+  name: The Floor is Lava
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 3, yellow: 1, blue: 3 }
+  cost: { resources: 5, keywords: [Fire] }
+  channel:
+    duration: "5 rounds"
+  attack:
+    color: Red
+    power: "|z| - 1"
+    target: "Area"
+  flavor: "Makes an area of ground that is lava."
+
+- id: melt-weapon
+  name: Melt Weapon
+  type: Ability
+  owner: Vallhach
+  tags: [Fire]
+  stats: { red: 3, yellow: 2, blue: 3 }
+  cost: { resources: 2, keywords: [Fire] }
+  attack:
+    color: Red
+    power: "|z| + 2"
+  effects:
+    - "Disarms opponent."

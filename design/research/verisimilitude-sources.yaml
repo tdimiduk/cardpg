@@ -1,8 +1,3 @@
-# Preamble: Factual Bedrock for Design
-# This document is the master index of all verisimilitude sources for the project.
-# Its use is governed by the Knowledge Manifest Protocol.
-# Its purpose is to provide a shared factual basis for our mechanics.
-
 document_purpose: >
   This is a designer-facing document intended for internal use.
   It serves as a living list and a starting point for our factual research.
@@ -24,6 +19,11 @@ modeling_armor_weapons_combat:
         description: >
           Cited for quantitative data on the energy (in joules) required to penetrate different types of armor,
           particularly the surprising effectiveness of gambesons against cuts.
+          vetting:
+            - date: "2025-09-05"
+              type: "AI-Assisted Initial Vetting"
+              author: "Chronicler & Artificer"
+              summary: "Source is the definitive academic work on the metallurgy and material science of historical armor. Author is the leading expert in the field. Highly recommended as a foundational source for modeling armor effectiveness."
       - type: organization
         organization: 'The Wallace Collection, London'
         description: 'Referenced for information on Gothic-style armor.'
@@ -36,6 +36,55 @@ modeling_armor_weapons_combat:
         description: >
           Primary sources for understanding the specific techniques used in armored combat (Harnischfechten),
           including grappling (Ringen), half-swording, and targeting gaps.
+    primary_historical_manuals:
+      - type: manual
+        author: 'Fiore dei Liberi'
+        title: '"Il Fior di Battaglia" (The Flower of Battle)'
+        description: >
+          A foundational early 15th-century Italian manual detailing a complete, integrated martial arts system. It is an invaluable source for modeling a holistic approach to combat, covering abrazare (grappling), dagger, longsword, poleaxe, and mounted combat, both in and out of armor.
+        vetting:
+          - date: "2025-09-05"
+            type: "confirmation"
+            author: "tdimiduk"
+            summary: "confirmed this is a primary source and cited correctly. Scans (in italian) are available at: https://wiktenauer.com/wiki/Fior_di_Battaglia_(MS_Ludwig_XV_13), translations at https://wiktenauer.com/wiki/Fiore_de%27i_Liberi"
+      - type: manual
+        author: 'Filippo Vadi'
+        title: '"De Arte Gladiatoria Dimicandi" (On the Art of Swordsmanship)'
+        description: >
+          A mid-15th-century Italian manual that builds upon the work of Fiore dei Liberi. It provides another key reference for the Italian school of arms, with a particular focus on the theory, geometry, and principles of the longsword.
+      - type: manual_tradition
+        tradition: 'German School (Liechtenauer Tradition)'
+        title: 'Various Fechtbücher (e.g., MS 3227a, Hans Talhoffer, Joachim Meyer)'
+        description: >
+          A vast body of work from the 14th to 16th centuries based on the mnemonic verses of Johannes Liechtenauer. These manuals are our primary source for tactical concepts like the Vor, Nach, and Indes, the five "master cuts" (Meisterhäue), and the importance of the bind (Winden).
+          - **Joachim Meyer (c. 1570):** A key late-period source notable for its systematic and pedagogical approach, providing a highly detailed lexicon of actions for longsword, dussack, and rapier.
+      - type: manual
+        author: 'George Silver'
+        title: '"Paradoxes of Defence"'
+        description: >
+          An English manual from 1599 that provides a critical perspective on the continental rapier systems, advocating for the effectiveness of the traditional English backsword. It is a valuable source for understanding the tactical principles of cut-and-thrust swordsmanship and the importance of measure (distance).
+      - type: manual
+        author: 'Miyamoto Musashi'
+        title: '"Go Rin no Sho" (The Book of Five Rings)'
+        description: >
+          A seminal 17th-century Japanese text on kenjutsu (swordsmanship) and martial strategy. While more philosophical than a step-by-step technical manual, it is an essential source for the psychological and strategic aspects of dueling, timing, and reading an opponent.
+      - type: manual_tradition
+        tradition: 'Tenshin Shōden Katori Shintō-ryū'
+        title: 'Various Densho (Transmission Scrolls)'
+        description: >
+          One of the oldest extant classical Japanese martial traditions (koryū), founded in the 15th century. Its teachings, accessible through modern scholarship and legitimate practitioners, provide a comprehensive curriculum including swordsmanship (kenjutsu), staff techniques (bōjutsu), and halberd fighting (naginatajutsu), offering a non-European perspective on integrated weapon systems.
+      - type: manual
+        author: 'Sun Tzu'
+        title: '"The Art of War"'
+        description: >
+          The foundational ancient Chinese text on military strategy. While it does not detail specific martial techniques, its principles of assessment, deception, maneuver, and exploiting terrain are timeless and provide a crucial framework for modeling the tactical and strategic layers of conflict, perfectly informing Blue-colored actions.
+
+      - type: manual
+        author: 'Qi Jiguang'
+        title: '"Jixiao Xinshu" (New Treatise on Military Efficiency)'
+        description: >
+          A highly practical and influential 16th-century Ming Dynasty military manual. Written by a renowned general to train his soldiers, it is an invaluable source for combined-arms tactics (the "mandarin duck" formation), formation fighting, and the battlefield application of various weapons, including staff, sword, and early firearms. It also includes one of the earliest known detailed sections on unarmed fighting ("Essentials of the Fist").
+
     online_compilations_blogs:
       - type: website
         publication: 'TheCollector.com'
@@ -52,7 +101,29 @@ modeling_armor_weapons_combat:
         community: 'myArmoury.com & r/AskHistorians, r/ArmsandArmor'
         description: >
           Community forums and subreddits used to find discussions from historical enthusiasts and amateur experts,
-          particularly regarding gambesons vs. blunt trauma and the effectiveness of swords.
+     - type: video
+       creator: 'BenjaminRose.com'
+       title: 'Mobility in Medieval Plate Armor'
+       platform: 'YouTube'
+       url: 'https://www.youtube.com/watch?v=qzTwBQniLSc'
+       description: >
+           A well-known video demonstrating the high degree of mobility possible in a well-fitted suit of plate armor, including running, climbing, and getting up from the ground unassisted. Excellent for debunking common myths about armor's cumbersomeness.     particularly regarding gambesons vs. blunt trauma and the effectiveness of swords.
+     - type: video
+       publication: 'Medievalists.net'
+       title: '"Can You Move in Armour?"'
+       url: 'https://www.youtube.com/watch?v=q-bnM5SuQkI'
+       description: >
+           Excellent short video citing primary historical sources (the chronicles of Boucicaut) to demonstrate the high degree of mobility and athleticism possible for a trained individual in a full plate harness. Directly supports the concept that the primary limitations of plate armor are fatigue and endurance, not inflexibility.
+     - type: website
+       publication: 'Wiktenauer'
+       url: 'https://wiktenauer.com'
+       description: >
+         The largest and most comprehensive online library of Historical European Martial Arts (HEMA) books and manuscripts. An indispensable primary and secondary source for historical combat techniques, principles, and traditions.
+       vetting:
+           - date: "2025-09-05"
+             type: "AI-Assisted Initial Vetting"
+             author: "Chronicler & Artificer"
+             summary: "Source is the definitive online repository for primary HEMA sources, managed by the reputable HEMA Alliance. Highly recommended as a foundational research tool."
 
 ---
 
@@ -77,6 +148,17 @@ modeling_physical_costs_of_effort:
         description: >
           The physiological concept for analyzing fatigue from sustained, high-intensity work lasting around a minute
           (like the "archer" or "kata" scenario).
+      - type: journal_article
+        author: 'Askew, G. N., Formenti, F., & Minetti, A. E.'
+        title: 'Limitations imposed by wearing armour on Medieval soldiers'' locomotor performance'
+        publication: 'Proceedings of the Royal Society B: Biological Sciences'
+        year: 2012
+        volume: 279
+        issue: 1729
+        pages: '640-644'
+        doi: '10.1098/rspb.2011.0816'
+  description: >
+    The definitive scientific study quantifying the increased energy cost of walking and running in a replica of 15th-century Gothic plate armor. Provides the key data points that locomotion in armor is ~2x more energetically expensive than unloaded movement.
     modern_military_psychological_research:
       - type: research_field
         title: 'Studies on Soldier Load and Metabolic Cost'
@@ -118,3 +200,112 @@ modeling_injury_damage_harm:
       - type: analogue
         title: 'Faraday Cages'
         description: 'Used to explain the protective effect of metal armor against lightning strikes.'
+
+---
+
+weaponry_and_armaments:
+  historical_reproductions_and_testing:
+    - name: "Tod's Workshop YouTube Channel"
+      author: "Tod Todeschini"
+      type: "Video Series"
+      url: "https://www.youtube.com/c/TodsWorkshop1"
+      description: "A channel by a professional historical weapons maker. Features practical tests of replica weapons (crossbows, swords, daggers) and detailed explanations of their construction and historical context. Excellent for understanding the real-world performance and limitations of medieval arms and armor."
+      tags: ["weapons", "armor", "crossbows", "swords", "crafting", "medieval", "renaissance", "practical-testing"]
+      vetting:
+        - date: "2025-09-05"
+          type: "AI-Assisted Initial Vetting"
+          author: "Chronicler & Artificer"
+          summary: "Highly authoritative specialist source. Tod Todeschini is a professional historical weapons maker with museum and film credentials. Channel provides high-quality experimental archaeology, testing replica weapons and armor with a focus on functional realism. Aligns perfectly with the project's 'Casual Realism' principle."
+
+---
+# Foundational Scientific & Medical Sources (Cited in Reports)
+foundational_scientific_medical:
+  description: >
+    Key peer-reviewed academic and clinical sources that are frequently cited in the project's research reports.
+    These provide the core quantitative data for modeling physiology, trauma, and the physical costs of exertion.
+  sources:
+    - type: journal_article
+      author: 'Askew, G. N., Formenti, F., & Minetti, A. E.'
+      title: 'Limitations imposed by wearing armour on Medieval soldiers'' locomotor performance'
+      publication: 'Proceedings of the Royal Society B: Biological Sciences'
+      year: 2012
+      description: >
+        The definitive scientific study quantifying the increased energy cost of walking and running in a replica 15th-century plate harness. This is the primary source for the ~2.2x metabolic cost multiplier for plate armor, a foundational piece of data for the game's fatigue and encumbrance mechanics.
+      vetting:
+        - date: "2025-09-05"
+          type: "existence check"
+          author: "tdimiduk"
+          summary: "confirmed that the article exists at https://royalsocietypublishing.org/doi/epdf/10.1098/rspb.2011.0816 and it's abstract contains the numbers we cite"
+    - type: journal_article
+      author: 'Jaquet, D., et al.'
+      title: 'Range of motion and energy cost of locomotion of the late medieval armoured fighter'
+      publication: 'Historical Methods: A Journal of Quantitative and Interdisciplinary History'
+      year: 2016
+      description: >
+        A critical counterpoint study to Askew et al. (2012) that used a single, high-fidelity, tailor-made harness. It provides the ~1.7x metabolic cost multiplier for "masterwork" armor and confirms that a well-fitted harness imposes minimal restrictions on range of motion, reinforcing that armor's primary cost is endurance, not mobility.
+      vetting:
+        - date: "2025-09-05"
+          type: "existence check"
+          author: "tdimiduk"
+          summary: "confirmed that the article exists at https://www.tandfonline.com/doi/abs/10.1080/01615440.2015.1112753 and it's abstract is relevant"
+    - type: government_report
+      author: 'U.S. Army Research Institute of Environmental Medicine'
+      title: 'Understanding the Physiological, Biomechanical, and Performance Effects of Body Armor Use (Technical Report ADA504354)'
+      year: 2008
+      description: >
+        A foundational modern military study on load carriage. It provides the critical quantitative data that adding weight to the feet is 4 to 6 times more energetically costly than adding it to the torso, which is the key biomechanical explanation for the high metabolic cost of full-body plate armor.
+      vetting:
+        - date: "2025-09-05"
+          type: "quick scan"
+          author: "tdimiduk"
+          summary: "confirmed that the report exists at https://apps.dtic.mil/sti/tr/pdf/ADA504354.pdf and conclusions seem in line with what we derived"
+    - type: medical_textbook_chapter
+      author: 'Kauvar, D. S., Lefering, R., & Wade, C. E.'
+      title: '"Impact of Hemorrhage on Trauma Outcomes: An Overview of Epidemiology, Clinical Presentations, and Therapeutic Considerations"'
+      publication: 'Journal of Trauma and Acute Care Surgery'
+      year: 2006
+      description: >
+        A key clinical review article that provides the quantitative framework for the four classes of hemorrhagic shock. This source is the factual basis for modeling the progressive physical and cognitive decline from blood loss, directly informing the severity levels of "Bleeding" consequences.
+    - type: journal_article
+      author: 'Keys, A., Brožek, J., Henschel, A., Mickelsen, O., & Taylor, H. L.'
+      title: '"The Biology of Human Starvation"'
+      publication: 'University of Minnesota Press'
+      year: 1950
+      description: >
+        The definitive study on the physiological and psychological effects of long-term calorie restriction (the "Minnesota Starvation Experiment"). It is the primary source for understanding the profound cognitive impacts of starvation, such as apathy and obsessive focus, which precede total physical collapse.
+    - type: journal_article
+      author: 'Gaw, R., et al.'
+      title: '"The physiological consequences of strangulation..."'
+      publication: 'Forensic Science, Medicine and Pathology'
+      year: 2021
+      description: >
+        A forensic pathology study that provides the highly precise timeline for strangulation, establishing that loss of consciousness occurs in approximately 6.8 seconds. This is a key data point for modeling the hyper-acute effects of asphyxiation and cerebral hypoxia.
+    - type: journal_article
+      author: 'Various'
+      title: 'Studies on Cognitive Performance during Prolonged Load Carriage'
+      publication: 'Military Medicine'
+      description: >
+        Represents a cluster of modern military studies analyzing the effects of fatigue from forced marches on cognitive function. These sources provide the quantitative data on the decline of working memory, vigilance, and executive function, forming the basis for cognitive consequences related to exploration and exhaustion.
+    - type: journal_article
+      author: 'Tipton, M. J.'
+      title: '"The initial responses to cold-water immersion in man"'
+      publication: 'Clinical Science'
+      year: 1989
+      description: >
+        A foundational paper on the "cold shock" response. It provides the physiological explanation and timeline for the involuntary gasp and hyperventilation that occur in the first few minutes of cold water immersion, which are the primary cause of drowning long before hypothermia sets in.
+
+    - type: journal_article
+      author: 'Butler, F. K., Hagmann, J., & Butler, E. G.'
+      title: '"Tactical Combat Casualty Care in Special Operations"'
+      publication: 'Military Medicine'
+      year: 1996
+      description: >
+        The seminal paper that introduced the TCCC guidelines. It serves as a primary source for understanding the principles of modern trauma care (e.g., tourniquets, hemostatic agents, chest seals), which in turn provides a logical framework for designing plausible magical or advanced healing mechanics.
+
+    - type: book
+      author: 'Williams, A.'
+      title: '"The Knight and the Blast Furnace: A History of the Metallurgy of Armour in the Middle Ages & the Early Modern Period"'
+      publication: 'Brill'
+      year: 2003
+      description: >
+        An essential text on the material science of historical armor. It provides the quantitative data (in joules) on the energy required to penetrate different types of armor, confirming that sword cuts are physically incapable of defeating steel plate and providing a factual basis for the game's weapon vs. armor interaction model.

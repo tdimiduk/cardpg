@@ -39,7 +39,7 @@ Injuries have weight, and the process of healing is a meaningful part of the gam
 
 ### Symmetrical Design
 
-By default, all characters in the game—whether player-controlled or GM-controlled—operate under the same core ruleset. NPCs and monsters have decks, stats like `Ward` and `Grit`, and suffer consequences just as player characters do. This ensures the system is robust, fair, and internally consistent. Mooks and minions are not a special category of creature; they are simply characters with unbalanced stats, an elegant solution that emerges naturally from the core math.
+By default, all characters in the game—whether player-controlled or GM-controlled—operate under the same core ruleset. NPCs and monsters have decks, stats like `Defense` and `Resilience`, and suffer consequences just as player characters do. This ensures the system is robust, fair, and internally consistent. Mooks and minions are not a special category of creature; they are simply characters with unbalanced stats, an elegant solution that emerges naturally from the core math.
 
 ### Flexible Resolution Scale
 
@@ -63,7 +63,7 @@ Exploration should be atmospheric and driven by discovery and suspense, presenti
 
 Social encounters should be mechanically interesting but not "gamey," providing all character archetypes with distinct and valuable ways to contribute.
 
-* **Key Mechanics:** The three Core Colors (Red, Yellow, Blue) as distinct approaches to interaction.
+* **Key Mechanics:** The three Core `Color`s (Red, `Yellow`, Blue) as distinct approaches to interaction.
 
 ## Downtime
 
