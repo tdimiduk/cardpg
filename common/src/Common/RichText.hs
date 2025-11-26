@@ -1,0 +1,123 @@
+module Common.RichText
+  ( TextStyle(..)
+  , Inline(..)
+  , RichString
+  , Block(..)
+  , CardBody
+  , StackPower(..)
+  , simpleString
+  , TextRunDef(..)
+  )
+  where
+
+import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON)
+import Data.Text (Text)
+import GHC.Generics (Generic)
+
+import Common.Json
+import Common.Card.Common (ResourceType(..))
+
+data StackPower = StackPower
+  { _source   :: ResourceType
+  , _modifier :: Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON StackPower where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON StackPower where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+
+-- | 1. The Token Stream
+-------------------------------------------------------------------------------
+
+data TextStyle
+  = Bold
+  | Italic
+  | GameKeyword  -- ^ For "Resolve:", "Setup:", etc.
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON TextStyle where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON TextStyle where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+data TextRunDef = TextRunDef
+  { _style   :: Maybe TextStyle
+  , _content :: Text 
+  } deriving stock (Eq, Show, Generic)
+
+instance ToJSON TextRunDef where
+  toJSON     = genericToJSON (cardpgJsonOptions "")
+  toEncoding = genericToEncoding (cardpgJsonOptions "")
+instance FromJSON TextRunDef where
+  parseJSON = genericParseJSON (cardpgJsonOptions "")
+
+-- | Payload for Icons
+data IconDef = IconDef
+  { _color   :: ResourceType 
+  } deriving stock (Eq, Show, Generic)
+
+instance ToJSON IconDef where
+  toJSON     = genericToJSON (cardpgJsonOptions "")
+  toEncoding = genericToEncoding (cardpgJsonOptions "")
+instance FromJSON IconDef where
+  parseJSON = genericParseJSON (cardpgJsonOptions "")
+
+-- | Payload for Dynamic Math
+data DynamicValDef = DynamicValDef
+  { _value   :: StackPower 
+  } deriving stock (Eq, Show, Generic)
+
+instance ToJSON DynamicValDef where
+  toJSON     = genericToJSON (cardpgJsonOptions "")
+  toEncoding = genericToEncoding (cardpgJsonOptions "")
+instance FromJSON DynamicValDef where
+  parseJSON = genericParseJSON (cardpgJsonOptions "")
+
+-- | The Main Inline Sum Type
+-- | No partial fields here; just wrappers around safe types.
+data Inline
+  = TextRun TextRunDef
+  | Icon IconDef
+  | DynamicVal DynamicValDef
+  | Break
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON Inline where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON Inline where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | A list allows for Monoidal concatenation (text <> icon).
+type RichString = [Inline]
+
+
+-- | 2. The Layout Structure
+-------------------------------------------------------------------------------
+
+data Block
+  = Paragraph RichString
+  | Header RichString
+  | Rule                    -- ^ <hr />
+  | BulletList [RichString] -- ^ <ul><li>...</li></ul>
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON Block where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON Block where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+type CardBody = [Block]
+
+simpleString :: Text -> RichString
+simpleString t = [TextRun (TextRunDef Nothing t)]

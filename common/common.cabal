@@ -49,6 +49,11 @@ library
     Common.Card
     Common.Card.Common
     Common.CardParser
+    Common.DeckCard
+    Common.RichText
+    Common.Json
+    Common.Parser.Common
+    Common.Parser.DeckCard
     Common.Route
     Common.Util
   ghc-options: -Wall -O -fno-show-valid-hole-fits

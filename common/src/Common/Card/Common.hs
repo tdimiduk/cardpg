@@ -21,11 +21,11 @@ import GHC.Generics (Generic)
 data CardType
   = ConsequenceCardType
   | ConditionCardType
-  deriving stock (Read, Show, Generic)
+  deriving stock (Eq, Read, Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
 data ResourceType = Red | Yellow | Blue
-  deriving stock (Show, Generic)
+  deriving stock (Eq, Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
 -- TODO this should be a more sophisticated type. These are mostly int's, sometimes absent, eventually maybe text or number + text

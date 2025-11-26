@@ -29,6 +29,7 @@ import Reflex.Dom.GadtApi.WebSocket
 import Common.Api
 import Common.Card
 import Common.CardParser
+import Common.Parser.DeckCard
 import Common.Route
 
 import Frontend.Admin

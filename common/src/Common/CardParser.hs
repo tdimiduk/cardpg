@@ -23,16 +23,9 @@ import Data.Void
 
 import Common.Card
 import Common.Card.Common hiding (CardType)
-
-type Parser = Parsec Void Text
+import Common.Parser.Common
 
 data CardType = CardStandard | CardAdhoc deriving stock Show
-
-sep :: Char
-sep = '\t'
-
-semicolin :: Parser Char
-semicolin = char ';'
 
 header :: Parser CardType
 header = do
@@ -96,24 +89,6 @@ defend = try (DefendAction <$> standardDefend) <|> do
   _ <- ots $ string' "defend:"
   SpecialDefend <$> cardText
 
-notLineEnd :: Char -> Bool
-notLineEnd x = x /= '\n' && x /= '\r'
-
-notFieldEnd :: Char -> Bool
-notFieldEnd x =  x /= sep && notLineEnd x
-
-textTillTab :: Parser Text
-textTillTab = takeWhile1P (Just "tab terminated text") (notFieldEnd)
-
-optionalTrailing :: Parser t -> Parser p -> Parser p
-optionalTrailing t p = p <* optional t
-
-tsvField :: Parser p -> Parser p
-tsvField = label "tsv field" . optionalTrailing tab
-
-resourceSymbol :: Parser ResourceType
-resourceSymbol = ots $ resourceSymbol'
-
 resourceSymbol' :: Parser ResourceType
 resourceSymbol' = label "resource symbol" $ do
   _ <- char '|'
@@ -140,14 +115,8 @@ cardBlock = label "card text block" $ Paragraph <$> some (ResourceIcon <$> resou
   where
     txt = Txt <$> takeWhile1P (Just "card text token") (\x -> notFieldEnd x && x /= '|' && x /= ';')
 
-plusModifier :: Parser Int
-plusModifier = plusInt <|> L.decimal <|> negativeInt <|> pure 0
-
 orSep :: Parser ()
 orSep = label "OR-like" $ void $ ots $ () <$ try (ots (char ',') >> string' "or") <|> () <$ string' "or" <|> () <$ char ','
-
-ots :: Parser p -> Parser p
-ots = optionalTrailing (takeWhile1P (Just "spaces") (\x -> x == ' '))
 
 standardDefend :: Parser StandardDefend
 standardDefend = label "standard defense" $ do
@@ -197,9 +166,6 @@ readAndParseTest name = do
   f <- T.readFile name
   parseTest parseFile f
 
-
-nonEmptyText :: Text -> Maybe Text
-nonEmptyText t = if T.null (T.strip t) then Nothing else Just (T.strip t)
 
 -- Replace some combinators that have NonEmpty requirements with ones that actually return NonEmpty
 
