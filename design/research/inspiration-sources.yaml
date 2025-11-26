@@ -1,0 +1,222 @@
+document_purpose: >
+  This is a designer-facing document intended for internal use.
+  It serves as a curated library of "places to look" when brainstorming the kinds of stories,
+  play styles, and mechanical concepts we want to support. By providing a shared pool of
+  inspirational touchstones—including books, films, and other games—this document helps to
+  establish a common creative vocabulary for the design team. It is a source of ideas,
+  not a book of rules.
+
+---
+
+inspiration_by_design_goal:
+  - goal: "Sources for Combat"
+    sources:
+      - sub_goal: "For Gritty, Technical Combat"
+        titles: ["The Soulsborne Series & Nioh Series", "Samurai Cinema", "The Witcher Series"]
+      - sub_goal: "For Heroic, High-Powered Combat"
+        titles: ["Exalted", "Final Fantasy Series", "The Wuxia Genre"]
+      - sub_goal: "For Tactical, Team-Based Combat"
+        titles: ["Gloomhaven", "Divinity: Original Sin 2", "Dungeons & Dragons / Pathfinder", "Might and Magic Series"]
+  - goal: "Sources for Exploration"
+    sources:
+      - sub_goal: "For Player-Driven Journeys"
+        titles: ["Ironsworn", "The Lord of the Rings", "Red Dead Redemption 2", "Avatar: The Last Airbender", "Torchbearer", "Might and Magic Series"]
+      - sub_goal: "For Non-Combat Problem Solving"
+        titles: ["Mushishi", "Disco Elysium", "Thief: The Dark Project", "Alien (1979)"]
+      - sub_goal: "For Environmental Storytelling"
+        titles: ["The Soulsborne Series", "Studio Ghibli Films", "Diablo (1997)"]
+  - goal: "Sources for Social & Intrigue"
+    sources:
+      - sub_goal: "For Political & Dynastic Intrigue"
+        titles: ["Crusader Kings", "Dune", "Romance of the Three Kingdoms", "A Song of Ice and Fire"]
+      - sub_goal: "For Personal & Factional Intrigue"
+        titles: ["World of Darkness Games", "Blades in the Dark", "The Tale of Genji", "The Harry Potter Series", "The Thing (1982)"]
+      - sub_goal: "For Structured Social Conflict"
+        titles: ["Burning Wheel", "Monsterhearts"]
+  - goal: "Sources for Downtime"
+    sources:
+      - sub_goal: "For Downtime Activities & Projects"
+        titles: ["Blades in the Dark", "Ars Magica", "Red Dead Redemption 2", "Torchbearer"]
+      - sub_goal: "For Generational Play & Legacy"
+        titles: ["King Arthur Pendragon", "Crusader Kings"]
+      - sub_goal: "For Faction & Base Building"
+        titles: ["Water Margin", "OSR Stronghold Building rules"]
+
+---
+
+inspiration_by_theme_and_tone:
+  - theme: "Gritty & Lethal Tone"
+    titles: ["The Black Company Series", "Darkest Dungeon", "Berserk", "The Soulsborne Series", "Robert E. Howard (Conan the Barbarian)", "Torchbearer", "Diablo (1997)", "Alien (1979)"]
+  - theme: "Heroic & High-Powered Tone"
+    titles: ["Exalted", "Final Fantasy Series", "Journey to the West", "The Wuxia Genre", "King Arthur Pendragon"]
+  - theme: "Kid-Friendly & Whimsical Tone"
+    titles: ["Avatar: The Last Airbender", "The Hobbit", "Studio Ghibli Films", "No Thank You, Evil!", "The Chronicles of Narnia"]
+
+---
+
+inspiration_by_game_mechanic:
+  - mechanic: "Card & Deck Mechanics"
+    titles: ["Slay the Spire", "Gloomhaven", "Magic: The Gathering", "Library of Ruina", "Arkham Horror: The Card Game"]
+  - mechanic: "Magic Systems"
+    sources:
+      - sub_mechanic: "For Detailed, Rule-Bound Magic"
+        titles: ["Ars Magica", "Mage: The Ascension"]
+      - sub_mechanic: "For Gritty, Consequential Magic"
+        titles: ["The Witcher Series", "Darkest Dungeon"]
+      - sub_mechanic: "For Flexible, Narrative Magic"
+        titles: ["Fate", "Numenera"]
+      - sub_mechanic: "For Thematic & Elemental Magic"
+        titles: ["Avatar: The Last Airbender"]
+
+---
+
+master_source_index:
+  - category: "Literary, Cinematic, & Mythological Sources"
+    entries:
+      - type: "Epic Western Fantasy"
+        sources:
+          - title: "The Lord of the Rings"
+            author: "J.R.R. Tolkien"
+          - title: "A Song of Ice and Fire"
+            author: "George R.R. Martin"
+          - title: "The Witcher Saga"
+            author: "Andrzej Sapkowski"
+          - title: "The Black Company Series"
+            author: "Glen Cook"
+      - type: "Sword & Sorcery Literature"
+        sources:
+          - title: "Conan the Barbarian"
+            author: "Robert E. Howard"
+          - title: "Fafhrd and the Gray Mouser"
+            author: "Fritz Leiber"
+          - title: "Elric of Melniboné"
+            author: "Michael Moorcock"
+      - type: "Kid-Friendly & Whimsical Literature"
+        sources:
+          - title: "The Hobbit"
+            author: "J.R.R. Tolkien"
+          - title: "The Chronicles of Narnia"
+            author: "C.S. Lewis"
+          - title: "The Harry Potter Series"
+            author: "J.K. Rowling"
+          - title: "The Redwall Series"
+            author: "Brian Jacques"
+          - title: "Howl's Moving Castle"
+            author: "Diana Wynne Jones"
+      - type: "Mythology & Epic Poems"
+        sources:
+          - title: "Arthurian Legend"
+            description: "The tales of King Arthur and the Knights of the Round Table."
+          - title: "Greek & Mesopotamian Epics"
+            description: "Such as The Odyssey and the Epic of Gilgamesh."
+          - title: "Norse Sagas"
+            description: "The heroic and mythological tales of Viking culture."
+      - type: "Japanese Folklore & Literature"
+        sources:
+          - title: "Shinto & Buddhist Mythology"
+            description: "Including the rich folklore of Kami (spirits/gods), Yokai (monsters), and Yurei (ghosts)."
+          - title: "The Tale of Genji"
+            description: "A classic of courtly life, providing deep insight into aesthetics, subtle social maneuvering, and personal relationships."
+          - title: "Musashi"
+            author: "Eiji Yoshikawa"
+            description: "An epic on the philosophy of swordsmanship, discipline, and the life of a wandering warrior."
+      - type: "Chinese Folklore & Literature"
+        sources:
+          - title: "Journey to the West"
+            description: "A foundational epic of pilgrimage, divine tests, and trickster heroes."
+          - title: "Romance of the Three Kingdoms"
+            description: "The quintessential epic of warfare, statecraft, personal honor, and grand strategy."
+          - title: "Water Margin"
+            description: "A classic tale of a growing band of 108 outlaws, providing a blueprint for faction-based play and diverse character archetypes."
+          - title: "The Wuxia Genre"
+            description: "The tradition of chivalrous martial artists who achieve superhuman feats, offering a model for non-magical but powerful action."
+      - type: "Genre Films & Television"
+        sources:
+          - title: "Samurai Cinema"
+            description: "e.g., Kurosawa's Seven Samurai, Yojimbo. A key source for gritty, tactical combat and stories of mismatched protectors."
+          - title: "Studio Ghibli Films"
+            description: "e.g., Princess Mononoke, Spirited Away. Masterworks of environmental storytelling and non-traditional heroism."
+          - title: "Mushishi"
+            description: "A masterclass in non-combat, exploratory problem-solving focused on understanding and resolving supernatural phenomena."
+          - title: "Berserk"
+            description: "A key reference for themes of enduring hardship, fighting against overwhelming odds, and a gritty, dark fantasy tone."
+          - title: "Animated Series for All Ages"
+            description: "Includes Avatar: The Last Airbender, Steven Universe, Adventure Time, and Kipo and the Age of Wonderbeasts. Examples of serialized character growth and creative, non-lethal problem solving."
+          - title: "Alien (1979)"
+            description: "A perfect model for a 'dungeon crawl' as gritty sci-fi horror. The emphasis is on environmental pressure and non-combat solutions against an overwhelming threat."
+          - title: "The Thing (1982)"
+            description: "An outstanding source for social intrigue under extreme duress, driven by paranoia and the breakdown of trust within an isolated group."
+      - type: "Cosmic Horror Literature"
+        sources:
+          - title: "Works by H.P. Lovecraft and China Miéville"
+  - category: "Tabletop & Gaming Sources"
+    entries:
+      - type: "Mainstream & Classic TTRPGs"
+        sources:
+          - title: "Dungeons & Dragons / Pathfinder"
+          - title: "World of Darkness Games"
+          - title: "Ars Magica"
+          - title: "Exalted"
+      - type: "Indie & Story-Focused TTRPGs"
+        sources:
+          - title: "Blades in the Dark"
+            description: "A key inspiration for downtime mechanics, faction-based play, and the 'success at a cost' resolution model."
+          - title: "Burning Wheel"
+            description: "A foundational influence on character-driven play, where mechanics are deeply tied to a character's beliefs and goals."
+          - title: "Fate"
+          - title: "Ironsworn"
+          - title: "King Arthur Pendragon"
+          - title: "Monsterhearts"
+          - title: "Numenera"
+          - title: "Torchbearer"
+            description: "A gritty dungeon crawl focused on resource management and survival. Based on the Burning Wheel engine, its core tension comes from 'The Grind,' a system that models the steady depletion of resources (light, food, etc.), making every decision meaningful and costly."
+      - type: "Kid-Focused TTRPGs"
+        sources:
+          - title: "No Thank You, Evil!"
+          - title: "Hero Kids"
+          - title: "Amazing Tales"
+      - type: "OSR (Old School Revival) TTRPGs"
+        sources:
+          - title: "Carousing Tables & Stronghold Building rules"
+      - type: "Board Games & Card Games"
+        sources:
+          - title: "Arkham Horror: The Card Game"
+          - title: "Dune"
+          - title: "Gloomhaven"
+          - title: "Magic: The Gathering"
+  - category: "Video Game Sources"
+    entries:
+      - type: "CRPGs (Computer Role-Playing Games)"
+        sources:
+          - title: "The Witcher Series"
+          - title: "The Soulsborne Series & Nioh Series"
+          - title: "Final Fantasy Series"
+          - title: "Crusader Kings"
+          - title: "Divinity: Original Sin 2"
+          - title: "Disco Elysium"
+          - title: Might and Magic Series
+            description: "A classic series known for its party-based, first-person exploration, tactical grid-based combat, and a unique blend of high fantasy and science fiction elements."
+      - type: "Immersive Sims"
+        sources:
+          - title: "Thief: The Dark Project"
+          - title: "Dishonored Series"
+      - type: "Strategy & Deck-building Games"
+        sources:
+          - title: "Slay the Spire"
+          - title: "Darkest Dungeon"
+          - title: "Library of Ruina"
+      - type: "Action/Adventure Games"
+        sources:
+          - title: "Red Dead Redemption 2"
+      - type: "Action RPGs"
+        sources:
+          - title: "Diablo (1997)"
+            description: "A masterclass in establishing a gothic horror tone and a gameplay loop built on resource attrition, forcing a compelling risk/reward choice between pressing forward and retreating to safety."
+
+- category: "Game Design & Theory"
+    entries:
+      - type: "Design Blog / Essay"
+        sources:
+          - title: '"Calibrating Your Expectations"'
+            author: "Justin Alexander (The Alexandrian)"
+            description: "A good essay about casual realism in the context of D&D 3rd edition. Works through how, with some resonable assumption, situations in the game come out feeling pretty reasonable for the real world."

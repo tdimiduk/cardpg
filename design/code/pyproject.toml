@@ -1,0 +1,12 @@
+[project]
+name = "cardpg-scripting"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+  "clifun",
+  "PyYAML",
+  "types-PyYAML",
+]
+
+[tool.uv.sources]
+clifun = { path = "../../../dev/clifun", editable = true }

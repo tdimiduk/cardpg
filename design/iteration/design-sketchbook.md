@@ -14,7 +14,7 @@ When designing rules for movement, disengagement, or other universal basic actio
 
 1. **Define a set of "Basic Maneuvers"** (e.g., Disengage, Take Cover, Regain Footing) that should always be available to a character.  
 2. **Assign a fixed card cost** to these maneuvers, such as "Expend 2 cards from your hand."  
-3. **Ensure this cost is purely quantitative.** The rule should explicitly state that any cards can be expended to pay this cost, ignoring their Color, value, or text. This is what gives `Fatigue` cards a secondary purpose.
+3. **Ensure this cost is purely quantitative.** The rule should explicitly state that any cards can be expended to pay this cost, ignoring their `Color`, value, or text. This is what gives `Fatigue` cards a secondary purpose.
 
 ## Case Study Example: Solving the "Hand of Fatigue" Problem
 
@@ -53,6 +53,58 @@ Mechanical elegance is not a pure measure of rules quantity, but of a design's f
   * An ogre's attack would be devastating to all but the best armor. It could have a special rule like: "If this attack's defense results in a consequence of `Severity 2` or higher, the defender's armor is automatically moved to its `Damaged` state."
   * **Design Application:** This rule interacts with the armor tiers realistically. A **Brigandine** might barely prevent a lethal wound but be destroyed in the process. A **Full Harness**, with its superior stats, has a much better chance of weathering the blow *and* remaining intact, justifying its elite status.
 
+# Unified "Encumbrance" Mechanic for Armor
+
+## Core Principle
+
+The physical cost of wearing armor should be modeled by a single, unified mechanic that accounts for both the immediate, per-action anaerobic cost and the deeper, cumulative aerobic strain of recovery. This provides maximum gameplay depth and realism from the minimum number of rules.
+
+## Rationale
+
+This mechanic is the result of extensive iteration to find an elegant solution for modeling the cost of armor. It synthesizes two distinct physiological effects into one keyword:
+
+1.  **The Immediate Cost:** The per-action discard from the deck models the rapid depletion of the body's explosive energy (ATP-PCr system) when moving in heavy gear. This makes every strenuous action more costly and causes fatigue cycles to occur more frequently.
+2.  **The Cumulative Cost:** The addition of extra `Fatigue` cards during a cycle models the deeper, systemic exhaustion an armored character faces. Their "recovery" phase is less effective, reflecting the greater toll on their aerobic system.
+
+By tying both effects to a single stat, `Encumbrance (X)`, we create a simple "knob" for tuning different armor types. This single number defines the entire exertion profile of an armor set, and the flat per-action cost naturally encourages players to adopt the deliberate, energy-efficient tactics appropriate for an armored combatant.
+
+## The Mechanic
+
+Armor cards can have the **`Encumbrance (X)`** keyword, where X is a numerical rating. This keyword has two effects:
+
+1.  When you perform a `Red` or `Yellow` `Attack Action` or a `Move Action`, you must discard **X** cards from the top of your deck.
+2.  When you perform a **Fatigue Cycle**, you add **X** additional `Fatigue` cards to your expended pile (for a total of 2+X).
+
+### Case Study
+* A **Maille Hauberk** is given **`Encumbrance (1)`**. A character wearing it discards 1 card from their deck per strenuous action and adds a total of 3 `Fatigue` cards (2+1) on a cycle.
+* A **Full Plate Harness** is given **`Encumbrance (2)`**. A character wearing it discards 2 cards from their deck per strenuous action and adds a total of 4 `Fatigue` cards (2+2) on a cycle.
+
+# Modular Complexity: The Layered Condition Card
+
+## Core Principle
+To model severe injuries with a modular level of complexity. A single `Condition Card` should be able to serve both a "Grounded Heroism" setting (where it's a simple, immediate problem) and a "Grim Simulationist" setting (where it's a complex, long-term struggle) by revealing its mechanical depth only when narratively necessary.
+
+## Rationale
+This solves a key design tension between **Mechanical Elegance** and **Casual Realism**. It prevents players in a heroic setting from being burdened with a "wall of text" for an injury that will be quickly healed, while ensuring that the full, gritty reality is available for a simulationist campaign.
+
+## The Mechanic
+Severe injuries are represented by two-sided `Condition Cards`.
+
+1.  **The Triage Side (Front):** This is the default state. It shows:
+    * **Name & Keyword:** e.g., `Compound Fracture (Injury)`
+    * **Immediate Effect:** e.g., "You are non-ambulatory."
+    * **Mundane Treatment:** A straightforward General Action to stabilize or remove. e.g., "Can be removed with a successful `Yellow` 25 General Action."
+    * **Escalation Trigger:** e.g., "If this condition is not treated before you next enter Downtime, flip this card."
+
+2.  **The Prognosis Side (Back):** This side details the grim, long-term consequences if the injury is not treated promptly.
+    * **Chronic Effects:** More detailed penalties.
+    * **Mundane Resolution:** A much more difficult, multi-stage process for healing, drawn from our verisimilitude research.
+
+### Interaction with Healing
+* **Mundane Healing** targets the explicit General Action printed on the card.
+* **Magical Healing** is designed to be a more powerful and versatile tool. It would interact with the card's **Keyword**. For example, a "Lesser Restoration" spell might say "Remove one Condition with the `Injury` keyword." This allows magic to bypass the specific skill check, providing a clean and powerful solution, reinforcing the heroic tone.
+
 # Document Purpose
 
 A collection of specific mechanic ideas, interesting concepts, and design explorations. Also a place we can retire `Design Precepts` to if they don’t feel completely broadly applicable.
+

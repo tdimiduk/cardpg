@@ -1,0 +1,52 @@
+# The Card Registry
+#
+# This file indexes all card definitions, decks, and loot tables.
+# It serves as the "Source of Truth" for the VTT build pipeline and the AI.
+
+definitions:
+  # PC Decks
+  - name: "Vallhach (Vin)"
+    id: "deck-vallhach"
+    path: "pc/vallhach.yaml"
+    type: "Character Deck"
+    status: "Active"
+    tags: ["PC", "Magic", "Fire"]
+
+  # Item Libraries
+  - name: "Rare Treasures"
+    id: "lib-treasures"
+    path: "items/treasures.yaml"
+    type: "Item Library"
+    status: "Active"
+    tags: ["Loot", "Rewards"]
+
+  - name: "Forest Journey"
+    id: "encounter-forest-journey"
+    path: "encounters/forest_journey.yaml"
+    type: "Encounter Deck"
+    status: "Active"
+    notes: "Source: Encouters - Forest Journey.csv"
+
+  - name: "Monster Chef"
+    id: "encounter-monster-chef"
+    path: "encounters/monster_chef.yaml"
+    type: "Encounter Deck"
+    status: "Pending"
+    notes: "Source: Encouters - monster chef.csv"
+
+# Core Rules Definitions
+  - name: "Core Status Cards"
+    id: "lib-status-core"
+    path: "status/core.yaml"
+    type: "Status Library"
+    status: "Active"
+    tags: ["Status", "Core", "Fatigue", "Injury"]
+    notes: "Contains the base definitions for Fatigue and Injury cards."
+
+  - name: "Baseline Consequences"
+    id: "deck-consequences-baseline"
+    path: "consequences/baseline.yaml"
+    type: "Consequence Deck"
+    status: "Active"
+    tags: ["Consequences", "Core", "General"]
+    notes: "Generic Severity 1 & 2 consequences for standard play."
