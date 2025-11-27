@@ -1,25 +1,18 @@
-import { Card, CardColor, PlayerDeckState } from "../types";
+import { DeckCard, ResourceType, PlayerDeckState, Stats } from "../types";
 import { STATUS_CARDS } from "../data/statuses";
-
-export const shuffle = <T>(array: T[]): T[] => {
-  const newArray = [...array];
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-  }
-  return newArray;
-};
+import { createCardFromDefinition } from "./deckFactory";
+import { shuffle } from "../utils";
 
 // Helper to get a fresh instance of a status card
-const getStatusCard = (type: 'fatigue' | 'wound'): Card => {
+const getStatusCard = (type: 'fatigue' | 'wound'): DeckCard => {
     const template = STATUS_CARDS.find(c => c.type === type);
     if (!template) throw new Error(`Status card type ${type} not found`);
-    return { ...template, id: Math.random().toString() } as Card;
+    return createCardFromDefinition(template);
 };
 
-export const drawCards = (currentDeck: PlayerDeckState, count: number): { newState: PlayerDeckState, drawn: Card[], fatigueTriggered: boolean } => {
+export const drawCards = (currentDeck: PlayerDeckState, count: number): { newState: PlayerDeckState, drawn: DeckCard[], fatigueTriggered: boolean } => {
   let { drawPile, discardPile, hand } = currentDeck;
-  const drawn: Card[] = [];
+  const drawn: DeckCard[] = [];
   let fatigueTriggered = false;
 
   for (let i = 0; i < count; i++) {
@@ -52,20 +45,21 @@ export const drawCards = (currentDeck: PlayerDeckState, count: number): { newSta
   };
 };
 
-export const calculateStackStrength = (stack: Card[], strengthColor: CardColor, modifier: number = 0): number => {
+export const calculateStackStrength = (stack: DeckCard[], strengthColor: ResourceType, modifier: number = 0): number => {
   // Rule: Sum of color values in stack + modifier
-  // Safe access: card[strengthColor] might be undefined for Items/Char cards, fallback to 0
-  const base = stack.reduce((sum, card) => sum + (card[strengthColor] ?? 0), 0);
+  const key = strengthColor.toLowerCase() as keyof Stats;
+  const base = stack.reduce((sum, card) => sum + (card.stats[key] ?? 0), 0);
   return base + modifier;
 };
 
-export const performDefend = (currentDeck: PlayerDeckState, targetValue: number, color: CardColor): { newState: PlayerDeckState, flipped: Card[], success: boolean, total: number } => {
+export const performDefend = (currentDeck: PlayerDeckState, targetValue: number, color: ResourceType): { newState: PlayerDeckState, flipped: DeckCard[], success: boolean, total: number } => {
   let { drawPile, discardPile, flippedPile } = currentDeck;
-  const newFlipped: Card[] = [];
+  const newFlipped: DeckCard[] = [];
   let currentTotal = 0;
+  const key = color.toLowerCase() as keyof Stats;
 
   // If we are continuing a defense, count existing flipped
-  currentTotal = flippedPile.reduce((sum, c) => sum + (c[color] ?? 0), 0);
+  currentTotal = flippedPile.reduce((sum, c) => sum + (c.stats[key] ?? 0), 0);
   
   if (drawPile.length === 0 && discardPile.length > 0) {
        drawPile = shuffle([...discardPile]);
@@ -75,7 +69,7 @@ export const performDefend = (currentDeck: PlayerDeckState, targetValue: number,
   if (drawPile.length > 0) {
     const card = drawPile.pop()!;
     newFlipped.push(card);
-    currentTotal += (card[color] ?? 0);
+    currentTotal += (card.stats[key] ?? 0);
   }
 
   return {
@@ -91,7 +85,7 @@ export const performDefend = (currentDeck: PlayerDeckState, targetValue: number,
   };
 };
 
-export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number => {
+export const getAttributeValue = (equipped: DeckCard[], stat: 'def' | 'res'): number => {
   let max = 0;
   let found = false;
   equipped.forEach(c => {
@@ -103,6 +97,6 @@ export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number
   return found ? max : 1;
 };
 
-export const calculateSeverity = (consequences: Card[], resilience: number): number => {
+export const calculateSeverity = (consequences: DeckCard[], resilience: number): number => {
   return Math.floor(consequences.length / resilience) + 1;
 };

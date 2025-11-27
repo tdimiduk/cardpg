@@ -1,27 +1,27 @@
 
 import React, { useState } from 'react';
-import { Card, CardColor, GamePhase, PlannedAction } from '../types';
+import { DeckCard, ResourceType, GamePhase, PlannedAction, Rule } from '../types';
 import { CardComponent } from './Card';
 import { Square, Circle, Diamond, X, Zap, Layers, Lock, SkipForward, RotateCcw, ArrowUp } from 'lucide-react';
 
 interface PlayerHandProps {
-  hand: Card[];
-  onPlayStack: (selectedCards: Card[], strengthColor: CardColor, modifier: number, targetDefense?: CardColor, actionName?: string) => void;
-  onDiscard: (selectedCards: Card[]) => void;
+  hand: DeckCard[];
+  onPlayStack: (selectedCards: DeckCard[], strengthColor: ResourceType, modifier: number, targetDefense?: ResourceType, actionName?: string) => void;
+  onDiscard: (selectedCards: DeckCard[]) => void;
   onPass: () => void;
   onCancelPlan: () => void;
-  onReturnToDeck: (selectedCards: Card[]) => void;
+  onReturnToDeck: (selectedCards: DeckCard[]) => void;
   phase: GamePhase;
   hasPlanned: boolean;
   plannedAction?: PlannedAction;
 }
 
 // Helper Component for Action Button Icons
-const ColorIcon = ({ color }: { color: CardColor }) => {
+const ColorIcon = ({ color }: { color: ResourceType }) => {
   switch (color) {
-    case 'red': return <Square size={14} className="inline fill-current" />;
-    case 'yellow': return <Circle size={14} className="inline fill-current" />;
-    case 'blue': return <Diamond size={14} className="inline fill-current" />;
+    case 'Red': return <Square size={14} className="inline fill-current" />;
+    case 'Yellow': return <Circle size={14} className="inline fill-current" />;
+    case 'Blue': return <Diamond size={14} className="inline fill-current" />;
   }
 };
 
@@ -42,19 +42,35 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
   };
 
   const selectedCards = hand.filter(c => selectedIds.has(c.id));
-  // Filter for cards that are strictly Actions (have a cost and a definition)
-  const actionCards = selectedCards.filter(c => c.playCount !== undefined && c.actionDefinition);
   
-  const handleImprovise = (color: CardColor) => {
+  // Filter for cards that are strictly Actions (have a cost and a rule)
+  // We look for the first Attack or General rule to define the action.
+  const getActionRule = (card: DeckCard): Rule | undefined => {
+      return card.rules.find(r => r.type === 'attack' || r.type === 'general');
+  };
+
+  const actionCards = selectedCards.filter(c => c.cost !== undefined && c.cost !== null && getActionRule(c));
+  
+  const handleImprovise = (color: ResourceType) => {
     if (selectedCards.length === 0) return;
     onPlayStack(selectedCards, color, 0, undefined, 'Improvised Action');
     setSelectedIds(new Set());
   };
 
-  const handleSpecificAction = (card: Card) => {
-      if (!card.actionDefinition) return;
-      const def = card.actionDefinition;
-      onPlayStack(selectedCards, def.strengthColor, def.modifier, def.targetDefenseColor, card.name);
+  const handleSpecificAction = (card: DeckCard) => {
+      const rule = getActionRule(card);
+      if (!rule) return;
+      
+      if (rule.type === 'attack') {
+          onPlayStack(selectedCards, rule.data.power.source, rule.data.power.modifier, rule.data.resistedBy, card.name);
+      } else if (rule.type === 'general') {
+          // General rules might not have power, default to Red/0 if missing?
+          // Or maybe we shouldn't allow playing them as "Stack Actions" if they don't have power?
+          // For now, assume if it's in the action list, it's playable.
+          const source = rule.data.power?.source || 'Red';
+          const modifier = rule.data.power?.modifier || 0;
+          onPlayStack(selectedCards, source, modifier, undefined, card.name);
+      }
       setSelectedIds(new Set());
   };
 
@@ -146,12 +162,15 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                 {actionCards.length > 0 ? (
                     <>
                         {actionCards.map(card => {
-                            const cost = card.playCount!; 
+                            const cost = card.cost!; 
                             const requiredTotal = cost + 1;
                             
                             const currentCount = selectedCards.length;
                             const diff = requiredTotal - currentCount;
                             const isValid = diff === 0;
+
+                            const rule = getActionRule(card);
+                            // We know rule exists because of filter
 
                             return (
                                 <button 
@@ -170,28 +189,39 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                                         {phase === 'planning' ? `Plan ${card.name}` : `Cast ${card.name}`}
                                     </span>
                                     
-                                    {isValid ? (
+                                    {isValid && rule && (
                                         <div className="text-[10px] text-indigo-300 group-hover:text-white flex items-center gap-2 bg-indigo-950/50 px-2 py-1 rounded">
-                                            {card.actionDefinition && (
+                                            {rule.type === 'attack' && (
                                               <>
-                                                <span className={card.actionDefinition.strengthColor === 'red' ? 'text-red-400' : card.actionDefinition.strengthColor === 'yellow' ? 'text-yellow-400' : 'text-blue-400'}>
-                                                  <ColorIcon color={card.actionDefinition.strengthColor} />
+                                                <span className={rule.data.power.source === 'Red' ? 'text-red-400' : rule.data.power.source === 'Yellow' ? 'text-yellow-400' : 'text-blue-400'}>
+                                                  <ColorIcon color={rule.data.power.source} />
                                                 </span>
-                                                {card.actionDefinition.targetDefenseColor && (
+                                                {rule.data.resistedBy && (
                                                   <>
                                                     <span className="text-slate-400 text-[9px]">VS</span>
-                                                    <span className={card.actionDefinition.targetDefenseColor === 'red' ? 'text-red-400' : card.actionDefinition.targetDefenseColor === 'yellow' ? 'text-yellow-400' : 'text-blue-400'}>
-                                                      <ColorIcon color={card.actionDefinition.targetDefenseColor} />
+                                                    <span className={rule.data.resistedBy === 'Red' ? 'text-red-400' : rule.data.resistedBy === 'Yellow' ? 'text-yellow-400' : 'text-blue-400'}>
+                                                      <ColorIcon color={rule.data.resistedBy} />
                                                     </span>
                                                   </>
                                                 )}
                                                 <span className="font-mono ml-1">
-                                                  ({card.actionDefinition.modifier > 0 ? '+' : ''}{card.actionDefinition.modifier})
+                                                  ({rule.data.power.modifier > 0 ? '+' : ''}{rule.data.power.modifier})
                                                 </span>
                                               </>
                                             )}
+                                            {rule.type === 'general' && rule.data.power && (
+                                               <>
+                                                <span className={rule.data.power.source === 'Red' ? 'text-red-400' : rule.data.power.source === 'Yellow' ? 'text-yellow-400' : 'text-blue-400'}>
+                                                  <ColorIcon color={rule.data.power.source} />
+                                                </span>
+                                                <span className="font-mono ml-1">
+                                                  ({rule.data.power.modifier > 0 ? '+' : ''}{rule.data.power.modifier})
+                                                </span>
+                                               </>
+                                            )}
                                         </div>
-                                    ) : (
+                                    )}
+                                    {!isValid && (
                                         <span className="text-[10px] text-red-400 font-semibold animate-pulse">
                                             {diff > 0 ? `Select ${diff} more` : `Select ${Math.abs(diff)} fewer`} (Cost: {cost})
                                         </span>
@@ -206,13 +236,13 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
 
                  {/* Improvise options */}
                  <div className="flex gap-2">
-                    <button onClick={() => handleImprovise('red')} className="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/80 text-red-200 px-3 py-2 rounded font-bold text-xs border border-red-900/50 transition-colors">
+                    <button onClick={() => handleImprovise('Red')} className="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/80 text-red-200 px-3 py-2 rounded font-bold text-xs border border-red-900/50 transition-colors">
                         <Square size={14} fill="currentColor" /> {phase === 'planning' ? 'Plan Force' : 'Force'}
                     </button>
-                    <button onClick={() => handleImprovise('yellow')} className="flex items-center gap-2 bg-yellow-950/40 hover:bg-yellow-900/80 text-yellow-200 px-3 py-2 rounded font-bold text-xs border border-yellow-900/50 transition-colors">
+                    <button onClick={() => handleImprovise('Yellow')} className="flex items-center gap-2 bg-yellow-950/40 hover:bg-yellow-900/80 text-yellow-200 px-3 py-2 rounded font-bold text-xs border border-yellow-900/50 transition-colors">
                         <Circle size={14} fill="currentColor" /> {phase === 'planning' ? 'Plan Speed' : 'Speed'}
                     </button>
-                    <button onClick={() => handleImprovise('blue')} className="flex items-center gap-2 bg-blue-950/40 hover:bg-blue-900/80 text-blue-200 px-3 py-2 rounded font-bold text-xs border border-blue-900/50 transition-colors">
+                    <button onClick={() => handleImprovise('Blue')} className="flex items-center gap-2 bg-blue-950/40 hover:bg-blue-900/80 text-blue-200 px-3 py-2 rounded font-bold text-xs border border-blue-900/50 transition-colors">
                         <Diamond size={14} fill="currentColor" /> {phase === 'planning' ? 'Plan Mind' : 'Mind'}
                     </button>
                 </div>

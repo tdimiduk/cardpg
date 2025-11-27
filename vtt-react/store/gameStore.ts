@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { Token, LogEntry, GamePhase, PlannedAction, PlayerDeckState, Card, CardColor, TokenType } from '../types';
+import { Token, LogEntry, GamePhase, PlannedAction, PlayerDeckState, DeckCard, ResourceType, TokenType } from '../types';
 import { INITIAL_TOKENS } from '../constants';
-import { generateStarterDeck, generateMonsterDeck } from '../services/deckFactory';
-import { drawCards, performDefend, shuffle, getAttributeValue, calculateSeverity, calculateStackStrength } from '../services/ruleService';
+import { generateStarterDeck, generateMonsterDeck, createCardFromDefinition } from '../services/deckFactory';
+import { drawCards, performDefend, getAttributeValue, calculateSeverity, calculateStackStrength } from '../services/ruleService';
+import { shuffle } from '../utils';
 import { resolveMovement } from '../services/resolutionService';
 import { STATUS_CARDS } from '../data/statuses';
 import { CONSEQUENCE_DEFINITIONS } from '../data/consequences';
@@ -39,12 +40,12 @@ export type GameAction =
   | { type: 'ADD_STATUS'; tokenId: string; statusType: 'fatigue' | 'wound'; destination: 'discard' | 'hand' | 'draw' }
   | { type: 'REMOVE_STATUS'; tokenId: string; statusType: 'fatigue' | 'wound' }
   // Planning & Flow
-  | { type: 'COMMIT_PLAN'; tokenId: string; cards: Card[]; strengthColor: CardColor; modifier: number; actionName?: string; targetDefense?: CardColor }
+  | { type: 'COMMIT_PLAN'; tokenId: string; cards: DeckCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType }
   | { type: 'CANCEL_PLAN'; tokenId: string }
   | { type: 'PASS_TURN'; tokenId: string }
   | { type: 'REVEAL_AND_RESOLVE' }
   | { type: 'END_ROUND' }
-  | { type: 'PLAY_IMMEDIATE'; tokenId: string; cards: Card[]; strengthColor: CardColor; modifier: number; actionName?: string; targetDefense?: CardColor };
+  | { type: 'PLAY_IMMEDIATE'; tokenId: string; cards: DeckCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType };
 
 
 interface GameStore extends GameState {
@@ -121,7 +122,7 @@ export const useGameStore = create<GameStore>()(
                      actorId: token.id,
                      actorName: token.name,
                      cards: [],
-                     strengthColor: 'red',
+                     strengthColor: 'Red',
                      modifier: 0,
                      actionName: undefined
                  };
@@ -156,7 +157,7 @@ export const useGameStore = create<GameStore>()(
         case 'DEFEND': {
           const deck = state.decks[action.tokenId];
           if (!deck) return;
-          const { newState, flipped } = performDefend(deck, 999, 'red');
+          const { newState, flipped } = performDefend(deck, 999, 'Red');
           state.decks[action.tokenId] = newState;
           if (flipped.length > 0) {
              state.logs.push(createLog(`${getTokenName(state, action.tokenId)} flipped for Defense: ${flipped[0].name}`, 'Player'));
@@ -216,12 +217,14 @@ export const useGameStore = create<GameStore>()(
                 ? pool[Math.floor(Math.random() * pool.length)]
                 : { name: 'Generic Wound', text: 'You are hurt.', severity: targetSeverity };
             
-            const newConsequence: Card = {
+            const newConsequence: DeckCard = {
                 id: Math.random().toString(),
                 name: selection.name,
-                text: [{ type: 'text', content: selection.text }],
-                type: 'wound',
-                playCount: undefined
+                flavor: [{ type: 'textRun', content: selection.text }],
+                tags: ['wound'],
+                stats: { red: 0, yellow: 0, blue: 0 },
+                rules: [],
+                cost: undefined
             };
 
             deck.consequences.push(newConsequence);
@@ -246,7 +249,7 @@ export const useGameStore = create<GameStore>()(
             const template = STATUS_CARDS.find(c => c.type === action.statusType);
             if (!template) return;
             
-            const newCard: Card = { ...template, id: Math.random().toString() };
+            const newCard = createCardFromDefinition(template);
             
             if (action.destination === 'discard') deck.discardPile.push(newCard);
             else if (action.destination === 'hand') deck.hand.push(newCard);
@@ -260,8 +263,8 @@ export const useGameStore = create<GameStore>()(
         case 'REMOVE_STATUS': {
             const deck = state.decks[action.tokenId];
             if (!deck) return;
-            const removeFirst = (arr: Card[]) => {
-                const idx = arr.findIndex(c => c.type === action.statusType);
+            const removeFirst = (arr: DeckCard[]) => {
+                const idx = arr.findIndex(c => c.tags.includes(action.statusType));
                 if (idx > -1) {
                     const removed = arr.splice(idx, 1)[0];
                     return removed;
@@ -313,7 +316,7 @@ export const useGameStore = create<GameStore>()(
                 actorId: action.tokenId,
                 actorName: getTokenName(state, action.tokenId),
                 cards: [],
-                strengthColor: 'red',
+                strengthColor: 'Red',
                 modifier: 0,
                 actionName: 'Pass',
                 move: state.plannedActions[action.tokenId]?.move
@@ -360,8 +363,8 @@ export const useGameStore = create<GameStore>()(
                 }
 
                 if (plan.cards.length > 0) {
-                    // Cast to Card[] because plan.cards is a WritableDraft<Card>[]
-                    const cards = plan.cards as Card[];
+                    // Cast to DeckCard[] because plan.cards is a WritableDraft<DeckCard>[]
+                    const cards = plan.cards as DeckCard[];
                     const strength = calculateStackStrength(cards, plan.strengthColor, plan.modifier);
                     const cardNames = cards.map((c) => c.name).join(' + ');
 
@@ -406,7 +409,7 @@ export const useGameStore = create<GameStore>()(
                         actorId: t.id,
                         actorName: t.name,
                         cards: [],
-                        strengthColor: 'red',
+                        strengthColor: 'Red',
                         modifier: 0,
                         actionName: 'Pass'
                     };

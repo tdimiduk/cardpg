@@ -26,4 +26,11 @@ export const INITIAL_TOKENS: Token[] = [
   }
 ];
 
+
 export const MOCK_MAP_IMAGE = 'https://picsum.photos/1920/1080?grayscale&blur=2';
+
+export const RESOURCE_TYPES = {
+  RED: 'Red',
+  YELLOW: 'Yellow',
+  BLUE: 'Blue',
+} as const;

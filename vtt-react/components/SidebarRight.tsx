@@ -102,18 +102,18 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({ logs, onAddLog, toke
                 {log.actionResult && (
                     <div className="mt-2 flex items-center justify-between bg-black/40 p-2 rounded border border-white/10">
                         <div className="flex items-center gap-2">
-                            {log.actionResult.color === 'red' && <Square className="text-red-500 fill-current" size={16} />}
-                            {log.actionResult.color === 'yellow' && <Circle className="text-yellow-500 fill-current" size={16} />}
-                            {log.actionResult.color === 'blue' && <Diamond className="text-blue-500 fill-current" size={16} />}
+                            {log.actionResult.color === 'Red' && <Square className="text-red-500 fill-current" size={16} />}
+                            {log.actionResult.color === 'Yellow' && <Circle className="text-yellow-500 fill-current" size={16} />}
+                            {log.actionResult.color === 'Blue' && <Diamond className="text-blue-500 fill-current" size={16} />}
                             <span className="font-bold text-lg text-white">{log.actionResult.total}</span>
                         </div>
                         {log.actionResult.targetColor && (
                             <div className="flex items-center gap-1 text-slate-400 text-xs">
                                 <ArrowRight size={12} />
                                 <span>VS</span>
-                                {log.actionResult.targetColor === 'red' && <Square className="text-red-800 fill-red-900" size={12} />}
-                                {log.actionResult.targetColor === 'yellow' && <Circle className="text-yellow-800 fill-yellow-900" size={12} />}
-                                {log.actionResult.targetColor === 'blue' && <Diamond className="text-blue-800 fill-blue-900" size={12} />}
+                                {log.actionResult.targetColor === 'Red' && <Square className="text-red-800 fill-red-900" size={12} />}
+                                {log.actionResult.targetColor === 'Yellow' && <Circle className="text-yellow-800 fill-yellow-900" size={12} />}
+                                {log.actionResult.targetColor === 'Blue' && <Diamond className="text-blue-800 fill-blue-900" size={12} />}
                             </div>
                         )}
                     </div>
