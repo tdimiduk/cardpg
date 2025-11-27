@@ -123,7 +123,10 @@ export const CardComponent: React.FC<CardProps> = ({ card, selected, onClick, sc
                       )}
                       {rule.type === 'general' && (
                          <div>
-                            <span className="font-bold uppercase">Effect</span>
+                            <span className="font-bold uppercase mr-1">Effect</span>
+                            <span className="font-serif italic">
+                                <RichTextRenderer content={rule.data.effect} />
+                            </span>
                          </div>
                       )}
                       {/* Add other rule types as needed */}
