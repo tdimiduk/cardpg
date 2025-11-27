@@ -17,6 +17,7 @@ library
                , megaparsec
                , aeson-gadt-th
                , constraints-extras
+               , cardpg-core
   default-extensions:
     ConstraintKinds
     DataKinds

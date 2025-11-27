@@ -17,6 +17,9 @@ project ./. ({ pkgs, hackGet,  ... }@args:
     relativePathToDataFile = "${generatedDataDir}/${pythonPathDataFileName}";
   in
   {
+  packages = {
+    cardpg-core = ../cardpg-core;
+  };
   overrides = pkgs.lib.composeExtensions
     (pkgs.callPackage (hackGet ./dep/rhyolite) args).haskellOverrides
     (self: super: with pkgs.haskell.lib; {

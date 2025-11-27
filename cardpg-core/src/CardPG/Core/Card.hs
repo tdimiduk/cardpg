@@ -2,16 +2,16 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Common.DeckCard where
+module CardPG.Core.Card where
 
 import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON)
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
 
-import Common.Card.Common (ResourceType(..))
-import Common.RichText 
-import Common.Json
+import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.RichText 
+import CardPG.Core.Json
 
 -- | A static modifier.
 -- | Addresses: "+2 to resource values when used in a defense stack"
@@ -75,50 +75,66 @@ instance FromJSON GeneralDef where
   parseJSON = genericParseJSON cardpgJsonDef
 
 -- | Persistent Effects
-data InstallDef = InstallDef
+-- | Persistent Effects: Stance
+data StanceDef = StanceDef
   { _duration :: Text
-  , _trigger  :: Maybe Text
-  , _reaction :: Maybe Action
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON InstallDef where
+instance ToJSON StanceDef where
   toJSON = genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
-instance FromJSON InstallDef where
+instance FromJSON StanceDef where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Persistent Effects: Channel
+data ChannelDef = ChannelDef
+  { _duration :: Text
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ChannelDef where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON ChannelDef where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Persistent Effects: Prime
+data PrimeDef = PrimeDef
+  { _trigger  :: Text
+  , _reaction :: Rule
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON PrimeDef where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON PrimeDef where
   parseJSON = genericParseJSON cardpgJsonDef
 
 
 -- | The "Do Something" Sum Type
-data Action
-  = DoAttack  AttackDef
-  | DoDefend  DefendDef
-  | DoGeneral GeneralDef
-  | DoInstall InstallDef
-  | DoNarrative RichString
-  deriving stock (Eq, Show, Generic)
-
-instance ToJSON Action where
-  toJSON = genericToJSON (cardpgJsonOptions "Do")
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON Action where
-  parseJSON = genericParseJSON (cardpgJsonOptions "Do")
-
--- | The Top-Level Rule Container.
--- | A card's text box is a list of these Rules.
+-- | The Top-Level Rule Sum Type
 data Rule
-  = Active  Action      -- ^ An actionable button on the VTT.
-  | Passive PassiveDef  -- ^ A static effect the engine tracks.
+  = RuleAttack  AttackDef
+  | RuleDefend  DefendDef
+  | RuleGeneral GeneralDef
+  | RuleStance  StanceDef
+  | RuleChannel ChannelDef
+  | RulePrime   PrimeDef
+  | RuleNarrative RichString
+  | RulePassive PassiveDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON Rule where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
+  toJSON = genericToJSON (cardpgJsonOptions "Rule")
+  toEncoding = genericToEncoding (cardpgJsonOptions "Rule")
 
 instance FromJSON Rule where
-  parseJSON = genericParseJSON cardpgJsonDef
+  parseJSON = genericParseJSON (cardpgJsonOptions "Rule")
 
 -- 3. The Card Record
 -------------------------------------------------------------------------------
@@ -151,7 +167,7 @@ data DeckCard = DeckCard
   
   , _flavor :: Maybe RichString
   }
-  deriving stock (Show, Generic)
+  deriving stock (Eq, Show, Generic)
 
 instance ToJSON DeckCard where
   toJSON = genericToJSON cardpgJsonDef

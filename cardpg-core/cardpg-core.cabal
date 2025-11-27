@@ -1,0 +1,73 @@
+name: cardpg-core
+version: 0.1.0.0
+cabal-version: >= 1.10
+build-type: Simple
+license: BSD3
+license-file: LICENSE
+
+library
+  hs-source-dirs: src
+  build-depends: base
+               , aeson
+               , text
+               , containers
+               , generic-lens
+  default-extensions:
+    ConstraintKinds
+    DataKinds
+    DeriveAnyClass
+    DeriveGeneric
+    DerivingStrategies
+    DuplicateRecordFields
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    OverloadedLabels
+    OverloadedStrings
+    QuantifiedConstraints
+    RankNTypes
+    RecursiveDo
+    ScopedTypeVariables
+    StandaloneDeriving
+    TupleSections
+    TypeApplications
+    TypeFamilies
+    TypeOperators
+    UndecidableInstances
+  exposed-modules:
+    CardPG.Core.Card
+    CardPG.Core.Json
+    CardPG.Core.RichText
+    CardPG.Core.Types
+  default-language: Haskell2010
+
+test-suite cardpg-core-test
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  hs-source-dirs: tests
+  build-depends: base
+               , cardpg-core
+               , aeson
+               , text
+               , vector
+               , QuickCheck
+               , tasty
+               , tasty-quickcheck
+               , generic-random
+  default-language: Haskell2010
+
+executable generate-json
+  main-is: GenerateJson.hs
+  hs-source-dirs: app
+  build-depends: base
+               , cardpg-core
+               , aeson
+               , bytestring
+               , text
+  default-language: Haskell2010
+

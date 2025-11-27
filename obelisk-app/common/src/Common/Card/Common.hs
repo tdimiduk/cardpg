@@ -17,6 +17,8 @@ import Data.List.NonEmpty (NonEmpty(..), (<|))
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
+import CardPG.Core.Types (ResourceType(..))
+
 
 data CardType
   = ConsequenceCardType
@@ -24,9 +26,7 @@ data CardType
   deriving stock (Read, Show, Generic)
   deriving anyclass (ToJSON, FromJSON)
 
-data ResourceType = Red | Yellow | Blue
-  deriving stock (Show, Generic)
-  deriving anyclass (ToJSON, FromJSON)
+
 
 -- TODO this should be a more sophisticated type. These are mostly int's, sometimes absent, eventually maybe text or number + text
 type ResourceValue = Maybe Text
