@@ -67,9 +67,9 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
   }
 
   const defenseTotal = {
-      red: deckState.flippedPile.reduce((sum, c) => sum + (c.red ?? 0), 0),
-      yellow: deckState.flippedPile.reduce((sum, c) => sum + (c.yellow ?? 0), 0),
-      blue: deckState.flippedPile.reduce((sum, c) => sum + (c.blue ?? 0), 0),
+      red: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.red ?? 0), 0),
+      yellow: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.yellow ?? 0), 0),
+      blue: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.blue ?? 0), 0),
   };
 
   // --- Derived Stats from Equipment ---
@@ -298,7 +298,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
                                   </button>
                               </div>
                               <div className="text-[10px] text-slate-400 whitespace-normal leading-normal">
-                                  {c.text[0]?.type === 'text' ? c.text[0].content : ''}
+                                  {c.flavor && c.flavor[0]?.type === 'textRun' ? c.flavor[0].content : ''}
                               </div>
                           </div>
                       ))

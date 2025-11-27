@@ -1,8 +1,14 @@
-
-import { CardColor, CardTextPart, ActionDefinition } from "../types";
+import { Inline, ResourceType } from "../types";
 
 // This file represents the OUTPUT of your export script.
 // It contains fully parsed structures, removing the need for runtime parsing.
+
+export interface LegacyActionDefinition {
+  type: 'attack' | 'utility';
+  strengthColor: ResourceType;
+  targetDefenseColor?: ResourceType;
+  modifier: number;
+}
 
 export interface CardDefinition {
   name: string;
@@ -11,72 +17,72 @@ export interface CardDefinition {
   blue?: number;
   def?: number;
   res?: number;
-  text: CardTextPart[];
+  text: Inline[];
   playCount?: number;
   type: 'ability' | 'item' | 'fatigue' | 'wound';
-  actionDefinition?: ActionDefinition;
+  actionDefinition?: LegacyActionDefinition;
 }
 
-// Helper for readability in this file, though the real export script would just output raw objects.
-const T = (content: string): CardTextPart => ({ type: 'text', content });
-const I = (color: CardColor): CardTextPart => ({ type: 'icon', color });
+// Helper for readability in this file
+const T = (content: string): Inline => ({ type: 'textRun', content });
+const I = (color: ResourceType): Inline => ({ type: 'icon', color });
 
 export const STARTER_DECK_DATA: CardDefinition[] = [
   {
     name: 'Lightning Bolt',
     red: 3, yellow: 3, blue: 3,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T(' + 4')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T(' + 4')],
     playCount: 3,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: 4 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: 4 }
   },
   {
     name: 'Thunderstorm',
     red: 2, yellow: 3, blue: 4,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T(' - 3. Summons clouds.')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T(' - 3. Summons clouds.')],
     playCount: 6,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: -3 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: -3 }
   },
   {
     name: 'Light Blast',
     red: 3, yellow: 3, blue: 3,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T(' + 2')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T(' + 2')],
     playCount: 1,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: 2 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: 2 }
   },
   {
     name: 'Fireball',
     red: 3, yellow: 1, blue: 4,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T(' + 2. Affects all monsters.')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T(' + 2. Affects all monsters.')],
     playCount: 5,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: 2 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: 2 }
   },
   {
     name: 'Magma Missile',
     red: 2, yellow: 1, blue: 4,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T('. Attacks each round.')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T('. Attacks each round.')],
     playCount: 3,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: 0 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: 0 }
   },
   {
     name: 'Banish Darkness',
     red: 4, yellow: 3, blue: 3,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T(' + 6 vs Dark.')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T(' + 6 vs Dark.')],
     playCount: 2,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: 6 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: 6 }
   },
   {
     name: 'Sunburn',
     red: 4, yellow: 1, blue: 4,
-    text: [T('Attack '), I('red'), T(': '), I('blue'), T('. Debuffs monster.')],
+    text: [T('Attack '), I('Red'), T(': '), I('Blue'), T('. Debuffs monster.')],
     playCount: 2,
     type: 'ability',
-    actionDefinition: { type: 'attack', strengthColor: 'blue', targetDefenseColor: 'red', modifier: 0 }
+    actionDefinition: { type: 'attack', strengthColor: 'Blue', targetDefenseColor: 'Red', modifier: 0 }
   },
   {
     name: 'Haste',
@@ -84,7 +90,7 @@ export const STARTER_DECK_DATA: CardDefinition[] = [
     text: [T('Action: Put in play. Draw extra card.')],
     playCount: 3,
     type: 'ability',
-    actionDefinition: { type: 'utility', strengthColor: 'yellow', modifier: 0 }
+    actionDefinition: { type: 'utility', strengthColor: 'Yellow', modifier: 0 }
   },
   {
     name: 'Lightning Speed',
@@ -103,7 +109,7 @@ export const STARTER_DECK_DATA: CardDefinition[] = [
   {
     name: 'Lightning Dodge',
     red: 2, yellow: 5, blue: 2,
-    text: [T('Use '), I('yellow'), T(' + '), I('red'), T(' on Defense.')],
+    text: [T('Use '), I('Yellow'), T(' + '), I('Red'), T(' on Defense.')],
     type: 'ability',
     playCount: undefined
   }
@@ -144,42 +150,42 @@ export const MONSTER_DECK_DATA: CardDefinition[] = [
     {
         name: 'Slash',
         red: 3, yellow: 2, blue: 2,
-        text: [T('Attack '), I('red'), T(': '), I('red'), T(' + 2. Basic wound.')],
+        text: [T('Attack '), I('Red'), T(': '), I('Red'), T(' + 2. Basic wound.')],
         playCount: 1,
         type: 'ability',
-        actionDefinition: { type: 'attack', strengthColor: 'red', targetDefenseColor: 'red', modifier: 2 }
+        actionDefinition: { type: 'attack', strengthColor: 'Red', targetDefenseColor: 'Red', modifier: 2 }
     },
     {
         name: 'Bite',
         red: 3, yellow: 3, blue: 1,
-        text: [T('Attack '), I('red'), T(': '), I('red'), T(' + 2. Basic wound.')],
+        text: [T('Attack '), I('Red'), T(': '), I('Red'), T(' + 2. Basic wound.')],
         playCount: 0,
         type: 'ability',
-        actionDefinition: { type: 'attack', strengthColor: 'red', targetDefenseColor: 'red', modifier: 2 }
+        actionDefinition: { type: 'attack', strengthColor: 'Red', targetDefenseColor: 'Red', modifier: 2 }
     },
     {
         name: 'Power Attack',
         red: 4, yellow: 2, blue: 2,
-        text: [T('Attack '), I('red'), T(': '), I('red'), T(' + 3. Basic wound.')],
+        text: [T('Attack '), I('Red'), T(': '), I('Red'), T(' + 3. Basic wound.')],
         playCount: 2,
         type: 'ability',
-        actionDefinition: { type: 'attack', strengthColor: 'red', targetDefenseColor: 'red', modifier: 3 }
+        actionDefinition: { type: 'attack', strengthColor: 'Red', targetDefenseColor: 'Red', modifier: 3 }
     },
     {
         name: 'Hack',
         red: 3, yellow: 2, blue: 1,
-        text: [T('Attack '), I('red'), T(': '), I('red'), T(' + 5. Basic wound.')],
+        text: [T('Attack '), I('Red'), T(': '), I('Red'), T(' + 5. Basic wound.')],
         playCount: 3,
         type: 'ability',
-        actionDefinition: { type: 'attack', strengthColor: 'red', targetDefenseColor: 'red', modifier: 5 }
+        actionDefinition: { type: 'attack', strengthColor: 'Red', targetDefenseColor: 'Red', modifier: 5 }
     },
     {
         name: 'Chop',
         red: 2, yellow: 3, blue: 1,
-        text: [T('Attack '), I('red'), T(': '), I('red'), T(' + 4. Basic wound.')],
+        text: [T('Attack '), I('Red'), T(': '), I('Red'), T(' + 4. Basic wound.')],
         playCount: 1,
         type: 'ability',
-        actionDefinition: { type: 'attack', strengthColor: 'red', targetDefenseColor: 'red', modifier: 4 }
+        actionDefinition: { type: 'attack', strengthColor: 'Red', targetDefenseColor: 'Red', modifier: 4 }
     },
     {
         name: 'Monitor',
@@ -187,7 +193,7 @@ export const MONSTER_DECK_DATA: CardDefinition[] = [
         text: [T('Draw 2 cards, recover 2 from spent.')],
         playCount: 1,
         type: 'ability',
-        actionDefinition: { type: 'utility', strengthColor: 'blue', modifier: 0 }
+        actionDefinition: { type: 'utility', strengthColor: 'Blue', modifier: 0 }
     },
     {
         name: 'Scaly Skin',

@@ -12,7 +12,9 @@ module CardPG.Core.RichText
   )
   where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON)
+import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, Value(..), object, (.=), (.:), withObject, Options(..))
+import qualified Data.Aeson.KeyMap as KM
+import qualified Data.Aeson.Key as Key
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
@@ -60,16 +62,20 @@ instance ToJSON TextRunDef where
 instance FromJSON TextRunDef where
   parseJSON = genericParseJSON (cardpgJsonOptions "")
 
+-- | Options that don't unwrap unary records, so we can always add "type" to an object.
+safeInlineOptions :: Options
+safeInlineOptions = (cardpgJsonOptions "") { unwrapUnaryRecords = False }
+
 -- | Payload for Icons
 data IconDef = IconDef
   { _color   :: ResourceType 
   } deriving stock (Eq, Show, Generic)
 
 instance ToJSON IconDef where
-  toJSON     = genericToJSON (cardpgJsonOptions "")
-  toEncoding = genericToEncoding (cardpgJsonOptions "")
+  toJSON     = genericToJSON safeInlineOptions
+  toEncoding = genericToEncoding safeInlineOptions
 instance FromJSON IconDef where
-  parseJSON = genericParseJSON (cardpgJsonOptions "")
+  parseJSON = genericParseJSON safeInlineOptions
 
 -- | Payload for Dynamic Math
 data DynamicValDef = DynamicValDef
@@ -77,10 +83,10 @@ data DynamicValDef = DynamicValDef
   } deriving stock (Eq, Show, Generic)
 
 instance ToJSON DynamicValDef where
-  toJSON     = genericToJSON (cardpgJsonOptions "")
-  toEncoding = genericToEncoding (cardpgJsonOptions "")
+  toJSON     = genericToJSON safeInlineOptions
+  toEncoding = genericToEncoding safeInlineOptions
 instance FromJSON DynamicValDef where
-  parseJSON = genericParseJSON (cardpgJsonOptions "")
+  parseJSON = genericParseJSON safeInlineOptions
 
 -- | The Main Inline Sum Type
 -- | No partial fields here; just wrappers around safe types.
@@ -92,11 +98,24 @@ data Inline
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON Inline where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
+  toJSON (TextRun d) = addType "textRun" (toJSON d)
+  toJSON (Icon d) = addType "icon" (toJSON d)
+  toJSON (DynamicVal d) = addType "dynamicVal" (toJSON d)
+  toJSON Break = object ["type" .= ("break" :: Text)]
+
+addType :: Text -> Value -> Value
+addType t (Object o) = Object (KM.insert (Key.fromText "type") (String t) o)
+addType _ v = v
 
 instance FromJSON Inline where
-  parseJSON = genericParseJSON cardpgJsonDef
+  parseJSON = withObject "Inline" $ \o -> do
+    t <- o .: "type"
+    case (t :: Text) of
+      "textRun" -> TextRun <$> parseJSON (Object o)
+      "icon" -> Icon <$> parseJSON (Object o)
+      "dynamicVal" -> DynamicVal <$> parseJSON (Object o)
+      "break" -> pure Break
+      _ -> fail $ "Unknown Inline type: " ++ show t
 
 -- | A list allows for Monoidal concatenation (text <> icon).
 type RichString = [Inline]

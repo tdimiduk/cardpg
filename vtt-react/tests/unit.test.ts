@@ -48,13 +48,13 @@ describe('Rule Service', () => {
   test('Strength Calculation', () => {
     // Stack: CardA (2 Red) + CardB (3 Red) + Item (Undefined/0 Red)
     const stack = [cardA, cardB, itemCard];
-    const strRed = calculateStackStrength(stack, 'red', 0);
+    const strRed = calculateStackStrength(stack, 'Red', 0);
     expect(strRed).toBe(5); // 2 + 3 + 0 = 5
     
-    const strMod = calculateStackStrength(stack, 'red', 2);
+    const strMod = calculateStackStrength(stack, 'Red', 2);
     expect(strMod).toBe(7); // 5 + 2 = 7
 
-    const strBlue = calculateStackStrength([fatigueCard, itemCard], 'blue', 0);
+    const strBlue = calculateStackStrength([fatigueCard, itemCard], 'Blue', 0);
     expect(strBlue).toBe(0); // 0 + undefined = 0
   });
 
@@ -69,7 +69,7 @@ describe('Rule Service', () => {
     };
 
     // Defending vs Target 10. Current flipeed (2). Next card (3). Total should be 5.
-    const defRes = performDefend(deck3, 10, 'red');
+    const defRes = performDefend(deck3, 10, 'Red');
     expect(defRes.total).toBe(5);
     expect(defRes.newState.flippedPile.length).toBe(2);
     expect(defRes.newState.drawPile.length).toBe(0);
@@ -95,7 +95,7 @@ describe('Rule Service', () => {
     // Simulate calculating strength for a revealed plan (e.g., Attack Red: Blue + 2) using 2 cards
     // CardA(Blue:2) + CardB(Blue:3) + Modifier(2)
     const planStack = [cardA, cardB];
-    const planStrength = calculateStackStrength(planStack, 'blue', 2);
+    const planStrength = calculateStackStrength(planStack, 'Blue', 2);
     expect(planStrength).toBe(2 + 3 + 2);
   });
 });

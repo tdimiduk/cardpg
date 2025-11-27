@@ -1,19 +1,19 @@
-import { CardTextPart, ActionDefinition, CardColor } from '../types';
-import { STARTER_DECK_DATA, ITEM_DATA, MONSTER_DECK_DATA, CardDefinition } from './cardDefinitions';
+import { Inline, ResourceType } from '../types';
+import { STARTER_DECK_DATA, ITEM_DATA, MONSTER_DECK_DATA, CardDefinition, LegacyActionDefinition } from './cardDefinitions';
 
 // --- Helpers for Generated Files ---
 
-export const T = (content: string): CardTextPart => ({ type: 'text', content });
-export const I = (color: CardColor): CardTextPart => ({ type: 'icon', color });
+export const T = (content: string): Inline => ({ type: 'textRun', content });
+export const I = (color: ResourceType): Inline => ({ type: 'icon', color });
 
 export const createCardTemplate = (
     name: string,
     red: number | undefined,
     yellow: number | undefined,
     blue: number | undefined,
-    text: CardTextPart[],
+    text: Inline[],
     playCount: number | undefined,
-    actionDefinition: ActionDefinition | undefined,
+    actionDefinition: LegacyActionDefinition | undefined,
     type: 'ability' | 'item' | 'fatigue' | 'wound',
     stats?: { def?: number, res?: number }
 ): CardDefinition => ({
