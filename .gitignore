@@ -1,4 +1,6 @@
-# --- Haskell / Root ---
+/scratch
+
+# --- Haskell 
 .attr-cache
 .cabal-sandbox
 *.hi

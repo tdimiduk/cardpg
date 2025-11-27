@@ -6,6 +6,7 @@ dependencies = [
   "clifun",
   "PyYAML",
   "types-PyYAML",
+  "gspread",
 ]
 
 [tool.uv.sources]

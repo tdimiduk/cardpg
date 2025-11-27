@@ -410,6 +410,12 @@ game_content_design:
       type: "Cards"
       status: "Archived"
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards"]
+      sheets: 
+        - { name: "Swashbuckler", purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.", status: "Archived" }
+        - { name: "Berserker", purpose: "Early playtesting aggressive red. More speculative, we never actually used this.", status: "Archived" }
+        - { name: "Squire", purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot.", status: "Archived" }
+        - { name: "Wizard", purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date.", status: "Archived" }
+        - { name: "shield-fighter", purpose: "Very Early playtesting defensive character.", status: "Archived" }
     - name: "Monsters - v 0.0.4"
       id: "gdoc-monsters-v004"
       path: "https://docs.google.com/spreadsheets/u/0/d/1_vBIPPSB4B2Y7_icIl3v2-iKZvIJRFEYM6kfAWTLSbQ/edit"
@@ -418,14 +424,24 @@ game_content_design:
       type: "Cards"
       status: "Archived"
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]
+      sheets:
+        - { name: "Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
+        - { name: "Campaign 2025", purpose: "Most recent monsters we have written", status: "Canon" }
+        - { name: "Vin's Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
+        - { name: "Peter's Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
+        - { name: "Kid's Campaign Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
     - name: "Kid’s Campaign Characters"
       id: "gdoc-kids-campaign-chars"
       path: "https://docs.google.com/spreadsheets/u/0/d/1kN1ZZoWVXjpMAbjw0x33D6DWrHIYvVjaYM8qC-ViqYI/edit"
       source_type: "google_sheet"
-      purpose: "Character decks from early playtest campaigns."
+      purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
       type: "Cards"
       status: "Archived"
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards"]
+      sheets:
+        - { name: "Vin", purpose: "The oldest of the kids with the most complex characters", status: "Archived" }
+        - { name: "Peter", purpose: "The middle child with intermediate characters", status: "Archived" }
+        - { name: "Luke", purpose: "The youngest of the kids with the simplest characters", status: "Archived" }
     - name: "Kids Events"
       id: "gdoc-kids-campaign-events"
       path: "https://docs.google.com/spreadsheets/u/0/d/1XH0j1CNqiYYSc4hoSCuY-9dznPsv3ZiE2cg4UrSk2Q8/edit"
