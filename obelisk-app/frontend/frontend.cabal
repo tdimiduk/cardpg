@@ -10,6 +10,7 @@ library
                , bytestring
                , cassava
                , common
+               , cardpg-core
                , containers
                , either
                , generic-lens

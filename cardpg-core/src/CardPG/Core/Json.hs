@@ -1,4 +1,4 @@
-module Common.Json where
+module CardPG.Core.Json where
 
 import Data.Aeson (Options(..), defaultOptions, SumEncoding(..))
 import Data.Char (toLower)

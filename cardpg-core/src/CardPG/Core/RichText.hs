@@ -1,4 +1,4 @@
-module Common.RichText
+module CardPG.Core.RichText
   ( TextStyle(..)
   , Inline(..)
   , RichString
@@ -7,6 +7,8 @@ module Common.RichText
   , StackPower(..)
   , simpleString
   , TextRunDef(..)
+  , IconDef(..)
+  , DynamicValDef(..) 
   )
   where
 
@@ -14,8 +16,8 @@ import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, g
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
-import Common.Json
-import Common.Card.Common (ResourceType(..))
+import CardPG.Core.Json
+import CardPG.Core.Types (ResourceType(..))
 
 data StackPower = StackPower
   { _source   :: ResourceType
