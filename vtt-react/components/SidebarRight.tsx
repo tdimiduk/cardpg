@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LogEntry, Token, GamePhase } from '../types';
-import { Send, Bot, Map as MapIcon, Sparkles, Square, Circle, Diamond, ArrowRight, Bug, Play, Rewind } from 'lucide-react';
-import { runUnitTests } from '../tests/unitTests';
+import { Send, Bot, Map as MapIcon, Sparkles, Square, Circle, Diamond, ArrowRight, Play, Rewind } from 'lucide-react';
+
 
 interface SidebarRightProps {
   logs: LogEntry[];
@@ -36,18 +36,7 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({ logs, onAddLog, toke
     setChatInput('');
   };
 
-  const handleRunTests = () => {
-      const results = runUnitTests();
-      const failed = results.filter(r => r.startsWith('FAIL'));
-      
-      if (failed.length === 0) {
-          onAddLog({ id: Date.now().toString(), timestamp: Date.now(), sender: 'System', content: `All tests PASSED.`, type: 'info' });
-      } else {
-          failed.forEach((failMsg, i) => {
-             onAddLog({ id: (Date.now() + i).toString(), timestamp: Date.now(), sender: 'System', content: failMsg, type: 'chat' }); 
-          });
-      }
-  };
+
 
   const allReady = readyCount !== undefined && totalCount !== undefined && readyCount >= totalCount;
 
@@ -85,12 +74,7 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({ logs, onAddLog, toke
           )}
       </div>
 
-      {/* Dev Tools */}
-      <div className="p-2 border-b border-slate-800 bg-slate-900/50 space-y-2">
-         <button onClick={handleRunTests} className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] py-1 rounded border border-slate-700 uppercase tracking-wider">
-            <Bug size={12} /> Diagnostics
-        </button>
-      </div>
+
 
       {/* Chat Log */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
