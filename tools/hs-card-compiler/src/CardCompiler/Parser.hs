@@ -38,6 +38,19 @@ instance ToJSON ParsedCard where
   toJSON (PCore c) = toJSON c
   toJSON (PItem i) = toJSON i
 
+compareParsedCard :: ParsedCard -> ParsedCard -> Ordering
+compareParsedCard (PItem _) (PCore _) = LT
+compareParsedCard (PCore _) (PItem _) = GT
+compareParsedCard _ _ = EQ
+
+data ActorOutput = ActorOutput
+  { items :: [ItemCard]
+  , deck  :: [CoreCard]
+  } deriving (Show, Generic)
+
+instance ToJSON ActorOutput where
+  toJSON = genericToJSON defaultOptions
+
 type MParser = Parsec Void Text
 
 -- | Raw JSON Card structure
@@ -168,6 +181,7 @@ attackParser = do
   _ <- optional (char ':')
   _ <- space1
   power <- stackPowerParser
+  _ <- optional (char ',') >> space
   extra <- takeWhileP Nothing (const True)
   let extraOpt = if T.null (T.strip extra) then Nothing else Just extra
   pure $ RuleAttack $ AttackDef power resistedBy (fmap simpleString extraOpt)
@@ -180,6 +194,7 @@ defendParser = do
   resists <- sepBy1 resourceSymbol orSep
   _ <- optional (char ':')
   power <- optional (space1 >> stackPowerParser)
+  _ <- optional (char ',') >> space
   extra <- takeWhileP Nothing (const True)
   let extraOpt = if T.null (T.strip extra) then Nothing else Just extra
   let p = maybe (StackPower Red 0) id power 

@@ -3,7 +3,7 @@
 
 module Main where
 
-import Control.Monad (forM_)
+import Control.Monad (forM_, unless)
 import Data.Aeson (eitherDecode)
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString as BS
@@ -14,9 +14,13 @@ import Data.Yaml (encode)
 import System.Environment (getArgs)
 import System.Exit (die)
 import System.FilePath ((</>))
+import System.FilePath ((</>))
 import System.Directory (createDirectoryIfMissing)
+import qualified Data.Map.Strict as Map
+import Data.List (sortBy)
+import Data.Maybe (fromMaybe)
 
-import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..))
+import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..), compareParsedCard, ActorOutput(..))
 import CardPG.Core.Card (CoreCard(..), ItemCard(..))
 
 main :: IO ()
@@ -37,14 +41,30 @@ run inputFile outputDir = do
 
 processCards :: FilePath -> [RawCard] -> IO ()
 processCards outputDir cards = do
-  forM_ cards $ \rc -> do
-    case convertCard rc of
-      Left err -> putStrLn $ "Failed to convert card " ++ show (rcName rc) ++ ": " ++ err
-      Right card -> do
-        let fileName = T.unpack (sanitize (rcName rc)) ++ ".yaml"
-        let outputPath = outputDir </> fileName
-        BS.writeFile outputPath (encode card)
-        putStrLn $ "Wrote " ++ outputPath
+  let cardsByActor = Map.fromListWith (++) [ (fromMaybe "unknown" (rcActor c), [c]) | c <- cards ]
+  
+  forM_ (Map.toList cardsByActor) $ \(actor, actorCards) -> do
+    let results = map convertCard actorCards
+        (failures, successes) = partitionEithers results
+    
+    forM_ failures $ \err -> putStrLn $ "Failed to convert card for actor " ++ show actor ++ ": " ++ err
+    
+    unless (null successes) $ do
+      let (items, deck) = splitCards successes
+          output = ActorOutput { items = items, deck = deck }
+          fileName = T.unpack (sanitize actor) ++ ".yaml"
+          outputPath = outputDir </> fileName
+      BS.writeFile outputPath (encode output)
+      putStrLn $ "Wrote " ++ outputPath
+
+splitCards :: [ParsedCard] -> ([ItemCard], [CoreCard])
+splitCards = foldr f ([], [])
+  where
+    f (PItem i) (is, cs) = (i:is, cs)
+    f (PCore c) (is, cs) = (is, c:cs)
+
+partitionEithers :: [Either a b] -> ([a], [b])
+partitionEithers = foldr (either (\a (l, r) -> (a:l, r)) (\b (l, r) -> (l, b:r))) ([], [])
 
 sanitize :: Text -> Text
 sanitize = T.replace " " "_" . T.toLower

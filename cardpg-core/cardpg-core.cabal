@@ -7,9 +7,10 @@ license-file: LICENSE
 
 library
   hs-source-dirs: src
-  build-depends: base
+  build-depends: base >= 4.16 && < 5
                , aeson
                , text
+               , vector
                , containers
                , generic-lens
   default-extensions:

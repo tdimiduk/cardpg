@@ -22,7 +22,7 @@ data PassiveDef = PassiveDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON PassiveDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON PassiveDef where
@@ -37,7 +37,7 @@ data AttackDef = AttackDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON AttackDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON AttackDef where
@@ -52,7 +52,7 @@ data DefendDef = DefendDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON DefendDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON DefendDef where
@@ -68,7 +68,7 @@ data GeneralDef = GeneralDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON GeneralDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON GeneralDef where
@@ -82,7 +82,7 @@ data StanceDef = StanceDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON StanceDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON StanceDef where
@@ -95,7 +95,7 @@ data ChannelDef = ChannelDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON ChannelDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON ChannelDef where
@@ -109,7 +109,7 @@ data PrimeDef = PrimeDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON PrimeDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON PrimeDef where
@@ -130,7 +130,7 @@ data Rule
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON Rule where
-  toJSON = genericToJSON (cardpgJsonOptions "Rule")
+  toJSON = stripEmpty . genericToJSON (cardpgJsonOptions "Rule")
   toEncoding = genericToEncoding (cardpgJsonOptions "Rule")
 
 instance FromJSON Rule where
@@ -143,7 +143,7 @@ data Stats = Stats { _red :: Int, _yellow :: Int, _blue :: Int }
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON Stats where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON Stats where
@@ -170,7 +170,7 @@ data CoreCard = CoreCard
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON CoreCard where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON CoreCard where
@@ -192,7 +192,7 @@ data ItemCard = ItemCard
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON ItemCard where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON ItemCard where
@@ -212,7 +212,7 @@ data NatureCard = NatureCard
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON NatureCard where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON NatureCard where
@@ -231,7 +231,7 @@ data TalentCard = TalentCard
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON TalentCard where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON TalentCard where
@@ -247,7 +247,7 @@ data GeneralActionDef = GeneralActionDef
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON GeneralActionDef where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON GeneralActionDef where
@@ -262,7 +262,7 @@ data EncounterMechanics = EncounterMechanics
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON EncounterMechanics where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON EncounterMechanics where
@@ -280,7 +280,7 @@ data EncounterCard = EncounterCard
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON EncounterCard where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON EncounterCard where
@@ -299,7 +299,7 @@ data ConsequenceCard = ConsequenceCard
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON ConsequenceCard where
-  toJSON = genericToJSON cardpgJsonDef
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
 instance FromJSON ConsequenceCard where
