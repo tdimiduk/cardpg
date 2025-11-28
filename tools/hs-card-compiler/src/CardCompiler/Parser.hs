@@ -8,7 +8,7 @@ module CardCompiler.Parser where
 import Control.Applicative ((<|>), optional, many, some)
 import Control.Monad (void, mfilter)
 import Data.Maybe (fromMaybe)
-import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), Value(..), genericToJSON, defaultOptions)
+import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), Value(..), genericToJSON, defaultOptions, object, (.=))
 import Data.Aeson.Types (Parser)
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
@@ -21,12 +21,11 @@ import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, take
 import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..), GeneralDef(..))
+import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..), GeneralDef(..), Actor(..))
 import CardPG.Core.RichText (RichString, Inline(..), TextRunDef(..), IconDef(..), StackPower(..), simpleString)
 import CardPG.Core.Types (ResourceType(..))
--- We need to map the parsed structures to CardPG.Core.Card types
--- The existing CardParser.hs produced Common.Card types which are slightly different.
--- We will adapt the parsers to produce CardPG.Core.Card types directly.
+import CardPG.Core.DSL.Parser (parseRule)
+import CardPG.Core.DSL.Printer (prettyRule)
 
 -- | Sum type for different card types
 data ParsedCard
@@ -42,16 +41,6 @@ compareParsedCard :: ParsedCard -> ParsedCard -> Ordering
 compareParsedCard (PItem _) (PCore _) = LT
 compareParsedCard (PCore _) (PItem _) = GT
 compareParsedCard _ _ = EQ
-
-data ActorOutput = ActorOutput
-  { items :: [ItemCard]
-  , deck  :: [CoreCard]
-  } deriving (Show, Generic)
-
-instance ToJSON ActorOutput where
-  toJSON = genericToJSON defaultOptions
-
-type MParser = Parsec Void Text
 
 -- | Raw JSON Card structure
 data RawCard = RawCard
@@ -84,6 +73,64 @@ instance FromJSON RawCard where
     rcTags <- v .:? "tags"
     rcKeywordProvide <- v .:? "keywordProvide"
     pure RawCard{..}
+
+-- | Export Types for DSL Output
+
+data ExportActor = ExportActor
+  { _exportItems :: [ItemCard]
+  , _exportDeck :: [ExportCoreCard]
+  } deriving (Show, Generic)
+
+instance ToJSON ExportActor where
+  toJSON ExportActor{..} = object
+    [ "items" .= _exportItems
+    , "deck" .= _exportDeck
+    ]
+
+data ExportCoreCard = ExportCoreCard
+  { _ecName :: Text
+  , _ecId :: Maybe Text
+  , _ecTags :: [Text]
+  , _ecStats :: Stats
+  , _ecCost :: Maybe Int
+  , _ecRules :: [Text]
+  , _ecFlavor :: Maybe RichString
+  } deriving (Show, Generic)
+
+instance ToJSON ExportCoreCard where
+  toJSON ExportCoreCard{..} = object
+    [ "name" .= _ecName
+    , "id" .= _ecId
+    , "tags" .= _ecTags
+    , "stats" .= _ecStats
+    , "cost" .= _ecCost
+    , "rules" .= _ecRules
+    , "flavor" .= _ecFlavor
+    ]
+
+-- | Convert Actor to ExportActor with validation
+toExportActor :: Actor -> Either String ExportActor
+toExportActor Actor{..} = do
+  exportDeck <- mapM toExportCoreCard _deck
+  pure $ ExportActor _items exportDeck
+
+toExportCoreCard :: CoreCard -> Either String ExportCoreCard
+toExportCoreCard CoreCard{..} = do
+  rules <- mapM convertRule _rules
+  pure $ ExportCoreCard _name _id _tags _stats _cost rules _flavor
+
+convertRule :: Rule -> Either String Text
+convertRule r = do
+  let printed = prettyRule r
+  case parseRule printed of
+    Left err -> Left $ "Round-trip verification failed for rule: " ++ show r ++ "\nError: " ++ err
+    Right parsed -> 
+      -- We compare the parsed rule with the original rule.
+      -- Note: The parser might not support all features yet (e.g. rich text styles if not implemented fully),
+      -- but we expect exact match for now as we just verified it in core tests.
+      if parsed == r
+        then Right printed
+        else Left $ "Round-trip mismatch for rule: " ++ show r ++ "\nParsed: " ++ show parsed ++ "\nPrinted: " ++ show printed
 
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
@@ -133,99 +180,28 @@ toInt = fromMaybe 0 . toIntMaybe
 
 parseRules :: Maybe Text -> Maybe Text -> Maybe Text -> Either String [Rule]
 parseRules actionStr effectStr detailsStr = do
-  r1 <- case nonEmpty actionStr of
+  r1 <- case nonEmptyText actionStr of
           Nothing -> pure []
           Just s -> (: []) <$> parseAction s
-  r2 <- case nonEmpty effectStr of
+  r2 <- case nonEmptyText effectStr of
           Nothing -> pure []
           Just s -> (: []) <$> parseEffect s
-  r3 <- case nonEmpty detailsStr of
+  r3 <- case nonEmptyText detailsStr of
           Nothing -> pure []
           Just s -> (: []) <$> parseDetails s
   pure (r1 ++ r2 ++ r3)
 
-nonEmpty :: Maybe Text -> Maybe Text
-nonEmpty Nothing = Nothing
-nonEmpty (Just t)
+nonEmptyText :: Maybe Text -> Maybe Text
+nonEmptyText Nothing = Nothing
+nonEmptyText (Just t)
   | T.null (T.strip t) = Nothing
   | otherwise = Just t
 
--- | Parsers adapted from CardParser.hs
-
 parseAction :: Text -> Either String Rule
-parseAction t = case parse actionParser "" t of
-  Left err -> Left $ errorBundlePretty err
-  Right r -> Right r
+parseAction t = parseRule t
 
 parseEffect :: Text -> Either String Rule
 parseEffect t = Right $ RuleNarrative $ simpleString t
 
 parseDetails :: Text -> Either String Rule
 parseDetails t = Right $ RuleNarrative $ simpleString t
-
-actionParser :: MParser Rule
-actionParser = try (attackParser <* eof) <|> try (defendParser <* eof) <|> (generalParser <* eof)
-
-orSep :: MParser ()
-orSep = void $ choice
-  [ try (space1 >> string' "or" >> space1)
-  , try (space >> char ',' >> space)
-  ]
-
--- Attack
-attackParser :: MParser Rule
-attackParser = do
-  _ <- string' "attack"
-  _ <- space1
-  resistedBy <- resourceSymbol
-  _ <- optional (char ':')
-  _ <- space1
-  power <- stackPowerParser
-  _ <- optional (char ',') >> space
-  extra <- takeWhileP Nothing (const True)
-  let extraOpt = if T.null (T.strip extra) then Nothing else Just extra
-  pure $ RuleAttack $ AttackDef power resistedBy (fmap simpleString extraOpt)
-
--- Defend
-defendParser :: MParser Rule
-defendParser = do
-  _ <- string' "defend"
-  _ <- space1
-  resists <- sepBy1 resourceSymbol orSep
-  _ <- optional (char ':')
-  power <- optional (space1 >> stackPowerParser)
-  _ <- optional (char ',') >> space
-  extra <- takeWhileP Nothing (const True)
-  let extraOpt = if T.null (T.strip extra) then Nothing else Just extra
-  let p = maybe (StackPower Red 0) id power 
-  pure $ RuleDefend $ DefendDef p (NE.fromList resists) (fmap simpleString extraOpt)
-
--- General
-generalParser :: MParser Rule
-generalParser = do
-  text <- takeWhile1P Nothing (const True)
-  pure $ RuleNarrative $ simpleString text
-
--- Helpers
-resourceSymbol :: MParser ResourceType
-resourceSymbol = do
-  _ <- char '|'
-  r <- (Red <$ char 'x') <|> (Yellow <$ char 'y') <|> (Blue <$ char 'z')
-  _ <- char '|'
-  pure r
-
-stackPowerParser :: MParser StackPower
-stackPowerParser = do
-  _ <- optional $ try $ do
-    _ <- string' "strength"
-    _ <- space
-    _ <- optional (char '=')
-    space
-  base <- resourceSymbol
-  _ <- space
-  modVal <- optional $ do
-    sign <- (id <$ char '+') <|> (negate <$ char '-')
-    _ <- space
-    n <- L.decimal
-    pure (sign n)
-  pure $ StackPower base (maybe 0 id modVal)

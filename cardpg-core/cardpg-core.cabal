@@ -13,6 +13,7 @@ library
                , vector
                , containers
                , generic-lens
+               , megaparsec
   default-extensions:
     ConstraintKinds
     DataKinds
@@ -45,6 +46,8 @@ library
     CardPG.Core.Json
     CardPG.Core.RichText
     CardPG.Core.Types
+    CardPG.Core.DSL.Parser
+    CardPG.Core.DSL.Printer
   default-language: Haskell2010
 
 test-suite cardpg-core-test

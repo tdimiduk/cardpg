@@ -305,3 +305,17 @@ instance ToJSON ConsequenceCard where
 instance FromJSON ConsequenceCard where
   parseJSON = genericParseJSON cardpgJsonDef
 
+-- | Represents an Actor (Character/Monster/NPC).
+data Actor = Actor
+  { _items :: [ItemCard]
+  , _deck  :: [CoreCard]
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON Actor where
+  toJSON = stripEmpty . genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON Actor where
+  parseJSON = genericParseJSON cardpgJsonDef
+

@@ -20,8 +20,9 @@ import qualified Data.Map.Strict as Map
 import Data.List (sortBy)
 import Data.Maybe (fromMaybe)
 
-import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..), compareParsedCard, ActorOutput(..))
-import CardPG.Core.Card (CoreCard(..), ItemCard(..))
+import Data.Either (partitionEithers)
+import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..), compareParsedCard, toExportActor, ExportActor(..))
+import CardPG.Core.Card (CoreCard(..), ItemCard(..), Actor(..))
 
 main :: IO ()
 main = do
@@ -51,20 +52,21 @@ processCards outputDir cards = do
     
     unless (null successes) $ do
       let (items, deck) = splitCards successes
-          output = ActorOutput { items = items, deck = deck }
-          fileName = T.unpack (sanitize actor) ++ ".yaml"
-          outputPath = outputDir </> fileName
-      BS.writeFile outputPath (encode output)
-      putStrLn $ "Wrote " ++ outputPath
+          actorData = Actor { _items = items, _deck = deck }
+      
+      case toExportActor actorData of
+        Left err -> die $ "Failed to export actor " ++ show actor ++ ": " ++ err
+        Right exportData -> do
+          let fileName = T.unpack (sanitize actor) ++ ".yaml"
+              outputPath = outputDir </> fileName
+          BS.writeFile outputPath (encode exportData)
+          putStrLn $ "Wrote " ++ outputPath
 
 splitCards :: [ParsedCard] -> ([ItemCard], [CoreCard])
 splitCards = foldr f ([], [])
   where
     f (PItem i) (is, cs) = (i:is, cs)
     f (PCore c) (is, cs) = (is, c:cs)
-
-partitionEithers :: [Either a b] -> ([a], [b])
-partitionEithers = foldr (either (\a (l, r) -> (a:l, r)) (\b (l, r) -> (l, b:r))) ([], [])
 
 sanitize :: Text -> Text
 sanitize = T.replace " " "_" . T.toLower
