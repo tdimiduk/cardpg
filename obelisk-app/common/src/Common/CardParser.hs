@@ -121,6 +121,15 @@ resourceSymbol' = label "resource symbol" $ do
   _ <- char '|'
   pure r
 
+
+cardText :: Parser CardBlocks
+cardText = label "card text" $ cardBlock `sepBy1` (char ';')
+
+cardBlock :: Parser CardBlock
+cardBlock = label "card text block" $ Paragraph <$> some (ResourceIcon <$> resourceSymbol' <|> txt)
+  where
+    txt = Txt <$> takeWhile1P (Just "card text token") (\x -> notFieldEnd x && x /= '|' && x /= ';')
+
 negativeInt :: Parser Int
 negativeInt = do
   _ <- ots $ char '-'
@@ -131,14 +140,6 @@ plusInt :: Parser Int
 plusInt = do
   _ <- ots $ char '+'
   ots L.decimal
-
-cardText :: Parser CardBlocks
-cardText = label "card text" $ cardBlock `sepBy1` (char ';')
-
-cardBlock :: Parser CardBlock
-cardBlock = label "card text block" $ Paragraph <$> some (ResourceIcon <$> resourceSymbol' <|> txt)
-  where
-    txt = Txt <$> takeWhile1P (Just "card text token") (\x -> notFieldEnd x && x /= '|' && x /= ';')
 
 plusModifier :: Parser Int
 plusModifier = plusInt <|> L.decimal <|> negativeInt <|> pure 0
