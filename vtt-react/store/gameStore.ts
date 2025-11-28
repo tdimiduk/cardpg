@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { Token, LogEntry, GamePhase, PlannedAction, PlayerDeckState, DeckCard, ResourceType, TokenType } from '../types';
+import { Token, LogEntry, GamePhase, PlannedAction, PlayerDeckState, CoreCard, ResourceType, TokenType } from '../types';
 import { INITIAL_TOKENS } from '../constants';
 import { generateStarterDeck, generateMonsterDeck, createCardFromDefinition } from '../services/deckFactory';
 import { drawCards, performDefend, getAttributeValue, calculateSeverity, calculateStackStrength } from '../services/ruleService';
@@ -40,12 +40,12 @@ export type GameAction =
   | { type: 'ADD_STATUS'; tokenId: string; statusType: 'fatigue' | 'wound'; destination: 'discard' | 'hand' | 'draw' }
   | { type: 'REMOVE_STATUS'; tokenId: string; statusType: 'fatigue' | 'wound' }
   // Planning & Flow
-  | { type: 'COMMIT_PLAN'; tokenId: string; cards: DeckCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType }
+  | { type: 'COMMIT_PLAN'; tokenId: string; cards: CoreCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType }
   | { type: 'CANCEL_PLAN'; tokenId: string }
   | { type: 'PASS_TURN'; tokenId: string }
   | { type: 'REVEAL_AND_RESOLVE' }
   | { type: 'END_ROUND' }
-  | { type: 'PLAY_IMMEDIATE'; tokenId: string; cards: DeckCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType };
+  | { type: 'PLAY_IMMEDIATE'; tokenId: string; cards: CoreCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType };
 
 
 interface GameStore extends GameState {
@@ -217,7 +217,7 @@ export const useGameStore = create<GameStore>()(
                 ? pool[Math.floor(Math.random() * pool.length)]
                 : { name: 'Generic Wound', text: 'You are hurt.', severity: targetSeverity };
             
-            const newConsequence: DeckCard = {
+            const newConsequence: CoreCard = {
                 id: Math.random().toString(),
                 name: selection.name,
                 flavor: [{ type: 'textRun', content: selection.text }],
@@ -263,7 +263,7 @@ export const useGameStore = create<GameStore>()(
         case 'REMOVE_STATUS': {
             const deck = state.decks[action.tokenId];
             if (!deck) return;
-            const removeFirst = (arr: DeckCard[]) => {
+            const removeFirst = (arr: CoreCard[]) => {
                 const idx = arr.findIndex(c => c.tags.includes(action.statusType));
                 if (idx > -1) {
                     const removed = arr.splice(idx, 1)[0];
@@ -363,8 +363,8 @@ export const useGameStore = create<GameStore>()(
                 }
 
                 if (plan.cards.length > 0) {
-                    // Cast to DeckCard[] because plan.cards is a WritableDraft<DeckCard>[]
-                    const cards = plan.cards as DeckCard[];
+                    // Cast to CoreCard[] because plan.cards is a WritableDraft<CoreCard>[]
+                    const cards = plan.cards as CoreCard[];
                     const strength = calculateStackStrength(cards, plan.strengthColor, plan.modifier);
                     const cardNames = cards.map((c) => c.name).join(' + ');
 

@@ -1,18 +1,18 @@
-import { DeckCard, ResourceType, PlayerDeckState, Stats } from "../types";
+import { CoreCard, ResourceType, PlayerDeckState, Stats } from "../types";
 import { STATUS_CARDS } from "../data/statuses";
 import { createCardFromDefinition } from "./deckFactory";
 import { shuffle } from "../utils";
 
 // Helper to get a fresh instance of a status card
-const getStatusCard = (type: 'fatigue' | 'wound'): DeckCard => {
+const getStatusCard = (type: 'fatigue' | 'wound'): CoreCard => {
     const template = STATUS_CARDS.find(c => c.type === type);
     if (!template) throw new Error(`Status card type ${type} not found`);
     return createCardFromDefinition(template);
 };
 
-export const drawCards = (currentDeck: PlayerDeckState, count: number): { newState: PlayerDeckState, drawn: DeckCard[], fatigueTriggered: boolean } => {
+export const drawCards = (currentDeck: PlayerDeckState, count: number): { newState: PlayerDeckState, drawn: CoreCard[], fatigueTriggered: boolean } => {
   let { drawPile, discardPile, hand } = currentDeck;
-  const drawn: DeckCard[] = [];
+  const drawn: CoreCard[] = [];
   let fatigueTriggered = false;
 
   for (let i = 0; i < count; i++) {
@@ -45,16 +45,16 @@ export const drawCards = (currentDeck: PlayerDeckState, count: number): { newSta
   };
 };
 
-export const calculateStackStrength = (stack: DeckCard[], strengthColor: ResourceType, modifier: number = 0): number => {
+export const calculateStackStrength = (stack: CoreCard[], strengthColor: ResourceType, modifier: number = 0): number => {
   // Rule: Sum of color values in stack + modifier
   const key = strengthColor.toLowerCase() as keyof Stats;
   const base = stack.reduce((sum, card) => sum + (card.stats[key] ?? 0), 0);
   return base + modifier;
 };
 
-export const performDefend = (currentDeck: PlayerDeckState, targetValue: number, color: ResourceType): { newState: PlayerDeckState, flipped: DeckCard[], success: boolean, total: number } => {
+export const performDefend = (currentDeck: PlayerDeckState, targetValue: number, color: ResourceType): { newState: PlayerDeckState, flipped: CoreCard[], success: boolean, total: number } => {
   let { drawPile, discardPile, flippedPile } = currentDeck;
-  const newFlipped: DeckCard[] = [];
+  const newFlipped: CoreCard[] = [];
   let currentTotal = 0;
   const key = color.toLowerCase() as keyof Stats;
 
@@ -85,7 +85,7 @@ export const performDefend = (currentDeck: PlayerDeckState, targetValue: number,
   };
 };
 
-export const getAttributeValue = (equipped: DeckCard[], stat: 'def' | 'res'): number => {
+export const getAttributeValue = (equipped: CoreCard[], stat: 'def' | 'res'): number => {
   let max = 0;
   let found = false;
   equipped.forEach(c => {
@@ -97,6 +97,6 @@ export const getAttributeValue = (equipped: DeckCard[], stat: 'def' | 'res'): nu
   return found ? max : 1;
 };
 
-export const calculateSeverity = (consequences: DeckCard[], resilience: number): number => {
+export const calculateSeverity = (consequences: CoreCard[], resilience: number): number => {
   return Math.floor(consequences.length / resilience) + 1;
 };

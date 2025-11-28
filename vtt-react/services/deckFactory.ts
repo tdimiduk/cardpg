@@ -1,4 +1,4 @@
-import { DeckCard, Rule, Stats, ResourceType, Inline } from '../types';
+import { CoreCard, Rule, Stats, ResourceType, Inline } from '../types';
 import { STARTER_DECK_TEMPLATES, PERMANENT_CARDS, LIZARD_DECK_TEMPLATES, T } from '../data/cardData';
 import { CardDefinition, LegacyActionDefinition } from '../data/cardDefinitions';
 import { shuffle } from '../utils';
@@ -63,7 +63,7 @@ const convertJsonRule = (r: any): Rule => {
     return { type: 'passive', data: { bonus: { source: 'Red', modifier: 0 }, condition: 'Unknown' } };
 };
 
-export const loadCard = (id: string): DeckCard | null => {
+export const loadCard = (id: string): CoreCard | null => {
     const cardData = (generatedCards as any[]).find(c => c.id === id);
     if (!cardData) return null;
 
@@ -83,7 +83,7 @@ export const loadCard = (id: string): DeckCard | null => {
 
 // --- Legacy / Hybrid Factories ---
 
-export const createCardFromDefinition = (tmpl: CardDefinition): DeckCard => {
+export const createCardFromDefinition = (tmpl: CardDefinition): CoreCard => {
     // ... (Keep legacy logic for now if needed, or deprecate)
     // For now, we'll just use the old logic for non-generated cards
     const rules: Rule[] = [];
@@ -121,7 +121,7 @@ export const createCardFromDefinition = (tmpl: CardDefinition): DeckCard => {
     };
 };
 
-export const generateStarterDeck = (): { deck: DeckCard[], equipped: DeckCard[] } => {
+export const generateStarterDeck = (): { deck: CoreCard[], equipped: CoreCard[] } => {
     // Swashbuckler Deck (from generated cards)
     const deckIds = [
         'feint', 'footwork', 'false-charge', 'fence', 'mind-games', 
@@ -134,13 +134,13 @@ export const generateStarterDeck = (): { deck: DeckCard[], equipped: DeckCard[] 
     
     const equippedIds = ['leather-armor', 'rapier', 'throwing-knives'];
 
-    const deck: DeckCard[] = [];
+    const deck: CoreCard[] = [];
     deckIds.forEach(id => {
         const c = loadCard(id);
         if (c) deck.push(c);
     });
 
-    const equipped: DeckCard[] = [];
+    const equipped: CoreCard[] = [];
     equippedIds.forEach(id => {
         const c = loadCard(id);
         if (c) equipped.push(c);
@@ -158,9 +158,9 @@ export const generateStarterDeck = (): { deck: DeckCard[], equipped: DeckCard[] 
     return { deck: shuffle(deck), equipped };
 };
 
-export const generateMonsterDeck = (): { deck: DeckCard[], equipped: DeckCard[] } => {
+export const generateMonsterDeck = (): { deck: CoreCard[], equipped: CoreCard[] } => {
     // Keep legacy monster deck for now until we migrate monsters
-    const deck: DeckCard[] = [];
+    const deck: CoreCard[] = [];
     const countMap: Record<string, number> = {
         'Slash': 4, 'Bite': 2, 'Power Attack': 2, 'Hack': 2, 'Chop': 3,
         'Monitor': 1, 'Scaly Skin': 2, 'Lizard Strength': 3, 'Athletics': 2, 'Skitter': 2

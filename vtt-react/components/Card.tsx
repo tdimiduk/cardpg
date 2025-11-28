@@ -1,9 +1,10 @@
+
 import React from 'react';
-import { DeckCard, ResourceType, Inline } from '../types';
+import { CoreCard, ResourceType, Inline } from '../types';
 import { Square, Circle, Diamond } from 'lucide-react';
 
 interface CardProps {
-  card: DeckCard;
+  card: CoreCard;
   selected?: boolean;
   onClick?: () => void;
   scale?: number;

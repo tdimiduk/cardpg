@@ -4,7 +4,7 @@
 
 module CardPG.Core.Card where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON)
+import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, Value)
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
@@ -149,8 +149,8 @@ instance ToJSON Stats where
 instance FromJSON Stats where
   parseJSON = genericParseJSON cardpgJsonDef
 
-data DeckCard = DeckCard
-  { _id     :: Text
+data CoreCard = CoreCard
+  { _id     :: Maybe Text
   , _name   :: Text
   , _tags   :: [Text]
   , _stats  :: Stats
@@ -169,9 +169,139 @@ data DeckCard = DeckCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON DeckCard where
+instance ToJSON CoreCard where
   toJSON = genericToJSON cardpgJsonDef
   toEncoding = genericToEncoding cardpgJsonDef
 
-instance FromJSON DeckCard where
+instance FromJSON CoreCard where
   parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Represents Items/Equipment that stay in play (Table Cards).
+data ItemCard = ItemCard
+  { _id         :: Maybe Text
+  , _name       :: Text
+  , _tags       :: [Text]
+  , _flavor     :: Maybe RichString
+  , _weight     :: Maybe Int
+  , _value      :: Maybe Int
+  , _traits     :: [Text]
+  , _passive    :: Maybe Text
+  , _defense    :: Maybe Int
+  , _resilience :: Maybe Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ItemCard where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON ItemCard where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Represents Innate Characteristics (Species, Natural Resilience).
+data NatureCard = NatureCard
+  { _id         :: Maybe Text
+  , _name       :: Text
+  , _tags       :: [Text]
+  , _flavor     :: Maybe RichString
+  , _traits     :: [Text]
+  , _passive    :: Maybe Text
+  , _defense    :: Maybe Int
+  , _resilience :: Maybe Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON NatureCard where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON NatureCard where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Represents Learned Skills/Training (Proficiencies, Feats).
+data TalentCard = TalentCard
+  { _id         :: Maybe Text
+  , _name       :: Text
+  , _tags       :: [Text]
+  , _flavor     :: Maybe RichString
+  , _traits     :: [Text]
+  , _passive    :: Maybe Text
+  , _defense    :: Maybe Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON TalentCard where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON TalentCard where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Represents a General Action / Skill Check.
+data GeneralActionDef = GeneralActionDef
+  { _name       :: Text
+  , _description :: Text
+  , _attribute  :: ResourceType -- ^ The Color (Red/Yellow/Blue)
+  , _difficulty :: Int          -- ^ The Strength required
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON GeneralActionDef where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON GeneralActionDef where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Structured Mechanics for Encounters.
+data EncounterMechanics = EncounterMechanics
+  { _combat     :: Maybe [Text] -- ^ List of Enemy IDs
+  , _challenges :: Maybe [GeneralActionDef] -- ^ List of General Actions/Checks
+  , _effects    :: Maybe [Text] -- ^ Narrative effects
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON EncounterMechanics where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON EncounterMechanics where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Represents Narrative Encounters/Events.
+data EncounterCard = EncounterCard
+  { _id        :: Maybe Text
+  , _name      :: Text
+  , _tags      :: [Text]
+  , _narrative :: RichString
+  , _options   :: Maybe [Text]
+  , _mechanics :: Maybe EncounterMechanics
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON EncounterCard where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON EncounterCard where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+-- | Represents Status Effects / Consequences.
+data ConsequenceCard = ConsequenceCard
+  { _id      :: Maybe Text
+  , _name    :: Text
+  , _tags    :: [Text]
+  , _passive :: Maybe Text
+  , _effects :: Maybe [Text]
+  , _notes   :: Maybe Text
+  , _rules   :: [Rule]
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ConsequenceCard where
+  toJSON = genericToJSON cardpgJsonDef
+  toEncoding = genericToEncoding cardpgJsonDef
+
+instance FromJSON ConsequenceCard where
+  parseJSON = genericParseJSON cardpgJsonDef
+

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { DeckCard, ResourceType, PlayerDeckState } from './types';
+import { CoreCard, ResourceType, PlayerDeckState } from './types';
 import { MapBoard } from './components/MapBoard';
 import { SidebarLeft } from './components/SidebarLeft';
 import { SidebarRight } from './components/SidebarRight';
@@ -36,13 +36,13 @@ const App: React.FC = () => {
       .map(([id, _]) => id);
 
   const activeAction = activeTokenId ? plannedActions[activeTokenId] : undefined;
-  const isActionPlanned = (action?: { cards: DeckCard[], actionName?: string }) => !!action && (action.cards.length > 0 || action.actionName === 'Pass');
+  const isActionPlanned = (action?: { cards: CoreCard[], actionName?: string }) => !!action && (action.cards.length > 0 || action.actionName === 'Pass');
   const userHasPlannedAction = isActionPlanned(activeAction);
   const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
 
   // --- Handlers (Dispatches) ---
 
-  const handlePlayStack = (selectedCards: DeckCard[], strengthColor: ResourceType, modifier: number, targetDefense?: ResourceType, actionName?: string) => {
+  const handlePlayStack = (selectedCards: CoreCard[], strengthColor: ResourceType, modifier: number, targetDefense?: ResourceType, actionName?: string) => {
       if (!activeTokenId) return;
       
       if (phase === 'planning') {
