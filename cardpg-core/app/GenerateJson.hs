@@ -20,9 +20,9 @@ main = do
 
 -- Sample Cards
 
-strikeCard :: DeckCard
-strikeCard = DeckCard
-  { _id = "card_strike"
+strikeCard :: CoreCard
+strikeCard = CoreCard
+  { _id = Just "card_strike"
   , _name = "Strike"
   , _tags = ["Melee", "Attack"]
   , _stats = Stats 3 2 2
@@ -37,9 +37,9 @@ strikeCard = DeckCard
   , _flavor = Just [TextRun (TextRunDef Nothing "A simple thrust.")]
   }
 
-defendCard :: DeckCard
-defendCard = DeckCard
-  { _id = "card_block"
+defendCard :: CoreCard
+defendCard = CoreCard
+  { _id = Just "card_block"
   , _name = "Block"
   , _tags = ["Melee", "Defense"]
   , _stats = Stats 0 0 0
@@ -54,9 +54,9 @@ defendCard = DeckCard
   , _flavor = Nothing
   }
 
-stanceCard :: DeckCard
-stanceCard = DeckCard
-  { _id = "card_stance"
+stanceCard :: CoreCard
+stanceCard = CoreCard
+  { _id = Just "card_stance"
   , _name = "Iron Stance"
   , _tags = ["Stance"]
   , _stats = Stats 0 0 0

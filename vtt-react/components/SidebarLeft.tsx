@@ -85,8 +85,35 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
   // Severity Calculation
   const currentSeverity = calculateSeverity(deckState.consequences, resilienceStat);
 
+  const [showDeckModal, setShowDeckModal] = React.useState(false);
+
   return (
-    <div className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col h-full z-20 shadow-xl">
+    <div className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col h-full z-20 shadow-xl relative">
+      {/* Deck Viewer Modal */}
+      {showDeckModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-8 backdrop-blur-sm" onClick={() => setShowDeckModal(false)}>
+            <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-5xl h-full max-h-[90vh] flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+                <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-950">
+                    <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <Layers className="text-indigo-500" /> Deck Viewer ({deckState.drawPile.length} cards)
+                    </h2>
+                    <button onClick={() => setShowDeckModal(false)} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors">
+                        <X size={24} />
+                    </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6 bg-slate-900/50">
+                    <div className="flex flex-wrap gap-4 justify-center">
+                        {deckState.drawPile.map((card, idx) => (
+                            <div key={`${card.id}-${idx}`} className="scale-90 origin-top">
+                                <CardComponent card={card} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
+
       <div className="p-4 border-b border-slate-800 flex items-center gap-2">
         <Layers className="text-indigo-500" />
         <h1 className="font-bold text-lg tracking-wider text-slate-100">caRd<span className="text-indigo-500">PG</span></h1>
@@ -122,10 +149,17 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
               </div>
               
               <div className="grid grid-cols-2 gap-2 mb-4">
-                  <div className="bg-slate-900 p-2 rounded border border-slate-800 flex flex-col items-center">
+                  <div className="bg-slate-900 p-2 rounded border border-slate-800 flex flex-col items-center relative group">
                       <span className="text-xs text-slate-500">Draw Pile</span>
                       <span className="text-xl font-bold text-slate-200">{deckState.drawPile.length}</span>
                       <button onClick={() => onDraw(1)} className="mt-1 w-full text-[10px] bg-slate-800 hover:bg-slate-700 py-1 rounded text-slate-300">Draw 1</button>
+                      <button 
+                        onClick={() => setShowDeckModal(true)}
+                        className="absolute top-1 right-1 p-1 text-slate-600 hover:text-indigo-400 transition-opacity"
+                        title="View Deck"
+                      >
+                          <Layers size={12} />
+                      </button>
                   </div>
                   <div className="bg-slate-900 p-2 rounded border border-slate-800 flex flex-col items-center">
                       <span className="text-xs text-slate-500">Discard</span>

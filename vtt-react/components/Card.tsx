@@ -1,9 +1,10 @@
+
 import React from 'react';
-import { DeckCard, ResourceType, Inline } from '../types';
+import { CoreCard, ResourceType, Inline } from '../types';
 import { Square, Circle, Diamond } from 'lucide-react';
 
 interface CardProps {
-  card: DeckCard;
+  card: CoreCard;
   selected?: boolean;
   onClick?: () => void;
   scale?: number;
@@ -123,7 +124,10 @@ export const CardComponent: React.FC<CardProps> = ({ card, selected, onClick, sc
                       )}
                       {rule.type === 'general' && (
                          <div>
-                            <span className="font-bold uppercase">Effect</span>
+                            <span className="font-bold uppercase mr-1">Effect</span>
+                            <span className="font-serif italic">
+                                <RichTextRenderer content={rule.data.effect} />
+                            </span>
                          </div>
                       )}
                       {/* Add other rule types as needed */}

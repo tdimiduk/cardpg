@@ -1,16 +1,15 @@
-
 import React, { useState } from 'react';
-import { DeckCard, ResourceType, GamePhase, PlannedAction, Rule } from '../types';
+import { CoreCard, ResourceType, GamePhase, PlannedAction, Rule } from '../types';
 import { CardComponent } from './Card';
 import { Square, Circle, Diamond, X, Zap, Layers, Lock, SkipForward, RotateCcw, ArrowUp } from 'lucide-react';
 
 interface PlayerHandProps {
-  hand: DeckCard[];
-  onPlayStack: (selectedCards: DeckCard[], strengthColor: ResourceType, modifier: number, targetDefense?: ResourceType, actionName?: string) => void;
-  onDiscard: (selectedCards: DeckCard[]) => void;
+  hand: CoreCard[];
+  onPlayStack: (selectedCards: CoreCard[], strengthColor: ResourceType, modifier: number, targetDefense?: ResourceType, actionName?: string) => void;
+  onDiscard: (selectedCards: CoreCard[]) => void;
   onPass: () => void;
   onCancelPlan: () => void;
-  onReturnToDeck: (selectedCards: DeckCard[]) => void;
+  onReturnToDeck: (selectedCards: CoreCard[]) => void;
   phase: GamePhase;
   hasPlanned: boolean;
   plannedAction?: PlannedAction;
@@ -45,7 +44,7 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
   
   // Filter for cards that are strictly Actions (have a cost and a rule)
   // We look for the first Attack or General rule to define the action.
-  const getActionRule = (card: DeckCard): Rule | undefined => {
+  const getActionRule = (card: CoreCard): Rule | undefined => {
       return card.rules.find(r => r.type === 'attack' || r.type === 'general');
   };
 
@@ -57,7 +56,7 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
     setSelectedIds(new Set());
   };
 
-  const handleSpecificAction = (card: DeckCard) => {
+  const handleSpecificAction = (card: CoreCard) => {
       const rule = getActionRule(card);
       if (!rule) return;
       

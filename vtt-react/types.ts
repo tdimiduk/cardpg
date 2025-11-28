@@ -107,7 +107,7 @@ export const StatsSchema = z.object({
 });
 export type Stats = z.infer<typeof StatsSchema>;
 
-export const DeckCardSchema = z.object({
+export const CoreCardSchema = z.object({
   id: z.string(),
   name: z.string(),
   tags: z.array(z.string()),
@@ -119,7 +119,7 @@ export const DeckCardSchema = z.object({
   def: z.number().optional(),
   res: z.number().optional(),
 });
-export type DeckCard = z.infer<typeof DeckCardSchema>;
+export type CoreCard = z.infer<typeof CoreCardSchema>;
 
 // --- Legacy / Game State Types (Preserved but updated where possible) ---
 
@@ -162,12 +162,12 @@ export interface GameState {
 }
 
 export interface PlayerDeckState {
-  drawPile: DeckCard[];
-  hand: DeckCard[];
-  discardPile: DeckCard[];
-  flippedPile: DeckCard[]; // Cards flipped for defense
-  equipped: DeckCard[];    // Cards on the table (Items/Characters)
-  consequences: DeckCard[]; // Condition cards on the table (Wounds/Injuries)
+  drawPile: CoreCard[];
+  hand: CoreCard[];
+  discardPile: CoreCard[];
+  flippedPile: CoreCard[]; // Cards flipped for defense
+  equipped: CoreCard[];    // Cards on the table (Items/Characters)
+  consequences: CoreCard[]; // Condition cards on the table (Wounds/Injuries)
 }
 
 // --- Phase & Planning ---
@@ -177,7 +177,7 @@ export type GamePhase = 'planning' | 'resolution';
 export interface PlannedAction {
   actorId: string;
   actorName: string;
-  cards: DeckCard[];
+  cards: CoreCard[];
   strengthColor: ResourceType;
   modifier: number;
   targetDefense?: ResourceType;
@@ -188,6 +188,6 @@ export interface PlannedAction {
   };
 }
 
-// Re-export Card as DeckCard for compatibility during refactor, 
-// or explicitly use DeckCard in new code.
-export type Card = DeckCard;
+// Re-export Card as CoreCard for compatibility during refactor, 
+// or explicitly use CoreCard in new code.
+export type Card = CoreCard;
