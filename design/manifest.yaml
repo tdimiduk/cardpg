@@ -363,7 +363,7 @@ design_process_and_research:
 global_registries:
   - name: "Card Catalog"
     id: "registry-cards"
-    path: "data/cards/_manifest.yaml"
+    path: "../data/cards/_manifest.yaml"
     source_type: "local_file"
     purpose: "The master index for all game objects (Cards, Items, Encounters). Used by the VTT build pipeline."
     type: "Registry"
@@ -372,7 +372,7 @@ global_registries:
 
   - name: "Data Schema & Syntax"
     id: "meta-data-schema"
-    path: "data/cards/README.md"
+    path: "../data/cards/README.md"
     source_type: "local_file"
     purpose: "Technical documentation for the YAML schema and notation syntax used in card definitions."
     type: "Meta Document"
@@ -409,7 +409,7 @@ game_content_design:
       purpose: "Early playtesting character decks. Useful as few-shot examples for card structure."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards"]
+      tags: ["doc-type:content-library", "type:pc-deck", "audience:designer-facing", "core-concept:cards"]
       sheets: 
         - { name: "Swashbuckler", purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.", status: "Archived" }
         - { name: "Berserker", purpose: "Early playtesting aggressive red. More speculative, we never actually used this.", status: "Archived" }
@@ -423,7 +423,7 @@ game_content_design:
       purpose: "Early playtesting monster decks. Useful as few-shot examples for monster design."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]
+      tags: ["doc-type:content-library", "type:monster-deck", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]
       sheets:
         - { name: "Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
         - { name: "Campaign 2025", purpose: "Most recent monsters we have written", status: "Canon" }
@@ -437,7 +437,7 @@ game_content_design:
       purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards"]
+      tags: ["doc-type:content-library", "type:pc-deck", "audience:designer-facing", "core-concept:cards"]
       sheets:
         - { name: "Vin", purpose: "The oldest of the kids with the most complex characters", status: "Archived" }
         - { name: "Peter", purpose: "The middle child with intermediate characters", status: "Archived" }

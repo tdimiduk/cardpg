@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import subprocess
+import yaml
+from pathlib import Path
+
+# Paths
+# We assume this script is run from the tools directory or we can resolve relative to it.
+# If run as `uv run run_pipeline.py` from `tools/`, __file__ is `run_pipeline.py` (or absolute).
+SCRIPT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = SCRIPT_DIR.parent
+MANIFEST_PATH = ROOT_DIR / "design/manifest.yaml"
+DATA_DIR = ROOT_DIR / "data/cards"
+RAW_DIR = DATA_DIR / "raw"
+PC_DIR = DATA_DIR / "pc"
+MONSTER_DIR = DATA_DIR / "monsters"
+SYNC_SCRIPT = SCRIPT_DIR / "gsheet_sync/sync-cards-gsheet.py"
+COMPILER_DIR = SCRIPT_DIR / "hs-card-compiler"
+
+def load_manifest():
+    with open(MANIFEST_PATH, 'r') as f:
+        return yaml.safe_load(f)
+
+def run_sync():
+    print("Syncing data from Google Sheets...")
+    # Ensure raw directory exists
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Run sync script using the current python interpreter (assuming uv run set it up)
+    cmd = [sys.executable, str(SYNC_SCRIPT), "--all", "true"]
+    subprocess.check_call(cmd)
+
+def run_compiler(json_file, output_dir):
+    print(f"Compiling {json_file.name} to {output_dir}...")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Run using cabal run from the compiler directory
+    # We need to pass absolute paths for input and output because we change cwd
+    cmd = ["cabal", "run", "hs-card-compiler", "--", str(json_file.resolve()), str(output_dir.resolve())]
+    
+    subprocess.check_call(cmd, cwd=COMPILER_DIR)
+
+import argparse
+
+# ... imports ...
+
+def main():
+    parser = argparse.ArgumentParser(description="Run the CardPG data pipeline.")
+    parser.add_argument("--skip-sync", action="store_true", help="Skip syncing data from Google Sheets.")
+    args = parser.parse_args()
+
+    # 1. Sync
+    if not args.skip_sync:
+        run_sync()
+    else:
+        print("Skipping sync step...")
+    
+    # 2. Compile
+    manifest = load_manifest()
+    
+    # Find all Cards entries
+    entries = []
+    for category in manifest.values():
+        if isinstance(category, list):
+            entries.extend([item for item in category if item.get('type') == 'Cards'])
+        elif isinstance(category, dict):
+            for subcategory in category.values():
+                if isinstance(subcategory, list):
+                    entries.extend([item for item in subcategory if item.get('type') == 'Cards'])
+    
+    for entry in entries:
+        json_filename = entry['id'] + ".json"
+        json_path = RAW_DIR / json_filename
+        
+        if not json_path.exists():
+            print(f"Warning: Expected JSON file {json_path} not found. Skipping compilation for {entry['name']}.")
+            continue
+        
+        tags = entry.get('tags', [])
+        if "type:pc-deck" in tags:
+            run_compiler(json_path, PC_DIR)
+        elif "type:monster-deck" in tags:
+            run_compiler(json_path, MONSTER_DIR)
+        else:
+            print(f"Skipping compilation for {entry['name']} (no type:pc-deck or type:monster-deck tag).")
+
+if __name__ == "__main__":
+    main()

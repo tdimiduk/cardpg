@@ -42,6 +42,7 @@ attackParser = do
   _ <- string' "attack"
   _ <- space1
   resistedBy <- resourceSymbol
+  _ <- space
   _ <- optional (char ':')
   _ <- space1
   power <- stackPowerParser

@@ -7,7 +7,7 @@ module CardCompiler.Parser where
 
 import Control.Applicative ((<|>), optional, many, some)
 import Control.Monad (void, mfilter)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (catMaybes, fromMaybe)
 import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), Value(..), genericToJSON, defaultOptions, object, (.=))
 import Data.Aeson.Types (Parser)
 import Data.List.NonEmpty (NonEmpty(..))
@@ -98,14 +98,14 @@ data ExportCoreCard = ExportCoreCard
   } deriving (Show, Generic)
 
 instance ToJSON ExportCoreCard where
-  toJSON ExportCoreCard{..} = object
-    [ "name" .= _ecName
-    , "id" .= _ecId
-    , "tags" .= _ecTags
-    , "stats" .= _ecStats
-    , "cost" .= _ecCost
-    , "rules" .= _ecRules
-    , "flavor" .= _ecFlavor
+  toJSON ExportCoreCard{..} = object $ catMaybes
+    [ Just ("name" .= _ecName)
+    , ("id" .=) <$> _ecId
+    , if null _ecTags then Nothing else Just ("tags" .= _ecTags)
+    , Just ("stats" .= _ecStats)
+    , ("cost" .=) <$> _ecCost
+    , if null _ecRules then Nothing else Just ("rules" .= _ecRules)
+    , ("flavor" .=) <$> _ecFlavor
     ]
 
 -- | Convert Actor to ExportActor with validation
