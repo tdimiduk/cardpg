@@ -24,8 +24,12 @@ prettyResource Yellow = "{Yellow}"
 prettyResource Blue = "{Blue}"
 
 prettyPower :: StackPower -> Text
-prettyPower (StackPower base modifier) =
-  prettyResource base <> " " <> prettyModifier modifier
+prettyPower (StackPower base modifier conditional) =
+  prettyResource base <> " " <> prettyModifier modifier <> prettyConditional conditional
+
+prettyConditional :: Maybe Text -> Text
+prettyConditional Nothing = ""
+prettyConditional (Just c) = " " <> c
 
 prettyModifier :: Int -> Text
 prettyModifier n
@@ -34,7 +38,7 @@ prettyModifier n
 
 prettyExtra :: Maybe RichString -> Text
 prettyExtra Nothing = ""
-prettyExtra (Just rt) = " " <> richToString rt
+prettyExtra (Just rt) = " -> " <> richToString rt
 
 richToString :: RichString -> Text
 richToString = T.concat . map inlineToString

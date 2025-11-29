@@ -45,7 +45,7 @@ attackParser = do
   _ <- optional (char ':')
   _ <- space1
   power <- stackPowerParser
-  _ <- optional (char ',') >> space
+  _ <- separatorParser
   extra <- richTextParser
   let extraOpt = if null extra then Nothing else Just extra
   pure $ RuleAttack $ AttackDef power resistedBy extraOpt
@@ -58,10 +58,10 @@ defendParser = do
   resists <- sepBy1 resourceSymbol orSep
   _ <- optional (char ':')
   power <- optional (space1 >> stackPowerParser)
-  _ <- optional (char ',') >> space
+  _ <- separatorParser
   extra <- richTextParser
   let extraOpt = if null extra then Nothing else Just extra
-  let p = fromMaybe (StackPower Red 0) power 
+  let p = fromMaybe (StackPower Red 0 Nothing) power 
   pure $ RuleDefend $ DefendDef p (NE.fromList resists) extraOpt
 
 -- General
@@ -69,6 +69,21 @@ generalParser :: MParser Rule
 generalParser = do
   rt <- richTextParser
   pure $ RuleNarrative rt
+
+-- Separator Parser
+-- Handles the transition between stats and effect.
+-- Canonical: "->"
+-- Legacy: ";" or "," or just space
+separatorParser :: MParser ()
+separatorParser = void $ choice
+  [ try (space >> string "->" >> hspace)
+  , try (space >> string ";" >> hspace)
+  , try (space >> char ',' >> hspace)
+  , hspace
+  ]
+
+hspace :: MParser ()
+hspace = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
 
 -- Rich Text Parser
 richTextParser :: MParser RichString
@@ -79,8 +94,14 @@ inlineParser = choice
   [ try boldParser
   , try italicParser
   , try keywordParser
+  , breakParser
   , textParser
   ]
+
+breakParser :: MParser Inline
+breakParser = do
+  _ <- char ';' <|> char '\n'
+  pure Break
 
 boldParser :: MParser Inline
 boldParser = do
@@ -105,7 +126,7 @@ keywordParser = do
 
 textParser :: MParser Inline
 textParser = do
-  content <- takeWhile1P Nothing (\c -> c /= '*' && c /= '`')
+  content <- takeWhile1P Nothing (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n')
   pure $ TextRun $ TextRunDef Nothing content
 
 -- Helpers
@@ -151,4 +172,10 @@ stackPowerParser = do
     _ <- space
     n <- L.decimal
     pure (sign n)
-  pure $ StackPower base (fromMaybe 0 modVal)
+  _ <- space
+  conditional <- optional $ do
+    _ <- char '('
+    content <- takeWhileP Nothing (/= ')')
+    _ <- char ')'
+    pure $ "(" <> content <> ")"
+  pure $ StackPower base (fromMaybe 0 modVal) conditional

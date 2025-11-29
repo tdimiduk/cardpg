@@ -181,15 +181,36 @@ toInt = fromMaybe 0 . toIntMaybe
 parseRules :: Maybe Text -> Maybe Text -> Maybe Text -> Either String [Rule]
 parseRules actionStr effectStr detailsStr = do
   r1 <- case nonEmptyText actionStr of
-          Nothing -> pure []
-          Just s -> (: []) <$> parseAction s
+          Nothing -> pure Nothing
+          Just s -> Just <$> parseAction s
+  
   r2 <- case nonEmptyText effectStr of
-          Nothing -> pure []
-          Just s -> (: []) <$> parseEffect s
+          Nothing -> pure Nothing
+          Just s -> Just <$> parseEffect s
+
   r3 <- case nonEmptyText detailsStr of
           Nothing -> pure []
           Just s -> (: []) <$> parseDetails s
-  pure (r1 ++ r2 ++ r3)
+
+  case (r1, r2) of
+    (Just (RuleAttack def), Just (RuleNarrative rt)) -> 
+      pure $ RuleAttack (mergeEffect def rt) : r3
+    (Just (RuleDefend def), Just (RuleNarrative rt)) -> 
+      pure $ RuleDefend (mergeEffectDef def rt) : r3
+    (Just ra, Just re) -> pure $ ra : re : r3
+    (Just ra, Nothing) -> pure $ ra : r3
+    (Nothing, Just re) -> pure $ re : r3
+    (Nothing, Nothing) -> pure r3
+
+mergeEffect :: AttackDef -> RichString -> AttackDef
+mergeEffect (AttackDef p r e) rt = AttackDef p r (mergeRichString e rt)
+
+mergeEffectDef :: DefendDef -> RichString -> DefendDef
+mergeEffectDef (DefendDef p r e) rt = DefendDef p r (mergeRichString e rt)
+
+mergeRichString :: Maybe RichString -> RichString -> Maybe RichString
+mergeRichString Nothing new = Just new
+mergeRichString (Just old) new = Just (old <> [Break] <> new)
 
 nonEmptyText :: Maybe Text -> Maybe Text
 nonEmptyText Nothing = Nothing
@@ -201,7 +222,7 @@ parseAction :: Text -> Either String Rule
 parseAction t = parseRule t
 
 parseEffect :: Text -> Either String Rule
-parseEffect t = Right $ RuleNarrative $ simpleString t
+parseEffect t = parseRule t
 
 parseDetails :: Text -> Either String Rule
-parseDetails t = Right $ RuleNarrative $ simpleString t
+parseDetails t = parseRule t

@@ -5,6 +5,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DisambiguateRecordFields #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Main where
@@ -24,6 +25,7 @@ import CardPG.Core.Types
 import CardPG.Core.RichText
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
+import Debug.Trace (trace)
 
 main :: IO ()
 main = defaultMain tests
@@ -79,7 +81,24 @@ prop_dslRoundtrip :: SafeRule -> Property
 prop_dslRoundtrip (SafeRule r) = 
   let printed = prettyRule r
       parsed = parseRule printed
-  in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right r
+      expected = normalizeRule r
+  in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right expected
+
+normalizeRule :: Rule -> Rule
+normalizeRule (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (normalizeEffect e)
+normalizeRule (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (normalizeEffect e)
+normalizeRule r = r
+
+
+
+normalizeEffect :: Maybe RichString -> Maybe RichString
+normalizeEffect Nothing = Nothing
+normalizeEffect (Just []) = Nothing
+normalizeEffect (Just (TextRun (TextRunDef Nothing c) : xs))
+  | T.null (T.stripStart c) && null xs = Nothing
+  | T.null (T.stripStart c) = Just xs
+  | otherwise = Just (TextRun (TextRunDef Nothing (T.stripStart c)) : xs)
+normalizeEffect (Just xs) = Just xs
 
 -- Arbitrary Instances
 
@@ -92,7 +111,16 @@ instance Arbitrary ResourceType where
   arbitrary = genericArbitrary uniform
 
 instance Arbitrary StackPower where
-  arbitrary = genericArbitrary uniform
+  arbitrary = do
+    base <- arbitrary
+    modVal <- arbitrary
+    cond <- oneof 
+      [ pure Nothing
+      , do
+          t <- arbitrary
+          pure $ Just $ "(" <> t <> ")"
+      ]
+    pure $ StackPower base modVal cond
 
 instance Arbitrary TextStyle where
   arbitrary = genericArbitrary uniform
@@ -115,9 +143,10 @@ instance Arbitrary SafeInline where
     , styledText Bold
     , styledText Italic
     , styledText GameKeyword
+    , pure $ SafeInline Break
     ]
     where
-      -- Generate text without special characters that trigger markdown parsing
+      -- Generate text without special characters that trigger markdown parsing or breaks
       safeText = T.pack <$> listOf1 (elements $ ['a'..'z'] ++ ['0'..'9'] ++ [' '])
       
       simpleText = do

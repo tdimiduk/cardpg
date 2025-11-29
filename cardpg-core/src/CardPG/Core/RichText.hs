@@ -22,8 +22,9 @@ import CardPG.Core.Json
 import CardPG.Core.Types (ResourceType(..))
 
 data StackPower = StackPower
-  { _source   :: ResourceType
-  , _modifier :: Int
+  { _source      :: ResourceType
+  , _modifier    :: Int
+  , _conditional :: Maybe Text
   }
   deriving stock (Eq, Show, Generic)
 
