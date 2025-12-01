@@ -1,7 +1,7 @@
 import React from 'react';
-import { useHandSelection } from '../hooks/useHandSelection';
-import { CoreCard, ResourceType, GamePhase, PlannedAction, Rule } from '../types';
-import { CardComponent } from './Card';
+import { useHandSelection } from '../../hooks/useHandSelection';
+import { CoreCard, ResourceType, GamePhase, PlannedAction, Rule } from '../../types';
+import { CardComponent } from '../Card/Card';
 import {
   Square,
   Circle,

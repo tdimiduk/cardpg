@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { CoreCard, ResourceType } from './types';
-import { MapBoard } from './components/MapBoard';
-import { SidebarLeft } from './components/SidebarLeft';
-import { SidebarRight } from './components/SidebarRight';
-import { PlayerHand } from './components/PlayerHand';
+import { MapBoard } from './components/Game/MapBoard';
+import { SidebarLeft } from './components/Sidebar/SidebarLeft';
+import { SidebarRight } from './components/Sidebar/SidebarRight';
+import { PlayerHand } from './components/Player/PlayerHand';
 import { useGameStore } from './store/gameStore';
 
 const App: React.FC = () => {

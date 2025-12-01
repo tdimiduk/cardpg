@@ -1,5 +1,5 @@
 import React from 'react';
-import { Inline } from '../types';
+import { Inline } from '../../types';
 import { InlineIcon } from './InlineIcon';
 
 export const RichTextRenderer = ({ content }: { content?: Inline[] | null }) => {

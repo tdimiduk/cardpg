@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CoreCard, ItemCard } from '../types';
+import { Card, CoreCard, ItemCard } from '../../types';
 import { Square, Circle, Diamond, Shield, Heart } from 'lucide-react';
 import { InlineIcon } from './InlineIcon';
 import { RichTextRenderer } from './RichTextRenderer';

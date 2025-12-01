@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layers, X } from 'lucide-react';
 import { CoreCard } from '../../types';
-import { CardComponent } from '../Card';
+import { CardComponent } from '../Card/Card';
 
 interface DeckViewerModalProps {
   isOpen: boolean;

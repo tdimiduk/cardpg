@@ -1,20 +1,20 @@
 import React from 'react';
-import { Token, TokenType, PlayerDeckState, Actor } from '../types';
-import { getActorTemplates, ActorTemplate } from '../services/deckFactory';
-import { useActorStats } from '../hooks/useActorStats';
-import { ACTOR_COLORS } from '../theme';
+import { Token, TokenType, PlayerDeckState, Actor } from '../../types';
+import { getActorTemplates, ActorTemplate } from '../../services/deckFactory';
+import { useActorStats } from '../../hooks/useActorStats';
+import { ACTOR_COLORS } from '../../theme';
 
 // Import new sub-components
-import { SidebarHeader } from './Sidebar/SidebarHeader';
-import { ActorList } from './Sidebar/ActorList';
-import { ActiveActorHeader } from './Sidebar/ActiveActorHeader';
-import { DeckStats } from './Sidebar/DeckStats';
-import { StatusManager } from './Sidebar/StatusManager';
-import { DefenseStats } from './Sidebar/DefenseStats';
-import { ConsequenceList } from './Sidebar/ConsequenceList';
-import { EquippedList } from './Sidebar/EquippedList';
-import { ActorSelectorModal } from './Sidebar/ActorSelectorModal';
-import { DeckViewerModal } from './Sidebar/DeckViewerModal';
+import { SidebarHeader } from './SidebarHeader';
+import { ActorList } from './ActorList';
+import { ActiveActorHeader } from './ActiveActorHeader';
+import { DeckStats } from './DeckStats';
+import { StatusManager } from './StatusManager';
+import { DefenseStats } from './DefenseStats';
+import { ConsequenceList } from './ConsequenceList';
+import { EquippedList } from './EquippedList';
+import { ActorSelectorModal } from './ActorSelectorModal';
+import { DeckViewerModal } from './DeckViewerModal';
 
 interface SidebarLeftProps {
   deckState: PlayerDeckState | null | undefined;

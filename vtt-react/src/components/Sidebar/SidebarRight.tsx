@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LogEntry, GamePhase } from '../types';
+import { LogEntry, GamePhase } from '../../types';
 import { Send, Bot, Square, Circle, Diamond, ArrowRight, Play, Rewind } from 'lucide-react';
 
 interface SidebarRightProps {

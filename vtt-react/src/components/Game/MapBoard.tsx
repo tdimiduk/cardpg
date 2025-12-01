@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Token, PlannedAction, Actor } from '../types';
-import { GRID_SIZE } from '../constants';
+import { Token, PlannedAction, Actor } from '../../types';
+import { GRID_SIZE } from '../../constants';
 import { TokenEntity } from './TokenEntity';
 
 interface MapBoardProps {
