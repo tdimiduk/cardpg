@@ -1,6 +1,6 @@
 import React from 'react';
 import { Square, Circle, Diamond } from 'lucide-react';
-import { ResourceType } from '../types';
+import { ResourceType } from '../../types';
 
 export const InlineIcon: React.FC<{ color: ResourceType }> = ({ color }) => {
   switch (color) {
