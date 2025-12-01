@@ -8,9 +8,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Main where
 
-import Data.Maybe (fromMaybe, mapMaybe)
+module Main where
 
 import Test.Tasty
 import Test.Tasty.QuickCheck
@@ -24,7 +23,7 @@ import qualified Data.List.NonEmpty as NE
 import CardPG.Core.Card
 import CardPG.Core.Types
 import CardPG.Core.RichText
-import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, mkNonEmptyText, getNonEmptyText)
+import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, getNonEmptyText)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
 
@@ -46,8 +45,7 @@ prop_coreCardRoundtrip :: CoreCard -> Property
 prop_coreCardRoundtrip x = 
   let encoded = encode x
       decoded = eitherDecode encoded
-      normalized = normalizeCoreCard x
-  in counterexample (show encoded) $ decoded === Right normalized
+  in counterexample (show encoded) $ decoded === Right x
 
 prop_itemCardRoundtrip :: ItemCard -> Property
 prop_itemCardRoundtrip x = 
@@ -77,53 +75,13 @@ prop_consequenceCardRoundtrip :: ConsequenceCard -> Property
 prop_consequenceCardRoundtrip x = 
   let encoded = encode x
       decoded = eitherDecode encoded
-      normalized = normalizeConsequenceCard x
-  in counterexample (show encoded) $ decoded === Right normalized
-
-normalizeCoreCard :: CoreCard -> CoreCard
-normalizeCoreCard c@CoreCard{..} = c
-  { _rules = fmap (fmap normalizeRuleJSON) _rules
-  , _flavor = normalizeEffectJSON _flavor
-  }
-
-normalizeConsequenceCard :: ConsequenceCard -> ConsequenceCard
-normalizeConsequenceCard c@ConsequenceCard{..} = c
-  { _rules = fmap (fmap normalizeRuleJSON) _rules
-  }
+  in counterexample (show encoded) $ decoded === Right x
 
 prop_dslRoundtrip :: Rule -> Property
 prop_dslRoundtrip r = 
   let printed = prettyRule r
       parsed = parseRule printed
-      expected = normalizeRuleDSL r
-  in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right expected
-
-normalizeRuleDSL :: Rule -> Rule
-normalizeRuleDSL = normalizeRuleWith normalizeEffectDSL
-
-normalizeRuleJSON :: Rule -> Rule
-normalizeRuleJSON = normalizeRuleWith normalizeEffectJSON
-
-normalizeRuleWith :: (Maybe RichString -> Maybe RichString) -> Rule -> Rule
-normalizeRuleWith norm (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (norm e)
-normalizeRuleWith norm (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (norm e)
-normalizeRuleWith norm (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (norm c) (fromMaybe (unsafeSimpleString " ") (norm (Just e)))
-normalizeRuleWith norm (RuleNarrative rt) = RuleNarrative (fromMaybe (unsafeSimpleString " ") (norm (Just rt)))
-normalizeRuleWith _ (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
-normalizeRuleWith norm (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (fromMaybe (unsafeSimpleString " ") (norm (Just e)))
-normalizeRuleWith norm (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (fromMaybe (unsafeSimpleString " ") (norm (Just e)))
-normalizeRuleWith norm (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleWith norm r)
-
-normalizeCondition :: Maybe NonEmptyText -> Maybe NonEmptyText
-normalizeCondition = id 
-
-normalizeEffectDSL :: Maybe RichString -> Maybe RichString
-normalizeEffectDSL Nothing = Nothing
-normalizeEffectDSL (Just rs) = mkRichString (NE.toList (unRichString rs))
-
-normalizeEffectJSON :: Maybe RichString -> Maybe RichString
-normalizeEffectJSON Nothing = Nothing
-normalizeEffectJSON (Just rs) = mkRichString (NE.toList (unRichString rs))
+  in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right r
 
 -- Arbitrary Instances
 
