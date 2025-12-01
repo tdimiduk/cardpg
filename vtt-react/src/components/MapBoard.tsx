@@ -87,8 +87,8 @@ export const MapBoard: React.FC<MapBoardProps> = ({
     >
       <div
         ref={boardRef}
-        className="relative min-w-[2000px] min-h-[2000px] bg-grid-pattern"
-        style={{ backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px`, backgroundColor: '#1e293b' }}
+        className="relative min-w-[2000px] min-h-[2000px] bg-grid-pattern bg-slate-800"
+        style={{ backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px` }}
         onClick={() => setActiveTokenId(null)}
       >
         {/* SVG Layer for Planned Paths */}

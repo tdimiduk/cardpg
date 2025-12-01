@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Token, TokenType, Actor } from '../types';
+import { ACTOR_COLORS } from '../theme';
 import { GRID_SIZE } from '../constants';
 import { User, Skull, Sword, X } from 'lucide-react';
 

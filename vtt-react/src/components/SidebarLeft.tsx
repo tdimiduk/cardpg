@@ -2,6 +2,7 @@ import React from 'react';
 import { Token, TokenType, PlayerDeckState, Actor } from '../types';
 import { getActorTemplates, ActorTemplate } from '../services/deckFactory';
 import { useActorStats } from '../hooks/useActorStats';
+import { ACTOR_COLORS } from '../theme';
 
 // Import new sub-components
 import { SidebarHeader } from './Sidebar/SidebarHeader';
@@ -71,7 +72,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     // Use template name, but append random number if needed or just use it as base
     // We'll use the template name + random number to ensure uniqueness if multiple are added
     const name = `${template.name} ${Math.floor(Math.random() * 100)}`;
-    const color = selectorType === TokenType.MONSTER ? '#10b981' : '#3b82f6';
+    const color = selectorType === TokenType.MONSTER ? ACTOR_COLORS.MONSTER : ACTOR_COLORS.PC;
     onAddActor(name, selectorType, color, template.id);
     setShowActorSelector(false);
   };

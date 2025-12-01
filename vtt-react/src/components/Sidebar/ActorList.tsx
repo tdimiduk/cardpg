@@ -1,6 +1,7 @@
 import React from 'react';
 import { Skull, User, X, Plus } from 'lucide-react';
 import { Token, TokenType, Actor } from '../../types';
+import { ACTOR_COLORS } from '../../theme';
 
 interface ActorListProps {
   tokens: Token[];
@@ -37,9 +38,9 @@ export const ActorList: React.FC<ActorListProps> = ({
                 >
                   <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-800 flex items-center justify-center shrink-0 border border-slate-600">
                     {actor.type === TokenType.MONSTER ? (
-                      <Skull size={16} className="text-emerald-400" />
+                      <Skull size={16} style={{ color: ACTOR_COLORS.MONSTER }} />
                     ) : (
-                      <User size={16} className="text-indigo-400" />
+                      <User size={16} style={{ color: ACTOR_COLORS.PC }} />
                     )}
                   </div>
                   <div className="text-left">

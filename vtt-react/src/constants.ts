@@ -1,4 +1,5 @@
 import { Token, Actor, TokenType } from './types';
+import { ACTOR_COLORS } from './theme';
 
 export const GRID_SIZE = 64; // pixels per square
 
@@ -7,7 +8,7 @@ export const INITIAL_ACTORS: Record<string, Actor> = {
     id: 'hero-1',
     name: 'Vallhach',
     type: TokenType.PC,
-    color: '#3b82f6',
+    color: ACTOR_COLORS.PC,
     deck: {
       drawPile: [],
       hand: [],
@@ -21,7 +22,7 @@ export const INITIAL_ACTORS: Record<string, Actor> = {
     id: 'monster-1',
     name: 'Lizard Warrior',
     type: TokenType.MONSTER,
-    color: '#10b981',
+    color: ACTOR_COLORS.MONSTER,
     deck: {
       drawPile: [],
       hand: [],

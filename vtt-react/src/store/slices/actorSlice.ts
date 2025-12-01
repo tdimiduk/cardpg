@@ -12,6 +12,7 @@ import { shuffle } from '../../utils';
 import { STATUS_CARDS } from '../../data/statuses';
 import { CONSEQUENCE_DEFINITIONS } from '../../data/consequences';
 import { LogSlice, createLog } from './logSlice';
+import { ACTOR_COLORS } from '../../theme';
 
 export interface ActorSlice {
   actors: Record<string, Actor>;
@@ -89,7 +90,7 @@ export const createActorSlice: StateCreator<
         id,
         name,
         type: actorType,
-        color: color || '#999',
+        color: color || (actorType === TokenType.MONSTER ? ACTOR_COLORS.MONSTER : ACTOR_COLORS.PC),
         deck: {
           drawPile: deckRes.deck,
           hand: [],
