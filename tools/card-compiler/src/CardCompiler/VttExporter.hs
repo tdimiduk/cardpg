@@ -86,7 +86,7 @@ convertActor Actor{..} =
 -- | Convert CoreCard to VttCoreCard
 toVttCoreCard :: CoreCard -> VttCoreCard
 toVttCoreCard CoreCard{..} = VttCoreCard
-  { _id = _id
+  { _id = Just $ fromMaybe (slugify (getNonEmptyText _name)) _id
   , _name = getNonEmptyText _name
   , _tags = _tags
   , _stats = _stats

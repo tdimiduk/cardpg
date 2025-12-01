@@ -57,6 +57,7 @@ data RawCard = RawCard
   , rcFlavor :: Maybe Text
   , rcTags :: Maybe [Text]
   , rcKeywordProvide :: Maybe Text
+  , rcId :: Maybe Text
   } deriving (Show, Generic)
 
 instance FromJSON RawCard where
@@ -73,6 +74,7 @@ instance FromJSON RawCard where
     rcFlavor <- v .:? "flavor"
     rcTags <- v .:? "tags"
     rcKeywordProvide <- v .:? "keywordProvide"
+    rcId <- v .:? "id"
     pure RawCard{..}
 
 
@@ -89,7 +91,7 @@ convertCard RawCard{..} = do
     Just name -> do
       case (mRed, mYellow, mBlue) of
         (Nothing, Nothing, Nothing) -> pure $ PItem ItemCard 
-          { _id = Nothing
+          { _id = rcId
           , _name = name
           , _tags = rcTags >>= NE.nonEmpty
           , _flavor = rcFlavor >>= simpleString
@@ -102,7 +104,7 @@ convertCard RawCard{..} = do
           }
         (Just r, Just y, Just b) -> do
           let _name = name
-              _id = Nothing -- Generated later or from ID field if present
+              _id = rcId
               _tags = rcTags >>= NE.nonEmpty
               _stats = Stats r y b
               _cost = toIntMaybe rcCost

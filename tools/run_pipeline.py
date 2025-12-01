@@ -17,7 +17,7 @@ RAW_DIR = DATA_DIR / "raw"
 PC_DIR = DATA_DIR / "pc"
 MONSTER_DIR = DATA_DIR / "monsters"
 SYNC_SCRIPT = SCRIPT_DIR / "gsheet_sync/sync-cards-gsheet.py"
-COMPILER_DIR = SCRIPT_DIR / "hs-card-compiler"
+COMPILER_DIR = SCRIPT_DIR / "card-compiler"
 
 def load_manifest():
     with open(MANIFEST_PATH, 'r') as f:
@@ -38,7 +38,7 @@ def run_compiler(json_file, output_dir):
     
     # Run using cabal run from the compiler directory
     # We need to pass absolute paths for input and output because we change cwd
-    cmd = ["cabal", "run", "hs-card-compiler", "--", str(json_file.resolve()), str(output_dir.resolve())]
+    cmd = ["cabal", "run", "card-compiler", "--", str(json_file.resolve()), str(output_dir.resolve())]
     
     subprocess.check_call(cmd, cwd=COMPILER_DIR)
 
@@ -98,7 +98,7 @@ def main():
     yaml_files = list(PC_DIR.glob("*.yaml")) + list(MONSTER_DIR.glob("*.yaml"))
     
     if yaml_files:
-        cmd = ["cabal", "run", "hs-card-compiler", "--", "export-vtt", str(vtt_output)] + [str(f) for f in yaml_files]
+        cmd = ["cabal", "run", "card-compiler", "--", "export-vtt", str(vtt_output)] + [str(f) for f in yaml_files]
         subprocess.check_call(cmd, cwd=COMPILER_DIR)
     else:
         print("No YAML files found to export.")

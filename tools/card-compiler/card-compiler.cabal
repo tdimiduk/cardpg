@@ -1,5 +1,5 @@
 cabal-version:      3.0
-name:               hs-card-compiler
+name:               card-compiler
 version:            0.1.0.0
 synopsis:           Compiles JSON card definitions to YAML using Haskell parsers
 license:            BSD-3-Clause
@@ -10,7 +10,7 @@ build-type:         Simple
 common warnings
     ghc-options: -Wall
 
-executable hs-card-compiler
+executable card-compiler
     import:           warnings
     main-is:          Main.hs
     other-modules:    CardCompiler.Parser
@@ -30,7 +30,7 @@ executable hs-card-compiler
     hs-source-dirs:   src
     default-language: Haskell2010
 
-test-suite hs-card-compiler-test
+test-suite card-compiler-test
     type:             exitcode-stdio-1.0
     main-is:          Spec.hs
     hs-source-dirs:   test, src

@@ -1,5 +1,5 @@
 import { Card, CoreCard, ItemCard, Rule, Stats, ResourceType, Inline } from '../types';
-import { STARTER_DECK_TEMPLATES, PERMANENT_CARDS, LIZARD_DECK_TEMPLATES, T } from '../data/cardData';
+import { T } from '../data/cardData';
 import { CardDefinition } from '../data/cardDefinitions';
 import { shuffle } from '../utils';
 import generatedCards from '../data/generated_cards.json';
@@ -134,43 +134,51 @@ export const generateStarterDeck = (): { deck: CoreCard[], equipped: ItemCard[] 
 
     // Fallback to legacy if generated cards are missing (e.g. during dev)
     if (deck.length === 0) {
-        console.warn("Generated cards not found, falling back to legacy starter deck.");
-        const legacyDeck = STARTER_DECK_TEMPLATES.map(createCardFromDefinition).filter(c => c.type === 'core') as CoreCard[];
-        const legacyEquipped = PERMANENT_CARDS.map(createCardFromDefinition).filter(c => c.type === 'item') as ItemCard[];
-        return { 
-            deck: shuffle(legacyDeck), 
-            equipped: legacyEquipped 
-        };
+        console.warn("Generated cards not found. Please run the pipeline to generate cards.");
+        // TODO: UI for indicating missing deck
+        return { deck: [], equipped: [] };
     }
 
     return { deck: shuffle(deck), equipped };
 };
 
 export const generateMonsterDeck = (): { deck: CoreCard[], equipped: ItemCard[] } => {
-    // Keep legacy monster deck for now until we migrate monsters
     const deck: CoreCard[] = [];
+    
+    // Map of card names to count in the deck
     const countMap: Record<string, number> = {
         'Slash': 4, 'Bite': 2, 'Power Attack': 2, 'Hack': 2, 'Chop': 3,
         'Monitor': 1, 'Scaly Skin': 2, 'Lizard Strength': 3, 'Athletics': 2, 'Skitter': 2
     };
 
-    LIZARD_DECK_TEMPLATES.forEach(tmpl => {
-        const count = countMap[tmpl.name!] || 1;
-        for(let i=0; i<count; i++) {
-             const c = createCardFromDefinition(tmpl);
-             if (c.type === 'core') deck.push(c);
+    // Load cards from generated JSON by name
+    Object.entries(countMap).forEach(([name, count]) => {
+        // Find card by name (case-insensitive search might be safer but exact match for now)
+        // The generated cards have names like "Slash", "Bite" etc.
+        const cardData = (generatedCards as any[]).find(c => c.name === name && c.type === 'core');
+        if (cardData) {
+            const card = loadCard(cardData.id);
+            if (card && card.type === 'core') {
+                for(let i=0; i<count; i++) {
+                    deck.push(card);
+                }
+            }
+        } else {
+            console.warn(`Monster card '${name}' not found in generated cards.`);
         }
     });
     
-    const equipped = [
-        createCardFromDefinition({
-            name: 'Lizard Warrior',
-            text: [T('A fierce reptile.')],
-            type: 'item',
-            def: 3,
-            res: 2
-        } as any)
-    ].filter(c => c.type === 'item') as ItemCard[];
+    // Load equipped item
+    const equipped: ItemCard[] = [];
+    const lizardWarrior = (generatedCards as any[]).find(c => c.name === 'Lizard Warrior' && c.type === 'item');
+    if (lizardWarrior) {
+        const card = loadCard(lizardWarrior.id);
+        if (card && card.type === 'item') {
+            equipped.push(card);
+        }
+    } else {
+        console.warn("Lizard Warrior item not found in generated cards.");
+    }
 
     return { deck: shuffle(deck), equipped };
 };
