@@ -4,60 +4,113 @@ import { CardDefinition } from '../data/cardDefinitions';
 import { shuffle } from '../utils';
 import generatedCards from '../data/generated_cards.json';
 
+// --- Types for Generated JSON ---
+
+interface GeneratedRule {
+    type: string;
+    data: any;
+}
+
+interface GeneratedCoreCard {
+    type?: 'core'; // Might be missing in JSON, implied by location in 'deck'
+    id: string;
+    name: string;
+    tags?: string[];
+    stats: { red: number, yellow: number, blue: number };
+    cost?: number;
+    rules?: GeneratedRule[];
+    flavor?: any; // RichString in JSON
+}
+
+interface GeneratedItemCard {
+    type?: 'item'; // Might be missing in JSON, implied by location in 'items'
+    id: string;
+    name: string;
+    tags?: string[];
+    flavor?: any;
+    weight?: number;
+    value?: number;
+    traits?: string[];
+    passive?: string;
+    defense?: number;
+    resilience?: number;
+}
+
+interface GeneratedActor {
+    id: string;
+    name: string;
+    tags: string[];
+    items: GeneratedItemCard[];
+    deck: GeneratedCoreCard[];
+}
+
+const actors = generatedCards as unknown as GeneratedActor[];
+
 // --- Loader Logic ---
 
 // Helper to convert JSON rules to internal Rule objects
 const convertJsonRule = (r: any): Rule => {
     if (r.type === 'attack') {
-        const expr = r.data.power.expression || ""; // Fallback if still using old format, but new format is structured
-        // Actually, the new JSON has structured power.
-        // { type: "attack", data: { power: { source: "Red", modifier: 2 }, ... } }
-        // So we can just pass it through if it matches, or map it if needed.
-        // The generated JSON should match the Rule type exactly if we did our job right.
-        // But let's be safe and map it explicitly or cast it.
+        // The generated JSON should match the Rule type exactly.
         return r as Rule;
     } 
     return r as Rule;
 };
 
-export const loadCard = (id: string): Card | null => {
-    const cardData = (generatedCards as any[]).find(c => c.id === id);
-    if (!cardData) return null;
+const convertCoreCard = (c: GeneratedCoreCard): CoreCard => ({
+    type: 'core',
+    id: c.id,
+    name: c.name,
+    tags: c.tags || [],
+    stats: c.stats || { red: 0, yellow: 0, blue: 0 },
+    cost: c.cost,
+    rules: (c.rules || []).map(convertJsonRule),
+    flavor: c.flavor,
+});
 
-    if (cardData.type === 'core') {
-        return {
-            type: 'core',
-            id: cardData.id,
-            name: cardData.name,
-            tags: cardData.tags || [],
-            stats: cardData.stats || { red: 0, yellow: 0, blue: 0 },
-            cost: cardData.cost,
-            rules: (cardData.rules || []).map(convertJsonRule),
-            flavor: cardData.flavor,
-        } as CoreCard;
-    } else if (cardData.type === 'item') {
-        return {
-            type: 'item',
-            id: cardData.id,
-            name: cardData.name,
-            tags: cardData.tags || [],
-            flavor: cardData.flavor,
-            weight: cardData.weight,
-            value: cardData.value,
-            traits: cardData.traits || [],
-            passive: cardData.passive,
-            defense: cardData.defense,
-            resilience: cardData.resilience
-        } as ItemCard;
-    }
-    return null;
+const convertItemCard = (c: GeneratedItemCard): ItemCard => ({
+    type: 'item',
+    id: c.id,
+    name: c.name,
+    tags: c.tags || [],
+    flavor: c.flavor,
+    weight: c.weight,
+    value: c.value,
+    traits: c.traits || [],
+    passive: c.passive,
+    defense: c.defense,
+    resilience: c.resilience
+});
+
+// Cache for flattened cards to avoid re-scanning every time
+let allCardsCache: Card[] | null = null;
+
+const getAllCards = (): Card[] => {
+    if (allCardsCache) return allCardsCache;
+    
+    const cards: Card[] = [];
+    actors.forEach(actor => {
+        actor.deck.forEach(c => cards.push(convertCoreCard(c)));
+        actor.items.forEach(i => cards.push(convertItemCard(i)));
+    });
+    
+    allCardsCache = cards;
+    return cards;
+};
+
+export const loadCard = (id: string): Card | null => {
+    const card = getAllCards().find(c => c.id === id);
+    return card || null;
+};
+
+export const getActorsByTag = (tag: string): GeneratedActor[] => {
+    return actors.filter(a => a.tags && a.tags.includes(tag));
 };
 
 // --- Legacy / Hybrid Factories ---
 
 export const createCardFromDefinition = (tmpl: CardDefinition): Card => {
     // Legacy support for hardcoded templates (if still needed)
-    // We try to map them to the new structure.
     
     if (tmpl.type === 'item') {
          return {
@@ -66,7 +119,7 @@ export const createCardFromDefinition = (tmpl: CardDefinition): Card => {
             name: tmpl.name,
             tags: [tmpl.type],
             flavor: tmpl.text,
-            traits: [], // Legacy didn't have traits array in definition?
+            traits: [],
             defense: tmpl.def,
             resilience: tmpl.res
          } as ItemCard;
@@ -108,77 +161,32 @@ export const createCardFromDefinition = (tmpl: CardDefinition): Card => {
 };
 
 export const generateStarterDeck = (): { deck: CoreCard[], equipped: ItemCard[] } => {
-    // Swashbuckler Deck (from generated cards)
-    const deckIds = [
-        'feint', 'footwork', 'false-charge', 'fence', 'mind-games', 
-        'inspire', 'trick', 'precise-strike', 'parry', 'athletics', 
-        'trip', 'efficient-attack', 'bouy-spirits', 'stop-thrust', 
-        "i've-got-a-plan", 'not-there-anymore', 'flashing-blade', 
-        'quick-attack', 'make-opportunity', 'reliable-attack', 
-        'patter', 'tales-of-heroics', 'gymnastics', 'disarming-humor'
-    ];
+    const actor = actors.find(a => a.id === 'swashbuckler');
     
-    const equippedIds = ['leather-armor', 'rapier', 'throwing-knives'];
-
-    const deck: CoreCard[] = [];
-    deckIds.forEach(id => {
-        const c = loadCard(id);
-        if (c && c.type === 'core') deck.push(c);
-    });
-
-    const equipped: ItemCard[] = [];
-    equippedIds.forEach(id => {
-        const c = loadCard(id);
-        if (c && c.type === 'item') equipped.push(c);
-    });
-
-    // Fallback to legacy if generated cards are missing (e.g. during dev)
-    if (deck.length === 0) {
-        console.warn("Generated cards not found. Please run the pipeline to generate cards.");
-        // TODO: UI for indicating missing deck
+    if (!actor) {
+        console.warn("Swashbuckler actor not found in generated cards.");
         return { deck: [], equipped: [] };
     }
+
+    const deck = actor.deck.map(convertCoreCard);
+    const equipped = actor.items.map(convertItemCard);
 
     return { deck: shuffle(deck), equipped };
 };
 
 export const generateMonsterDeck = (): { deck: CoreCard[], equipped: ItemCard[] } => {
-    const deck: CoreCard[] = [];
+    const monsters = getActorsByTag('monster');
     
-    // Map of card names to count in the deck
-    const countMap: Record<string, number> = {
-        'Slash': 4, 'Bite': 2, 'Power Attack': 2, 'Hack': 2, 'Chop': 3,
-        'Monitor': 1, 'Scaly Skin': 2, 'Lizard Strength': 3, 'Athletics': 2, 'Skitter': 2
-    };
-
-    // Load cards from generated JSON by name
-    Object.entries(countMap).forEach(([name, count]) => {
-        // Find card by name (case-insensitive search might be safer but exact match for now)
-        // The generated cards have names like "Slash", "Bite" etc.
-        const cardData = (generatedCards as any[]).find(c => c.name === name && c.type === 'core');
-        if (cardData) {
-            const card = loadCard(cardData.id);
-            if (card && card.type === 'core') {
-                for(let i=0; i<count; i++) {
-                    deck.push(card);
-                }
-            }
-        } else {
-            console.warn(`Monster card '${name}' not found in generated cards.`);
-        }
-    });
-    
-    // Load equipped item
-    const equipped: ItemCard[] = [];
-    const lizardWarrior = (generatedCards as any[]).find(c => c.name === 'Lizard Warrior' && c.type === 'item');
-    if (lizardWarrior) {
-        const card = loadCard(lizardWarrior.id);
-        if (card && card.type === 'item') {
-            equipped.push(card);
-        }
-    } else {
-        console.warn("Lizard Warrior item not found in generated cards.");
+    if (monsters.length === 0) {
+        console.warn("No monster actors found in generated cards.");
+        return { deck: [], equipped: [] };
     }
+
+    // Default to Lizard Warrior if available, otherwise pick the first one
+    const actor = monsters.find(a => a.id === 'lizard_warrior') || monsters[0];
+
+    const deck = actor.deck.map(convertCoreCard);
+    const equipped = actor.items.map(convertItemCard);
 
     return { deck: shuffle(deck), equipped };
 };

@@ -9,31 +9,40 @@ import { useGameStore } from './store/gameStore';
 const App: React.FC = () => {
   // --- Store Hooks ---
   const { 
+      actors,
       tokens, 
       logs, 
       phase, 
       activeTokenId, 
       plannedActions, 
-      decks, 
       dispatch 
   } = useGameStore();
 
   // Initialize Game on Mount
   useEffect(() => {
-      // Only initialize if decks are empty (prevents double init in strict mode dev)
-      if (Object.keys(decks).length === 0) {
+      // Check if game needs initialization (if first actor has no cards)
+      const needsInit = Object.values(actors).some(a => 
+          a.deck.drawPile.length === 0 && 
+          a.deck.hand.length === 0 && 
+          a.deck.discardPile.length === 0 &&
+          a.deck.equipped.length === 0
+      );
+
+      if (needsInit) {
           dispatch({ type: 'INITIALIZE_GAME' });
       }
   }, []);
 
-  const currentDeck = activeTokenId ? decks[activeTokenId] : null;
+  const activeToken = activeTokenId ? tokens.find(t => t.id === activeTokenId) : null;
+  const activeActor = activeToken ? actors[activeToken.actorId] : null;
+  const currentDeck = activeActor?.deck;
 
   // --- Helpers ---
   
   // Calculate defeated for visualization
-  const defeatedTokenIds = Object.entries(decks)
-      .filter(([_, deck]) => (deck as PlayerDeckState).consequences.some(c => c.name === 'Taken Out'))
-      .map(([id, _]) => id);
+  const defeatedTokenIds = Object.values(actors)
+      .filter(actor => actor.deck.consequences.some(c => c.name === 'Taken Out'))
+      .flatMap(actor => tokens.filter(t => t.actorId === actor.id).map(t => t.id));
 
   const activeAction = activeTokenId ? plannedActions[activeTokenId] : undefined;
   const isActionPlanned = (action?: { cards: CoreCard[], actionName?: string }) => !!action && (action.cards.length > 0 || action.actionName === 'Pass');
@@ -90,6 +99,9 @@ const App: React.FC = () => {
         activeToken={tokens.find(t => t.id === activeTokenId)}
         activeTokenId={activeTokenId || ''}
         hasPlannedAction={userHasPlannedAction}
+        actors={actors}
+        onAddActor={(name, type, color) => dispatch({ type: 'ADD_ACTOR', name, actorType: type, color })}
+        onRemoveActor={(actorId) => dispatch({ type: 'REMOVE_ACTOR', actorId })}
       />
 
       <main className="flex-1 flex flex-col relative overflow-hidden shadow-inner bg-slate-900">
@@ -113,6 +125,7 @@ const App: React.FC = () => {
 
         {currentDeck && (
             <PlayerHand 
+                key={activeTokenId} 
                 hand={currentDeck.hand}
                 onPlayStack={handlePlayStack}
                 onDiscard={(cards) => activeTokenId && dispatch({ type: 'DISCARD_CARDS', tokenId: activeTokenId, cardIds: cards.map(c => c.id) })}

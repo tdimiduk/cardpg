@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Token, TokenType, PlayerDeckState } from '../types';
+import { Token, TokenType, PlayerDeckState, Actor } from '../types';
 import { Layers, RefreshCw, Shield, Square, Circle, Diamond, Briefcase, User, Skull, AlertOctagon, Activity, Plus, Minus, AlertTriangle, Hand, ArrowUp, Archive, X } from 'lucide-react';
 import { CardComponent } from './Card';
 import { getAttributeValue, calculateSeverity } from '../services/ruleService';
@@ -20,6 +20,9 @@ interface SidebarLeftProps {
   activeToken?: Token;
   activeTokenId: string;
   hasPlannedAction?: boolean;
+  actors: Record<string, Actor>;
+  onAddActor: (name: string, type: TokenType, color: string) => void;
+  onRemoveActor: (actorId: string) => void;
 }
 
 export const SidebarLeft: React.FC<SidebarLeftProps> = ({ 
@@ -35,8 +38,14 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     onRemoveStatusCard,
     tokens,
     activeToken,
-    hasPlannedAction
+    hasPlannedAction,
+    actors,
+    onAddActor,
+    onRemoveActor
 }) => {
+  
+  // Helper to get actor for token
+  const getActor = (token: Token) => actors[token.actorId];
   
   // Empty State / Character Selector
   if (!deckState || !activeToken) {
@@ -49,17 +58,47 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
                <div className="p-6 text-center space-y-6">
                   <div className="text-slate-500 text-sm italic">Select an actor to view their hand and deck.</div>
                   <div className="space-y-2">
-                      {tokens.map(token => (
-                          <button key={token.id} onClick={() => onSelectToken(token.id)} className="w-full flex items-center gap-3 bg-slate-900 hover:bg-slate-800 p-2 rounded border border-slate-800 hover:border-slate-600 transition-all group">
-                             <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-800 flex items-center justify-center shrink-0 border border-slate-600">
-                                {token.imageUrl ? <img src={token.imageUrl} alt={token.name} className="w-full h-full object-cover" /> : token.type === TokenType.MONSTER ? <Skull size={16} className="text-emerald-400" /> : <User size={16} className="text-indigo-400" />}
-                             </div>
-                             <div className="text-left">
-                                 <div className="font-bold text-slate-200 text-sm group-hover:text-white" style={{ color: token.color }}>{token.name}</div>
-                                 <div className="text-[10px] text-slate-500 uppercase">{token.type}</div>
-                             </div>
-                          </button>
-                      ))}
+                  <div className="space-y-2">
+                      {tokens.map(token => {
+                          const actor = getActor(token);
+                          if (!actor) return null;
+                          return (
+                          <div key={token.id} className="relative group">
+                              <button onClick={() => onSelectToken(token.id)} className="w-full flex items-center gap-3 bg-slate-900 hover:bg-slate-800 p-2 rounded border border-slate-800 hover:border-slate-600 transition-all">
+                                 <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-800 flex items-center justify-center shrink-0 border border-slate-600">
+                                    {token.type === TokenType.MONSTER ? <Skull size={16} className="text-emerald-400" /> : <User size={16} className="text-indigo-400" />}
+                                 </div>
+                                 <div className="text-left">
+                                     <div className="font-bold text-slate-200 text-sm group-hover:text-white" style={{ color: actor.color }}>{actor.name}</div>
+                                     <div className="text-[10px] text-slate-500 uppercase">{actor.type}</div>
+                                 </div>
+                              </button>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); onRemoveActor(actor.id); }}
+                                className="absolute top-2 right-2 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="Remove Actor"
+                              >
+                                  <X size={14} />
+                              </button>
+                          </div>
+                          );
+                      })}
+                  </div>
+                  
+                  <div className="pt-4 border-t border-slate-800 flex gap-2 justify-center">
+                      <button 
+                        onClick={() => onAddActor(`Hero ${Math.floor(Math.random()*100)}`, TokenType.PC, '#3b82f6')}
+                        className="flex items-center gap-1 text-xs bg-indigo-900/50 hover:bg-indigo-800 text-indigo-200 px-3 py-2 rounded border border-indigo-700/50 transition-colors"
+                      >
+                          <Plus size={12} /> Add Hero
+                      </button>
+                      <button 
+                        onClick={() => onAddActor(`Monster ${Math.floor(Math.random()*100)}`, TokenType.MONSTER, '#10b981')}
+                        className="flex items-center gap-1 text-xs bg-emerald-900/50 hover:bg-emerald-800 text-emerald-200 px-3 py-2 rounded border border-emerald-700/50 transition-colors"
+                      >
+                          <Plus size={12} /> Add Monster
+                      </button>
+                  </div>
                   </div>
                </div>
           </div>
@@ -120,18 +159,20 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
       </div>
 
       {/* Active Actor Header */}
+      {activeToken && actors[activeToken.actorId] && (
       <div className="p-4 border-b border-slate-800 bg-slate-900 flex items-center gap-3">
          <div className="w-10 h-10 rounded-full border-2 border-slate-600 overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
-             {activeToken.imageUrl ? <img src={activeToken.imageUrl} alt={activeToken.name} className="w-full h-full object-cover" /> : <User size={20} className="text-slate-400" />}
+             {actors[activeToken.actorId].type === TokenType.MONSTER ? <Skull size={20} className="text-emerald-400" /> : <User size={20} className="text-indigo-400" />}
          </div>
          <div className="flex-1 overflow-hidden">
-             <div className="font-bold text-slate-100 truncate" style={{ color: activeToken.color }}>{activeToken.name}</div>
+             <div className="font-bold text-slate-100 truncate" style={{ color: actors[activeToken.actorId].color }}>{actors[activeToken.actorId].name}</div>
              <div className="text-xs text-slate-500 uppercase flex items-center gap-2">
-                 {activeToken.type}
+                 {actors[activeToken.actorId].type}
                  {hasPlannedAction && <span className="text-indigo-400 font-bold flex items-center gap-1 text-[10px] border border-indigo-900 px-1 rounded bg-indigo-950"><Activity size={10} /> Ready</span>}
              </div>
          </div>
       </div>
+      )}
 
       <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1">
           

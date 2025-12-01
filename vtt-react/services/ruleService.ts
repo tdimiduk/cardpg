@@ -1,13 +1,13 @@
-import { CoreCard, ResourceType, PlayerDeckState, Stats } from "../types";
+import { CoreCard, ResourceType, PlayerDeckState, Stats, Card } from "../types";
 import { STATUS_CARDS } from "../data/statuses";
 import { createCardFromDefinition } from "./deckFactory";
 import { shuffle } from "../utils";
 
 // Helper to get a fresh instance of a status card
 const getStatusCard = (type: 'fatigue' | 'wound'): CoreCard => {
-    const template = STATUS_CARDS.find(c => c.type === type);
+    const template = STATUS_CARDS.find(c => c.tags?.includes(type));
     if (!template) throw new Error(`Status card type ${type} not found`);
-    return createCardFromDefinition(template);
+    return { ...template, id: Math.random().toString() };
 };
 
 export const drawCards = (currentDeck: PlayerDeckState, count: number): { newState: PlayerDeckState, drawn: CoreCard[], fatigueTriggered: boolean } => {
@@ -85,16 +85,19 @@ export const performDefend = (currentDeck: PlayerDeckState, targetValue: number,
   };
 };
 
-export const getAttributeValue = (equipped: CoreCard[], stat: 'def' | 'res'): number => {
+export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number => {
   let max = 0;
   let found = false;
   equipped.forEach(c => {
-      if (c[stat] !== undefined) {
-          max = Math.max(max, c[stat]!);
-          found = true;
+      if (c.type === 'item') {
+          const val = stat === 'def' ? c.defense : c.resilience;
+          if (val !== undefined && val !== null) {
+              max = Math.max(max, val);
+              found = true;
+          }
       }
   });
-  return found ? max : 1;
+  return found ? max : 1; // Default Res 1, Def 1
 };
 
 export const calculateSeverity = (consequences: CoreCard[], resilience: number): number => {

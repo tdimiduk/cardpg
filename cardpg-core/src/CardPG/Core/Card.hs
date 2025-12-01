@@ -303,7 +303,9 @@ instance FromJSON ConsequenceCard where
 
 -- | Represents an Actor (Character/Monster/NPC).
 data Actor = Actor
-  { _items :: [ItemCard]
+  { _name  :: Text
+  , _tags  :: Maybe (NonEmpty Text)
+  , _items :: [ItemCard]
   , _deck  :: [CoreCard]
   }
   deriving stock (Eq, Show, Generic)

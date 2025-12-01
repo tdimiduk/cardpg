@@ -143,15 +143,21 @@ export enum TokenType {
   MONSTER = 'MONSTER'
 }
 
-export interface Token {
+export interface Actor {
   id: string;
   name: string;
+  type: TokenType;
+  color: string;
+  deck: PlayerDeckState;
+}
+
+export interface Token {
+  id: string;
+  actorId: string;
   x: number;
   y: number;
-  color: string;
-  type: TokenType;
-  imageUrl?: string;
   size: number;
+  // Visual overrides could go here
 }
 
 export interface LogEntry {
@@ -169,6 +175,7 @@ export interface LogEntry {
 }
 
 export interface GameState {
+  actors: Record<string, Actor>;
   tokens: Token[];
   logs: LogEntry[];
   gridSize: number;
@@ -180,7 +187,7 @@ export interface PlayerDeckState {
   hand: CoreCard[];
   discardPile: CoreCard[];
   flippedPile: CoreCard[]; // Cards flipped for defense
-  equipped: CoreCard[];    // Cards on the table (Items/Characters)
+  equipped: Card[];    // Cards on the table (Items/Characters)
   consequences: CoreCard[]; // Condition cards on the table (Wounds/Injuries)
 }
 

@@ -32,13 +32,15 @@ def run_sync():
     cmd = [sys.executable, str(SYNC_SCRIPT), "--all", "true"]
     subprocess.check_call(cmd)
 
-def run_compiler(json_file, output_dir):
+def run_compiler(json_file, output_dir, tag=None):
     print(f"Compiling {json_file.name} to {output_dir}...")
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Run using cabal run from the compiler directory
     # We need to pass absolute paths for input and output because we change cwd
     cmd = ["cabal", "run", "card-compiler", "--", str(json_file.resolve()), str(output_dir.resolve())]
+    if tag:
+        cmd.append(tag)
     
     subprocess.check_call(cmd, cwd=COMPILER_DIR)
 
@@ -81,12 +83,12 @@ def main():
         
         tags = entry.get('tags', [])
         if "type:pc-deck" in tags:
-            run_compiler(json_path, PC_DIR)
+            run_compiler(json_path, PC_DIR, "pc")
             # Assume output filename based on entry id or name? 
             # The compiler uses the actor name from the JSON.
             # We can find the generated YAMLs by listing the directory later.
         elif "type:monster-deck" in tags:
-            run_compiler(json_path, MONSTER_DIR)
+            run_compiler(json_path, MONSTER_DIR, "monster")
         else:
             print(f"Skipping compilation for {entry['name']} (no type:pc-deck or type:monster-deck tag).")
 

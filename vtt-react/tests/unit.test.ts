@@ -1,15 +1,38 @@
 import { describe, test, expect } from 'vitest';
 import { drawCards, calculateStackStrength, performDefend } from '../services/ruleService';
-import { createCard } from '../services/deckFactory';
 import { T } from '../data/cardData';
-import { PlayerDeckState } from '../types';
+import { PlayerDeckState, CoreCard, ItemCard } from '../types';
+
+// Helper for tests
+const createCard = (name: string, red?: number, yellow?: number, blue?: number, flavor: any[] = [], id?: string, tags?: string[], type: 'core' | 'item' | 'fatigue' = 'core'): CoreCard | ItemCard => {
+    if (type === 'item') {
+        return {
+            type: 'item',
+            id: id || name,
+            name,
+            flavor,
+            tags: tags || [],
+            weight: 0,
+            value: 0
+        } as ItemCard;
+    }
+    return {
+        type: 'core',
+        id: id || name,
+        name,
+        stats: { red: red || 0, yellow: yellow || 0, blue: blue || 0 },
+        flavor,
+        tags: type === 'fatigue' ? ['fatigue'] : tags || [],
+        rules: []
+    } as CoreCard;
+};
 
 describe('Rule Service', () => {
   // --- Setup Mocks ---
-  const cardA = createCard('A', 2, 2, 2, [T('A')], undefined); // 2/2/2
-  const cardB = createCard('B', 3, 3, 3, [T('B')], undefined); // 3/3/3
-  const itemCard = createCard('Item', undefined, undefined, undefined, [T('I')], undefined, undefined, 'item'); // undefined stats
-  const fatigueCard = createCard('Fatigue', 0, 0, 0, [T('F')], undefined, undefined, 'fatigue'); // 0/0/0
+  const cardA = createCard('A', 2, 2, 2, [T('A')], undefined) as CoreCard; // 2/2/2
+  const cardB = createCard('B', 3, 3, 3, [T('B')], undefined) as CoreCard; // 3/3/3
+  const itemCard = createCard('Item', undefined, undefined, undefined, [T('I')], undefined, undefined, 'item') as ItemCard; // undefined stats
+  const fatigueCard = createCard('Fatigue', 0, 0, 0, [T('F')], undefined, undefined, 'fatigue') as CoreCard; // 0/0/0
 
   test('Basic Draw', () => {
     const deck1: PlayerDeckState = {
@@ -46,16 +69,16 @@ describe('Rule Service', () => {
   });
 
   test('Strength Calculation', () => {
-    // Stack: CardA (2 Red) + CardB (3 Red) + Item (Undefined/0 Red)
-    const stack = [cardA, cardB, itemCard];
+    // Stack: CardA (2 Red) + CardB (3 Red)
+    const stack = [cardA, cardB];
     const strRed = calculateStackStrength(stack, 'Red', 0);
-    expect(strRed).toBe(5); // 2 + 3 + 0 = 5
+    expect(strRed).toBe(5); // 2 + 3 = 5
     
     const strMod = calculateStackStrength(stack, 'Red', 2);
     expect(strMod).toBe(7); // 5 + 2 = 7
 
-    const strBlue = calculateStackStrength([fatigueCard, itemCard], 'Blue', 0);
-    expect(strBlue).toBe(0); // 0 + undefined = 0
+    const strBlue = calculateStackStrength([fatigueCard], 'Blue', 0);
+    expect(strBlue).toBe(0); // 0
   });
 
   test('Defense Logic', () => {

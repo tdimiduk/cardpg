@@ -49,39 +49,44 @@ data VttCoreCard = VttCoreCard
 instance ToJSON VttCoreCard where
   toJSON = genericToJSON (cardpgJsonOptions "CoreCard")
 
--- | VTT Card Sum Type
-data VttCard
-  = VttCore VttCoreCard
-  | VttItem ItemCard
+-- | VTT Actor Type
+data VttActor = VttActor
+  { _id    :: Text
+  , _name  :: Text
+  , _tags  :: [Text]
+  , _items :: [ItemCard]
+  , _deck  :: [VttCoreCard]
+  }
   deriving (Show, Generic)
 
-instance ToJSON VttCard where
-  toJSON (VttCore c) = addType "core" (toJSON c)
-  toJSON (VttItem i) = addType "item" (toJSON i)
-
-addType :: Text -> Value -> Value
-addType t (Object o) = Object (KM.insert (Key.fromText "type") (String t) o)
-addType _ v = v
+instance ToJSON VttActor where
+  toJSON = genericToJSON (cardpgJsonOptions "Actor")
 
 -- | Load and Export Function
 loadAndExport :: [FilePath] -> FilePath -> IO ()
 loadAndExport inputFiles outputFile = do
-  allCards <- fmap concat $ forM inputFiles $ \file -> do
+  allActors <- forM inputFiles $ \file -> do
     result <- Yaml.decodeFileEither file
     case result of
       Left err -> do
         putStrLn $ "Warning: Failed to parse " ++ file ++ ": " ++ show err
-        return []
-      Right actor -> return $ convertActor actor
+        return Nothing
+      Right actor -> do
+        return $ Just $ convertActor actor
 
-  LBS.writeFile outputFile (Aeson.encode allCards)
-  putStrLn $ "Exported " ++ show (length allCards) ++ " cards to " ++ outputFile
+  let validActors = [ a | Just a <- allActors ]
+  LBS.writeFile outputFile (Aeson.encode validActors)
+  putStrLn $ "Exported " ++ show (length validActors) ++ " actors to " ++ outputFile
 
--- | Convert Actor to list of VttCards
-convertActor :: Actor -> [VttCard]
-convertActor Actor{..} = 
-  map (VttCore . toVttCoreCard) _deck ++
-  map (VttItem . ensureItemId) _items
+-- | Convert Actor to VttActor
+convertActor :: Actor -> VttActor
+convertActor Actor{..} = VttActor
+  { _id = slugify _name
+  , _name = _name
+  , _tags = maybe [] NE.toList _tags
+  , _items = map ensureItemId _items
+  , _deck = map toVttCoreCard _deck
+  }
 
 -- | Convert CoreCard to VttCoreCard
 toVttCoreCard :: CoreCard -> VttCoreCard

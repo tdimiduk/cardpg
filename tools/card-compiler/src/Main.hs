@@ -17,6 +17,7 @@ import System.FilePath ((</>))
 import System.Directory (createDirectoryIfMissing)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
+import qualified Data.List.NonEmpty as NE
 
 import Data.Either (partitionEithers)
 import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..))
@@ -28,12 +29,13 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [inputFile, outputDir] -> run inputFile outputDir
+    [inputFile, outputDir] -> run inputFile outputDir Nothing
+    [inputFile, outputDir, tag] -> run inputFile outputDir (Just tag)
     ("export-vtt" : outputFile : inputFiles) -> Vtt.loadAndExport inputFiles outputFile
-    _ -> die "Usage: hs-card-compiler <input.json> <output_dir> OR hs-card-compiler export-vtt <output.json> <input_yaml>..."
+    _ -> die "Usage: hs-card-compiler <input.json> <output_dir> [tag] OR hs-card-compiler export-vtt <output.json> <input_yaml>..."
 
-run :: FilePath -> FilePath -> IO ()
-run inputFile outputDir = do
+run :: FilePath -> FilePath -> Maybe String -> IO ()
+run inputFile outputDir tag = do
   content <- LBS.readFile inputFile
   case eitherDecode content of
     Left err -> die $ "Failed to parse JSON: " ++ err
@@ -48,29 +50,34 @@ run inputFile outputDir = do
         _ -> die "Input JSON must be an array of cards or a map of character names to lists of cards"
       
       createDirectoryIfMissing True outputDir
-      processCards outputDir cards
+      processCards outputDir cards tag
 
-processCards :: FilePath -> [RawCard] -> IO ()
-processCards outputDir cards = do
+processCards :: FilePath -> [RawCard] -> Maybe String -> IO ()
+processCards outputDir cards tag = do
   let validCards = filter isValidCard cards
       cardsByActor = Map.fromListWith (++) [ (fromMaybe "unknown" (rcActor c), [c]) | c <- validCards ]
 
-  forM_ (Map.toList cardsByActor) $ \(actor, actorCards) -> do
+  forM_ (Map.toList cardsByActor) $ \(actorName, actorCards) -> do
     let results = map convertCard actorCards
         (failures, successes) = partitionEithers results
     
     -- Filter out "Skipping empty card row" messages to reduce noise
     let meaningfulFailures = filter (/= "Skipping empty card row") failures
-    forM_ meaningfulFailures $ \err -> putStrLn $ "Failed to convert card for actor " ++ show actor ++ ": " ++ err
+    forM_ meaningfulFailures $ \err -> putStrLn $ "Failed to convert card for actor " ++ show actorName ++ ": " ++ err
     
     unless (null successes) $ do
       let (items, deck) = splitCards successes
       
       if length deck /= 24
-        then putStrLn $ "Warning: Actor " ++ show actor ++ " has " ++ show (length deck) ++ " cards in deck. Expected 24. Skipping."
+        then putStrLn $ "Warning: Actor " ++ show actorName ++ " has " ++ show (length deck) ++ " cards in deck. Expected 24. Skipping."
         else do
-          let actorData = Actor { _items = items, _deck = deck }
-          let fileName = T.unpack (sanitize actor) ++ ".yaml"
+          let actorData = Actor 
+                { _name = actorName
+                , _tags = fmap (\t -> NE.fromList [T.pack t]) tag
+                , _items = items
+                , _deck = deck 
+                }
+          let fileName = T.unpack (sanitize actorName) ++ ".yaml"
           let outputPath = outputDir </> fileName
           BS.writeFile outputPath (encode actorData)
           putStrLn $ "Wrote " ++ outputPath

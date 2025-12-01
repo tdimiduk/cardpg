@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { Token, LogEntry, GamePhase, PlannedAction, PlayerDeckState, CoreCard, ResourceType, TokenType } from '../types';
-import { INITIAL_TOKENS } from '../constants';
+import { Token, LogEntry, GamePhase, PlannedAction, PlayerDeckState, CoreCard, ResourceType, TokenType, Actor } from '../types';
+import { INITIAL_TOKENS, INITIAL_ACTORS } from '../constants';
 import { generateStarterDeck, generateMonsterDeck, createCardFromDefinition } from '../services/deckFactory';
 import { drawCards, performDefend, getAttributeValue, calculateSeverity, calculateStackStrength } from '../services/ruleService';
 import { shuffle } from '../utils';
@@ -12,12 +12,12 @@ import { CONSEQUENCE_DEFINITIONS } from '../data/consequences';
 // --- State Definition ---
 
 export interface GameState {
+  actors: Record<string, Actor>;
   tokens: Token[];
   logs: LogEntry[];
   phase: GamePhase;
   activeTokenId: string | null;
   plannedActions: Record<string, PlannedAction>;
-  decks: Record<string, PlayerDeckState>;
 }
 
 // --- Action Definitions ---
@@ -45,7 +45,11 @@ export type GameAction =
   | { type: 'PASS_TURN'; tokenId: string }
   | { type: 'REVEAL_AND_RESOLVE' }
   | { type: 'END_ROUND' }
-  | { type: 'PLAY_IMMEDIATE'; tokenId: string; cards: CoreCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType };
+  | { type: 'PLAY_IMMEDIATE'; tokenId: string; cards: CoreCard[]; strengthColor: ResourceType; modifier: number; actionName?: string; targetDefense?: ResourceType }
+  | { type: 'ADD_ACTOR'; name: string; actorType: TokenType; templateId?: string; x?: number; y?: number; color?: string }
+  | { type: 'REMOVE_ACTOR'; actorId: string }
+  | { type: 'SPAWN_TOKEN'; actorId: string; x: number; y: number }
+  | { type: 'DESPAWN_TOKEN'; tokenId: string };
 
 
 interface GameStore extends GameState {
@@ -54,7 +58,13 @@ interface GameStore extends GameState {
 
 // --- Helper Functions ---
 
-const getTokenName = (state: GameState, id: string) => state.tokens.find(t => t.id === id)?.name || 'Unknown';
+const getActor = (state: GameState, tokenId: string): Actor | undefined => {
+    const token = state.tokens.find(t => t.id === tokenId);
+    if (!token) return undefined;
+    return state.actors[token.actorId];
+}
+
+const getTokenName = (state: GameState, id: string) => getActor(state, id)?.name || 'Unknown';
 
 const createLog = (content: string, sender: LogEntry['sender'] = 'System', type: LogEntry['type'] = 'info', actionResult?: LogEntry['actionResult']): LogEntry => ({
   id: Math.random().toString(36),
@@ -70,19 +80,19 @@ const createLog = (content: string, sender: LogEntry['sender'] = 'System', type:
 export const useGameStore = create<GameStore>()(
   immer((set, get) => ({
     // Initial State
+    actors: INITIAL_ACTORS,
     tokens: INITIAL_TOKENS,
     logs: [createLog('Welcome to caRdPG. Begin Planning Phase.')],
     phase: 'planning',
     activeTokenId: INITIAL_TOKENS[0]?.id || null,
     plannedActions: {},
-    decks: {},
 
     dispatch: (action: GameAction) => set((state) => {
       switch (action.type) {
         
         case 'INITIALIZE_GAME': {
-          state.tokens.forEach(token => {
-            const { deck, equipped } = token.type === TokenType.MONSTER 
+          Object.values(state.actors).forEach(actor => {
+            const { deck, equipped } = actor.type === TokenType.MONSTER 
               ? generateMonsterDeck() 
               : generateStarterDeck();
             
@@ -98,7 +108,7 @@ export const useGameStore = create<GameStore>()(
 
             // Initial Draw (4 cards)
             const result = drawCards(deckState, 4);
-            state.decks[token.id] = result.newState;
+            actor.deck = result.newState;
           });
           break;
         }
@@ -118,9 +128,13 @@ export const useGameStore = create<GameStore>()(
           // Planning: Update Move Plan
           else {
              if (!state.plannedActions[token.id]) {
+                 const actor = state.actors[token.actorId];
                  state.plannedActions[token.id] = {
-                     actorId: token.id,
-                     actorName: token.name,
+                     actorId: token.id, // Keeping tokenId as the key for plans for now, or should it be actorId? 
+                     // The plan is associated with the token on the map.
+                     // But the actor executes it.
+                     // Let's keep using tokenId for plannedActions key to match activeTokenId.
+                     actorName: actor?.name || 'Unknown',
                      cards: [],
                      strengthColor: 'Red',
                      modifier: 0,
@@ -140,76 +154,76 @@ export const useGameStore = create<GameStore>()(
         // --- Deck Actions ---
 
         case 'DRAW_CARDS': {
-          const deck = state.decks[action.tokenId];
-          if (!deck) return;
-          const { newState, drawn, fatigueTriggered } = drawCards(deck, action.count);
-          state.decks[action.tokenId] = newState;
+          const actor = getActor(state, action.tokenId);
+          if (!actor) return;
+          const { newState, drawn, fatigueTriggered } = drawCards(actor.deck, action.count);
+          actor.deck = newState;
           
           if (fatigueTriggered) {
-            state.logs.push(createLog(`Fatigue Cycle triggered for ${getTokenName(state, action.tokenId)}.`, 'System'));
+            state.logs.push(createLog(`Fatigue Cycle triggered for ${actor.name}.`, 'System'));
           }
           if (drawn.length > 0) {
-            state.logs.push(createLog(`${getTokenName(state, action.tokenId)} drew ${drawn.length} card(s).`, 'System'));
+            state.logs.push(createLog(`${actor.name} drew ${drawn.length} card(s).`, 'System'));
           }
           break;
         }
 
         case 'DEFEND': {
-          const deck = state.decks[action.tokenId];
-          if (!deck) return;
-          const { newState, flipped } = performDefend(deck, 999, 'Red');
-          state.decks[action.tokenId] = newState;
+          const actor = getActor(state, action.tokenId);
+          if (!actor) return;
+          const { newState, flipped } = performDefend(actor.deck, 999, 'Red');
+          actor.deck = newState;
           if (flipped.length > 0) {
-             state.logs.push(createLog(`${getTokenName(state, action.tokenId)} flipped for Defense: ${flipped[0].name}`, 'Player'));
+             state.logs.push(createLog(`${actor.name} flipped for Defense: ${flipped[0].name}`, 'Player'));
           }
           break;
         }
 
         case 'CLEAR_DEFENSE': {
-          const deck = state.decks[action.tokenId];
-          if (!deck) return;
-          deck.discardPile.push(...deck.flippedPile);
-          deck.flippedPile = [];
+          const actor = getActor(state, action.tokenId);
+          if (!actor) return;
+          actor.deck.discardPile.push(...actor.deck.flippedPile);
+          actor.deck.flippedPile = [];
           break;
         }
 
         case 'RESHUFFLE': {
-          const deck = state.decks[action.tokenId];
-          if (!deck) return;
-          const newDraw = shuffle([...deck.drawPile, ...deck.discardPile]);
-          deck.drawPile = newDraw;
-          deck.discardPile = [];
-          state.logs.push(createLog(`${getTokenName(state, action.tokenId)} reshuffled discard pile into deck.`, 'System'));
+          const actor = getActor(state, action.tokenId);
+          if (!actor) return;
+          const newDraw = shuffle([...actor.deck.drawPile, ...actor.deck.discardPile]);
+          actor.deck.drawPile = newDraw;
+          actor.deck.discardPile = [];
+          state.logs.push(createLog(`${actor.name} reshuffled discard pile into deck.`, 'System'));
           break;
         }
 
         case 'DISCARD_CARDS': {
-           const deck = state.decks[action.tokenId];
-           if (!deck) return;
-           const cardsToDiscard = deck.hand.filter(c => action.cardIds.includes(c.id));
-           deck.hand = deck.hand.filter(c => !action.cardIds.includes(c.id));
-           deck.discardPile.push(...cardsToDiscard);
-           state.logs.push(createLog(`${getTokenName(state, action.tokenId)} discarded ${cardsToDiscard.length} card(s).`, 'System'));
+           const actor = getActor(state, action.tokenId);
+           if (!actor) return;
+           const cardsToDiscard = actor.deck.hand.filter(c => action.cardIds.includes(c.id));
+           actor.deck.hand = actor.deck.hand.filter(c => !action.cardIds.includes(c.id));
+           actor.deck.discardPile.push(...cardsToDiscard);
+           state.logs.push(createLog(`${actor.name} discarded ${cardsToDiscard.length} card(s).`, 'System'));
            break;
         }
 
         case 'RETURN_TO_DECK': {
-            const deck = state.decks[action.tokenId];
-            if (!deck) return;
-            const cards = deck.hand.filter(c => action.cardIds.includes(c.id));
-            deck.hand = deck.hand.filter(c => !action.cardIds.includes(c.id));
-            deck.drawPile.push(...cards);
-            state.logs.push(createLog(`${getTokenName(state, action.tokenId)} returned ${cards.length} card(s) to top of deck.`, 'System'));
+            const actor = getActor(state, action.tokenId);
+            if (!actor) return;
+            const cards = actor.deck.hand.filter(c => action.cardIds.includes(c.id));
+            actor.deck.hand = actor.deck.hand.filter(c => !action.cardIds.includes(c.id));
+            actor.deck.drawPile.push(...cards);
+            state.logs.push(createLog(`${actor.name} returned ${cards.length} card(s) to top of deck.`, 'System'));
             break;
         }
 
         // --- Status & Consequences ---
 
         case 'ADD_CONSEQUENCE': {
-            const deck = state.decks[action.tokenId];
-            if (!deck) return;
-            const resilience = getAttributeValue(deck.equipped, 'res');
-            const currentSeverity = calculateSeverity(deck.consequences, resilience);
+            const actor = getActor(state, action.tokenId);
+            if (!actor) return;
+            const resilience = getAttributeValue(actor.deck.equipped, 'res');
+            const currentSeverity = calculateSeverity(actor.deck.consequences, resilience);
             const targetSeverity = Math.min(currentSeverity, 3);
 
             const pool = CONSEQUENCE_DEFINITIONS.filter(c => c.severity === targetSeverity);
@@ -217,54 +231,55 @@ export const useGameStore = create<GameStore>()(
                 ? pool[Math.floor(Math.random() * pool.length)]
                 : { name: 'Generic Wound', text: 'You are hurt.', severity: targetSeverity };
             
-            const newConsequence: CoreCard = {
+            const newConsequence = {
+                type: 'core' as const,
                 id: Math.random().toString(),
                 name: selection.name,
-                flavor: [{ type: 'textRun', content: selection.text }],
+                flavor: [{ type: 'textRun' as const, content: selection.text }],
                 tags: ['wound'],
                 stats: { red: 0, yellow: 0, blue: 0 },
                 rules: [],
                 cost: undefined
             };
 
-            deck.consequences.push(newConsequence);
-            state.logs.push(createLog(`${getTokenName(state, action.tokenId)} takes a Level ${targetSeverity} Consequence: ${selection.name}.`, 'System'));
+            actor.deck.consequences.push(newConsequence as CoreCard);
+            state.logs.push(createLog(`${actor.name} takes a Level ${targetSeverity} Consequence: ${selection.name}.`, 'System'));
             break;
         }
 
         case 'REMOVE_CONSEQUENCE': {
-            const deck = state.decks[action.tokenId];
-            if (!deck) return;
-            const target = deck.consequences.find(c => c.id === action.cardId);
-            deck.consequences = deck.consequences.filter(c => c.id !== action.cardId);
+            const actor = getActor(state, action.tokenId);
+            if (!actor) return;
+            const target = actor.deck.consequences.find(c => c.id === action.cardId);
+            actor.deck.consequences = actor.deck.consequences.filter(c => c.id !== action.cardId);
             if (target) {
-                state.logs.push(createLog(`${getTokenName(state, action.tokenId)} removed consequence: "${target.name}".`, 'System'));
+                state.logs.push(createLog(`${actor.name} removed consequence: "${target.name}".`, 'System'));
             }
             break;
         }
 
         case 'ADD_STATUS': {
-            const deck = state.decks[action.tokenId];
-            if (!deck) return;
-            const template = STATUS_CARDS.find(c => c.type === action.statusType);
+            const actor = getActor(state, action.tokenId);
+            if (!actor) return;
+            const template = STATUS_CARDS.find(c => c.tags?.includes(action.statusType));
             if (!template) return;
             
-            const newCard = createCardFromDefinition(template);
+            // Clone the template
+            const newCard: CoreCard = { ...template, id: Math.random().toString() };
             
-            if (action.destination === 'discard') deck.discardPile.push(newCard);
-            else if (action.destination === 'hand') deck.hand.push(newCard);
-            else if (action.destination === 'draw') deck.drawPile.push(newCard);
+            if (action.destination === 'discard') actor.deck.discardPile.push(newCard);
+            else if (action.destination === 'draw') actor.deck.drawPile.push(newCard);
 
-            const label = action.destination === 'draw' ? 'top of deck' : action.destination === 'hand' ? 'hand' : 'discard pile';
-            state.logs.push(createLog(`${getTokenName(state, action.tokenId)} added ${newCard.name} to ${label}.`, 'System'));
+            const label = action.destination === 'draw' ? 'top of deck' : 'discard pile';
+            state.logs.push(createLog(`${actor.name} added ${newCard.name} to ${label}.`, 'System'));
             break;
         }
 
         case 'REMOVE_STATUS': {
-            const deck = state.decks[action.tokenId];
-            if (!deck) return;
+            const actor = getActor(state, action.tokenId);
+            if (!actor) return;
             const removeFirst = (arr: CoreCard[]) => {
-                const idx = arr.findIndex(c => c.tags.includes(action.statusType));
+                const idx = arr.findIndex(c => c.tags?.includes(action.statusType));
                 if (idx > -1) {
                     const removed = arr.splice(idx, 1)[0];
                     return removed;
@@ -272,12 +287,12 @@ export const useGameStore = create<GameStore>()(
                 return null;
             }
             
-            let removed = removeFirst(deck.discardPile);
-            if (!removed) removed = removeFirst(deck.drawPile);
-            if (!removed) removed = removeFirst(deck.hand);
+            let removed = removeFirst(actor.deck.discardPile);
+            if (!removed) removed = removeFirst(actor.deck.drawPile);
+            if (!removed) removed = removeFirst(actor.deck.hand);
 
             if (removed) {
-                state.logs.push(createLog(`Removed ${removed.name} from ${getTokenName(state, action.tokenId)}'s deck.`, 'System'));
+                state.logs.push(createLog(`Removed ${removed.name} from ${actor.name}'s deck.`, 'System'));
             } else {
                 state.logs.push(createLog(`No ${action.statusType} cards found to remove.`, 'System'));
             }
@@ -287,17 +302,17 @@ export const useGameStore = create<GameStore>()(
         // --- Planning & Flow ---
 
         case 'COMMIT_PLAN': {
-            const deck = state.decks[action.tokenId];
-            if (!deck) return;
+            const actor = getActor(state, action.tokenId);
+            if (!actor) return;
             
             // Remove cards from hand
             const cardIds = new Set(action.cards.map(c => c.id));
-            deck.hand = deck.hand.filter(c => !cardIds.has(c.id));
+            actor.deck.hand = actor.deck.hand.filter(c => !cardIds.has(c.id));
 
             // Set Plan
             state.plannedActions[action.tokenId] = {
                 actorId: action.tokenId,
-                actorName: getTokenName(state, action.tokenId),
+                actorName: actor.name,
                 cards: action.cards,
                 strengthColor: action.strengthColor,
                 modifier: action.modifier,
@@ -306,22 +321,22 @@ export const useGameStore = create<GameStore>()(
                 move: state.plannedActions[action.tokenId]?.move
             };
 
-            state.logs.push(createLog(`${getTokenName(state, action.tokenId)} has prepared an action.`, 'Player'));
+            state.logs.push(createLog(`${actor.name} has prepared an action.`, 'Player'));
             break;
         }
 
         case 'PASS_TURN': {
-            const deck = state.decks[action.tokenId];
+            const actor = getActor(state, action.tokenId);
             state.plannedActions[action.tokenId] = {
                 actorId: action.tokenId,
-                actorName: getTokenName(state, action.tokenId),
+                actorName: actor?.name || 'Unknown',
                 cards: [],
                 strengthColor: 'Red',
                 modifier: 0,
                 actionName: 'Pass',
                 move: state.plannedActions[action.tokenId]?.move
             };
-            state.logs.push(createLog(`${getTokenName(state, action.tokenId)} passes and waits.`, 'Player'));
+            state.logs.push(createLog(`${actor?.name || 'Unknown'} passes and waits.`, 'Player'));
             break;
         }
 
@@ -330,9 +345,9 @@ export const useGameStore = create<GameStore>()(
              if (!plan) return;
 
              // Return cards to hand
-             const deck = state.decks[action.tokenId];
-             if (deck && plan.cards.length > 0) {
-                 deck.hand.push(...plan.cards);
+             const actor = getActor(state, action.tokenId);
+             if (actor && plan.cards.length > 0) {
+                 actor.deck.hand.push(...plan.cards);
              }
 
              // Reset Plan (keep move)
@@ -343,7 +358,7 @@ export const useGameStore = create<GameStore>()(
                  modifier: 0
              };
              
-             state.logs.push(createLog(`${getTokenName(state, action.tokenId)} is revising their plan.`, 'System'));
+             state.logs.push(createLog(`${actor?.name || 'Unknown'} is revising their plan.`, 'System'));
              break;
         }
 
@@ -354,8 +369,8 @@ export const useGameStore = create<GameStore>()(
             // Note: Movement is deferred to END_ROUND to maintain board state for targeting.
 
             // Resolve Actions & Discard Played Cards
-            Object.values(state.plannedActions).forEach((plan) => {
-                const deck = state.decks[plan.actorId];
+            Object.entries(state.plannedActions).forEach(([tokenId, plan]) => {
+                const actor = getActor(state, tokenId);
                 
                 if (plan.actionName === 'Pass' && plan.cards.length === 0) {
                     state.logs.push(createLog(`${plan.actorName} takes no action.`, 'System'));
@@ -376,8 +391,8 @@ export const useGameStore = create<GameStore>()(
                     ));
 
                     // Move to discard
-                    if (deck) {
-                        deck.discardPile.push(...cards);
+                    if (actor) {
+                        actor.deck.discardPile.push(...cards);
                     }
                 }
             });
@@ -397,17 +412,18 @@ export const useGameStore = create<GameStore>()(
             }
 
             // Identify defeated
-            const defeatedIds = Object.entries(state.decks)
-                .filter(([_, d]) => (d as PlayerDeckState).consequences.some(c => c.name === 'Taken Out'))
-                .map(([id]) => id);
+            const defeatedIds = Object.values(state.actors)
+                .filter(a => a.deck.consequences.some(c => c.name === 'Taken Out'))
+                .map(a => a.id);
             
             // Reset Plans (Auto-pass defeated)
             const nextPlans: Record<string, PlannedAction> = {};
             state.tokens.forEach(t => {
-                if (defeatedIds.includes(t.id)) {
+                const actor = state.actors[t.actorId];
+                if (actor && defeatedIds.includes(actor.id)) {
                     nextPlans[t.id] = {
                         actorId: t.id,
-                        actorName: t.name,
+                        actorName: actor.name,
                         cards: [],
                         strengthColor: 'Red',
                         modifier: 0,
@@ -422,13 +438,13 @@ export const useGameStore = create<GameStore>()(
             let activeCount = 0;
             let fatigueMsg = '';
             
-            Object.keys(state.decks).forEach(tokenId => {
-                if (defeatedIds.includes(tokenId)) return;
+            Object.values(state.actors).forEach(actor => {
+                if (defeatedIds.includes(actor.id)) return;
 
-                const { newState, fatigueTriggered } = drawCards(state.decks[tokenId], 2);
-                state.decks[tokenId] = newState;
+                const { newState, fatigueTriggered } = drawCards(actor.deck, 2);
+                actor.deck = newState;
                 activeCount++;
-                if (fatigueTriggered) fatigueMsg += ` Fatigue for ${getTokenName(state, tokenId)}.`;
+                if (fatigueTriggered) fatigueMsg += ` Fatigue for ${actor.name}.`;
             });
 
             state.logs.push(createLog(`Round Ended. ${activeCount} active actors drew cards.${fatigueMsg}`, 'GM'));
@@ -437,27 +453,124 @@ export const useGameStore = create<GameStore>()(
 
         case 'PLAY_IMMEDIATE': {
              // Used during Resolution Phase for reactions or unplanned moves
-             const deck = state.decks[action.tokenId];
-             if (!deck) return;
+             const actor = getActor(state, action.tokenId);
+             if (!actor) return;
 
              // Remove from hand
              const cardIds = new Set(action.cards.map(c => c.id));
-             deck.hand = deck.hand.filter(c => !cardIds.has(c.id));
+             actor.deck.hand = actor.deck.hand.filter(c => !cardIds.has(c.id));
              
              // Discard
-             deck.discardPile.push(...action.cards);
+             actor.deck.discardPile.push(...action.cards);
 
              // Log
              const strength = calculateStackStrength(action.cards, action.strengthColor, action.modifier);
              const cardNames = action.cards.map(c => c.name).join(' + ');
              
              state.logs.push(createLog(
-                 action.actionName ? `${getTokenName(state, action.tokenId)} used ${action.actionName} (${cardNames})` : `${getTokenName(state, action.tokenId)} performed Action (${cardNames})`,
+                 action.actionName ? `${actor.name} used ${action.actionName} (${cardNames})` : `${actor.name} performed Action (${cardNames})`,
                  'Player',
                  'action',
                  { total: strength, color: action.strengthColor, targetColor: action.targetDefense, label: 'Strength' }
              ));
              break;
+        }
+
+        case 'ADD_ACTOR': {
+            const { name, actorType, templateId, x, y, color } = action;
+            const id = Math.random().toString(36).substr(2, 9);
+            
+            let deckRes;
+            if (actorType === TokenType.MONSTER) {
+                deckRes = generateMonsterDeck(); 
+            } else {
+                deckRes = generateStarterDeck();
+            }
+            
+            const newActor: Actor = {
+                id,
+                name,
+                type: actorType,
+                color: color || '#999',
+                deck: {
+                    drawPile: deckRes.deck,
+                    hand: [],
+                    discardPile: [],
+                    flippedPile: [],
+                    equipped: deckRes.equipped,
+                    consequences: []
+                }
+            };
+            
+            // Initial Draw
+            const drawRes = drawCards(newActor.deck, 4);
+            newActor.deck = drawRes.newState;
+            
+            state.actors[id] = newActor;
+            
+            // Default to 0,0 if not specified
+            const spawnX = x ?? 0;
+            const spawnY = y ?? 0;
+            
+            state.tokens.push({
+                id: `token-${id}`,
+                actorId: id,
+                x: spawnX,
+                y: spawnY,
+                size: 1
+            });
+            
+            state.logs.push(createLog(`Added actor: ${name}`, 'GM'));
+            break;
+        }
+
+        case 'REMOVE_ACTOR': {
+            const { actorId } = action;
+            if (!state.actors[actorId]) return;
+            
+            // Find tokens to remove
+            const tokensToRemove = state.tokens.filter(t => t.actorId === actorId);
+            const tokenIds = new Set(tokensToRemove.map(t => t.id));
+            
+            // Remove tokens
+            state.tokens = state.tokens.filter(t => t.actorId !== actorId);
+            
+            // Remove actor
+            delete state.actors[actorId];
+            
+            // Remove plans
+            Object.keys(state.plannedActions).forEach(tid => {
+                if (tokenIds.has(tid)) {
+                    delete state.plannedActions[tid];
+                }
+            });
+            
+            state.logs.push(createLog(`Removed actor ${actorId}`, 'GM'));
+            break;
+        }
+
+        case 'SPAWN_TOKEN': {
+            const { actorId, x, y } = action;
+            if (!state.actors[actorId]) return;
+            
+            state.tokens.push({
+                id: `token-${Math.random().toString(36).substr(2, 9)}`,
+                actorId,
+                x,
+                y,
+                size: 1
+            });
+            break;
+        }
+
+        case 'DESPAWN_TOKEN': {
+            const { tokenId } = action;
+            state.tokens = state.tokens.filter(t => t.id !== tokenId);
+            delete state.plannedActions[tokenId];
+            if (state.activeTokenId === tokenId) {
+                state.activeTokenId = null;
+            }
+            break;
         }
       }
     })

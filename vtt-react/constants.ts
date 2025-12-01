@@ -1,28 +1,53 @@
 
-import { Token, TokenType } from './types';
+import { Token, TokenType, Actor, PlayerDeckState } from './types';
 
 export const GRID_SIZE = 64; // pixels per square
 
-export const INITIAL_TOKENS: Token[] = [
-  {
+export const INITIAL_ACTORS: Record<string, Actor> = {
+  'hero-1': {
     id: 'hero-1',
     name: 'Vallhach',
-    x: 2,
-    y: 2,
-    color: '#3b82f6',
     type: TokenType.PC,
-    size: 1,
-    imageUrl: 'https://picsum.photos/64/64?random=1'
+    color: '#3b82f6',
+    deck: {
+        drawPile: [],
+        hand: [],
+        discardPile: [],
+        flippedPile: [],
+        equipped: [],
+        consequences: []
+    }
   },
-  {
+  'monster-1': {
     id: 'monster-1',
     name: 'Lizard Warrior',
+    type: TokenType.MONSTER,
+    color: '#10b981',
+    deck: {
+        drawPile: [],
+        hand: [],
+        discardPile: [],
+        flippedPile: [],
+        equipped: [],
+        consequences: []
+    }
+  }
+};
+
+export const INITIAL_TOKENS: Token[] = [
+  {
+    id: 'token-1',
+    actorId: 'hero-1',
+    x: 2,
+    y: 2,
+    size: 1,
+  },
+  {
+    id: 'token-2',
+    actorId: 'monster-1',
     x: 8,
     y: 6,
-    color: '#10b981',
-    type: TokenType.MONSTER,
     size: 1,
-    imageUrl: 'https://picsum.photos/128/128?random=3'
   }
 ];
 
