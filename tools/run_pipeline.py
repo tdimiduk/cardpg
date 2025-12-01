@@ -50,14 +50,18 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description="Run the CardPG data pipeline.")
-    parser.add_argument("--skip-sync", action="store_true", help="Skip syncing data from Google Sheets.")
+    parser.add_argument("--sync", action="store_true", help="Sync data from Google Sheets.")
+    parser.add_argument("--skip-sync", action="store_true", help="[DEPRECATED] Skip syncing data from Google Sheets (now the default).")
     args = parser.parse_args()
 
     # 1. Sync
-    if not args.skip_sync:
+    if args.skip_sync:
+        print("Warning: --skip-sync is deprecated. Syncing is now disabled by default. Use --sync to enable it.")
+
+    if args.sync:
         run_sync()
     else:
-        print("Skipping sync step...")
+        print("Skipping sync step (use --sync to enable)...")
     
     # 2. Compile
     manifest = load_manifest()
