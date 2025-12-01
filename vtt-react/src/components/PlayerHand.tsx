@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useHandSelection } from '../hooks/useHandSelection';
 import { CoreCard, ResourceType, GamePhase, PlannedAction, Rule } from '../types';
 import { CardComponent } from './Card';
 import {
@@ -55,58 +56,16 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
   hasPlanned,
   plannedAction,
 }) => {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-
-  const toggleSelection = (id: string) => {
-    const newSet = new Set(selectedIds);
-    if (newSet.has(id)) {
-      newSet.delete(id);
-    } else {
-      newSet.add(id);
-    }
-    setSelectedIds(newSet);
-  };
-
-  const selectedCards = hand.filter((c) => selectedIds.has(c.id));
-
-  // Filter for cards that are strictly Actions (have a cost and a rule)
-  // We look for the first Attack or General rule to define the action.
-  const getActionRule = (card: CoreCard): Rule | undefined => {
-    return card.rules?.find((r) => r.type === 'attack' || r.type === 'general');
-  };
-
-  const actionCards = selectedCards.filter(
-    (c) => c.cost !== undefined && c.cost !== null && getActionRule(c),
-  );
-
-  const handleImprovise = (color: ResourceType) => {
-    if (selectedCards.length === 0) return;
-    onPlayStack(selectedCards, color, 0, undefined, 'Improvised Action');
-    setSelectedIds(new Set());
-  };
-
-  const handleSpecificAction = (card: CoreCard) => {
-    const rule = getActionRule(card);
-    if (!rule) return;
-
-    if (rule.type === 'attack') {
-      onPlayStack(
-        selectedCards,
-        rule.data.power.source,
-        rule.data.power.modifier,
-        rule.data.resistedBy,
-        card.name,
-      );
-    } else if (rule.type === 'general') {
-      // General rules might not have power, default to Red/0 if missing?
-      // Or maybe we shouldn't allow playing them as "Stack Actions" if they don't have power?
-      // For now, assume if it's in the action list, it's playable.
-      const source = rule.data.power?.source || 'Red';
-      const modifier = rule.data.power?.modifier || 0;
-      onPlayStack(selectedCards, source, modifier, undefined, card.name);
-    }
-    setSelectedIds(new Set());
-  };
+  const {
+    selectedIds,
+    selectedCards,
+    actionCards,
+    toggleSelection,
+    clearSelection,
+    handleImprovise,
+    handleSpecificAction,
+    getActionRule,
+  } = useHandSelection({ hand, onPlayStack });
 
   // If actor has already planned, hide hand and show locked state
   if (hasPlanned && phase === 'planning') {
@@ -177,7 +136,7 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
               <button
                 onClick={() => {
                   onReturnToDeck(selectedCards);
-                  setSelectedIds(new Set());
+                  clearSelection();
                 }}
                 className="text-slate-500 hover:text-blue-400 px-2 flex items-center gap-1 text-xs transition-colors border-r border-slate-700 pr-3"
                 title="Return selected cards to top of draw pile"
@@ -187,7 +146,7 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
               <button
                 onClick={() => {
                   onDiscard(selectedCards);
-                  setSelectedIds(new Set());
+                  clearSelection();
                 }}
                 className="text-slate-500 hover:text-red-400 px-2 flex items-center gap-1 text-xs transition-colors"
                 title="Discard selected cards"

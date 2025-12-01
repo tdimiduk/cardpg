@@ -44,6 +44,9 @@ describe('CardComponent', () => {
     // The component renders stats in a specific way, maybe check for text content or structure
     // It renders "2" inside a red box/icon
     expect(screen.getByText('2')).toBeInTheDocument();
+    // Check cost rendering
+    expect(screen.getByText('Cost')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
   });
 
   it('renders ItemCard details', () => {

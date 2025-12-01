@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { CardComponent } from './Card';
 import { getActorTemplates, ActorTemplate } from '../services/deckFactory';
-import { getAttributeValue, calculateSeverity } from '../services/ruleService';
+import { useActorStats } from '../hooks/useActorStats';
 
 interface SidebarLeftProps {
   deckState: PlayerDeckState | null | undefined;
@@ -142,24 +142,18 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     );
   }
 
-  const defenseTotal = {
-    red: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.red ?? 0), 0),
-    yellow: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.yellow ?? 0), 0),
-    blue: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.blue ?? 0), 0),
-  };
+  const stats = useActorStats(deckState);
+  
+  if (!stats) return null;
 
-  // --- Derived Stats from Equipment ---
-  const defenseStat = getAttributeValue(deckState.equipped, 'def');
-  const resilienceStat = getAttributeValue(deckState.equipped, 'res');
-
-  // --- Consequence Logic ---
-  // Impact = Cards Flipped
-  const impact = deckState.flippedPile.length;
-  // Consequences = floor(Impact / Defense)
-  const calculatedConsequences = Math.floor(impact / defenseStat);
-
-  // Severity Calculation
-  const currentSeverity = calculateSeverity(deckState.consequences, resilienceStat);
+  const {
+    defenseTotal,
+    defenseStat,
+    resilienceStat,
+    impact,
+    calculatedConsequences,
+    currentSeverity
+  } = stats;
 
   const [showDeckModal, setShowDeckModal] = React.useState(false);
   const [showActorSelector, setShowActorSelector] = React.useState(false);

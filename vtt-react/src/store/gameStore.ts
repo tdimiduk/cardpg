@@ -129,8 +129,7 @@ const createLog = (
 });
 
 // --- Store Implementation ---
-
-export const useGameStore = create<GameStore>()(
+export const createGameStore = () => create<GameStore>()(
   immer((set) => ({
     // Initial State
     actors: INITIAL_ACTORS,
@@ -164,6 +163,7 @@ export const useGameStore = create<GameStore>()(
             });
             break;
           }
+// ... rest of dispatch ...
 
           case 'SET_ACTIVE_TOKEN': {
             state.activeTokenId = action.tokenId;
@@ -678,5 +678,6 @@ export const useGameStore = create<GameStore>()(
           }
         }
       }),
-  })),
-);
+  })));
+
+export const useGameStore = createGameStore();
