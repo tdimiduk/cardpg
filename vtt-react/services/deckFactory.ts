@@ -1,6 +1,6 @@
-import { CoreCard, Rule, Stats, ResourceType, Inline } from '../types';
+import { Card, CoreCard, ItemCard, Rule, Stats, ResourceType, Inline } from '../types';
 import { STARTER_DECK_TEMPLATES, PERMANENT_CARDS, LIZARD_DECK_TEMPLATES, T } from '../data/cardData';
-import { CardDefinition, LegacyActionDefinition } from '../data/cardDefinitions';
+import { CardDefinition } from '../data/cardDefinitions';
 import { shuffle } from '../utils';
 import generatedCards from '../data/generated_cards.json';
 
@@ -9,83 +9,69 @@ import generatedCards from '../data/generated_cards.json';
 // Helper to convert JSON rules to internal Rule objects
 const convertJsonRule = (r: any): Rule => {
     if (r.type === 'attack') {
-        const expr = r.power.expression || "";
-        const sourceMatch = expr.match(/{(\w+)}/);
-        const modMatch = expr.match(/[+-]\s*(\d+)/);
-        
-        const source = sourceMatch ? sourceMatch[1] : 'Red';
-        const modifier = modMatch ? parseInt(modMatch[0].replace(/\s/g, '')) : 0;
-
-        return {
-            type: 'attack',
-            data: {
-                power: { source: source as ResourceType, modifier },
-                resistedBy: r.resistedBy || 'defense',
-                effect: r.effect
-            }
-        };
-    } else if (r.type === 'defend') {
-        const expr = r.power.expression || "";
-        const sourceMatch = expr.match(/{(\w+)}/);
-        const modMatch = expr.match(/[+-]\s*(\d+)/);
-        
-        const source = sourceMatch ? sourceMatch[1] : 'Red';
-        const modifier = modMatch ? parseInt(modMatch[0].replace(/\s/g, '')) : 0;
-
-        return {
-            type: 'defend',
-            data: {
-                power: { source: source as ResourceType, modifier },
-                resists: r.resists || ['Red'],
-                effect: r.effect
-            }
-        };
-    } else if (r.type === 'narrative') {
-        // Fallback for narrative rules
-        return {
-            type: 'general', // Map to general for now so it shows up
-            data: {
-                power: null,
-                cost: null,
-                effect: [{ type: 'textRun', content: r.text }]
-            }
-        };
-    } else if (r.type === 'general') {
-        return {
-            type: 'general',
-            data: {
-                power: null,
-                cost: null,
-                effect: [{ type: 'textRun', content: r.effect }]
-            }
-        };
-    }
-    return { type: 'passive', data: { bonus: { source: 'Red', modifier: 0 }, condition: 'Unknown' } };
+        const expr = r.data.power.expression || ""; // Fallback if still using old format, but new format is structured
+        // Actually, the new JSON has structured power.
+        // { type: "attack", data: { power: { source: "Red", modifier: 2 }, ... } }
+        // So we can just pass it through if it matches, or map it if needed.
+        // The generated JSON should match the Rule type exactly if we did our job right.
+        // But let's be safe and map it explicitly or cast it.
+        return r as Rule;
+    } 
+    return r as Rule;
 };
 
-export const loadCard = (id: string): CoreCard | null => {
+export const loadCard = (id: string): Card | null => {
     const cardData = (generatedCards as any[]).find(c => c.id === id);
     if (!cardData) return null;
 
-    return {
-        id: cardData.id,
-        name: cardData.name,
-        tags: cardData.tags || [],
-        stats: cardData.stats || { red: 0, yellow: 0, blue: 0 },
-        cost: cardData.cost,
-        rules: (cardData.rules || []).map(convertJsonRule),
-        flavor: cardData.flavor ? [{ type: 'textRun', content: cardData.flavor }] : undefined,
-        // Legacy support for items (Table Cards)
-        def: cardData.defense,
-        res: cardData.resilience
-    };
+    if (cardData.type === 'core') {
+        return {
+            type: 'core',
+            id: cardData.id,
+            name: cardData.name,
+            tags: cardData.tags || [],
+            stats: cardData.stats || { red: 0, yellow: 0, blue: 0 },
+            cost: cardData.cost,
+            rules: (cardData.rules || []).map(convertJsonRule),
+            flavor: cardData.flavor,
+        } as CoreCard;
+    } else if (cardData.type === 'item') {
+        return {
+            type: 'item',
+            id: cardData.id,
+            name: cardData.name,
+            tags: cardData.tags || [],
+            flavor: cardData.flavor,
+            weight: cardData.weight,
+            value: cardData.value,
+            traits: cardData.traits || [],
+            passive: cardData.passive,
+            defense: cardData.defense,
+            resilience: cardData.resilience
+        } as ItemCard;
+    }
+    return null;
 };
 
 // --- Legacy / Hybrid Factories ---
 
-export const createCardFromDefinition = (tmpl: CardDefinition): CoreCard => {
-    // ... (Keep legacy logic for now if needed, or deprecate)
-    // For now, we'll just use the old logic for non-generated cards
+export const createCardFromDefinition = (tmpl: CardDefinition): Card => {
+    // Legacy support for hardcoded templates (if still needed)
+    // We try to map them to the new structure.
+    
+    if (tmpl.type === 'item') {
+         return {
+            type: 'item',
+            id: Math.random().toString(36).substr(2, 9),
+            name: tmpl.name,
+            tags: [tmpl.type],
+            flavor: tmpl.text,
+            traits: [], // Legacy didn't have traits array in definition?
+            defense: tmpl.def,
+            resilience: tmpl.res
+         } as ItemCard;
+    }
+
     const rules: Rule[] = [];
     if (tmpl.actionDefinition) {
         if (tmpl.actionDefinition.type === 'attack') {
@@ -108,7 +94,9 @@ export const createCardFromDefinition = (tmpl: CardDefinition): CoreCard => {
             });
         }
     }
+
     return {
+        type: 'core',
         id: Math.random().toString(36).substr(2, 9),
         name: tmpl.name,
         tags: [tmpl.type],
@@ -116,12 +104,10 @@ export const createCardFromDefinition = (tmpl: CardDefinition): CoreCard => {
         cost: tmpl.playCount,
         rules: rules,
         flavor: tmpl.text,
-        def: tmpl.def,
-        res: tmpl.res
-    };
+    } as CoreCard;
 };
 
-export const generateStarterDeck = (): { deck: CoreCard[], equipped: CoreCard[] } => {
+export const generateStarterDeck = (): { deck: CoreCard[], equipped: ItemCard[] } => {
     // Swashbuckler Deck (from generated cards)
     const deckIds = [
         'feint', 'footwork', 'false-charge', 'fence', 'mind-games', 
@@ -137,28 +123,30 @@ export const generateStarterDeck = (): { deck: CoreCard[], equipped: CoreCard[] 
     const deck: CoreCard[] = [];
     deckIds.forEach(id => {
         const c = loadCard(id);
-        if (c) deck.push(c);
+        if (c && c.type === 'core') deck.push(c);
     });
 
-    const equipped: CoreCard[] = [];
+    const equipped: ItemCard[] = [];
     equippedIds.forEach(id => {
         const c = loadCard(id);
-        if (c) equipped.push(c);
+        if (c && c.type === 'item') equipped.push(c);
     });
 
     // Fallback to legacy if generated cards are missing (e.g. during dev)
     if (deck.length === 0) {
         console.warn("Generated cards not found, falling back to legacy starter deck.");
+        const legacyDeck = STARTER_DECK_TEMPLATES.map(createCardFromDefinition).filter(c => c.type === 'core') as CoreCard[];
+        const legacyEquipped = PERMANENT_CARDS.map(createCardFromDefinition).filter(c => c.type === 'item') as ItemCard[];
         return { 
-            deck: shuffle(STARTER_DECK_TEMPLATES.map(createCardFromDefinition)), 
-            equipped: PERMANENT_CARDS.map(createCardFromDefinition) 
+            deck: shuffle(legacyDeck), 
+            equipped: legacyEquipped 
         };
     }
 
     return { deck: shuffle(deck), equipped };
 };
 
-export const generateMonsterDeck = (): { deck: CoreCard[], equipped: CoreCard[] } => {
+export const generateMonsterDeck = (): { deck: CoreCard[], equipped: ItemCard[] } => {
     // Keep legacy monster deck for now until we migrate monsters
     const deck: CoreCard[] = [];
     const countMap: Record<string, number> = {
@@ -169,7 +157,8 @@ export const generateMonsterDeck = (): { deck: CoreCard[], equipped: CoreCard[] 
     LIZARD_DECK_TEMPLATES.forEach(tmpl => {
         const count = countMap[tmpl.name!] || 1;
         for(let i=0; i<count; i++) {
-             deck.push(createCardFromDefinition(tmpl));
+             const c = createCardFromDefinition(tmpl);
+             if (c.type === 'core') deck.push(c);
         }
     });
     
@@ -181,7 +170,7 @@ export const generateMonsterDeck = (): { deck: CoreCard[], equipped: CoreCard[] 
             def: 3,
             res: 2
         } as any)
-    ];
+    ].filter(c => c.type === 'item') as ItemCard[];
 
     return { deck: shuffle(deck), equipped };
 };

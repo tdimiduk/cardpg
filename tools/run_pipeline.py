@@ -70,6 +70,7 @@ def main():
                 if isinstance(subcategory, list):
                     entries.extend([item for item in subcategory if item.get('type') == 'Cards'])
     
+    generated_yamls = []
     for entry in entries:
         json_filename = entry['id'] + ".json"
         json_path = RAW_DIR / json_filename
@@ -81,10 +82,26 @@ def main():
         tags = entry.get('tags', [])
         if "type:pc-deck" in tags:
             run_compiler(json_path, PC_DIR)
+            # Assume output filename based on entry id or name? 
+            # The compiler uses the actor name from the JSON.
+            # We can find the generated YAMLs by listing the directory later.
         elif "type:monster-deck" in tags:
             run_compiler(json_path, MONSTER_DIR)
         else:
             print(f"Skipping compilation for {entry['name']} (no type:pc-deck or type:monster-deck tag).")
+
+    # 3. Export VTT JSON
+    print("Exporting VTT JSON...")
+    vtt_output = ROOT_DIR / "vtt-react/data/generated_cards.json"
+    
+    # Collect all YAML files from PC and Monster directories
+    yaml_files = list(PC_DIR.glob("*.yaml")) + list(MONSTER_DIR.glob("*.yaml"))
+    
+    if yaml_files:
+        cmd = ["cabal", "run", "hs-card-compiler", "--", "export-vtt", str(vtt_output)] + [str(f) for f in yaml_files]
+        subprocess.check_call(cmd, cwd=COMPILER_DIR)
+    else:
+        print("No YAML files found to export.")
 
 if __name__ == "__main__":
     main()

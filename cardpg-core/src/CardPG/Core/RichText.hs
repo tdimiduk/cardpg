@@ -2,6 +2,8 @@ module CardPG.Core.RichText
   ( TextStyle(..)
   , Inline(..)
   , RichString
+  , mkRichString
+  , unRichString
   , Block(..)
   , CardBody
   , StackPower(..)
@@ -15,11 +17,13 @@ module CardPG.Core.RichText
 import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, Value(..), object, (.=), (.:), withObject, Options(..))
 import qualified Data.Aeson.KeyMap as KM
 import qualified Data.Aeson.Key as Key
+import qualified Data.List.NonEmpty as NE
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText)
 
 data StackPower = StackPower
   { _source      :: ResourceType
@@ -34,6 +38,7 @@ instance ToJSON StackPower where
 
 instance FromJSON StackPower where
   parseJSON = genericParseJSON cardpgJsonDef
+
 
 
 -- | 1. The Token Stream
@@ -54,7 +59,7 @@ instance FromJSON TextStyle where
 
 data TextRunDef = TextRunDef
   { _style   :: Maybe TextStyle
-  , _content :: Text 
+  , _content :: NonEmptyText
   } deriving stock (Eq, Show, Generic)
 
 instance ToJSON TextRunDef where
@@ -118,9 +123,29 @@ instance FromJSON Inline where
       "break" -> pure Break
       _ -> fail $ "Unknown Inline type: " ++ show t
 
--- | A list allows for Monoidal concatenation (text <> icon).
-type RichString = [Inline]
 
+newtype RichString = RichString { unRichString :: NE.NonEmpty Inline }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON RichString where
+  toJSON = toJSON . unRichString
+  toEncoding = toEncoding . unRichString
+
+instance FromJSON RichString where
+  parseJSON v = mkRichString <$> parseJSON v
+
+instance Semigroup RichString where
+  (RichString a) <> (RichString b) = mkRichString (a <> b)
+
+-- | Smart constructor that merges adjacent TextRuns with the same style
+mkRichString :: NE.NonEmpty Inline -> RichString
+mkRichString = RichString . NE.fromList . mergeAdjacent . NE.toList
+
+mergeAdjacent :: [Inline] -> [Inline]
+mergeAdjacent (TextRun (TextRunDef s1 c1) : TextRun (TextRunDef s2 c2) : xs)
+  | s1 == s2 = mergeAdjacent (TextRun (TextRunDef s1 (c1 <> c2)) : xs)
+mergeAdjacent (x:xs) = x : mergeAdjacent xs
+mergeAdjacent [] = []
 
 -- | 2. The Layout Structure
 -------------------------------------------------------------------------------
@@ -141,5 +166,7 @@ instance FromJSON Block where
 
 type CardBody = [Block]
 
+
+
 simpleString :: Text -> RichString
-simpleString t = [TextRun (TextRunDef Nothing t)]
+simpleString t = mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText t)) NE.:| [])

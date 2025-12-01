@@ -7,8 +7,8 @@ module CardCompiler.Parser where
 
 import Control.Applicative ((<|>), optional, many, some)
 import Control.Monad (void, mfilter)
-import Data.Maybe (catMaybes, fromMaybe)
-import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), Value(..), genericToJSON, defaultOptions, object, (.=))
+import Data.Maybe (fromMaybe, catMaybes)
+import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), (.!=), Value(..), genericToJSON, defaultOptions, object, (.=))
 import Data.Aeson.Types (Parser)
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
@@ -22,10 +22,11 @@ import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..), GeneralDef(..), Actor(..))
-import CardPG.Core.RichText (RichString, Inline(..), TextRunDef(..), IconDef(..), StackPower(..), simpleString)
+import CardPG.Core.RichText (RichString, mkRichString, Inline(..), TextRunDef(..), IconDef(..), StackPower(..), simpleString)
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
+import CardPG.Core.NonEmptyText (unsafeNonEmptyText, mkNonEmptyText)
 
 -- | Sum type for different card types
 data ParsedCard
@@ -74,63 +75,7 @@ instance FromJSON RawCard where
     rcKeywordProvide <- v .:? "keywordProvide"
     pure RawCard{..}
 
--- | Export Types for DSL Output
 
-data ExportActor = ExportActor
-  { _exportItems :: [ItemCard]
-  , _exportDeck :: [ExportCoreCard]
-  } deriving (Show, Generic)
-
-instance ToJSON ExportActor where
-  toJSON ExportActor{..} = object
-    [ "items" .= _exportItems
-    , "deck" .= _exportDeck
-    ]
-
-data ExportCoreCard = ExportCoreCard
-  { _ecName :: Text
-  , _ecId :: Maybe Text
-  , _ecTags :: [Text]
-  , _ecStats :: Stats
-  , _ecCost :: Maybe Int
-  , _ecRules :: [Text]
-  , _ecFlavor :: Maybe RichString
-  } deriving (Show, Generic)
-
-instance ToJSON ExportCoreCard where
-  toJSON ExportCoreCard{..} = object $ catMaybes
-    [ Just ("name" .= _ecName)
-    , ("id" .=) <$> _ecId
-    , if null _ecTags then Nothing else Just ("tags" .= _ecTags)
-    , Just ("stats" .= _ecStats)
-    , ("cost" .=) <$> _ecCost
-    , if null _ecRules then Nothing else Just ("rules" .= _ecRules)
-    , ("flavor" .=) <$> _ecFlavor
-    ]
-
--- | Convert Actor to ExportActor with validation
-toExportActor :: Actor -> Either String ExportActor
-toExportActor Actor{..} = do
-  exportDeck <- mapM toExportCoreCard _deck
-  pure $ ExportActor _items exportDeck
-
-toExportCoreCard :: CoreCard -> Either String ExportCoreCard
-toExportCoreCard CoreCard{..} = do
-  rules <- mapM convertRule _rules
-  pure $ ExportCoreCard _name _id _tags _stats _cost rules _flavor
-
-convertRule :: Rule -> Either String Text
-convertRule r = do
-  let printed = prettyRule r
-  case parseRule printed of
-    Left err -> Left $ "Round-trip verification failed for rule: " ++ show r ++ "\nError: " ++ err
-    Right parsed -> 
-      -- We compare the parsed rule with the original rule.
-      -- Note: The parser might not support all features yet (e.g. rich text styles if not implemented fully),
-      -- but we expect exact match for now as we just verified it in core tests.
-      if parsed == r
-        then Right printed
-        else Left $ "Round-trip mismatch for rule: " ++ show r ++ "\nParsed: " ++ show parsed ++ "\nPrinted: " ++ show printed
 
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
@@ -139,34 +84,33 @@ convertCard RawCard{..} = do
       mYellow = toIntMaybe rcYellow
       mBlue = toIntMaybe rcBlue
 
-  case (mRed, mYellow, mBlue) of
-    (Nothing, Nothing, Nothing) -> do
-       let _id = Nothing
-           _name = rcName
-           _tags = maybe [] id rcTags
-           _flavor = fmap simpleString rcFlavor
-           _weight = Nothing
-           _value = Nothing
-           _traits = maybe [] (map T.strip . T.splitOn ",") rcKeywordProvide
-           _passive = rcAction
-           _defense = Nothing
-           _resilience = Nothing
-       pure $ PItem ItemCard{..}
-
-    (Just r, Just y, Just b) -> do
-      let _name = rcName
-          _id = Nothing -- Generated later or from ID field if present
-          _tags = maybe [] id rcTags
-          _stats = Stats r y b
-          _cost = toIntMaybe rcCost
-          _flavor = fmap simpleString rcFlavor 
-
-      rules <- parseRules rcAction rcEffect rcDetails
-      let _rules = rules
-      
-      pure $ PCore CoreCard{..}
-
-    _ -> Left "Data Error: Partial stats found. Either all stats (red, yellow, blue) must be present, or none."
+  case mkNonEmptyText (T.strip rcName) of
+    Nothing -> Left "Skipping empty card row"
+    Just name -> do
+      case (mRed, mYellow, mBlue) of
+        (Nothing, Nothing, Nothing) -> pure $ PItem ItemCard 
+          { _id = Nothing
+          , _name = name
+          , _tags = rcTags >>= NE.nonEmpty
+          , _flavor = fmap simpleString rcFlavor
+          , _weight = Nothing
+          , _value = Nothing
+          , _traits = rcKeywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
+          , _passive = nonEmptyText rcAction
+          , _defense = Nothing
+          , _resilience = Nothing
+          }
+        (Just r, Just y, Just b) -> do
+          let _name = name
+              _id = Nothing -- Generated later or from ID field if present
+              _tags = rcTags >>= NE.nonEmpty
+              _stats = Stats r y b
+              _cost = toIntMaybe rcCost
+              _flavor = fmap simpleString rcFlavor 
+          rules <- parseRules rcAction rcEffect rcDetails
+          let _rules = NE.nonEmpty rules
+          pure $ PCore CoreCard{..}
+        _ -> Left "Data Error: Partial stats found. Either all stats (red, yellow, blue) must be present, or none."
 
 toIntMaybe :: Maybe Value -> Maybe Int
 toIntMaybe (Just (Number n)) = Just (floor n)
@@ -210,7 +154,7 @@ mergeEffectDef (DefendDef p r e) rt = DefendDef p r (mergeRichString e rt)
 
 mergeRichString :: Maybe RichString -> RichString -> Maybe RichString
 mergeRichString Nothing new = Just new
-mergeRichString (Just old) new = Just (old <> [Break] <> new)
+mergeRichString (Just old) new = Just (old <> mkRichString (Break NE.:| []) <> new)
 
 nonEmptyText :: Maybe Text -> Maybe Text
 nonEmptyText Nothing = Nothing

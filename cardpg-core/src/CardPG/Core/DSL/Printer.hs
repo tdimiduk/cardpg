@@ -6,17 +6,37 @@ module CardPG.Core.DSL.Printer where
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.List.NonEmpty as NE
-import CardPG.Core.Card (Rule(..), AttackDef(..), DefendDef(..))
-import CardPG.Core.RichText (RichString, Inline(..), TextRunDef(..), IconDef(..), DynamicValDef(..), StackPower(..), TextStyle(..))
+import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RichText (RichString, unRichString, Inline(..), TextRunDef(..), IconDef(..), DynamicValDef(..), StackPower(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
+
+import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
 
 prettyRule :: Rule -> Text
 prettyRule (RuleAttack AttackDef{..}) =
   "Attack " <> prettyResource _resistedBy <> ": Strength = " <> prettyPower _power <> prettyExtra _effect
+
 prettyRule (RuleDefend DefendDef{..}) =
   "Defend " <> T.intercalate ", " (map prettyResource (NE.toList _resists)) <> ": Strength = " <> prettyPower _power <> prettyExtra _effect
+prettyRule (RuleGeneral GeneralDef{..}) =
+  "General: " <> prettyMaybePower _power <> prettyCost _cost <> " -> " <> richToString _effect
+prettyRule (RuleStance StanceDef{..}) =
+  "Stance (" <> getNonEmptyText _duration <> ")" <> prettyExtra (Just _effect)
+prettyRule (RuleChannel ChannelDef{..}) =
+  "Channel (" <> getNonEmptyText _duration <> ")" <> prettyExtra (Just _effect)
+prettyRule (RulePrime PrimeDef{..}) =
+  "Prime (" <> getNonEmptyText _trigger <> "): " <> prettyRule _reaction
+prettyRule (RulePassive PassiveDef{..}) =
+  "Passive: " <> prettyPower _bonus <> prettyCondition _condition
 prettyRule (RuleNarrative rt) = richToString rt
-prettyRule _ = "TODO: Implement printer for other rule types"
+
+prettyMaybePower :: Maybe StackPower -> Text
+prettyMaybePower Nothing = ""
+prettyMaybePower (Just p) = prettyPower p
+
+prettyCondition :: Maybe NonEmptyText -> Text
+prettyCondition Nothing = ""
+prettyCondition (Just c) = " " <> getNonEmptyText c
 
 prettyResource :: ResourceType -> Text
 prettyResource Red = "{Red}"
@@ -40,14 +60,23 @@ prettyExtra :: Maybe RichString -> Text
 prettyExtra Nothing = ""
 prettyExtra (Just rt) = " -> " <> richToString rt
 
+prettyCost :: Maybe RichString -> Text
+prettyCost Nothing = ""
+prettyCost (Just c) = " (Cost: " <> richToString c <> ")"
+
+prettyRichString :: RichString -> Text
+prettyRichString rs = T.concat . map inlineToString . NE.toList $ unRichString rs
+
 richToString :: RichString -> Text
-richToString = T.concat . map inlineToString
+richToString = T.concat . map inlineToString . NE.toList . unRichString
 
 inlineToString :: Inline -> Text
-inlineToString (TextRun (TextRunDef (Just Bold) content)) = "**" <> content <> "**"
-inlineToString (TextRun (TextRunDef (Just Italic) content)) = "*" <> content <> "*"
-inlineToString (TextRun (TextRunDef (Just GameKeyword) content)) = "`" <> content <> "`"
-inlineToString (TextRun (TextRunDef _ content)) = content
+inlineToString (TextRun (TextRunDef (Just Bold) content)) = "**" <> getNonEmptyText content <> "**"
+inlineToString (TextRun (TextRunDef (Just Italic) content)) = "*" <> getNonEmptyText content <> "*"
+inlineToString (TextRun (TextRunDef (Just GameKeyword) content)) = "`" <> getNonEmptyText content <> "`"
+inlineToString (TextRun (TextRunDef _ content)) = getNonEmptyText content
 inlineToString (Icon (IconDef color)) = prettyResource color
 inlineToString (DynamicVal (DynamicValDef power)) = prettyPower power
 inlineToString Break = "\n"
+
+

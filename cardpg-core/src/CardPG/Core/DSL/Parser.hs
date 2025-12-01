@@ -10,15 +10,16 @@ import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Void (Void)
-import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, label, sepBy1, eof, choice, between)
+import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, label, sepBy1, eof, choice, between, lookAhead, notFollowedBy)
 import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 
-import CardPG.Core.Card (Rule(..), AttackDef(..), DefendDef(..))
-import CardPG.Core.RichText (simpleString, StackPower(..), RichString, Inline(..), TextRunDef(..), TextStyle(..))
+import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RichText (simpleString, StackPower(..), RichString, mkRichString, Inline(..), TextRunDef(..), TextStyle(..), DynamicValDef(..))
 import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.NonEmptyText (NonEmptyText, takeWhilePNonEmpty, mkNonEmptyText, unsafeNonEmptyText)
 
 type MParser = Parsec Void Text
 
@@ -28,7 +29,16 @@ parseRule t = case parse ruleParser "" t of
   Right r -> Right r
 
 ruleParser :: MParser Rule
-ruleParser = try (attackParser <* eof) <|> try (defendParser <* eof) <|> (generalParser <* eof)
+ruleParser = choice
+  [ try (attackParser <* eof)
+  , try (defendParser <* eof)
+  , try (stanceParser <* eof)
+  , try (channelParser <* eof)
+  , try (primeParser <* eof)
+  , try (passiveParser <* eof)
+  , try (explicitGeneralParser <* eof)
+  , (narrativeParser <* eof)
+  ]
 
 orSep :: MParser ()
 orSep = void $ choice
@@ -47,9 +57,8 @@ attackParser = do
   _ <- space1
   power <- stackPowerParser
   _ <- separatorParser
-  extra <- richTextParser
-  let extraOpt = if null extra then Nothing else Just extra
-  pure $ RuleAttack $ AttackDef power resistedBy extraOpt
+  extra <- optional richTextParser
+  pure $ RuleAttack $ AttackDef power resistedBy extra
 
 -- Defend
 defendParser :: MParser Rule
@@ -60,21 +69,86 @@ defendParser = do
   _ <- optional (char ':')
   power <- optional (space1 >> stackPowerParser)
   _ <- separatorParser
-  extra <- richTextParser
-  let extraOpt = if null extra then Nothing else Just extra
+  extra <- optional richTextParser
   let p = fromMaybe (StackPower Red 0 Nothing) power 
-  pure $ RuleDefend $ DefendDef p (NE.fromList resists) extraOpt
+  pure $ RuleDefend $ DefendDef p (NE.fromList resists) extra
 
--- General
-generalParser :: MParser Rule
-generalParser = do
+-- Stance
+stanceParser :: MParser Rule
+stanceParser = do
+  _ <- string' "stance"
+  _ <- space
+  _ <- char '('
+  duration <- takeWhilePNonEmpty Nothing (/= ')')
+  _ <- char ')'
+  _ <- separatorParser
+  effect <- richTextParser
+  pure $ RuleStance $ StanceDef duration effect
+
+-- Channel
+channelParser :: MParser Rule
+channelParser = do
+  _ <- string' "channel"
+  _ <- space
+  _ <- char '('
+  duration <- takeWhilePNonEmpty Nothing (/= ')')
+  _ <- char ')'
+  _ <- separatorParser
+  effect <- richTextParser
+  pure $ RuleChannel $ ChannelDef duration effect
+
+-- Prime
+primeParser :: MParser Rule
+primeParser = do
+  _ <- string' "prime"
+  _ <- space
+  _ <- char '('
+  trigger <- takeWhilePNonEmpty Nothing (/= ')')
+  _ <- char ')'
+  _ <- hspace
+  _ <- char ':'
+  _ <- hspace
+  reaction <- ruleParser -- Recursive parse for the reaction
+  pure $ RulePrime $ PrimeDef trigger reaction
+
+-- Passive
+passiveParser :: MParser Rule
+passiveParser = do
+  _ <- string' "passive"
+  _ <- space
+  _ <- char ':'
+  _ <- space
+  bonus <- stackPowerParser
+  condStr <- takeWhileP Nothing (const True)
+  let condition = mkNonEmptyText condStr
+  pure $ RulePassive $ PassiveDef bonus condition
+
+-- General (Explicit)
+explicitGeneralParser :: MParser Rule
+explicitGeneralParser = do
+  _ <- string' "general"
+  _ <- space
+  _ <- char ':'
+  _ <- space
+  power <- optional (try (stackPowerParser <* space))
+  cost <- optional $ try $ do
+    _ <- space -- Consume potential leading space from prettyCost
+    _ <- string "(Cost: "
+    c <- richTextParserStopAt [')']
+    _ <- char ')'
+    space
+    pure c
+  _ <- separatorParser
+  effect <- richTextParser
+  pure $ RuleGeneral $ GeneralDef power cost effect
+
+-- Narrative (Fallback for General)
+narrativeParser :: MParser Rule
+narrativeParser = do
   rt <- richTextParser
   pure $ RuleNarrative rt
 
 -- Separator Parser
--- Handles the transition between stats and effect.
--- Canonical: "->"
--- Legacy: ";" or "," or just space
 separatorParser :: MParser ()
 separatorParser = void $ choice
   [ try (space >> string "->" >> hspace)
@@ -88,15 +162,25 @@ hspace = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
 
 -- Rich Text Parser
 richTextParser :: MParser RichString
-richTextParser = many inlineParser
+richTextParser = mkRichString <$> someNE (inlineParserStopAt [])
+
+richTextParserStopAt :: [Char] -> MParser RichString
+richTextParserStopAt stopChars = mkRichString <$> someNE (inlineParserStopAt stopChars)
+
+someNE :: MParser a -> MParser (NonEmpty a)
+someNE p = (:|) <$> p <*> many p
 
 inlineParser :: MParser Inline
-inlineParser = choice
+inlineParser = inlineParserStopAt []
+
+inlineParserStopAt :: [Char] -> MParser Inline
+inlineParserStopAt stopChars = choice
   [ try boldParser
   , try italicParser
   , try keywordParser
+  , try dynamicValParser -- Try parsing dynamic values (stack power syntax)
   , breakParser
-  , textParser
+  , textParserStopAt stopChars
   ]
 
 breakParser :: MParser Inline
@@ -107,28 +191,45 @@ breakParser = do
 boldParser :: MParser Inline
 boldParser = do
   _ <- string "**"
-  content <- takeWhile1P Nothing (/= '*')
+  content <- takeWhilePNonEmpty Nothing (/= '*')
   _ <- string "**"
   pure $ TextRun $ TextRunDef (Just Bold) content
 
 italicParser :: MParser Inline
 italicParser = do
   _ <- char '*'
-  content <- takeWhile1P Nothing (/= '*')
+  content <- takeWhilePNonEmpty Nothing (/= '*')
   _ <- char '*'
   pure $ TextRun $ TextRunDef (Just Italic) content
 
 keywordParser :: MParser Inline
 keywordParser = do
   _ <- char '`'
-  content <- takeWhile1P Nothing (/= '`')
+  content <- takeWhilePNonEmpty Nothing (/= '`')
   _ <- char '`'
   pure $ TextRun $ TextRunDef (Just GameKeyword) content
 
+dynamicValParser :: MParser Inline
+dynamicValParser = do
+  -- Lookahead to ensure we are parsing something that looks like a resource symbol
+  -- to avoid consuming normal text that starts with '{' but isn't a resource.
+  _ <- lookAhead (try (string "{Red}") <|> try (string "{Blue}") <|> try (string "{Yellow}"))
+  val <- stackPowerParser
+  pure $ DynamicVal $ DynamicValDef val
+
 textParser :: MParser Inline
-textParser = do
-  content <- takeWhile1P Nothing (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n')
+textParser = textParserStopAt []
+
+textParserStopAt :: [Char] -> MParser Inline
+textParserStopAt stopChars = do
+  -- Ensure we don't consume characters that start other parsers or stop chars
+  content <- takeWhilePNonEmpty Nothing (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n' && c /= '{' && notElem c stopChars)
   pure $ TextRun $ TextRunDef Nothing content
+  <|> do
+    -- Fallback for '{' if it wasn't a dynamic val
+    _ <- char '{'
+    let content = unsafeNonEmptyText "{" -- Safe because we know it's "{"
+    pure $ TextRun $ TextRunDef Nothing content
 
 -- Helpers
 resourceSymbol :: MParser ResourceType
@@ -159,24 +260,29 @@ legacyResource = between (char '|') (char '|') $ choice
   , Blue <$ char 'z'
   ]
 
+hspace1 :: MParser ()
+hspace1 = void $ takeWhile1P Nothing (\c -> c == ' ' || c == '\t')
+
 stackPowerParser :: MParser StackPower
 stackPowerParser = do
   _ <- optional $ try $ do
     _ <- string' "strength" <|> string' "str"
-    _ <- space
+    _ <- hspace1
     _ <- optional (char '=')
-    space
+    hspace
   base <- resourceSymbol
-  _ <- space
-  modVal <- optional $ do
+  _ <- hspace
+  modVal <- optional $ try $ do
     sign <- (id <$ char '+') <|> (negate <$ char '-')
-    _ <- space
+    _ <- hspace
     n <- L.decimal
     pure (sign n)
-  _ <- space
-  conditional <- optional $ do
+  _ <- hspace
+  conditional <- optional $ try $ do
     _ <- char '('
+    notFollowedBy (string "Cost:")
     content <- takeWhileP Nothing (/= ')')
     _ <- char ')'
     pure $ "(" <> content <> ")"
+  _ <- hspace -- Consume trailing hspace
   pure $ StackPower base (fromMaybe 0 modVal) conditional

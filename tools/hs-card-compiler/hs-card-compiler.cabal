@@ -14,6 +14,7 @@ executable hs-card-compiler
     import:           warnings
     main-is:          Main.hs
     other-modules:    CardCompiler.Parser
+                    , CardCompiler.VttExporter
     -- other-extensions:
     build-depends:    base >= 4.16 && < 5
                     , aeson

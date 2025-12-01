@@ -19,15 +19,18 @@ import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
 
 import Data.Either (partitionEithers)
-import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..), toExportActor)
+import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..))
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Actor(..))
+
+import qualified CardCompiler.VttExporter as Vtt
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
     [inputFile, outputDir] -> run inputFile outputDir
-    _ -> die "Usage: hs-card-compiler <input.json> <output_dir>"
+    ("export-vtt" : outputFile : inputFiles) -> Vtt.loadAndExport inputFiles outputFile
+    _ -> die "Usage: hs-card-compiler <input.json> <output_dir> OR hs-card-compiler export-vtt <output.json> <input_yaml>..."
 
 run :: FilePath -> FilePath -> IO ()
 run inputFile outputDir = do
@@ -56,7 +59,9 @@ processCards outputDir cards = do
     let results = map convertCard actorCards
         (failures, successes) = partitionEithers results
     
-    forM_ failures $ \err -> putStrLn $ "Failed to convert card for actor " ++ show actor ++ ": " ++ err
+    -- Filter out "Skipping empty card row" messages to reduce noise
+    let meaningfulFailures = filter (/= "Skipping empty card row") failures
+    forM_ meaningfulFailures $ \err -> putStrLn $ "Failed to convert card for actor " ++ show actor ++ ": " ++ err
     
     unless (null successes) $ do
       let (items, deck) = splitCards successes
@@ -65,14 +70,10 @@ processCards outputDir cards = do
         then putStrLn $ "Warning: Actor " ++ show actor ++ " has " ++ show (length deck) ++ " cards in deck. Expected 24. Skipping."
         else do
           let actorData = Actor { _items = items, _deck = deck }
-      
-          case toExportActor actorData of
-            Left err -> die $ "Failed to export actor " ++ show actor ++ ": " ++ err
-            Right exportData -> do
-              let fileName = T.unpack (sanitize actor) ++ ".yaml"
-                  outputPath = outputDir </> fileName
-              BS.writeFile outputPath (encode exportData)
-              putStrLn $ "Wrote " ++ outputPath
+          let fileName = T.unpack (sanitize actor) ++ ".yaml"
+          let outputPath = outputDir </> fileName
+          BS.writeFile outputPath (encode actorData)
+          putStrLn $ "Wrote " ++ outputPath
 
 isValidCard :: RawCard -> Bool
 isValidCard c = case rcActor c of

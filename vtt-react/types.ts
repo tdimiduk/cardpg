@@ -108,18 +108,37 @@ export const StatsSchema = z.object({
 export type Stats = z.infer<typeof StatsSchema>;
 
 export const CoreCardSchema = z.object({
+  type: z.literal('core'),
   id: z.string(),
   name: z.string(),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
   stats: StatsSchema,
   cost: z.number().optional().nullable(),
-  rules: z.array(RuleSchema),
+  rules: z.array(RuleSchema).optional(),
   flavor: RichStringSchema.optional().nullable(),
-  // Legacy/Item stats
-  def: z.number().optional(),
-  res: z.number().optional(),
 });
 export type CoreCard = z.infer<typeof CoreCardSchema>;
+
+export const ItemCardSchema = z.object({
+  type: z.literal('item'),
+  id: z.string(),
+  name: z.string(),
+  tags: z.array(z.string()).optional(),
+  flavor: RichStringSchema.optional().nullable(),
+  weight: z.number().optional().nullable(),
+  value: z.number().optional().nullable(),
+  traits: z.array(z.string()).optional(),
+  passive: z.string().optional().nullable(),
+  defense: z.number().optional().nullable(),
+  resilience: z.number().optional().nullable(),
+});
+export type ItemCard = z.infer<typeof ItemCardSchema>;
+
+export const CardSchema = z.discriminatedUnion('type', [
+  CoreCardSchema,
+  ItemCardSchema,
+]);
+export type Card = z.infer<typeof CardSchema>;
 
 // --- Legacy / Game State Types (Preserved but updated where possible) ---
 
@@ -190,4 +209,6 @@ export interface PlannedAction {
 
 // Re-export Card as CoreCard for compatibility during refactor, 
 // or explicitly use CoreCard in new code.
-export type Card = CoreCard;
+// Re-export Card as CoreCard for compatibility during refactor, 
+// or explicitly use CoreCard in new code.
+// export type Card = CoreCard; // Removed, using the discriminated union above

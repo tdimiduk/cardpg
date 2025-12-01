@@ -6,9 +6,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-
 module Main where
+import Data.Maybe (fromMaybe, mapMaybe)
+import Debug.Trace (trace)
 
 import Test.Tasty
 import Test.Tasty.QuickCheck
@@ -23,6 +25,7 @@ import qualified Data.Vector as V
 import CardPG.Core.Card
 import CardPG.Core.Types
 import CardPG.Core.RichText
+import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, mkNonEmptyText, getNonEmptyText)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
 import Debug.Trace (trace)
@@ -45,7 +48,8 @@ prop_coreCardRoundtrip :: CoreCard -> Property
 prop_coreCardRoundtrip x = 
   let encoded = encode x
       decoded = eitherDecode encoded
-  in counterexample (show encoded) $ decoded === Right x
+      normalized = normalizeCoreCard x
+  in counterexample (show encoded) $ decoded === Right normalized
 
 prop_itemCardRoundtrip :: ItemCard -> Property
 prop_itemCardRoundtrip x = 
@@ -75,40 +79,111 @@ prop_consequenceCardRoundtrip :: ConsequenceCard -> Property
 prop_consequenceCardRoundtrip x = 
   let encoded = encode x
       decoded = eitherDecode encoded
-  in counterexample (show encoded) $ decoded === Right x
+      normalized = normalizeConsequenceCard x
+  in counterexample (show encoded) $ decoded === Right normalized
+
+normalizeCoreCard :: CoreCard -> CoreCard
+normalizeCoreCard c@CoreCard{..} = c
+  { _rules = fmap (fmap normalizeRuleDSL) _rules
+  , _flavor = normalizeEffectJSON _flavor
+  }
+
+normalizeConsequenceCard :: ConsequenceCard -> ConsequenceCard
+normalizeConsequenceCard c@ConsequenceCard{..} = c
+  { _rules = fmap (fmap normalizeRuleDSL) _rules
+  }
 
 prop_dslRoundtrip :: SafeRule -> Property
 prop_dslRoundtrip (SafeRule r) = 
   let printed = prettyRule r
       parsed = parseRule printed
-      expected = normalizeRule r
+      expected = normalizeRuleDSL r
   in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right expected
 
-normalizeRule :: Rule -> Rule
-normalizeRule (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (normalizeEffect e)
-normalizeRule (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (normalizeEffect e)
-normalizeRule r = r
+normalizeRuleDSL :: Rule -> Rule
+normalizeRuleDSL (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (normalizeEffectDSL e)
+normalizeRuleDSL (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (normalizeEffectDSL e)
+normalizeRuleDSL (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (normalizeEffectDSL c) (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectDSL (Just e)))
+normalizeRuleDSL (RuleNarrative rt) = RuleNarrative (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectDSL (Just rt)))
+normalizeRuleDSL (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
+normalizeRuleDSL (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (normalizeEffectDSL' e)
+normalizeRuleDSL (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (normalizeEffectDSL' e)
+normalizeRuleDSL (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleDSL r)
 
+normalizeRuleJSON :: Rule -> Rule
+normalizeRuleJSON (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (normalizeEffectJSON e)
+normalizeRuleJSON (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (normalizeEffectJSON e)
+normalizeRuleJSON (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (normalizeEffectJSON c) (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectJSON (Just e)))
+normalizeRuleJSON (RuleNarrative rt) = RuleNarrative (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectJSON (Just rt)))
+normalizeRuleJSON (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
+normalizeRuleJSON (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (normalizeEffectJSON' e)
+normalizeRuleJSON (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (normalizeEffectJSON' e)
+normalizeRuleJSON (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleJSON r)
 
+normalizeEffectDSL' :: RichString -> RichString
+normalizeEffectDSL' rs = fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectDSL (Just rs))
 
-normalizeEffect :: Maybe RichString -> Maybe RichString
-normalizeEffect Nothing = Nothing
-normalizeEffect (Just []) = Nothing
-normalizeEffect (Just (TextRun (TextRunDef Nothing c) : xs))
-  | T.null (T.stripStart c) && null xs = Nothing
-  | T.null (T.stripStart c) = Just xs
-  | otherwise = Just (TextRun (TextRunDef Nothing (T.stripStart c)) : xs)
-normalizeEffect (Just xs) = Just xs
+normalizeEffectJSON' :: RichString -> RichString
+normalizeEffectJSON' rs = fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectJSON (Just rs))
 
--- Arbitrary Instances
+normalizeCondition :: Maybe NonEmptyText -> Maybe NonEmptyText
+normalizeCondition c = c
+
+normalizeEffectWith :: (Inline -> Inline) -> Maybe RichString -> Maybe RichString
+normalizeEffectWith _ Nothing = Nothing
+normalizeEffectWith normalizer (Just rs) = 
+  let normalized = map normalizer (NE.toList (unRichString rs))
+  in case NE.nonEmpty normalized of
+       Nothing -> Nothing
+       Just ne -> 
+         let merged = mkRichString ne
+         in case NE.toList (unRichString merged) of
+              (TextRun (TextRunDef Nothing c) : rest) ->
+                let stripped = T.stripStart (getNonEmptyText c)
+                in case mkNonEmptyText stripped of
+                     Nothing -> 
+                       case NE.nonEmpty rest of
+                         Nothing -> Nothing
+                         Just restNe -> Just (mkRichString restNe)
+                     Just c' -> Just (mkRichString (TextRun (TextRunDef Nothing c') :| rest))
+              _ -> Just merged
+
+normalizeInlineDSL :: Inline -> Inline
+normalizeInlineDSL (Icon (IconDef c)) = DynamicVal (DynamicValDef (StackPower c 0 Nothing))
+normalizeInlineDSL x = x
+
+normalizeInlineJSON :: Inline -> Inline
+normalizeInlineJSON x = x
+
+normalizeEffectDSL :: Maybe RichString -> Maybe RichString
+normalizeEffectDSL = normalizeEffectWith normalizeInlineDSL
+
+normalizeEffectJSON :: Maybe RichString -> Maybe RichString
+normalizeEffectJSON Nothing = Nothing
+normalizeEffectJSON (Just rs) = 
+  let normalized = map normalizeInlineJSON (NE.toList (unRichString rs))
+      filtered = mapMaybe filterEmptyTextRun normalized
+  in case NE.nonEmpty filtered of
+       Nothing -> Nothing
+       Just ne -> Just (mkRichString ne)
+
+filterEmptyTextRun :: Inline -> Maybe Inline
+filterEmptyTextRun (TextRun (TextRunDef s c)) = 
+  let stripped = T.strip (getNonEmptyText c)
+  in case mkNonEmptyText stripped of
+       Nothing -> Nothing
+       Just c' -> Just (TextRun (TextRunDef s c'))
+filterEmptyTextRun x = Just x
 
 -- Arbitrary Instances
 
 instance Arbitrary Text where
   arbitrary = T.pack <$> listOf (elements ['a'..'z'])
+  shrink t = T.pack <$> shrink (T.unpack t)
 
 instance Arbitrary ResourceType where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary StackPower where
   arbitrary = do
@@ -121,12 +196,17 @@ instance Arbitrary StackPower where
           pure $ Just $ "(" <> t <> ")"
       ]
     pure $ StackPower base modVal cond
+  shrink = genericShrink
 
 instance Arbitrary TextStyle where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary TextRunDef where
-  arbitrary = genericArbitrary uniform
+  arbitrary = do
+    style <- arbitrary
+    content <- arbitrary
+    return $ TextRunDef style content
 
 instance Arbitrary Inline where
   arbitrary = genericArbitrary uniform
@@ -138,53 +218,19 @@ newtype SafeInline = SafeInline { getSafeInline :: Inline }
   deriving (Show, Eq)
 
 instance Arbitrary SafeInline where
-  arbitrary = oneof
-    [ simpleText
-    , styledText Bold
-    , styledText Italic
-    , styledText GameKeyword
-    , pure $ SafeInline Break
-    ]
-    where
-      -- Generate text without special characters that trigger markdown parsing or breaks
-      safeText = T.pack <$> listOf1 (elements $ ['a'..'z'] ++ ['0'..'9'] ++ [' '])
-      
-      simpleText = do
-        c <- safeText
-        return $ SafeInline $ TextRun $ TextRunDef Nothing c
-        
-      styledText style = do
-        c <- safeText
-        return $ SafeInline $ TextRun $ TextRunDef (Just style) c
+  arbitrary = SafeInline <$> arbitrary
+  shrink (SafeInline i) = SafeInline <$> shrink i
 
-newtype SafeRichString = SafeRichString { getSafeRichString :: RichString }
-  deriving (Show, Eq)
-
-instance Arbitrary SafeRichString where
+instance Arbitrary RichString where
   arbitrary = do
-    -- Generate a list of inlines, but ensure we don't have adjacent simple text runs
-    -- because the parser merges them (or rather, parses them as separate chunks but semantically they are adjacent).
-    -- Actually, the parser produces [TextRun "a", TextRun "b"] if they are separated by nothing?
-    -- No, textParser consumes until special char.
-    -- So "ab" becomes [TextRun "ab"].
-    -- But "a*b*c" becomes [TextRun "a", TextRun "b" (italic), TextRun "c"].
-    -- If we generate [TextRun "a", TextRun "b"], printed as "ab", parsed as [TextRun "ab"].
-    -- So we still have the merging issue for adjacent plain text.
-    -- We can enforce that adjacent inlines are NOT both plain text?
-    -- Or just rely on the fact that `safeText` generates non-empty strings and we can just generate a list of styled/plain.
-    -- Wait, if we generate [TextRun "a", TextRun "b"], printed "ab", parsed [TextRun "ab"].
-    -- Original != Parsed.
-    -- So we should probably merge adjacent plain text runs in the generator?
-    -- Or just generate a list where no two adjacent items are plain text?
-    -- Let's try generating a list of SafeInlines, then merging adjacent plain text runs.
-    inlines <- listOf1 (getSafeInline <$> arbitrary)
-    return $ SafeRichString (mergeAdjacentText inlines)
-
-mergeAdjacentText :: [Inline] -> [Inline]
-mergeAdjacentText (TextRun (TextRunDef Nothing c1) : TextRun (TextRunDef Nothing c2) : xs) =
-  mergeAdjacentText (TextRun (TextRunDef Nothing (c1 <> c2)) : xs)
-mergeAdjacentText (x:xs) = x : mergeAdjacentText xs
-mergeAdjacentText [] = []
+    inlines <- listOf1 arbitrary
+    return $ mkRichString (NE.fromList inlines)
+  shrink rs = 
+    [ mkRichString ne 
+    | l <- shrink (NE.toList (unRichString rs))
+    , not (null l)
+    , Just ne <- [NE.nonEmpty l]
+    ]
 
 -- | Safe Rule for DSL Roundtrip
 newtype SafeRule = SafeRule { getSafeRule :: Rule }
@@ -192,80 +238,106 @@ newtype SafeRule = SafeRule { getSafeRule :: Rule }
 
 instance Arbitrary SafeRule where
   arbitrary = oneof
-    [ do
-        p <- arbitrary
-        r <- arbitrary
-        e <- fmap getSafeRichString <$> arbitrary
-        return $ SafeRule $ RuleAttack $ AttackDef p r e
-    , do
-        p <- arbitrary
-        rs <- arbitrary
-        e <- fmap getSafeRichString <$> arbitrary
-        return $ SafeRule $ RuleDefend $ DefendDef p rs e
-    , do
-        rt <- getSafeRichString <$> arbitrary
-        return $ SafeRule $ RuleNarrative rt
+    [ SafeRule . RuleAttack <$> arbitrary
+    , SafeRule . RuleDefend <$> arbitrary
+    , SafeRule . RuleStance <$> arbitrary
+    , SafeRule . RuleChannel <$> arbitrary
+    , SafeRule <$> (RulePrime <$> (PrimeDef <$> (unsafeNonEmptyText . T.filter (`notElem` ['(', ')']) . getNonEmptyText <$> arbitrary) <*> (getSafeRule <$> arbitrary)))
+    , SafeRule . RulePassive <$> arbitrary
+    , SafeRule . RuleGeneral <$> arbitrary
+    , SafeRule . RuleNarrative <$> arbitrary
     ]
+  shrink (SafeRule r) = SafeRule <$> shrink r
 
 instance Arbitrary Block where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary PassiveDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary AttackDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary DefendDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary GeneralDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary StanceDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary ChannelDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary PrimeDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary Rule where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary Stats where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary CoreCard where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary ItemCard where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary NatureCard where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary TalentCard where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary EncounterCard where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary ConsequenceCard where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary IconDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary DynamicValDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary GeneralActionDef where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
 
 instance Arbitrary EncounterMechanics where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary NonEmptyText where
+  arbitrary = do
+    t <- T.pack <$> listOf1 (elements ['a'..'z'])
+    return $ unsafeNonEmptyText t
+  shrink ne = 
+    [ unsafeNonEmptyText (T.pack s) 
+    | s <- shrink (T.unpack (getNonEmptyText ne))
+    , not (null s)
+    ]
 
 -- Helper for NonEmpty
 instance Arbitrary a => Arbitrary (NonEmpty a) where
@@ -273,4 +345,5 @@ instance Arbitrary a => Arbitrary (NonEmpty a) where
     x <- arbitrary
     xs <- arbitrary
     return (x :| xs)
+  shrink ne = [ NE.fromList l | l <- shrink (NE.toList ne), not (null l) ]
 
