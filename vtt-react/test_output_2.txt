@@ -1,0 +1,57 @@
+
+> cardpg-vtt@0.0.0 test
+> vitest --run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.14 [39m[90m/home/tdimiduk/cardpg/cardpg/vtt-react[39m
+
+ [32m✓[39m src/tests/lint.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/tests/deckFactory.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstderr[2m | src/services/deckFactory.test.ts[2m > [22m[2mdeckFactory[2m > [22m[2mshould handle invalid template ID gracefully
+[22m[39mTemplate not found: invalid-id
+
+ [32m✓[39m src/services/deckFactory.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/tests/unit.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/hooks/useActorStats.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/hooks/useHandSelection.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/tests/integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [31m❯[39m src/tests/gameFlow.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 15[2mms[22m[39m
+     [32m✓[39m should allow a player to move and attack[32m 5[2mms[22m[39m
+[31m     [31m×[31m should resolve combat correctly[39m[32m 5[2mms[22m[39m
+[31m     [31m×[31m should handle fatigue when deck runs out[39m[32m 2[2mms[22m[39m
+     [32m✓[39m should allow adding and removing consequences[32m 2[2mms[22m[39m
+ [32m✓[39m src/components/RichTextRenderer.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m src/components/Card.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 70[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/tests/gameFlow.test.ts[2m > [22mGame Flow Scenarios[2m > [22mshould resolve combat correctly
+[31m[1mAssertionError[22m: expected undefined to be defined[39m
+[36m [2m❯[22m src/tests/gameFlow.test.ts:[2m67:29[22m[39m
+    [90m 65| [39m      [35mconst[39m logs [33m=[39m useGameStore[33m.[39m[34mgetState[39m()[33m.[39mlogs[33m;[39m
+    [90m 66| [39m      const resolutionLog = logs.find((l: any) => l.type === 'action' …
+    [90m 67| [39m      [34mexpect[39m(resolutionLog)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m 68| [39m    }
+    [90m 69| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/tests/gameFlow.test.ts[2m > [22mGame Flow Scenarios[2m > [22mshould handle fatigue when deck runs out
+[31m[1mAssertionError[22m: expected undefined to be defined[39m
+[36m [2m❯[22m src/tests/gameFlow.test.ts:[2m89:24[22m[39m
+    [90m 87| [39m    [35mconst[39m logs [33m=[39m useGameStore[33m.[39m[34mgetState[39m()[33m.[39mlogs[33m;[39m
+    [90m 88| [39m    const fatigueLog = logs.find((l: any) => l.content.includes('Fatig…
+    [90m 89| [39m    [34mexpect[39m(fatigueLog)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m 90| [39m  })[33m;[39m
+    [90m 91| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m9 passed[39m[22m[90m (10)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m41 passed[39m[22m[90m (43)[39m
+[2m   Start at [22m 14:58:08
+[2m   Duration [22m 813ms[2m (transform 503ms, setup 436ms, import 1.08s, tests 192ms, environment 3.89s)[22m
+

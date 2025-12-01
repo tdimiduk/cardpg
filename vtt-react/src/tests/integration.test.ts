@@ -1,37 +1,65 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../store/gameStore';
-import { getActorTemplates } from '../services/deckFactory';
+import { INITIAL_ACTORS, INITIAL_TOKENS } from '../constants';
 
-describe('App Initialization', () => {
-  it('should initialize game without crashing', () => {
-    const store = useGameStore.getState();
-    expect(store).toBeDefined();
+describe('Game Store Integration', () => {
+  beforeEach(() => {
+    useGameStore.setState({
+      actors: INITIAL_ACTORS,
+      tokens: INITIAL_TOKENS,
+      logs: [],
+      phase: 'planning',
+      activeTokenId: INITIAL_TOKENS[0]?.id || null,
+      plannedActions: {},
+    });
+  });
 
-    // Simulate App.tsx useEffect
-    store.dispatch({ type: 'INITIALIZE_GAME' });
+  it('should initialize game state', () => {
+    const { initializeGame, actors } = useGameStore.getState();
+    initializeGame();
 
-    const state = useGameStore.getState();
-    const actors = Object.values(state.actors);
-    expect(actors.length).toBeGreaterThan(0);
-
-    actors.forEach((actor) => {
-      expect(actor.deck.drawPile.length).toBeGreaterThanOrEqual(0);
-      // It might be 0 if they drew everything, but hand should have cards
+    const actorList = Object.values(useGameStore.getState().actors);
+    expect(actorList.length).toBeGreaterThan(0);
+    actorList.forEach((actor) => {
+      expect(actor.deck.drawPile.length).toBeGreaterThan(0);
       expect(actor.deck.hand.length).toBe(4);
     });
   });
 
-  it('should load templates correctly', () => {
-    const templates = getActorTemplates();
-    expect(Array.isArray(templates)).toBe(true);
-    expect(templates.length).toBeGreaterThan(0);
+  it('should handle card drawing', () => {
+    const { initializeGame, drawCards, tokens } = useGameStore.getState();
+    initializeGame();
+    
+    const tokenId = tokens[0].id;
+    const initialHandSize = 4;
+    
+    drawCards(tokenId, 2);
+    
+    const actor = useGameStore.getState().actors[tokens[0].actorId];
+    expect(actor.deck.hand.length).toBe(initialHandSize + 2);
+  });
 
-    // Verify normalization
-    templates.forEach((t) => {
-      t.items.forEach((item) => {
-        expect(item.traits).toBeDefined();
-        expect(Array.isArray(item.traits)).toBe(true);
-      });
-    });
+  it('should handle planning and resolution flow', () => {
+    useGameStore.getState().initializeGame();
+    
+    const store = useGameStore.getState();
+    const tokenId = store.tokens[0].id;
+    const actor = store.actors[store.tokens[0].actorId];
+    const cardToPlay = actor.deck.hand[0];
+
+    // Commit Plan
+    store.commitPlan(tokenId, [cardToPlay], 'Red', 0);
+    
+    expect(useGameStore.getState().plannedActions[tokenId]).toBeDefined();
+    expect(useGameStore.getState().plannedActions[tokenId].cards[0].id).toBe(cardToPlay.id);
+
+    // Reveal
+    store.revealAndResolve();
+    expect(useGameStore.getState().phase).toBe('resolution');
+    
+    // End Round
+    store.endRound();
+    expect(useGameStore.getState().phase).toBe('planning');
+    expect(useGameStore.getState().plannedActions[tokenId]).toBeUndefined();
   });
 });

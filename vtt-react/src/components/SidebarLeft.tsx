@@ -60,6 +60,8 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
   const [showActorSelector, setShowActorSelector] = React.useState(false);
   const [selectorType, setSelectorType] = React.useState<TokenType>(TokenType.PC);
 
+  const stats = useActorStats(deckState);
+
   const handleOpenSelector = (type: TokenType) => {
     setSelectorType(type);
     setShowActorSelector(true);
@@ -105,8 +107,6 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     );
   }
 
-  const stats = useActorStats(deckState);
-  
   if (!stats) return null;
 
   const {

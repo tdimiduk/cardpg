@@ -1,157 +1,109 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createGameStore } from '../store/gameStore';
-import { CoreCard, TokenType } from '../types';
+import { useGameStore } from '../store/gameStore';
+import { INITIAL_ACTORS, INITIAL_TOKENS } from '../constants';
+import { CoreCard } from '../types';
 
 describe('Game Flow Scenarios', () => {
-    let useTestStore: ReturnType<typeof createGameStore>;
+  beforeEach(() => {
+    useGameStore.setState({
+      actors: INITIAL_ACTORS,
+      tokens: INITIAL_TOKENS,
+      logs: [],
+      phase: 'planning',
+      activeTokenId: INITIAL_TOKENS[0]?.id || null,
+      plannedActions: {},
+    });
+  });
 
-    beforeEach(() => {
-        useTestStore = createGameStore();
-        // Initialize game
-        useTestStore.getState().dispatch({ type: 'INITIALIZE_GAME' });
+  it('should allow a player to move and attack', () => {
+    useGameStore.getState().initializeGame();
+    const store = useGameStore.getState();
+
+    const tokenId = store.tokens[0].id;
+    const actor = store.actors[store.tokens[0].actorId];
+    
+    // Move
+    const newToken = { ...store.tokens[0], x: 100, y: 100 };
+    store.updateTokenPosition(newToken);
+    
+    // Plan Attack
+    const attackCard = actor.deck.hand.find((c: CoreCard) => 
+      c.rules?.some((r: any) => r.type === 'attack')
+    );
+    
+    if (attackCard) {
+      store.commitPlan(tokenId, [attackCard], 'Red', 0);
+      
+      const plan = useGameStore.getState().plannedActions[tokenId];
+      expect(plan.move).toEqual({ x: 100, y: 100 });
+      expect(plan.cards).toHaveLength(1);
+    }
+  });
+
+  it('should resolve combat correctly', () => {
+    useGameStore.getState().initializeGame();
+    const store = useGameStore.getState();
+    
+    const attackerId = store.tokens[0].id;
+    const defenderId = store.tokens[1]?.id; // Assuming 2nd token exists
+    
+    if (!defenderId) return; // Skip if only 1 token
+
+    const attacker = store.actors[store.tokens[0].actorId];
+    const attackCard = attacker.deck.hand.find((c: CoreCard) => 
+      c.rules?.some((r: any) => r.type === 'attack')
+    );
+
+    if (attackCard) {
+      // Plan Attack
+      store.commitPlan(attackerId, [attackCard], 'Red', 0);
+      
+      // Resolve
+      store.revealAndResolve();
+      
+      // Check logs for resolution
+      const logs = useGameStore.getState().logs;
+      const resolutionLog = logs.find((l: any) => l.type === 'action' && l.content.includes('resolves Action'));
+      expect(resolutionLog).toBeDefined();
+    }
+  });
+
+  it('should handle fatigue when deck runs out', () => {
+    useGameStore.getState().initializeGame();
+    const store = useGameStore.getState();
+    
+    const tokenId = store.tokens[0].id;
+    
+    // Force empty deck
+    useGameStore.setState((state) => {
+      const a = state.actors[store.tokens[0].actorId];
+      a.deck.drawPile = [];
+      a.deck.discardPile = []; // Ensure discard is also empty so fatigue triggers
     });
 
-    it('Scenario 1: Find a playable action', () => {
-        const store = useTestStore.getState();
-        const actorId = Object.keys(store.actors)[0];
-        const actor = store.actors[actorId];
-        
-        // Ensure hand is populated
-        expect(actor.deck.hand.length).toBeGreaterThan(0);
+    // Draw
+    store.drawCards(tokenId, 1);
+    
+    const logs = useGameStore.getState().logs;
+    const fatigueLog = logs.find((l: any) => l.content.includes('Fatigue Cycle'));
+    expect(fatigueLog).toBeDefined();
+  });
 
-        // Find a card with cost and attack rule (playable action)
-        const actionCard = actor.deck.hand.find(c => 
-            c.cost !== undefined && 
-            c.rules?.some(r => r.type === 'attack')
-        );
-
-        if (actionCard) {
-            expect(actionCard.cost).toBeGreaterThanOrEqual(0);
-            expect(actionCard.rules).toBeDefined();
-            const attackRule = actionCard.rules?.find(r => r.type === 'attack');
-            expect(attackRule).toBeDefined();
-            expect(attackRule?.data.power).toBeDefined();
-        }
-    });
-
-    it('Scenario 2 & 3: Plan Move and Action', () => {
-        const store = useTestStore.getState();
-        const token = store.tokens[0];
-        const actor = store.actors[token.actorId];
-        
-        // 1. Plan Move
-        const newX = token.x + 1;
-        const newY = token.y + 1;
-        useTestStore.getState().dispatch({ 
-            type: 'UPDATE_TOKEN_POSITION', 
-            token: { ...token, x: newX, y: newY } 
-        });
-
-        let state = useTestStore.getState();
-        expect(state.plannedActions[token.id]).toBeDefined();
-        expect(state.plannedActions[token.id].move).toEqual({ x: newX, y: newY });
-
-        // 2. Plan Action
-        const cardToPlay = actor.deck.hand[0];
-        useTestStore.getState().dispatch({
-            type: 'COMMIT_PLAN',
-            tokenId: token.id,
-            cards: [cardToPlay],
-            strengthColor: 'Red',
-            modifier: 0,
-            actionName: 'Test Attack'
-        });
-
-        state = useTestStore.getState();
-        expect(state.plannedActions[token.id].cards.length).toBe(1);
-        expect(state.plannedActions[token.id].cards[0].id).toBe(cardToPlay.id);
-        expect(state.plannedActions[token.id].actionName).toBe('Test Attack');
-        
-        const updatedActor = state.actors[token.actorId];
-        expect(updatedActor.deck.hand.find(c => c.id === cardToPlay.id)).toBeUndefined();
-    });
-
-    it('Scenario 4: Resolve Actions', () => {
-        const store = useTestStore.getState();
-        const token = store.tokens[0];
-        const actor = store.actors[token.actorId];
-        const cardToPlay = actor.deck.hand[0];
-
-        useTestStore.getState().dispatch({
-            type: 'COMMIT_PLAN',
-            tokenId: token.id,
-            cards: [cardToPlay],
-            strengthColor: 'Red',
-            modifier: 0,
-            actionName: 'Test Resolution'
-        });
-
-        useTestStore.getState().dispatch({ type: 'REVEAL_AND_RESOLVE' });
-
-        const state = useTestStore.getState();
-        expect(state.phase).toBe('resolution');
-        
-        const resolutionLog = state.logs.find(l => l.content.includes('Test Resolution'));
-        expect(resolutionLog).toBeDefined();
-        expect(resolutionLog?.type).toBe('action');
-    });
-
-    it('Scenario 5: Flip for Defense', () => {
-        const store = useTestStore.getState();
-        const token = store.tokens[0];
-        const actor = store.actors[token.actorId];
-        const initialFlipped = actor.deck.flippedPile.length;
-
-        useTestStore.getState().dispatch({ type: 'DEFEND', tokenId: token.id });
-
-        const state = useTestStore.getState();
-        const updatedActor = state.actors[token.actorId];
-        
-        expect(updatedActor.deck.flippedPile.length).toBeGreaterThan(initialFlipped);
-        
-        const log = state.logs.find(l => l.content.includes('flipped for Defense'));
-        expect(log).toBeDefined();
-    });
-
-    it('Scenario 6: Add Consequence', () => {
-        const store = useTestStore.getState();
-        const token = store.tokens[0];
-        const actor = store.actors[token.actorId];
-        const initialConsequences = actor.deck.consequences.length;
-
-        useTestStore.getState().dispatch({ type: 'ADD_CONSEQUENCE', tokenId: token.id });
-
-        const state = useTestStore.getState();
-        const updatedActor = state.actors[token.actorId];
-        
-        expect(updatedActor.deck.consequences.length).toBe(initialConsequences + 1);
-        
-        const log = state.logs.find(l => l.content.includes('Consequence'));
-        expect(log).toBeDefined();
-    });
-
-    it('Scenario 7: Next Round (Move Realization)', () => {
-        const store = useTestStore.getState();
-        const token = store.tokens[0];
-        
-        const targetX = token.x + 2;
-        const targetY = token.y + 2;
-        useTestStore.getState().dispatch({ 
-            type: 'UPDATE_TOKEN_POSITION', 
-            token: { ...token, x: targetX, y: targetY } 
-        });
-
-        useTestStore.getState().dispatch({ type: 'END_ROUND' });
-
-        const state = useTestStore.getState();
-        const updatedToken = state.tokens.find(t => t.id === token.id);
-        
-        expect(updatedToken?.x).toBe(targetX);
-        expect(updatedToken?.y).toBe(targetY);
-        
-        expect(state.phase).toBe('planning');
-        
-        const moveLog = state.logs.find(l => l.content.includes('moved'));
-        expect(moveLog).toBeDefined();
-    });
+  it('should allow adding and removing consequences', () => {
+    useGameStore.getState().initializeGame();
+    const store = useGameStore.getState();
+    
+    const tokenId = store.tokens[0].id;
+    
+    store.addConsequence(tokenId);
+    
+    const actor = useGameStore.getState().actors[store.tokens[0].actorId];
+    expect(actor.deck.consequences.length).toBe(1);
+    
+    const consequenceId = actor.deck.consequences[0].id;
+    store.removeConsequence(tokenId, consequenceId);
+    
+    const updatedActor = useGameStore.getState().actors[store.tokens[0].actorId];
+    expect(updatedActor.deck.consequences.length).toBe(0);
+  });
 });

@@ -8,7 +8,40 @@ import { useGameStore } from './store/gameStore';
 
 const App: React.FC = () => {
   // --- Store Hooks ---
-  const { actors, tokens, logs, phase, activeTokenId, plannedActions, dispatch } = useGameStore();
+  const actors = useGameStore((state) => state.actors);
+  const tokens = useGameStore((state) => state.tokens);
+  const logs = useGameStore((state) => state.logs);
+  const phase = useGameStore((state) => state.phase);
+  const activeTokenId = useGameStore((state) => state.activeTokenId);
+  const plannedActions = useGameStore((state) => state.plannedActions);
+
+  // Actions
+  const initializeGame = useGameStore((state) => state.initializeGame);
+  const setActiveToken = useGameStore((state) => state.setActiveToken);
+  const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
+  const addLog = useGameStore((state) => state.addLog);
+  
+  // Actor Actions
+  const addActor = useGameStore((state) => state.addActor);
+  const removeActor = useGameStore((state) => state.removeActor);
+  const drawCards = useGameStore((state) => state.drawCards);
+  const defend = useGameStore((state) => state.defend);
+  const clearDefense = useGameStore((state) => state.clearDefense);
+  const reshuffle = useGameStore((state) => state.reshuffle);
+  const discardCards = useGameStore((state) => state.discardCards);
+  const returnToDeck = useGameStore((state) => state.returnToDeck);
+  const addConsequence = useGameStore((state) => state.addConsequence);
+  const removeConsequence = useGameStore((state) => state.removeConsequence);
+  const addStatus = useGameStore((state) => state.addStatus);
+  const removeStatus = useGameStore((state) => state.removeStatus);
+
+  // Game Actions
+  const commitPlan = useGameStore((state) => state.commitPlan);
+  const cancelPlan = useGameStore((state) => state.cancelPlan);
+  const passTurn = useGameStore((state) => state.passTurn);
+  const revealAndResolve = useGameStore((state) => state.revealAndResolve);
+  const endRound = useGameStore((state) => state.endRound);
+  const playImmediate = useGameStore((state) => state.playImmediate);
 
   // Initialize Game on Mount
   useEffect(() => {
@@ -22,7 +55,7 @@ const App: React.FC = () => {
     );
 
     if (needsInit) {
-      dispatch({ type: 'INITIALIZE_GAME' });
+      initializeGame();
     }
   }, []);
 
@@ -43,7 +76,7 @@ const App: React.FC = () => {
   const userHasPlannedAction = isActionPlanned(activeAction);
   const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
 
-  // --- Handlers (Dispatches) ---
+  // --- Handlers ---
 
   const handlePlayStack = (
     selectedCards: CoreCard[],
@@ -55,58 +88,49 @@ const App: React.FC = () => {
     if (!activeTokenId) return;
 
     if (phase === 'planning') {
-      dispatch({
-        type: 'COMMIT_PLAN',
-        tokenId: activeTokenId,
-        cards: selectedCards,
+      commitPlan(
+        activeTokenId,
+        selectedCards,
         strengthColor,
         modifier,
         actionName,
         targetDefense,
-      });
+      );
     } else {
-      dispatch({
-        type: 'PLAY_IMMEDIATE',
-        tokenId: activeTokenId,
-        cards: selectedCards,
+      playImmediate(
+        activeTokenId,
+        selectedCards,
         strengthColor,
         modifier,
         actionName,
         targetDefense,
-      });
+      );
     }
   };
 
   const handlePass = () => {
     if (!activeTokenId || phase !== 'planning') return;
-    dispatch({ type: 'PASS_TURN', tokenId: activeTokenId });
+    passTurn(activeTokenId);
   };
 
   return (
     <div className="flex h-screen w-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">
       <SidebarLeft
         deckState={currentDeck}
-        onDraw={(count) =>
-          activeTokenId && dispatch({ type: 'DRAW_CARDS', tokenId: activeTokenId, count })
-        }
-        onDefend={() => activeTokenId && dispatch({ type: 'DEFEND', tokenId: activeTokenId })}
-        onClearDefense={() =>
-          activeTokenId && dispatch({ type: 'CLEAR_DEFENSE', tokenId: activeTokenId })
-        }
-        onReshuffle={() => activeTokenId && dispatch({ type: 'RESHUFFLE', tokenId: activeTokenId })}
-        onSelectToken={(id) => dispatch({ type: 'SET_ACTIVE_TOKEN', tokenId: id })}
-        onAddConsequence={() =>
-          activeTokenId && dispatch({ type: 'ADD_CONSEQUENCE', tokenId: activeTokenId })
-        }
+        onDraw={(count) => activeTokenId && drawCards(activeTokenId, count)}
+        onDefend={() => activeTokenId && defend(activeTokenId)}
+        onClearDefense={() => activeTokenId && clearDefense(activeTokenId)}
+        onReshuffle={() => activeTokenId && reshuffle(activeTokenId)}
+        onSelectToken={(id) => setActiveToken(id)}
+        onAddConsequence={() => activeTokenId && addConsequence(activeTokenId)}
         onRemoveConsequence={(cardId) =>
-          activeTokenId && dispatch({ type: 'REMOVE_CONSEQUENCE', tokenId: activeTokenId, cardId })
+          activeTokenId && removeConsequence(activeTokenId, cardId)
         }
         onAddStatusCard={(statusType, destination) =>
-          activeTokenId &&
-          dispatch({ type: 'ADD_STATUS', tokenId: activeTokenId, statusType, destination })
+          activeTokenId && addStatus(activeTokenId, statusType, destination)
         }
         onRemoveStatusCard={(statusType) =>
-          activeTokenId && dispatch({ type: 'REMOVE_STATUS', tokenId: activeTokenId, statusType })
+          activeTokenId && removeStatus(activeTokenId, statusType)
         }
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
@@ -114,9 +138,9 @@ const App: React.FC = () => {
         hasPlannedAction={userHasPlannedAction}
         actors={actors}
         onAddActor={(name, type, color, templateId) =>
-          dispatch({ type: 'ADD_ACTOR', name, actorType: type, color, templateId })
+          addActor(name, type, color, templateId)
         }
-        onRemoveActor={(actorId) => dispatch({ type: 'REMOVE_ACTOR', actorId })}
+        onRemoveActor={(actorId) => removeActor(actorId)}
       />
 
       <main className="flex-1 flex flex-col relative overflow-hidden shadow-inner bg-slate-900">
@@ -133,9 +157,9 @@ const App: React.FC = () => {
 
         <MapBoard
           tokens={tokens}
-          onUpdateToken={(token) => dispatch({ type: 'UPDATE_TOKEN_POSITION', token })}
+          onUpdateToken={(token) => updateTokenPosition(token)}
           activeTokenId={activeTokenId}
-          setActiveTokenId={(id) => dispatch({ type: 'SET_ACTIVE_TOKEN', tokenId: id })}
+          setActiveTokenId={(id) => setActiveToken(id)}
           plannedActions={plannedActions}
           defeatedTokenIds={defeatedTokenIds}
           actors={actors}
@@ -147,24 +171,12 @@ const App: React.FC = () => {
             hand={currentDeck.hand}
             onPlayStack={handlePlayStack}
             onDiscard={(cards) =>
-              activeTokenId &&
-              dispatch({
-                type: 'DISCARD_CARDS',
-                tokenId: activeTokenId,
-                cardIds: cards.map((c) => c.id),
-              })
+              activeTokenId && discardCards(activeTokenId, cards.map((c) => c.id))
             }
             onPass={handlePass}
-            onCancelPlan={() =>
-              activeTokenId && dispatch({ type: 'CANCEL_PLAN', tokenId: activeTokenId })
-            }
+            onCancelPlan={() => activeTokenId && cancelPlan(activeTokenId)}
             onReturnToDeck={(cards) =>
-              activeTokenId &&
-              dispatch({
-                type: 'RETURN_TO_DECK',
-                tokenId: activeTokenId,
-                cardIds: cards.map((c) => c.id),
-              })
+              activeTokenId && returnToDeck(activeTokenId, cards.map((c) => c.id))
             }
             phase={phase}
             hasPlanned={userHasPlannedAction}
@@ -175,12 +187,10 @@ const App: React.FC = () => {
 
       <SidebarRight
         logs={logs}
-        onAddLog={(log) =>
-          dispatch({ type: 'ADD_LOG', message: log.content, sender: log.sender, logType: log.type })
-        }
+        onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
-        onRevealActions={() => dispatch({ type: 'REVEAL_AND_RESOLVE' })}
-        onEndRound={() => dispatch({ type: 'END_ROUND' })}
+        onRevealActions={() => revealAndResolve()}
+        onEndRound={() => endRound()}
         readyCount={readyCount}
         totalCount={tokens.length}
       />
