@@ -7,6 +7,9 @@ license-file: LICENSE
 
 library
   hs-source-dirs: src
+  ghc-options:
+    -Wall -Wredundant-constraints -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
   build-depends: base >= 4.16 && < 5
                , aeson
                , text
@@ -58,6 +61,9 @@ test-suite cardpg-core-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
   hs-source-dirs: tests
+  ghc-options:
+    -Wall -Wredundant-constraints -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
   build-depends: base
                , cardpg-core
                , aeson

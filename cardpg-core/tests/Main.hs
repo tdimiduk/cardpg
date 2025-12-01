@@ -9,18 +9,17 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Main where
+
 import Data.Maybe (fromMaybe, mapMaybe)
-import Debug.Trace (trace)
 
 import Test.Tasty
 import Test.Tasty.QuickCheck
 import Generic.Random
-import Data.Aeson (encode, eitherDecode, ToJSON, FromJSON, Value(..))
+import Data.Aeson (encode, eitherDecode)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
-import qualified Data.Vector as V
 
 import CardPG.Core.Card
 import CardPG.Core.Types
@@ -28,7 +27,6 @@ import CardPG.Core.RichText
 import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, mkNonEmptyText, getNonEmptyText)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
-import Debug.Trace (trace)
 
 main :: IO ()
 main = defaultMain tests
@@ -93,60 +91,31 @@ normalizeConsequenceCard c@ConsequenceCard{..} = c
   { _rules = fmap (fmap normalizeRuleDSL) _rules
   }
 
-prop_dslRoundtrip :: SafeRule -> Property
-prop_dslRoundtrip (SafeRule r) = 
+prop_dslRoundtrip :: Rule -> Property
+prop_dslRoundtrip r = 
   let printed = prettyRule r
       parsed = parseRule printed
       expected = normalizeRuleDSL r
   in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right expected
 
 normalizeRuleDSL :: Rule -> Rule
-normalizeRuleDSL (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (normalizeEffectDSL e)
-normalizeRuleDSL (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (normalizeEffectDSL e)
-normalizeRuleDSL (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (normalizeEffectDSL c) (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectDSL (Just e)))
-normalizeRuleDSL (RuleNarrative rt) = RuleNarrative (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectDSL (Just rt)))
-normalizeRuleDSL (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
-normalizeRuleDSL (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (normalizeEffectDSL' e)
-normalizeRuleDSL (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (normalizeEffectDSL' e)
-normalizeRuleDSL (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleDSL r)
+normalizeRuleDSL = normalizeRuleWith normalizeEffectDSL
 
 normalizeRuleJSON :: Rule -> Rule
-normalizeRuleJSON (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (normalizeEffectJSON e)
-normalizeRuleJSON (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (normalizeEffectJSON e)
-normalizeRuleJSON (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (normalizeEffectJSON c) (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectJSON (Just e)))
-normalizeRuleJSON (RuleNarrative rt) = RuleNarrative (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectJSON (Just rt)))
-normalizeRuleJSON (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
-normalizeRuleJSON (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (normalizeEffectJSON' e)
-normalizeRuleJSON (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (normalizeEffectJSON' e)
-normalizeRuleJSON (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleJSON r)
+normalizeRuleJSON = normalizeRuleWith normalizeEffectJSON
 
-normalizeEffectDSL' :: RichString -> RichString
-normalizeEffectDSL' rs = fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectDSL (Just rs))
-
-normalizeEffectJSON' :: RichString -> RichString
-normalizeEffectJSON' rs = fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (normalizeEffectJSON (Just rs))
+normalizeRuleWith :: (Maybe RichString -> Maybe RichString) -> Rule -> Rule
+normalizeRuleWith norm (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (norm e)
+normalizeRuleWith norm (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (norm e)
+normalizeRuleWith norm (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (norm c) (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just e)))
+normalizeRuleWith norm (RuleNarrative rt) = RuleNarrative (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just rt)))
+normalizeRuleWith _ (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
+normalizeRuleWith norm (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just e)))
+normalizeRuleWith norm (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just e)))
+normalizeRuleWith norm (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleWith norm r)
 
 normalizeCondition :: Maybe NonEmptyText -> Maybe NonEmptyText
 normalizeCondition c = c
-
-normalizeEffectWith :: (Inline -> Inline) -> Maybe RichString -> Maybe RichString
-normalizeEffectWith _ Nothing = Nothing
-normalizeEffectWith normalizer (Just rs) = 
-  let normalized = map normalizer (NE.toList (unRichString rs))
-  in case NE.nonEmpty normalized of
-       Nothing -> Nothing
-       Just ne -> 
-         let merged = mkRichString ne
-         in case NE.toList (unRichString merged) of
-              (TextRun (TextRunDef Nothing c) : rest) ->
-                let stripped = T.stripStart (getNonEmptyText c)
-                in case mkNonEmptyText stripped of
-                     Nothing -> 
-                       case NE.nonEmpty rest of
-                         Nothing -> Nothing
-                         Just restNe -> Just (mkRichString restNe)
-                     Just c' -> Just (mkRichString (TextRun (TextRunDef Nothing c') :| rest))
-              _ -> Just merged
 
 normalizeInlineDSL :: Inline -> Inline
 normalizeInlineDSL (Icon (IconDef c)) = DynamicVal (DynamicValDef (StackPower c 0 Nothing))
@@ -156,7 +125,25 @@ normalizeInlineJSON :: Inline -> Inline
 normalizeInlineJSON x = x
 
 normalizeEffectDSL :: Maybe RichString -> Maybe RichString
-normalizeEffectDSL = normalizeEffectWith normalizeInlineDSL
+normalizeEffectDSL Nothing = Nothing
+normalizeEffectDSL (Just rs) = 
+  let normalized = map normalizeInlineDSL (NE.toList (unRichString rs))
+  in case NE.nonEmpty normalized of
+       Nothing -> Nothing
+       Just ne -> stripLeadingWhitespace (mkRichString ne)
+
+stripLeadingWhitespace :: RichString -> Maybe RichString
+stripLeadingWhitespace rs = 
+  case NE.toList (unRichString rs) of
+    (TextRun (TextRunDef Nothing c) : rest) ->
+      let stripped = T.stripStart (getNonEmptyText c)
+      in case mkNonEmptyText stripped of
+           Nothing -> 
+             case NE.nonEmpty rest of
+               Nothing -> Nothing
+               Just restNe -> Just (mkRichString restNe)
+           Just c' -> Just (mkRichString (TextRun (TextRunDef Nothing c') :| rest))
+    _ -> Just rs
 
 normalizeEffectJSON :: Maybe RichString -> Maybe RichString
 normalizeEffectJSON Nothing = Nothing
@@ -211,16 +198,6 @@ instance Arbitrary TextRunDef where
 instance Arbitrary Inline where
   arbitrary = genericArbitrary uniform
 
--- | Safe Inline for DSL Roundtrip
--- | The current DSL parser supports simple text and markdown styles (**bold**, *italic*, `code`).
--- | It does NOT support nested styles or icons yet.
-newtype SafeInline = SafeInline { getSafeInline :: Inline }
-  deriving (Show, Eq)
-
-instance Arbitrary SafeInline where
-  arbitrary = SafeInline <$> arbitrary
-  shrink (SafeInline i) = SafeInline <$> shrink i
-
 instance Arbitrary RichString where
   arbitrary = do
     inlines <- listOf1 arbitrary
@@ -231,23 +208,6 @@ instance Arbitrary RichString where
     , not (null l)
     , Just ne <- [NE.nonEmpty l]
     ]
-
--- | Safe Rule for DSL Roundtrip
-newtype SafeRule = SafeRule { getSafeRule :: Rule }
-  deriving (Show, Eq)
-
-instance Arbitrary SafeRule where
-  arbitrary = oneof
-    [ SafeRule . RuleAttack <$> arbitrary
-    , SafeRule . RuleDefend <$> arbitrary
-    , SafeRule . RuleStance <$> arbitrary
-    , SafeRule . RuleChannel <$> arbitrary
-    , SafeRule <$> (RulePrime <$> (PrimeDef <$> (unsafeNonEmptyText . T.filter (`notElem` ['(', ')']) . getNonEmptyText <$> arbitrary) <*> (getSafeRule <$> arbitrary)))
-    , SafeRule . RulePassive <$> arbitrary
-    , SafeRule . RuleGeneral <$> arbitrary
-    , SafeRule . RuleNarrative <$> arbitrary
-    ]
-  shrink (SafeRule r) = SafeRule <$> shrink r
 
 instance Arbitrary Block where
   arbitrary = genericArbitrary uniform
