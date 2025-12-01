@@ -60,6 +60,7 @@ library
 test-suite cardpg-core-test
   type: exitcode-stdio-1.0
   main-is: Main.hs
+  other-modules: ArbitraryInstances
   hs-source-dirs: tests
   ghc-options:
     -Wall -Wredundant-constraints -Wincomplete-uni-patterns

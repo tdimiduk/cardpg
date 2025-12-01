@@ -1,4 +1,8 @@
-module CardPG.Core.Json where
+module CardPG.Core.Json
+  ( cardpgJsonOptions
+  , cardpgJsonDef
+  , stripEmpty
+  ) where
 
 import Data.Aeson (Options(..), defaultOptions, SumEncoding(..), Value(..))
 import qualified Data.Aeson.KeyMap as KM

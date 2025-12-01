@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module CardPG.Core.DSL.Printer where
+module CardPG.Core.DSL.Printer (prettyRule) where
 
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -64,9 +64,6 @@ prettyExtra (Just rt) = " -> " <> richToString rt
 prettyCost :: Maybe RichString -> Text
 prettyCost Nothing = ""
 prettyCost (Just c) = " (Cost: " <> richToString c <> ")"
-
-prettyRichString :: RichString -> Text
-prettyRichString rs = T.concat . map inlineToString . NE.toList $ unRichString rs
 
 richToString :: RichString -> Text
 richToString = T.concat . map inlineToString . NE.toList . unRichString

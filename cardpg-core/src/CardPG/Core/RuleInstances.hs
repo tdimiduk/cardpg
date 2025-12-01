@@ -2,11 +2,9 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module CardPG.Core.RuleInstances where
+module CardPG.Core.RuleInstances () where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), withText, genericParseJSON, genericToJSON, genericToEncoding, defaultOptions)
-import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), withText, genericParseJSON, genericToJSON, genericToEncoding)
 
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
 import CardPG.Core.TextFmt (TextFmt(..))

@@ -1,6 +1,15 @@
 module CardPG.Core.Card 
   ( module CardPG.Core.RuleDefs
-  , module CardPG.Core.Card
+  , Stats(..)
+  , CoreCard(..)
+  , ItemCard(..)
+  , NatureCard(..)
+  , TalentCard(..)
+  , GeneralActionDef(..)
+  , EncounterMechanics(..)
+  , EncounterCard(..)
+  , ConsequenceCard(..)
+  , Actor(..)
   ) where
 
 import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, withObject, (.:), (.:?), (.!=))

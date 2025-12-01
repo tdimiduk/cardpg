@@ -2,24 +2,24 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TupleSections #-}
 
-module CardPG.Core.DSL.Parser where
+module CardPG.Core.DSL.Parser (parseRule) where
 
-import Control.Applicative ((<|>), optional, many, some)
+import Control.Applicative ((<|>), optional, many)
 import Control.Monad (void)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import qualified Data.Text as T
+
 import Data.Void (Void)
-import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, label, sepBy1, eof, choice, between, lookAhead, notFollowedBy)
+import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, sepBy1, eof, choice, between, lookAhead, notFollowedBy)
 import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
-import CardPG.Core.RichText (simpleString, StackPower(..), RichString, mkRichString, Inline(..), TextRunDef(..), TextStyle(..), ColorValueDef(..))
+import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextRunDef(..), TextStyle(..), ColorValueDef(..))
 import CardPG.Core.Types (ResourceType(..))
-import CardPG.Core.NonEmptyText (NonEmptyText, takeWhilePNonEmpty, mkNonEmptyText, unsafeNonEmptyText)
+import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, mkNonEmptyText, unsafeNonEmptyText)
 
 type MParser = Parsec Void Text
 
@@ -178,9 +178,6 @@ richTextParserStopAt stopChars = do
 someNE :: MParser a -> MParser (NonEmpty a)
 someNE p = (:|) <$> p <*> many p
 
-inlineParser :: MParser Inline
-inlineParser = inlineParserStopAt []
-
 inlineParserStopAt :: [Char] -> MParser Inline
 inlineParserStopAt stopChars = choice
   [ try boldParser
@@ -221,12 +218,9 @@ colorValueParser :: MParser Inline
 colorValueParser = do
   -- Lookahead to ensure we are parsing something that looks like a resource symbol
   -- to avoid consuming normal text that starts with '{' but isn't a resource.
-  lookAhead (char '{')
+  _ <- lookAhead (char '{')
   sp <- stackPowerParser
   pure $ ColorValue (ColorValueDef sp)
-
-textParser :: MParser Inline
-textParser = textParserStopAt []
 
 textParserStopAt :: [Char] -> MParser Inline
 textParserStopAt stopChars = do

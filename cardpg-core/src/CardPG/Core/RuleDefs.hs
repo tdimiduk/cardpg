@@ -2,12 +2,21 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module CardPG.Core.RuleDefs where
+module CardPG.Core.RuleDefs
+  ( PassiveDef(..)
+  , AttackDef(..)
+  , DefendDef(..)
+  , GeneralDef(..)
+  , StanceDef(..)
+  , ChannelDef(..)
+  , PrimeDef(..)
+  , Rule(..)
+  ) where
 
 
 import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
-import Data.Aeson (ToJSON, FromJSON)
+
 
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.RichText (RichString, StackPower)

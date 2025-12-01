@@ -13,16 +13,16 @@ module CardPG.Core.NonEmptyText
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Aeson (ToJSON(..), FromJSON(..), withText)
-import GHC.Generics (Generic)
+
 import Control.Monad (mzero)
-import Data.String (IsString(..))
+
 import Text.Megaparsec (Parsec, takeWhile1P, Token)
 import Data.Void (Void)
 
 -- | Parser for NonEmptyText using Megaparsec
 -- This wraps takeWhile1P to ensure the result is non-empty at the type level.
 takeWhilePNonEmpty :: Maybe String -> (Token Text -> Bool) -> Parsec Void Text NonEmptyText
-takeWhilePNonEmpty name pred = NonEmptyText <$> takeWhile1P name pred
+takeWhilePNonEmpty name p = NonEmptyText <$> takeWhile1P name p
 
 newtype NonEmptyText = NonEmptyText { getNonEmptyText :: Text }
   deriving newtype (Show, Eq, Ord, Semigroup)

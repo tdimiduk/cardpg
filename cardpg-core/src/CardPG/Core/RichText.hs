@@ -23,7 +23,7 @@ import qualified Data.Text as T
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json
-import CardPG.Core.Types (ResourceType(..), StackPower(..))
+import CardPG.Core.Types (StackPower(..))
 import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, mkNonEmptyText, getNonEmptyText)
 
 -- | 1. The Token Stream

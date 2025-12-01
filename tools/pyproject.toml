@@ -11,3 +11,8 @@ dependencies = [
 
 [tool.uv.sources]
 clifun = { path = "../../../dev/clifun", editable = true }
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
