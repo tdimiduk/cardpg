@@ -71,7 +71,13 @@ export const ChannelDefSchema = z.object({
 });
 
 // Recursive definition for Prime (reaction is a Rule)
-export const PrimeDefSchema = z.object({
+// Recursive definition for Prime (reaction is a Rule)
+export type PrimeDef = {
+  trigger: string;
+  reaction: Rule;
+};
+
+export const PrimeDefSchema: z.ZodType<PrimeDef> = z.object({
   trigger: z.string(),
   reaction: z.lazy(() => RuleSchema),
 });
@@ -81,7 +87,17 @@ export const PassiveDefSchema = z.object({
   condition: z.string().optional().nullable(),
 });
 
-export const RuleSchema = z.discriminatedUnion('type', [
+export type Rule =
+  | { type: 'attack'; data: z.infer<typeof AttackDefSchema> }
+  | { type: 'defend'; data: z.infer<typeof DefendDefSchema> }
+  | { type: 'general'; data: z.infer<typeof GeneralDefSchema> }
+  | { type: 'stance'; data: z.infer<typeof StanceDefSchema> }
+  | { type: 'channel'; data: z.infer<typeof ChannelDefSchema> }
+  | { type: 'prime'; data: PrimeDef }
+  | { type: 'narrative'; data: RichString }
+  | { type: 'passive'; data: z.infer<typeof PassiveDefSchema> };
+
+export const RuleSchema: z.ZodType<Rule> = z.discriminatedUnion('type', [
   z.object({ type: z.literal('attack'), data: AttackDefSchema }),
   z.object({ type: z.literal('defend'), data: DefendDefSchema }),
   z.object({ type: z.literal('general'), data: GeneralDefSchema }),
@@ -91,7 +107,6 @@ export const RuleSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('narrative'), data: RichStringSchema }),
   z.object({ type: z.literal('passive'), data: PassiveDefSchema }),
 ]);
-export type Rule = z.infer<typeof RuleSchema>;
 
 // --- Card ---
 
@@ -129,10 +144,7 @@ export const ItemCardSchema = z.object({
 });
 export type ItemCard = z.infer<typeof ItemCardSchema>;
 
-export const CardSchema = z.discriminatedUnion('type', [
-  CoreCardSchema,
-  ItemCardSchema,
-]);
+export const CardSchema = z.discriminatedUnion('type', [CoreCardSchema, ItemCardSchema]);
 export type Card = z.infer<typeof CardSchema>;
 
 // --- Legacy / Game State Types (Preserved but updated where possible) ---
@@ -140,7 +152,7 @@ export type Card = z.infer<typeof CardSchema>;
 export enum TokenType {
   PC = 'PC',
   NPC = 'NPC',
-  MONSTER = 'MONSTER'
+  MONSTER = 'MONSTER',
 }
 
 export interface Actor {
@@ -187,7 +199,7 @@ export interface PlayerDeckState {
   hand: CoreCard[];
   discardPile: CoreCard[];
   flippedPile: CoreCard[]; // Cards flipped for defense
-  equipped: Card[];    // Cards on the table (Items/Characters)
+  equipped: Card[]; // Cards on the table (Items/Characters)
   consequences: CoreCard[]; // Condition cards on the table (Wounds/Injuries)
 }
 
@@ -204,13 +216,13 @@ export interface PlannedAction {
   targetDefense?: ResourceType;
   actionName?: string;
   move?: {
-      x: number;
-      y: number;
+    x: number;
+    y: number;
   };
 }
 
-// Re-export Card as CoreCard for compatibility during refactor, 
+// Re-export Card as CoreCard for compatibility during refactor,
 // or explicitly use CoreCard in new code.
-// Re-export Card as CoreCard for compatibility during refactor, 
+// Re-export Card as CoreCard for compatibility during refactor,
 // or explicitly use CoreCard in new code.
 // export type Card = CoreCard; // Removed, using the discriminated union above

@@ -1,5 +1,4 @@
-
-import { Token, TokenType, Actor, PlayerDeckState } from './types';
+import { Token, Actor, TokenType } from './types';
 
 export const GRID_SIZE = 64; // pixels per square
 
@@ -10,13 +9,13 @@ export const INITIAL_ACTORS: Record<string, Actor> = {
     type: TokenType.PC,
     color: '#3b82f6',
     deck: {
-        drawPile: [],
-        hand: [],
-        discardPile: [],
-        flippedPile: [],
-        equipped: [],
-        consequences: []
-    }
+      drawPile: [],
+      hand: [],
+      discardPile: [],
+      flippedPile: [],
+      equipped: [],
+      consequences: [],
+    },
   },
   'monster-1': {
     id: 'monster-1',
@@ -24,14 +23,14 @@ export const INITIAL_ACTORS: Record<string, Actor> = {
     type: TokenType.MONSTER,
     color: '#10b981',
     deck: {
-        drawPile: [],
-        hand: [],
-        discardPile: [],
-        flippedPile: [],
-        equipped: [],
-        consequences: []
-    }
-  }
+      drawPile: [],
+      hand: [],
+      discardPile: [],
+      flippedPile: [],
+      equipped: [],
+      consequences: [],
+    },
+  },
 };
 
 export const INITIAL_TOKENS: Token[] = [
@@ -48,9 +47,8 @@ export const INITIAL_TOKENS: Token[] = [
     x: 8,
     y: 6,
     size: 1,
-  }
+  },
 ];
-
 
 export const MOCK_MAP_IMAGE = 'https://picsum.photos/1920/1080?grayscale&blur=2';
 

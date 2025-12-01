@@ -4,35 +4,52 @@ import { T } from '../data/cardData';
 import { PlayerDeckState, CoreCard, ItemCard } from '../types';
 
 // Helper for tests
-const createCard = (name: string, red?: number, yellow?: number, blue?: number, flavor: any[] = [], id?: string, tags?: string[], type: 'core' | 'item' | 'fatigue' = 'core'): CoreCard | ItemCard => {
-    if (type === 'item') {
-        return {
-            type: 'item',
-            id: id || name,
-            name,
-            flavor,
-            tags: tags || [],
-            weight: 0,
-            value: 0
-        } as ItemCard;
-    }
+const createCard = (
+  name: string,
+  red?: number,
+  yellow?: number,
+  blue?: number,
+  flavor: any[] = [],
+  id?: string,
+  tags?: string[],
+  type: 'core' | 'item' | 'fatigue' = 'core',
+): CoreCard | ItemCard => {
+  if (type === 'item') {
     return {
-        type: 'core',
-        id: id || name,
-        name,
-        stats: { red: red || 0, yellow: yellow || 0, blue: blue || 0 },
-        flavor,
-        tags: type === 'fatigue' ? ['fatigue'] : tags || [],
-        rules: []
-    } as CoreCard;
+      type: 'item',
+      id: id || name,
+      name,
+      flavor,
+      tags: tags || [],
+      weight: 0,
+      value: 0,
+    } as ItemCard;
+  }
+  return {
+    type: 'core',
+    id: id || name,
+    name,
+    stats: { red: red || 0, yellow: yellow || 0, blue: blue || 0 },
+    flavor,
+    tags: type === 'fatigue' ? ['fatigue'] : tags || [],
+    rules: [],
+  } as CoreCard;
 };
 
 describe('Rule Service', () => {
   // --- Setup Mocks ---
   const cardA = createCard('A', 2, 2, 2, [T('A')], undefined) as CoreCard; // 2/2/2
   const cardB = createCard('B', 3, 3, 3, [T('B')], undefined) as CoreCard; // 3/3/3
-  const itemCard = createCard('Item', undefined, undefined, undefined, [T('I')], undefined, undefined, 'item') as ItemCard; // undefined stats
-  const fatigueCard = createCard('Fatigue', 0, 0, 0, [T('F')], undefined, undefined, 'fatigue') as CoreCard; // 0/0/0
+  const fatigueCard = createCard(
+    'Fatigue',
+    0,
+    0,
+    0,
+    [T('F')],
+    undefined,
+    undefined,
+    'fatigue',
+  ) as CoreCard; // 0/0/0
 
   test('Basic Draw', () => {
     const deck1: PlayerDeckState = {
@@ -41,9 +58,9 @@ describe('Rule Service', () => {
       discardPile: [],
       flippedPile: [],
       equipped: [],
-      consequences: []
+      consequences: [],
     };
-    
+
     const res1 = drawCards(deck1, 1);
     expect(res1.drawn.length).toBe(1);
     expect(res1.newState.hand.length).toBe(1);
@@ -57,9 +74,9 @@ describe('Rule Service', () => {
       discardPile: [cardA, cardB],
       flippedPile: [],
       equipped: [],
-      consequences: []
+      consequences: [],
     };
-    
+
     // Requesting 1 card from empty pile should trigger shuffle
     const res2 = drawCards(deck2, 1);
     expect(res2.fatigueTriggered).toBe(true);
@@ -73,7 +90,7 @@ describe('Rule Service', () => {
     const stack = [cardA, cardB];
     const strRed = calculateStackStrength(stack, 'Red', 0);
     expect(strRed).toBe(5); // 2 + 3 = 5
-    
+
     const strMod = calculateStackStrength(stack, 'Red', 2);
     expect(strMod).toBe(7); // 5 + 2 = 7
 
@@ -88,7 +105,7 @@ describe('Rule Service', () => {
       discardPile: [],
       flippedPile: [cardA], // Already flipped CardA (2)
       equipped: [],
-      consequences: []
+      consequences: [],
     };
 
     // Defending vs Target 10. Current flipeed (2). Next card (3). Total should be 5.
@@ -102,16 +119,16 @@ describe('Rule Service', () => {
     // Simulate the data flow of planning an action and then cancelling it
     const handStart = [cardA, cardB];
     const planningStack = [cardA];
-    
+
     // 1. Plan: Remove A from hand
-    const handPlanned = handStart.filter(c => c.id !== cardA.id);
+    const handPlanned = handStart.filter((c) => c.id !== cardA.id);
     expect(handPlanned.length).toBe(1);
     expect(handPlanned[0].id).toBe(cardB.id);
 
     // 2. Cancel: Return A to hand
     const handRestored = [...handPlanned, ...planningStack];
     expect(handRestored.length).toBe(2);
-    expect(handRestored.some(c => c.id === cardA.id)).toBe(true);
+    expect(handRestored.some((c) => c.id === cardA.id)).toBe(true);
   });
 
   test('Planned Action Strength', () => {

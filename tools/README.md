@@ -8,8 +8,23 @@ This directory contains various utility scripts and tools for the CardPG project
 
 The master orchestration script for the data pipeline.
 
-- **Usage**: `uv run tools/run_pipeline.py [--skip-sync]` (in `tools` directory)
-- **Function**: Syncs data from Google Sheets and compiles it into YAML files in `data/cards/`. Use `--skip-sync` to skip the Google Sheets fetch step.
+## Usage
+
+Run the full pipeline:
+
+```bash
+# Default: skips Google Sheets sync, runs compiler, exports VTT JSON
+python3 run_pipeline.py
+
+# With sync enabled:
+python3 run_pipeline.py --sync
+```
+
+The pipeline performs the following steps:
+
+1.  **Sync (Optional):** Fetches data from Google Sheets and saves it as JSON in `data/cards/raw`. This step is skipped by default and can be enabled with `--sync`.
+2.  **Compile:** Converts the raw JSON data into YAML card definitions in `data/cards/pc` and `data/cards/monsters`.
+3.  **Export:** Generates `vtt-react/data/generated_cards.json` for the VTT.Sheets.
 
 ### `gsheet_sync/sync-cards-gsheet.py`
 

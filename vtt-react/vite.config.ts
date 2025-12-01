@@ -17,12 +17,13 @@ export default defineConfig(({ mode }) => {
       },
       resolve: {
         alias: {
-          '@': path.resolve(__dirname, '.'),
+          '@': path.resolve(__dirname, './src'),
         }
       },
       test: {
         environment: 'jsdom',
-        globals: true
+        globals: true,
+        setupFiles: './src/tests/setup.ts'
       }
     };
 });

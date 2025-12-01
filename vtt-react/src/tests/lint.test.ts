@@ -7,7 +7,7 @@ const FORBIDDEN_STRINGS = ["'red'", '"red"', "'yellow'", '"yellow"', "'blue'", '
 
 function scanFile(filePath: string) {
   const content = fs.readFileSync(filePath, 'utf-8');
-  FORBIDDEN_STRINGS.forEach(str => {
+  FORBIDDEN_STRINGS.forEach((str) => {
     if (content.includes(str)) {
       throw new Error(`Found forbidden string ${str} in ${filePath}`);
     }
@@ -16,10 +16,10 @@ function scanFile(filePath: string) {
 
 function scanDir(dir: string) {
   const files = fs.readdirSync(dir);
-  files.forEach(file => {
+  files.forEach((file) => {
     const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
-    
+
     if (stat.isDirectory()) {
       if (file !== 'node_modules' && file !== 'dist' && file !== '.git') {
         scanDir(fullPath);
