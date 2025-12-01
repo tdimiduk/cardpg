@@ -3,7 +3,7 @@ module CardPG.Core.Card
   , module CardPG.Core.Card
   ) where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, Value, withObject, (.:), (.:?), (.!=))
+import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, withObject, (.:), (.:?), (.!=))
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NE
@@ -15,11 +15,6 @@ import CardPG.Core.Json
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
 import CardPG.Core.NonEmptyText (NonEmptyText)
-
-
-
--- 3. The Card Record
--------------------------------------------------------------------------------
 
 data Stats = Stats { _red :: Int, _yellow :: Int, _blue :: Int }
   deriving stock (Eq, Show, Generic)

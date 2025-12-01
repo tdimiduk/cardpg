@@ -82,13 +82,13 @@ prop_consequenceCardRoundtrip x =
 
 normalizeCoreCard :: CoreCard -> CoreCard
 normalizeCoreCard c@CoreCard{..} = c
-  { _rules = fmap (fmap normalizeRuleDSL) _rules
+  { _rules = fmap (fmap normalizeRuleJSON) _rules
   , _flavor = normalizeEffectJSON _flavor
   }
 
 normalizeConsequenceCard :: ConsequenceCard -> ConsequenceCard
 normalizeConsequenceCard c@ConsequenceCard{..} = c
-  { _rules = fmap (fmap normalizeRuleDSL) _rules
+  { _rules = fmap (fmap normalizeRuleJSON) _rules
   }
 
 prop_dslRoundtrip :: Rule -> Property
@@ -107,60 +107,23 @@ normalizeRuleJSON = normalizeRuleWith normalizeEffectJSON
 normalizeRuleWith :: (Maybe RichString -> Maybe RichString) -> Rule -> Rule
 normalizeRuleWith norm (RuleAttack (AttackDef p r e)) = RuleAttack $ AttackDef p r (norm e)
 normalizeRuleWith norm (RuleDefend (DefendDef p r e)) = RuleDefend $ DefendDef p r (norm e)
-normalizeRuleWith norm (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (norm c) (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just e)))
-normalizeRuleWith norm (RuleNarrative rt) = RuleNarrative (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just rt)))
+normalizeRuleWith norm (RuleGeneral (GeneralDef p c e)) = RuleGeneral $ GeneralDef p (norm c) (fromMaybe (unsafeSimpleString " ") (norm (Just e)))
+normalizeRuleWith norm (RuleNarrative rt) = RuleNarrative (fromMaybe (unsafeSimpleString " ") (norm (Just rt)))
 normalizeRuleWith _ (RulePassive (PassiveDef b c)) = RulePassive $ PassiveDef b (normalizeCondition c)
-normalizeRuleWith norm (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just e)))
-normalizeRuleWith norm (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (fromMaybe (mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText " ")) :| [])) (norm (Just e)))
+normalizeRuleWith norm (RuleStance (StanceDef d e)) = RuleStance $ StanceDef d (fromMaybe (unsafeSimpleString " ") (norm (Just e)))
+normalizeRuleWith norm (RuleChannel (ChannelDef d e)) = RuleChannel $ ChannelDef d (fromMaybe (unsafeSimpleString " ") (norm (Just e)))
 normalizeRuleWith norm (RulePrime (PrimeDef t r)) = RulePrime $ PrimeDef t (normalizeRuleWith norm r)
 
 normalizeCondition :: Maybe NonEmptyText -> Maybe NonEmptyText
-normalizeCondition c = c
-
-normalizeInlineDSL :: Inline -> Inline
-normalizeInlineDSL (Icon (IconDef c)) = DynamicVal (DynamicValDef (StackPower c 0 Nothing))
-normalizeInlineDSL x = x
-
-normalizeInlineJSON :: Inline -> Inline
-normalizeInlineJSON x = x
+normalizeCondition = id 
 
 normalizeEffectDSL :: Maybe RichString -> Maybe RichString
 normalizeEffectDSL Nothing = Nothing
-normalizeEffectDSL (Just rs) = 
-  let normalized = map normalizeInlineDSL (NE.toList (unRichString rs))
-  in case NE.nonEmpty normalized of
-       Nothing -> Nothing
-       Just ne -> stripLeadingWhitespace (mkRichString ne)
-
-stripLeadingWhitespace :: RichString -> Maybe RichString
-stripLeadingWhitespace rs = 
-  case NE.toList (unRichString rs) of
-    (TextRun (TextRunDef Nothing c) : rest) ->
-      let stripped = T.stripStart (getNonEmptyText c)
-      in case mkNonEmptyText stripped of
-           Nothing -> 
-             case NE.nonEmpty rest of
-               Nothing -> Nothing
-               Just restNe -> Just (mkRichString restNe)
-           Just c' -> Just (mkRichString (TextRun (TextRunDef Nothing c') :| rest))
-    _ -> Just rs
+normalizeEffectDSL (Just rs) = mkRichString (NE.toList (unRichString rs))
 
 normalizeEffectJSON :: Maybe RichString -> Maybe RichString
 normalizeEffectJSON Nothing = Nothing
-normalizeEffectJSON (Just rs) = 
-  let normalized = map normalizeInlineJSON (NE.toList (unRichString rs))
-      filtered = mapMaybe filterEmptyTextRun normalized
-  in case NE.nonEmpty filtered of
-       Nothing -> Nothing
-       Just ne -> Just (mkRichString ne)
-
-filterEmptyTextRun :: Inline -> Maybe Inline
-filterEmptyTextRun (TextRun (TextRunDef s c)) = 
-  let stripped = T.strip (getNonEmptyText c)
-  in case mkNonEmptyText stripped of
-       Nothing -> Nothing
-       Just c' -> Just (TextRun (TextRunDef s c'))
-filterEmptyTextRun x = Just x
+normalizeEffectJSON (Just rs) = mkRichString (NE.toList (unRichString rs))
 
 -- Arbitrary Instances
 
@@ -201,12 +164,14 @@ instance Arbitrary Inline where
 instance Arbitrary RichString where
   arbitrary = do
     inlines <- listOf1 arbitrary
-    return $ mkRichString (NE.fromList inlines)
+    case mkRichString inlines of
+      Nothing -> return $ unsafeSimpleString "empty" -- Fallback, though listOf1 shouldn't be empty, stripping might make it empty
+      Just rs -> return rs
   shrink rs = 
-    [ mkRichString ne 
+    [ rs'
     | l <- shrink (NE.toList (unRichString rs))
     , not (null l)
-    , Just ne <- [NE.nonEmpty l]
+    , Just rs' <- [mkRichString l]
     ]
 
 instance Arbitrary Block where
@@ -273,11 +238,7 @@ instance Arbitrary ConsequenceCard where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary IconDef where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-
-instance Arbitrary DynamicValDef where
+instance Arbitrary ColorValueDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
@@ -306,4 +267,3 @@ instance Arbitrary a => Arbitrary (NonEmpty a) where
     xs <- arbitrary
     return (x :| xs)
   shrink ne = [ NE.fromList l | l <- shrink (NE.toList ne), not (null l) ]
-

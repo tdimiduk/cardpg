@@ -17,7 +17,7 @@ import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
-import CardPG.Core.RichText (simpleString, StackPower(..), RichString, mkRichString, Inline(..), TextRunDef(..), TextStyle(..), DynamicValDef(..))
+import CardPG.Core.RichText (simpleString, StackPower(..), RichString, mkRichString, Inline(..), TextRunDef(..), TextStyle(..), ColorValueDef(..))
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.NonEmptyText (NonEmptyText, takeWhilePNonEmpty, mkNonEmptyText, unsafeNonEmptyText)
 
@@ -162,10 +162,18 @@ hspace = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
 
 -- Rich Text Parser
 richTextParser :: MParser RichString
-richTextParser = mkRichString <$> someNE (inlineParserStopAt [])
+richTextParser = do
+  inlines <- someNE (inlineParserStopAt [])
+  case mkRichString (NE.toList inlines) of
+    Nothing -> fail "Rich text cannot be empty or whitespace only"
+    Just rs -> pure rs
 
 richTextParserStopAt :: [Char] -> MParser RichString
-richTextParserStopAt stopChars = mkRichString <$> someNE (inlineParserStopAt stopChars)
+richTextParserStopAt stopChars = do
+  inlines <- someNE (inlineParserStopAt stopChars)
+  case mkRichString (NE.toList inlines) of
+    Nothing -> fail "Rich text cannot be empty or whitespace only"
+    Just rs -> pure rs
 
 someNE :: MParser a -> MParser (NonEmpty a)
 someNE p = (:|) <$> p <*> many p
@@ -178,7 +186,7 @@ inlineParserStopAt stopChars = choice
   [ try boldParser
   , try italicParser
   , try keywordParser
-  , try dynamicValParser -- Try parsing dynamic values (stack power syntax)
+  , try colorValueParser -- Try parsing dynamic values (stack power syntax)
   , breakParser
   , textParserStopAt stopChars
   ]
@@ -209,13 +217,13 @@ keywordParser = do
   _ <- char '`'
   pure $ TextRun $ TextRunDef (Just GameKeyword) content
 
-dynamicValParser :: MParser Inline
-dynamicValParser = do
+colorValueParser :: MParser Inline
+colorValueParser = do
   -- Lookahead to ensure we are parsing something that looks like a resource symbol
   -- to avoid consuming normal text that starts with '{' but isn't a resource.
-  _ <- lookAhead (try (string "{Red}") <|> try (string "{Blue}") <|> try (string "{Yellow}"))
-  val <- stackPowerParser
-  pure $ DynamicVal $ DynamicValDef val
+  lookAhead (char '{')
+  sp <- stackPowerParser
+  pure $ ColorValue (ColorValueDef sp)
 
 textParser :: MParser Inline
 textParser = textParserStopAt []

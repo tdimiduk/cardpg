@@ -7,7 +7,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.List.NonEmpty as NE
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
-import CardPG.Core.RichText (RichString, unRichString, Inline(..), TextRunDef(..), IconDef(..), DynamicValDef(..), StackPower(..), TextStyle(..))
+import CardPG.Core.RichText (RichString, unRichString, Inline(..), TextRunDef(..), ColorValueDef(..), StackPower(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
 
 import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
@@ -44,6 +44,7 @@ prettyResource Yellow = "{Yellow}"
 prettyResource Blue = "{Blue}"
 
 prettyPower :: StackPower -> Text
+prettyPower (StackPower base 0 Nothing) = prettyResource base
 prettyPower (StackPower base modifier conditional) =
   prettyResource base <> " " <> prettyModifier modifier <> prettyConditional conditional
 
@@ -75,8 +76,6 @@ inlineToString (TextRun (TextRunDef (Just Bold) content)) = "**" <> getNonEmptyT
 inlineToString (TextRun (TextRunDef (Just Italic) content)) = "*" <> getNonEmptyText content <> "*"
 inlineToString (TextRun (TextRunDef (Just GameKeyword) content)) = "`" <> getNonEmptyText content <> "`"
 inlineToString (TextRun (TextRunDef _ content)) = getNonEmptyText content
-inlineToString (Icon (IconDef color)) = prettyResource color
-inlineToString (DynamicVal (DynamicValDef power)) = prettyPower power
+
+inlineToString (ColorValue (ColorValueDef power)) = prettyPower power
 inlineToString Break = "\n"
-
-

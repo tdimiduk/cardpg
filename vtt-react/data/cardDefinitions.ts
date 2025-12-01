@@ -25,7 +25,7 @@ export interface CardDefinition {
 
 // Helper for readability in this file
 const T = (content: string): Inline => ({ type: 'textRun', content });
-const I = (color: ResourceType): Inline => ({ type: 'icon', color });
+const I = (color: ResourceType): Inline => ({ type: 'colorValue', value: { source: color, modifier: 0, conditional: null } });
 
 export const STARTER_DECK_DATA: CardDefinition[] = [
   {

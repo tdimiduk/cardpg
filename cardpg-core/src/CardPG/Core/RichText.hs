@@ -7,10 +7,10 @@ module CardPG.Core.RichText
   , Block(..)
   , CardBody
   , StackPower(..)
+  , unsafeSimpleString
   , simpleString
   , TextRunDef(..)
-  , IconDef(..)
-  , DynamicValDef(..) 
+  , ColorValueDef(..)
   )
   where
 
@@ -19,27 +19,12 @@ import qualified Data.Aeson.KeyMap as KM
 import qualified Data.Aeson.Key as Key
 import qualified Data.List.NonEmpty as NE
 import Data.Text (Text)
+import qualified Data.Text as T
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json
-import CardPG.Core.Types (ResourceType(..))
-import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText)
-
-data StackPower = StackPower
-  { _source      :: ResourceType
-  , _modifier    :: Int
-  , _conditional :: Maybe Text
-  }
-  deriving stock (Eq, Show, Generic)
-
-instance ToJSON StackPower where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON StackPower where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-
+import CardPG.Core.Types (ResourceType(..), StackPower(..))
+import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, mkNonEmptyText, getNonEmptyText)
 
 -- | 1. The Token Stream
 -------------------------------------------------------------------------------
@@ -72,41 +57,28 @@ instance FromJSON TextRunDef where
 safeInlineOptions :: Options
 safeInlineOptions = (cardpgJsonOptions "") { unwrapUnaryRecords = False }
 
--- | Payload for Icons
-data IconDef = IconDef
-  { _color   :: ResourceType 
+-- | Payload for Color Values (Icons or Dynamic Values)
+data ColorValueDef = ColorValueDef
+  { _value :: StackPower 
   } deriving stock (Eq, Show, Generic)
 
-instance ToJSON IconDef where
+instance ToJSON ColorValueDef where
   toJSON     = genericToJSON safeInlineOptions
   toEncoding = genericToEncoding safeInlineOptions
-instance FromJSON IconDef where
-  parseJSON = genericParseJSON safeInlineOptions
-
--- | Payload for Dynamic Math
-data DynamicValDef = DynamicValDef
-  { _value   :: StackPower 
-  } deriving stock (Eq, Show, Generic)
-
-instance ToJSON DynamicValDef where
-  toJSON     = genericToJSON safeInlineOptions
-  toEncoding = genericToEncoding safeInlineOptions
-instance FromJSON DynamicValDef where
+instance FromJSON ColorValueDef where
   parseJSON = genericParseJSON safeInlineOptions
 
 -- | The Main Inline Sum Type
 -- | No partial fields here; just wrappers around safe types.
 data Inline
   = TextRun TextRunDef
-  | Icon IconDef
-  | DynamicVal DynamicValDef
+  | ColorValue ColorValueDef
   | Break
   deriving stock (Eq, Show, Generic)
 
 instance ToJSON Inline where
   toJSON (TextRun d) = addType "textRun" (toJSON d)
-  toJSON (Icon d) = addType "icon" (toJSON d)
-  toJSON (DynamicVal d) = addType "dynamicVal" (toJSON d)
+  toJSON (ColorValue d) = addType "colorValue" (toJSON d)
   toJSON Break = object ["type" .= ("break" :: Text)]
 
 addType :: Text -> Value -> Value
@@ -118,8 +90,7 @@ instance FromJSON Inline where
     t <- o .: "type"
     case (t :: Text) of
       "textRun" -> TextRun <$> parseJSON (Object o)
-      "icon" -> Icon <$> parseJSON (Object o)
-      "dynamicVal" -> DynamicVal <$> parseJSON (Object o)
+      "colorValue" -> ColorValue <$> parseJSON (Object o)
       "break" -> pure Break
       _ -> fail $ "Unknown Inline type: " ++ show t
 
@@ -132,20 +103,44 @@ instance ToJSON RichString where
   toEncoding = toEncoding . unRichString
 
 instance FromJSON RichString where
-  parseJSON v = mkRichString <$> parseJSON v
+  parseJSON v = do
+    inlines <- parseJSON v
+    case mkRichString (NE.toList inlines) of
+      Nothing -> fail "RichString cannot be empty or whitespace only"
+      Just rs -> pure rs
 
 instance Semigroup RichString where
-  (RichString a) <> (RichString b) = mkRichString (a <> b)
+  (RichString a) <> (RichString b) = 
+    RichString $ NE.fromList $ mergeAdjacent (NE.toList a ++ NE.toList b)
 
 -- | Smart constructor that merges adjacent TextRuns with the same style
-mkRichString :: NE.NonEmpty Inline -> RichString
-mkRichString = RichString . NE.fromList . mergeAdjacent . NE.toList
+-- | and strips leading/trailing whitespace from the entire RichString.
+mkRichString :: [Inline] -> Maybe RichString
+mkRichString inlines = 
+  let merged = mergeAdjacent inlines
+      stripped = stripBoundaryWhitespace merged
+  in RichString <$> NE.nonEmpty stripped
 
 mergeAdjacent :: [Inline] -> [Inline]
 mergeAdjacent (TextRun (TextRunDef s1 c1) : TextRun (TextRunDef s2 c2) : xs)
   | s1 == s2 = mergeAdjacent (TextRun (TextRunDef s1 (c1 <> c2)) : xs)
 mergeAdjacent (x:xs) = x : mergeAdjacent xs
 mergeAdjacent [] = []
+
+stripBoundaryWhitespace :: [Inline] -> [Inline]
+stripBoundaryWhitespace [] = []
+stripBoundaryWhitespace inlines = 
+  let withoutLeading = stripStart inlines
+      withoutTrailing = reverse (stripStart (reverse withoutLeading))
+  in withoutTrailing
+  where
+    stripStart [] = []
+    stripStart (TextRun (TextRunDef s c) : xs) =
+      let strippedText = T.stripStart (getNonEmptyText c)
+      in case mkNonEmptyText strippedText of
+           Nothing -> stripStart xs
+           Just c' -> TextRun (TextRunDef s c') : xs
+    stripStart xs = xs
 
 -- | 2. The Layout Structure
 -------------------------------------------------------------------------------
@@ -167,6 +162,12 @@ instance FromJSON Block where
 type CardBody = [Block]
 
 
+-- | Unsafe constructor for literals. 
+-- | Assumes the text is non-empty and does not require stripping/merging.
+unsafeSimpleString :: Text -> RichString
+unsafeSimpleString t = RichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText t)) NE.:| [])
 
-simpleString :: Text -> RichString
-simpleString t = mkRichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText t)) NE.:| [])
+-- | Safe constructor that attempts to create a RichString from Text.
+-- | Returns Nothing if the text is empty or whitespace-only after stripping.
+simpleString :: Text -> Maybe RichString
+simpleString t = mkRichString [TextRun (TextRunDef Nothing (unsafeNonEmptyText t))]

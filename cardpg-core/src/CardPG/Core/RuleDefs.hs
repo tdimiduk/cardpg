@@ -4,7 +4,7 @@
 
 module CardPG.Core.RuleDefs where
 
-import Data.Text (Text)
+
 import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
 import Data.Aeson (ToJSON, FromJSON)

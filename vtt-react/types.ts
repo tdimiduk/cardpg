@@ -8,6 +8,7 @@ export type ResourceType = z.infer<typeof ResourceTypeSchema>;
 export const StackPowerSchema = z.object({
   source: ResourceTypeSchema,
   modifier: z.number(),
+  conditional: z.string().optional().nullable(),
 });
 export type StackPower = z.infer<typeof StackPowerSchema>;
 
@@ -22,13 +23,8 @@ export const TextRunSchema = z.object({
   style: TextStyleSchema.optional().nullable(),
 });
 
-export const IconSchema = z.object({
-  type: z.literal('icon'),
-  color: ResourceTypeSchema,
-});
-
-export const DynamicValSchema = z.object({
-  type: z.literal('dynamicVal'),
+export const ColorValueSchema = z.object({
+  type: z.literal('colorValue'),
   value: StackPowerSchema,
 });
 
@@ -38,8 +34,7 @@ export const BreakSchema = z.object({
 
 export const InlineSchema = z.discriminatedUnion('type', [
   TextRunSchema,
-  IconSchema,
-  DynamicValSchema,
+  ColorValueSchema,
   BreakSchema,
 ]);
 export type Inline = z.infer<typeof InlineSchema>;

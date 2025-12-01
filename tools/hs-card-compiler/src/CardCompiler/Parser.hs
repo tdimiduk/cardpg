@@ -22,8 +22,8 @@ import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..), GeneralDef(..), Actor(..))
-import CardPG.Core.RichText (RichString, mkRichString, Inline(..), TextRunDef(..), IconDef(..), StackPower(..), simpleString)
-import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.RichText (RichString, mkRichString, Inline(..), TextRunDef(..), ColorValueDef(..), simpleString)
+import CardPG.Core.Types (ResourceType(..), StackPower(..))
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText, mkNonEmptyText)
@@ -92,7 +92,7 @@ convertCard RawCard{..} = do
           { _id = Nothing
           , _name = name
           , _tags = rcTags >>= NE.nonEmpty
-          , _flavor = fmap simpleString rcFlavor
+          , _flavor = rcFlavor >>= simpleString
           , _weight = Nothing
           , _value = Nothing
           , _traits = rcKeywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
@@ -106,7 +106,7 @@ convertCard RawCard{..} = do
               _tags = rcTags >>= NE.nonEmpty
               _stats = Stats r y b
               _cost = toIntMaybe rcCost
-              _flavor = fmap simpleString rcFlavor 
+              _flavor = rcFlavor >>= simpleString 
           rules <- parseRules rcAction rcEffect rcDetails
           let _rules = NE.nonEmpty rules
           pure $ PCore CoreCard{..}
@@ -154,7 +154,10 @@ mergeEffectDef (DefendDef p r e) rt = DefendDef p r (mergeRichString e rt)
 
 mergeRichString :: Maybe RichString -> RichString -> Maybe RichString
 mergeRichString Nothing new = Just new
-mergeRichString (Just old) new = Just (old <> mkRichString (Break NE.:| []) <> new)
+mergeRichString (Just old) new = 
+  case mkRichString [Break] of
+    Just br -> Just (old <> br <> new)
+    Nothing -> Just (old <> new) -- Should not happen for [Break] but safe fallback
 
 nonEmptyText :: Maybe Text -> Maybe Text
 nonEmptyText Nothing = Nothing
