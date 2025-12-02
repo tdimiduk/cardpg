@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useHandSelection } from './useHandSelection';
-import { CoreCard, ResourceType } from '../types';
+import { CoreCard } from '../types';
 
 describe('useHandSelection', () => {
   const mockCard1: CoreCard = {

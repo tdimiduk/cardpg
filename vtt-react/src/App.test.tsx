@@ -5,6 +5,7 @@ import { useGameStore } from './store/gameStore';
 import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
+import { CoreCard } from './types';
 
 // Mock dependencies
 vi.mock('./store/gameStore');
@@ -14,7 +15,13 @@ vi.mock('./hooks/useGameDispatch');
 
 // Mock child components to avoid complex rendering and isolate App logic
 vi.mock('./components/Game/MapBoard', () => ({
-  MapBoard: ({ onUpdateToken, setActiveTokenId }: any) => (
+  MapBoard: ({
+    _onUpdateToken,
+    setActiveTokenId,
+  }: {
+    _onUpdateToken: unknown;
+    setActiveTokenId: (id: string) => void;
+  }) => (
     <div data-testid="map-board">
       <button onClick={() => setActiveTokenId('token-1')} data-testid="select-token-btn">
         Select Token
@@ -24,7 +31,9 @@ vi.mock('./components/Game/MapBoard', () => ({
 }));
 
 vi.mock('./components/Player/PlayerHand', () => ({
-  PlayerHand: ({ hand }: any) => <div data-testid="player-hand">Hand Size: {hand.length}</div>,
+  PlayerHand: ({ hand }: { hand: CoreCard[] }) => (
+    <div data-testid="player-hand">Hand Size: {hand.length}</div>
+  ),
 }));
 
 vi.mock('./components/Sidebar/SidebarLeft', () => ({

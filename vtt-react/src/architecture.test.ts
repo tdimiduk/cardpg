@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 
 describe('Architecture Constraints', () => {
   it('_applyAction should only be used in allowed files', () => {

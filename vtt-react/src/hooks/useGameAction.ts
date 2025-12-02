@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { BroadcastAction } from '../types/sync';
 
-function assertUnreachable(x: never): never {
+function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
 }
 
@@ -86,10 +86,14 @@ export const useGameAction = () => {
           removeConsequence(action.activeTokenId, action.cardId);
           break;
         case 'ADD_STATUS':
-          addStatus(action.activeTokenId, action.statusType as any, action.destination as any);
+          addStatus(
+            action.activeTokenId,
+            action.statusType as 'fatigue' | 'wound',
+            action.destination as 'discard' | 'hand' | 'draw',
+          );
           break;
         case 'REMOVE_STATUS':
-          removeStatus(action.activeTokenId, action.statusType as any);
+          removeStatus(action.activeTokenId, action.statusType as 'fatigue' | 'wound');
           break;
         case 'DISCARD_CARDS':
           discardCards(action.activeTokenId, action.cardIds);

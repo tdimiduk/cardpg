@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { Actor, TokenType, PlayerDeckState, CoreCard } from '../../types';
+import { Actor, TokenType, PlayerDeckState, Token, CoreCard } from '../../types';
 import { INITIAL_ACTORS } from '../../constants';
 import { generateStarterDeck, generateMonsterDeck, generateDeck } from '../../services/deckFactory';
 import {
@@ -40,18 +40,18 @@ export interface ActorSlice {
 }
 
 // Helper to get actor from state
-const getActor = (state: { tokens: any[]; actors: Record<string, Actor> }, tokenId: string) => {
+const getActor = (state: { tokens: Token[]; actors: Record<string, Actor> }, tokenId: string) => {
   const token = state.tokens.find((t) => t.id === tokenId);
   if (!token) return undefined;
   return state.actors[token.actorId];
 };
 
 export const createActorSlice: StateCreator<
-  ActorSlice & LogSlice & { tokens: any[] },
+  ActorSlice & LogSlice & { tokens: Token[] },
   [['zustand/immer', never]],
   [],
   ActorSlice
-> = (set, get) => ({
+> = (set) => ({
   actors: INITIAL_ACTORS,
 
   initializeGame: () =>
@@ -122,7 +122,7 @@ export const createActorSlice: StateCreator<
   removeActor: (actorId) =>
     set((state) => {
       if (!state.actors[actorId]) return;
-      const tokensToRemove = state.tokens.filter((t) => t.actorId === actorId);
+
       // Remove tokens
       state.tokens = state.tokens.filter((t) => t.actorId !== actorId);
       // Remove actor

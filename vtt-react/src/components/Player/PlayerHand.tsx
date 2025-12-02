@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHandSelection } from '../../hooks/useHandSelection';
-import { CoreCard, ResourceType, GamePhase, PlannedAction, Rule } from '../../types';
+import { CoreCard, ResourceType, GamePhase, PlannedAction } from '../../types';
 import { CardComponent } from '../Card/Card';
 import {
   Square,

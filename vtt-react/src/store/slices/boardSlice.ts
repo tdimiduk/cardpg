@@ -1,7 +1,6 @@
 import { StateCreator } from 'zustand';
-import { Token } from '../../types';
-import { INITIAL_TOKENS } from '../../constants';
-import { GameSlice } from './gameSlice'; // Circular dependency for types? No, just interface usage if needed, but here we just need types.
+import { Token, PlannedAction, Actor } from '../../types';
+import { INITIAL_TOKENS } from '../../constants'; // Circular dependency for types? No, just interface usage if needed, but here we just need types.
 // Actually, updateTokenPosition needs to check phase, so we might need access to GameSlice state if we were combining them in one object,
 // but with slices, `set` and `get` work on the whole store.
 // Let's define the combined store type for the creator if needed, or just use generic.
@@ -20,11 +19,15 @@ export interface BoardSlice {
 
 // We'll use a generic for the store type to allow access to other slices
 export const createBoardSlice: StateCreator<
-  BoardSlice & { phase: string; plannedActions: any; actors: any }, // Partial definition of full store for TS
+  BoardSlice & {
+    phase: string;
+    plannedActions: Record<string, PlannedAction>;
+    actors: Record<string, Actor>;
+  }, // Partial definition of full store for TS
   [['zustand/immer', never]],
   [],
   BoardSlice
-> = (set, get) => ({
+> = (set) => ({
   tokens: INITIAL_TOKENS,
   activeTokenId: INITIAL_TOKENS[0]?.id || null,
 

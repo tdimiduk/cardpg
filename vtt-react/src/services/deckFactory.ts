@@ -9,21 +9,53 @@ export interface ActorTemplate {
   deck: CoreCard[];
 }
 
+interface RawStats {
+  red: number;
+  yellow: number;
+  blue: number;
+}
+
+interface RawItem {
+  traits?: string[];
+  tags?: string[];
+  [key: string]: unknown;
+}
+
+interface RawCard {
+  tags?: string[];
+  stats?: RawStats;
+  [key: string]: unknown;
+}
+
+interface RawActor {
+  items?: RawItem[];
+  deck?: RawCard[];
+  [key: string]: unknown;
+}
+
 // Cast the imported JSON to the correct type and normalize
-const ACTOR_DATA: ActorTemplate[] = (generatedCards as any[]).map((actor) => ({
+const ACTOR_DATA: ActorTemplate[] = (generatedCards as RawActor[]).map((actor) => ({
   ...actor,
+  id: actor.id as string,
+  name: actor.name as string,
+  tags: (actor.tags as string[]) || [],
   items: actor.items
-    ? actor.items.map((item: any) => ({
+    ? actor.items.map((item) => ({
         ...item,
-        type: 'item',
+        type: 'item' as const,
+        id: item.id as string,
+        name: item.name as string,
         traits: item.traits || [],
         tags: item.tags || [],
       }))
     : [],
   deck: actor.deck
-    ? actor.deck.map((card: any) => ({
+    ? actor.deck.map((card) => ({
         ...card,
-        type: 'core',
+        type: 'core' as const,
+        id: card.id as string,
+        name: card.name as string,
+        stats: card.stats as RawStats,
         tags: card.tags || [],
       }))
     : [],

@@ -43,7 +43,7 @@ export const createGameSlice: StateCreator<
   [['zustand/immer', never]],
   [],
   GameSlice
-> = (set, get) => ({
+> = (set) => ({
   phase: 'planning',
   plannedActions: {},
 

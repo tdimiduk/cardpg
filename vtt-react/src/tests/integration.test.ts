@@ -15,7 +15,7 @@ describe('Game Store Integration', () => {
   });
 
   it('should initialize game state', () => {
-    const { initializeGame, actors } = useGameStore.getState();
+    const { initializeGame } = useGameStore.getState();
     initializeGame();
 
     const actorList = Object.values(useGameStore.getState().actors);

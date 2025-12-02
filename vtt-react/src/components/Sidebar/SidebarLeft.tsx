@@ -49,14 +49,11 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
   onRemoveStatusCard,
   tokens,
   activeToken,
-  hasPlannedAction,
+  activeTokenId,
   actors,
   onAddActor,
   onRemoveActor,
 }) => {
-  // Helper to get actor for token
-  const getActor = (token: Token) => actors[token.actorId];
-
   const [showDeckModal, setShowDeckModal] = React.useState(false);
   const [showActorSelector, setShowActorSelector] = React.useState(false);
   const [selectorType, setSelectorType] = React.useState<TokenType>(TokenType.PC);
@@ -139,9 +136,8 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
 
       {activeToken && actors[activeToken.actorId] && (
         <ActiveActorHeader
-          activeToken={activeToken}
-          actor={actors[activeToken.actorId]}
-          hasPlannedAction={hasPlannedAction}
+          activeTokenId={activeTokenId}
+          actor={activeToken ? actors[activeToken.actorId] : actors[Object.keys(actors)[0]]}
         />
       )}
 

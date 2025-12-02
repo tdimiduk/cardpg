@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../store/gameStore';
 import { INITIAL_ACTORS, INITIAL_TOKENS } from '../constants';
-import { CoreCard } from '../types';
+import { CoreCard, Rule, LogEntry } from '../types';
 
 describe('Game Flow Scenarios', () => {
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Game Flow Scenarios', () => {
 
     // Plan Attack
     const attackCard = actor.deck.hand.find((c: CoreCard) =>
-      c.rules?.some((r: any) => r.type === 'attack'),
+      c.rules?.some((r: Rule) => r.type === 'attack'),
     );
 
     if (attackCard) {
@@ -51,7 +51,7 @@ describe('Game Flow Scenarios', () => {
 
     const attacker = store.actors[store.tokens[0].actorId];
     const attackCard = attacker.deck.hand.find((c: CoreCard) =>
-      c.rules?.some((r: any) => r.type === 'attack'),
+      c.rules?.some((r: Rule) => r.type === 'attack'),
     );
 
     if (attackCard) {
@@ -64,7 +64,7 @@ describe('Game Flow Scenarios', () => {
       // Check logs for resolution
       const logs = useGameStore.getState().logs;
       const resolutionLog = logs.find(
-        (l: any) => l.type === 'action' && l.content.includes('resolves Action'),
+        (l: LogEntry) => l.type === 'action' && l.content.includes('resolves Action'),
       );
       expect(resolutionLog).toBeDefined();
     }
@@ -87,7 +87,7 @@ describe('Game Flow Scenarios', () => {
     store.drawCards(tokenId, 1);
 
     const logs = useGameStore.getState().logs;
-    const fatigueLog = logs.find((l: any) => l.content.includes('Fatigue Cycle'));
+    const fatigueLog = logs.find((l: LogEntry) => l.content.includes('Fatigue Cycle'));
     expect(fatigueLog).toBeDefined();
   });
 

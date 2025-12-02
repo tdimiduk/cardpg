@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { drawCards, calculateStackStrength, performDefend } from '../services/ruleService';
 import { T } from '../data/cardData';
-import { PlayerDeckState, CoreCard, ItemCard } from '../types';
+import { PlayerDeckState, CoreCard, ItemCard, RichString } from '../types';
 
 // Helper for tests
 const createCard = (
@@ -9,7 +9,7 @@ const createCard = (
   red?: number,
   yellow?: number,
   blue?: number,
-  flavor: any[] = [],
+  flavor: RichString = [],
   id?: string,
   tags?: string[],
   type: 'core' | 'item' | 'fatigue' = 'core',

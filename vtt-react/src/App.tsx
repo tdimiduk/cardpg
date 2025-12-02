@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { CoreCard, ResourceType } from './types';
+import { Actor, CoreCard, ResourceType } from './types';
 import { MapBoard } from './components/Game/MapBoard';
 import { SidebarLeft } from './components/Sidebar/SidebarLeft';
 import { SidebarRight } from './components/Sidebar/SidebarRight';
@@ -31,9 +31,9 @@ const App: React.FC = () => {
     // Only initialize if we have no actors (fresh load)
     // Actually, INITIAL_ACTORS populates actors, so this check might be false if constants exist.
     // But initializeGame populates decks.
-    // We should check if decks are empty.
+    // Check if decks are empty (need initialization)
     const needsInit = Object.values(actors).some(
-      (a) => a.deck.hand.length === 0 && a.deck.drawPile.length === 0,
+      (a: Actor) => a.deck.hand.length === 0 && a.deck.drawPile.length === 0,
     );
 
     if (needsInit) {
@@ -60,7 +60,7 @@ const App: React.FC = () => {
   const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
 
   // --- WebSocket Integration ---
-  const { clientId } = useWebSocket();
+  useWebSocket();
   useGameSync();
   const { dispatch } = useGameDispatch();
 

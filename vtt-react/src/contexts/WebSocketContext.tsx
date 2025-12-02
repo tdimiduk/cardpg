@@ -68,7 +68,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, []);
 
-  const handleMessage = (msg: any) => {
+  const handleMessage = (msg: unknown) => {
     // Basic normalization if needed, for now assume we can map it
     // If Haskell sends { "tag": "Welcome", ... } great.
     // If it sends { "Welcome": { ... } } we might need to adapt.
@@ -78,13 +78,19 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     let normalized: ServerMessage | null = null;
 
-    // Check for Aeson default object wrapper { "Constructor": { fields } }
-    // We configured Haskell to use TaggedObject "tag" "contents", so we expect { tag: "...", ... }
-    if (msg.tag) {
-      normalized = msg as ServerMessage;
-    } else if (msg.Welcome) {
+    const raw = msg as {
+      tag?: string;
+      Welcome?: { yourClientId: string; connectedClients: string[] };
+    };
+    if (raw.tag) {
+      normalized = raw as ServerMessage;
+    } else if (raw.Welcome) {
       // Fallback for legacy/default encoding if needed (though we changed server)
-      normalized = { tag: 'Welcome', ...msg.Welcome };
+      normalized = {
+        tag: 'Welcome',
+        yourClientId: raw.Welcome.yourClientId,
+        connectedClients: raw.Welcome.connectedClients,
+      };
     }
 
     if (normalized) {

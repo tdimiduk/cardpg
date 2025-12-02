@@ -10,9 +10,9 @@ export type GameStore = ActorSlice & BoardSlice & LogSlice & GameSlice;
 
 export const useGameStore = create<GameStore>()(
   immer((...a) => ({
-    ...createLogSlice(...(a as [any, any, any])),
-    ...createBoardSlice(...(a as [any, any, any])),
-    ...createActorSlice(...(a as [any, any, any])),
-    ...createGameSlice(...(a as [any, any, any])),
+    ...createLogSlice(...(a as Parameters<typeof createLogSlice>)),
+    ...createBoardSlice(...(a as Parameters<typeof createBoardSlice>)),
+    ...createActorSlice(...(a as Parameters<typeof createActorSlice>)),
+    ...createGameSlice(...(a as Parameters<typeof createGameSlice>)),
   })),
 );
