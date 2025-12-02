@@ -7,53 +7,33 @@ import { PlayerHand } from './components/Player/PlayerHand';
 import { useGameStore } from './store/gameStore';
 import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
+import { useGameDispatch } from './hooks/useGameDispatch';
 
 const App: React.FC = () => {
   // --- Store Hooks ---
-  const actors = useGameStore((state) => state.actors);
-  const tokens = useGameStore((state) => state.tokens);
-  const logs = useGameStore((state) => state.logs);
+  // --- Store Hooks ---
   const phase = useGameStore((state) => state.phase);
-  const activeTokenId = useGameStore((state) => state.activeTokenId);
   const plannedActions = useGameStore((state) => state.plannedActions);
+  const tokens = useGameStore((state) => state.tokens);
+  const actors = useGameStore((state) => state.actors);
+  const logs = useGameStore((state) => state.logs);
+  const activeTokenId = useGameStore((state) => state.activeTokenId);
 
   // Actions
-  const initializeGame = useGameStore((state) => state.initializeGame);
   const setActiveToken = useGameStore((state) => state.setActiveToken);
-  const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
-  const addLog = useGameStore((state) => state.addLog);
-
-  // Actor Actions
   const addActor = useGameStore((state) => state.addActor);
   const removeActor = useGameStore((state) => state.removeActor);
-  const drawCards = useGameStore((state) => state.drawCards);
-  const defend = useGameStore((state) => state.defend);
-  const clearDefense = useGameStore((state) => state.clearDefense);
-  const reshuffle = useGameStore((state) => state.reshuffle);
-  const discardCards = useGameStore((state) => state.discardCards);
-  const returnToDeck = useGameStore((state) => state.returnToDeck);
-  const addConsequence = useGameStore((state) => state.addConsequence);
-  const removeConsequence = useGameStore((state) => state.removeConsequence);
-  const addStatus = useGameStore((state) => state.addStatus);
-  const removeStatus = useGameStore((state) => state.removeStatus);
-
-  // Game Actions
-  const commitPlan = useGameStore((state) => state.commitPlan);
-  const cancelPlan = useGameStore((state) => state.cancelPlan);
-  const passTurn = useGameStore((state) => state.passTurn);
-  const revealAndResolve = useGameStore((state) => state.revealAndResolve);
-  const endRound = useGameStore((state) => state.endRound);
-  const playImmediate = useGameStore((state) => state.playImmediate);
+  const addLog = useGameStore((state) => state.addLog);
+  const initializeGame = useGameStore((state) => state.initializeGame);
 
   // Initialize Game on Mount
   useEffect(() => {
-    // Check if game needs initialization (if first actor has no cards)
+    // Only initialize if we have no actors (fresh load)
+    // Actually, INITIAL_ACTORS populates actors, so this check might be false if constants exist.
+    // But initializeGame populates decks.
+    // We should check if decks are empty.
     const needsInit = Object.values(actors).some(
-      (a) =>
-        a.deck.drawPile.length === 0 &&
-        a.deck.hand.length === 0 &&
-        a.deck.discardPile.length === 0 &&
-        a.deck.equipped.length === 0,
+      (a) => a.deck.hand.length === 0 && a.deck.drawPile.length === 0,
     );
 
     if (needsInit) {
@@ -61,11 +41,12 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // --- Helpers ---
   const activeToken = activeTokenId ? tokens.find((t) => t.id === activeTokenId) : null;
   const activeActor = activeToken ? actors[activeToken.actorId] : null;
   const currentDeck = activeActor?.deck;
 
-  // --- Helpers ---
+  // Calculate defeated for visualization
 
   // Calculate defeated for visualization
   const defeatedTokenIds = Object.values(actors)
@@ -79,9 +60,9 @@ const App: React.FC = () => {
   const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
 
   // --- WebSocket Integration ---
-  // --- WebSocket Integration ---
-  const { sendMessage, clientId } = useWebSocket();
+  const { clientId } = useWebSocket();
   useGameSync();
+  const { dispatch } = useGameDispatch();
 
   // --- Handlers ---
 
@@ -94,47 +75,21 @@ const App: React.FC = () => {
   ) => {
     if (!activeTokenId) return;
 
-    // Send to server
-    sendMessage({
-      tag: 'Broadcast',
-      payload: {
-        type: 'PLAY_STACK',
-        activeTokenId,
-        selectedCards,
-        strengthColor,
-        modifier,
-        targetDefense,
-        actionName,
-        phase,
-      },
+    dispatch({
+      type: 'PLAY_STACK',
+      activeTokenId,
+      selectedCards,
+      strengthColor,
+      modifier,
+      targetDefense,
+      actionName,
+      phase,
     });
-
-    if (phase === 'planning') {
-      commitPlan(activeTokenId, selectedCards, strengthColor, modifier, actionName, targetDefense);
-    } else {
-      playImmediate(
-        activeTokenId,
-        selectedCards,
-        strengthColor,
-        modifier,
-        actionName,
-        targetDefense,
-      );
-    }
   };
 
   const handlePass = () => {
     if (!activeTokenId || phase !== 'planning') return;
-
-    sendMessage({
-      tag: 'Broadcast',
-      payload: {
-        type: 'PASS',
-        activeTokenId,
-      },
-    });
-
-    passTurn(activeTokenId);
+    dispatch({ type: 'PASS', activeTokenId });
   };
 
   return (
@@ -143,53 +98,36 @@ const App: React.FC = () => {
         deckState={currentDeck}
         onDraw={(count) => {
           if (!activeTokenId) return;
-          sendMessage({ tag: 'Broadcast', payload: { type: 'DRAW_CARDS', activeTokenId, count } });
-          drawCards(activeTokenId, count);
+          dispatch({ type: 'DRAW_CARDS', activeTokenId, count });
         }}
         onDefend={() => {
           if (!activeTokenId) return;
-          sendMessage({ tag: 'Broadcast', payload: { type: 'DEFEND', activeTokenId } });
-          defend(activeTokenId);
+          dispatch({ type: 'DEFEND', activeTokenId });
         }}
         onClearDefense={() => {
           if (!activeTokenId) return;
-          sendMessage({ tag: 'Broadcast', payload: { type: 'CLEAR_DEFENSE', activeTokenId } });
-          clearDefense(activeTokenId);
+          dispatch({ type: 'CLEAR_DEFENSE', activeTokenId });
         }}
         onReshuffle={() => {
           if (!activeTokenId) return;
-          sendMessage({ tag: 'Broadcast', payload: { type: 'RESHUFFLE', activeTokenId } });
-          reshuffle(activeTokenId);
+          dispatch({ type: 'RESHUFFLE', activeTokenId });
         }}
         onSelectToken={(id) => setActiveToken(id)}
         onAddConsequence={() => {
           if (!activeTokenId) return;
-          sendMessage({ tag: 'Broadcast', payload: { type: 'ADD_CONSEQUENCE', activeTokenId } });
-          addConsequence(activeTokenId);
+          dispatch({ type: 'ADD_CONSEQUENCE', activeTokenId });
         }}
         onRemoveConsequence={(cardId) => {
           if (!activeTokenId) return;
-          sendMessage({
-            tag: 'Broadcast',
-            payload: { type: 'REMOVE_CONSEQUENCE', activeTokenId, cardId },
-          });
-          removeConsequence(activeTokenId, cardId);
+          dispatch({ type: 'REMOVE_CONSEQUENCE', activeTokenId, cardId });
         }}
         onAddStatusCard={(statusType, destination) => {
           if (!activeTokenId) return;
-          sendMessage({
-            tag: 'Broadcast',
-            payload: { type: 'ADD_STATUS', activeTokenId, statusType, destination },
-          });
-          addStatus(activeTokenId, statusType, destination);
+          dispatch({ type: 'ADD_STATUS', activeTokenId, statusType, destination });
         }}
         onRemoveStatusCard={(statusType) => {
           if (!activeTokenId) return;
-          sendMessage({
-            tag: 'Broadcast',
-            payload: { type: 'REMOVE_STATUS', activeTokenId, statusType },
-          });
-          removeStatus(activeTokenId, statusType);
+          dispatch({ type: 'REMOVE_STATUS', activeTokenId, statusType });
         }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
@@ -215,8 +153,7 @@ const App: React.FC = () => {
         <MapBoard
           tokens={tokens}
           onUpdateToken={(token) => {
-            sendMessage({ tag: 'Broadcast', payload: { type: 'MOVE_TOKEN', token } });
-            updateTokenPosition(token);
+            dispatch({ type: 'MOVE_TOKEN', token });
           }}
           activeTokenId={activeTokenId}
           setActiveTokenId={(id) => setActiveToken(id)}
@@ -232,19 +169,21 @@ const App: React.FC = () => {
             onPlayStack={handlePlayStack}
             onDiscard={(cards) =>
               activeTokenId &&
-              discardCards(
+              dispatch({
+                type: 'DISCARD_CARDS',
                 activeTokenId,
-                cards.map((c) => c.id),
-              )
+                cardIds: cards.map((c) => c.id),
+              })
             }
             onPass={handlePass}
-            onCancelPlan={() => activeTokenId && cancelPlan(activeTokenId)}
+            onCancelPlan={() => activeTokenId && dispatch({ type: 'CANCEL_PLAN', activeTokenId })}
             onReturnToDeck={(cards) =>
               activeTokenId &&
-              returnToDeck(
+              dispatch({
+                type: 'RETURN_TO_DECK',
                 activeTokenId,
-                cards.map((c) => c.id),
-              )
+                cardIds: cards.map((c) => c.id),
+              })
             }
             phase={phase}
             hasPlanned={userHasPlannedAction}
@@ -258,12 +197,10 @@ const App: React.FC = () => {
         onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
         onRevealActions={() => {
-          sendMessage({ tag: 'Broadcast', payload: { type: 'REVEAL' } });
-          revealAndResolve();
+          dispatch({ type: 'REVEAL' });
         }}
         onEndRound={() => {
-          sendMessage({ tag: 'Broadcast', payload: { type: 'END_ROUND' } });
-          endRound();
+          dispatch({ type: 'END_ROUND' });
         }}
         readyCount={readyCount}
         totalCount={tokens.length}
