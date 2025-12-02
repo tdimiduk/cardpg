@@ -27,8 +27,11 @@ data Client = Client
   , clientConn :: Connection
   }
 
--- | The state of the server, mapping client IDs to clients.
-type ServerState = Map UUID Client
+-- | The state of the server, mapping client IDs to clients and storing action history.
+data ServerState = ServerState
+  { clients :: Map UUID Client
+  , actionLog :: [Value]
+  }
 
 -- | Custom Aeson options for JSON encoding
 customOptions :: Options
@@ -50,7 +53,7 @@ instance ToJSON ClientMessage where
 
 -- | Messages sent from Server to Client.
 data ServerMessage
-  = Welcome { yourClientId :: UUID, connectedClients :: [Text] }
+  = Welcome { yourClientId :: UUID, connectedClients :: [Text], history :: [Value] }
   | BroadcastMessage { fromClientId :: UUID, payload :: Value }
   | ClientJoined { newClientName :: Text, newClientId :: UUID }
   | ClientLeft { leftClientId :: UUID }
@@ -64,24 +67,27 @@ instance ToJSON ServerMessage where
   toJSON = genericToJSON customOptions
 
 newServerState :: ServerState
-newServerState = Map.empty
+newServerState = ServerState Map.empty []
 
 numClients :: ServerState -> Int
-numClients = Map.size
+numClients = Map.size . clients
 
 clientExists :: Client -> ServerState -> Bool
-clientExists client = Map.member (clientId client)
+clientExists client state = Map.member (clientId client) (clients state)
 
 addClient :: Client -> ServerState -> ServerState
-addClient client = Map.insert (clientId client) client
+addClient client state = state { clients = Map.insert (clientId client) client (clients state) }
 
 removeClient :: Client -> ServerState -> ServerState
-removeClient client = Map.delete (clientId client)
+removeClient client state = state { clients = Map.delete (clientId client) (clients state) }
+
+addAction :: Value -> ServerState -> ServerState
+addAction action state = state { actionLog = actionLog state ++ [action] }
 
 broadcast :: ServerMessage -> ServerState -> IO ()
 broadcast msg state = do
     let msgBytes = encode msg
-    forM_ (Map.elems state) $ \client ->
+    forM_ (Map.elems (clients state)) $ \client ->
         sendTextData (clientConn client) msgBytes
 
 main :: IO ()
@@ -113,27 +119,33 @@ talk client state = forever $ do
             let newClient = client { clientName = name }
             
             -- Update state with new client
-            currentClients <- modifyMVar state $ \s -> do
+            (currentClients, historyLog) <- modifyMVar state $ \s -> do
                 let s' = addClient newClient s
-                return (s', s')
+                return (s', (clients s', actionLog s'))
             
             T.putStrLn $ "Client joined: " <> name <> " (" <> T.pack (show $ clientId newClient) <> ")"
             
             -- Send Welcome to the new client
             let clientNames = map clientName $ Map.elems currentClients
-            sendTextData (clientConn newClient) $ encode $ Welcome (clientId newClient) clientNames
+            sendTextData (clientConn newClient) $ encode $ Welcome (clientId newClient) clientNames historyLog
             
             -- Notify others
-            broadcast (ClientJoined name (clientId newClient)) (removeClient newClient currentClients)
+            -- We construct a temporary state for broadcasting to everyone else
+            let broadcastState = ServerState (Map.delete (clientId newClient) currentClients) []
+            broadcast (ClientJoined name (clientId newClient)) broadcastState
             
             -- Continue loop with updated client info
             talkLoop newClient state
             
         Just (Broadcast payload) -> do
-            -- We can't broadcast if we haven't joined yet? 
-            -- For MVP let's allow it but it might be weird if name is Anonymous
-            currentClients <- readMVar state
-            broadcast (BroadcastMessage (clientId client) payload) (removeClient client currentClients)
+            -- Update log and broadcast
+            currentClients <- modifyMVar state $ \s -> do
+                let s' = addAction payload s
+                return (s', clients s')
+
+            -- Broadcast to others
+            let broadcastState = ServerState (Map.delete (clientId client) currentClients) []
+            broadcast (BroadcastMessage (clientId client) payload) broadcastState
             
             -- Continue loop
             talkLoop client state
@@ -156,8 +168,14 @@ talkLoop client state = do
             T.putStrLn $ "Client renamed: " <> name
             talkLoop newClient state
         Just (Broadcast payload) -> do
-            currentClients <- readMVar state
-            broadcast (BroadcastMessage (clientId client) payload) (removeClient client currentClients)
+            -- Update log and broadcast
+            currentClients <- modifyMVar state $ \s -> do
+                let s' = addAction payload s
+                return (s', clients s')
+
+            let broadcastState = ServerState (Map.delete (clientId client) currentClients) []
+            broadcast (BroadcastMessage (clientId client) payload) broadcastState
+            
             talkLoop client state
 
 disconnect :: Client -> MVar ServerState -> IO ()

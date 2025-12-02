@@ -7,7 +7,7 @@ import { BroadcastAction } from '../types/sync';
 type ClientMessage = { tag: 'Join'; name: string } | { tag: 'Broadcast'; payload: BroadcastAction };
 
 type ServerMessage =
-  | { tag: 'Welcome'; yourClientId: string; connectedClients: string[] }
+  | { tag: 'Welcome'; yourClientId: string; connectedClients: string[]; history: BroadcastAction[] }
   | { tag: 'BroadcastMessage'; fromClientId: string; payload: BroadcastAction }
   | { tag: 'ClientJoined'; newClientName: string; newClientId: string }
   | { tag: 'ClientLeft'; leftClientId: string }
@@ -76,6 +76,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       tag: z.literal('Welcome'),
       yourClientId: z.string(),
       connectedClients: z.array(z.string()),
+      history: z.array(BroadcastActionSchema),
     }),
     z.object({
       tag: z.literal('BroadcastMessage'),
@@ -108,6 +109,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         tag: 'Welcome',
         yourClientId: raw.Welcome.yourClientId,
         connectedClients: raw.Welcome.connectedClients,
+        history: [], // Legacy fallback if history is missing
       };
     }
 
