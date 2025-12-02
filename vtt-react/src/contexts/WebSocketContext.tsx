@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { z } from 'zod';
+import { BroadcastActionSchema } from '../types/sync';
 import { BroadcastAction } from '../types/sync';
 
 // Types for messages
@@ -68,24 +70,40 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, []);
 
+  // Define ServerMessage Schema
+  const ServerMessageSchema = z.discriminatedUnion('tag', [
+    z.object({
+      tag: z.literal('Welcome'),
+      yourClientId: z.string(),
+      connectedClients: z.array(z.string()),
+    }),
+    z.object({
+      tag: z.literal('BroadcastMessage'),
+      fromClientId: z.string(),
+      payload: BroadcastActionSchema,
+    }),
+    z.object({
+      tag: z.literal('ClientJoined'),
+      newClientName: z.string(),
+      newClientId: z.string(),
+    }),
+    z.object({ tag: z.literal('ClientLeft'), leftClientId: z.string() }),
+    z.object({ tag: z.literal('ErrorMessage'), error: z.string() }),
+  ]);
+
+  // ... (inside component)
+
   const handleMessage = (msg: unknown) => {
-    // Basic normalization if needed, for now assume we can map it
-    // If Haskell sends { "tag": "Welcome", ... } great.
-    // If it sends { "Welcome": { ... } } we might need to adapt.
-
-    // Let's assume we might need to adapt for now, but I'll implement a simple handler
-    // that tries to guess.
-
-    let normalized: ServerMessage | null = null;
+    // Basic normalization if needed
+    let normalized: unknown = msg;
 
     const raw = msg as {
       tag?: string;
       Welcome?: { yourClientId: string; connectedClients: string[] };
     };
-    if (raw.tag) {
-      normalized = raw as ServerMessage;
-    } else if (raw.Welcome) {
-      // Fallback for legacy/default encoding if needed (though we changed server)
+
+    // Legacy/Default Aeson normalization
+    if (raw.Welcome && !raw.tag) {
       normalized = {
         tag: 'Welcome',
         yourClientId: raw.Welcome.yourClientId,
@@ -93,20 +111,25 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       };
     }
 
-    if (normalized) {
-      setLastMessage(normalized);
-      switch (normalized.tag) {
+    const result = ServerMessageSchema.safeParse(normalized);
+
+    if (result.success) {
+      const message = result.data;
+      setLastMessage(message);
+      switch (message.tag) {
         case 'Welcome':
-          setClientId(normalized.yourClientId);
-          setConnectedClients(normalized.connectedClients);
+          setClientId(message.yourClientId);
+          setConnectedClients(message.connectedClients);
           break;
         case 'ClientJoined':
-          setConnectedClients((prev) => [...prev, normalized.newClientName]);
+          setConnectedClients((prev) => [...prev, message.newClientName]);
           break;
         case 'ClientLeft':
           // We don't have the name here easily unless we track a map.
           break;
       }
+    } else {
+      console.error('Failed to parse server message:', result.error);
     }
   };
 

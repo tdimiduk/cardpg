@@ -1,28 +1,53 @@
-import { CoreCard, ResourceType, Token } from '../types';
+import { z } from 'zod';
+import { CoreCardSchema, ResourceTypeSchema, TokenSchema } from '../types';
 
-export type BroadcastAction =
-  | {
-      type: 'PLAY_STACK';
-      activeTokenId: string;
-      selectedCards: CoreCard[];
-      strengthColor: ResourceType;
-      modifier: number;
-      targetDefense?: ResourceType;
-      actionName?: string;
-      phase: string;
-    }
-  | { type: 'PASS'; activeTokenId: string }
-  | { type: 'REVEAL' }
-  | { type: 'END_ROUND' }
-  | { type: 'MOVE_TOKEN'; token: Token }
-  | { type: 'DRAW_CARDS'; activeTokenId: string; count: number }
-  | { type: 'DEFEND'; activeTokenId: string }
-  | { type: 'CLEAR_DEFENSE'; activeTokenId: string }
-  | { type: 'RESHUFFLE'; activeTokenId: string }
-  | { type: 'ADD_CONSEQUENCE'; activeTokenId: string }
-  | { type: 'REMOVE_CONSEQUENCE'; activeTokenId: string; cardId: string }
-  | { type: 'ADD_STATUS'; activeTokenId: string; statusType: string; destination: string }
-  | { type: 'REMOVE_STATUS'; activeTokenId: string; statusType: string }
-  | { type: 'DISCARD_CARDS'; activeTokenId: string; cardIds: string[] }
-  | { type: 'CANCEL_PLAN'; activeTokenId: string }
-  | { type: 'RETURN_TO_DECK'; activeTokenId: string; cardIds: string[] };
+export const BroadcastActionSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('PLAY_STACK'),
+    activeTokenId: z.string(),
+    selectedCards: z.array(CoreCardSchema),
+    strengthColor: ResourceTypeSchema,
+    modifier: z.number(),
+    targetDefense: ResourceTypeSchema.optional(),
+    actionName: z.string().optional(),
+    phase: z.string(),
+  }),
+  z.object({ type: z.literal('PASS'), activeTokenId: z.string() }),
+  z.object({ type: z.literal('REVEAL') }),
+  z.object({ type: z.literal('END_ROUND') }),
+  z.object({ type: z.literal('MOVE_TOKEN'), token: TokenSchema }),
+  z.object({ type: z.literal('DRAW_CARDS'), activeTokenId: z.string(), count: z.number() }),
+  z.object({ type: z.literal('DEFEND'), activeTokenId: z.string() }),
+  z.object({ type: z.literal('CLEAR_DEFENSE'), activeTokenId: z.string() }),
+  z.object({ type: z.literal('RESHUFFLE'), activeTokenId: z.string() }),
+  z.object({ type: z.literal('ADD_CONSEQUENCE'), activeTokenId: z.string() }),
+  z.object({
+    type: z.literal('REMOVE_CONSEQUENCE'),
+    activeTokenId: z.string(),
+    cardId: z.string(),
+  }),
+  z.object({
+    type: z.literal('ADD_STATUS'),
+    activeTokenId: z.string(),
+    statusType: z.string(),
+    destination: z.string(),
+  }),
+  z.object({
+    type: z.literal('REMOVE_STATUS'),
+    activeTokenId: z.string(),
+    statusType: z.string(),
+  }),
+  z.object({
+    type: z.literal('DISCARD_CARDS'),
+    activeTokenId: z.string(),
+    cardIds: z.array(z.string()),
+  }),
+  z.object({ type: z.literal('CANCEL_PLAN'), activeTokenId: z.string() }),
+  z.object({
+    type: z.literal('RETURN_TO_DECK'),
+    activeTokenId: z.string(),
+    cardIds: z.array(z.string()),
+  }),
+]);
+
+export type BroadcastAction = z.infer<typeof BroadcastActionSchema>;

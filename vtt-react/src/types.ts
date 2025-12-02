@@ -163,14 +163,15 @@ export interface Actor {
   deck: PlayerDeckState;
 }
 
-export interface Token {
-  id: string;
-  actorId: string;
-  x: number;
-  y: number;
-  size: number;
-  // Visual overrides could go here
-}
+export const TokenSchema = z.object({
+  id: z.string(),
+  actorId: z.string(),
+  x: z.number(),
+  y: z.number(),
+  size: z.number(),
+});
+export type Token = z.infer<typeof TokenSchema>;
+// Visual overrides could go here
 
 export interface LogEntry {
   id: string;

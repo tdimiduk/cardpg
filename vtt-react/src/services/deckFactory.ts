@@ -9,55 +9,52 @@ export interface ActorTemplate {
   deck: CoreCard[];
 }
 
-interface RawStats {
-  red: number;
-  yellow: number;
-  blue: number;
-}
+import { z } from 'zod';
+import { CoreCardSchema, ItemCardSchema } from '../types';
 
-interface RawItem {
-  traits?: string[];
-  tags?: string[];
-  [key: string]: unknown;
-}
+// Define Raw Schema for JSON input (looser validation before normalization)
+const RawActorSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  tags: z.array(z.string()).optional(),
+  items: z.array(z.record(z.string(), z.unknown())).optional(),
+  deck: z.array(z.record(z.string(), z.unknown())).optional(),
+});
 
-interface RawCard {
-  tags?: string[];
-  stats?: RawStats;
-  [key: string]: unknown;
-}
-
-interface RawActor {
-  items?: RawItem[];
-  deck?: RawCard[];
-  [key: string]: unknown;
-}
+const RawDataSchema = z.array(RawActorSchema);
 
 // Cast the imported JSON to the correct type and normalize
-const ACTOR_DATA: ActorTemplate[] = (generatedCards as RawActor[]).map((actor) => ({
-  ...actor,
-  id: actor.id as string,
-  name: actor.name as string,
-  tags: (actor.tags as string[]) || [],
+const rawData = RawDataSchema.parse(generatedCards);
+
+const ACTOR_DATA: ActorTemplate[] = rawData.map((actor) => ({
+  id: actor.id,
+  name: actor.name,
+  tags: actor.tags || [],
   items: actor.items
-    ? actor.items.map((item) => ({
-        ...item,
-        type: 'item' as const,
-        id: item.id as string,
-        name: item.name as string,
-        traits: item.traits || [],
-        tags: item.tags || [],
-      }))
+    ? actor.items.map((item) => {
+        const itemObj = {
+          ...item,
+          type: 'item' as const,
+          id: item.id as string,
+          name: item.name as string,
+          traits: (item.traits as string[]) || [],
+          tags: (item.tags as string[]) || [],
+        };
+        return ItemCardSchema.parse(itemObj);
+      })
     : [],
   deck: actor.deck
-    ? actor.deck.map((card) => ({
-        ...card,
-        type: 'core' as const,
-        id: card.id as string,
-        name: card.name as string,
-        stats: card.stats as RawStats,
-        tags: card.tags || [],
-      }))
+    ? actor.deck.map((card) => {
+        const cardObj = {
+          ...card,
+          type: 'core' as const,
+          id: card.id as string,
+          name: card.name as string,
+          stats: card.stats,
+          tags: (card.tags as string[]) || [],
+        };
+        return CoreCardSchema.parse(cardObj);
+      })
     : [],
 }));
 
