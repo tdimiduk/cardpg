@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { Actor, TokenType, PlayerDeckState, Token, CoreCard } from '../../types';
 import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
-import { generateStarterDeck, generateMonsterDeck, generateDeck } from '../../services/deckFactory';
+import { generateDeck } from '../../services/deckFactory';
 import {
   drawCards,
   performDefend,
@@ -58,7 +58,9 @@ export const createActorSlice: StateCreator<
     set((state) => {
       Object.values(state.actors).forEach((actor) => {
         const { deck, equipped } =
-          actor.type === TokenType.MONSTER ? generateMonsterDeck() : generateStarterDeck();
+          actor.type === TokenType.MONSTER
+            ? generateDeck('lizard-warrior')
+            : generateDeck('swashbuckler');
 
         const deckState: PlayerDeckState = {
           drawPile: deck,
@@ -81,9 +83,9 @@ export const createActorSlice: StateCreator<
       if (templateId) {
         deckRes = generateDeck(templateId);
       } else if (actorType === TokenType.MONSTER) {
-        deckRes = generateMonsterDeck();
+        deckRes = generateDeck('lizard-warrior');
       } else {
-        deckRes = generateStarterDeck();
+        deckRes = generateDeck('swashbuckler');
       }
 
       const newActor: Actor = {

@@ -83,13 +83,3 @@ export const generateDeck = (templateId: string): { deck: CoreCard[]; equipped: 
 
   return { deck, equipped };
 };
-
-export const generateStarterDeck = (): { deck: CoreCard[]; equipped: ItemCard[] } => {
-  // Fallback to swashbuckler if called without ID (legacy support)
-  return generateDeck('swashbuckler');
-};
-
-export const generateMonsterDeck = (): { deck: CoreCard[]; equipped: ItemCard[] } => {
-  // Fallback to lizard warrior if called without ID (legacy support)
-  return generateDeck('lizard-warrior');
-};
