@@ -1,0 +1,5 @@
+packages:
+  cardpg-core/cardpg-core.cabal
+  cardpg-server/cardpg-server.cabal
+  tools/codegen/cardpg-codegen.cabal
+  tools/card-compiler/card-compiler.cabal

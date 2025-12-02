@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "eslint src --ext .ts,.tsx",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
+    "gen:types": "cabal run codegen -- $(pwd)/src/generated/types.ts && ts-to-zod src/generated/types.ts src/generated/schemas.ts --skipValidation && prettier --write src/generated/*"
   },
   "dependencies": {
     "immer": "10.0.3",
@@ -39,6 +40,7 @@
     "tailwindcss": "^4.1.17",
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
-    "vitest": "^4.0.14"
+    "vitest": "^4.0.14",
+    "ts-to-zod": "^3.14.0"
   }
 }

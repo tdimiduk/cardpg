@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module CardPG.Core.RuleInstances () where
@@ -11,50 +12,13 @@ import CardPG.Core.TextFmt (TextFmt(..))
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
 import CardPG.Core.Json (cardpgJsonOptions, cardpgJsonDef)
+import Data.Aeson.TH (deriveJSON)
 
 -- Component Instances
 
-instance ToJSON PassiveDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON PassiveDef where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-instance ToJSON AttackDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON AttackDef where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-instance ToJSON DefendDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON DefendDef where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-instance ToJSON GeneralDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON GeneralDef where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-instance ToJSON StanceDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON StanceDef where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-instance ToJSON ChannelDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON ChannelDef where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-instance ToJSON PrimeDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-instance FromJSON PrimeDef where
-  parseJSON = genericParseJSON cardpgJsonDef
+-- Component Instances moved to RuleDefs.hs via deriveJSON
+-- PrimeDef must be here because it depends on Rule (which is defined here)
+$(deriveJSON cardpgJsonDef ''PrimeDef)
 
 -- Rule Instances
 

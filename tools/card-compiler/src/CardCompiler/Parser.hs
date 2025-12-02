@@ -22,7 +22,7 @@ import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..), GeneralDef(..), Actor(..))
-import CardPG.Core.RichText (RichString, mkRichString, Inline(..), TextRunDef(..), ColorValueDef(..), simpleString)
+import CardPG.Core.RichText (RichString, mkRichString, Inline(..), simpleString)
 import CardPG.Core.Types (ResourceType(..), StackPower(..))
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)

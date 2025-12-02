@@ -20,51 +20,13 @@ import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
 import qualified Network.WebSockets as WS
 
--- | A client connection with a unique ID and a name.
-data Client = Client
-  { clientId :: UUID
-  , clientName :: Text
-  , clientConn :: Connection
-  }
+import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..))
 
 -- | The state of the server, mapping client IDs to clients and storing action history.
 data ServerState = ServerState
   { clients :: Map UUID Client
   , actionLog :: [Value]
   }
-
--- | Custom Aeson options for JSON encoding
-customOptions :: Options
-customOptions = defaultOptions
-  { sumEncoding = TaggedObject "tag" "contents"
-  }
-
--- | Messages sent from Client to Server.
-data ClientMessage
-  = Join { name :: Text }
-  | Broadcast { payload :: Value }
-  deriving (Show, Generic)
-
-instance FromJSON ClientMessage where
-  parseJSON = genericParseJSON customOptions
-
-instance ToJSON ClientMessage where
-  toJSON = genericToJSON customOptions
-
--- | Messages sent from Server to Client.
-data ServerMessage
-  = Welcome { yourClientId :: UUID, connectedClients :: [Text], history :: [Value] }
-  | BroadcastMessage { fromClientId :: UUID, payload :: Value }
-  | ClientJoined { newClientName :: Text, newClientId :: UUID }
-  | ClientLeft { leftClientId :: UUID }
-  | ErrorMessage { error :: Text }
-  deriving (Show, Generic)
-
-instance FromJSON ServerMessage where
-  parseJSON = genericParseJSON customOptions
-
-instance ToJSON ServerMessage where
-  toJSON = genericToJSON customOptions
 
 newServerState :: ServerState
 newServerState = ServerState Map.empty []

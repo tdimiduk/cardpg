@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module CardPG.Core.RichText
   ( TextStyle(..)
   , Inline(..)
@@ -9,14 +11,12 @@ module CardPG.Core.RichText
   , StackPower(..)
   , unsafeSimpleString
   , simpleString
-  , TextRunDef(..)
-  , ColorValueDef(..)
   )
   where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, Value(..), object, (.=), (.:), withObject, Options(..))
-import qualified Data.Aeson.KeyMap as KM
-import qualified Data.Aeson.Key as Key
+import Data.Aeson (ToJSON(..), FromJSON(..))
+import Data.Aeson.TH (deriveJSON)
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import qualified Data.List.NonEmpty as NE
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -35,65 +35,60 @@ data TextStyle
   | GameKeyword  -- ^ For "Resolve:", "Setup:", etc.
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON TextStyle where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON TextStyle where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-data TextRunDef = TextRunDef
-  { _style   :: Maybe TextStyle
-  , _content :: NonEmptyText
-  } deriving stock (Eq, Show, Generic)
-
-instance ToJSON TextRunDef where
-  toJSON     = genericToJSON (cardpgJsonOptions "")
-  toEncoding = genericToEncoding (cardpgJsonOptions "")
-instance FromJSON TextRunDef where
-  parseJSON = genericParseJSON (cardpgJsonOptions "")
-
--- | Options that don't unwrap unary records, so we can always add "type" to an object.
-safeInlineOptions :: Options
-safeInlineOptions = (cardpgJsonOptions "") { unwrapUnaryRecords = False }
+$(deriveJSON cardpgJsonDef ''TextStyle)
+$(deriveTypeScript cardpgJsonDef ''TextStyle)
 
 -- | Payload for Color Values (Icons or Dynamic Values)
-data ColorValueDef = ColorValueDef
-  { _value :: StackPower 
-  } deriving stock (Eq, Show, Generic)
-
-instance ToJSON ColorValueDef where
-  toJSON     = genericToJSON safeInlineOptions
-  toEncoding = genericToEncoding safeInlineOptions
-instance FromJSON ColorValueDef where
-  parseJSON = genericParseJSON safeInlineOptions
+-- | We use inline records in Inline now, but keeping these for backward compat if needed
+-- | or we can just remove them. The plan says remove them.
+-- | Let's remove TextRunDef and ColorValueDef and put fields directly in Inline.
 
 -- | The Main Inline Sum Type
--- | No partial fields here; just wrappers around safe types.
+-- | Refactored to use inline records for standard JSON derivation.
 data Inline
-  = TextRun TextRunDef
-  | ColorValue ColorValueDef
+  = TextRun 
+      { _style   :: Maybe TextStyle
+      , _content :: NonEmptyText
+      }
+  | ColorValue 
+      { _value :: StackPower 
+      }
   | Break
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON Inline where
-  toJSON (TextRun d) = addType "textRun" (toJSON d)
-  toJSON (ColorValue d) = addType "colorValue" (toJSON d)
-  toJSON Break = object ["type" .= ("break" :: Text)]
+$(deriveJSON cardpgJsonDef ''Inline)
+$(deriveTypeScript cardpgJsonDef ''Inline)
 
-addType :: Text -> Value -> Value
-addType t (Object o) = Object (KM.insert (Key.fromText "type") (String t) o)
-addType _ v = v
 
-instance FromJSON Inline where
-  parseJSON = withObject "Inline" $ \o -> do
-    t <- o .: "type"
-    case (t :: Text) of
-      "textRun" -> TextRun <$> parseJSON (Object o)
-      "colorValue" -> ColorValue <$> parseJSON (Object o)
-      "break" -> pure Break
-      _ -> fail $ "Unknown Inline type: " ++ show t
 
+-- | Smart constructor that merges adjacent TextRuns with the same style
+-- | and strips leading/trailing whitespace from the entire RichString.
+mkRichString :: [Inline] -> Maybe RichString
+mkRichString inlines = 
+  let merged = mergeAdjacent inlines
+      stripped = stripBoundaryWhitespace merged
+  in RichString <$> NE.nonEmpty stripped
+
+mergeAdjacent :: [Inline] -> [Inline]
+mergeAdjacent (TextRun s1 c1 : TextRun s2 c2 : xs)
+  | s1 == s2 = mergeAdjacent (TextRun s1 (c1 <> c2) : xs)
+mergeAdjacent (x:xs) = x : mergeAdjacent xs
+mergeAdjacent [] = []
+
+stripBoundaryWhitespace :: [Inline] -> [Inline]
+stripBoundaryWhitespace [] = []
+stripBoundaryWhitespace inlines = 
+  let withoutLeading = stripStart inlines
+      withoutTrailing = reverse (stripStart (reverse withoutLeading))
+  in withoutTrailing
+  where
+    stripStart [] = []
+    stripStart (TextRun s c : xs) =
+      let strippedText = T.stripStart (getNonEmptyText c)
+      in case mkNonEmptyText strippedText of
+           Nothing -> stripStart xs
+           Just c' -> TextRun s c' : xs
+    stripStart xs = xs
 
 newtype RichString = RichString { unRichString :: NE.NonEmpty Inline }
   deriving stock (Eq, Show, Generic)
@@ -109,38 +104,11 @@ instance FromJSON RichString where
       Nothing -> fail "RichString cannot be empty or whitespace only"
       Just rs -> pure rs
 
+$(deriveTypeScript cardpgJsonDef ''RichString)
+
 instance Semigroup RichString where
   (RichString a) <> (RichString b) = 
     RichString $ NE.fromList $ mergeAdjacent (NE.toList a ++ NE.toList b)
-
--- | Smart constructor that merges adjacent TextRuns with the same style
--- | and strips leading/trailing whitespace from the entire RichString.
-mkRichString :: [Inline] -> Maybe RichString
-mkRichString inlines = 
-  let merged = mergeAdjacent inlines
-      stripped = stripBoundaryWhitespace merged
-  in RichString <$> NE.nonEmpty stripped
-
-mergeAdjacent :: [Inline] -> [Inline]
-mergeAdjacent (TextRun (TextRunDef s1 c1) : TextRun (TextRunDef s2 c2) : xs)
-  | s1 == s2 = mergeAdjacent (TextRun (TextRunDef s1 (c1 <> c2)) : xs)
-mergeAdjacent (x:xs) = x : mergeAdjacent xs
-mergeAdjacent [] = []
-
-stripBoundaryWhitespace :: [Inline] -> [Inline]
-stripBoundaryWhitespace [] = []
-stripBoundaryWhitespace inlines = 
-  let withoutLeading = stripStart inlines
-      withoutTrailing = reverse (stripStart (reverse withoutLeading))
-  in withoutTrailing
-  where
-    stripStart [] = []
-    stripStart (TextRun (TextRunDef s c) : xs) =
-      let strippedText = T.stripStart (getNonEmptyText c)
-      in case mkNonEmptyText strippedText of
-           Nothing -> stripStart xs
-           Just c' -> TextRun (TextRunDef s c') : xs
-    stripStart xs = xs
 
 -- | 2. The Layout Structure
 -------------------------------------------------------------------------------
@@ -152,12 +120,8 @@ data Block
   | BulletList [RichString] -- ^ <ul><li>...</li></ul>
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON Block where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON Block where
-  parseJSON = genericParseJSON cardpgJsonDef
+$(deriveJSON cardpgJsonDef ''Block)
+$(deriveTypeScript cardpgJsonDef ''Block)
 
 type CardBody = [Block]
 
@@ -165,9 +129,9 @@ type CardBody = [Block]
 -- | Unsafe constructor for literals. 
 -- | Assumes the text is non-empty and does not require stripping/merging.
 unsafeSimpleString :: Text -> RichString
-unsafeSimpleString t = RichString (TextRun (TextRunDef Nothing (unsafeNonEmptyText t)) NE.:| [])
+unsafeSimpleString t = RichString (TextRun Nothing (unsafeNonEmptyText t) NE.:| [])
 
 -- | Safe constructor that attempts to create a RichString from Text.
 -- | Returns Nothing if the text is empty or whitespace-only after stripping.
 simpleString :: Text -> Maybe RichString
-simpleString t = mkRichString [TextRun (TextRunDef Nothing (unsafeNonEmptyText t))]
+simpleString t = mkRichString [TextRun Nothing (unsafeNonEmptyText t)]

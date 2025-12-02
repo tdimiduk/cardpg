@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module CardPG.Core.Card 
   ( module CardPG.Core.RuleDefs
   , Stats(..)
@@ -12,7 +14,8 @@ module CardPG.Core.Card
   , Actor(..)
   ) where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, withObject, (.:), (.:?), (.!=))
+import Data.Aeson (ToJSON(..), FromJSON(..))
+import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NE
@@ -24,16 +27,13 @@ import CardPG.Core.Json
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
 import CardPG.Core.NonEmptyText (NonEmptyText)
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
 
 data Stats = Stats { _red :: Int, _yellow :: Int, _blue :: Int }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON Stats where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON Stats where
-  parseJSON = genericParseJSON cardpgJsonDef
+$(deriveJSON cardpgJsonDef ''Stats)
+$(deriveTypeScript cardpgJsonDef ''Stats)
 
 data CoreCard = CoreCard
   { _id     :: Maybe Text
@@ -55,28 +55,8 @@ data CoreCard = CoreCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON CoreCard where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON CoreCard where
-  parseJSON = withObject "CoreCard" $ \v -> do
-    _id <- v .:? "id"
-    _name <- v .: "name"
-    tags <- v .:? "tags"
-    _stats <- v .: "stats"
-    _cost <- v .:? "cost"
-    rules <- v .:? "rules"
-    _flavor <- v .:? "flavor"
-    pure CoreCard
-      { _id = _id
-      , _name = _name
-      , _tags = tags
-      , _stats = _stats
-      , _cost = _cost
-      , _rules = rules
-      , _flavor = _flavor
-      }
+$(deriveJSON cardpgJsonDef ''CoreCard)
+$(deriveTypeScript cardpgJsonDef ''CoreCard)
 
 -- | Represents Items/Equipment that stay in play (Table Cards).
 data ItemCard = ItemCard
@@ -93,34 +73,8 @@ data ItemCard = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON ItemCard where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON ItemCard where
-  parseJSON = withObject "ItemCard" $ \v -> do
-    _id <- v .:? "id"
-    _name <- v .: "name"
-    tags <- v .:? "tags"
-    _flavor <- v .:? "flavor"
-    _weight <- v .:? "weight"
-    _value <- v .:? "value"
-    traits <- v .:? "traits"
-    _passive <- v .:? "passive"
-    _defense <- v .:? "defense"
-    _resilience <- v .:? "resilience"
-    pure ItemCard
-      { _id = _id
-      , _name = _name
-      , _tags = tags
-      , _flavor = _flavor
-      , _weight = _weight
-      , _value = _value
-      , _traits = traits
-      , _passive = _passive
-      , _defense = _defense
-      , _resilience = _resilience
-      }
+$(deriveJSON cardpgJsonDef ''ItemCard)
+$(deriveTypeScript cardpgJsonDef ''ItemCard)
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCard = NatureCard
@@ -135,30 +89,8 @@ data NatureCard = NatureCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON NatureCard where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON NatureCard where
-  parseJSON = withObject "NatureCard" $ \v -> do
-    _id <- v .:? "id"
-    _name <- v .: "name"
-    tags <- v .:? "tags"
-    _flavor <- v .:? "flavor"
-    traits <- v .:? "traits"
-    _passive <- v .:? "passive"
-    _defense <- v .:? "defense"
-    _resilience <- v .:? "resilience"
-    pure NatureCard
-      { _id = _id
-      , _name = _name
-      , _tags = tags
-      , _flavor = _flavor
-      , _traits = traits
-      , _passive = _passive
-      , _defense = _defense
-      , _resilience = _resilience
-      }
+$(deriveJSON cardpgJsonDef ''NatureCard)
+$(deriveTypeScript cardpgJsonDef ''NatureCard)
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
 data TalentCard = TalentCard
@@ -172,28 +104,8 @@ data TalentCard = TalentCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON TalentCard where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON TalentCard where
-  parseJSON = withObject "TalentCard" $ \v -> do
-    _id <- v .:? "id"
-    _name <- v .: "name"
-    tags <- v .:? "tags"
-    _flavor <- v .:? "flavor"
-    traits <- v .:? "traits"
-    _passive <- v .:? "passive"
-    _defense <- v .:? "defense"
-    pure TalentCard
-      { _id = _id
-      , _name = _name
-      , _tags = tags
-      , _flavor = _flavor
-      , _traits = traits
-      , _passive = _passive
-      , _defense = _defense
-      }
+$(deriveJSON cardpgJsonDef ''TalentCard)
+$(deriveTypeScript cardpgJsonDef ''TalentCard)
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef
@@ -204,12 +116,8 @@ data GeneralActionDef = GeneralActionDef
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON GeneralActionDef where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON GeneralActionDef where
-  parseJSON = genericParseJSON cardpgJsonDef
+$(deriveJSON cardpgJsonDef ''GeneralActionDef)
+$(deriveTypeScript cardpgJsonDef ''GeneralActionDef)
 
 -- | Structured Mechanics for Encounters.
 data EncounterMechanics = EncounterMechanics
@@ -219,20 +127,8 @@ data EncounterMechanics = EncounterMechanics
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON EncounterMechanics where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON EncounterMechanics where
-  parseJSON = withObject "EncounterMechanics" $ \v -> do
-    combat <- v .:? "combat" .!= []
-    challenges <- v .:? "challenges" .!= []
-    effects <- v .:? "effects" .!= []
-    pure EncounterMechanics
-      { _combat = NE.nonEmpty combat
-      , _challenges = NE.nonEmpty challenges
-      , _effects = NE.nonEmpty effects
-      }
+$(deriveJSON cardpgJsonDef ''EncounterMechanics)
+$(deriveTypeScript cardpgJsonDef ''EncounterMechanics)
 
 -- | Represents Narrative Encounters/Events.
 data EncounterCard = EncounterCard
@@ -245,26 +141,8 @@ data EncounterCard = EncounterCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON EncounterCard where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON EncounterCard where
-  parseJSON = withObject "EncounterCard" $ \v -> do
-    _id <- v .:? "id"
-    _name <- v .: "name"
-    tags <- v .:? "tags"
-    _narrative <- v .: "narrative"
-    options <- v .:? "options"
-    _mechanics <- v .:? "mechanics"
-    pure EncounterCard
-      { _id = _id
-      , _name = _name
-      , _tags = tags
-      , _narrative = _narrative
-      , _options = options
-      , _mechanics = _mechanics
-      }
+$(deriveJSON cardpgJsonDef ''EncounterCard)
+$(deriveTypeScript cardpgJsonDef ''EncounterCard)
 
 -- | Represents Status Effects / Consequences.
 data ConsequenceCard = ConsequenceCard
@@ -278,28 +156,8 @@ data ConsequenceCard = ConsequenceCard
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON ConsequenceCard where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON ConsequenceCard where
-  parseJSON = withObject "ConsequenceCard" $ \v -> do
-    _id <- v .:? "id"
-    _name <- v .: "name"
-    tags <- v .:? "tags"
-    _passive <- v .:? "passive"
-    effects <- v .:? "effects"
-    _notes <- v .:? "notes"
-    rules <- v .:? "rules"
-    pure ConsequenceCard
-      { _id = _id
-      , _name = _name
-      , _tags = tags
-      , _passive = _passive
-      , _effects = effects
-      , _notes = _notes
-      , _rules = rules
-      }
+$(deriveJSON cardpgJsonDef ''ConsequenceCard)
+$(deriveTypeScript cardpgJsonDef ''ConsequenceCard)
 
 -- | Represents an Actor (Character/Monster/NPC).
 data Actor = Actor
@@ -310,10 +168,6 @@ data Actor = Actor
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON Actor where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
-
-instance FromJSON Actor where
-  parseJSON = genericParseJSON cardpgJsonDef
+$(deriveJSON cardpgJsonDef ''Actor)
+$(deriveTypeScript cardpgJsonDef ''Actor)
 

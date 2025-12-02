@@ -17,7 +17,7 @@ import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
-import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextRunDef(..), TextStyle(..), ColorValueDef(..))
+import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, mkNonEmptyText, unsafeNonEmptyText)
 
@@ -198,21 +198,24 @@ boldParser = do
   _ <- string "**"
   content <- takeWhilePNonEmpty Nothing (/= '*')
   _ <- string "**"
-  pure $ TextRun $ TextRunDef (Just Bold) content
+  _ <- string "**"
+  pure $ TextRun (Just Bold) content
 
 italicParser :: MParser Inline
 italicParser = do
   _ <- char '*'
   content <- takeWhilePNonEmpty Nothing (/= '*')
   _ <- char '*'
-  pure $ TextRun $ TextRunDef (Just Italic) content
+  _ <- char '*'
+  pure $ TextRun (Just Italic) content
 
 keywordParser :: MParser Inline
 keywordParser = do
   _ <- char '`'
   content <- takeWhilePNonEmpty Nothing (/= '`')
   _ <- char '`'
-  pure $ TextRun $ TextRunDef (Just GameKeyword) content
+  _ <- char '`'
+  pure $ TextRun (Just GameKeyword) content
 
 colorValueParser :: MParser Inline
 colorValueParser = do
@@ -220,18 +223,18 @@ colorValueParser = do
   -- to avoid consuming normal text that starts with '{' but isn't a resource.
   _ <- lookAhead (char '{')
   sp <- stackPowerParser
-  pure $ ColorValue (ColorValueDef sp)
+  pure $ ColorValue sp
 
 textParserStopAt :: [Char] -> MParser Inline
 textParserStopAt stopChars = do
   -- Ensure we don't consume characters that start other parsers or stop chars
   content <- takeWhilePNonEmpty Nothing (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n' && c /= '{' && notElem c stopChars)
-  pure $ TextRun $ TextRunDef Nothing content
+  pure $ TextRun Nothing content
   <|> do
     -- Fallback for '{' if it wasn't a dynamic val
     _ <- char '{'
     let content = unsafeNonEmptyText "{" -- Safe because we know it's "{"
-    pure $ TextRun $ TextRunDef Nothing content
+    pure $ TextRun Nothing content
 
 -- Helpers
 resourceSymbol :: MParser ResourceType

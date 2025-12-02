@@ -1,5 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module CardPG.Core.RuleDefs
@@ -20,6 +22,9 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.RichText (RichString, StackPower)
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
+import Data.Aeson.TH (deriveJSON)
+import CardPG.Core.Json (cardpgJsonDef)
 
 -- | A static modifier.
 -- | Addresses: "+2 to resource values when used in a defense stack"
@@ -81,3 +86,28 @@ data Rule
   | RuleNarrative RichString
   | RulePassive PassiveDef
   deriving stock (Eq, Show, Generic)
+
+$(mconcat <$> traverse (deriveTypeScript cardpgJsonDef) 
+  [ ''PassiveDef
+  , ''AttackDef
+  , ''DefendDef
+  , ''GeneralDef
+  , ''StanceDef
+  , ''ChannelDef
+  , ''PrimeDef
+  , ''Rule
+  ])
+
+-- | Note:
+-- | 1. 'Rule' is excluded because it has a custom manual instance in RuleInstances.hs
+-- |    to support DSL parsing (e.g. "Attack {Red}...").
+-- | 2. 'PrimeDef' is excluded because it depends on 'Rule', creating a cycle if defined here.
+-- |    Its instance is derived in RuleInstances.hs instead.
+$(mconcat <$> traverse (deriveJSON cardpgJsonDef)
+  [ ''PassiveDef
+  , ''AttackDef
+  , ''DefendDef
+  , ''GeneralDef
+  , ''StanceDef
+  , ''ChannelDef
+  ])

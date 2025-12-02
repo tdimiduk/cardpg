@@ -7,7 +7,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.List.NonEmpty as NE
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
-import CardPG.Core.RichText (RichString, unRichString, Inline(..), TextRunDef(..), ColorValueDef(..), StackPower(..), TextStyle(..))
+import CardPG.Core.RichText (RichString, unRichString, Inline(..), StackPower(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
 
 import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
@@ -69,10 +69,10 @@ richToString :: RichString -> Text
 richToString = T.concat . map inlineToString . NE.toList . unRichString
 
 inlineToString :: Inline -> Text
-inlineToString (TextRun (TextRunDef (Just Bold) content)) = "**" <> getNonEmptyText content <> "**"
-inlineToString (TextRun (TextRunDef (Just Italic) content)) = "*" <> getNonEmptyText content <> "*"
-inlineToString (TextRun (TextRunDef (Just GameKeyword) content)) = "`" <> getNonEmptyText content <> "`"
-inlineToString (TextRun (TextRunDef _ content)) = getNonEmptyText content
+inlineToString (TextRun (Just Bold) content) = "**" <> getNonEmptyText content <> "**"
+inlineToString (TextRun (Just Italic) content) = "*" <> getNonEmptyText content <> "*"
+inlineToString (TextRun (Just GameKeyword) content) = "`" <> getNonEmptyText content <> "`"
+inlineToString (TextRun _ content) = getNonEmptyText content
 
-inlineToString (ColorValue (ColorValueDef power)) = prettyPower power
+inlineToString (ColorValue power) = prettyPower power
 inlineToString Break = "\n"

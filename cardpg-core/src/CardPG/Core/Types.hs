@@ -1,18 +1,21 @@
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module CardPG.Core.Types
   ( ResourceType(..)
   , StackPower(..)
   )
 where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON)
+import Data.Aeson (ToJSON(..), FromJSON(..))
+import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json (cardpgJsonDef)
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
 
 data ResourceType = Red | Yellow | Blue
   deriving stock (Eq,Show, Generic)
-  deriving anyclass (ToJSON, FromJSON)
 
 data StackPower = StackPower
   { _source      :: ResourceType
@@ -21,9 +24,8 @@ data StackPower = StackPower
   }
   deriving stock (Eq, Show, Generic)
 
-instance ToJSON StackPower where
-  toJSON = genericToJSON cardpgJsonDef
-  toEncoding = genericToEncoding cardpgJsonDef
+$(deriveJSON cardpgJsonDef ''ResourceType)
+$(deriveJSON cardpgJsonDef ''StackPower)
 
-instance FromJSON StackPower where
-  parseJSON = genericParseJSON cardpgJsonDef
+$(deriveTypeScript cardpgJsonDef ''ResourceType)
+$(deriveTypeScript cardpgJsonDef ''StackPower)
