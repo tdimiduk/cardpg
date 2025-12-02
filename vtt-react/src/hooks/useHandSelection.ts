@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { CoreCard, ResourceType, Rule } from '../types';
+import { RESOURCE_TYPES } from '../constants';
 
 export interface UseHandSelectionProps {
   hand: CoreCard[];
@@ -66,7 +67,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
         card.name,
       );
     } else if (rule.type === 'general') {
-      const source = rule.data.power?.source || 'Red';
+      const source = rule.data.power?.source || RESOURCE_TYPES.RED;
       const modifier = rule.data.power?.modifier || 0;
       onPlayStack(selectedCards, source, modifier, undefined, card.name);
     }

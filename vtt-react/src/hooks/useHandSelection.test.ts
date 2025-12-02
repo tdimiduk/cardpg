@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useHandSelection } from './useHandSelection';
 import { CoreCard } from '../types';
+import { RESOURCE_TYPES } from '../constants';
 
 describe('useHandSelection', () => {
   const mockCard1: CoreCard = {
@@ -14,8 +15,8 @@ describe('useHandSelection', () => {
       {
         type: 'attack',
         data: {
-          power: { source: 'Red', modifier: 2 },
-          resistedBy: 'Blue',
+          power: { source: RESOURCE_TYPES.RED, modifier: 2 },
+          resistedBy: RESOURCE_TYPES.BLUE,
         },
       },
     ],
@@ -84,12 +85,12 @@ describe('useHandSelection', () => {
     });
 
     act(() => {
-      result.current.handleImprovise('Blue');
+      result.current.handleImprovise(RESOURCE_TYPES.BLUE);
     });
 
     expect(mockOnPlayStack).toHaveBeenCalledWith(
       [mockCard2],
-      'Blue',
+      RESOURCE_TYPES.BLUE,
       0,
       undefined,
       'Improvised Action',
@@ -110,7 +111,13 @@ describe('useHandSelection', () => {
       result.current.handleSpecificAction(mockCard1);
     });
 
-    expect(mockOnPlayStack).toHaveBeenCalledWith([mockCard1], 'Red', 2, 'Blue', 'Strike');
+    expect(mockOnPlayStack).toHaveBeenCalledWith(
+      [mockCard1],
+      RESOURCE_TYPES.RED,
+      2,
+      RESOURCE_TYPES.BLUE,
+      'Strike',
+    );
     expect(result.current.selectedIds.size).toBe(0);
   });
 });

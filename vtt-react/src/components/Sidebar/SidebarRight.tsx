@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LogEntry, GamePhase } from '../../types';
+import { RESOURCE_TYPES } from '../../constants';
 import { Send, Bot, Square, Circle, Diamond, ArrowRight, Play, Rewind } from 'lucide-react';
 
 interface SidebarRightProps {
@@ -120,13 +121,13 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
               {log.actionResult && (
                 <div className="mt-2 flex items-center justify-between bg-black/40 p-2 rounded border border-white/10">
                   <div className="flex items-center gap-2">
-                    {log.actionResult.color === 'Red' && (
+                    {log.actionResult.color === RESOURCE_TYPES.RED && (
                       <Square className="text-red-500 fill-current" size={16} />
                     )}
-                    {log.actionResult.color === 'Yellow' && (
+                    {log.actionResult.color === RESOURCE_TYPES.YELLOW && (
                       <Circle className="text-yellow-500 fill-current" size={16} />
                     )}
-                    {log.actionResult.color === 'Blue' && (
+                    {log.actionResult.color === RESOURCE_TYPES.BLUE && (
                       <Diamond className="text-blue-500 fill-current" size={16} />
                     )}
                     <span className="font-bold text-lg text-white">{log.actionResult.total}</span>
@@ -135,13 +136,13 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
                     <div className="flex items-center gap-1 text-slate-400 text-xs">
                       <ArrowRight size={12} />
                       <span>VS</span>
-                      {log.actionResult.targetColor === 'Red' && (
+                      {log.actionResult.targetColor === RESOURCE_TYPES.RED && (
                         <Square className="text-red-800 fill-red-900" size={12} />
                       )}
-                      {log.actionResult.targetColor === 'Yellow' && (
+                      {log.actionResult.targetColor === RESOURCE_TYPES.YELLOW && (
                         <Circle className="text-yellow-800 fill-yellow-900" size={12} />
                       )}
-                      {log.actionResult.targetColor === 'Blue' && (
+                      {log.actionResult.targetColor === RESOURCE_TYPES.BLUE && (
                         <Diamond className="text-blue-800 fill-blue-900" size={12} />
                       )}
                     </div>

@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
 import { GamePhase, PlannedAction, CoreCard, ResourceType, Token, Actor } from '../../types';
+import { RESOURCE_TYPES } from '../../constants';
 import { calculateStackStrength, drawCards } from '../../services/ruleService';
 import { resolveMovement } from '../../services/resolutionService';
 import { LogSlice, createLog } from './logSlice';
@@ -100,7 +101,7 @@ export const createGameSlice: StateCreator<
         actorId: tokenId,
         actorName: actor?.name || 'Unknown',
         cards: [],
-        strengthColor: 'Red',
+        strengthColor: RESOURCE_TYPES.RED,
         modifier: 0,
         actionName: 'Pass',
         move: state.plannedActions[tokenId]?.move,
@@ -174,7 +175,7 @@ export const createGameSlice: StateCreator<
             actorId: t.id,
             actorName: actor.name,
             cards: [],
-            strengthColor: 'Red',
+            strengthColor: RESOURCE_TYPES.RED,
             modifier: 0,
             actionName: 'Pass',
           };

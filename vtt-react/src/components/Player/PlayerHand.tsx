@@ -14,6 +14,7 @@ import {
   RotateCcw,
   ArrowUp,
 } from 'lucide-react';
+import { RESOURCE_TYPES } from '../../constants';
 
 interface PlayerHandProps {
   hand: CoreCard[];
@@ -36,11 +37,11 @@ interface PlayerHandProps {
 // Helper Component for Action Button Icons
 const ColorIcon = ({ color }: { color: ResourceType }) => {
   switch (color) {
-    case 'Red':
+    case RESOURCE_TYPES.RED:
       return <Square size={14} className="inline fill-current" />;
-    case 'Yellow':
+    case RESOURCE_TYPES.YELLOW:
       return <Circle size={14} className="inline fill-current" />;
-    case 'Blue':
+    case RESOURCE_TYPES.BLUE:
       return <Diamond size={14} className="inline fill-current" />;
   }
 };
@@ -199,9 +200,9 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                             <>
                               <span
                                 className={
-                                  rule.data.power.source === 'Red'
+                                  rule.data.power.source === RESOURCE_TYPES.RED
                                     ? 'text-red-400'
-                                    : rule.data.power.source === 'Yellow'
+                                    : rule.data.power.source === RESOURCE_TYPES.YELLOW
                                       ? 'text-yellow-400'
                                       : 'text-blue-400'
                                 }
@@ -213,9 +214,9 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                                   <span className="text-slate-400 text-[9px]">VS</span>
                                   <span
                                     className={
-                                      rule.data.resistedBy === 'Red'
+                                      rule.data.resistedBy === RESOURCE_TYPES.RED
                                         ? 'text-red-400'
-                                        : rule.data.resistedBy === 'Yellow'
+                                        : rule.data.resistedBy === RESOURCE_TYPES.YELLOW
                                           ? 'text-yellow-400'
                                           : 'text-blue-400'
                                     }
@@ -234,9 +235,9 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                             <>
                               <span
                                 className={
-                                  rule.data.power.source === 'Red'
+                                  rule.data.power.source === RESOURCE_TYPES.RED
                                     ? 'text-red-400'
-                                    : rule.data.power.source === 'Yellow'
+                                    : rule.data.power.source === RESOURCE_TYPES.YELLOW
                                       ? 'text-yellow-400'
                                       : 'text-blue-400'
                                 }
@@ -268,21 +269,21 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
             {/* Improvise options */}
             <div className="flex gap-2">
               <button
-                onClick={() => handleImprovise('Red')}
+                onClick={() => handleImprovise(RESOURCE_TYPES.RED)}
                 className="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/80 text-red-200 px-3 py-2 rounded font-bold text-xs border border-red-900/50 transition-colors"
               >
                 <Square size={14} fill="currentColor" />{' '}
                 {phase === 'planning' ? 'Plan Force' : 'Force'}
               </button>
               <button
-                onClick={() => handleImprovise('Yellow')}
+                onClick={() => handleImprovise(RESOURCE_TYPES.YELLOW)}
                 className="flex items-center gap-2 bg-yellow-950/40 hover:bg-yellow-900/80 text-yellow-200 px-3 py-2 rounded font-bold text-xs border border-yellow-900/50 transition-colors"
               >
                 <Circle size={14} fill="currentColor" />{' '}
                 {phase === 'planning' ? 'Plan Speed' : 'Speed'}
               </button>
               <button
-                onClick={() => handleImprovise('Blue')}
+                onClick={() => handleImprovise(RESOURCE_TYPES.BLUE)}
                 className="flex items-center gap-2 bg-blue-950/40 hover:bg-blue-900/80 text-blue-200 px-3 py-2 rounded font-bold text-xs border border-blue-900/50 transition-colors"
               >
                 <Diamond size={14} fill="currentColor" />{' '}

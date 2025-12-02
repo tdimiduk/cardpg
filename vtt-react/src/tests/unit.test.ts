@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest';
 import { drawCards, calculateStackStrength, performDefend } from '../services/ruleService';
 import { T } from '../data/cardData';
 import { PlayerDeckState, CoreCard, ItemCard, RichString } from '../types';
+import { RESOURCE_TYPES } from '../constants';
 
 // Helper for tests
 const createCard = (
@@ -88,13 +89,13 @@ describe('Rule Service', () => {
   test('Strength Calculation', () => {
     // Stack: CardA (2 Red) + CardB (3 Red)
     const stack = [cardA, cardB];
-    const strRed = calculateStackStrength(stack, 'Red', 0);
+    const strRed = calculateStackStrength(stack, RESOURCE_TYPES.RED, 0);
     expect(strRed).toBe(5); // 2 + 3 = 5
 
-    const strMod = calculateStackStrength(stack, 'Red', 2);
+    const strMod = calculateStackStrength(stack, RESOURCE_TYPES.RED, 2);
     expect(strMod).toBe(7); // 5 + 2 = 7
 
-    const strBlue = calculateStackStrength([fatigueCard], 'Blue', 0);
+    const strBlue = calculateStackStrength([fatigueCard], RESOURCE_TYPES.BLUE, 0);
     expect(strBlue).toBe(0); // 0
   });
 
@@ -109,7 +110,7 @@ describe('Rule Service', () => {
     };
 
     // Defending vs Target 10. Current flipeed (2). Next card (3). Total should be 5.
-    const defRes = performDefend(deck3, 10, 'Red');
+    const defRes = performDefend(deck3, 10, RESOURCE_TYPES.RED);
     expect(defRes.total).toBe(5);
     expect(defRes.newState.flippedPile.length).toBe(2);
     expect(defRes.newState.drawPile.length).toBe(0);
@@ -135,7 +136,7 @@ describe('Rule Service', () => {
     // Simulate calculating strength for a revealed plan (e.g., Attack Red: Blue + 2) using 2 cards
     // CardA(Blue:2) + CardB(Blue:3) + Modifier(2)
     const planStack = [cardA, cardB];
-    const planStrength = calculateStackStrength(planStack, 'Blue', 2);
+    const planStrength = calculateStackStrength(planStack, RESOURCE_TYPES.BLUE, 2);
     expect(planStrength).toBe(2 + 3 + 2);
   });
 });

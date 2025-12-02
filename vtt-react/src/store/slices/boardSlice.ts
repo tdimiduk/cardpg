@@ -1,12 +1,6 @@
 import { StateCreator } from 'zustand';
 import { Token, PlannedAction, Actor } from '../../types';
-import { INITIAL_TOKENS } from '../../constants'; // Circular dependency for types? No, just interface usage if needed, but here we just need types.
-// Actually, updateTokenPosition needs to check phase, so we might need access to GameSlice state if we were combining them in one object,
-// but with slices, `set` and `get` work on the whole store.
-// Let's define the combined store type for the creator if needed, or just use generic.
-
-// We need to know the full store type to access other slices in `set` / `get` if we use them.
-// For now, let's define BoardSlice independently and assume we can access phase via `get().phase` if we type it correctly.
+import { INITIAL_TOKENS, RESOURCE_TYPES } from '../../constants';
 
 export interface BoardSlice {
   tokens: Token[];
@@ -51,7 +45,7 @@ export const createBoardSlice: StateCreator<
             actorId: token.id,
             actorName: actor?.name || 'Unknown',
             cards: [],
-            strengthColor: 'Red',
+            strengthColor: RESOURCE_TYPES.RED,
             modifier: 0,
             actionName: undefined,
           };

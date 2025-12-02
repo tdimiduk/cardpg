@@ -1,153 +1,53 @@
 import { z } from 'zod';
+import * as Gen from './generated/types';
+import * as GenSchemas from './generated/schemas';
 
 // --- Core Enums ---
+export const ResourceTypeSchema = GenSchemas.resourceTypeSchema;
+export type ResourceType = Gen.ResourceType;
 
-export const ResourceTypeSchema = z.enum(['Red', 'Yellow', 'Blue']);
-export type ResourceType = z.infer<typeof ResourceTypeSchema>;
-
-export const StackPowerSchema = z.object({
-  source: ResourceTypeSchema,
-  modifier: z.number(),
-  conditional: z.string().optional().nullable(),
-});
-export type StackPower = z.infer<typeof StackPowerSchema>;
+export const StackPowerSchema = GenSchemas.stackPowerSchema;
+export type StackPower = Gen.StackPower;
 
 // --- Rich Text ---
+export const TextStyleSchema = GenSchemas.textStyleSchema;
+export type TextStyle = Gen.TextStyle;
 
-export const TextStyleSchema = z.enum(['Bold', 'Italic', 'GameKeyword']);
-export type TextStyle = z.infer<typeof TextStyleSchema>;
+export const InlineSchema = GenSchemas.inlineSchema;
+export type Inline = Gen.Inline;
 
-export const TextRunSchema = z.object({
-  type: z.literal('textRun'),
-  content: z.string(),
-  style: TextStyleSchema.optional().nullable(),
-});
-
-export const ColorValueSchema = z.object({
-  type: z.literal('colorValue'),
-  value: StackPowerSchema,
-});
-
-export const BreakSchema = z.object({
-  type: z.literal('break'),
-});
-
-export const InlineSchema = z.discriminatedUnion('type', [
-  TextRunSchema,
-  ColorValueSchema,
-  BreakSchema,
-]);
-export type Inline = z.infer<typeof InlineSchema>;
-
-export const RichStringSchema = z.array(InlineSchema);
-export type RichString = z.infer<typeof RichStringSchema>;
+export const RichStringSchema = GenSchemas.richStringSchema;
+export type RichString = Gen.RichString;
 
 // --- Rules ---
-
-export const AttackDefSchema = z.object({
-  power: StackPowerSchema,
-  resistedBy: ResourceTypeSchema,
-  effect: RichStringSchema.optional().nullable(),
-});
-
-export const DefendDefSchema = z.object({
-  power: StackPowerSchema,
-  resists: z.array(ResourceTypeSchema),
-  effect: RichStringSchema.optional().nullable(),
-});
-
-export const GeneralDefSchema = z.object({
-  power: StackPowerSchema.optional().nullable(),
-  cost: RichStringSchema.optional().nullable(),
-  effect: RichStringSchema,
-});
-
-export const StanceDefSchema = z.object({
-  duration: z.string(),
-});
-
-export const ChannelDefSchema = z.object({
-  duration: z.string(),
-});
-
-// Recursive definition for Prime (reaction is a Rule)
-// Recursive definition for Prime (reaction is a Rule)
-export type PrimeDef = {
-  trigger: string;
-  reaction: Rule;
-};
-
-export const PrimeDefSchema: z.ZodType<PrimeDef> = z.object({
-  trigger: z.string(),
-  reaction: z.lazy(() => RuleSchema),
-});
-
-export const PassiveDefSchema = z.object({
-  bonus: StackPowerSchema,
-  condition: z.string().optional().nullable(),
-});
-
-export type Rule =
-  | { type: 'attack'; data: z.infer<typeof AttackDefSchema> }
-  | { type: 'defend'; data: z.infer<typeof DefendDefSchema> }
-  | { type: 'general'; data: z.infer<typeof GeneralDefSchema> }
-  | { type: 'stance'; data: z.infer<typeof StanceDefSchema> }
-  | { type: 'channel'; data: z.infer<typeof ChannelDefSchema> }
-  | { type: 'prime'; data: PrimeDef }
-  | { type: 'narrative'; data: RichString }
-  | { type: 'passive'; data: z.infer<typeof PassiveDefSchema> };
-
-export const RuleSchema: z.ZodType<Rule> = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('attack'), data: AttackDefSchema }),
-  z.object({ type: z.literal('defend'), data: DefendDefSchema }),
-  z.object({ type: z.literal('general'), data: GeneralDefSchema }),
-  z.object({ type: z.literal('stance'), data: StanceDefSchema }),
-  z.object({ type: z.literal('channel'), data: ChannelDefSchema }),
-  z.object({ type: z.literal('prime'), data: PrimeDefSchema }),
-  z.object({ type: z.literal('narrative'), data: RichStringSchema }),
-  z.object({ type: z.literal('passive'), data: PassiveDefSchema }),
-]);
+export type Rule = Gen.Rule;
+export const RuleSchema = GenSchemas.ruleSchema;
 
 // --- Card ---
+export const StatsSchema = GenSchemas.statsSchema;
+export type Stats = Gen.Stats;
 
-export const StatsSchema = z.object({
-  red: z.number(),
-  yellow: z.number(),
-  blue: z.number(),
-});
-export type Stats = z.infer<typeof StatsSchema>;
+// Extend generated schemas to include the discriminator 'type'
+export const CoreCardSchema = GenSchemas.coreCardSchema.and(
+  z.object({
+    type: z.literal('core'),
+    id: z.string(),
+  }),
+);
+export type CoreCard = Gen.CoreCard & { type: 'core'; id: string };
 
-export const CoreCardSchema = z.object({
-  type: z.literal('core'),
-  id: z.string(),
-  name: z.string(),
-  tags: z.array(z.string()).optional(),
-  stats: StatsSchema,
-  cost: z.number().optional().nullable(),
-  rules: z.array(RuleSchema).optional(),
-  flavor: RichStringSchema.optional().nullable(),
-});
-export type CoreCard = z.infer<typeof CoreCardSchema>;
+export const ItemCardSchema = GenSchemas.itemCardSchema.and(
+  z.object({
+    type: z.literal('item'),
+    id: z.string(),
+  }),
+);
+export type ItemCard = Gen.ItemCard & { type: 'item'; id: string };
 
-export const ItemCardSchema = z.object({
-  type: z.literal('item'),
-  id: z.string(),
-  name: z.string(),
-  tags: z.array(z.string()).optional(),
-  flavor: RichStringSchema.optional().nullable(),
-  weight: z.number().optional().nullable(),
-  value: z.number().optional().nullable(),
-  traits: z.array(z.string()).optional(),
-  passive: z.string().optional().nullable(),
-  defense: z.number().optional().nullable(),
-  resilience: z.number().optional().nullable(),
-});
-export type ItemCard = z.infer<typeof ItemCardSchema>;
+export const CardSchema = z.union([CoreCardSchema, ItemCardSchema]);
+export type Card = CoreCard | ItemCard;
 
-export const CardSchema = z.discriminatedUnion('type', [CoreCardSchema, ItemCardSchema]);
-export type Card = z.infer<typeof CardSchema>;
-
-// --- Legacy / Game State Types (Preserved but updated where possible) ---
+// --- Legacy / Game State Types ---
 
 export enum TokenType {
   PC = 'PC',
@@ -155,6 +55,7 @@ export enum TokenType {
   MONSTER = 'MONSTER',
 }
 
+// Frontend Actor State
 export interface Actor {
   id: string;
   name: string;
@@ -162,6 +63,10 @@ export interface Actor {
   color: string;
   deck: PlayerDeckState;
 }
+
+// Generated Actor Data (renamed to avoid conflict)
+export type ActorData = Gen.Actor;
+export const ActorDataSchema = GenSchemas.actorSchema;
 
 export const TokenSchema = z.object({
   id: z.string(),
@@ -171,7 +76,6 @@ export const TokenSchema = z.object({
   size: z.number(),
 });
 export type Token = z.infer<typeof TokenSchema>;
-// Visual overrides could go here
 
 export interface LogEntry {
   id: string;
@@ -199,12 +103,10 @@ export interface PlayerDeckState {
   drawPile: CoreCard[];
   hand: CoreCard[];
   discardPile: CoreCard[];
-  flippedPile: CoreCard[]; // Cards flipped for defense
-  equipped: Card[]; // Cards on the table (Items/Characters)
-  consequences: CoreCard[]; // Condition cards on the table (Wounds/Injuries)
+  flippedPile: CoreCard[];
+  equipped: Card[];
+  consequences: CoreCard[];
 }
-
-// --- Phase & Planning ---
 
 export type GamePhase = 'planning' | 'resolution';
 
@@ -221,9 +123,3 @@ export interface PlannedAction {
     y: number;
   };
 }
-
-// Re-export Card as CoreCard for compatibility during refactor,
-// or explicitly use CoreCard in new code.
-// Re-export Card as CoreCard for compatibility during refactor,
-// or explicitly use CoreCard in new code.
-// export type Card = CoreCard; // Removed, using the discriminated union above

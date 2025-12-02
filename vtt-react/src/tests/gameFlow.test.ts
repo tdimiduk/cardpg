@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../store/gameStore';
-import { INITIAL_ACTORS, INITIAL_TOKENS } from '../constants';
+import { INITIAL_ACTORS, INITIAL_TOKENS, RESOURCE_TYPES } from '../constants';
 import { CoreCard, Rule, LogEntry } from '../types';
 
 describe('Game Flow Scenarios', () => {
@@ -32,7 +32,7 @@ describe('Game Flow Scenarios', () => {
     );
 
     if (attackCard) {
-      store.commitPlan(tokenId, [attackCard], 'Red', 0);
+      store.commitPlan(tokenId, [attackCard], RESOURCE_TYPES.RED, 0);
 
       const plan = useGameStore.getState().plannedActions[tokenId];
       expect(plan.move).toEqual({ x: 100, y: 100 });
@@ -56,7 +56,7 @@ describe('Game Flow Scenarios', () => {
 
     if (attackCard) {
       // Plan Attack
-      store.commitPlan(attackerId, [attackCard], 'Red', 0);
+      store.commitPlan(attackerId, [attackCard], RESOURCE_TYPES.RED, 0);
 
       // Resolve
       store.revealAndResolve();

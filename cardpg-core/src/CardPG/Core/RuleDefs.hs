@@ -24,7 +24,7 @@ import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.RichText (RichString, StackPower)
 import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Aeson.TH (deriveJSON)
-import CardPG.Core.Json (cardpgJsonDef)
+import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 
 -- | A static modifier.
 -- | Addresses: "+2 to resource values when used in a defense stack"
@@ -87,7 +87,7 @@ data Rule
   | RulePassive PassiveDef
   deriving stock (Eq, Show, Generic)
 
-$(mconcat <$> traverse (deriveTypeScript cardpgJsonDef) 
+$(mconcat <$> traverse (deriveTypeScript (cardpgJsonOptions "Rule")) 
   [ ''PassiveDef
   , ''AttackDef
   , ''DefendDef

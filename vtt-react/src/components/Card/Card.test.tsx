@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CardComponent } from './Card';
 import { CoreCard, ItemCard } from '../../types';
+import { RESOURCE_TYPES } from '../../constants';
 
 describe('CardComponent', () => {
   const mockCoreCard: CoreCard = {
@@ -15,13 +16,13 @@ describe('CardComponent', () => {
       {
         type: 'attack',
         data: {
-          power: { source: 'Red', modifier: 0 },
-          resistedBy: 'Red',
+          power: { source: RESOURCE_TYPES.RED, modifier: 0 },
+          resistedBy: RESOURCE_TYPES.RED,
           effect: [{ type: 'textRun', content: 'Hit them', style: undefined }],
         },
       },
     ],
-    flavor: [{ type: 'textRun', content: 'A simple strike.', style: 'Italic' }],
+    flavor: [{ type: 'textRun', content: 'A simple strike.', style: 'italic' }],
   };
 
   const mockItemCard: ItemCard = {
@@ -33,7 +34,7 @@ describe('CardComponent', () => {
     value: 10,
     defense: 1,
     resilience: 0,
-    flavor: [{ type: 'textRun', content: 'A sharp sword.', style: 'Italic' }],
+    flavor: [{ type: 'textRun', content: 'A sharp sword.', style: 'italic' }],
   };
 
   it('renders CoreCard details', () => {

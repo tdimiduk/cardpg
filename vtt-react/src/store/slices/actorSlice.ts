@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { Actor, TokenType, PlayerDeckState, Token, CoreCard } from '../../types';
-import { INITIAL_ACTORS } from '../../constants';
+import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
 import { generateStarterDeck, generateMonsterDeck, generateDeck } from '../../services/deckFactory';
 import {
   drawCards,
@@ -152,7 +152,7 @@ export const createActorSlice: StateCreator<
     set((state) => {
       const actor = getActor(state, tokenId);
       if (!actor) return;
-      const { newState, flipped } = performDefend(actor.deck, 999, 'Red');
+      const { newState, flipped } = performDefend(actor.deck, 999, RESOURCE_TYPES.RED);
       actor.deck = newState;
       if (flipped.length > 0) {
         state.logs.push(

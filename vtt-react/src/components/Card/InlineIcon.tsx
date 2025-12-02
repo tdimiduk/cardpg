@@ -1,10 +1,11 @@
 import React from 'react';
 import { Square, Circle, Diamond } from 'lucide-react';
 import { ResourceType } from '../../types';
+import { RESOURCE_TYPES } from '../../constants';
 
 export const InlineIcon: React.FC<{ color: ResourceType }> = ({ color }) => {
   switch (color) {
-    case 'Red':
+    case RESOURCE_TYPES.RED:
       return (
         <Square
           size={12}
@@ -12,7 +13,7 @@ export const InlineIcon: React.FC<{ color: ResourceType }> = ({ color }) => {
           strokeWidth={3}
         />
       );
-    case 'Yellow':
+    case RESOURCE_TYPES.YELLOW:
       return (
         <Circle
           size={12}
@@ -20,7 +21,7 @@ export const InlineIcon: React.FC<{ color: ResourceType }> = ({ color }) => {
           strokeWidth={3}
         />
       );
-    case 'Blue':
+    case RESOURCE_TYPES.BLUE:
       return (
         <Diamond
           size={12}

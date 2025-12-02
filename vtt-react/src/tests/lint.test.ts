@@ -21,12 +21,12 @@ function scanDir(dir: string) {
     const stat = fs.statSync(fullPath);
 
     if (stat.isDirectory()) {
-      if (file !== 'node_modules' && file !== 'dist' && file !== '.git') {
+      if (file !== 'node_modules' && file !== 'dist' && file !== '.git' && file !== 'generated') {
         scanDir(fullPath);
       }
     } else if (file.endsWith('.ts') || file.endsWith('.tsx')) {
       // Skip this test file itself
-      if (!fullPath.endsWith('lint.test.ts')) {
+      if (!fullPath.endsWith('lint.test.ts') && file !== 'constants.ts') {
         scanFile(fullPath);
       }
     }

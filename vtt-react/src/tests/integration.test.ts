@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../store/gameStore';
-import { INITIAL_ACTORS, INITIAL_TOKENS } from '../constants';
+import { INITIAL_ACTORS, INITIAL_TOKENS, RESOURCE_TYPES } from '../constants';
 
 describe('Game Store Integration', () => {
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('Game Store Integration', () => {
     const cardToPlay = actor.deck.hand[0];
 
     // Commit Plan
-    store.commitPlan(tokenId, [cardToPlay], 'Red', 0);
+    store.commitPlan(tokenId, [cardToPlay], RESOURCE_TYPES.RED, 0);
 
     expect(useGameStore.getState().plannedActions[tokenId]).toBeDefined();
     expect(useGameStore.getState().plannedActions[tokenId].cards[0].id).toBe(cardToPlay.id);

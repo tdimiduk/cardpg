@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { useGameAction } from './useGameAction';
 import { useGameStore } from '../store/gameStore';
 import { BroadcastAction } from '../types/sync';
+import { RESOURCE_TYPES } from '../constants';
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest';
 
 // Mock dependencies
@@ -61,7 +62,7 @@ describe('useGameAction', () => {
       type: 'PLAY_STACK',
       activeTokenId: 'token-1',
       selectedCards: [],
-      strengthColor: 'Red',
+      strengthColor: RESOURCE_TYPES.RED,
       modifier: 0,
       phase: 'planning',
     };
@@ -69,7 +70,14 @@ describe('useGameAction', () => {
     const { result } = renderHook(() => useGameAction());
     result.current._applyAction(payload);
 
-    expect(mockCommitPlan).toHaveBeenCalledWith('token-1', [], 'Red', 0, undefined, undefined);
+    expect(mockCommitPlan).toHaveBeenCalledWith(
+      'token-1',
+      [],
+      RESOURCE_TYPES.RED,
+      0,
+      undefined,
+      undefined,
+    );
   });
 
   it('should handle DISCARD_CARDS action', () => {

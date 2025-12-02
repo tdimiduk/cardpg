@@ -26,11 +26,11 @@ export const RichTextRenderer = ({ content }: { content?: Inline[] | null }) => 
             <span
               key={index}
               className={
-                part.style === 'Bold'
+                part.style === 'bold'
                   ? 'font-bold'
-                  : part.style === 'Italic'
+                  : part.style === 'italic'
                     ? 'italic'
-                    : part.style === 'GameKeyword'
+                    : part.style === 'gameKeyword'
                       ? 'font-mono text-xs bg-slate-200 px-0.5 rounded'
                       : ''
               }

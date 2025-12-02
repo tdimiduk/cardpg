@@ -98,7 +98,7 @@ def main():
 
     # 3. Export VTT JSON
     print("Exporting VTT JSON...")
-    vtt_output = ROOT_DIR / "vtt-react/data/generated_cards.json"
+    vtt_output = ROOT_DIR / "vtt-react/src/data/generated_cards.json"
     
     # Collect all YAML files from PC and Monster directories
     yaml_files = list(PC_DIR.glob("*.yaml")) + list(MONSTER_DIR.glob("*.yaml"))
