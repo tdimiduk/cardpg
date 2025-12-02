@@ -35,7 +35,7 @@ describe('RichTextRenderer', () => {
   it('renders icons/colors', () => {
     const content: Inline[] = [
       { type: 'textRun', content: 'Attack with ', style: undefined },
-      { type: 'colorValue', value: { source: 'Red', modifier: 0 } }
+      { type: 'colorValue', value: { source: 'Red', modifier: 0 } },
     ];
     const { container } = render(<RichTextRenderer content={content} />);
     expect(screen.getByText('Attack with')).toBeInTheDocument();
@@ -47,17 +47,13 @@ describe('RichTextRenderer', () => {
   });
 
   it('renders modifiers', () => {
-    const content: Inline[] = [
-      { type: 'colorValue', value: { source: 'Blue', modifier: 2 } }
-    ];
+    const content: Inline[] = [{ type: 'colorValue', value: { source: 'Blue', modifier: 2 } }];
     render(<RichTextRenderer content={content} />);
     expect(screen.getByText('+ 2')).toBeInTheDocument();
   });
 
   it('renders negative modifiers', () => {
-    const content: Inline[] = [
-      { type: 'colorValue', value: { source: 'Yellow', modifier: -1 } }
-    ];
+    const content: Inline[] = [{ type: 'colorValue', value: { source: 'Yellow', modifier: -1 } }];
     render(<RichTextRenderer content={content} />);
     expect(screen.getByText('- 1')).toBeInTheDocument();
   });

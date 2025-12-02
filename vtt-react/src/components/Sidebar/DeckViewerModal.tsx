@@ -9,11 +9,7 @@ interface DeckViewerModalProps {
   cards: CoreCard[];
 }
 
-export const DeckViewerModal: React.FC<DeckViewerModalProps> = ({
-  isOpen,
-  onClose,
-  cards,
-}) => {
+export const DeckViewerModal: React.FC<DeckViewerModalProps> = ({ isOpen, onClose, cards }) => {
   if (!isOpen) return null;
 
   return (
@@ -27,8 +23,7 @@ export const DeckViewerModal: React.FC<DeckViewerModalProps> = ({
       >
         <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-950">
           <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            <Layers className="text-indigo-500" /> Deck Viewer ({cards.length}{' '}
-            cards)
+            <Layers className="text-indigo-500" /> Deck Viewer ({cards.length} cards)
           </h2>
           <button
             onClick={onClose}

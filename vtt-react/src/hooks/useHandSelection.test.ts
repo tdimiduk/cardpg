@@ -34,7 +34,7 @@ describe('useHandSelection', () => {
 
   it('initializes with empty selection', () => {
     const { result } = renderHook(() =>
-      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack })
+      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack }),
     );
     expect(result.current.selectedIds.size).toBe(0);
     expect(result.current.selectedCards).toHaveLength(0);
@@ -42,7 +42,7 @@ describe('useHandSelection', () => {
 
   it('toggles selection', () => {
     const { result } = renderHook(() =>
-      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack })
+      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack }),
     );
 
     act(() => {
@@ -62,7 +62,7 @@ describe('useHandSelection', () => {
 
   it('identifies action cards correctly', () => {
     const { result } = renderHook(() =>
-      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack })
+      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack }),
     );
 
     act(() => {
@@ -76,7 +76,7 @@ describe('useHandSelection', () => {
 
   it('handles improvise action', () => {
     const { result } = renderHook(() =>
-      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack })
+      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack }),
     );
 
     act(() => {
@@ -92,14 +92,14 @@ describe('useHandSelection', () => {
       'Blue',
       0,
       undefined,
-      'Improvised Action'
+      'Improvised Action',
     );
     expect(result.current.selectedIds.size).toBe(0); // Should clear selection
   });
 
   it('handles specific action', () => {
     const { result } = renderHook(() =>
-      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack })
+      useHandSelection({ hand: mockHand, onPlayStack: mockOnPlayStack }),
     );
 
     act(() => {
@@ -110,13 +110,7 @@ describe('useHandSelection', () => {
       result.current.handleSpecificAction(mockCard1);
     });
 
-    expect(mockOnPlayStack).toHaveBeenCalledWith(
-      [mockCard1],
-      'Red',
-      2,
-      'Blue',
-      'Strike'
-    );
+    expect(mockOnPlayStack).toHaveBeenCalledWith([mockCard1], 'Red', 2, 'Blue', 'Strike');
     expect(result.current.selectedIds.size).toBe(0);
   });
 });

@@ -5,6 +5,8 @@ import { SidebarLeft } from './components/Sidebar/SidebarLeft';
 import { SidebarRight } from './components/Sidebar/SidebarRight';
 import { PlayerHand } from './components/Player/PlayerHand';
 import { useGameStore } from './store/gameStore';
+import { useWebSocket } from './contexts/WebSocketContext';
+import { useGameSync } from './hooks/useGameSync';
 
 const App: React.FC = () => {
   // --- Store Hooks ---
@@ -20,7 +22,7 @@ const App: React.FC = () => {
   const setActiveToken = useGameStore((state) => state.setActiveToken);
   const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
   const addLog = useGameStore((state) => state.addLog);
-  
+
   // Actor Actions
   const addActor = useGameStore((state) => state.addActor);
   const removeActor = useGameStore((state) => state.removeActor);
@@ -76,6 +78,11 @@ const App: React.FC = () => {
   const userHasPlannedAction = isActionPlanned(activeAction);
   const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
 
+  // --- WebSocket Integration ---
+  // --- WebSocket Integration ---
+  const { sendMessage, clientId } = useWebSocket();
+  useGameSync();
+
   // --- Handlers ---
 
   const handlePlayStack = (
@@ -87,15 +94,23 @@ const App: React.FC = () => {
   ) => {
     if (!activeTokenId) return;
 
-    if (phase === 'planning') {
-      commitPlan(
+    // Send to server
+    sendMessage({
+      tag: 'Broadcast',
+      payload: {
+        type: 'PLAY_STACK',
         activeTokenId,
         selectedCards,
         strengthColor,
         modifier,
-        actionName,
         targetDefense,
-      );
+        actionName,
+        phase,
+      },
+    });
+
+    if (phase === 'planning') {
+      commitPlan(activeTokenId, selectedCards, strengthColor, modifier, actionName, targetDefense);
     } else {
       playImmediate(
         activeTokenId,
@@ -110,6 +125,15 @@ const App: React.FC = () => {
 
   const handlePass = () => {
     if (!activeTokenId || phase !== 'planning') return;
+
+    sendMessage({
+      tag: 'Broadcast',
+      payload: {
+        type: 'PASS',
+        activeTokenId,
+      },
+    });
+
     passTurn(activeTokenId);
   };
 
@@ -117,29 +141,62 @@ const App: React.FC = () => {
     <div className="flex h-screen w-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">
       <SidebarLeft
         deckState={currentDeck}
-        onDraw={(count) => activeTokenId && drawCards(activeTokenId, count)}
-        onDefend={() => activeTokenId && defend(activeTokenId)}
-        onClearDefense={() => activeTokenId && clearDefense(activeTokenId)}
-        onReshuffle={() => activeTokenId && reshuffle(activeTokenId)}
+        onDraw={(count) => {
+          if (!activeTokenId) return;
+          sendMessage({ tag: 'Broadcast', payload: { type: 'DRAW_CARDS', activeTokenId, count } });
+          drawCards(activeTokenId, count);
+        }}
+        onDefend={() => {
+          if (!activeTokenId) return;
+          sendMessage({ tag: 'Broadcast', payload: { type: 'DEFEND', activeTokenId } });
+          defend(activeTokenId);
+        }}
+        onClearDefense={() => {
+          if (!activeTokenId) return;
+          sendMessage({ tag: 'Broadcast', payload: { type: 'CLEAR_DEFENSE', activeTokenId } });
+          clearDefense(activeTokenId);
+        }}
+        onReshuffle={() => {
+          if (!activeTokenId) return;
+          sendMessage({ tag: 'Broadcast', payload: { type: 'RESHUFFLE', activeTokenId } });
+          reshuffle(activeTokenId);
+        }}
         onSelectToken={(id) => setActiveToken(id)}
-        onAddConsequence={() => activeTokenId && addConsequence(activeTokenId)}
-        onRemoveConsequence={(cardId) =>
-          activeTokenId && removeConsequence(activeTokenId, cardId)
-        }
-        onAddStatusCard={(statusType, destination) =>
-          activeTokenId && addStatus(activeTokenId, statusType, destination)
-        }
-        onRemoveStatusCard={(statusType) =>
-          activeTokenId && removeStatus(activeTokenId, statusType)
-        }
+        onAddConsequence={() => {
+          if (!activeTokenId) return;
+          sendMessage({ tag: 'Broadcast', payload: { type: 'ADD_CONSEQUENCE', activeTokenId } });
+          addConsequence(activeTokenId);
+        }}
+        onRemoveConsequence={(cardId) => {
+          if (!activeTokenId) return;
+          sendMessage({
+            tag: 'Broadcast',
+            payload: { type: 'REMOVE_CONSEQUENCE', activeTokenId, cardId },
+          });
+          removeConsequence(activeTokenId, cardId);
+        }}
+        onAddStatusCard={(statusType, destination) => {
+          if (!activeTokenId) return;
+          sendMessage({
+            tag: 'Broadcast',
+            payload: { type: 'ADD_STATUS', activeTokenId, statusType, destination },
+          });
+          addStatus(activeTokenId, statusType, destination);
+        }}
+        onRemoveStatusCard={(statusType) => {
+          if (!activeTokenId) return;
+          sendMessage({
+            tag: 'Broadcast',
+            payload: { type: 'REMOVE_STATUS', activeTokenId, statusType },
+          });
+          removeStatus(activeTokenId, statusType);
+        }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
         activeTokenId={activeTokenId || ''}
         hasPlannedAction={userHasPlannedAction}
         actors={actors}
-        onAddActor={(name, type, color, templateId) =>
-          addActor(name, type, color, templateId)
-        }
+        onAddActor={(name, type, color, templateId) => addActor(name, type, color, templateId)}
         onRemoveActor={(actorId) => removeActor(actorId)}
       />
 
@@ -157,7 +214,10 @@ const App: React.FC = () => {
 
         <MapBoard
           tokens={tokens}
-          onUpdateToken={(token) => updateTokenPosition(token)}
+          onUpdateToken={(token) => {
+            sendMessage({ tag: 'Broadcast', payload: { type: 'MOVE_TOKEN', token } });
+            updateTokenPosition(token);
+          }}
           activeTokenId={activeTokenId}
           setActiveTokenId={(id) => setActiveToken(id)}
           plannedActions={plannedActions}
@@ -171,12 +231,20 @@ const App: React.FC = () => {
             hand={currentDeck.hand}
             onPlayStack={handlePlayStack}
             onDiscard={(cards) =>
-              activeTokenId && discardCards(activeTokenId, cards.map((c) => c.id))
+              activeTokenId &&
+              discardCards(
+                activeTokenId,
+                cards.map((c) => c.id),
+              )
             }
             onPass={handlePass}
             onCancelPlan={() => activeTokenId && cancelPlan(activeTokenId)}
             onReturnToDeck={(cards) =>
-              activeTokenId && returnToDeck(activeTokenId, cards.map((c) => c.id))
+              activeTokenId &&
+              returnToDeck(
+                activeTokenId,
+                cards.map((c) => c.id),
+              )
             }
             phase={phase}
             hasPlanned={userHasPlannedAction}
@@ -189,8 +257,14 @@ const App: React.FC = () => {
         logs={logs}
         onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
-        onRevealActions={() => revealAndResolve()}
-        onEndRound={() => endRound()}
+        onRevealActions={() => {
+          sendMessage({ tag: 'Broadcast', payload: { type: 'REVEAL' } });
+          revealAndResolve();
+        }}
+        onEndRound={() => {
+          sendMessage({ tag: 'Broadcast', payload: { type: 'END_ROUND' } });
+          endRound();
+        }}
         readyCount={readyCount}
         totalCount={tokens.length}
       />

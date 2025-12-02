@@ -95,7 +95,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
           onRemoveActor={onRemoveActor}
           onAddActor={handleOpenSelector}
         />
-        
+
         {/* Actor Selector Modal for Empty State */}
         <ActorSelectorModal
           isOpen={showActorSelector}
@@ -116,7 +116,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     resilienceStat,
     impact,
     calculatedConsequences,
-    currentSeverity
+    currentSeverity,
   } = stats;
 
   return (
@@ -153,10 +153,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
           onViewDeck={() => setShowDeckModal(true)}
         />
 
-        <StatusManager
-          onAddStatusCard={onAddStatusCard}
-          onRemoveStatusCard={onRemoveStatusCard}
-        />
+        <StatusManager onAddStatusCard={onAddStatusCard} onRemoveStatusCard={onRemoveStatusCard} />
 
         <DefenseStats
           defenseTotal={defenseTotal}

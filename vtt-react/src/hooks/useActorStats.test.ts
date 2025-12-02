@@ -12,11 +12,15 @@ describe('useActorStats', () => {
       { id: '1', type: 'core', name: 'Flip1', stats: { red: 1, yellow: 0, blue: 0 } } as CoreCard,
       { id: '2', type: 'core', name: 'Flip2', stats: { red: 2, yellow: 1, blue: 0 } } as CoreCard,
     ],
-    equipped: [
-      { id: '3', type: 'item', name: 'Shield', defense: 2, resilience: 1 } as ItemCard,
-    ],
+    equipped: [{ id: '3', type: 'item', name: 'Shield', defense: 2, resilience: 1 } as ItemCard],
     consequences: [
-      { id: '4', type: 'core', name: 'Wound', severity: 1, stats: { red: 0, yellow: 0, blue: 0 } } as unknown as CoreCard,
+      {
+        id: '4',
+        type: 'core',
+        name: 'Wound',
+        severity: 1,
+        stats: { red: 0, yellow: 0, blue: 0 },
+      } as unknown as CoreCard,
     ],
   };
 

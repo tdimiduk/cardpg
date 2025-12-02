@@ -33,7 +33,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
 
   const selectedCards = useMemo(
     () => hand.filter((c) => selectedIds.has(c.id)),
-    [hand, selectedIds]
+    [hand, selectedIds],
   );
 
   // Filter for cards that are strictly Actions (have a cost and a rule)
@@ -43,11 +43,8 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
   };
 
   const actionCards = useMemo(
-    () =>
-      selectedCards.filter(
-        (c) => c.cost !== undefined && c.cost !== null && getActionRule(c)
-      ),
-    [selectedCards]
+    () => selectedCards.filter((c) => c.cost !== undefined && c.cost !== null && getActionRule(c)),
+    [selectedCards],
   );
 
   const handleImprovise = (color: ResourceType) => {
@@ -66,7 +63,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
         rule.data.power.source,
         rule.data.power.modifier,
         rule.data.resistedBy,
-        card.name
+        card.name,
       );
     } else if (rule.type === 'general') {
       const source = rule.data.power?.source || 'Red';

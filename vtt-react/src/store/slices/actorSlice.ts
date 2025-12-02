@@ -19,7 +19,7 @@ export interface ActorSlice {
   initializeGame: () => void;
   addActor: (name: string, type: TokenType, color: string, templateId?: string) => void;
   removeActor: (actorId: string) => void;
-  
+
   // Deck Actions
   drawCards: (tokenId: string, count: number) => void;
   defend: (tokenId: string) => void;
@@ -27,7 +27,7 @@ export interface ActorSlice {
   reshuffle: (tokenId: string) => void;
   discardCards: (tokenId: string, cardIds: string[]) => void;
   returnToDeck: (tokenId: string, cardIds: string[]) => void;
-  
+
   // Status & Consequences
   addConsequence: (tokenId: string) => void;
   removeConsequence: (tokenId: string, cardId: string) => void;
@@ -128,9 +128,9 @@ export const createActorSlice: StateCreator<
       // Remove actor
       delete state.actors[actorId];
       // Remove plans (handled in board/game slice usually, but we can do it here if we have access)
-       // Ideally we'd call a cleanup action, but direct mutation is fine in combined store
-       // We'll leave plan cleanup for now or add it if we can access plannedActions
-       state.logs.push(createLog(`Removed actor ${actorId}`, 'GM'));
+      // Ideally we'd call a cleanup action, but direct mutation is fine in combined store
+      // We'll leave plan cleanup for now or add it if we can access plannedActions
+      state.logs.push(createLog(`Removed actor ${actorId}`, 'GM'));
     }),
 
   drawCards: (tokenId, count) =>
@@ -155,7 +155,9 @@ export const createActorSlice: StateCreator<
       const { newState, flipped } = performDefend(actor.deck, 999, 'Red');
       actor.deck = newState;
       if (flipped.length > 0) {
-        state.logs.push(createLog(`${actor.name} flipped for Defense: ${flipped[0].name}`, 'Player'));
+        state.logs.push(
+          createLog(`${actor.name} flipped for Defense: ${flipped[0].name}`, 'Player'),
+        );
       }
     }),
 
@@ -184,7 +186,9 @@ export const createActorSlice: StateCreator<
       const cardsToDiscard = actor.deck.hand.filter((c) => cardIds.includes(c.id));
       actor.deck.hand = actor.deck.hand.filter((c) => !cardIds.includes(c.id));
       actor.deck.discardPile.push(...cardsToDiscard);
-      state.logs.push(createLog(`${actor.name} discarded ${cardsToDiscard.length} card(s).`, 'System'));
+      state.logs.push(
+        createLog(`${actor.name} discarded ${cardsToDiscard.length} card(s).`, 'System'),
+      );
     }),
 
   returnToDeck: (tokenId, cardIds) =>
@@ -194,7 +198,9 @@ export const createActorSlice: StateCreator<
       const cards = actor.deck.hand.filter((c) => cardIds.includes(c.id));
       actor.deck.hand = actor.deck.hand.filter((c) => !cardIds.includes(c.id));
       actor.deck.drawPile.push(...cards);
-      state.logs.push(createLog(`${actor.name} returned ${cards.length} card(s) to top of deck.`, 'System'));
+      state.logs.push(
+        createLog(`${actor.name} returned ${cards.length} card(s) to top of deck.`, 'System'),
+      );
     }),
 
   addConsequence: (tokenId) =>
@@ -223,7 +229,12 @@ export const createActorSlice: StateCreator<
       };
 
       actor.deck.consequences.push(newConsequence as CoreCard);
-      state.logs.push(createLog(`${actor.name} takes a Level ${targetSeverity} Consequence: ${selection.name}.`, 'System'));
+      state.logs.push(
+        createLog(
+          `${actor.name} takes a Level ${targetSeverity} Consequence: ${selection.name}.`,
+          'System',
+        ),
+      );
     }),
 
   removeConsequence: (tokenId, cardId) =>
@@ -233,7 +244,9 @@ export const createActorSlice: StateCreator<
       const target = actor.deck.consequences.find((c) => c.id === cardId);
       actor.deck.consequences = actor.deck.consequences.filter((c) => c.id !== cardId);
       if (target) {
-        state.logs.push(createLog(`${actor.name} removed consequence: "${target.name}".`, 'System'));
+        state.logs.push(
+          createLog(`${actor.name} removed consequence: "${target.name}".`, 'System'),
+        );
       }
     }),
 
@@ -250,7 +263,12 @@ export const createActorSlice: StateCreator<
       else if (destination === 'draw') actor.deck.drawPile.push(newCard);
       else actor.deck.hand.push(newCard); // Added hand case
 
-      const label = destination === 'draw' ? 'top of deck' : destination === 'discard' ? 'discard pile' : 'hand';
+      const label =
+        destination === 'draw'
+          ? 'top of deck'
+          : destination === 'discard'
+            ? 'discard pile'
+            : 'hand';
       state.logs.push(createLog(`${actor.name} added ${newCard.name} to ${label}.`, 'System'));
     }),
 

@@ -8,7 +8,7 @@ import { ActorSlice } from './actorSlice';
 export interface GameSlice {
   phase: GamePhase;
   plannedActions: Record<string, PlannedAction>;
-  
+
   commitPlan: (
     tokenId: string,
     cards: CoreCard[],
@@ -127,19 +127,21 @@ export const createGameSlice: StateCreator<
           const strength = calculateStackStrength(cards, plan.strengthColor, plan.modifier);
           const cardNames = cards.map((c) => c.name).join(' + ');
 
-          state.logs.push(createLog(
-            plan.actionName
-              ? `${plan.actorName} resolves ${plan.actionName} (${cardNames})`
-              : `${plan.actorName} resolves Action (${cardNames})`,
-            'System',
-            'action',
-            {
-              total: strength,
-              color: plan.strengthColor,
-              targetColor: plan.targetDefense,
-              label: 'Strength',
-            },
-          ));
+          state.logs.push(
+            createLog(
+              plan.actionName
+                ? `${plan.actorName} resolves ${plan.actionName} (${cardNames})`
+                : `${plan.actorName} resolves Action (${cardNames})`,
+              'System',
+              'action',
+              {
+                total: strength,
+                color: plan.strengthColor,
+                targetColor: plan.targetDefense,
+                label: 'Strength',
+              },
+            ),
+          );
 
           // Move to discard
           if (actor) {
@@ -152,10 +154,7 @@ export const createGameSlice: StateCreator<
   endRound: () =>
     set((state) => {
       // 1. Resolve Movement
-      const { movedTokens, logs: moveLogs } = resolveMovement(
-        state.tokens,
-        state.plannedActions,
-      );
+      const { movedTokens, logs: moveLogs } = resolveMovement(state.tokens, state.plannedActions);
       state.tokens = movedTokens;
       if (moveLogs.length > 0) {
         state.logs.push(createLog(moveLogs.join(' '), 'System'));
@@ -197,7 +196,9 @@ export const createGameSlice: StateCreator<
         if (fatigueTriggered) fatigueMsg += ` Fatigue for ${actor.name}.`;
       });
 
-      state.logs.push(createLog(`Round Ended. ${activeCount} active actors drew cards.${fatigueMsg}`, 'GM'));
+      state.logs.push(
+        createLog(`Round Ended. ${activeCount} active actors drew cards.${fatigueMsg}`, 'GM'),
+      );
     }),
 
   playImmediate: (tokenId, cards, strengthColor, modifier, actionName, targetDefense) =>
@@ -216,18 +217,20 @@ export const createGameSlice: StateCreator<
       const strength = calculateStackStrength(cards, strengthColor, modifier);
       const cardNames = cards.map((c) => c.name).join(' + ');
 
-      state.logs.push(createLog(
-        actionName
-          ? `${actor.name} used ${actionName} (${cardNames})`
-          : `${actor.name} performed Action (${cardNames})`,
-        'Player',
-        'action',
-        {
-          total: strength,
-          color: strengthColor,
-          targetColor: targetDefense,
-          label: 'Strength',
-        },
-      ));
+      state.logs.push(
+        createLog(
+          actionName
+            ? `${actor.name} used ${actionName} (${cardNames})`
+            : `${actor.name} performed Action (${cardNames})`,
+          'Player',
+          'action',
+          {
+            total: strength,
+            color: strengthColor,
+            targetColor: targetDefense,
+            label: 'Strength',
+          },
+        ),
+      );
     }),
 });

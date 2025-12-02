@@ -56,11 +56,7 @@ export const ActorSelectorModal: React.FC<ActorSelectorModalProps> = ({
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${selectorType === TokenType.MONSTER ? 'bg-emerald-900/20 border-emerald-700 text-emerald-400' : 'bg-indigo-900/20 border-indigo-700 text-indigo-400'}`}
                 >
-                  {selectorType === TokenType.MONSTER ? (
-                    <Skull size={20} />
-                  ) : (
-                    <User size={20} />
-                  )}
+                  {selectorType === TokenType.MONSTER ? <Skull size={20} /> : <User size={20} />}
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-slate-200 group-hover:text-white text-lg">

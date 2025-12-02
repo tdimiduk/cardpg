@@ -12,16 +12,16 @@ describe('CardComponent', () => {
     stats: { red: 2, yellow: 0, blue: 0 },
     cost: 1,
     rules: [
-      { 
-        type: 'attack', 
-        data: { 
-          power: { source: 'Red', modifier: 0 }, 
+      {
+        type: 'attack',
+        data: {
+          power: { source: 'Red', modifier: 0 },
           resistedBy: 'Red',
-          effect: [{ type: 'textRun', content: 'Hit them', style: undefined }] 
-        } 
-      }
+          effect: [{ type: 'textRun', content: 'Hit them', style: undefined }],
+        },
+      },
     ],
-    flavor: [{ type: 'textRun', content: 'A simple strike.', style: 'Italic' }]
+    flavor: [{ type: 'textRun', content: 'A simple strike.', style: 'Italic' }],
   };
 
   const mockItemCard: ItemCard = {
@@ -33,7 +33,7 @@ describe('CardComponent', () => {
     value: 10,
     defense: 1,
     resilience: 0,
-    flavor: [{ type: 'textRun', content: 'A sharp sword.', style: 'Italic' }]
+    flavor: [{ type: 'textRun', content: 'A sharp sword.', style: 'Italic' }],
   };
 
   it('renders CoreCard details', () => {

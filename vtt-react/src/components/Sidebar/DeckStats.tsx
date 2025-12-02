@@ -50,9 +50,7 @@ export const DeckStats: React.FC<DeckStatsProps> = ({
         </div>
         <div className="bg-slate-900 p-2 rounded border border-slate-800 flex flex-col items-center">
           <span className="text-xs text-slate-500">Discard</span>
-          <span className="text-xl font-bold text-slate-200">
-            {deckState.discardPile.length}
-          </span>
+          <span className="text-xl font-bold text-slate-200">{deckState.discardPile.length}</span>
           <span className="text-[8px] text-slate-600 mt-1 h-5"></span>
         </div>
       </div>
