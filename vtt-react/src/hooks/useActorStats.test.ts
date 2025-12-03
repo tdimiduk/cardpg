@@ -9,10 +9,22 @@ describe('useActorStats', () => {
     hand: [],
     discardPile: [],
     flippedPile: [
-      { id: '1', type: 'coreCard', name: 'Flip1', stats: { red: 1, yellow: 0, blue: 0 } } as CoreCard,
-      { id: '2', type: 'coreCard', name: 'Flip2', stats: { red: 2, yellow: 1, blue: 0 } } as CoreCard,
+      {
+        id: '1',
+        type: 'coreCard',
+        name: 'Flip1',
+        stats: { red: 1, yellow: 0, blue: 0 },
+      } as CoreCard,
+      {
+        id: '2',
+        type: 'coreCard',
+        name: 'Flip2',
+        stats: { red: 2, yellow: 1, blue: 0 },
+      } as CoreCard,
     ],
-    equipped: [{ id: '3', type: 'itemCard', name: 'Shield', defense: 2, resilience: 1 } as ItemCard],
+    equipped: [
+      { id: '3', type: 'itemCard', name: 'Shield', defense: 2, resilience: 1 } as ItemCard,
+    ],
     consequences: [
       {
         id: '4',

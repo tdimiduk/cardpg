@@ -1,7 +1,7 @@
 /scratch
 /data/cards/raw
-/vtt-react/data/generated_cards.json  
 /vtt-react/src/generated/*.ts
+vtt-react/src/data/generated_cards.json
 
 # --- Haskell 
 .attr-cache

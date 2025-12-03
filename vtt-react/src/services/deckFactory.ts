@@ -16,9 +16,9 @@ import { CoreCardSchema, ItemCardSchema } from '../types';
 const RawActorSchema = z.object({
   id: z.string(),
   name: z.string(),
-  tags: z.array(z.string()).optional(),
-  items: z.array(z.record(z.string(), z.unknown())).optional(),
-  deck: z.array(z.record(z.string(), z.unknown())).optional(),
+  tags: z.array(z.string()).optional().default([]),
+  items: z.array(z.record(z.string(), z.unknown())).optional().default([]),
+  deck: z.array(z.record(z.string(), z.unknown())).optional().default([]),
 });
 
 const RawDataSchema = z.array(RawActorSchema);
@@ -29,33 +29,26 @@ const rawData = RawDataSchema.parse(generatedCards);
 const ACTOR_DATA: ActorTemplate[] = rawData.map((actor) => ({
   id: actor.id,
   name: actor.name,
-  tags: actor.tags || [],
-  items: actor.items
-    ? actor.items.map((item) => {
-        const itemObj = {
-          ...item,
-          type: item.type as 'itemCard',
-          id: item.id as string,
-          name: item.name as string,
-          traits: (item.traits as string[]) || [],
-          tags: (item.tags as string[]) || [],
-        };
-        return ItemCardSchema.parse(itemObj);
-      })
-    : [],
-  deck: actor.deck
-    ? actor.deck.map((card) => {
-        const cardObj = {
-          ...card,
-          type: card.type as 'coreCard',
-          id: card.id as string,
-          name: card.name as string,
-          stats: card.stats,
-          tags: (card.tags as string[]) || [],
-        };
-        return CoreCardSchema.parse(cardObj);
-      })
-    : [],
+  tags: actor.tags,
+  items: actor.items.map((item) => {
+    // Ensure discriminators and defaults are present before parsing
+    const itemObj = {
+      ...item,
+      type: 'itemCard',
+      tags: item.tags || [],
+      traits: item.traits || [],
+    };
+    return ItemCardSchema.parse(itemObj);
+  }),
+  deck: actor.deck.map((card) => {
+    // Ensure discriminators and defaults are present before parsing
+    const cardObj = {
+      ...card,
+      type: 'coreCard',
+      tags: card.tags || [],
+    };
+    return CoreCardSchema.parse(cardObj);
+  }),
 }));
 
 export const getActorTemplates = (type?: 'pc' | 'monster'): ActorTemplate[] => {

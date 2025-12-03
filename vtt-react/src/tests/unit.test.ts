@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
-import { drawCards, calculateStackStrength, performDefend } from '../services/ruleService';
-import { T } from '../data/cardData';
-import { PlayerDeckState, CoreCard, ItemCard, RichString } from '../types';
+import { calculateStackStrength, drawCards, performDefend } from '../services/ruleService';
+import { CoreCard, PlayerDeckState, ItemCard, RichString } from '../types';
+import { T } from '../utils';
 import { RESOURCE_TYPES } from '../constants';
 
 // Helper for tests
