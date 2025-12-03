@@ -15,9 +15,9 @@ module CardPG.Core.Card
   ) where
 
 import Data.Aeson.TH (deriveJSON)
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)
-import qualified Data.List.NonEmpty as NE
 import GHC.Generics (Generic)
 
 import CardPG.Core.Types (ResourceType(..))
@@ -26,7 +26,6 @@ import CardPG.Core.Json
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import Data.Aeson.TypeScript.TH (deriveTypeScript)
 
 data Stats = Stats { _red :: Int, _yellow :: Int, _blue :: Int }
   deriving stock (Eq, Show, Generic)

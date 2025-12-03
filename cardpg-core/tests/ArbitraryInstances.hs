@@ -14,15 +14,13 @@ import Test.Tasty.QuickCheck
 import Generic.Random
 import qualified Data.Text as T
 import Data.Text (Text)
-import qualified Data.Text as T
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.Card
 import CardPG.Core.Types
 import CardPG.Core.RichText
-import CardPG.Core.DSL.Printer (richToString)
-import CardPG.Core.NonEmptyText (NonEmptyText(..), mkNonEmptyText, unsafeNonEmptyText, getNonEmptyText)
+import CardPG.Core.NonEmptyText (NonEmptyText(..), unsafeNonEmptyText, getNonEmptyText)
 
 
 -- Arbitrary Instances

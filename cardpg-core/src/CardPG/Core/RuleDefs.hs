@@ -16,17 +16,14 @@ module CardPG.Core.RuleDefs
   ) where
 
 
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
+import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
 
-
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.RichText (RichString, StackPower)
-import Data.Aeson.TypeScript.TH (deriveTypeScript)
-import Data.Aeson.TH (deriveJSON)
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
-
-import Data.Text (Text)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 
 -- | A static modifier.
