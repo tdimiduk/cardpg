@@ -23,7 +23,7 @@ const BaseCard: React.FC<{
       onClick={onClick}
       className={`
         relative bg-slate-200 text-slate-900 rounded-lg shadow-xl overflow-hidden select-none
-        transition-all duration-200 border-2 cursor-pointer
+        transition-all duration-200 border-2 cursor-pointer z-0
         ${selected ? 'border-yellow-500 -translate-y-4 z-10 ring-2 ring-yellow-300' : 'border-slate-400 hover:-translate-y-2'}
       `}
       style={{
