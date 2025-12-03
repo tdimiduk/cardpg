@@ -1,18 +1,72 @@
 export interface ConsequenceDefinition {
+  id: string;
   name: string;
-  text: string;
-  severity: number;
+  type: 'Consequence';
+  tags: string[];
+  passive?: string;
+  effects?: string[];
+  notes?: string;
 }
 
 export const CONSEQUENCE_DEFINITIONS: ConsequenceDefinition[] = [
-  { name: 'Minor Scratch', text: 'A shallow cut.', severity: 1 },
-  { name: 'Bruised', text: 'Painful to the touch.', severity: 1 },
-  { name: 'Winded', text: 'Hard to catch breath.', severity: 1 },
-  { name: 'Deep Cut', text: 'Bleeding profusely.', severity: 2 },
-  { name: 'Concussed', text: 'Vision is blurry.', severity: 2 },
-  { name: 'Sprained Ankle', text: 'Movement is difficult.', severity: 2 },
-  { name: 'Broken Bone', text: 'Something snapped.', severity: 3 },
-  { name: 'Internal Bleeding', text: 'Feeling cold.', severity: 3 },
-  { name: 'Unconscious', text: 'Blacked out.', severity: 3 },
-  { name: 'Taken Out', text: 'Defeated.', severity: 4 },
+  // --- Severity 1 (Acceptable Costs) ---
+  {
+    id: 'cons-sev1-strain-attack',
+    name: 'Strained Offense',
+    type: 'Consequence',
+    tags: ['Severity_1', 'Combat', 'Condition', 'Red'],
+    passive: 'You must discard a card to perform an Attack Action.',
+    notes: 'Models minor muscle strain or poor positioning requiring extra effort.',
+  },
+  {
+    id: 'cons-sev1-strain-defense',
+    name: 'Rattled Guard',
+    type: 'Consequence',
+    tags: ['Severity_1', 'Combat', 'Condition', 'Yellow'],
+    passive: 'Impact of Defense +1.',
+    notes: 'Increases the risk from future attacks',
+  },
+  {
+    id: 'cons-sev1-minor-trauma',
+    name: 'Minor Trauma',
+    type: 'Consequence',
+    tags: ['Severity_1', 'General', 'Status_Effect'],
+    effects: ['Put 2 Injury cards on top of your deck.'],
+    notes: 'Immediate deck pollution.',
+  },
+  // --- Severity 2 (The Turning Point) ---
+  {
+    id: 'cons-sev2-fumbled-strike',
+    name: 'Compromised Leverage',
+    type: 'Consequence',
+    tags: ['Severity_2', 'Combat', 'Condition', 'Red'],
+    passive: 'When calculating Attack Strength, treat the highest value card in your stack as 0.',
+    notes: 'A severe penalty to offense.',
+  },
+  {
+    id: 'cons-sev2-guard-breach',
+    name: 'Breached Guard',
+    type: 'Consequence',
+    tags: ['Severity_2', 'Combat', 'Condition', 'Blue'],
+    passive: 'When calculating Defense Strength, treat the highest value card in your stack as 0.',
+    notes: 'A severe penalty to defense.',
+  },
+  {
+    id: 'cons-sev2-major-trauma',
+    name: 'Major Trauma',
+    type: 'Consequence',
+    tags: ['Severity_2', 'General', 'Status_Effect'],
+    effects: [
+      'Expend 4 cards from hand and replace them with Injury cards. For each card you cannot expend, put the Injury on top of your deck instead.',
+    ],
+    notes: 'Severe immediate attrition.',
+  },
+  // --- Severity 3 ---
+  {
+    id: 'cons-sev3-taken-out',
+    name: 'Taken Out',
+    type: 'Consequence',
+    tags: ['Severity_3'],
+    effects: ['You are unconsious or dying and on longer a meaningful participant in this fight'],
+  },
 ];

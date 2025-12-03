@@ -1,6 +1,6 @@
 import React from 'react';
 import { Activity, Minus, Hand, ArrowUp, Archive, AlertOctagon } from 'lucide-react';
-import { STATUS_CARDS } from '../../data/statuses';
+import { STATUS_DATA } from '../../services/deckFactory';
 
 interface StatusManagerProps {
   onAddStatusCard: (type: string, destination: 'discard' | 'hand' | 'draw') => void;
@@ -17,7 +17,7 @@ export const StatusManager: React.FC<StatusManagerProps> = ({
         Status Cards in Deck
       </span>
 
-      {STATUS_CARDS.map((card) => (
+      {STATUS_DATA.map((card) => (
         <div key={card.id} className="flex items-center justify-between mb-2 last:mb-0">
           <span className="text-xs text-slate-300 flex items-center gap-1">
             {card.id?.includes('fatigue') ? (

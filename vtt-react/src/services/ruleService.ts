@@ -1,10 +1,10 @@
 import { CoreCard, ResourceType, PlayerDeckState, Stats, Card } from '../types';
-import { STATUS_CARDS } from '../data/statuses';
+import { STATUS_DATA } from '../services/deckFactory';
 import { shuffle } from '../utils';
 
 // Helper to get a fresh instance of a status card
 const getStatusCard = (type: string): CoreCard => {
-  const template = STATUS_CARDS.find(
+  const template = STATUS_DATA.find(
     (c) =>
       c.id === type ||
       c.id === `status-${type}` ||

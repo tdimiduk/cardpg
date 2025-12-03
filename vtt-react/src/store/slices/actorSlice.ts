@@ -9,7 +9,7 @@ import {
   calculateSeverity,
 } from '../../services/ruleService';
 import { shuffle } from '../../utils';
-import { STATUS_CARDS } from '../../data/statuses';
+import { STATUS_DATA } from '../../services/deckFactory';
 import { CONSEQUENCE_DEFINITIONS } from '../../data/consequences';
 import { LogSlice, createLog } from './logSlice';
 import { ACTOR_COLORS } from '../../theme';
@@ -213,24 +213,44 @@ export const createActorSlice: StateCreator<
       const currentSeverity = calculateSeverity(actor.deck.consequences, resilience);
       const targetSeverity = Math.min(currentSeverity, 3);
 
-      const pool = CONSEQUENCE_DEFINITIONS.filter((c) => c.severity === targetSeverity);
+      // Filter by severity tag
+      const severityTag = `Severity_${targetSeverity}`;
+      const pool = CONSEQUENCE_DEFINITIONS.filter((c) => c.tags.includes(severityTag));
+
       const selection =
         pool.length > 0
           ? pool[Math.floor(Math.random() * pool.length)]
-          : { name: 'Generic Wound', text: 'You are hurt.', severity: targetSeverity };
+          : {
+              id: `generic-sev-${targetSeverity}`,
+              name: 'Generic Wound',
+              type: 'Consequence',
+              tags: [severityTag],
+              effects: ['You are hurt.'],
+              passive: undefined,
+            };
 
-      const newConsequence = {
-        type: 'coreCard' as const,
+      const newConsequence: CoreCard = {
+        type: 'coreCard',
         id: Math.random().toString(),
         name: selection.name,
-        flavor: [{ type: 'textRun' as const, content: selection.text }],
-        tags: ['wound'],
+        flavor: selection.effects
+          ? selection.effects.map((e) => ({ type: 'textRun', content: e }))
+          : [],
+        tags: ['consequence', ...selection.tags],
         stats: { red: 0, yellow: 0, blue: 0 },
         rules: [],
         cost: undefined,
+        // Add passive if present (using flavor or a specific field if CoreCard supported it,
+        // but for now we'll just put it in flavor or rules if needed.
+        // The original code put text in flavor.)
       };
 
-      actor.deck.consequences.push(newConsequence as CoreCard);
+      if (selection.passive) {
+        if (!newConsequence.flavor) newConsequence.flavor = [];
+        newConsequence.flavor.push({ type: 'textRun', content: `Passive: ${selection.passive}` });
+      }
+
+      actor.deck.consequences.push(newConsequence);
       state.logs.push(
         createLog(
           `${actor.name} takes a Level ${targetSeverity} Consequence: ${selection.name}.`,
@@ -257,7 +277,7 @@ export const createActorSlice: StateCreator<
       const actor = getActor(state, tokenId);
       if (!actor) return;
       // Look up by exact ID first (e.g. "status-fatigue")
-      const template = STATUS_CARDS.find((c) => c.id === statusType);
+      const template = STATUS_DATA.find((c) => c.id === statusType);
       if (!template) {
         console.warn(`Status card template not found for id: ${statusType}`);
         return;
@@ -289,7 +309,7 @@ export const createActorSlice: StateCreator<
         // We must rely on Name or Tags.
         // The `statusType` passed in is now the `id` of the template (e.g. "status-fatigue").
         // Let's find the template to get the name.
-        const template = STATUS_CARDS.find((c) => c.id === statusType);
+        const template = STATUS_DATA.find((c) => c.id === statusType);
         if (!template) return null;
 
         const idx = arr.findIndex((c) => c.name === template.name);

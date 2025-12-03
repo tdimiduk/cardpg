@@ -128,11 +128,7 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
           ))}
         </div>
 
-        {card.tags?.includes('fatigue') && (
-          <div className="mt-1 text-[8px] bg-red-100 text-red-800 text-center rounded border border-red-200 font-bold">
-            FATIGUE
-          </div>
-        )}
+
       </div>
     </>
   );
