@@ -33,10 +33,10 @@ export interface ActorSlice {
   removeConsequence: (tokenId: string, cardId: string) => void;
   addStatus: (
     tokenId: string,
-    statusType: 'fatigue' | 'wound',
+    statusType: string,
     destination: 'discard' | 'hand' | 'draw',
   ) => void;
-  removeStatus: (tokenId: string, statusType: 'fatigue' | 'wound') => void;
+  removeStatus: (tokenId: string, statusType: string) => void;
 }
 
 // Helper to get actor from state
@@ -256,8 +256,12 @@ export const createActorSlice: StateCreator<
     set((state) => {
       const actor = getActor(state, tokenId);
       if (!actor) return;
-      const template = STATUS_CARDS.find((c) => c.tags?.includes(statusType));
-      if (!template) return;
+      // Look up by exact ID first (e.g. "status-fatigue")
+      const template = STATUS_CARDS.find((c) => c.id === statusType);
+      if (!template) {
+        console.warn(`Status card template not found for id: ${statusType}`);
+        return;
+      }
 
       const newCard: CoreCard = { ...template, id: Math.random().toString() };
 
@@ -279,7 +283,16 @@ export const createActorSlice: StateCreator<
       const actor = getActor(state, tokenId);
       if (!actor) return;
       const removeFirst = (arr: CoreCard[]) => {
-        const idx = arr.findIndex((c) => c.tags?.includes(statusType));
+        // We need to match the card type. The instantiated cards have random IDs.
+        // But they should share the same name or we can check if the ID starts with the statusType (if we preserved it)
+        // Current implementation assigns `Math.random()` to ID, so we can't rely on ID prefix.
+        // We must rely on Name or Tags.
+        // The `statusType` passed in is now the `id` of the template (e.g. "status-fatigue").
+        // Let's find the template to get the name.
+        const template = STATUS_CARDS.find((c) => c.id === statusType);
+        if (!template) return null;
+
+        const idx = arr.findIndex((c) => c.name === template.name);
         if (idx > -1) {
           const removed = arr.splice(idx, 1)[0];
           return removed;

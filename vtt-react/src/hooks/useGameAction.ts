@@ -88,12 +88,12 @@ export const useGameAction = () => {
         case 'ADD_STATUS':
           addStatus(
             action.activeTokenId,
-            action.statusType as 'fatigue' | 'wound',
+            action.statusType,
             action.destination as 'discard' | 'hand' | 'draw',
           );
           break;
         case 'REMOVE_STATUS':
-          removeStatus(action.activeTokenId, action.statusType as 'fatigue' | 'wound');
+          removeStatus(action.activeTokenId, action.statusType);
           break;
         case 'DISCARD_CARDS':
           discardCards(action.activeTokenId, action.cardIds);

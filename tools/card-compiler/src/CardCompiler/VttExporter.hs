@@ -2,43 +2,100 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module CardCompiler.VttExporter where
 
-import Data.Aeson (ToJSON(..), FromJSON(..), genericToJSON, genericToEncoding, genericParseJSON, Value(..), object, (.=), (.:), withObject, Options(..))
+import Data.Aeson (ToJSON(..), genericToJSON, Value(..), object, (.=))
 import qualified Data.Aeson as Aeson
-import qualified Data.Aeson.KeyMap as KM
-import qualified Data.Aeson.Key as Key
 import Data.Text (Text)
 import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import qualified Data.ByteString.Lazy as LBS
 import GHC.Generics (Generic)
-import System.FilePath (takeBaseName)
 import Data.Maybe (fromMaybe)
-import Control.Monad (forM)
+import Control.Monad (foldM)
 import qualified Data.Yaml as Yaml
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NE
+import qualified Data.Map as Map
+import Data.List (mapAccumL)
 
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), Actor(..))
-import CardPG.Core.Json (cardpgJsonOptions, cardpgTaggedOptions)
-import CardPG.Core.DSL.Parser (parseRule)
-import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
-import CardPG.Core.RichText (simpleString, RichString)
+import CardPG.Core.Json (cardpgJsonOptions)
+import CardPG.Core.RuleDefs (AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.NonEmptyText (getNonEmptyText)
+import CardPG.Core.RichText (unRichString, RichString)
 
-import qualified Data.Map as Map
-import Data.List (mapAccumL)
+-- | Wrapper to force Array JSON output for RichString
+newtype VttRichString = VttRichString RichString
+  deriving (Show)
 
-import qualified Data.Map as Map
-import Data.List (mapAccumL)
+instance ToJSON VttRichString where
+  toJSON (VttRichString rs) = toJSON (CardPG.Core.RichText.unRichString rs)
 
--- | Shadow Type for Rules to force structured JSON
+-- | Shadow Type for Rules to force structured JSON and VttRichString
 newtype StructuredRule = StructuredRule { unStructuredRule :: Rule }
   deriving (Show, Generic)
 
 instance ToJSON StructuredRule where
-  toJSON (StructuredRule r) = genericToJSON (cardpgJsonOptions "Rule") r
+  toJSON (StructuredRule r) = case r of
+    RuleAttack (AttackDef p res eff) -> object
+      [ "type" .= ("attack" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "power" .= p
+          , "resistedBy" .= res
+          , "effect" .= fmap VttRichString eff
+          ])
+      ]
+    RuleDefend (DefendDef p res eff) -> object
+      [ "type" .= ("defend" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "power" .= p
+          , "resists" .= res
+          , "effect" .= fmap VttRichString eff
+          ])
+      ]
+    RuleGeneral (GeneralDef n c p eff) -> object
+      [ "type" .= ("general" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "name" .= n
+          , "cost" .= fmap VttRichString c
+          , "power" .= p
+          , "effect" .= VttRichString eff
+          ])
+      ]
+    RuleStance (StanceDef d eff) -> object
+      [ "type" .= ("stance" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "duration" .= d
+          , "effect" .= VttRichString eff
+          ])
+      ]
+    RuleChannel (ChannelDef d eff) -> object
+      [ "type" .= ("channel" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "duration" .= d
+          , "effect" .= VttRichString eff
+          ])
+      ]
+    RulePrime (PrimeDef t reac) -> object
+      [ "type" .= ("prime" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "trigger" .= t
+          , "reaction" .= StructuredRule reac
+          ])
+      ]
+    RuleNarrative rs -> object
+      [ "type" .= ("narrative" :: Text)
+      , "data" .= VttRichString rs
+      ]
+    RulePassive (PassiveDef b c) -> object
+      [ "type" .= ("passive" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "bonus" .= b
+          , "condition" .= c
+          ])
+      ]
 
 -- | Shadow Type for CoreCard to use StructuredRule
 data VttCoreCard = VttCoreCard
@@ -48,13 +105,21 @@ data VttCoreCard = VttCoreCard
   , _stats  :: Stats
   , _cost   :: Maybe Int
   , _rules  :: Maybe (NonEmpty StructuredRule)
-  , _flavor :: Maybe RichString
+  , _flavor :: Maybe VttRichString
   }
   deriving (Show, Generic)
 
-
 instance ToJSON VttCoreCard where
-  toJSON = genericToJSON (cardpgTaggedOptions "Vtt")
+  toJSON VttCoreCard{..} = object $ filter (\(_, v) -> v /= Null)
+    [ "type" .= ("coreCard" :: Text)
+    , "id" .= _id
+    , "name" .= _name
+    , "tags" .= _tags
+    , "stats" .= _stats
+    , "cost" .= _cost
+    , "rules" .= _rules
+    , "flavor" .= _flavor
+    ]
 
 -- | VTT Actor Type
 data VttActor = VttActor
@@ -69,21 +134,51 @@ data VttActor = VttActor
 instance ToJSON VttActor where
   toJSON = genericToJSON (cardpgJsonOptions "Actor")
 
+-- | VTT Export Data
+data VttExport = VttExport
+  { _actors   :: [VttActor]
+  , _statuses :: [VttCoreCard]
+  }
+  deriving (Show, Generic)
+
+instance ToJSON VttExport where
+  toJSON = genericToJSON (cardpgJsonOptions "VttExport")
+
 -- | Load and Export Function
 loadAndExport :: [FilePath] -> FilePath -> IO ()
 loadAndExport inputFiles outputFile = do
-  allActors <- forM inputFiles $ \file -> do
-    result <- Yaml.decodeFileEither file
-    case result of
-      Left err -> do
-        putStrLn $ "Warning: Failed to parse " ++ file ++ ": " ++ show err
-        return Nothing
-      Right actor -> do
-        return $ Just $ convertActor actor
+  (actors, statuses) <- foldM processFile ([], []) inputFiles
 
-  let validActors = [ a | Just a <- allActors ]
-  LBS.writeFile outputFile (Aeson.encode validActors)
-  putStrLn $ "Exported " ++ show (length validActors) ++ " actors to " ++ outputFile
+  let exportData = VttExport
+        { _actors = actors
+        , _statuses = statuses
+        }
+
+  LBS.writeFile outputFile (Aeson.encode exportData)
+  putStrLn $ "Exported " ++ show (length actors) ++ " actors and " ++ show (length statuses) ++ " status cards to " ++ outputFile
+
+  where
+    processFile :: ([VttActor], [VttCoreCard]) -> FilePath -> IO ([VttActor], [VttCoreCard])
+    processFile (accActors, accStatuses) file = do
+      result <- Yaml.decodeFileEither file
+      case result of
+        Right (actor :: Actor) -> do
+          return (convertActor actor : accActors, accStatuses)
+        Left _ -> do
+          -- Try parsing as list of CoreCards (Status Library)
+          resultCards <- Yaml.decodeFileEither file
+          case resultCards of
+            Right (cards :: [CoreCard]) -> do
+               -- For status cards, we don't need the complex ID logic of decks yet, 
+               -- or maybe we do? Let's assume simple ID assignment for now or use existing IDs.
+               -- The `processDeck` logic is useful for deduplication and ID assignment.
+               -- Let's treat the file name or a generic "status" as the "actorId" for ID generation purposes if needed,
+               -- but CoreCards usually have IDs.
+               let vttCards = map (\c@CoreCard{_name=n, _id=i} -> toVttCoreCard c (fromMaybe (slugify (getNonEmptyText n)) i)) cards
+               return (accActors, vttCards ++ accStatuses)
+            Left err -> do
+               putStrLn $ "Warning: Failed to parse " ++ file ++ " as Actor or Card List: " ++ show err
+               return (accActors, accStatuses)
 
 -- | Convert Actor to VttActor
 convertActor :: Actor -> VttActor
@@ -143,7 +238,7 @@ toVttCoreCard CoreCard{..} finalId = VttCoreCard
   , _stats = _stats
   , _cost = _cost
   , _rules = fmap (fmap StructuredRule) _rules
-  , _flavor = _flavor
+  , _flavor = fmap VttRichString _flavor
   }
 
 -- | Helper to ensure ItemCard has an ID

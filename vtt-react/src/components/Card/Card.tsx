@@ -80,14 +80,13 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
         </div>
 
         <div className="flex-1 bg-white rounded p-1.5 border border-slate-200 shadow-inner overflow-hidden flex flex-col gap-1">
-          {card.flavor && (
-            <p className="text-[10px] leading-tight font-serif text-slate-800 italic">
-              <RichTextRenderer content={card.flavor} />
-            </p>
-          )}
+          {/* Flavor text removed for space constraints */}
 
           {card.rules?.map((rule, idx) => (
-            <div key={idx} className="text-[9px] leading-tight border-t border-slate-100 pt-1">
+            <div
+              key={idx}
+              className="text-[9px] leading-tight border-t border-slate-100 pt-1 first:border-t-0 first:pt-0"
+            >
               {rule.type === 'attack' && (
                 <div>
                   <div className="flex items-center gap-1">
@@ -105,11 +104,23 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
                 </div>
               )}
               {rule.type === 'general' && (
-                <div>
-                  <span className="font-bold uppercase mr-1">Effect</span>
-                  <span className="font-serif italic">
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-bold uppercase">{rule.data.name}</span>
+                    {rule.data.cost && (
+                      <span className="font-bold text-slate-600">
+                        <RichTextRenderer content={rule.data.cost} />
+                      </span>
+                    )}
+                  </div>
+                  <span className="font-serif italic pl-1">
                     <RichTextRenderer content={rule.data.effect} />
                   </span>
+                </div>
+              )}
+              {rule.type === 'narrative' && (
+                <div className="font-serif italic">
+                  <RichTextRenderer content={rule.data} />
                 </div>
               )}
               {/* Add other rule types as needed */}

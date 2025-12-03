@@ -40,7 +40,6 @@ describe('CardComponent', () => {
   it('renders CoreCard details', () => {
     render(<CardComponent card={mockCoreCard} />);
     expect(screen.getByText('Strike')).toBeInTheDocument();
-    expect(screen.getByText('A simple strike.')).toBeInTheDocument();
     // Check stats rendering (Red: 2)
     // The component renders stats in a specific way, maybe check for text content or structure
     // It renders "2" inside a red box/icon

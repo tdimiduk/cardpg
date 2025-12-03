@@ -3,8 +3,13 @@ import { STATUS_CARDS } from '../data/statuses';
 import { shuffle } from '../utils';
 
 // Helper to get a fresh instance of a status card
-const getStatusCard = (type: 'fatigue' | 'wound'): CoreCard => {
-  const template = STATUS_CARDS.find((c) => c.tags?.includes(type));
+const getStatusCard = (type: string): CoreCard => {
+  const template = STATUS_CARDS.find(
+    (c) =>
+      c.id === type ||
+      c.id === `status-${type}` ||
+      c.tags?.some((t) => t.toLowerCase() === type.toLowerCase()),
+  );
   if (!template) throw new Error(`Status card type ${type} not found`);
   return { ...template, id: Math.random().toString() };
 };

@@ -99,9 +99,10 @@ def main():
     # 3. Export VTT JSON
     print("Exporting VTT JSON...")
     vtt_output = ROOT_DIR / "vtt-react/src/data/generated_cards.json"
+    STATUS_DIR = DATA_DIR / "status"
     
-    # Collect all YAML files from PC and Monster directories
-    yaml_files = list(PC_DIR.glob("*.yaml")) + list(MONSTER_DIR.glob("*.yaml"))
+    # Collect all YAML files from PC, Monster, and Status directories
+    yaml_files = list(PC_DIR.glob("*.yaml")) + list(MONSTER_DIR.glob("*.yaml")) + list(STATUS_DIR.glob("*.yaml"))
     
     if yaml_files:
         cmd = ["cabal", "run", "card-compiler", "--", "export-vtt", str(vtt_output)] + [str(f) for f in yaml_files]

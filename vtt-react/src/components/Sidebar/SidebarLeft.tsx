@@ -25,8 +25,8 @@ interface SidebarLeftProps {
   onSelectToken: (tokenId: string) => void;
   onAddConsequence: () => void;
   onRemoveConsequence: (cardId: string) => void;
-  onAddStatusCard: (type: 'fatigue' | 'wound', destination: 'discard' | 'hand' | 'draw') => void;
-  onRemoveStatusCard: (type: 'fatigue' | 'wound') => void;
+  onAddStatusCard: (type: string, destination: 'discard' | 'hand' | 'draw') => void;
+  onRemoveStatusCard: (type: string) => void;
   tokens: Token[];
   activeToken?: Token;
   activeTokenId: string;

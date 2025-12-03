@@ -21,12 +21,17 @@ const RawActorSchema = z.object({
   deck: z.array(z.record(z.string(), z.unknown())).optional().default([]),
 });
 
-const RawDataSchema = z.array(RawActorSchema);
+const RawStatusSchema = z.record(z.string(), z.unknown());
+
+const RawDataSchema = z.object({
+  actors: z.array(RawActorSchema),
+  statuses: z.array(RawStatusSchema),
+});
 
 // Cast the imported JSON to the correct type and normalize
 const rawData = RawDataSchema.parse(generatedCards);
 
-const ACTOR_DATA: ActorTemplate[] = rawData.map((actor) => ({
+const ACTOR_DATA: ActorTemplate[] = rawData.actors.map((actor) => ({
   id: actor.id,
   name: actor.name,
   tags: actor.tags,
@@ -34,22 +39,27 @@ const ACTOR_DATA: ActorTemplate[] = rawData.map((actor) => ({
     // Ensure discriminators and defaults are present before parsing
     const itemObj = {
       ...item,
-      type: 'itemCard',
       tags: item.tags || [],
       traits: item.traits || [],
     };
     return ItemCardSchema.parse(itemObj);
   }),
   deck: actor.deck.map((card) => {
-    // Ensure discriminators and defaults are present before parsing
     const cardObj = {
       ...card,
-      type: 'coreCard',
       tags: card.tags || [],
     };
     return CoreCardSchema.parse(cardObj);
   }),
 }));
+
+export const STATUS_DATA: CoreCard[] = rawData.statuses.map((status) => {
+  const statusObj = {
+    ...status,
+    tags: status.tags || [],
+  };
+  return CoreCardSchema.parse(statusObj);
+});
 
 export const getActorTemplates = (type?: 'pc' | 'monster'): ActorTemplate[] => {
   if (!type) {

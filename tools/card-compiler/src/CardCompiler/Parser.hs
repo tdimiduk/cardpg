@@ -5,28 +5,18 @@
 
 module CardCompiler.Parser where
 
-import Control.Applicative ((<|>), optional, many, some)
-import Control.Monad (void, mfilter)
-import Data.Maybe (fromMaybe, catMaybes)
-import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), (.!=), Value(..), genericToJSON, defaultOptions, object, (.=))
-import Data.Aeson.Types (Parser)
-import Data.List.NonEmpty (NonEmpty(..))
+import Data.Maybe (fromMaybe)
+import Data.Aeson (FromJSON(..), ToJSON(..), withObject, (.:), (.:?), Value(..))
 import qualified Data.List.NonEmpty as NE
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Read as TR
-import Data.Void (Void)
 import GHC.Generics (Generic)
-import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, label, sepBy1, between, eof, choice)
-import Text.Megaparsec.Char (char, string, string', space1, space)
-import qualified Text.Megaparsec.Char.Lexer as L
 
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..), GeneralDef(..), Actor(..))
+import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..))
 import CardPG.Core.RichText (RichString, mkRichString, Inline(..), simpleString)
-import CardPG.Core.Types (ResourceType(..), StackPower(..))
 import CardPG.Core.DSL.Parser (parseRule)
-import CardPG.Core.DSL.Printer (prettyRule)
-import CardPG.Core.NonEmptyText (unsafeNonEmptyText, mkNonEmptyText)
+import CardPG.Core.NonEmptyText (mkNonEmptyText)
 
 -- | Sum type for different card types
 data ParsedCard
