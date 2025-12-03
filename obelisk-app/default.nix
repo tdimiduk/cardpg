@@ -10,7 +10,7 @@
 with obelisk;
 project ./. ({ pkgs, hackGet,  ... }@args:
   let
-    pythonScriptPackage = pkgs.callPackage ./python/default.nix {};
+    # pythonScriptPackage = pkgs.callPackage ./python/default.nix {};
     scriptPath = "${pythonScriptPackage}/bin/sync-cards-gsheet.py";
     generatedDataDir = "generated_nix_config";
     pythonPathDataFileName = "python_script_path.txt";
@@ -30,20 +30,20 @@ project ./. ({ pkgs, hackGet,  ... }@args:
         sha256 = "sha256-pWIzmLMZ1EOgkV3D9qnVliZyhVKvPnRloUdjaYTob+Q=";
       } { });
       beam-automigrate = self.callCabal2nix "beam-automigrate" (hackGet ./dep/beam-automigrate) {};
-      backend = super.backend.overrideAttrs (oldAttrs: {
-        postPatch = (oldAttrs.postPatch or "") + ''
-          echo "Generating Python script path data file for backend..."
-          mkdir -p ./${generatedDataDir} # Create the directory in the source tree
-          echo -n "${scriptPath}" > ./${relativePathToDataFile} # Use echo -n to avoid trailing newline
-          echo "Generated ./${relativePathToDataFile} with content:"
-          cat ./${relativePathToDataFile}
-          echo "" # Newline for cleaner logs
-        '';
-        installPhase = (oldAttrs.installPhase or "cabalInstallPhase") + ''
-          echo "adding python script"
-          ln -s "${scriptPath}" $out/bin/
-      '';
-      });
+      # backend = super.backend.overrideAttrs (oldAttrs: {
+      #   postPatch = (oldAttrs.postPatch or "") + ''
+      #     echo "Generating Python script path data file for backend..."
+      #     mkdir -p ./${generatedDataDir} # Create the directory in the source tree
+      #     echo -n "${scriptPath}" > ./${relativePathToDataFile} # Use echo -n to avoid trailing newline
+      #     echo "Generated ./${relativePathToDataFile} with content:"
+      #     cat ./${relativePathToDataFile}
+      #     echo "" # Newline for cleaner logs
+      #   '';
+      #   installPhase = (oldAttrs.installPhase or "cabalInstallPhase") + ''
+      #     echo "adding python script"
+      #     ln -s "${scriptPath}" $out/bin/
+      # '';
+      # });
       shells = super.shells // {
         ghc = super.shells.ghc.overrideAttrs (oldAttrs: {
           shellHook = (oldAttrs.shellHook or "") + ''
