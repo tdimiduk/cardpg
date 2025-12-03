@@ -1,0 +1,28 @@
+- id: status-fatigue
+  name: "Fatigue"
+  type: Status
+  tags: [Status, Fatigue, Physical]
+  stats: { red: 1, yellow: 1, blue: 1 }
+  actions:
+    - name: "Sleep"
+      cost: "2 Hours"
+      effect: "Remove this card."
+    - name: "Light Rest"
+      cost: "4 Hours"
+      effect: "Remove this card."
+  flavor: "Fatigue is setting in ..."
+  notes: "Represents general exhaustion. Has minimal stats (1) to allow for desperate actions."
+
+- id: status-injury
+  name: "Injury"
+  type: Status
+  tags: [Status, Injury, Physical]
+  stats: { red: 0, yellow: 0, blue: 0 }
+  effects:
+    - "If this card is in your hand at the end of the Resolve Step, expend it."
+  actions:
+    - name: "Rest"
+      cost: "1 Day"
+      effect: "Remove this card."
+  flavor: "A minor injury. The pain is distracting."
+  notes: "Represents minor injuries. Zero stats make it dead weight. The forced expend prevents hoarding to thin the deck."

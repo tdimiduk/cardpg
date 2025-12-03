@@ -1,6 +1,3 @@
-# Temporary while we are still iterating on the parsers
-data
-
 /scratch
 /data/cards/raw
 /vtt-react/data/generated_cards.json  
