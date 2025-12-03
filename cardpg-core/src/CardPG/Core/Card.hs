@@ -14,7 +14,6 @@ module CardPG.Core.Card
   , Actor(..)
   ) where
 
-import Data.Aeson (ToJSON(..), FromJSON(..))
 import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)

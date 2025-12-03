@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -8,8 +8,10 @@
 module CardPG.Core.NonEmptyText 
   ( NonEmptyText
   , mkNonEmptyText
+  , strippedNonEmptyText
   , unsafeNonEmptyText
   , takeWhilePNonEmpty
+  , takeWhilePNonEmptyStripped
   , getNonEmptyText
   ) where
 
@@ -29,6 +31,13 @@ import Data.Void (Void)
 takeWhilePNonEmpty :: Maybe String -> (Token Text -> Bool) -> Parsec Void Text NonEmptyText
 takeWhilePNonEmpty name p = NonEmptyText <$> takeWhile1P name p
 
+takeWhilePNonEmptyStripped :: Maybe String -> (Token Text -> Bool) -> Parsec Void Text NonEmptyText
+takeWhilePNonEmptyStripped name p = do
+  s <- takeWhile1P name p
+  case strippedNonEmptyText s of
+    Just t -> pure t
+    Nothing -> fail "only whitespace"
+
 newtype NonEmptyText = NonEmptyText { getNonEmptyText :: Text }
   deriving newtype (Show, Eq, Ord, Semigroup)
 
@@ -37,6 +46,11 @@ mkNonEmptyText :: Text -> Maybe NonEmptyText
 mkNonEmptyText t
   | T.null (T.strip t) = Nothing
   | otherwise = Just $ NonEmptyText t
+
+strippedNonEmptyText :: Text -> Maybe NonEmptyText
+strippedNonEmptyText t = case T.strip t of
+  "" -> Nothing
+  s -> Just $ NonEmptyText s
 
 -- | Unsafe constructor for trusted input (e.g. literals)
 unsafeNonEmptyText :: Text -> NonEmptyText

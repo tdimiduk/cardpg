@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module CardPG.Core.DSL.Printer (prettyRule) where
+module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -12,27 +12,36 @@ import CardPG.Core.Types (ResourceType(..))
 
 import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
 
+
+effectArrow :: Text
+effectArrow = "->"
+
+wrapped :: Text -> Text -> Text
+wrapped wrapper t = wrapper <> t <> wrapper
+
+inParens :: Text -> Text
+inParens t = "(" <> t <> ")"
+
+
 prettyRule :: Rule -> Text
 prettyRule (RuleAttack AttackDef{..}) =
   "Attack " <> prettyResource _resistedBy <> ": Strength = " <> prettyPower _power <> prettyExtra _effect
-
 prettyRule (RuleDefend DefendDef{..}) =
   "Defend " <> T.intercalate ", " (map prettyResource (NE.toList _resists)) <> ": Strength = " <> prettyPower _power <> prettyExtra _effect
-prettyRule (RuleGeneral GeneralDef{..}) =
-  "General: " <> prettyMaybePower _power <> prettyCost _cost <> " -> " <> richToString _effect
+prettyRule (RuleGeneral GeneralDef{..}) = 
+  "Action: " <> getNonEmptyText _name <> maybe "" ((" " <>) . inParens. richToString) _cost 
+  <> maybe "" ((" " <>) . prettyPower) _power  <> " " <> effectArrow <> " " <> richToString _effect
 prettyRule (RuleStance StanceDef{..}) =
-  "Stance (" <> getNonEmptyText _duration <> ")" <> prettyExtra (Just _effect)
+  "Stance " <> inParens (getNonEmptyText _duration) <> prettyExtra (Just _effect)
 prettyRule (RuleChannel ChannelDef{..}) =
-  "Channel (" <> getNonEmptyText _duration <> ")" <> prettyExtra (Just _effect)
+  "Channel " <> inParens (getNonEmptyText _duration) <> prettyExtra (Just _effect)
 prettyRule (RulePrime PrimeDef{..}) =
-  "Prime (" <> getNonEmptyText _trigger <> "): " <> prettyRule _reaction
+  "Prime " <> inParens (getNonEmptyText _trigger) <> ": " <> prettyRule _reaction
 prettyRule (RulePassive PassiveDef{..}) =
   "Passive: " <> prettyPower _bonus <> prettyCondition _condition
 prettyRule (RuleNarrative rt) = richToString rt
 
-prettyMaybePower :: Maybe StackPower -> Text
-prettyMaybePower Nothing = ""
-prettyMaybePower (Just p) = prettyPower p
+
 
 prettyCondition :: Maybe NonEmptyText -> Text
 prettyCondition Nothing = ""
@@ -61,17 +70,15 @@ prettyExtra :: Maybe RichString -> Text
 prettyExtra Nothing = ""
 prettyExtra (Just rt) = " -> " <> richToString rt
 
-prettyCost :: Maybe RichString -> Text
-prettyCost Nothing = ""
-prettyCost (Just c) = " (Cost: " <> richToString c <> ")"
+
 
 richToString :: RichString -> Text
 richToString = T.concat . map inlineToString . NE.toList . unRichString
 
 inlineToString :: Inline -> Text
-inlineToString (TextRun (Just Bold) content) = "**" <> getNonEmptyText content <> "**"
-inlineToString (TextRun (Just Italic) content) = "*" <> getNonEmptyText content <> "*"
-inlineToString (TextRun (Just GameKeyword) content) = "`" <> getNonEmptyText content <> "`"
+inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getNonEmptyText content 
+inlineToString (TextRun (Just Italic) content) = wrapped "*" $ getNonEmptyText content
+inlineToString (TextRun (Just GameKeyword) content) = wrapped "`" $ getNonEmptyText content 
 inlineToString (TextRun _ content) = getNonEmptyText content
 
 inlineToString (ColorValue power) = prettyPower power

@@ -13,6 +13,9 @@
 module Main where
 
 import ArbitraryInstances ()
+import RuleJsonTest (prop_ruleJsonParsing)
+import StatusParsingTest (test_statusParsing)
+
 
 import Test.Tasty
 import Test.Tasty.QuickCheck
@@ -34,6 +37,8 @@ tests = testGroup "Tests"
   , testProperty "EncounterCard Roundtrip" $ prop_jsonRoundtrip @EncounterCard
   , testProperty "ConsequenceCard Roundtrip" $ prop_jsonRoundtrip @ConsequenceCard
   , testProperty "DSL Roundtrip" prop_dslRoundtrip
+  , testProperty "Rule JSON Object Parsing" prop_ruleJsonParsing
+  , test_statusParsing
   ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

@@ -4,7 +4,7 @@
 
 module CardPG.Core.DSL.Parser (parseRule) where
 
-import Control.Applicative ((<|>), optional, many)
+import Control.Applicative ((<|>), optional, some)
 import Control.Monad (void)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
@@ -13,22 +13,21 @@ import Data.Void (Void)
 import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, sepBy1, eof, choice, between, lookAhead, notFollowedBy)
 import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
-import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
 import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
-import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, mkNonEmptyText, unsafeNonEmptyText)
+import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, takeWhilePNonEmptyStripped, mkNonEmptyText, unsafeNonEmptyText)
 
-type MParser = Parsec Void Text
+type Parser = Parsec Void Text
 
 parseRule :: Text -> Either String Rule
 parseRule t = case parse ruleParser "" t of
   Left err -> Left $ errorBundlePretty err
   Right r -> Right r
 
-ruleParser :: MParser Rule
+ruleParser :: Parser Rule
 ruleParser = choice
   [ try (attackParser <* eof)
   , try (defendParser <* eof)
@@ -36,18 +35,18 @@ ruleParser = choice
   , try (channelParser <* eof)
   , try (primeParser <* eof)
   , try (passiveParser <* eof)
-  , try (explicitGeneralParser <* eof)
+  , try (generalParser <* eof)
   , (narrativeParser <* eof)
   ]
 
-orSep :: MParser ()
+orSep :: Parser ()
 orSep = void $ choice
   [ try (space1 >> string' "or" >> space1)
   , try (space >> char ',' >> space)
   ]
 
 -- Attack
-attackParser :: MParser Rule
+attackParser :: Parser Rule
 attackParser = do
   _ <- string' "attack"
   _ <- space1
@@ -61,7 +60,7 @@ attackParser = do
   pure $ RuleAttack $ AttackDef power resistedBy extra
 
 -- Defend
-defendParser :: MParser Rule
+defendParser :: Parser Rule
 defendParser = do
   _ <- string' "defend"
   _ <- space1
@@ -74,7 +73,7 @@ defendParser = do
   pure $ RuleDefend $ DefendDef p (NE.fromList resists) extra
 
 -- Stance
-stanceParser :: MParser Rule
+stanceParser :: Parser Rule
 stanceParser = do
   _ <- string' "stance"
   _ <- space
@@ -85,26 +84,33 @@ stanceParser = do
   effect <- richTextParser
   pure $ RuleStance $ StanceDef duration effect
 
+-- The parser p must not consume ')'
+betweenParens :: Parser a -> Parser a
+betweenParens p = do
+  _ <- char '('
+  r <- p
+  _ <- char ')'
+  pure $ r
+
+effectArrow :: Parser Text
+effectArrow = string "->"
+
 -- Channel
-channelParser :: MParser Rule
+channelParser :: Parser Rule
 channelParser = do
   _ <- string' "channel"
   _ <- space
-  _ <- char '('
-  duration <- takeWhilePNonEmpty Nothing (/= ')')
-  _ <- char ')'
+  duration <- betweenParens $ takeWhilePNonEmpty Nothing (/= ')')
   _ <- separatorParser
   effect <- richTextParser
   pure $ RuleChannel $ ChannelDef duration effect
 
 -- Prime
-primeParser :: MParser Rule
+primeParser :: Parser Rule
 primeParser = do
   _ <- string' "prime"
   _ <- space
-  _ <- char '('
-  trigger <- takeWhilePNonEmpty Nothing (/= ')')
-  _ <- char ')'
+  trigger <- betweenParens $ takeWhilePNonEmpty Nothing (/= ')')
   _ <- hspace
   _ <- char ':'
   _ <- hspace
@@ -112,7 +118,7 @@ primeParser = do
   pure $ RulePrime $ PrimeDef trigger reaction
 
 -- Passive
-passiveParser :: MParser Rule
+passiveParser :: Parser Rule
 passiveParser = do
   _ <- string' "passive"
   _ <- space
@@ -124,100 +130,89 @@ passiveParser = do
   pure $ RulePassive $ PassiveDef bonus condition
 
 -- General (Explicit)
-explicitGeneralParser :: MParser Rule
-explicitGeneralParser = do
-  _ <- string' "general"
+generalParser :: Parser Rule
+generalParser = do
+  _ <- string' "Action:" <|> string' "General:"
   _ <- space
-  _ <- char ':'
+  name <- takeWhilePNonEmptyStripped (Just "Action name") (\c -> c /= '(' && c /= '{' && c /= '-') 
+
+  cost <- optional $ betweenParens $ richTextParserWith [')']
   _ <- space
-  power <- optional (try (stackPowerParser <* space))
-  cost <- optional $ try $ do
-    _ <- space -- Consume potential leading space from prettyCost
-    _ <- string "(Cost: "
-    c <- richTextParserStopAt [')']
-    _ <- char ')'
-    space
-    pure c
-  _ <- separatorParser
+  power <- optional stackPowerParser
+  _ <- space
+  _ <- effectArrow
+  _ <- hspace
+
   effect <- richTextParser
-  pure $ RuleGeneral $ GeneralDef power cost effect
+  
+  pure $ RuleGeneral $ GeneralDef name cost power effect
 
 -- Narrative (Fallback for General)
-narrativeParser :: MParser Rule
+narrativeParser :: Parser Rule
 narrativeParser = do
   rt <- richTextParser
   pure $ RuleNarrative rt
 
 -- Separator Parser
-separatorParser :: MParser ()
+separatorParser :: Parser ()
 separatorParser = void $ choice
-  [ try (space >> string "->" >> hspace)
+  [ try (space >> effectArrow >> hspace)
   , try (space >> string ";" >> hspace)
   , try (space >> char ',' >> hspace)
   , hspace
   ]
 
-hspace :: MParser ()
+hspace :: Parser ()
 hspace = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
 
 -- Rich Text Parser
-richTextParser :: MParser RichString
-richTextParser = do
-  inlines <- someNE (inlineParserStopAt [])
-  case mkRichString (NE.toList inlines) of
-    Nothing -> fail "Rich text cannot be empty or whitespace only"
+richTextParser :: Parser RichString
+richTextParser = richTextParserWith []
+
+richTextParserWith :: [Char] -> Parser RichString
+richTextParserWith stopChars = do
+  inlines <- some (inlineParserStopAt stopChars)
+  case mkRichString inlines of
     Just rs -> pure rs
+    Nothing -> fail "Empty rich string"
 
-richTextParserStopAt :: [Char] -> MParser RichString
-richTextParserStopAt stopChars = do
-  inlines <- someNE (inlineParserStopAt stopChars)
-  case mkRichString (NE.toList inlines) of
-    Nothing -> fail "Rich text cannot be empty or whitespace only"
-    Just rs -> pure rs
-
-someNE :: MParser a -> MParser (NonEmpty a)
-someNE p = (:|) <$> p <*> many p
-
-inlineParserStopAt :: [Char] -> MParser Inline
+inlineParserStopAt :: [Char] -> Parser Inline
 inlineParserStopAt stopChars = choice
   [ try boldParser
   , try italicParser
   , try keywordParser
-  , try colorValueParser -- Try parsing dynamic values (stack power syntax)
+  , try colorValueParser
   , breakParser
   , textParserStopAt stopChars
   ]
 
-breakParser :: MParser Inline
+breakParser :: Parser Inline
 breakParser = do
   _ <- char ';' <|> char '\n'
   pure Break
 
-boldParser :: MParser Inline
+boldParser :: Parser Inline
 boldParser = do
   _ <- string "**"
   content <- takeWhilePNonEmpty Nothing (/= '*')
   _ <- string "**"
-  _ <- string "**"
   pure $ TextRun (Just Bold) content
 
-italicParser :: MParser Inline
+italicParser :: Parser Inline
 italicParser = do
   _ <- char '*'
   content <- takeWhilePNonEmpty Nothing (/= '*')
   _ <- char '*'
-  _ <- char '*'
   pure $ TextRun (Just Italic) content
 
-keywordParser :: MParser Inline
+keywordParser :: Parser Inline
 keywordParser = do
   _ <- char '`'
   content <- takeWhilePNonEmpty Nothing (/= '`')
   _ <- char '`'
-  _ <- char '`'
   pure $ TextRun (Just GameKeyword) content
 
-colorValueParser :: MParser Inline
+colorValueParser :: Parser Inline
 colorValueParser = do
   -- Lookahead to ensure we are parsing something that looks like a resource symbol
   -- to avoid consuming normal text that starts with '{' but isn't a resource.
@@ -225,7 +220,7 @@ colorValueParser = do
   sp <- stackPowerParser
   pure $ ColorValue sp
 
-textParserStopAt :: [Char] -> MParser Inline
+textParserStopAt :: [Char] -> Parser Inline
 textParserStopAt stopChars = do
   -- Ensure we don't consume characters that start other parsers or stop chars
   content <- takeWhilePNonEmpty Nothing (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n' && c /= '{' && notElem c stopChars)
@@ -237,38 +232,38 @@ textParserStopAt stopChars = do
     pure $ TextRun Nothing content
 
 -- Helpers
-resourceSymbol :: MParser ResourceType
+resourceSymbol :: Parser ResourceType
 resourceSymbol = choice
   [ try canonicalResource
   , try shorthandResource
   , legacyResource
   ]
 
-canonicalResource :: MParser ResourceType
+canonicalResource :: Parser ResourceType
 canonicalResource = between (char '{') (char '}') $ choice
   [ Red <$ string' "Red"
   , Yellow <$ string' "Yellow"
   , Blue <$ string' "Blue"
   ]
 
-shorthandResource :: MParser ResourceType
+shorthandResource :: Parser ResourceType
 shorthandResource = choice
   [ Red <$ string' "R"
   , Yellow <$ string' "Y"
   , Blue <$ string' "B"
   ]
 
-legacyResource :: MParser ResourceType
+legacyResource :: Parser ResourceType
 legacyResource = between (char '|') (char '|') $ choice
   [ Red <$ char 'x'
   , Yellow <$ char 'y'
   , Blue <$ char 'z'
   ]
 
-hspace1 :: MParser ()
+hspace1 :: Parser ()
 hspace1 = void $ takeWhile1P Nothing (\c -> c == ' ' || c == '\t')
 
-stackPowerParser :: MParser StackPower
+stackPowerParser :: Parser StackPower
 stackPowerParser = do
   _ <- optional $ try $ do
     _ <- string' "strength" <|> string' "str"

@@ -26,10 +26,11 @@ import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Aeson.TH (deriveJSON)
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 
--- | A static modifier.
--- | Addresses: "+2 to resource values when used in a defense stack"
+import Data.Text (Text)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 
+-- | A static modifier.
+-- | Addresses: "+2 to resource values when used in a defense stack"
 data PassiveDef = PassiveDef
   { _bonus     :: StackPower
   , _condition :: Maybe NonEmptyText
@@ -52,8 +53,9 @@ data DefendDef = DefendDef
 -- | General/Utility Actions
 -- | Addresses: "Fatigue: Action (Sleep 2 hours): Remove this"
 data GeneralDef = GeneralDef
-  { _power  :: Maybe StackPower -- ^ Optional. Fatigue removal isn't a check.
+  { _name   :: NonEmptyText
   , _cost   :: Maybe RichString -- ^ Narrative Cost: "Sleep 2 hours"
+  , _power  :: Maybe StackPower -- ^ Optional. Fatigue removal isn't a check.
   , _effect :: RichString       -- ^ Effect: "Remove this card"
   } deriving (Show, Eq, Generic)
 

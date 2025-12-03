@@ -12,6 +12,7 @@ module ArbitraryInstances where
 
 import Test.Tasty.QuickCheck
 import Generic.Random
+import qualified Data.Text as T
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.List.NonEmpty (NonEmpty(..))
@@ -20,7 +21,8 @@ import qualified Data.List.NonEmpty as NE
 import CardPG.Core.Card
 import CardPG.Core.Types
 import CardPG.Core.RichText
-import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, getNonEmptyText)
+import CardPG.Core.DSL.Printer (richToString)
+import CardPG.Core.NonEmptyText (NonEmptyText(..), mkNonEmptyText, unsafeNonEmptyText, getNonEmptyText)
 
 
 -- Arbitrary Instances
@@ -40,7 +42,7 @@ instance Arbitrary StackPower where
     cond <- oneof 
       [ pure Nothing
       , do
-          t <- arbitrary
+          t <- T.pack <$> listOf1 (elements ['a'..'z'])
           pure $ Just $ "(" <> t <> ")"
       ]
     pure $ StackPower base modVal cond
@@ -49,12 +51,6 @@ instance Arbitrary StackPower where
 instance Arbitrary TextStyle where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
-
-instance Arbitrary TextRunDef where
-  arbitrary = do
-    style <- arbitrary
-    content <- arbitrary
-    return $ TextRunDef style content
 
 instance Arbitrary Inline where
   arbitrary = genericArbitrary uniform
@@ -133,10 +129,6 @@ instance Arbitrary EncounterCard where
   shrink = genericShrink
 
 instance Arbitrary ConsequenceCard where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-
-instance Arbitrary ColorValueDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 

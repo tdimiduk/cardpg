@@ -3,6 +3,12 @@
 /vtt-react/src/generated/*.ts
 vtt-react/src/data/generated_cards.json
 
+# Temporary while we are still iterating on the parsers
+data/cards/encounters
+data/cards/monsters
+data/cards/pc
+data/cards/items
+
 # --- Haskell 
 .attr-cache
 .cabal-sandbox
@@ -51,8 +57,4 @@ dist-ssr
 *.sln
 *.sw?
 
-# Temporary while we are still iterating on the parsers
-data/cards/encounters
-data/cards/monsters
-data/cards/pc
-data/cards/items
+data/cards/status/core.reformatted.yaml

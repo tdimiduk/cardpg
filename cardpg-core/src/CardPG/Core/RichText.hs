@@ -14,7 +14,7 @@ module CardPG.Core.RichText
   )
   where
 
-import Data.Aeson (ToJSON(..), FromJSON(..))
+import Data.Aeson (ToJSON(..), FromJSON(..), Value(..))
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import qualified Data.List.NonEmpty as NE
@@ -93,16 +93,34 @@ stripBoundaryWhitespace inlines =
 newtype RichString = RichString { unRichString :: NE.NonEmpty Inline }
   deriving stock (Eq, Show, Generic)
 
+-- | Unsafe constructor for literals. 
+-- | Assumes the text is non-empty and does not require stripping/merging.
+unsafeSimpleString :: Text -> RichString
+unsafeSimpleString t = RichString (TextRun Nothing (unsafeNonEmptyText t) NE.:| [])
+
+-- | Safe constructor that attempts to create a RichString from Text.
+-- | Returns Nothing if the text is empty or whitespace-only after stripping.
+simpleString :: Text -> Maybe RichString
+simpleString t = mkRichString [TextRun Nothing (unsafeNonEmptyText t)]
+
 instance ToJSON RichString where
-  toJSON = toJSON . unRichString
-  toEncoding = toEncoding . unRichString
+  toJSON rs = case unRichString rs of
+    TextRun Nothing t NE.:| [] -> toJSON (getNonEmptyText t)
+    _ -> toJSON (unRichString rs)
+  toEncoding rs = case unRichString rs of
+    TextRun Nothing t NE.:| [] -> toEncoding (getNonEmptyText t)
+    _ -> toEncoding (unRichString rs)
 
 instance FromJSON RichString where
-  parseJSON v = do
-    inlines <- parseJSON v
-    case mkRichString (NE.toList inlines) of
-      Nothing -> fail "RichString cannot be empty or whitespace only"
+  parseJSON v = case v of
+    String t -> case simpleString t of
       Just rs -> pure rs
+      Nothing -> fail "RichString cannot be empty or whitespace only"
+    _ -> do
+      inlines <- parseJSON v
+      case mkRichString (NE.toList inlines) of
+        Nothing -> fail "RichString cannot be empty or whitespace only"
+        Just rs -> pure rs
 
 $(deriveTypeScript cardpgJsonDef ''RichString)
 
@@ -126,12 +144,4 @@ $(deriveTypeScript cardpgJsonDef ''Block)
 type CardBody = [Block]
 
 
--- | Unsafe constructor for literals. 
--- | Assumes the text is non-empty and does not require stripping/merging.
-unsafeSimpleString :: Text -> RichString
-unsafeSimpleString t = RichString (TextRun Nothing (unsafeNonEmptyText t) NE.:| [])
 
--- | Safe constructor that attempts to create a RichString from Text.
--- | Returns Nothing if the text is empty or whitespace-only after stripping.
-simpleString :: Text -> Maybe RichString
-simpleString t = mkRichString [TextRun Nothing (unsafeNonEmptyText t)]
