@@ -6,10 +6,10 @@ import { RESOURCE_TYPES } from '../constants';
 
 describe('useHandSelection', () => {
   const mockCard1: CoreCard = {
+    type: 'coreCard',
     id: '1',
     name: 'Strike',
-    type: 'core',
-    cost: 0,
+    cost: 1,
     stats: { red: 0, yellow: 0, blue: 0 },
     rules: [
       {
@@ -25,7 +25,7 @@ describe('useHandSelection', () => {
   const mockCard2: CoreCard = {
     id: '2',
     name: 'Boost',
-    type: 'core',
+    type: 'coreCard',
     cost: undefined, // Not an action card
     stats: { red: 0, yellow: 0, blue: 0 },
   };

@@ -22,7 +22,7 @@ import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), Actor(..))
-import CardPG.Core.Json (cardpgJsonOptions)
+import CardPG.Core.Json (cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
 import CardPG.Core.RichText (simpleString, RichString)
@@ -52,8 +52,9 @@ data VttCoreCard = VttCoreCard
   }
   deriving (Show, Generic)
 
+
 instance ToJSON VttCoreCard where
-  toJSON = genericToJSON (cardpgJsonOptions "CoreCard")
+  toJSON = genericToJSON (cardpgTaggedOptions "Vtt")
 
 -- | VTT Actor Type
 data VttActor = VttActor

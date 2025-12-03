@@ -28,21 +28,20 @@ export const StatsSchema = GenSchemas.statsSchema;
 export type Stats = Gen.Stats;
 
 // Extend generated schemas to include the discriminator 'type'
+// Extend generated schemas to enforce 'id' presence and add discriminator
 export const CoreCardSchema = GenSchemas.coreCardSchema.and(
   z.object({
-    type: z.literal('core'),
     id: z.string(),
   }),
 );
-export type CoreCard = Gen.CoreCard & { type: 'core'; id: string };
+export type CoreCard = Gen.CoreCard & { id: string };
 
 export const ItemCardSchema = GenSchemas.itemCardSchema.and(
   z.object({
-    type: z.literal('item'),
     id: z.string(),
   }),
 );
-export type ItemCard = Gen.ItemCard & { type: 'item'; id: string };
+export type ItemCard = Gen.ItemCard & { id: string };
 
 export const CardSchema = z.union([CoreCardSchema, ItemCardSchema]);
 export type Card = CoreCard | ItemCard;

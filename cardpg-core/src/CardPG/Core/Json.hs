@@ -1,6 +1,7 @@
 module CardPG.Core.Json
   ( cardpgJsonOptions
   , cardpgJsonDef
+  , cardpgTaggedOptions
   , stripEmpty
   ) where
 
@@ -42,6 +43,13 @@ cardpgJsonOptions prefixToStrip = defaultOptions
 
 cardpgJsonDef :: Options
 cardpgJsonDef = cardpgJsonOptions ""
+
+-- | Options that force a "type" tag even for single constructors.
+-- | Useful for CoreCard/ItemCard to be discriminated unions.
+cardpgTaggedOptions :: String -> Options
+cardpgTaggedOptions prefixToStrip = (cardpgJsonOptions prefixToStrip)
+  { tagSingleConstructors = True
+  }
 
 -- | Recursively strip empty arrays and nulls from JSON Values
 stripEmpty :: Value -> Value

@@ -33,7 +33,7 @@ const BaseCard: React.FC<{
       }}
     >
       {/* Cost Badge (Core Only) */}
-      {card.type === 'core' && card.cost !== undefined && card.cost !== null && (
+      {card.type === 'coreCard' && card.cost !== undefined && card.cost !== null && (
         <div className="absolute top-1 right-1 bg-slate-900 text-white rounded border border-slate-600 z-20 flex flex-col items-center justify-center w-7 h-8 shadow-sm">
           <span className="text-[10px] text-slate-400 leading-none pt-0.5">Cost</span>
           <span className="font-bold text-sm leading-none pb-0.5">{card.cost}</span>
@@ -174,7 +174,7 @@ const ItemCardView: React.FC<{ card: ItemCard }> = ({ card }) => {
 export const CardComponent: React.FC<CardProps> = (props) => {
   return (
     <BaseCard {...props}>
-      {props.card.type === 'core' ? (
+      {props.card.type === 'coreCard' ? (
         <CoreCardView card={props.card} />
       ) : (
         <ItemCardView card={props.card} />

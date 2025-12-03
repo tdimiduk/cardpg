@@ -34,7 +34,7 @@ const ACTOR_DATA: ActorTemplate[] = rawData.map((actor) => ({
     ? actor.items.map((item) => {
         const itemObj = {
           ...item,
-          type: 'item' as const,
+          type: item.type as 'itemCard',
           id: item.id as string,
           name: item.name as string,
           traits: (item.traits as string[]) || [],
@@ -47,7 +47,7 @@ const ACTOR_DATA: ActorTemplate[] = rawData.map((actor) => ({
     ? actor.deck.map((card) => {
         const cardObj = {
           ...card,
-          type: 'core' as const,
+          type: card.type as 'coreCard',
           id: card.id as string,
           name: card.name as string,
           stats: card.stats,

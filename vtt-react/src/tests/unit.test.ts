@@ -13,11 +13,11 @@ const createCard = (
   flavor: RichString = [],
   id?: string,
   tags?: string[],
-  type: 'core' | 'item' | 'fatigue' = 'core',
+  type: 'coreCard' | 'itemCard' | 'fatigue' = 'coreCard',
 ): CoreCard | ItemCard => {
-  if (type === 'item') {
+  if (type === 'itemCard') {
     return {
-      type: 'item',
+      type: 'itemCard',
       id: id || name,
       name,
       flavor,
@@ -27,7 +27,7 @@ const createCard = (
     } as ItemCard;
   }
   return {
-    type: 'core',
+    type: 'coreCard',
     id: id || name,
     name,
     stats: { red: red || 0, yellow: yellow || 0, blue: blue || 0 },

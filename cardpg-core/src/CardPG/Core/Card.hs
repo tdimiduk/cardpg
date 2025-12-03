@@ -55,8 +55,8 @@ data CoreCard = CoreCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''CoreCard)
-$(deriveTypeScript cardpgJsonDef ''CoreCard)
+$(deriveJSON (cardpgTaggedOptions "") ''CoreCard)
+$(deriveTypeScript (cardpgTaggedOptions "") ''CoreCard)
 
 -- | Represents Items/Equipment that stay in play (Table Cards).
 data ItemCard = ItemCard
@@ -73,8 +73,8 @@ data ItemCard = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''ItemCard)
-$(deriveTypeScript cardpgJsonDef ''ItemCard)
+$(deriveJSON (cardpgTaggedOptions "") ''ItemCard)
+$(deriveTypeScript (cardpgTaggedOptions "") ''ItemCard)
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCard = NatureCard

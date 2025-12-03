@@ -101,7 +101,7 @@ export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number
   let max = 0;
   let found = false;
   equipped.forEach((c) => {
-    if (c.type === 'item') {
+    if (c.type === 'itemCard') {
       const val = stat === 'def' ? c.defense : c.resilience;
       if (val !== undefined && val !== null) {
         max = Math.max(max, val);

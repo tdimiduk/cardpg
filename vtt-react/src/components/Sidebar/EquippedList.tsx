@@ -14,7 +14,7 @@ export const EquippedList: React.FC<EquippedListProps> = ({ equipped }) => {
       </span>
       <div className="space-y-1">
         {equipped.map((c) => {
-          const isItem = c.type === 'item';
+          const isItem = c.type === 'itemCard';
           const def = isItem ? c.defense : undefined;
           const res = isItem ? c.resilience : undefined;
 

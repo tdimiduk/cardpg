@@ -7,7 +7,7 @@ describe('deckFactory Normalization', () => {
     const actor = templates[0];
     const card = actor.deck[0];
 
-    expect(card.type).toBe('core');
+    expect(card.type).toBe('coreCard');
   });
 
   it('should inject type: "item" into items', () => {
@@ -17,7 +17,7 @@ describe('deckFactory Normalization', () => {
     expect(actor).toBeDefined();
     if (actor) {
       const item = actor.items[0];
-      expect(item.type).toBe('item');
+      expect(item.type).toBe('itemCard');
     }
   });
 

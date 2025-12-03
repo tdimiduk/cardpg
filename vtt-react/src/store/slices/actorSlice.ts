@@ -220,7 +220,7 @@ export const createActorSlice: StateCreator<
           : { name: 'Generic Wound', text: 'You are hurt.', severity: targetSeverity };
 
       const newConsequence = {
-        type: 'core' as const,
+        type: 'coreCard' as const,
         id: Math.random().toString(),
         name: selection.name,
         flavor: [{ type: 'textRun' as const, content: selection.text }],
