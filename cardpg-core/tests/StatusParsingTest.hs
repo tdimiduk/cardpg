@@ -25,7 +25,8 @@ test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
           let rules = fromMaybe (error "No rules") (_rules fatigue)
           case NE.head rules of
               RuleGeneral _ -> return ()
-              r -> assertFailure $ "Expected RuleGeneral, got: " ++ show r
+              RuleTask _ -> return ()
+              r -> assertFailure $ "Expected RuleGeneral or RuleTask, got: " ++ show r
 
           -- Roundtrip check
           let encoded = encode cards

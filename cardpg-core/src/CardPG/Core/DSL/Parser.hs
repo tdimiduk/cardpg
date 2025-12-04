@@ -15,7 +15,7 @@ import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Data.List.NonEmpty as NE
 
-import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
 import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, takeWhilePNonEmptyStripped, mkNonEmptyText, unsafeNonEmptyText)
@@ -35,6 +35,8 @@ ruleParser = choice
   , try (channelParser <* eof)
   , try (primeParser <* eof)
   , try (passiveParser <* eof)
+  , try (taskParser <* eof)
+  , try (triggerParser <* eof)
   , try (generalParser <* eof)
   , (narrativeParser <* eof)
   ]
@@ -129,13 +131,82 @@ passiveParser = do
   let condition = mkNonEmptyText condStr
   pure $ RulePassive $ PassiveDef bonus condition
 
--- General (Explicit)
+-- Task
+-- Task: Name ({Color} X, Time) -> Effect
+taskParser :: Parser Rule
+taskParser = do
+  _ <- string' "Task:"
+  _ <- space
+  name <- takeWhilePNonEmptyStripped (Just "Task name") (\c -> c /= '(' && c /= '{' && c /= '-')
+  
+  (check, time, cost) <- (try $ do
+      _ <- char '('
+      
+      let checkP = try $ do
+            _ <- string' "Check"
+            _ <- hspace1
+            p <- stackPowerParser
+            pure p
+
+      let timeP = try $ do
+            _ <- string' "Time"
+            _ <- hspace1
+            t <- richTextParserWith [';', ')']
+            pure t
+
+      let costP = try $ do
+            _ <- string' "Cost"
+            _ <- hspace1
+            c <- richTextParserWith [';', ')']
+            pure c
+
+      let clause = choice 
+            [ (\c -> (Just c, Nothing, Nothing)) <$> checkP
+            , (\t -> (Nothing, Just t, Nothing)) <$> timeP
+            , (\c -> (Nothing, Nothing, Just c)) <$> costP
+            ]
+
+      clauses <- sepBy1 clause (try $ space >> char ';' >> space)
+      
+      _ <- char ')'
+      
+      let merge (c1, t1, co1) (c2, t2, co2) = (c1 <|> c2, t1 <|> t2, co1 <|> co2)
+      let (finalCheck, finalTime, finalCost) = foldl merge (Nothing, Nothing, Nothing) clauses
+      
+      pure (finalCheck, finalTime, finalCost)
+    ) <|> pure (Nothing, Nothing, Nothing)
+  
+  _ <- space
+  _ <- effectArrow
+  _ <- hspace
+  
+  effect <- richTextParser
+  pure $ RuleTask $ TaskDef name check time cost effect
+
+-- Trigger (When)
+-- When [Trigger] -> [Effect]
+triggerParser :: Parser Rule
+triggerParser = do
+  _ <- string' "When"
+  _ <- space1
+  trigger <- takeWhilePNonEmptyStripped (Just "Trigger condition") (\c -> c /= '-' && c /= '>')
+  
+  _ <- space
+  _ <- effectArrow
+  _ <- hspace
+  
+  effect <- richTextParser
+  pure $ RuleTrigger $ TriggerDef trigger effect
+
+-- General (Explicit Action)
 generalParser :: Parser Rule
 generalParser = do
   _ <- string' "Action:" <|> string' "General:"
   _ <- space
   name <- takeWhilePNonEmptyStripped (Just "Action name") (\c -> c /= '(' && c /= '{' && c /= '-') 
-
+  
+  -- Support "Action: Name (Spend {Color} X) -> Effect"
+  -- We treat the parenthetical as the cost
   cost <- optional $ betweenParens $ richTextParserWith [')']
   _ <- space
   power <- optional stackPowerParser
@@ -182,14 +253,18 @@ inlineParserStopAt stopChars = choice
   , try italicParser
   , try keywordParser
   , try colorValueParser
-  , breakParser
+  , breakParser stopChars
   , textParserStopAt stopChars
   ]
 
-breakParser :: Parser Inline
-breakParser = do
-  _ <- char ';' <|> char '\n'
-  pure Break
+breakParser :: [Char] -> Parser Inline
+breakParser stopChars = do
+  c <- lookAhead (char ';' <|> char '\n')
+  if c `elem` stopChars
+    then fail "Stop char"
+    else do
+      _ <- char c
+      pure Break
 
 boldParser :: Parser Inline
 boldParser = do

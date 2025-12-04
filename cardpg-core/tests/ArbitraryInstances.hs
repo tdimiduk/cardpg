@@ -98,6 +98,24 @@ instance Arbitrary PrimeDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+
+
+instance Arbitrary TriggerDef where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary TaskDef where
+  arbitrary = do
+    name <- arbitrary
+    check <- arbitrary
+    time <- arbitrary
+    cost <- arbitrary
+    effect <- arbitrary
+    pure $ TaskDef name check time cost effect
+  shrink = genericShrink
+
+
+
 instance Arbitrary Rule where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

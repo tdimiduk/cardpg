@@ -15,6 +15,7 @@ module Main where
 import ArbitraryInstances ()
 import RuleJsonTest (prop_ruleJsonParsing)
 import StatusParsingTest (test_statusParsing)
+import ReadmeExamplesTest (test_readmeExamples)
 
 
 import Test.Tasty
@@ -39,6 +40,7 @@ tests = testGroup "Tests"
   , testProperty "DSL Roundtrip" prop_dslRoundtrip
   , testProperty "Rule JSON Object Parsing" prop_ruleJsonParsing
   , test_statusParsing
+  , test_readmeExamples
   ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

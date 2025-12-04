@@ -51,8 +51,8 @@ This section defines the **strict syntax** required by the parser.
   - _Example:_ `Defend {Red} | {Yellow}: Strength = {Yellow} + 1`
 - **Action**: `Action: [Name] (Spend {Color} [Cost]) -> [Effect]`
   - _Example:_ `Action: Push Through (Spend {Red} 10) -> Remove this`
-- **Task**: `Task: [Name] ({Color} [Diff], [Time]) -> [Effect]`
-  - _Example:_ `Task: First Aid ({Blue} 3, 1 min) -> Remove this`
+- **Task**: `Task: [Name] (Check {Color} [Diff]; Time [Duration]; Cost [Narrative]) -> [Effect]`
+  - _Example:_ `Task: First Aid (Check {Blue} 3; Time 1 min) -> Remove this`
 - **Trigger**: `When [Trigger] -> [Effect]`
   - _Example:_ `When removed -> Add 1 Wound`
 - **Passive**: `Passive: [Bonus] [Condition]`

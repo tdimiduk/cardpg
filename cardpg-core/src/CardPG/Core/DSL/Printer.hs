@@ -6,7 +6,7 @@ module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.List.NonEmpty as NE
-import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..), TaskDef(..), TriggerDef(..))
 import CardPG.Core.RichText (RichString, unRichString, Inline(..), StackPower(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..))
 
@@ -39,6 +39,20 @@ prettyRule (RulePrime PrimeDef{..}) =
   "Prime " <> inParens (getNonEmptyText _trigger) <> ": " <> prettyRule _reaction
 prettyRule (RulePassive PassiveDef{..}) =
   "Passive: " <> prettyPower _bonus <> prettyCondition _condition
+prettyRule (RuleTask TaskDef{..}) =
+  "Task: " <> getNonEmptyText _name <> parensContent <> " " <> effectArrow <> " " <> richToString _effect
+  where
+    checkStr = fmap (\c -> "Check " <> prettyPower c) _check
+    timeStr = fmap (\t -> "Time " <> richToString t) _time
+    costStr = fmap (\c -> "Cost " <> richToString c) _cost
+    
+    parts = [checkStr, timeStr, costStr]
+    inner = T.intercalate "; " [p | Just p <- parts]
+
+    parensContent = if T.null inner then "" else " (" <> inner <> ")"
+
+prettyRule (RuleTrigger TriggerDef{..}) =
+  "When " <> getNonEmptyText _trigger <> " " <> effectArrow <> " " <> richToString _effect
 prettyRule (RuleNarrative rt) = richToString rt
 
 

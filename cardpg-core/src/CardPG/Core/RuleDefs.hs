@@ -9,6 +9,8 @@ module CardPG.Core.RuleDefs
   , AttackDef(..)
   , DefendDef(..)
   , GeneralDef(..)
+  , TaskDef(..)
+  , TriggerDef(..)
   , StanceDef(..)
   , ChannelDef(..)
   , PrimeDef(..)
@@ -74,11 +76,30 @@ data PrimeDef = PrimeDef
   , _reaction :: Rule
   } deriving (Show, Eq, Generic)
 
+-- | Task Actions (Downtime/Narrative)
+-- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
+data TaskDef = TaskDef
+  { _name   :: NonEmptyText
+  , _check  :: Maybe StackPower -- ^ The difficulty check: "Check {Blue} 3"
+  , _time   :: Maybe RichString -- ^ Duration: "Time 1 min"
+  , _cost   :: Maybe RichString -- ^ Narrative Cost: "Cost Bandage"
+  , _effect :: RichString       -- ^ Effect: "Remove this card"
+  } deriving (Show, Eq, Generic)
+
+-- | Triggered Effects (When)
+-- | Addresses: "When removed -> Add 1 Wound"
+data TriggerDef = TriggerDef
+  { _trigger :: NonEmptyText
+  , _effect  :: RichString
+  } deriving (Show, Eq, Generic)
+
 -- | The Top-Level Rule Sum Type
 data Rule
   = RuleAttack  AttackDef
   | RuleDefend  DefendDef
   | RuleGeneral GeneralDef
+  | RuleTask    TaskDef
+  | RuleTrigger TriggerDef
   | RuleStance  StanceDef
   | RuleChannel ChannelDef
   | RulePrime   PrimeDef
@@ -91,6 +112,8 @@ $(mconcat <$> traverse (deriveTypeScript (cardpgJsonOptions "Rule"))
   , ''AttackDef
   , ''DefendDef
   , ''GeneralDef
+  , ''TaskDef
+  , ''TriggerDef
   , ''StanceDef
   , ''ChannelDef
   , ''PrimeDef
@@ -107,6 +130,8 @@ $(mconcat <$> traverse (deriveJSON cardpgJsonDef)
   , ''AttackDef
   , ''DefendDef
   , ''GeneralDef
+  , ''TaskDef
+  , ''TriggerDef
   , ''StanceDef
   , ''ChannelDef
   ])

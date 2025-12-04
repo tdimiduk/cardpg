@@ -22,7 +22,7 @@ import Data.List (mapAccumL)
 
 import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), Actor(..))
 import CardPG.Core.Json (cardpgJsonOptions)
-import CardPG.Core.RuleDefs (AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RuleDefs (AttackDef(..), DefendDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
 import CardPG.Core.NonEmptyText (getNonEmptyText)
 import CardPG.Core.RichText (unRichString, RichString)
 
@@ -94,6 +94,22 @@ instance ToJSON StructuredRule where
       , "data" .= object (filter (\(_, v) -> v /= Null)
           [ "bonus" .= b
           , "condition" .= c
+          ])
+      ]
+    RuleTask (TaskDef n ch c eff) -> object
+      [ "type" .= ("task" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "name" .= n
+          , "check" .= ch
+          , "cost" .= fmap VttRichString c
+          , "effect" .= VttRichString eff
+          ])
+      ]
+    RuleTrigger (TriggerDef t eff) -> object
+      [ "type" .= ("trigger" :: Text)
+      , "data" .= object (filter (\(_, v) -> v /= Null)
+          [ "trigger" .= t
+          , "effect" .= VttRichString eff
           ])
       ]
 
