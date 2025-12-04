@@ -149,6 +149,7 @@ data ConsequenceCard = ConsequenceCard
   , _tags    :: Maybe (NonEmpty Text)
   , _passive :: Maybe Text
   , _effects :: Maybe (NonEmpty Text)
+  , _severity :: Int
   , _notes   :: Maybe Text
   , _rules   :: Maybe (NonEmpty Rule)
   }

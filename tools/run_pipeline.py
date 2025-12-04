@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Usage: python run_pipeline.py (in the tools directory)
+
 import os
 import sys
 import subprocess

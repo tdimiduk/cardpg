@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { Actor, TokenType, PlayerDeckState, Token, CoreCard } from '../../types';
+import { Actor, TokenType, PlayerDeckState, Token, CoreCard, ConsequenceCard } from '../../types';
 import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
 import { generateDeck } from '../../services/deckFactory';
 import {
@@ -10,7 +10,7 @@ import {
 } from '../../services/ruleService';
 import { shuffle } from '../../utils';
 import { STATUS_DATA } from '../../services/deckFactory';
-import { CONSEQUENCE_DEFINITIONS } from '../../data/consequences';
+import GENERATED_DATA from '../../data/generated_cards.json';
 import { LogSlice, createLog } from './logSlice';
 import { ACTOR_COLORS } from '../../theme';
 
@@ -213,9 +213,10 @@ export const createActorSlice: StateCreator<
       const currentSeverity = calculateSeverity(actor.deck.consequences, resilience);
       const targetSeverity = Math.min(currentSeverity, 3);
 
-      // Filter by severity tag
-      const severityTag = `Severity_${targetSeverity}`;
-      const pool = CONSEQUENCE_DEFINITIONS.filter((c) => c.tags.includes(severityTag));
+      // Filter by severity field
+      const pool = (GENERATED_DATA.consequences as ConsequenceCard[]).filter(
+        (c) => c.severity === targetSeverity,
+      );
 
       const selection =
         pool.length > 0
@@ -223,32 +224,17 @@ export const createActorSlice: StateCreator<
           : {
               id: `generic-sev-${targetSeverity}`,
               name: 'Generic Wound',
-              type: 'Consequence',
-              tags: [severityTag],
+              type: 'consequenceCard',
+              tags: [`Severity_${targetSeverity}`],
               effects: ['You are hurt.'],
-              passive: undefined,
+              severity: targetSeverity,
             };
 
-      const newConsequence: CoreCard = {
-        type: 'coreCard',
+      const newConsequence: ConsequenceCard = {
+        ...selection,
         id: Math.random().toString(),
-        name: selection.name,
-        flavor: selection.effects
-          ? selection.effects.map((e) => ({ type: 'textRun', content: e }))
-          : [],
-        tags: ['consequence', ...selection.tags],
-        stats: { red: 0, yellow: 0, blue: 0 },
-        rules: [],
-        cost: undefined,
-        // Add passive if present (using flavor or a specific field if CoreCard supported it,
-        // but for now we'll just put it in flavor or rules if needed.
-        // The original code put text in flavor.)
-      };
-
-      if (selection.passive) {
-        if (!newConsequence.flavor) newConsequence.flavor = [];
-        newConsequence.flavor.push({ type: 'textRun', content: `Passive: ${selection.passive}` });
-      }
+        type: 'consequenceCard',
+      } as ConsequenceCard;
 
       actor.deck.consequences.push(newConsequence);
       state.logs.push(

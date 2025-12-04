@@ -1,4 +1,4 @@
-import { CoreCard, ResourceType, PlayerDeckState, Stats, Card } from '../types';
+import { CoreCard, ResourceType, PlayerDeckState, Stats, Card, ConsequenceCard } from '../types';
 import { STATUS_DATA } from '../services/deckFactory';
 import { shuffle } from '../utils';
 
@@ -117,6 +117,6 @@ export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number
   return found ? max : 1; // Default Res 1, Def 1
 };
 
-export const calculateSeverity = (consequences: CoreCard[], resilience: number): number => {
+export const calculateSeverity = (consequences: ConsequenceCard[], resilience: number): number => {
   return Math.floor(consequences.length / resilience) + 1;
 };

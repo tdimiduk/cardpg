@@ -271,6 +271,7 @@ data VttConsequenceCard = VttConsequenceCard
   , _tags    :: Maybe (NonEmpty Text)
   , _passive :: Maybe Text
   , _effects :: Maybe (NonEmpty Text)
+  , _severity :: Int
   , _notes   :: Maybe Text
   , _rules   :: Maybe (NonEmpty StructuredRule)
   }
@@ -284,6 +285,7 @@ instance ToJSON VttConsequenceCard where
     , "tags" .= _tags
     , "passive" .= _passive
     , "effects" .= _effects
+    , "severity" .= _severity
     , "notes" .= _notes
     , "rules" .= _rules
     ]
@@ -295,6 +297,7 @@ toVttConsequenceCard ConsequenceCard{..} = VttConsequenceCard
   , _tags = _tags
   , _passive = _passive
   , _effects = _effects
+  , _severity = _severity
   , _notes = _notes
   , _rules = fmap (fmap StructuredRule) _rules
   }

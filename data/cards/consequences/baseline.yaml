@@ -6,10 +6,10 @@
   - 'Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) -> Remove this'
   - When removed -> Add 1 Wound to your expended pile
   tags:
-  - Severity_1
   - Combat
   - Condition
   type: consequenceCard
+  severity: 1
 - id: cons-sev1-strain-defense
   name: Rattled Guard
   notes: Increases the risk from future attacks
@@ -18,10 +18,10 @@
   - 'Task: Stretch Out (Check {Yellow} 3; Time 1 min) -> Remove this'
   - When removed -> Add 2 Fatigue to your expended pile
   tags:
-  - Severity_1
   - Combat
   - Condition
   type: consequenceCard
+  severity: 1
 - effects:
   - Put 2 Injury cards on top of your deck.
   id: cons-sev1-minor-trauma
@@ -31,10 +31,10 @@
   - 'Task: Steady Yourself (Check {Red} 3; Time 1 min) -> Remove this'
   - 'Action: Push Through (Spend {Red} 10) -> Remove this'
   tags:
-  - Severity_1
   - General
   - Status_Effect
   type: consequenceCard
+  severity: 1
 - id: cons-sev2-fumbled-strike
   name: Compromised Leverage
   notes: A severe penalty to offense.
@@ -44,10 +44,10 @@
   - 'Task: Set and Bind Wound (Check {Blue} 10; Time 1 hour) -> Remove this'
   - When removed -> Add 2 Wounds to your expended pile
   tags:
-  - Severity_2
   - Combat
   - Condition
   type: consequenceCard
+  severity: 2
 - id: cons-sev2-guard-breach
   name: Breached Guard
   notes: A severe penalty to defense.
@@ -59,10 +59,10 @@
     Remove this'
   - When removed -> If you used 'Hammer Out', this armor gains the 'Battered' condition
   tags:
-  - Severity_2
   - Combat
   - Condition
   type: consequenceCard
+  severity: 2
 - effects:
   - Expend 4 cards from hand and replace them with Injury cards. For each card you
     cannot expend, put the Injury on top of your deck instead.
@@ -74,14 +74,13 @@
   - 'Action: Force Yourself Back (Spend {Red} 10) -> Remove this'
   - When removed -> Add 1 Fatigue to your expended pile
   tags:
-  - Severity_2
   - General
   - Status_Effect
   type: consequenceCard
+  severity: 2
 - effects:
   - You are unconsious or dying and on longer a meaningful participant in this fight
   id: cons-sev3-taken-out
   name: Taken Out
-  tags:
-  - Severity_3
+  severity: 3
   type: consequenceCard

@@ -98,13 +98,20 @@ export interface GameState {
   activeTokenId: string | null;
 }
 
+export const ConsequenceCardSchema = GenSchemas.consequenceCardSchema.and(
+  z.object({
+    id: z.string(),
+  }),
+);
+export type ConsequenceCard = Gen.ConsequenceCard & { id: string };
+
 export interface PlayerDeckState {
   drawPile: CoreCard[];
   hand: CoreCard[];
   discardPile: CoreCard[];
   flippedPile: CoreCard[];
   equipped: Card[];
-  consequences: CoreCard[];
+  consequences: ConsequenceCard[];
 }
 
 export type GamePhase = 'planning' | 'resolution';

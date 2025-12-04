@@ -1,9 +1,10 @@
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
-import { CoreCard } from '../../types';
+import { ConsequenceCard } from '../../types';
+import { RuleRenderer } from '../Card/RuleRenderer';
 
 interface ConsequenceListProps {
-  consequences: CoreCard[];
+  consequences: ConsequenceCard[];
   currentSeverity: number;
   onAddConsequence: () => void;
   onRemoveConsequence: (cardId: string) => void;
@@ -49,6 +50,9 @@ export const ConsequenceList: React.FC<ConsequenceListProps> = ({
             >
               <div className="font-bold text-red-200 mb-1 flex justify-between items-start pr-4">
                 <span>{c.name}</span>
+                <span className="text-[9px] text-slate-500 uppercase tracking-wider border border-slate-700 px-1 rounded">
+                  Sev {c.severity}
+                </span>
                 <button
                   onClick={() => onRemoveConsequence(c.id)}
                   className="absolute top-1 right-1 text-slate-600 hover:text-slate-300 p-0.5 rounded transition-colors"
@@ -57,9 +61,32 @@ export const ConsequenceList: React.FC<ConsequenceListProps> = ({
                   <X size={12} />
                 </button>
               </div>
-              <div className="text-[10px] text-slate-400 whitespace-normal leading-normal">
-                {c.flavor && c.flavor[0]?.type === 'textRun' ? c.flavor[0].content : ''}
-              </div>
+              {/* Effects */}
+              {c.effects && c.effects.length > 0 && (
+                <div className="mb-2 space-y-1">
+                  {c.effects.map((effect, idx) => (
+                    <div key={idx} className="text-[10px] text-slate-400">
+                      {effect}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Passive */}
+              {c.passive && (
+                <div className="mb-2 text-[10px] text-slate-400">
+                  <span className="font-bold text-slate-300">Passive:</span> {c.passive}
+                </div>
+              )}
+
+              {/* Rules */}
+              {c.rules && c.rules.length > 0 && (
+                <div className="space-y-1">
+                  {c.rules.map((rule, idx) => (
+                    <RuleRenderer key={idx} rule={rule} />
+                  ))}
+                </div>
+              )}
             </div>
           ))
         )}

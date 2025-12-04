@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useActorStats } from './useActorStats';
-import { PlayerDeckState, CoreCard, ItemCard } from '../types';
+import { PlayerDeckState, CoreCard, ItemCard, ConsequenceCard } from '../types';
 
 describe('useActorStats', () => {
   const mockDeckState: PlayerDeckState = {
@@ -28,11 +28,10 @@ describe('useActorStats', () => {
     consequences: [
       {
         id: '4',
-        type: 'coreCard',
+        type: 'consequenceCard',
         name: 'Wound',
         severity: 1,
-        stats: { red: 0, yellow: 0, blue: 0 },
-      } as unknown as CoreCard,
+      } as ConsequenceCard,
     ],
   };
 
