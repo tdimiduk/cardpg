@@ -10,7 +10,7 @@ import System.IO (writeFile)
 import CardPG.Core.Types (ResourceType, StackPower)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (TextStyle, Inline, RichString, Block)
-import CardPG.Core.RuleDefs (PassiveDef, AttackDef, GeneralDef, StanceDef, ChannelDef, PrimeDef, Rule)
+import CardPG.Core.RuleDefs (PassiveDef, AttackDef, GeneralDef, StanceDef, ChannelDef, PrimeDef, Rule, TaskDef, TriggerDef)
 import CardPG.Core.Card (Stats, CoreCard, ItemCard, NatureCard, TalentCard, GeneralActionDef, EncounterMechanics, EncounterCard, ConsequenceCard, Actor)
 import CardPG.Server.Types (ClientMessage, ServerMessage)
 
@@ -39,6 +39,8 @@ main = do
         (getTypeScriptDeclarations (Proxy :: Proxy StanceDef)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy ChannelDef)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy PrimeDef)) <>
+        (getTypeScriptDeclarations (Proxy :: Proxy TaskDef)) <>
+        (getTypeScriptDeclarations (Proxy :: Proxy TriggerDef)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy Rule)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy Stats)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy CoreCard)) <>
