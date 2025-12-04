@@ -29,3 +29,4 @@ _Deviate only with explicit justification._
 ## Key References
 
 1.  **Core Rules:** `design/rules/core-rules.md` (Consult for existing mechanics)
+2.  **Guiding Principles:** `design/philosophy/guiding-principles.md` (High level goals for the project)
