@@ -104,16 +104,53 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
                 </div>
               )}
               {rule.type === 'general' && (
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex justify-between items-baseline">
-                    <span className="font-bold uppercase">{rule.data.name}</span>
-                    {rule.data.cost && (
-                      <span className="font-bold text-slate-600">
-                        <RichTextRenderer content={rule.data.cost} />
-                      </span>
-                    )}
-                  </div>
-                  <span className="font-serif italic pl-1">
+                <div className="leading-tight">
+                  <span className="font-bold uppercase">Action: {rule.data.name}</span>
+                  {(rule.data.cost || rule.data.difficulty) && (
+                    <span className="font-bold text-slate-700">
+                      {' ('}
+                      {rule.data.difficulty && (
+                        <>
+                          Check <InlineIcon color={rule.data.difficulty.attribute} />{' '}
+                          {rule.data.difficulty.value}
+                        </>
+                      )}
+                      {rule.data.difficulty && rule.data.cost && '; '}
+                      {rule.data.cost && <RichTextRenderer content={rule.data.cost} />}
+                      {')'}
+                    </span>
+                  )}
+                  {' -> '}
+                  <span className="font-serif italic">
+                    <RichTextRenderer content={rule.data.effect} />
+                  </span>
+                </div>
+              )}
+              {rule.type === 'task' && (
+                <div className="leading-tight">
+                  <span className="font-bold uppercase">Task: {rule.data.name}</span>
+                  {(rule.data.check || rule.data.time || rule.data.cost) && (
+                    <span className="font-bold text-slate-700">
+                      {' ('}
+                      {rule.data.check && (
+                        <>
+                          Check <InlineIcon color={rule.data.check.attribute} />{' '}
+                          {rule.data.check.value}
+                        </>
+                      )}
+                      {rule.data.check && (rule.data.time || rule.data.cost) && '; '}
+                      {rule.data.time && (
+                        <>
+                          Time <RichTextRenderer content={rule.data.time} />
+                        </>
+                      )}
+                      {rule.data.time && rule.data.cost && '; '}
+                      {rule.data.cost && <RichTextRenderer content={rule.data.cost} />}
+                      {')'}
+                    </span>
+                  )}
+                  {' -> '}
+                  <span className="font-serif italic">
                     <RichTextRenderer content={rule.data.effect} />
                   </span>
                 </div>
@@ -127,8 +164,6 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
             </div>
           ))}
         </div>
-
-
       </div>
     </>
   );

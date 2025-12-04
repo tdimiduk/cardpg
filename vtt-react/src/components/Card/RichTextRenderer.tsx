@@ -39,6 +39,13 @@ export const RichTextRenderer = ({ content }: { content?: Inline[] | null }) => 
             </span>
           );
         if (part.type === 'break') return <br key={index} />;
+        if (part.type === 'difficultyValue') {
+          return (
+            <span key={index} className="font-bold">
+              Check <InlineIcon color={part.difficulty.attribute} /> {part.difficulty.value}
+            </span>
+          );
+        }
         return null;
       })}
     </>

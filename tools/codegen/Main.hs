@@ -7,7 +7,7 @@ import Data.Aeson.TypeScript.TH
 import Data.Proxy
 import System.IO (writeFile)
 
-import CardPG.Core.Types (ResourceType, StackPower)
+import CardPG.Core.Types (ResourceType, StackPower, Difficulty)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (TextStyle, Inline, RichString, Block)
 import CardPG.Core.RuleDefs (PassiveDef, AttackDef, GeneralDef, StanceDef, ChannelDef, PrimeDef, Rule, TaskDef, TriggerDef)
@@ -28,6 +28,7 @@ main = do
   let declarations = formatTSDeclarations (
         (getTypeScriptDeclarations (Proxy :: Proxy ResourceType)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy StackPower)) <>
+        (getTypeScriptDeclarations (Proxy :: Proxy Difficulty)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy NonEmptyText)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy TextStyle)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy Inline)) <>

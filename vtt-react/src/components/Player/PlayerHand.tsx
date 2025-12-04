@@ -231,22 +231,21 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                               </span>
                             </>
                           )}
-                          {rule.type === 'general' && rule.data.power && (
+                          {rule.type === 'general' && rule.data.difficulty && (
                             <>
                               <span
                                 className={
-                                  rule.data.power.source === RESOURCE_TYPES.RED
+                                  rule.data.difficulty.attribute === RESOURCE_TYPES.RED
                                     ? 'text-red-400'
-                                    : rule.data.power.source === RESOURCE_TYPES.YELLOW
+                                    : rule.data.difficulty.attribute === RESOURCE_TYPES.YELLOW
                                       ? 'text-yellow-400'
                                       : 'text-blue-400'
                                 }
                               >
-                                <ColorIcon color={rule.data.power.source} />
+                                <ColorIcon color={rule.data.difficulty.attribute} />
                               </span>
                               <span className="font-mono ml-1">
-                                ({rule.data.power.modifier > 0 ? '+' : ''}
-                                {rule.data.power.modifier})
+                                (Diff {rule.data.difficulty.value})
                               </span>
                             </>
                           )}

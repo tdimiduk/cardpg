@@ -67,8 +67,8 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
         card.name,
       );
     } else if (rule.type === 'general') {
-      const source = rule.data.power?.source || RESOURCE_TYPES.RED;
-      const modifier = rule.data.power?.modifier || 0;
+      const source = rule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
+      const modifier = 0;
       onPlayStack(selectedCards, source, modifier, undefined, card.name);
     }
     clearSelection();
