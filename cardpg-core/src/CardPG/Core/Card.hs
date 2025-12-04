@@ -154,8 +154,8 @@ data ConsequenceCard = ConsequenceCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''ConsequenceCard)
-$(deriveTypeScript cardpgJsonDef ''ConsequenceCard)
+$(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCard)
+$(deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard)
 
 -- | Represents an Actor (Character/Monster/NPC).
 data Actor = Actor

@@ -13,7 +13,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Read as TR
 import GHC.Generics (Generic)
 
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..), DefendDef(..))
+import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..))
 import CardPG.Core.RichText (RichString, mkRichString, Inline(..), simpleString)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
@@ -131,8 +131,6 @@ parseRules actionStr effectStr detailsStr = do
   case (r1, r2) of
     (Just (RuleAttack def), Just (RuleNarrative rt)) -> 
       pure $ RuleAttack (mergeEffect def rt) : r3
-    (Just (RuleDefend def), Just (RuleNarrative rt)) -> 
-      pure $ RuleDefend (mergeEffectDef def rt) : r3
     (Just ra, Just re) -> pure $ ra : re : r3
     (Just ra, Nothing) -> pure $ ra : r3
     (Nothing, Just re) -> pure $ re : r3
@@ -141,10 +139,6 @@ parseRules actionStr effectStr detailsStr = do
 mergeEffect :: AttackDef -> RichString -> AttackDef
 mergeEffect (AttackDef p r e) rt = AttackDef p r (mergeRichString e rt)
 
-mergeEffectDef :: DefendDef -> RichString -> DefendDef
-mergeEffectDef (DefendDef p r e) rt = DefendDef p r (mergeRichString e rt)
-
-mergeRichString :: Maybe RichString -> RichString -> Maybe RichString
 mergeRichString Nothing new = Just new
 mergeRichString (Just old) new = 
   case mkRichString [Break] of

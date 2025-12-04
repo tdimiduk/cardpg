@@ -40,7 +40,6 @@ instance FromJSON Rule where
       t <- o .: "type"
       case (t :: Text) of
         "attack"   -> (RuleAttack   <$> parseJSON v) <|> genericParseJSON (cardpgJsonOptions "Rule") v
-        "defend"   -> (RuleDefend   <$> parseJSON v) <|> genericParseJSON (cardpgJsonOptions "Rule") v
         "general"  -> (RuleGeneral  <$> parseJSON v) <|> genericParseJSON (cardpgJsonOptions "Rule") v
         "stance"   -> (RuleStance   <$> parseJSON v) <|> genericParseJSON (cardpgJsonOptions "Rule") v
         "channel"  -> (RuleChannel  <$> parseJSON v) <|> genericParseJSON (cardpgJsonOptions "Rule") v

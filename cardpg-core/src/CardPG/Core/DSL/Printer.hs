@@ -6,9 +6,9 @@ module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.List.NonEmpty as NE
-import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..), TaskDef(..), TriggerDef(..))
+import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), GeneralDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..), TaskDef(..), TriggerDef(..))
 import CardPG.Core.RichText (RichString, unRichString, Inline(..), StackPower(..), TextStyle(..))
-import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.Types (ResourceType(..), Difficulty(..))
 
 import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
 
@@ -26,11 +26,9 @@ inParens t = "(" <> t <> ")"
 prettyRule :: Rule -> Text
 prettyRule (RuleAttack AttackDef{..}) =
   "Attack " <> prettyResource _resistedBy <> ": Strength = " <> prettyPower _power <> prettyExtra _effect
-prettyRule (RuleDefend DefendDef{..}) =
-  "Defend " <> T.intercalate ", " (map prettyResource (NE.toList _resists)) <> ": Strength = " <> prettyPower _power <> prettyExtra _effect
 prettyRule (RuleGeneral GeneralDef{..}) = 
   "Action: " <> getNonEmptyText _name <> maybe "" ((" " <>) . inParens. richToString) _cost 
-  <> maybe "" ((" " <>) . prettyPower) _power  <> " " <> effectArrow <> " " <> richToString _effect
+  <> maybe "" ((" " <>) . prettyDifficulty) _difficulty  <> " " <> effectArrow <> " " <> richToString _effect
 prettyRule (RuleStance StanceDef{..}) =
   "Stance " <> inParens (getNonEmptyText _duration) <> prettyExtra (Just _effect)
 prettyRule (RuleChannel ChannelDef{..}) =
@@ -42,7 +40,7 @@ prettyRule (RulePassive PassiveDef{..}) =
 prettyRule (RuleTask TaskDef{..}) =
   "Task: " <> getNonEmptyText _name <> parensContent <> " " <> effectArrow <> " " <> richToString _effect
   where
-    checkStr = fmap (\c -> "Check " <> prettyPower c) _check
+    checkStr = fmap (\c -> "Check " <> prettyDifficulty c) _check
     timeStr = fmap (\t -> "Time " <> richToString t) _time
     costStr = fmap (\c -> "Cost " <> richToString c) _cost
     
@@ -54,8 +52,6 @@ prettyRule (RuleTask TaskDef{..}) =
 prettyRule (RuleTrigger TriggerDef{..}) =
   "When " <> getNonEmptyText _trigger <> " " <> effectArrow <> " " <> richToString _effect
 prettyRule (RuleNarrative rt) = richToString rt
-
-
 
 prettyCondition :: Maybe NonEmptyText -> Text
 prettyCondition Nothing = ""
@@ -80,6 +76,9 @@ prettyModifier n
   | n >= 0 = "+ " <> T.pack (show n)
   | otherwise = "- " <> T.pack (show (abs n))
 
+prettyDifficulty :: Difficulty -> Text
+prettyDifficulty (Difficulty attr val) = prettyResource attr <> " " <> T.pack (show val)
+
 prettyExtra :: Maybe RichString -> Text
 prettyExtra Nothing = ""
 prettyExtra (Just rt) = " -> " <> richToString rt
@@ -94,6 +93,6 @@ inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getNonEmptyText co
 inlineToString (TextRun (Just Italic) content) = wrapped "*" $ getNonEmptyText content
 inlineToString (TextRun (Just GameKeyword) content) = wrapped "`" $ getNonEmptyText content 
 inlineToString (TextRun _ content) = getNonEmptyText content
-
 inlineToString (ColorValue power) = prettyPower power
+inlineToString (DifficultyValue diff) = prettyDifficulty diff
 inlineToString Break = "\n"

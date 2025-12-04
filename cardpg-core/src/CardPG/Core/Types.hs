@@ -3,6 +3,7 @@
 module CardPG.Core.Types
   ( ResourceType(..)
   , StackPower(..)
+  , Difficulty(..)
   )
 where
 
@@ -23,8 +24,16 @@ data StackPower = StackPower
   }
   deriving stock (Eq, Show, Generic)
 
+data Difficulty = Difficulty
+  { _attribute :: ResourceType
+  , _value     :: Int
+  }
+  deriving stock (Eq, Show, Generic)
+
 $(deriveJSON cardpgJsonDef ''ResourceType)
 $(deriveJSON cardpgJsonDef ''StackPower)
+$(deriveJSON cardpgJsonDef ''Difficulty)
 
 $(deriveTypeScript cardpgJsonDef ''ResourceType)
 $(deriveTypeScript cardpgJsonDef ''StackPower)
+$(deriveTypeScript cardpgJsonDef ''Difficulty)

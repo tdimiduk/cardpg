@@ -23,7 +23,7 @@ import qualified Data.Text as T
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json
-import CardPG.Core.Types (StackPower(..))
+import CardPG.Core.Types (StackPower(..), Difficulty)
 import CardPG.Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText, mkNonEmptyText, getNonEmptyText)
 
 -- | 1. The Token Stream
@@ -52,6 +52,9 @@ data Inline
       }
   | ColorValue 
       { _value :: StackPower 
+      }
+  | DifficultyValue
+      { _difficulty :: Difficulty
       }
   | Break
   deriving stock (Eq, Show, Generic)

@@ -7,7 +7,6 @@
 module CardPG.Core.RuleDefs
   ( PassiveDef(..)
   , AttackDef(..)
-  , DefendDef(..)
   , GeneralDef(..)
   , TaskDef(..)
   , TriggerDef(..)
@@ -17,13 +16,11 @@ module CardPG.Core.RuleDefs
   , Rule(..)
   ) where
 
-
 import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Aeson.TH (deriveJSON)
-import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
 
-import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.Types (ResourceType(..), Difficulty)
 import CardPG.Core.RichText (RichString, StackPower)
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
@@ -42,19 +39,12 @@ data AttackDef = AttackDef
   , _effect     :: Maybe RichString
   } deriving (Show, Eq, Generic)
 
--- | Defense Logic
-data DefendDef = DefendDef
-  { _power   :: StackPower
-  , _resists :: NonEmpty ResourceType
-  , _effect  :: Maybe RichString
-  } deriving (Show, Eq, Generic)
-
 -- | General/Utility Actions
 -- | Addresses: "Fatigue: Action (Sleep 2 hours): Remove this"
 data GeneralDef = GeneralDef
   { _name   :: NonEmptyText
   , _cost   :: Maybe RichString -- ^ Narrative Cost: "Sleep 2 hours"
-  , _power  :: Maybe StackPower -- ^ Optional. Fatigue removal isn't a check.
+  , _difficulty :: Maybe Difficulty -- ^ Optional. Fatigue removal isn't a check.
   , _effect :: RichString       -- ^ Effect: "Remove this card"
   } deriving (Show, Eq, Generic)
 
@@ -80,7 +70,7 @@ data PrimeDef = PrimeDef
 -- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
 data TaskDef = TaskDef
   { _name   :: NonEmptyText
-  , _check  :: Maybe StackPower -- ^ The difficulty check: "Check {Blue} 3"
+  , _check  :: Maybe Difficulty -- ^ The difficulty check: "Check {Blue} 3"
   , _time   :: Maybe RichString -- ^ Duration: "Time 1 min"
   , _cost   :: Maybe RichString -- ^ Narrative Cost: "Cost Bandage"
   , _effect :: RichString       -- ^ Effect: "Remove this card"
@@ -96,7 +86,7 @@ data TriggerDef = TriggerDef
 -- | The Top-Level Rule Sum Type
 data Rule
   = RuleAttack  AttackDef
-  | RuleDefend  DefendDef
+
   | RuleGeneral GeneralDef
   | RuleTask    TaskDef
   | RuleTrigger TriggerDef
@@ -110,7 +100,6 @@ data Rule
 $(mconcat <$> traverse (deriveTypeScript (cardpgJsonOptions "Rule")) 
   [ ''PassiveDef
   , ''AttackDef
-  , ''DefendDef
   , ''GeneralDef
   , ''TaskDef
   , ''TriggerDef
@@ -128,7 +117,6 @@ $(mconcat <$> traverse (deriveTypeScript (cardpgJsonOptions "Rule"))
 $(mconcat <$> traverse (deriveJSON cardpgJsonDef)
   [ ''PassiveDef
   , ''AttackDef
-  , ''DefendDef
   , ''GeneralDef
   , ''TaskDef
   , ''TriggerDef

@@ -13,11 +13,10 @@ import Data.Void (Void)
 import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, takeWhileP, sepBy1, eof, choice, between, lookAhead, notFollowedBy)
 import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
-import qualified Data.List.NonEmpty as NE
 
-import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), DefendDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
 import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextStyle(..))
-import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.Types (ResourceType(..), Difficulty(..))
 import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, takeWhilePNonEmptyStripped, mkNonEmptyText, unsafeNonEmptyText)
 
 type Parser = Parsec Void Text
@@ -30,7 +29,6 @@ parseRule t = case parse ruleParser "" t of
 ruleParser :: Parser Rule
 ruleParser = choice
   [ try (attackParser <* eof)
-  , try (defendParser <* eof)
   , try (stanceParser <* eof)
   , try (channelParser <* eof)
   , try (primeParser <* eof)
@@ -39,12 +37,6 @@ ruleParser = choice
   , try (triggerParser <* eof)
   , try (generalParser <* eof)
   , (narrativeParser <* eof)
-  ]
-
-orSep :: Parser ()
-orSep = void $ choice
-  [ try (space1 >> string' "or" >> space1)
-  , try (space >> char ',' >> space)
   ]
 
 -- Attack
@@ -60,19 +52,6 @@ attackParser = do
   _ <- separatorParser
   extra <- optional richTextParser
   pure $ RuleAttack $ AttackDef power resistedBy extra
-
--- Defend
-defendParser :: Parser Rule
-defendParser = do
-  _ <- string' "defend"
-  _ <- space1
-  resists <- sepBy1 resourceSymbol orSep
-  _ <- optional (char ':')
-  power <- optional (space1 >> stackPowerParser)
-  _ <- separatorParser
-  extra <- optional richTextParser
-  let p = fromMaybe (StackPower Red 0 Nothing) power 
-  pure $ RuleDefend $ DefendDef p (NE.fromList resists) extra
 
 -- Stance
 stanceParser :: Parser Rule
@@ -145,7 +124,7 @@ taskParser = do
       let checkP = try $ do
             _ <- string' "Check"
             _ <- hspace1
-            p <- stackPowerParser
+            p <- difficultyParser
             pure p
 
       let timeP = try $ do
@@ -209,14 +188,14 @@ generalParser = do
   -- We treat the parenthetical as the cost
   cost <- optional $ betweenParens $ richTextParserWith [')']
   _ <- space
-  power <- optional stackPowerParser
+  difficulty <- optional difficultyParser
   _ <- space
   _ <- effectArrow
   _ <- hspace
 
   effect <- richTextParser
   
-  pure $ RuleGeneral $ GeneralDef name cost power effect
+  pure $ RuleGeneral $ GeneralDef name cost difficulty effect
 
 -- Narrative (Fallback for General)
 narrativeParser :: Parser Rule
@@ -292,8 +271,7 @@ colorValueParser = do
   -- Lookahead to ensure we are parsing something that looks like a resource symbol
   -- to avoid consuming normal text that starts with '{' but isn't a resource.
   _ <- lookAhead (char '{')
-  sp <- stackPowerParser
-  pure $ ColorValue sp
+  (DifficultyValue <$> try difficultyParser) <|> (ColorValue <$> stackPowerParser)
 
 textParserStopAt :: [Char] -> Parser Inline
 textParserStopAt stopChars = do
@@ -361,3 +339,15 @@ stackPowerParser = do
     pure $ "(" <> content <> ")"
   _ <- hspace -- Consume trailing hspace
   pure $ StackPower base (fromMaybe 0 modVal) conditional
+
+difficultyParser :: Parser Difficulty
+difficultyParser = do
+  _ <- optional $ try $ do
+    _ <- string' "Check" <|> string' "Diff"
+    _ <- hspace1
+    _ <- optional (char '=')
+    hspace
+  base <- resourceSymbol
+  _ <- hspace
+  val <- L.decimal
+  pure $ Difficulty base val

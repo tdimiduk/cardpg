@@ -15,12 +15,15 @@ module Main where
 import ArbitraryInstances ()
 import RuleJsonTest (prop_ruleJsonParsing)
 import StatusParsingTest (test_statusParsing)
+import ConsequenceParsingTest (test_consequenceParsing)
 import ReadmeExamplesTest (test_readmeExamples)
 
 
 import Test.Tasty
 import Test.Tasty.QuickCheck
 import Data.Aeson (encode, eitherDecode, ToJSON, FromJSON)
+import Data.IORef
+import System.IO.Unsafe (unsafePerformIO)
 
 import CardPG.Core.Card
 import CardPG.Core.DSL.Parser (parseRule)
@@ -40,6 +43,7 @@ tests = testGroup "Tests"
   , testProperty "DSL Roundtrip" prop_dslRoundtrip
   , testProperty "Rule JSON Object Parsing" prop_ruleJsonParsing
   , test_statusParsing
+  , test_consequenceParsing
   , test_readmeExamples
   ]
 
@@ -54,3 +58,15 @@ prop_dslRoundtrip r =
   let printed = prettyRule r
       parsed = parseRule printed
   in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right r
+
+-- Debugging Helpers
+
+{-# NOINLINE debugRef #-}
+debugRef :: IORef (Maybe Rule)
+debugRef = unsafePerformIO (newIORef Nothing)
+
+captureFailure :: Rule -> Property -> Property
+captureFailure x prop = whenFail (writeIORef debugRef (Just x)) prop
+
+prop_dslRoundtrip_debug :: Rule -> Property
+prop_dslRoundtrip_debug r = captureFailure r (prop_dslRoundtrip r)
