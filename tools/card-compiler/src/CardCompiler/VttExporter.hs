@@ -20,7 +20,7 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as Map
 import Data.List (mapAccumL)
 
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), Actor(..))
+import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), Actor(..), ConsequenceCard(..))
 import CardPG.Core.Json (cardpgJsonOptions)
 import CardPG.Core.RuleDefs (AttackDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
 import CardPG.Core.NonEmptyText (getNonEmptyText)
@@ -147,6 +147,7 @@ instance ToJSON VttActor where
 data VttExport = VttExport
   { _actors   :: [VttActor]
   , _statuses :: [VttCoreCard]
+  , _consequences :: [VttConsequenceCard]
   }
   deriving (Show, Generic)
 
@@ -156,38 +157,41 @@ instance ToJSON VttExport where
 -- | Load and Export Function
 loadAndExport :: [FilePath] -> FilePath -> IO ()
 loadAndExport inputFiles outputFile = do
-  (actors, statuses) <- foldM processFile ([], []) inputFiles
+  (actors, statuses, consequences) <- foldM processFile ([], [], []) inputFiles
 
   let exportData = VttExport
         { _actors = actors
         , _statuses = statuses
+        , _consequences = consequences
         }
 
   LBS.writeFile outputFile (Aeson.encode exportData)
   putStrLn $ "Exported " ++ show (length actors) ++ " actors and " ++ show (length statuses) ++ " status cards to " ++ outputFile
 
   where
-    processFile :: ([VttActor], [VttCoreCard]) -> FilePath -> IO ([VttActor], [VttCoreCard])
-    processFile (accActors, accStatuses) file = do
+    processFile :: ([VttActor], [VttCoreCard], [VttConsequenceCard]) -> FilePath -> IO ([VttActor], [VttCoreCard], [VttConsequenceCard])
+    processFile (accActors, accStatuses, accConsequences) file = do
       result <- Yaml.decodeFileEither file
       case result of
         Right (actor :: Actor) -> do
-          return (convertActor actor : accActors, accStatuses)
+          return (convertActor actor : accActors, accStatuses, accConsequences)
         Left _ -> do
           -- Try parsing as list of CoreCards (Status Library)
           resultCards <- Yaml.decodeFileEither file
           case resultCards of
             Right (cards :: [CoreCard]) -> do
-               -- For status cards, we don't need the complex ID logic of decks yet, 
-               -- or maybe we do? Let's assume simple ID assignment for now or use existing IDs.
-               -- The `processDeck` logic is useful for deduplication and ID assignment.
-               -- Let's treat the file name or a generic "status" as the "actorId" for ID generation purposes if needed,
-               -- but CoreCards usually have IDs.
                let vttCards = map (\c@CoreCard{_name=n, _id=i} -> toVttCoreCard c (fromMaybe (slugify (getNonEmptyText n)) i)) cards
-               return (accActors, vttCards ++ accStatuses)
-            Left err -> do
-               putStrLn $ "Warning: Failed to parse " ++ file ++ " as Actor or Card List: " ++ show err
-               return (accActors, accStatuses)
+               return (accActors, vttCards ++ accStatuses, accConsequences)
+            Left _ -> do
+               -- Try parsing as list of ConsequenceCards
+               resultConsequences <- Yaml.decodeFileEither file
+               case resultConsequences of
+                 Right (consequences :: [ConsequenceCard]) -> do
+                   let vttConsequences = map toVttConsequenceCard consequences
+                   return (accActors, accStatuses, vttConsequences ++ accConsequences)
+                 Left err -> do
+                   putStrLn $ "Warning: Failed to parse " ++ file ++ " as Actor, Card List, or Consequence List: " ++ show err
+                   return (accActors, accStatuses, accConsequences)
 
 -- | Convert Actor to VttActor
 convertActor :: Actor -> VttActor
@@ -257,3 +261,38 @@ ensureItemId item@ItemCard{..} = item { _id = Just $ fromMaybe (slugify (getNonE
 -- | Simple slugify
 slugify :: Text -> Text
 slugify = T.toLower . T.replace " " "-"
+
+-- | VTT Consequence Card Type
+data VttConsequenceCard = VttConsequenceCard
+  { _id      :: Maybe Text
+  , _name    :: Text
+  , _tags    :: Maybe (NonEmpty Text)
+  , _passive :: Maybe Text
+  , _effects :: Maybe (NonEmpty Text)
+  , _notes   :: Maybe Text
+  , _rules   :: Maybe (NonEmpty StructuredRule)
+  }
+  deriving (Show, Generic)
+
+instance ToJSON VttConsequenceCard where
+  toJSON VttConsequenceCard{..} = object $ filter (\(_, v) -> v /= Null)
+    [ "type" .= ("consequenceCard" :: Text)
+    , "id" .= _id
+    , "name" .= _name
+    , "tags" .= _tags
+    , "passive" .= _passive
+    , "effects" .= _effects
+    , "notes" .= _notes
+    , "rules" .= _rules
+    ]
+
+toVttConsequenceCard :: ConsequenceCard -> VttConsequenceCard
+toVttConsequenceCard ConsequenceCard{..} = VttConsequenceCard
+  { _id = _id
+  , _name = getNonEmptyText _name
+  , _tags = _tags
+  , _passive = _passive
+  , _effects = _effects
+  , _notes = _notes
+  , _rules = fmap (fmap StructuredRule) _rules
+  }
