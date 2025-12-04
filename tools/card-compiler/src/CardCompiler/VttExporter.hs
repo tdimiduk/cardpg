@@ -166,7 +166,9 @@ loadAndExport inputFiles outputFile = do
         }
 
   LBS.writeFile outputFile (Aeson.encode exportData)
-  putStrLn $ "Exported " ++ show (length actors) ++ " actors and " ++ show (length statuses) ++ " status cards to " ++ outputFile
+  putStrLn $ "Exported " ++ show (length actors) ++ " actors, " 
+                         ++ show (length statuses) ++ " status cards, and " 
+                         ++ show (length consequences) ++ " consequence cards to" ++ outputFile
 
   where
     processFile :: ([VttActor], [VttCoreCard], [VttConsequenceCard]) -> FilePath -> IO ([VttActor], [VttCoreCard], [VttConsequenceCard])
