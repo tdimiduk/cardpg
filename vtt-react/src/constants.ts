@@ -6,7 +6,7 @@ export const GRID_SIZE = 64; // pixels per square
 export const INITIAL_ACTORS: Record<string, Actor> = {
   'hero-1': {
     id: 'hero-1',
-    name: 'Vallhach',
+    name: 'Swashbuckler',
     type: TokenType.PC,
     color: ACTOR_COLORS.PC,
     deck: {

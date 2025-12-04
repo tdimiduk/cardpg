@@ -12,7 +12,7 @@ import { shuffle } from '../../utils';
 import { STATUS_DATA } from '../../services/deckFactory';
 import GENERATED_DATA from '../../data/generated_cards.json';
 import { LogSlice, createLog } from './logSlice';
-import { ACTOR_COLORS } from '../../theme';
+import { createActor } from '../../services/actorFactory';
 
 export interface ActorSlice {
   actors: Record<string, Actor>;
@@ -57,10 +57,8 @@ export const createActorSlice: StateCreator<
   initializeGame: () =>
     set((state) => {
       Object.values(state.actors).forEach((actor) => {
-        const { deck, equipped } =
-          actor.type === TokenType.MONSTER
-            ? generateDeck('lizard-warrior')
-            : generateDeck('swashbuckler');
+        const templateId = actor.name.toLowerCase().replace(/\s+/g, '-');
+        const { deck, equipped } = generateDeck(templateId);
 
         const deckState: PlayerDeckState = {
           drawPile: deck,
@@ -78,41 +76,13 @@ export const createActorSlice: StateCreator<
 
   addActor: (name, actorType, color, templateId) =>
     set((state) => {
-      const id = Math.random().toString(36).substr(2, 9);
-      let deckRes;
-      if (templateId) {
-        deckRes = generateDeck(templateId);
-      } else if (actorType === TokenType.MONSTER) {
-        deckRes = generateDeck('lizard-warrior');
-      } else {
-        deckRes = generateDeck('swashbuckler');
-      }
-
-      const newActor: Actor = {
-        id,
-        name,
-        type: actorType,
-        color: color || (actorType === TokenType.MONSTER ? ACTOR_COLORS.MONSTER : ACTOR_COLORS.PC),
-        deck: {
-          drawPile: deckRes.deck,
-          hand: [],
-          discardPile: [],
-          flippedPile: [],
-          equipped: deckRes.equipped,
-          consequences: [],
-        },
-      };
-
-      const drawRes = drawCards(newActor.deck, 4);
-      newActor.deck = drawRes.newState;
-
-      state.actors[id] = newActor;
+      const newActor = createActor(name, actorType, color, templateId);
+      state.actors[newActor.id] = newActor;
 
       // Also spawn token (Logic moved from dispatch, but requires access to tokens)
-      // We can call the board slice action if we had access, or just mutate here since we are in the same store
       state.tokens.push({
-        id: `token-${id}`,
-        actorId: id,
+        id: `token-${newActor.id}`,
+        actorId: newActor.id,
         x: 0,
         y: 0,
         size: 1,

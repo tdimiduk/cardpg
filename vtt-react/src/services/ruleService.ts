@@ -18,7 +18,8 @@ export const drawCards = (
   currentDeck: PlayerDeckState,
   count: number,
 ): { newState: PlayerDeckState; drawn: CoreCard[]; fatigueTriggered: boolean } => {
-  let { drawPile, discardPile } = currentDeck;
+  let drawPile = [...currentDeck.drawPile];
+  let discardPile = [...currentDeck.discardPile];
   const { hand } = currentDeck;
   const drawn: CoreCard[] = [];
   let fatigueTriggered = false;
