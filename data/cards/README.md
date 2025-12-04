@@ -1,7 +1,7 @@
 # Card Data & Schema
 
 This directory contains the **Single Source of Truth (SSOT)** for all Cards, Items, and Encounters.
-The data is stored in **Hybrid YAML** format, which combines structured fields (Stats, Cost) with a **Mini-DSL** for game rules.
+The data is stored in **YAML** format, which combines structured fields (Stats, Cost) with a **Mini-DSL** for game rules.
 
 **Format**: YAML
 **Extension**: `.yaml`
@@ -9,101 +9,61 @@ The data is stored in **Hybrid YAML** format, which combines structured fields (
 
 ## Data Pipeline
 
-1.  **Source**: YAML files in this directory (e.g., `core/`, `items/`, `imported/`).
-2.  **Build**: The `compiler.py` tool validates these files and compiles them into a single JSON artifact.
+1.  **Source**: YAML files in this directory.
+2.  **Build**: The Haskell `card-compiler` tool validates these files and compiles them into a single JSON artifact.
 3.  **Consumption**: The VTT (and potentially other tools) load the generated JSON.
-
-### Legacy Migration
-
-- Legacy data (Google Sheets, TSV) is converted to YAML using `tools/card_compiler/migrate.py`.
-- Once migrated, the YAML file becomes the SSOT. Edits should happen in YAML, not the source sheet.
 
 ## Card Categories
 
-**Category is inferred from the file path** (e.g., `cards/core/` -> Deck, `cards/items/` -> Table).
+1.  **Deck Cards (`CoreCard`)**: Cards that go into a deck. They provide Stats (Red/Yellow/Blue) and contain a list of **Rules**.
+2.  **Table Cards (`ItemCard`, `NatureCard`)**: Cards that stay in play (Item, Monster, Character). They provide Defense, Resilience, and passive capabilities.
 
-1.  **Deck Cards**: Cards that go into a deck. They provide Stats (Red/Yellow/Blue) and contain a list of **Rules**.
-2.  **Table Cards**: Cards that stay in play (Item, Monster, Character). They provide Defense, Resilience, and passive capabilities.
+## Schema Reference
 
-## Field Definitions
+**The authoritative schema is defined in the Haskell source code:**
+[`CardPG.Core.Card`](../../cardpg-core/src/CardPG/Core/Card.hs)
 
-### Common Fields
+Refer to the Haskell types (`CoreCard`, `ItemCard`, `NatureCard`) for the exact list of required and optional fields.
 
-- `name` (Required): Display name.
-- `id` (Optional): Kebab-case unique identifier. **Defaults to slugified name**.
-- `tags` (Optional): List of strings.
-- `flavor` (Optional): Multi-line string.
+### Key Concepts
 
-### 1. Deck Cards (The "Hand")
+- **Deck Cards (`CoreCard`)**:
 
-**Types**: `Action`, `Defense`, `Ability`, `Fatigue`
+  - Must have `stats` (Red/Yellow/Blue).
+  - Use `rules` for active abilities (Attack, Defend, Action).
+  - Use `cost` for play cost.
 
-- `stats` (Required): The Red/Yellow/Blue values this card contributes when played or flipped.
-  ```yaml
-  stats:
-    red: 2
-    yellow: 0
-    blue: 1
-  ```
-- `cost` (Optional): Resources required to play. `null` or missing means it cannot be played (Status/Resource only).
-  ```yaml
-  cost:
-    resources: 2
-  ```
-- `rules` (Optional): List of Mini-DSL strings defining the card's capabilities.
+- **Table Cards (`ItemCard`, `NatureCard`)**:
+  - Represent permanent state (Equipment, Monsters, Characters).
+  - Use `defense` and `resilience` for durability.
+  - Use `traits` and `passive` for static effects.
 
-### 2. Table Cards (The "Board")
+## Syntax Reference
 
-**Types**: `Item`, `Monster`, `Character`
+For semantic definitions of these rules, see `design/rules/reading-the-cards.md`.
+This section defines the **strict syntax** required by the parser.
 
-- `defense` (Optional): Integer. Defense value provided (e.g., Armor).
-- `resilience` (Optional): Integer. Resilience value provided.
-- `traits` (Optional): List of passive rules or keywords.
-- `abilities` (Optional): List of special abilities (Mini-DSL).
-
-## Mini-DSL Syntax
-
-- **Resources**: `{Red}`, `{Yellow}`, `{Blue}` (render as icons).
-- **Attack**: `Attack {Color}: Strength = {Color} + Mod`
-- **Defend**: `Defend {Color}: Strength = {Color} + Mod`
-- **General**: `Action: [Narrative Description]` (e.g., "Sleep 2 hours to remove this")
-- **Passive**: `Passive: [Bonus] [Condition]` (e.g., "Passive: +2 {Red} when attacking")
-- **Stance**: `Stance: [Duration]`
-- **Channel**: `Channel: [Duration]`
-- **Prime**: `Prime: [Trigger] -> [Reaction]`
-- **Narrative**: Plain text (e.g., "Effect: ...") is preserved as narrative rules.
-
-## Validation Rules
-
-1.  **Deck Cards** MUST have `stats`.
-2.  **Table Cards** MUST NOT have `stats`.
-3.  `rules` strings must parse successfully against the DSL grammar defined by `CardPG.Core.Card.Rule`.
-
-## Example: Deck Card (`core/basic_martial.yaml`)
-
-```yaml
-- name: Strike
-  type: Action
-  tags: [Basic, Combat]
-  stats: { red: 3, yellow: 2, blue: 2 }
-  cost: { resources: 2 }
-  rules:
-    - "Attack {Red}: Strength = {Red} + 2"
-  flavor: "A solid blow."
-
-- name: Parry
-  type: Defense
-  tags: [Combat, Defense]
-  stats: { red: 1, yellow: 4, blue: 2 }
-  rules:
-    - "Defend {Red}|{Yellow}: Strength = {Yellow}"
-    - "Passive: +1 {Yellow} when defending"
-  flavor: "Turning their force aside."
-```
+- **Resources**: `{Red}`, `{Yellow}`, `{Blue}`
+- **Attack**: `Attack {Color}: Strength = {Color} (+/- Mod)`
+  - _Example:_ `Attack {Red}: Strength = {Red} + 2`
+- **Defend**: `Defend {Color} (| {Color})*: Strength = {Color} (+/- Mod)`
+  - _Example:_ `Defend {Red}: Strength = {Red}`
+  - _Example:_ `Defend {Red} | {Yellow}: Strength = {Yellow} + 1`
+- **Action**: `Action: [Name] (Spend {Color} [Cost]) -> [Effect]`
+  - _Example:_ `Action: Push Through (Spend {Red} 10) -> Remove this`
+- **Task**: `Task: [Name] ({Color} [Diff], [Time]) -> [Effect]`
+  - _Example:_ `Task: First Aid ({Blue} 3, 1 min) -> Remove this`
+- **Trigger**: `When [Trigger] -> [Effect]`
+  - _Example:_ `When removed -> Add 1 Wound`
+- **Passive**: `Passive: [Bonus] [Condition]`
+  - _Example:_ `Passive: +2 {Red} when attacking`
+- **Stance**: `Stance ([Duration]) -> [Effect]`
+- **Channel**: `Channel ([Duration]) -> [Effect]`
 
 ## Directory Structure
 
-- `core/`: Core deck cards (Basic Martial, etc.).
+- `core/`: Core deck cards.
 - `items/`: Equipment and Items.
-- `imported/`: Data migrated from legacy sources (pending organization).
-- `generated_cards.json`: **DO NOT COMMIT**. Build artifact generated by `compiler.py`.
+- `pc/`: Player Character definitions.
+- `monsters/`: Monster definitions.
+- `generated_cards.json`: **DO NOT COMMIT**. Build artifact.

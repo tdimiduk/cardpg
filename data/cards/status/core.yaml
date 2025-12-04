@@ -2,8 +2,8 @@
   id: status-fatigue
   name: Fatigue
   rules:
-  - 'Action: Sleep (2 Hours) -> Remove this card.'
-  - 'Action: Light Rest (4 Hours) -> Remove this card.'
+  - 'Task: Sleep (2 Hours) -> Remove this card.'
+  - 'Task: Light Rest (4 Hours) -> Remove this card.'
   stats:
     blue: 1
     red: 1
@@ -18,7 +18,7 @@
   name: Injury
   rules:
   - If this card is in your hand at the end of the Resolve Step, expend it.
-  - 'Action: Rest (1 Day) -> Remove this card.'
+  - 'Task: Rest (1 Day) -> Remove this card.'
   stats:
     blue: 0
     red: 0

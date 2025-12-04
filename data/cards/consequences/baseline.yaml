@@ -5,6 +5,9 @@
   type: Consequence
   tags: [Severity_1, Combat, Condition, Red]
   passive: "You must discard a card to perform an Attack Action."
+  rules:
+    - "Task: First Aid ({Blue} 3, 1 min, Bandage) -> Remove this."
+    - "When removed -> Add 1 Wound to your expended pile."
   notes: "Models minor muscle strain or poor positioning requiring extra effort."
 
 - id: cons-sev1-strain-defense
@@ -12,6 +15,9 @@
   type: Consequence
   tags: [Severity_1, Combat, Condition, Yellow]
   passive: "Impact of Defense +1."
+  rules:
+    - "Task: Stretch Out ({Yellow} 3, 1 min) -> Remove this."
+    - "When removed -> Add 2 Fatigue to your expended pile."
   notes: "Increases the risk from future attacks"
 
 - id: cons-sev1-minor-trauma
@@ -20,6 +26,9 @@
   tags: [Severity_1, General, Status_Effect]
   effects:
     - "Put 2 Injury cards on top of your deck."
+  rules:
+    - "Task: Steady Yourself ({Red} 3, 1 min) -> Remove this."
+    - "Action: Push Through (Spend {Red} 10) -> Remove this."
   notes: "Immediate deck pollution."
 
 # --- Severity 2 (The Turning Point) ---
@@ -29,6 +38,9 @@
   type: Consequence
   tags: [Severity_2, Combat, Condition, Red]
   passive: "When calculating Attack Strength, treat the highest value card in your stack as 0."
+  rules:
+    - "Task: Set and Bind Wound ({Blue} 10, 1 hour) -> Remove this."
+    - "When removed -> Add 2 Wounds to your expended pile."
   notes: "A severe penalty to offense."
 
 - id: cons-sev2-guard-breach
@@ -36,6 +48,10 @@
   type: Consequence
   tags: [Severity_2, Combat, Condition, Blue]
   passive: "When calculating Defense Strength, treat the highest value card in your stack as 0."
+  rules:
+    - "Task: Hammer Out ({Red} 8, 1 hour, Hammer) -> Remove this."
+    - "Task: Careful Repair ({Yellow} 12, 4 hours, Repair Tools) -> Remove this."
+    - "When removed -> If you used 'Hammer Out', this armor gains the 'Battered' condition."
   notes: "A severe penalty to defense."
 
 - id: cons-sev2-major-trauma
@@ -44,6 +60,10 @@
   tags: [Severity_2, General, Status_Effect]
   effects:
     - "Expend 4 cards from hand and replace them with Injury cards. For each card you cannot expend, put the Injury on top of your deck instead."
+  rules:
+    - "Task: Recuperate ({Red} 5, 1 hour) -> Remove this."
+    - "Action: Force Yourself Back (Spend {Red} 10) -> Remove this."
+    - "When removed -> Add 1 Fatigue to your expended pile."
   notes: "Severe immediate attrition."
 
 - id: cons-sev3-taken-out
