@@ -8,4 +8,7 @@ description: Switch context to TypeScript/React frontend development
 - **Stack**: React, Vite, Tailwind CSS, Zod
 - **Build**: `npm run dev` (local), `npm run build` (prod)
 - **Testing**: `npm test`
-- **Key Files**: `src/data/generated_cards.json` is the source of truth for card data.
+- **Codegen**:
+  - **Types**: `npm run gen:types` (Generates `src/generated/types.ts` & `schemas.ts` from Haskell)
+  - **Data**: Run `uv run run_pipeline.py` in `../tools/` (Generates `src/data/generated_cards.json`)
+- **WARNING**: DO NOT manually edit `src/generated/*` or `src/data/generated_cards.json`. They are build artifacts.
