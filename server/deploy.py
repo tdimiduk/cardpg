@@ -122,7 +122,7 @@ def main(rebuild, prod):
     # /sites/cardpg.tgd.me -> package
     target_link = "/sites/cardpg.tgd.me"
     run(["ssh", server("root"), "mkdir", "-p", "/sites"]) # Ensure /sites exists
-    run(["ssh", server("root"), "ln", "-s", "-f", package, target_link])
+    run(["ssh", server("root"), "ln", "-sfn", package, target_link])
 
     if rebuild:
         nix_rebuild(prod)
