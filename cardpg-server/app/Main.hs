@@ -14,6 +14,9 @@ import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
+import System.Environment (lookupEnv)
+import Data.Maybe (fromMaybe)
+import qualified Network.WebSockets as WST
 import Data.UUID (UUID)
 import qualified Data.UUID.V4 as UUID
 import GHC.Generics (Generic)
@@ -55,8 +58,12 @@ broadcast msg state = do
 main :: IO ()
 main = do
     state <- newMVar newServerState
-    T.putStrLn "Starting CardPG Server on port 8080..."
-    WS.runServer "127.0.0.1" 8080 $ application state
+    
+    portStr <- lookupEnv "PORT"
+    let port = fromMaybe 8080 (fmap read portStr)
+
+    T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show port) <> "..."
+    WS.runServer "127.0.0.1" port $ application state
 
 application :: MVar ServerState -> ServerApp
 application state pending = do
