@@ -2,16 +2,23 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { z } from 'zod';
 import { BroadcastActionSchema } from '../types/sync';
 import { BroadcastAction } from '../types/sync';
+import {
+  IWelcome,
+  IBroadcastMessage,
+  IClientJoined,
+  IClientLeft,
+  IErrorMessage,
+} from '../generated/types';
 
-// Types for messages
+// Refine generated types to use BroadcastAction for payload
 type ClientMessage = { tag: 'Join'; name: string } | { tag: 'Broadcast'; payload: BroadcastAction };
 
 type ServerMessage =
-  | { tag: 'Welcome'; yourClientId: string; connectedClients: string[]; history: BroadcastAction[] }
-  | { tag: 'BroadcastMessage'; fromClientId: string; payload: BroadcastAction }
-  | { tag: 'ClientJoined'; newClientName: string; newClientId: string }
-  | { tag: 'ClientLeft'; leftClientId: string }
-  | { tag: 'ErrorMessage'; error: string };
+  | (Omit<IWelcome, 'history'> & { history: BroadcastAction[] })
+  | (Omit<IBroadcastMessage, 'payload'> & { payload: BroadcastAction })
+  | IClientJoined
+  | IClientLeft
+  | IErrorMessage;
 
 interface WebSocketContextType {
   isConnected: boolean;
@@ -57,14 +64,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // Haskell Aeson default encoding for sum types might be object with single key
-        // But let's see what we get. If we used Generic derivation it might be different.
-        // Let's assume we need to normalize or it matches.
-        // Wait, Aeson default for sum types is usually { "tag": "Constructor", ... } if configured,
-        // or { "Constructor": { ... } } object wrapper.
-        // Let's check the Haskell code... we just derived Generic.
-        // Default Aeson generic encoding is { "tag": "Constructor", ... } ? No, it's usually Object with single key.
-        // Actually, let's just log it first to be sure in development.
         console.log('Received:', data);
         handleMessage(data);
       } catch (e) {
@@ -78,6 +77,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   // Define ServerMessage Schema
+  // We can reuse parts of this, or just keep it as the runtime validation layer
+  // since the generated types are just TS types, not Zod schemas (yet, though we have schemas.ts too)
   const ServerMessageSchema = z.discriminatedUnion('tag', [
     z.object({
       tag: z.literal('Welcome'),
@@ -98,8 +99,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     z.object({ tag: z.literal('ClientLeft'), leftClientId: z.string() }),
     z.object({ tag: z.literal('ErrorMessage'), error: z.string() }),
   ]);
-
-  // ... (inside component)
 
   const handleMessage = (msg: unknown) => {
     // Basic normalization if needed
@@ -123,7 +122,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const result = ServerMessageSchema.safeParse(normalized);
 
     if (result.success) {
-      const message = result.data;
+      // The Zod schema output matches our refined ServerMessage type
+      const message = result.data as ServerMessage;
       setLastMessage(message);
       switch (message.tag) {
         case 'Welcome':
