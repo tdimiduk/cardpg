@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE LambdaCase #-}
 
-module DeriveSpecialized (specializeType) where
+module DeriveSpecialized (specializeType, specializeType2, makeBridgeInstance) where
 
 import Language.Haskell.TH
 import Data.Map (Map)
@@ -45,23 +45,59 @@ specializeType typeName paramType newTypeNameStr = do
       
     _ -> fail "specializeType: Expected a data type declaration"
 
+-- | specializeType2 substitutes the first *two* type parameters.
+specializeType2 :: Name -> Type -> Type -> String -> Q [Dec]
+specializeType2 typeName param1 param2 newTypeNameStr = do
+  info <- reify typeName
+  case info of
+    TyConI (DataD _cxt _name binders _kind constructors _deriv) -> do
+      let newName = mkName newTypeNameStr
+      
+      -- Identify variables
+      let (var1, var2) = case binders of
+            (b1:b2:_) -> (getBinderName b1, getBinderName b2)
+            _ -> error "specializeType2: Type must have at least 2 parameters"
+            
+      let subst = Map.fromList [(var1, param1), (var2, param2)]
+      
+      newConstructors <- mapM (substConstructor subst newName) constructors
+      
+      let derivingClauses = [DerivClause Nothing [ConT (mkName "Generic")]]
+      
+      return [DataD [] newName [] Nothing newConstructors derivingClauses]
+      
+    _ -> fail "specializeType2: Expected a data type declaration"
+
 getBinderName :: TyVarBndr flag -> Name
 getBinderName (PlainTV n _) = n
 getBinderName (KindedTV n _ _) = n
 
 substConstructor :: Map Name Type -> Name -> Con -> Q Con
 substConstructor subst newTypeName (RecC _name fields) = do
-  -- We rename the constructor to match the new type name.
-  -- This is a common pattern for single-constructor types.
+  -- For single-constructor records, we often rename constructor to type name
   let newConName = newTypeName
   newFields <- mapM (substField subst) fields
   return $ RecC newConName newFields
-substConstructor _ _ _ = fail "specializeType: Only record constructors are supported"
+
+substConstructor subst newTypeName (NormalC name fields) = do
+  -- For sum types, we prepend the new TypeName to the old ConstructorName to avoid collision
+  -- e.g. Rule -> RuleRuleAttack. 
+  -- We assume Aeson options will be configured to strip this prefix.
+  let newConName = mkName (nameBase newTypeName ++ nameBase name)
+  newFields <- mapM (substBangType subst) fields
+  return $ NormalC newConName newFields
+
+substConstructor _ _ _ = fail "specializeType: Only record and normal constructors are supported"
 
 substField :: Map Name Type -> (Name, Bang, Type) -> Q (Name, Bang, Type)
 substField subst (name, bang, type_) = do
   newType <- substType subst type_
   return (name, bang, newType)
+
+substBangType :: Map Name Type -> (Bang, Type) -> Q (Bang, Type)
+substBangType subst (bang, type_) = do
+  newType <- substType subst type_
+  return (bang, newType)
 
 substType :: Map Name Type -> Type -> Q Type
 substType subst t = case t of
@@ -75,4 +111,32 @@ substType subst t = case t of
     -- For simple data types, this is usually not an issue.
     substType subst t' >>= \t'' -> return (ForallT b c t'')
   SigT t' k -> SigT <$> substType subst t' <*> pure k
+  ListT -> return ListT
+  ConT n -> return (ConT n)
   _ -> return t
+
+-- | Creates a "Bridge Instance" that bridges a parameterized type (e.g. AttackDefT RichText)
+-- to a concrete specialized type (e.g. AttackDef).
+-- This allows the generator to "see through" the parameterized type usage in other types (like Rule)
+-- and link it to the definition of the specialized type.
+--
+-- Usage:
+-- $(makeBridgeInstance ''AttackDefT (ConT ''RichText) "AttackDef")
+makeBridgeInstance :: Name -> Type -> String -> Q [Dec]
+makeBridgeInstance paramTypeName paramType targetTypeNameStr = do
+  let targetTypeName = mkName targetTypeNameStr
+  let instanceHead = AppT (ConT (mkName "TypeScript")) (AppT (ConT paramTypeName) paramType)
+  
+  -- Method: getTypeScriptType _ = targetTypeNameStr
+  let getTypeScriptTypeDec = FunD (mkName "getTypeScriptType") 
+        [Clause [WildP] (NormalB (LitE (StringL targetTypeNameStr))) []]
+        
+  -- Method: getParentTypes _ = [TSType (Proxy :: Proxy TargetType)]
+  -- [| [TSType (Proxy :: Proxy TargetType)] |]
+  let proxyExp = SigE (ConE (mkName "Proxy")) (AppT (ConT (mkName "Proxy")) (ConT targetTypeName))
+  let tsTypeExp = AppE (ConE (mkName "TSType")) proxyExp
+  let listExp = ListE [tsTypeExp]
+  let getParentTypesDec = FunD (mkName "getParentTypes")
+        [Clause [WildP] (NormalB listExp) []]
+        
+  return [InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getParentTypesDec]]

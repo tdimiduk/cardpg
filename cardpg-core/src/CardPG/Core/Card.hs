@@ -3,22 +3,37 @@
 module CardPG.Core.Card 
   ( module CardPG.Core.RuleDefs
   , Stats(..)
-  , CoreCard(..)
-  , ItemCard(..)
-  , NatureCard(..)
-  , TalentCard(..)
+  , CoreCardT(..)
+  , CoreCard
+  , CoreCardMachine
+  , ItemCardT(..)
+  , ItemCard
+  , NatureCardT(..)
+  , NatureCard
+  , TalentCardT(..)
+  , TalentCard
   , GeneralActionDef(..)
   , EncounterMechanics(..)
-  , EncounterCard(..)
-  , ConsequenceCard(..)
-  , Actor(..)
+  , EncounterCardT(..)
+  , EncounterCard
+  , ConsequenceCardT(..)
+  , ConsequenceCard
+  , ConsequenceCardMachine
+  , ActorT(..)
+  , Actor
+  , ActorMachine
+  , ItemCardMachine
+  , NatureCardMachine
+  , TalentCardMachine
+  , EncounterCardMachine
   ) where
 
+import Data.Aeson (ToJSON, FromJSON)
 import Data.Aeson.TH (deriveJSON)
-import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty)
 import GHC.Generics (Generic)
+import Data.Functor.Classes (Eq1, Show1)
 
 import CardPG.Core.Types (ResourceType(..))
 import CardPG.Core.RichText
@@ -31,9 +46,8 @@ data Stats = Stats { _red :: Int, _yellow :: Int, _blue :: Int }
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''Stats)
-$(deriveTypeScript cardpgJsonDef ''Stats)
 
-data CoreCard = CoreCard
+data CoreCardT rule rt = CoreCard
   { _id     :: Maybe Text
   , _name   :: NonEmptyText
   , _tags   :: Maybe (NonEmpty Text)
@@ -47,21 +61,23 @@ data CoreCard = CoreCard
   -- | VTT Renderer: Iterates this list to draw the text box.
   -- | VTT Engine: Filters for 'Active' rules to generate buttons.
   -- | Supports multiple actions (Fatigue) via list length > 1.
-  , _rules  :: Maybe (NonEmpty Rule)
+  , _rules  :: Maybe (NonEmpty rule)
   
-  , _flavor :: Maybe RichString
+  , _flavor :: Maybe rt
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''CoreCard)
-$(deriveTypeScript (cardpgTaggedOptions "") ''CoreCard)
+type CoreCard = CoreCardT DSLRule RichString
+type CoreCardMachine = CoreCardT Rule RichText
+
+$(deriveJSON (cardpgTaggedOptions "") ''CoreCardT)
 
 -- | Represents Items/Equipment that stay in play (Table Cards).
-data ItemCard = ItemCard
+data ItemCardT rt = ItemCard
   { _id         :: Maybe Text
   , _name       :: NonEmptyText
   , _tags       :: Maybe (NonEmpty Text)
-  , _flavor     :: Maybe RichString
+  , _flavor     :: Maybe rt
   , _weight     :: Maybe Int
   , _value      :: Maybe Int
   , _traits     :: Maybe (NonEmpty Text)
@@ -71,15 +87,17 @@ data ItemCard = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''ItemCard)
-$(deriveTypeScript (cardpgTaggedOptions "") ''ItemCard)
+type ItemCard = ItemCardT RichString
+type ItemCardMachine = ItemCardT RichText
+
+$(deriveJSON (cardpgTaggedOptions "") ''ItemCardT)
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
-data NatureCard = NatureCard
+data NatureCardT rt = NatureCard
   { _id         :: Maybe Text
   , _name       :: NonEmptyText
   , _tags       :: Maybe (NonEmpty Text)
-  , _flavor     :: Maybe RichString
+  , _flavor     :: Maybe rt
   , _traits     :: Maybe (NonEmpty Text)
   , _passive    :: Maybe Text
   , _defense    :: Maybe Int
@@ -87,23 +105,27 @@ data NatureCard = NatureCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''NatureCard)
-$(deriveTypeScript cardpgJsonDef ''NatureCard)
+type NatureCard = NatureCardT RichString
+type NatureCardMachine = NatureCardT RichText
+
+$(deriveJSON cardpgJsonDef ''NatureCardT)
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
-data TalentCard = TalentCard
+data TalentCardT rt = TalentCard
   { _id         :: Maybe Text
   , _name       :: NonEmptyText
   , _tags       :: Maybe (NonEmpty Text)
-  , _flavor     :: Maybe RichString
+  , _flavor     :: Maybe rt
   , _traits     :: Maybe (NonEmpty Text)
   , _passive    :: Maybe Text
   , _defense    :: Maybe Int
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''TalentCard)
-$(deriveTypeScript cardpgJsonDef ''TalentCard)
+type TalentCard = TalentCardT RichString
+type TalentCardMachine = TalentCardT RichText
+
+$(deriveJSON cardpgJsonDef ''TalentCardT)
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef
@@ -115,7 +137,6 @@ data GeneralActionDef = GeneralActionDef
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''GeneralActionDef)
-$(deriveTypeScript cardpgJsonDef ''GeneralActionDef)
 
 -- | Structured Mechanics for Encounters.
 data EncounterMechanics = EncounterMechanics
@@ -126,24 +147,25 @@ data EncounterMechanics = EncounterMechanics
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''EncounterMechanics)
-$(deriveTypeScript cardpgJsonDef ''EncounterMechanics)
 
 -- | Represents Narrative Encounters/Events.
-data EncounterCard = EncounterCard
+data EncounterCardT rt = EncounterCard
   { _id        :: Maybe Text
   , _name      :: NonEmptyText
   , _tags      :: Maybe (NonEmpty Text)
-  , _narrative :: RichString
+  , _narrative :: rt
   , _options   :: Maybe (NonEmpty Text)
   , _mechanics :: Maybe EncounterMechanics
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''EncounterCard)
-$(deriveTypeScript cardpgJsonDef ''EncounterCard)
+type EncounterCard = EncounterCardT RichString
+type EncounterCardMachine = EncounterCardT RichText
+
+$(deriveJSON cardpgJsonDef ''EncounterCardT)
 
 -- | Represents Status Effects / Consequences.
-data ConsequenceCard = ConsequenceCard
+data ConsequenceCardT rule = ConsequenceCard
   { _id      :: Maybe Text
   , _name    :: NonEmptyText
   , _tags    :: Maybe (NonEmpty Text)
@@ -151,22 +173,26 @@ data ConsequenceCard = ConsequenceCard
   , _effects :: Maybe (NonEmpty Text)
   , _severity :: Int
   , _notes   :: Maybe Text
-  , _rules   :: Maybe (NonEmpty Rule)
+  , _rules   :: Maybe (NonEmpty rule)
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCard)
-$(deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard)
+type ConsequenceCard = ConsequenceCardT DSLRule
+type ConsequenceCardMachine = ConsequenceCardT Rule
+
+$(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCardT)
 
 -- | Represents an Actor (Character/Monster/NPC).
-data Actor = Actor
+data ActorT rule rt = Actor
   { _name  :: Text
   , _tags  :: Maybe (NonEmpty Text)
-  , _items :: [ItemCard]
-  , _deck  :: [CoreCard]
+  , _items :: [ItemCardT rt]
+  , _deck  :: [CoreCardT rule rt]
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''Actor)
-$(deriveTypeScript cardpgJsonDef ''Actor)
+type Actor = ActorT DSLRule RichString
+type ActorMachine = ActorT Rule RichText
+
+$(deriveJSON cardpgJsonDef ''ActorT)
 

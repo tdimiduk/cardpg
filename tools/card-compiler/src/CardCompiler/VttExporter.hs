@@ -20,139 +20,24 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map as Map
 import Data.List (mapAccumL)
 
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), Actor(..), ConsequenceCard(..))
+import CardPG.Core.Card (CoreCard, ItemCard, Rule, DSLRule(..), Stats(..), Actor, ConsequenceCard, ItemCardMachine, ConsequenceCardMachine, CoreCardMachine, ActorMachine, ItemCardT(..), CoreCardT(..), ActorT(..), ConsequenceCardT(..))
 import CardPG.Core.Json (cardpgJsonOptions)
-import CardPG.Core.RuleDefs (AttackDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
-import CardPG.Core.NonEmptyText (getNonEmptyText)
-import CardPG.Core.RichText (unRichString, RichString)
+import CardPG.Core.RuleDefs (RuleT(..), DSLBase)
+import CardPG.Core.NonEmptyText (getNonEmptyText, NonEmptyText)
+import CardPG.Core.RichText (unRichString, RichString, RichText)
 
--- | Wrapper to force Array JSON output for RichString
-newtype VttRichString = VttRichString RichString
-  deriving (Show)
-
-instance ToJSON VttRichString where
-  toJSON (VttRichString rs) = toJSON (CardPG.Core.RichText.unRichString rs)
-
--- | Shadow Type for Rules to force structured JSON and VttRichString
-newtype StructuredRule = StructuredRule { unStructuredRule :: Rule }
-  deriving (Show, Generic)
-
-instance ToJSON StructuredRule where
-  toJSON (StructuredRule r) = case r of
-    RuleAttack (AttackDef p res eff) -> object
-      [ "type" .= ("attack" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "power" .= p
-          , "resistedBy" .= res
-          , "effect" .= fmap VttRichString eff
-          ])
-      ]
-    RuleGeneral (GeneralDef n c p eff) -> object
-      [ "type" .= ("general" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "name" .= n
-          , "cost" .= fmap VttRichString c
-          , "power" .= p
-          , "effect" .= VttRichString eff
-          ])
-      ]
-    RuleStance (StanceDef d eff) -> object
-      [ "type" .= ("stance" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "duration" .= d
-          , "effect" .= VttRichString eff
-          ])
-      ]
-    RuleChannel (ChannelDef d eff) -> object
-      [ "type" .= ("channel" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "duration" .= d
-          , "effect" .= VttRichString eff
-          ])
-      ]
-    RulePrime (PrimeDef t reac) -> object
-      [ "type" .= ("prime" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "trigger" .= t
-          , "reaction" .= StructuredRule reac
-          ])
-      ]
-    RuleNarrative rs -> object
-      [ "type" .= ("narrative" :: Text)
-      , "data" .= VttRichString rs
-      ]
-    RulePassive (PassiveDef b c) -> object
-      [ "type" .= ("passive" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "bonus" .= b
-          , "condition" .= c
-          ])
-      ]
-    RuleTask (TaskDef n ch t c eff) -> object
-      [ "type" .= ("task" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "name" .= n
-          , "check" .= ch
-          , "time" .= fmap VttRichString t
-          , "cost" .= fmap VttRichString c
-          , "effect" .= VttRichString eff
-          ])
-      ]
-    RuleTrigger (TriggerDef t eff) -> object
-      [ "type" .= ("trigger" :: Text)
-      , "data" .= object (filter (\(_, v) -> v /= Null)
-          [ "trigger" .= t
-          , "effect" .= VttRichString eff
-          ])
-      ]
-
--- | Shadow Type for CoreCard to use StructuredRule
-data VttCoreCard = VttCoreCard
-  { _id     :: Maybe Text
-  , _name   :: Text
-  , _tags   :: Maybe (NonEmpty Text)
-  , _stats  :: Stats
-  , _cost   :: Maybe Int
-  , _rules  :: Maybe (NonEmpty StructuredRule)
-  , _flavor :: Maybe VttRichString
-  }
-  deriving (Show, Generic)
-
-instance ToJSON VttCoreCard where
-  toJSON VttCoreCard{..} = object $ filter (\(_, v) -> v /= Null)
-    [ "type" .= ("coreCard" :: Text)
-    , "id" .= _id
-    , "name" .= _name
-    , "tags" .= _tags
-    , "stats" .= _stats
-    , "cost" .= _cost
-    , "rules" .= _rules
-    , "flavor" .= _flavor
-    ]
-
--- | VTT Actor Type
-data VttActor = VttActor
-  { _id    :: Text
-  , _name  :: Text
-  , _tags  :: [Text]
-  , _items :: [ItemCard]
-  , _deck  :: [VttCoreCard]
-  }
-  deriving (Show, Generic)
-
-instance ToJSON VttActor where
-  toJSON = genericToJSON (cardpgJsonOptions "Actor")
 
 -- | VTT Export Data
 data VttExport = VttExport
-  { _actors   :: [VttActor]
-  , _statuses :: [VttCoreCard]
-  , _consequences :: [VttConsequenceCard]
+  { _actors   :: [ActorMachine]
+  , _statuses :: [CoreCardMachine]
+  , _consequences :: [ConsequenceCardMachine]
   }
   deriving (Show, Generic)
 
 instance ToJSON VttExport where
   toJSON = genericToJSON (cardpgJsonOptions "VttExport")
+
 
 -- | Load and Export Function
 loadAndExport :: [FilePath] -> FilePath -> IO ()
@@ -168,10 +53,10 @@ loadAndExport inputFiles outputFile = do
   LBS.writeFile outputFile (Aeson.encode exportData)
   putStrLn $ "Exported " ++ show (length actors) ++ " actors, " 
                          ++ show (length statuses) ++ " status cards, and " 
-                         ++ show (length consequences) ++ " consequence cards to" ++ outputFile
+                         ++ show (length consequences) ++ " consequence cards to " ++ outputFile
 
   where
-    processFile :: ([VttActor], [VttCoreCard], [VttConsequenceCard]) -> FilePath -> IO ([VttActor], [VttCoreCard], [VttConsequenceCard])
+    processFile :: ([ActorMachine], [CoreCardMachine], [ConsequenceCardMachine]) -> FilePath -> IO ([ActorMachine], [CoreCardMachine], [ConsequenceCardMachine])
     processFile (accActors, accStatuses, accConsequences) file = do
       result <- Yaml.decodeFileEither file
       case result of
@@ -182,7 +67,7 @@ loadAndExport inputFiles outputFile = do
           resultCards <- Yaml.decodeFileEither file
           case resultCards of
             Right (cards :: [CoreCard]) -> do
-               let vttCards = map (\c@CoreCard{_name=n, _id=i} -> toVttCoreCard c (fromMaybe (slugify (getNonEmptyText n)) i)) cards
+               let vttCards = map (\c@(CoreCard i n _ _ _ _ _) -> toVttCoreCard c (fromMaybe (slugify (getNonEmptyText n)) i)) cards
                return (accActors, vttCards ++ accStatuses, accConsequences)
             Left _ -> do
                -- Try parsing as list of ConsequenceCards
@@ -195,25 +80,39 @@ loadAndExport inputFiles outputFile = do
                    putStrLn $ "Warning: Failed to parse " ++ file ++ " as Actor, Card List, or Consequence List: " ++ show err
                    return (accActors, accStatuses, accConsequences)
 
--- | Convert Actor to VttActor
-convertActor :: Actor -> VttActor
-convertActor Actor{..} = 
-  let actorId = slugify _name
-  in VttActor
-  { _id = actorId
-  , _name = _name
-  , _tags = maybe [] NE.toList _tags
-  , _items = map ensureItemId _items
-  , _deck = processDeck actorId _deck
+-- | Convert Actor (Human) to ActorMachine (Machine)
+convertActor :: Actor -> ActorMachine
+convertActor (Actor n t i d) = 
+  let actorId = slugify n
+  in Actor
+  { _name = n
+  , _tags = t
+  , _items = map convertItem i
+  , _deck = processDeck actorId d
   }
 
+convertItem :: ItemCard -> ItemCardMachine
+convertItem (ItemCard i n t f w v tr p d r) = 
+  ItemCard
+    { _id = Just $ fromMaybe (slugify (getNonEmptyText n)) i
+    , _name = n
+    , _tags = t
+    , _flavor = fmap unRichString f
+    , _weight = w
+    , _value = v
+    , _traits = tr
+    , _passive = p
+    , _defense = d
+    , _resilience = r
+    }
+
 -- | Process deck to ensure unique IDs for duplicates
-processDeck :: Text -> [CoreCard] -> [VttCoreCard]
+processDeck :: Text -> [CoreCard] -> [CoreCardMachine]
 processDeck actorId cards =
   let
     -- 1. Calculate frequencies of card slugs (names)
     -- Use pattern matching to disambiguate _name
-    getNameSlug CoreCard{_name=n} = slugify (getNonEmptyText n)
+    getNameSlug (CoreCard _ n _ _ _ _ _) = slugify (getNonEmptyText n)
     cardSlugs = map getNameSlug cards
     freqMap = Map.fromListWith (+) $ zip cardSlugs (repeat 1 :: [Int])
 
@@ -223,8 +122,8 @@ processDeck actorId cards =
     vttCards
 
 -- | Assign ID based on frequency and current count
-assignId :: Text -> Map.Map Text Int -> Map.Map Text Int -> CoreCard -> (Map.Map Text Int, VttCoreCard)
-assignId actorId freqMap counters card@CoreCard{_name=n} =
+assignId :: Text -> Map.Map Text Int -> Map.Map Text Int -> CoreCard -> (Map.Map Text Int, CoreCardMachine)
+assignId actorId freqMap counters card@(CoreCard _ n _ _ _ _ _) =
   let
     cardSlug = slugify (getNonEmptyText n)
     count = Map.findWithDefault 0 cardSlug counters
@@ -244,60 +143,36 @@ assignId actorId freqMap counters card@CoreCard{_name=n} =
   in
     (newCounters, vttCard)
 
--- | Convert CoreCard to VttCoreCard with specific ID
-toVttCoreCard :: CoreCard -> Text -> VttCoreCard
-toVttCoreCard CoreCard{..} finalId = VttCoreCard
+-- | Convert CoreCard to CoreCardMachine with specific ID
+toVttCoreCard :: CoreCard -> Text -> CoreCardMachine
+toVttCoreCard (CoreCard _ n t s c r f) finalId = CoreCard
   { _id = Just finalId
-  , _name = getNonEmptyText _name
-  , _tags = _tags
-  , _stats = _stats
-  , _cost = _cost
-  , _rules = fmap (fmap StructuredRule) _rules
-  , _flavor = fmap VttRichString _flavor
+  , _name = n
+  , _tags = t
+  , _stats = s
+  , _cost = c
+  , _rules = fmap (fmap convertRule) r
+  , _flavor = fmap unRichString f
   }
 
--- | Helper to ensure ItemCard has an ID
-ensureItemId :: ItemCard -> ItemCard
-ensureItemId item@ItemCard{..} = item { _id = Just $ fromMaybe (slugify (getNonEmptyText _name)) _id }
+convertRule :: DSLRule -> Rule
+convertRule (DSLRule r) = fmap unRichString r
+
 
 -- | Simple slugify
 slugify :: Text -> Text
 slugify = T.toLower . T.replace " " "-"
 
--- | VTT Consequence Card Type
-data VttConsequenceCard = VttConsequenceCard
-  { _id      :: Maybe Text
-  , _name    :: Text
-  , _tags    :: Maybe (NonEmpty Text)
-  , _passive :: Maybe Text
-  , _effects :: Maybe (NonEmpty Text)
-  , _severity :: Int
-  , _notes   :: Maybe Text
-  , _rules   :: Maybe (NonEmpty StructuredRule)
-  }
-  deriving (Show, Generic)
 
-instance ToJSON VttConsequenceCard where
-  toJSON VttConsequenceCard{..} = object $ filter (\(_, v) -> v /= Null)
-    [ "type" .= ("consequenceCard" :: Text)
-    , "id" .= _id
-    , "name" .= _name
-    , "tags" .= _tags
-    , "passive" .= _passive
-    , "effects" .= _effects
-    , "severity" .= _severity
-    , "notes" .= _notes
-    , "rules" .= _rules
-    ]
-
-toVttConsequenceCard :: ConsequenceCard -> VttConsequenceCard
-toVttConsequenceCard ConsequenceCard{..} = VttConsequenceCard
-  { _id = _id
-  , _name = getNonEmptyText _name
-  , _tags = _tags
-  , _passive = _passive
-  , _effects = _effects
-  , _severity = _severity
-  , _notes = _notes
-  , _rules = fmap (fmap StructuredRule) _rules
+toVttConsequenceCard :: ConsequenceCard -> ConsequenceCardMachine
+toVttConsequenceCard (ConsequenceCard i n t p e s nota r) = 
+  ConsequenceCard
+  { _id = i
+  , _name = n
+  , _tags = t
+  , _passive = p
+  , _effects = e
+  , _severity = s
+  , _notes = nota
+  , _rules = fmap (fmap convertRule) r
   }

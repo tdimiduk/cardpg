@@ -18,7 +18,6 @@ module CardPG.Core.NonEmptyText
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Aeson (ToJSON(..), FromJSON(..), withText)
-import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import CardPG.Core.Json (cardpgJsonDef)
 
 import Control.Monad (mzero)
@@ -65,7 +64,6 @@ instance FromJSON NonEmptyText where
       Nothing -> mzero
       Just ne -> pure ne
 
-$(deriveTypeScript cardpgJsonDef ''NonEmptyText)
 
 
 -- | Allow string literals if they are non-empty (runtime check?)

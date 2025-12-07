@@ -21,7 +21,7 @@ import qualified Data.List.NonEmpty as NE
 
 import Data.Either (partitionEithers)
 import CardCompiler.Parser (RawCard(..), convertCard, ParsedCard(..))
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Actor(..))
+import CardPG.Core.Card (CoreCard, ItemCard, Actor, CoreCardT(..), ItemCardT(..), ActorT(..))
 
 import qualified CardCompiler.VttExporter as Vtt
 

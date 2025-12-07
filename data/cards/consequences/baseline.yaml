@@ -5,11 +5,11 @@
   rules:
   - 'Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) -> Remove this'
   - When removed -> Add 1 Wound to your expended pile
+  severity: 1
   tags:
   - Combat
   - Condition
   type: consequenceCard
-  severity: 1
 - id: cons-sev1-strain-defense
   name: Rattled Guard
   notes: Increases the risk from future attacks
@@ -17,11 +17,11 @@
   rules:
   - 'Task: Stretch Out (Check {Yellow} 3; Time 1 min) -> Remove this'
   - When removed -> Add 2 Fatigue to your expended pile
+  severity: 1
   tags:
   - Combat
   - Condition
   type: consequenceCard
-  severity: 1
 - effects:
   - Put 2 Injury cards on top of your deck.
   id: cons-sev1-minor-trauma
@@ -30,11 +30,11 @@
   rules:
   - 'Task: Steady Yourself (Check {Red} 3; Time 1 min) -> Remove this'
   - 'Action: Push Through (Spend {Red} 10) -> Remove this'
+  severity: 1
   tags:
   - General
   - Status_Effect
   type: consequenceCard
-  severity: 1
 - id: cons-sev2-fumbled-strike
   name: Compromised Leverage
   notes: A severe penalty to offense.
@@ -43,11 +43,11 @@
   rules:
   - 'Task: Set and Bind Wound (Check {Blue} 10; Time 1 hour) -> Remove this'
   - When removed -> Add 2 Wounds to your expended pile
+  severity: 2
   tags:
   - Combat
   - Condition
   type: consequenceCard
-  severity: 2
 - id: cons-sev2-guard-breach
   name: Breached Guard
   notes: A severe penalty to defense.
@@ -58,11 +58,11 @@
   - 'Task: Careful Repair (Check {Yellow} 12; Time 4 hours; Cost Repair Tools) ->
     Remove this'
   - When removed -> If you used 'Hammer Out', this armor gains the 'Battered' condition
+  severity: 2
   tags:
   - Combat
   - Condition
   type: consequenceCard
-  severity: 2
 - effects:
   - Expend 4 cards from hand and replace them with Injury cards. For each card you
     cannot expend, put the Injury on top of your deck instead.
@@ -73,11 +73,11 @@
   - 'Task: Recuperate (Check {Red} 5; Time 1 hour) -> Remove this'
   - 'Action: Force Yourself Back (Spend {Red} 10) -> Remove this'
   - When removed -> Add 1 Fatigue to your expended pile
+  severity: 2
   tags:
   - General
   - Status_Effect
   type: consequenceCard
-  severity: 2
 - effects:
   - You are unconsious or dying and on longer a meaningful participant in this fight
   id: cons-sev3-taken-out

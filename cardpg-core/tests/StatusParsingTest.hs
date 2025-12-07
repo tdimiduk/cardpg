@@ -5,9 +5,9 @@ import Data.Yaml (decodeFileEither, ParseException, encode)
 import qualified Data.ByteString as BS
 import Test.Tasty
 import Test.Tasty.HUnit
-import CardPG.Core.Card (CoreCard(..))
+import CardPG.Core.Card (CoreCard, CoreCardT(..))
 import CardPG.Core.RuleInstances () -- Import orphan instances
-import CardPG.Core.RuleDefs (Rule(..))
+import CardPG.Core.RuleDefs (RuleT(..), DSLRule(DSLRule))
 import qualified Data.List.NonEmpty as NE
 import Data.Maybe (fromMaybe)
 
@@ -24,8 +24,8 @@ test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
           -- Verify that rules are parsed as General, not Narrative (fallback)
           let rules = fromMaybe (error "No rules") (_rules fatigue)
           case NE.head rules of
-              RuleGeneral _ -> return ()
-              RuleTask _ -> return ()
+              DSLRule (RuleGeneral _) -> return ()
+              DSLRule (RuleTask _) -> return ()
               r -> assertFailure $ "Expected RuleGeneral or RuleTask, got: " ++ show r
 
           -- Roundtrip check

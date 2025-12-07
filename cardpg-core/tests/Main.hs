@@ -53,7 +53,8 @@ prop_jsonRoundtrip x =
       decoded = eitherDecode encoded
   in counterexample (show encoded) $ decoded === Right x
 
-prop_dslRoundtrip :: Rule -> Property
+
+prop_dslRoundtrip :: DSLBase -> Property
 prop_dslRoundtrip r = 
   let printed = prettyRule r
       parsed = parseRule printed
@@ -62,11 +63,11 @@ prop_dslRoundtrip r =
 -- Debugging Helpers
 
 {-# NOINLINE debugRef #-}
-debugRef :: IORef (Maybe Rule)
+debugRef :: IORef (Maybe DSLBase)
 debugRef = unsafePerformIO (newIORef Nothing)
 
-captureFailure :: Rule -> Property -> Property
+captureFailure :: DSLBase -> Property -> Property
 captureFailure x prop = whenFail (writeIORef debugRef (Just x)) prop
 
-prop_dslRoundtrip_debug :: Rule -> Property
+prop_dslRoundtrip_debug :: DSLBase -> Property
 prop_dslRoundtrip_debug r = captureFailure r (prop_dslRoundtrip r)

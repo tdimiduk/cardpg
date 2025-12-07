@@ -12,7 +12,6 @@ library
     -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
   build-depends: base >= 4.16 && < 5
                , aeson
-               , aeson-typescript
                , text
                , vector
                , containers

@@ -3,25 +3,38 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE DeriveFunctor #-}
 
 module CardPG.Core.RuleDefs
   ( PassiveDef(..)
-  , AttackDef(..)
-  , GeneralDef(..)
-  , TaskDef(..)
-  , TriggerDef(..)
-  , StanceDef(..)
-  , ChannelDef(..)
-  , PrimeDef(..)
-  , Rule(..)
+  , AttackDefT(..)
+  , AttackDef
+  , GeneralDefT(..)
+  , GeneralDef
+  , TaskDefT(..)
+  , TaskDef
+  , TriggerDefT(..)
+  , TriggerDef
+  , StanceDefT(..)
+  , StanceDef
+  , ChannelDefT(..)
+  , ChannelDef
+  , PrimeDefT(..)
+  , PrimeDef
+  , RuleT(..)
+  , Rule
+  , DSLBase
+  , DSLRule(..)
   ) where
 
-import Data.Aeson.TypeScript.TH (deriveTypeScript)
+import Data.Aeson (ToJSON, FromJSON)
 import Data.Aeson.TH (deriveJSON)
 import GHC.Generics (Generic)
+import Data.Functor.Classes (Eq1, Show1, eq1, liftEq, showsPrec1, liftShowsPrec)
 
 import CardPG.Core.Types (ResourceType(..), Difficulty)
-import CardPG.Core.RichText (RichString, StackPower)
+import CardPG.Core.RichText (RichText, RichString, StackPower)
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 
@@ -33,93 +46,101 @@ data PassiveDef = PassiveDef
   } deriving (Show, Eq, Generic)
 
 -- | Standard Attack Logic
-data AttackDef = AttackDef
+data AttackDefT rt = AttackDef
   { _power      :: StackPower
   , _resistedBy :: ResourceType
-  , _effect     :: Maybe RichString
-  } deriving (Show, Eq, Generic)
+  , _effect     :: Maybe rt
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | General/Utility Actions
 -- | Addresses: "Fatigue: Action (Sleep 2 hours): Remove this"
-data GeneralDef = GeneralDef
+data GeneralDefT rt = GeneralDef
   { _name   :: NonEmptyText
-  , _cost   :: Maybe RichString -- ^ Narrative Cost: "Sleep 2 hours"
+  , _cost   :: Maybe rt -- ^ Narrative Cost: "Sleep 2 hours"
   , _difficulty :: Maybe Difficulty -- ^ Optional. Fatigue removal isn't a check.
-  , _effect :: RichString       -- ^ Effect: "Remove this card"
-  } deriving (Show, Eq, Generic)
+  , _effect :: rt       -- ^ Effect: "Remove this card"
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | Persistent Effects: Stance
-data StanceDef = StanceDef
+data StanceDefT rt = StanceDef
   { _duration :: NonEmptyText
-  , _effect :: RichString
-  } deriving (Show, Eq, Generic)
+  , _effect :: rt
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | Persistent Effects: Channel
-data ChannelDef = ChannelDef
+data ChannelDefT rt = ChannelDef
   { _duration :: NonEmptyText
-  , _effect   :: RichString
-  } deriving (Show, Eq, Generic)
+  , _effect   :: rt
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | Persistent Effects: Prime
-data PrimeDef = PrimeDef
+data PrimeDefT rt = PrimeDef
   { _trigger  :: NonEmptyText
-  , _reaction :: Rule
-  } deriving (Show, Eq, Generic)
+  , _reaction :: RuleT rt
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | Task Actions (Downtime/Narrative)
 -- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
-data TaskDef = TaskDef
+data TaskDefT rt = TaskDef
   { _name   :: NonEmptyText
   , _check  :: Maybe Difficulty -- ^ The difficulty check: "Check {Blue} 3"
-  , _time   :: Maybe RichString -- ^ Duration: "Time 1 min"
-  , _cost   :: Maybe RichString -- ^ Narrative Cost: "Cost Bandage"
-  , _effect :: RichString       -- ^ Effect: "Remove this card"
-  } deriving (Show, Eq, Generic)
+  , _time   :: Maybe rt -- ^ Duration: "Time 1 min"
+  , _cost   :: Maybe rt -- ^ Narrative Cost: "Cost Bandage"
+  , _effect :: rt       -- ^ Effect: "Remove this card"
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | Triggered Effects (When)
 -- | Addresses: "When removed -> Add 1 Wound"
-data TriggerDef = TriggerDef
+data TriggerDefT rt = TriggerDef
   { _trigger :: NonEmptyText
-  , _effect  :: RichString
-  } deriving (Show, Eq, Generic)
+  , _effect  :: rt
+  } deriving (Show, Eq, Generic, Functor)
 
 -- | The Top-Level Rule Sum Type
-data Rule
-  = RuleAttack  AttackDef
-
-  | RuleGeneral GeneralDef
-  | RuleTask    TaskDef
-  | RuleTrigger TriggerDef
-  | RuleStance  StanceDef
-  | RuleChannel ChannelDef
-  | RulePrime   PrimeDef
-  | RuleNarrative RichString
+data RuleT rt
+  = RuleAttack  (AttackDefT rt)
+  | RuleGeneral (GeneralDefT rt)
+  | RuleTask    (TaskDefT rt)
+  | RuleTrigger (TriggerDefT rt)
+  | RuleStance  (StanceDefT rt)
+  | RuleChannel (ChannelDefT rt)
+  | RulePrime   (PrimeDefT rt)
+  | RuleNarrative rt
   | RulePassive PassiveDef
-  deriving stock (Eq, Show, Generic)
+  deriving stock (Eq, Show, Generic, Functor)
 
-$(mconcat <$> traverse (deriveTypeScript (cardpgJsonOptions "Rule")) 
-  [ ''PassiveDef
-  , ''AttackDef
-  , ''GeneralDef
-  , ''TaskDef
-  , ''TriggerDef
-  , ''StanceDef
-  , ''ChannelDef
-  , ''PrimeDef
-  , ''Rule
-  ])
+-- | Base Types (Machine Readable)
+type Rule = RuleT RichText
+type AttackDef = AttackDefT RichText
+type GeneralDef = GeneralDefT RichText
+type TaskDef = TaskDefT RichText
+type TriggerDef = TriggerDefT RichText
+type StanceDef = StanceDefT RichText
+type ChannelDef = ChannelDefT RichText
+type PrimeDef = PrimeDefT RichText
+
+-- | DSL Base (Human Readable)
+type DSLBase = RuleT RichString
+
+newtype DSLRule = DSLRule { unDSLRule :: DSLBase }
+  deriving (Show, Eq, Generic)
+
 
 -- | Note:
 -- | 1. 'Rule' is excluded because it has a custom manual instance in RuleInstances.hs
 -- |    to support DSL parsing (e.g. "Attack {Red}...").
 -- | 2. 'PrimeDef' is excluded because it depends on 'Rule', creating a cycle if defined here.
 -- |    Its instance is derived in RuleInstances.hs instead.
-$(mconcat <$> traverse (deriveJSON cardpgJsonDef)
-  [ ''PassiveDef
-  , ''AttackDef
-  , ''GeneralDef
-  , ''TaskDef
-  , ''TriggerDef
-  , ''StanceDef
-  , ''ChannelDef
-  ])
+$(do
+  defs <- mconcat <$> traverse (deriveJSON cardpgJsonDef)
+    [ ''PassiveDef
+    , ''AttackDefT
+    , ''GeneralDefT
+    , ''TaskDefT
+    , ''TriggerDefT
+    , ''StanceDefT
+    , ''ChannelDefT
+    , ''PrimeDefT
+    ]
+  rule <- deriveJSON (cardpgJsonOptions "Rule") ''RuleT
+  return (defs ++ rule))

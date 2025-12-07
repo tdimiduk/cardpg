@@ -17,12 +17,15 @@ import qualified Data.Text as T
 import Data.Text (Text)
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
+import Data.Maybe (fromMaybe)
 
 import CardPG.Core.Card
 import CardPG.Core.Types
 import CardPG.Core.RichText
 import CardPG.Core.NonEmptyText (NonEmptyText(..), unsafeNonEmptyText, getNonEmptyText)
 import CardPG.Core.DSL.Printer (richToString)
+
+import CardPG.Core.RuleDefs
 
 -- Arbitrary Instances
 
@@ -69,7 +72,7 @@ instance Arbitrary RichString where
       Just rs -> return rs
   shrink rs = 
     [ rs'
-    | l <- shrink (NE.toList (unRichString rs))
+    | l <- shrink (NE.toList (unRichText (unRichString rs)))
     , not (null l)
     , Just rs' <- [mkRichString l]
     ]
@@ -82,31 +85,35 @@ instance Arbitrary PassiveDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary AttackDef where
+instance Arbitrary rt => Arbitrary (AttackDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary GeneralDef where
+instance Arbitrary rt => Arbitrary (GeneralDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary StanceDef where
+instance Arbitrary rt => Arbitrary (StanceDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary ChannelDef where
+instance Arbitrary rt => Arbitrary (ChannelDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary PrimeDef where
+instance Arbitrary (PrimeDefT RichString) where
+  arbitrary = do
+    trig <- arbitrary
+    -- Break recursion by using a simple rule
+    let simpleReaction = RuleNarrative (fromMaybe (unsafeSimpleString "Reaction") (simpleString "Reaction"))
+    return $ PrimeDef trig simpleReaction
+  shrink _ = []
+
+instance Arbitrary rt => Arbitrary (TriggerDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary TriggerDef where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-
-instance Arbitrary TaskDef where
+instance Arbitrary rt => Arbitrary (TaskDefT rt) where
   arbitrary = do
     name <- arbitrary
     check <- arbitrary
@@ -116,7 +123,7 @@ instance Arbitrary TaskDef where
     pure $ TaskDef name check time cost effect
   shrink = genericShrink
 
-instance Arbitrary Rule where
+instance Arbitrary DSLBase where
   arbitrary = oneof
     [ RuleAttack <$> arbitrary
     , RuleGeneral <$> arbitrary
@@ -128,6 +135,10 @@ instance Arbitrary Rule where
     , RulePassive <$> arbitrary
     , RuleNarrative <$> arbitrarySafeRichString
     ]
+  shrink = genericShrink
+
+instance Arbitrary DSLRule where
+  arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
 arbitrarySafeRichString :: Gen RichString

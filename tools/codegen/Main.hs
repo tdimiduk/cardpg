@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module Main where
 
@@ -10,13 +9,15 @@ import System.IO (writeFile)
 import CardPG.Core.Types (ResourceType, StackPower, Difficulty)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (TextStyle, Inline, RichString, Block)
-import CardPG.Core.RuleDefs (PassiveDef, AttackDef, GeneralDef, StanceDef, ChannelDef, PrimeDef, Rule, TaskDef, TriggerDef)
-import CardPG.Core.Card (Stats, CoreCard, ItemCard, NatureCard, TalentCard, GeneralActionDef, EncounterMechanics, EncounterCard, ConsequenceCard, Actor)
+import CardPG.Core.RuleDefs (PassiveDef)
+import CardPG.Core.Card (Stats, GeneralActionDef, EncounterMechanics)
 import CardPG.Server.Types (ClientMessage, ServerMessage)
 
 import Data.List (intercalate)
 import Data.Text (pack, unpack, replace)
 import System.Environment (getArgs)
+
+import TypeScriptInstances (CoreCard, Actor, Rule, AttackDef, GeneralDef, TaskDef, TriggerDef, StanceDef, ChannelDef, PrimeDef, ItemCard, NatureCard, TalentCard, EncounterCard, ConsequenceCard)
 
 main :: IO ()
 main = do

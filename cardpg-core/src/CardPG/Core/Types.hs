@@ -12,7 +12,6 @@ import Data.Text (Text)
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json (cardpgJsonDef)
-import Data.Aeson.TypeScript.TH (deriveTypeScript)
 
 data ResourceType = Red | Yellow | Blue
   deriving stock (Eq,Show, Generic)
@@ -34,6 +33,3 @@ $(deriveJSON cardpgJsonDef ''ResourceType)
 $(deriveJSON cardpgJsonDef ''StackPower)
 $(deriveJSON cardpgJsonDef ''Difficulty)
 
-$(deriveTypeScript cardpgJsonDef ''ResourceType)
-$(deriveTypeScript cardpgJsonDef ''StackPower)
-$(deriveTypeScript cardpgJsonDef ''Difficulty)

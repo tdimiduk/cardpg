@@ -14,19 +14,19 @@ import Text.Megaparsec (Parsec, parse, errorBundlePretty, try, takeWhile1P, take
 import Text.Megaparsec.Char (char, string, string', space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 
-import CardPG.Core.RuleDefs (Rule(..), AttackDef(..), GeneralDef(..), TaskDef(..), TriggerDef(..), StanceDef(..), ChannelDef(..), PrimeDef(..), PassiveDef(..))
+import CardPG.Core.RuleDefs (RuleT(..), DSLBase, AttackDefT(..), GeneralDefT(..), TaskDefT(..), TriggerDefT(..), StanceDefT(..), ChannelDefT(..), PrimeDefT(..), PassiveDef(..))
 import CardPG.Core.RichText (StackPower(..), RichString, mkRichString, Inline(..), TextStyle(..))
 import CardPG.Core.Types (ResourceType(..), Difficulty(..))
 import CardPG.Core.NonEmptyText (takeWhilePNonEmpty, takeWhilePNonEmptyStripped, mkNonEmptyText, unsafeNonEmptyText)
 
 type Parser = Parsec Void Text
 
-parseRule :: Text -> Either String Rule
+parseRule :: Text -> Either String DSLBase
 parseRule t = case parse ruleParser "" t of
   Left err -> Left $ errorBundlePretty err
   Right r -> Right r
 
-ruleParser :: Parser Rule
+ruleParser :: Parser DSLBase
 ruleParser = choice
   [ try (attackParser <* eof)
   , try (stanceParser <* eof)
@@ -40,7 +40,7 @@ ruleParser = choice
   ]
 
 -- Attack
-attackParser :: Parser Rule
+attackParser :: Parser DSLBase
 attackParser = do
   _ <- string' "attack"
   _ <- space1
@@ -54,7 +54,7 @@ attackParser = do
   pure $ RuleAttack $ AttackDef power resistedBy extra
 
 -- Stance
-stanceParser :: Parser Rule
+stanceParser :: Parser DSLBase
 stanceParser = do
   _ <- string' "stance"
   _ <- space
@@ -77,7 +77,7 @@ effectArrow :: Parser Text
 effectArrow = string "->"
 
 -- Channel
-channelParser :: Parser Rule
+channelParser :: Parser DSLBase
 channelParser = do
   _ <- string' "channel"
   _ <- space
@@ -87,7 +87,7 @@ channelParser = do
   pure $ RuleChannel $ ChannelDef duration effect
 
 -- Prime
-primeParser :: Parser Rule
+primeParser :: Parser DSLBase
 primeParser = do
   _ <- string' "prime"
   _ <- space
@@ -99,7 +99,7 @@ primeParser = do
   pure $ RulePrime $ PrimeDef trigger reaction
 
 -- Passive
-passiveParser :: Parser Rule
+passiveParser :: Parser DSLBase
 passiveParser = do
   _ <- string' "passive"
   _ <- space
@@ -112,7 +112,7 @@ passiveParser = do
 
 -- Task
 -- Task: Name ({Color} X, Time) -> Effect
-taskParser :: Parser Rule
+taskParser :: Parser DSLBase
 taskParser = do
   _ <- string' "Task:"
   _ <- space
@@ -164,7 +164,7 @@ taskParser = do
 
 -- Trigger (When)
 -- When [Trigger] -> [Effect]
-triggerParser :: Parser Rule
+triggerParser :: Parser DSLBase
 triggerParser = do
   _ <- string' "When"
   _ <- space1
@@ -178,7 +178,7 @@ triggerParser = do
   pure $ RuleTrigger $ TriggerDef trigger effect
 
 -- General (Explicit Action)
-generalParser :: Parser Rule
+generalParser :: Parser DSLBase
 generalParser = do
   _ <- string' "Action:" <|> string' "General:"
   _ <- space
@@ -198,7 +198,7 @@ generalParser = do
   pure $ RuleGeneral $ GeneralDef name cost difficulty effect
 
 -- Narrative (Fallback for General)
-narrativeParser :: Parser Rule
+narrativeParser :: Parser DSLBase
 narrativeParser = do
   rt <- richTextParser
   pure $ RuleNarrative rt

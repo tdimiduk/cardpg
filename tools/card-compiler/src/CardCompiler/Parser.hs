@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 
 module CardCompiler.Parser where
 
@@ -13,7 +14,8 @@ import qualified Data.Text as T
 import qualified Data.Text.Read as TR
 import GHC.Generics (Generic)
 
-import CardPG.Core.Card (CoreCard(..), ItemCard(..), Rule(..), Stats(..), AttackDef(..))
+import CardPG.Core.Card (CoreCard, ItemCard, CoreCardT(..), ItemCardT(..), Stats(..))
+import CardPG.Core.RuleDefs (DSLBase, RuleT(..), AttackDefT(..), DSLRule(..))
 import CardPG.Core.RichText (RichString, mkRichString, Inline(..), simpleString)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
@@ -100,7 +102,7 @@ convertCard RawCard{..} = do
               _cost = toIntMaybe rcCost
               _flavor = rcFlavor >>= simpleString 
           rules <- parseRules rcAction rcEffect rcDetails
-          let _rules = NE.nonEmpty rules
+          let _rules = NE.nonEmpty (map DSLRule rules)
           pure $ PCore CoreCard{..}
         _ -> Left "Data Error: Partial stats found. Either all stats (red, yellow, blue) must be present, or none."
 
@@ -114,7 +116,7 @@ toIntMaybe _ = Nothing
 toInt :: Maybe Value -> Int
 toInt = fromMaybe 0 . toIntMaybe
 
-parseRules :: Maybe Text -> Maybe Text -> Maybe Text -> Either String [Rule]
+parseRules :: Maybe Text -> Maybe Text -> Maybe Text -> Either String [DSLBase]
 parseRules actionStr effectStr detailsStr = do
   r1 <- case nonEmptyText actionStr of
           Nothing -> pure Nothing
@@ -136,7 +138,7 @@ parseRules actionStr effectStr detailsStr = do
     (Nothing, Just re) -> pure $ re : r3
     (Nothing, Nothing) -> pure r3
 
-mergeEffect :: AttackDef -> RichString -> AttackDef
+mergeEffect :: AttackDefT RichString -> RichString -> AttackDefT RichString
 mergeEffect (AttackDef p r e) rt = AttackDef p r (mergeRichString e rt)
 
 mergeRichString Nothing new = Just new
@@ -151,11 +153,11 @@ nonEmptyText (Just t)
   | T.null (T.strip t) = Nothing
   | otherwise = Just t
 
-parseAction :: Text -> Either String Rule
+parseAction :: Text -> Either String DSLBase
 parseAction t = parseRule t
 
-parseEffect :: Text -> Either String Rule
+parseEffect :: Text -> Either String DSLBase
 parseEffect t = parseRule t
 
-parseDetails :: Text -> Either String Rule
+parseDetails :: Text -> Either String DSLBase
 parseDetails t = parseRule t
