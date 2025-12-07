@@ -56,5 +56,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vite
 
 data/cards/status/core.reformatted.yaml
