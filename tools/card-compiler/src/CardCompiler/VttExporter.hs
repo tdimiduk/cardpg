@@ -82,12 +82,13 @@ loadAndExport inputFiles outputFile = do
 
 -- | Convert Actor (Human) to ActorMachine (Machine)
 convertActor :: Actor -> ActorMachine
-convertActor (Actor n t i d) = 
-  let actorId = slugify n
+convertActor (Actor i n t items d) = 
+  let actorId = maybe (slugify n) id i
   in Actor
   { _name = n
+  , _id = Just actorId
   , _tags = t
-  , _items = map convertItem i
+  , _items = map convertItem items
   , _deck = processDeck actorId d
   }
 

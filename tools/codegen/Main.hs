@@ -8,7 +8,7 @@ import System.IO (writeFile)
 
 import CardPG.Core.Types (ResourceType, StackPower, Difficulty)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.RichText (TextStyle, Inline, RichString, Block)
+import CardPG.Core.RichText (TextStyle, Inline, RichString, RichText, Block)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.Card (Stats, GeneralActionDef, EncounterMechanics)
 import CardPG.Server.Types (ClientMessage, ServerMessage)
@@ -33,6 +33,7 @@ main = do
         (getTypeScriptDeclarations (Proxy :: Proxy NonEmptyText)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy TextStyle)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy Inline)) <>
+        (getTypeScriptDeclarations (Proxy :: Proxy RichText)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy RichString)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy Block)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy PassiveDef)) <>

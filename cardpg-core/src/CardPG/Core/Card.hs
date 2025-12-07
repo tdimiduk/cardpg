@@ -184,7 +184,8 @@ $(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCardT)
 
 -- | Represents an Actor (Character/Monster/NPC).
 data ActorT rule rt = Actor
-  { _name  :: Text
+  { _id    :: Maybe Text
+  , _name  :: Text
   , _tags  :: Maybe (NonEmpty Text)
   , _items :: [ItemCardT rt]
   , _deck  :: [CoreCardT rule rt]

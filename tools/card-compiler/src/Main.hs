@@ -76,6 +76,7 @@ processCards outputDir cards tag = do
                 , _tags = fmap (\t -> NE.fromList [T.pack t]) tag
                 , _items = items
                 , _deck = deck 
+                , _id = Just (Vtt.slugify actorName)
                 }
           let fileName = T.unpack (sanitize actorName) ++ ".yaml"
           let outputPath = outputDir </> fileName
