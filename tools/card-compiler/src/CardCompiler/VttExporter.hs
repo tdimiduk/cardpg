@@ -86,16 +86,16 @@ convertActor (Actor i n t items d) =
   let actorId = maybe (slugify n) id i
   in Actor
   { _name = n
-  , _id = Just actorId
+  , _id = actorId
   , _tags = t
-  , _items = map convertItem items
+  , _items = map (convertItem actorId) items
   , _deck = processDeck actorId d
   }
 
-convertItem :: ItemCard -> ItemCardMachine
-convertItem (ItemCard i n t f w v tr p d r) = 
+convertItem :: Text -> ItemCard -> ItemCardMachine
+convertItem actorId (ItemCard i n t f w v tr p d r) = 
   ItemCard
-    { _id = Just $ fromMaybe (slugify (getNonEmptyText n)) i
+    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText n)) i
     , _name = n
     , _tags = t
     , _flavor = fmap unRichString f
@@ -147,7 +147,7 @@ assignId actorId freqMap counters card@(CoreCard _ n _ _ _ _ _) =
 -- | Convert CoreCard to CoreCardMachine with specific ID
 toVttCoreCard :: CoreCard -> Text -> CoreCardMachine
 toVttCoreCard (CoreCard _ n t s c r f) finalId = CoreCard
-  { _id = Just finalId
+  { _id = finalId
   , _name = n
   , _tags = t
   , _stats = s
@@ -168,7 +168,7 @@ slugify = T.toLower . T.replace " " "-"
 toVttConsequenceCard :: ConsequenceCard -> ConsequenceCardMachine
 toVttConsequenceCard (ConsequenceCard i n t p e s nota r) = 
   ConsequenceCard
-  { _id = i
+  { _id = fromMaybe (slugify (getNonEmptyText n)) i
   , _name = n
   , _tags = t
   , _passive = p

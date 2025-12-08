@@ -47,8 +47,8 @@ data Stats = Stats { _red :: Int, _yellow :: Int, _blue :: Int }
 
 $(deriveJSON cardpgJsonDef ''Stats)
 
-data CoreCardT rule rt = CoreCard
-  { _id     :: Maybe Text
+data CoreCardT id rule rt = CoreCard
+  { _id     :: id
   , _name   :: NonEmptyText
   , _tags   :: Maybe (NonEmpty Text)
   , _stats  :: Stats
@@ -67,14 +67,14 @@ data CoreCardT rule rt = CoreCard
   }
   deriving stock (Eq, Show, Generic)
 
-type CoreCard = CoreCardT DSLRule RichString
-type CoreCardMachine = CoreCardT Rule RichText
+type CoreCard = CoreCardT (Maybe Text) DSLRule RichString
+type CoreCardMachine = CoreCardT Text Rule RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''CoreCardT)
 
 -- | Represents Items/Equipment that stay in play (Table Cards).
-data ItemCardT rt = ItemCard
-  { _id         :: Maybe Text
+data ItemCardT id rt = ItemCard
+  { _id         :: id
   , _name       :: NonEmptyText
   , _tags       :: Maybe (NonEmpty Text)
   , _flavor     :: Maybe rt
@@ -87,14 +87,14 @@ data ItemCardT rt = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-type ItemCard = ItemCardT RichString
-type ItemCardMachine = ItemCardT RichText
+type ItemCard = ItemCardT (Maybe Text) RichString
+type ItemCardMachine = ItemCardT Text RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''ItemCardT)
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
-data NatureCardT rt = NatureCard
-  { _id         :: Maybe Text
+data NatureCardT id rt = NatureCard
+  { _id         :: id
   , _name       :: NonEmptyText
   , _tags       :: Maybe (NonEmpty Text)
   , _flavor     :: Maybe rt
@@ -105,14 +105,14 @@ data NatureCardT rt = NatureCard
   }
   deriving stock (Eq, Show, Generic)
 
-type NatureCard = NatureCardT RichString
-type NatureCardMachine = NatureCardT RichText
+type NatureCard = NatureCardT (Maybe Text) RichString
+type NatureCardMachine = NatureCardT Text RichText
 
 $(deriveJSON cardpgJsonDef ''NatureCardT)
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
-data TalentCardT rt = TalentCard
-  { _id         :: Maybe Text
+data TalentCardT id rt = TalentCard
+  { _id         :: id
   , _name       :: NonEmptyText
   , _tags       :: Maybe (NonEmpty Text)
   , _flavor     :: Maybe rt
@@ -122,8 +122,8 @@ data TalentCardT rt = TalentCard
   }
   deriving stock (Eq, Show, Generic)
 
-type TalentCard = TalentCardT RichString
-type TalentCardMachine = TalentCardT RichText
+type TalentCard = TalentCardT (Maybe Text) RichString
+type TalentCardMachine = TalentCardT Text RichText
 
 $(deriveJSON cardpgJsonDef ''TalentCardT)
 
@@ -149,8 +149,8 @@ data EncounterMechanics = EncounterMechanics
 $(deriveJSON cardpgJsonDef ''EncounterMechanics)
 
 -- | Represents Narrative Encounters/Events.
-data EncounterCardT rt = EncounterCard
-  { _id        :: Maybe Text
+data EncounterCardT id rt = EncounterCard
+  { _id        :: id
   , _name      :: NonEmptyText
   , _tags      :: Maybe (NonEmpty Text)
   , _narrative :: rt
@@ -159,14 +159,14 @@ data EncounterCardT rt = EncounterCard
   }
   deriving stock (Eq, Show, Generic)
 
-type EncounterCard = EncounterCardT RichString
-type EncounterCardMachine = EncounterCardT RichText
+type EncounterCard = EncounterCardT (Maybe Text) RichString
+type EncounterCardMachine = EncounterCardT Text RichText
 
 $(deriveJSON cardpgJsonDef ''EncounterCardT)
 
 -- | Represents Status Effects / Consequences.
-data ConsequenceCardT rule = ConsequenceCard
-  { _id      :: Maybe Text
+data ConsequenceCardT id rule = ConsequenceCard
+  { _id      :: id
   , _name    :: NonEmptyText
   , _tags    :: Maybe (NonEmpty Text)
   , _passive :: Maybe Text
@@ -177,23 +177,23 @@ data ConsequenceCardT rule = ConsequenceCard
   }
   deriving stock (Eq, Show, Generic)
 
-type ConsequenceCard = ConsequenceCardT DSLRule
-type ConsequenceCardMachine = ConsequenceCardT Rule
+type ConsequenceCard = ConsequenceCardT (Maybe Text) DSLRule
+type ConsequenceCardMachine = ConsequenceCardT Text Rule
 
 $(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCardT)
 
 -- | Represents an Actor (Character/Monster/NPC).
-data ActorT rule rt = Actor
-  { _id    :: Maybe Text
+data ActorT id rule rt = Actor
+  { _id    :: id
   , _name  :: Text
   , _tags  :: Maybe (NonEmpty Text)
-  , _items :: [ItemCardT rt]
-  , _deck  :: [CoreCardT rule rt]
+  , _items :: [ItemCardT id rt]
+  , _deck  :: [CoreCardT id rule rt]
   }
   deriving stock (Eq, Show, Generic)
 
-type Actor = ActorT DSLRule RichString
-type ActorMachine = ActorT Rule RichText
+type Actor = ActorT (Maybe Text) DSLRule RichString
+type ActorMachine = ActorT Text Rule RichText
 
 $(deriveJSON cardpgJsonDef ''ActorT)
 

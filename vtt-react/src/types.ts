@@ -28,20 +28,12 @@ export const StatsSchema = GenSchemas.statsSchema;
 export type Stats = Gen.Stats;
 
 // Extend generated schemas to include the discriminator 'type'
-// Extend generated schemas to enforce 'id' presence and add discriminator
-export const CoreCardSchema = GenSchemas.coreCardSchema.and(
-  z.object({
-    id: z.string(),
-  }),
-);
-export type CoreCard = Gen.CoreCard & { id: string };
+// Extend generated schemas to include the discriminator 'type'
+export const CoreCardSchema = GenSchemas.coreCardSchema;
+export type CoreCard = Gen.CoreCard;
 
-export const ItemCardSchema = GenSchemas.itemCardSchema.and(
-  z.object({
-    id: z.string(),
-  }),
-);
-export type ItemCard = Gen.ItemCard & { id: string };
+export const ItemCardSchema = GenSchemas.itemCardSchema;
+export type ItemCard = Gen.ItemCard;
 
 export const CardSchema = z.union([CoreCardSchema, ItemCardSchema]);
 export type Card = CoreCard | ItemCard;
@@ -98,12 +90,8 @@ export interface GameState {
   activeTokenId: string | null;
 }
 
-export const ConsequenceCardSchema = GenSchemas.consequenceCardSchema.and(
-  z.object({
-    id: z.string(),
-  }),
-);
-export type ConsequenceCard = Gen.ConsequenceCard & { id: string };
+export const ConsequenceCardSchema = GenSchemas.consequenceCardSchema;
+export type ConsequenceCard = Gen.ConsequenceCard;
 
 export interface PlayerDeckState {
   drawPile: CoreCard[];

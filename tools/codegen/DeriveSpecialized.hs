@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE LambdaCase #-}
 
-module DeriveSpecialized (specializeType, specializeType2, makeBridgeInstance) where
+module DeriveSpecialized (specializeType, specializeType2, specializeType3, makeBridgeInstance) where
 
 import Language.Haskell.TH
 import Data.Map (Map)
@@ -67,6 +67,29 @@ specializeType2 typeName param1 param2 newTypeNameStr = do
       return [DataD [] newName [] Nothing newConstructors derivingClauses]
       
     _ -> fail "specializeType2: Expected a data type declaration"
+
+-- | specializeType3 substitutes the first *three* type parameters.
+specializeType3 :: Name -> Type -> Type -> Type -> String -> Q [Dec]
+specializeType3 typeName param1 param2 param3 newTypeNameStr = do
+  info <- reify typeName
+  case info of
+    TyConI (DataD _cxt _name binders _kind constructors _deriv) -> do
+      let newName = mkName newTypeNameStr
+      
+      -- Identify variables
+      let (var1, var2, var3) = case binders of
+            (b1:b2:b3:_) -> (getBinderName b1, getBinderName b2, getBinderName b3)
+            _ -> error "specializeType3: Type must have at least 3 parameters"
+            
+      let subst = Map.fromList [(var1, param1), (var2, param2), (var3, param3)]
+      
+      newConstructors <- mapM (substConstructor subst newName) constructors
+      
+      let derivingClauses = [DerivClause Nothing [ConT (mkName "Generic")]]
+      
+      return [DataD [] newName [] Nothing newConstructors derivingClauses]
+      
+    _ -> fail "specializeType3: Expected a data type declaration"
 
 getBinderName :: TyVarBndr flag -> Name
 getBinderName (PlainTV n _) = n
