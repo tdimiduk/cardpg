@@ -59,6 +59,16 @@ test:
     @test -f {{shake}} || just bootstrap
     @{{shake}} test
 
+# Lint frontend code
+lint-frontend:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} lint-frontend
+
+# Typecheck frontend code
+check-types:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} check-types
+
 # Test cardpg-core
 test-core:
     @test -f {{shake}} || just bootstrap

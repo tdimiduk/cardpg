@@ -59,6 +59,8 @@ main = do
             , ("build",       "Build all targets",                buildAll)
             , ("dev",         "Run dev servers",                  runDev)
             , ("test",        "Run all tests",                    testAll)
+            , ("lint-frontend", "Lint frontend code",             need ["_build/frontend/.lint.timestamp"])
+            , ("check-types",   "Typecheck frontend code",        need ["_build/frontend/.typecheck.timestamp"])
             , ("test-core",   "Test cardpg-core",                 need ["_build/tests/.cardpg-core.timestamp"])
             , ("test-compiler","Test card-compiler",              need ["_build/tests/.card-compiler.timestamp"])
             , ("repl-core",   "REPL for cardpg-core",             replCore)
@@ -78,6 +80,7 @@ main = do
         defineDeckRules "monster" "data/cards/monsters"
         defineCodegenRules
         defineTestRules
+        defineFrontendRules
 
 -- | Directory for build artifacts
 buildDir :: FilePath
@@ -243,6 +246,8 @@ testAll = do
         [ "_build/tests/.cardpg-core.timestamp"
         , "_build/tests/.card-compiler.timestamp"
         , "_build/tests/.vtt-react.timestamp"
+        , "_build/frontend/.lint.timestamp"
+        , "_build/frontend/.typecheck.timestamp"
         ]
 
 -- | Run REPL for core
@@ -252,6 +257,24 @@ replCore = cmd_ (["cabal", "repl", "cardpg-core"] :: [String])
 -- | Run REPL for server
 replServer :: Action ()
 replServer = cmd_ (["cabal", "repl", "cardpg-server"] :: [String])
+
+
+-- | Define rules for frontend linting and typechecking
+defineFrontendRules :: Rules ()
+defineFrontendRules = do
+    "_build/frontend/.lint.timestamp" %> \out -> do
+        srcs <- getFrontendSources
+        need srcs
+        cmd_ (Cwd "vtt-react") (["npm", "run", "lint"] :: [String])
+        cmd_ (["mkdir", "-p", takeDirectory out] :: [String])
+        cmd_ (["touch", out] :: [String])
+
+    "_build/frontend/.typecheck.timestamp" %> \out -> do
+        srcs <- getFrontendSources
+        need srcs
+        cmd_ (Cwd "vtt-react") (["npm", "exec", "tsc", "--", "--noEmit"] :: [String])
+        cmd_ (["mkdir", "-p", takeDirectory out] :: [String])
+        cmd_ (["touch", out] :: [String])
 
 -- | Define rules for test caching
 defineTestRules :: Rules ()
