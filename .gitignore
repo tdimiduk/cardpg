@@ -19,6 +19,7 @@ cabal.sandbox.config
 ctags
 dist-newstyle/
 dist/
+_build/
 ghcid-output.txt
 profile/
 result
@@ -59,3 +60,4 @@ dist-ssr
 .vite
 
 data/cards/status/core.reformatted.yaml
+.direnv

@@ -3,3 +3,4 @@ packages:
   cardpg-server/cardpg-server.cabal
   tools/codegen/cardpg-codegen.cabal
   tools/card-compiler/card-compiler.cabal
+  shake-build/shake-build.cabal
