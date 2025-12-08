@@ -1,74 +1,28 @@
-import { CoreCard, ItemCard } from '../types';
+import { CoreCard, ItemCard, ActorData, ActorDataSchema, CoreCardSchema } from '../types';
 import generatedCards from '../data/generated_cards.json';
-
-export interface ActorTemplate {
-  id: string;
-  name: string;
-  tags: string[];
-  items: ItemCard[];
-  deck: CoreCard[];
-}
-
 import { z } from 'zod';
-import { CoreCardSchema, ItemCardSchema } from '../types';
 
-// Define Raw Schema for JSON input (looser validation before normalization)
-const RawActorSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  tags: z.array(z.string()).optional().default([]),
-  items: z.array(z.record(z.string(), z.unknown())).optional().default([]),
-  deck: z.array(z.record(z.string(), z.unknown())).optional().default([]),
-});
-
-const RawStatusSchema = z.record(z.string(), z.unknown());
-
-const RawDataSchema = z.object({
-  actors: z.array(RawActorSchema),
-  statuses: z.array(RawStatusSchema),
+// Schema for the entire generated cards JSON file to ensure type safety at runtime
+const GeneratedDataSchema = z.object({
+  actors: z.array(ActorDataSchema),
+  statuses: z.array(CoreCardSchema),
 });
 
 // Cast the imported JSON to the correct type and normalize
-const rawData = RawDataSchema.parse(generatedCards);
+const rawData = GeneratedDataSchema.parse(generatedCards);
 
-const ACTOR_DATA: ActorTemplate[] = rawData.actors.map((actor) => ({
-  id: actor.id,
-  name: actor.name,
-  tags: actor.tags,
-  items: actor.items.map((item) => {
-    // Ensure discriminators and defaults are present before parsing
-    const itemObj = {
-      ...item,
-      tags: item.tags || [],
-      traits: item.traits || [],
-    };
-    return ItemCardSchema.parse(itemObj);
-  }),
-  deck: actor.deck.map((card) => {
-    const cardObj = {
-      ...card,
-      tags: card.tags || [],
-    };
-    return CoreCardSchema.parse(cardObj);
-  }),
-}));
+export const ACTOR_DATA: ActorData[] = rawData.actors;
 
-export const STATUS_DATA: CoreCard[] = rawData.statuses.map((status) => {
-  const statusObj = {
-    ...status,
-    tags: status.tags || [],
-  };
-  return CoreCardSchema.parse(statusObj);
-});
+export const STATUS_DATA: CoreCard[] = rawData.statuses;
 
-export const getActorTemplates = (type?: 'pc' | 'monster'): ActorTemplate[] => {
+export const getActorTemplates = (type?: 'pc' | 'monster'): ActorData[] => {
   if (!type) {
     return ACTOR_DATA;
   }
-  return ACTOR_DATA.filter((actor) => actor.tags.includes(type));
+  return ACTOR_DATA.filter((actor) => actor.tags?.includes(type));
 };
 
-export const getActorTemplate = (id: string): ActorTemplate | undefined => {
+export const getActorTemplate = (id: string): ActorData | undefined => {
   return ACTOR_DATA.find((actor) => actor.id === id);
 };
 

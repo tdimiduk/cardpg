@@ -1,6 +1,6 @@
 import React from 'react';
-import { Token, TokenType, PlayerDeckState, Actor } from '../../types';
-import { getActorTemplates, ActorTemplate } from '../../services/deckFactory';
+import { Token, TokenType, PlayerDeckState, Actor, ActorData } from '../../types';
+import { getActorTemplates } from '../../services/deckFactory';
 import { useActorStats } from '../../hooks/useActorStats';
 import { ACTOR_COLORS } from '../../theme';
 
@@ -65,7 +65,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     setShowActorSelector(true);
   };
 
-  const handleSelectTemplate = (template: ActorTemplate) => {
+  const handleSelectTemplate = (template: ActorData) => {
     // Use template name, but append random number if needed or just use it as base
     // We'll use the template name + random number to ensure uniqueness if multiple are added
     const name = `${template.name} ${Math.floor(Math.random() * 100)}`;
