@@ -89,3 +89,13 @@ repl-server:
     @test -f {{shake}} || just bootstrap
     @{{shake}} repl-server
 
+# Deploy to prod (smart rebuild)
+deploy-prod:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} deploy-prod
+
+# Deploy to prod (force rebuild)
+deploy-rebuild:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} deploy-rebuild
+

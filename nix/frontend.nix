@@ -6,11 +6,9 @@ pkgs.buildNpmPackage {
 
   src = ../vtt-react;
 
-  npmDepsHash = "sha256-FDFgAZgc7fRDOr8CR+bXC1zYpt5GBR8gi3d5QvINT6M=";
-
+  npmDepsHash = "sha256-rbFS+T8tmcjhXkXwy3YuRg9AxLHFzRA/hwxEh3ZpcYg="; 
+  
   nativeBuildInputs = [ 
-    pkgs.python3
-    pkgs.python3Packages.pyyaml
     codegen
     cardCompiler
   ];
@@ -32,18 +30,17 @@ pkgs.buildNpmPackage {
     
     # Generate Data
     echo "Generating data..."
-    cd tools
     
-    # Patch run_pipeline.py to use card-compiler directly and fix output path
-    substituteInPlace run_pipeline.py \
-      --replace '["cabal", "run", "card-compiler", "--",' '["${cardCompiler}/bin/card-compiler",' \
-      --replace '["cabal", "run", "card-compiler", "--", "export-vtt",' '["${cardCompiler}/bin/card-compiler", "export-vtt",' \
-      --replace '"vtt-react/src/data/generated_cards.json"' '"src/data/generated_cards.json"'
+    # Use card-compiler directly (replicating Shake logic)
+    # Find all yaml files in relevant directories
+    # We use 'find' to get the lists, assuming simple filenames without spaces for simplicity in this build env
+    yaml_files=$(find data/cards/pc data/cards/monsters data/cards/status data/cards/consequences -name "*.yaml")
     
-    # Run pipeline
-    python3 run_pipeline.py --skip-sync
+    # Run card-compiler export-vtt
+    # We pass the list of files as arguments
+    ${cardCompiler}/bin/card-compiler export-vtt src/data/generated_cards.json $yaml_files
     
-    cd ..
+
   '';
 
   installPhase = ''
