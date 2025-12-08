@@ -1,75 +1,43 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module Main where
 
 import Development.Shake
-import Development.Shake.FilePath
-import Data.Yaml (decodeFileThrow, Value(..), FromJSON(..), parseMaybe)
-import Data.Aeson (withObject, (.:), (.:?))
-import qualified Data.Vector as V
-import qualified Data.Aeson.KeyMap as KM
-import Data.Maybe (mapMaybe)
-import Control.Monad (forM_, when, void)
-import Data.List (isSuffixOf)
-import System.Environment (lookupEnv)
-import System.Exit (ExitCode(..))
-import Control.Monad.IO.Class (liftIO)
-
-data ManifestEntry = ManifestEntry
-    { entryId :: String
-    , entryType :: Maybe String
-    , entryTags :: Maybe [String]
-    , entryName :: String
-    } deriving (Show)
-
-instance FromJSON ManifestEntry where
-    parseJSON = withObject "ManifestEntry" $ \v -> ManifestEntry
-        <$> v .: "id"
-        <*> v .:? "type"
-        <*> v .:? "tags"
-        <*> v .: "name"
-
--- Helper to extract entries recursively
-extractCards :: Value -> [ManifestEntry]
-extractCards (Object obj) = concatMap extractFromValue (KM.elems obj)
-  where
-    extractFromValue :: Value -> [ManifestEntry]
-    extractFromValue (Array vec) = mapMaybe parseEntry (V.toList vec)
-    extractFromValue (Object o) = extractCards (Object o) -- Recurse into sub-objects
-    extractFromValue _ = []
-
-    parseEntry :: Value -> Maybe ManifestEntry
-    parseEntry v = case parseMaybe parseJSON v of
-        Just e | entryType e == Just "Cards" -> Just e
-        _ -> Nothing
-extractCards _ = []
+import Control.Monad (forM_)
+import qualified Rules.Cards as Cards
+import qualified Rules.Codegen as Codegen
+import qualified Rules.Deploy as Deploy
+import qualified Rules.Frontend as Frontend
+import qualified Rules.Haskell as Haskell
+import qualified Rules.Justfile as Justfile
+import qualified Rules.Orchestration as Orchestration
+import Common (buildDir)
 
 main :: IO ()
 main = do
     -- Parse manifest and extract decks
-    (pcDecks, monsterDecks) <- getDecks
+    (pcDecks, monsterDecks) <- Cards.getDecks
 
     -- Define phony targets
     let defs = 
-            [ ("card-data", "Compiles all card data to VTT JSON", buildCardData)
-            , ("sync",      "Syncs card data from Google Sheets", runSync)
-            , ("clean",     "Clean build artifacts",              cleanBuild)
-            , ("gen-just",  "Regenerate the Justfile",            generateJustfile defs)
-            , ("gen-types", "Generate TypeScript types",          buildGenTypes)
-            , ("build-core", "Build cardpg-core",                 buildCore)
-            , ("build-server", "Build cardpg-server",             buildServer)
-            , ("build",       "Build all targets",                buildAll)
-            , ("dev",         "Run dev servers",                  runDev)
-            , ("test",        "Run all tests",                    testAll)
+            [ ("card-data", "Compiles all card data to VTT JSON", Cards.buildCardData)
+            , ("sync",      "Syncs card data from Google Sheets", Cards.runSync)
+            , ("clean",     "Clean build artifacts",              Orchestration.cleanBuild)
+            , ("gen-just",  "Regenerate the Justfile",            Justfile.generateJustfile defs)
+            , ("gen-types", "Generate TypeScript types",          Codegen.buildGenTypes)
+            , ("build-core", "Build cardpg-core",                 Haskell.buildCore)
+            , ("build-server", "Build cardpg-server",             Haskell.buildServer)
+            , ("build",       "Build all targets",                Orchestration.buildAll)
+            , ("dev",         "Run dev servers",                  Orchestration.runDev)
+            , ("test",        "Run all tests",                    Orchestration.testAll)
             , ("lint-frontend", "Lint frontend code",             need ["_build/frontend/.lint.timestamp"])
             , ("check-types",   "Typecheck frontend code",        need ["_build/frontend/.typecheck.timestamp"])
             , ("test-core",   "Test cardpg-core",                 need ["_build/tests/.cardpg-core.timestamp"])
             , ("test-compiler","Test card-compiler",              need ["_build/tests/.card-compiler.timestamp"])
-            , ("repl-core",   "REPL for cardpg-core",             replCore)
-            , ("repl-server", "REPL for cardpg-server",           replServer)
-            , ("deploy-prod", "Deploy to prod (smart rebuild)",   deploy False)
-            , ("deploy-rebuild", "Deploy to prod (force rebuild)", deploy True)
+            , ("repl-core",   "REPL for cardpg-core",             Haskell.replCore)
+            , ("repl-server", "REPL for cardpg-server",           Haskell.replServer)
+            , ("deploy-prod", "Deploy to prod (smart rebuild)",   Deploy.deploy False)
+            , ("deploy-rebuild", "Deploy to prod (force rebuild)", Deploy.deploy True)
             ]
 
     shakeArgs shakeOptions{shakeFiles=buildDir, shakeColor=True, shakeThreads=0} $ do
@@ -80,350 +48,10 @@ main = do
         forM_ defs $ \(name, _, ruleAction) -> phony name ruleAction
 
         -- Define build rules
-        defineVttRule pcDecks monsterDecks
-        defineDeckRules "pc" "data/cards/pc"
-        defineDeckRules "monster" "data/cards/monsters"
-        defineCodegenRules
-        defineTestRules
-        defineFrontendRules
-
--- | Directory for build artifacts
-buildDir :: FilePath
-buildDir = "_build"
-
--- | Load manifest and return (PC Decks, Monster Decks)
-getDecks :: IO ([ManifestEntry], [ManifestEntry])
-getDecks = do
-    manifestValue <- decodeFileThrow "design/manifest.yaml" :: IO Value
-    let entries = extractCards manifestValue
-    let pcDecks = filter (\e -> maybe False ("type:pc-deck" `elem`) (entryTags e)) entries
-    let monsterDecks = filter (\e -> maybe False ("type:monster-deck" `elem`) (entryTags e)) entries
-    return (pcDecks, monsterDecks)
-
--- | Compile card data
-buildCardData :: Action ()
-buildCardData = need ["vtt-react/src/data/generated_cards.json"]
-
--- | Run the python sync script
-runSync :: Action ()
-runSync = cmd_ (["python3", "tools/gsheet_sync/sync-cards-gsheet.py", "--all", "true"] :: [String])
-
--- | Clean build artifacts
-cleanBuild :: Action ()
-cleanBuild = removeFilesAfter "." [buildDir, "dist-shake", "dist-newstyle"]
-
--- | Regenerate the Justfile based on the definitions
-generateJustfile :: [(String, String, Action ())] -> Action ()
-generateJustfile defs = do
-    let justfileContent = unlines $
-            [ "# Justfile generated by shake-build"
-            , "# DO NOT EDIT MANUALLY: Run 'just gen-just' to update"
-            , ""
-            , "default: card-data"
-            , ""
-            , "# Define output binary path"
-            , "shake := '_build/shake-build'"
-            , ""
-            , "# Helper to ensure shake binary exists"
-            , "bootstrap:"
-            , "    cabal install shake-build --installdir=_build --install-method=copy --overwrite-policy=always"
-            , ""
-            ] ++ concatMap (\(name, desc, _) -> 
-                if name == "gen-just" then
-                    -- gen-just always uses cabal run to ensure it runs with latest source code changes
-                    [ "# " ++ desc
-                    , name ++ ":"
-                    , "    cabal run shake-build -- " ++ name
-                    , ""
-                    ]
-                else
-                    -- Other targets use the bootstrapped binary
-                    [ "# " ++ desc
-                    , name ++ ":"
-                    , "    @test -f {{shake}} || just bootstrap"
-                    , "    @{{shake}} " ++ name
-                    , ""
-                    ]) defs
-    writeFileChanged "Justfile" justfileContent
-
--- | Define rule for VTT JSON generation
-defineVttRule :: [ManifestEntry] -> [ManifestEntry] -> Rules ()
-defineVttRule pcDecks monsterDecks = do
-    "vtt-react/src/data/generated_cards.json" %> \out -> do
-        let pcStamps = ["data/cards/pc/.stamp-" ++ entryId e | e <- pcDecks]
-        let monsterStamps = ["data/cards/monsters/.stamp-" ++ entryId e | e <- monsterDecks]
-        
-        -- Ensure all compilations are done
-        need (pcStamps ++ monsterStamps)
-        
-        -- Now that compilation is done, dynamically find all generated YAML files
-        pcYamls <- getDirectoryFiles "data/cards/pc" ["*.yaml"]
-        monsterYamls <- getDirectoryFiles "data/cards/monsters" ["*.yaml"]
-        statusYamls <- getDirectoryFiles "data/cards/status" ["*.yaml"]
-        consequenceYamls <- getDirectoryFiles "data/cards/consequences" ["*.yaml"]
-        
-        let allYamls = map ("data/cards/pc" </>) pcYamls
-                    ++ map ("data/cards/monsters" </>) monsterYamls
-                    ++ map ("data/cards/status" </>) statusYamls
-                    ++ map ("data/cards/consequences" </>) consequenceYamls
-        
-        -- Track content of all YAMLs
-        need allYamls
-        
-        cmd_ (["cabal", "run", "card-compiler", "--", "export-vtt", out] ++ allYamls)
-
--- | Define generic rule for deck compilation using stamps
-defineDeckRules :: String -> FilePath -> Rules ()
-defineDeckRules tag dir = do
-    (dir </> ".stamp-*") %> \out -> do
-        let deckId = drop 7 (takeFileName out) -- drop ".stamp-"
-        let jsonSrc = "data/cards/raw" </> deckId <.> "json"
-        need [jsonSrc]
-        let outDir = takeDirectory out
-        cmd_ (["cabal", "run", "card-compiler", "--", jsonSrc, outDir, tag] :: [String])
-        cmd_ (["touch", out] :: [String])
-
--- | Build TypeScript types
-buildGenTypes :: Action ()
-buildGenTypes = need 
-    [ "vtt-react/src/generated/types.ts"
-    , "vtt-react/src/generated/types.zod.ts"
-    ]
-
--- | Build core library
-buildCore :: Action ()
-buildCore = do
-    srcs <- getCoreSources
-    need srcs
-    cmd_ (["cabal", "build", "cardpg-core"] :: [String])
-
--- | Build server library
-buildServer :: Action ()
-buildServer = do
-    srcs <- getServerSources
-    need srcs
-    cmd_ (["cabal", "build", "cardpg-server"] :: [String])
-
--- | Build everything
-buildAll :: Action ()
-buildAll = do
-    need ["vtt-react/src/generated/types.ts"] -- Ensure types are gen'd first usually?
-    -- Build Haskell
-    cmd_ (["cabal", "build", "all"] :: [String])
-    -- Build Frontend
-    cmd_ (Cwd "vtt-react") (["npm", "run", "build"] :: [String])
-
--- | Run dev servers
-runDev :: Action ()
-runDev = do
-    -- We want to run both the haskell server and the vite dev server
-    -- 'par' runs actions in parallel
-    -- Note: This assumes cardpg-server can run from the root or we adjust Cwd
-    -- 'cabal run' handles the build if needed.
-    
-    -- We can't really use 'need' here effectively for long running processes 
-    -- if we want them to stream output to the user.
-    -- We'll use 'cmd' with Async or just rely on the fact that if we fire them off
-    -- Shake might wait?
-    -- Shake's normal behavior is to wait for commands.
-    -- If we use 'par' on two actions that run commands, they run in parallel.
-    
-    -- We also want to make sure generated types exist before starting frontend?
-    need ["gen-types"]
-
-    let runServer = do
-           putInfo "Starting cardpg-server..."
-           cmd_ (["cabal", "run", "cardpg-server"] :: [String])
-    
-    let runFrontend = do
-           putInfo "Starting Vite dev server..."
-           cmd_ (Cwd "vtt-react") (["npm", "run", "dev"] :: [String])
-
-    -- Actions in the list passed to 'parallel' run in parallel
-    _ <- parallel [runServer, runFrontend]
-    return ()
-
--- | Run all tests
--- | Run all tests
-testAll :: Action ()
-testAll = do
-    need 
-        [ "_build/tests/.cardpg-core.timestamp"
-        , "_build/tests/.card-compiler.timestamp"
-        , "_build/tests/.vtt-react.timestamp"
-        , "_build/frontend/.lint.timestamp"
-        , "_build/frontend/.typecheck.timestamp"
-        ]
-
--- | Run REPL for core
-replCore :: Action ()
-replCore = cmd_ (["cabal", "repl", "cardpg-core"] :: [String])
-
--- | Run REPL for server
-replServer :: Action ()
-replServer = cmd_ (["cabal", "repl", "cardpg-server"] :: [String])
-
-
--- | Define rules for frontend linting and typechecking
-defineFrontendRules :: Rules ()
-defineFrontendRules = do
-    "_build/frontend/.lint.timestamp" %> \out -> do
-        srcs <- getFrontendSources
-        need srcs
-        cmd_ (Cwd "vtt-react") (["npm", "run", "lint"] :: [String])
-        cmd_ (["mkdir", "-p", takeDirectory out] :: [String])
-        cmd_ (["touch", out] :: [String])
-
-    "_build/frontend/.typecheck.timestamp" %> \out -> do
-        srcs <- getFrontendSources
-        need srcs
-        cmd_ (Cwd "vtt-react") (["npm", "exec", "tsc", "--", "--noEmit"] :: [String])
-        cmd_ (["mkdir", "-p", takeDirectory out] :: [String])
-        cmd_ (["touch", out] :: [String])
-
--- | Define rules for test caching
-defineTestRules :: Rules ()
-defineTestRules = do
-    "_build/tests/.cardpg-core.timestamp" %> \out -> do
-        srcs <- getCoreSources
-        need srcs
-        cmd_ (["cabal", "test", "cardpg-core"] :: [String])
-        cmd_ (["touch", out] :: [String])
-        
-    "_build/tests/.card-compiler.timestamp" %> \out -> do
-        srcs <- getCardCompilerSources
-        need srcs
-        cmd_ (["cabal", "test", "card-compiler"] :: [String])
-        cmd_ (["touch", out] :: [String])
-
-    "_build/tests/.vtt-react.timestamp" %> \out -> do
-        srcs <- getFrontendSources
-        need srcs
-        cmd_ (Cwd "vtt-react") (["npm", "exec", "vitest", "run"] :: [String])
-        cmd_ (["touch", out] :: [String])
-
-        cmd_ (["touch", out] :: [String])
-
-
-serverHost :: String
-serverHost = "tgd.me"
-
-rootAt :: String
-rootAt = "root" <> "@" <> serverHost
-
--- | Deploy routine
-deploy :: Bool -> Action ()
-deploy forceRebuild = do
-    -- 1. Check for NIX_SIGNING_KEY
-    key <- liftIO $ lookupEnv "NIX_SIGNING_KEY"
-    case key of
-        Nothing -> fail "NIX_SIGNING_KEY must be set to deploy"
-        Just k ->  do
-            putInfo $ "Deploying with key: " ++ k
-
-            -- 2. Build package
-            putInfo "Building default.nix..."
-            cmd_ (["nix-build", "default.nix"] :: [String])
-            Stdout packageOut <- cmd (["nix-build", "default.nix", "--no-out-link"] :: [String])
-            let package = head (lines packageOut)
-            putInfo $ "Built package: " ++ package
-
-            -- 3. Sign package
-            putInfo "Signing package..."
-            cmd_ (EchoStdout True) (EchoStderr True) (["nix", "store", "sign", "-r", "--key-file", k, package] :: [String])
-
-            -- 4. Copy to server
-            putInfo "Copying to server..."
-            cmd_ (EchoStdout True) (EchoStderr True) (["nix", "copy", "--to", "ssh://" <> rootAt, "--verbose", package] :: [String])
-
-            -- 5. Detect change in cardpg-service.nix
-            let serviceFile = "deploy/cardpg-service.nix"
-            let lastServiceFile = "_build/deploy/cardpg-service.nix.last"
-            
-            -- We can't easily use diff in pure Shake Action without just running diff
-            -- Return codes: 0 = same, 1 = different, 2 = trouble
-            -- We want to ignore exit code 1
-            (Exit code, Stderr _, Stdout _) <- cmd (["cmp", "-s", serviceFile, lastServiceFile] :: [String]) :: Action (Exit, Stderr String, Stdout String)
-            let changed = code /= ExitSuccess
-            
-            let shouldRebuild = forceRebuild || changed
-
-            -- 6. Update symlink
-            putInfo "Updating symlink..."
-            let targetLink = "/sites/cardpg.tgd.me"
-            cmd_ (EchoStdout True) (EchoStderr True) (["ssh", rootAt, "mkdir", "-p", "/sites"] :: [String])
-            cmd_ (EchoStdout True) (EchoStderr True) (["ssh", rootAt, "ln", "-sfn", package, targetLink] :: [String])
-
-            if shouldRebuild
-                then do
-                    putInfo "Service changed or rebuild forced. Rebuilding NixOS..."
-                    -- Rsync service file
-                    cmd_ (EchoStdout True) (EchoStderr True) (["rsync", "-rav", serviceFile, rootAt <> ":/etc/nixos/"] :: [String])
-                    
-                    -- Rebuild
-                    cmd_ (EchoStdout True) (EchoStderr True) (["ssh", rootAt, "nixos-rebuild", "switch"] :: [String])
-                    
-                    -- Update last file
-                    cmd_ (["mkdir", "-p", "_build/deploy"] :: [String])
-                    cmd_ (["cp", serviceFile, lastServiceFile] :: [String])
-                else
-                    putInfo "Service file unchanged. Skipping nixos-rebuild."
-
-            -- 7. Restart service
-            putInfo "Restarting service..."
-            cmd_ (EchoStdout True) (EchoStderr True) (["ssh", rootAt, "systemctl", "restart", "cardpg"] :: [String])
-
-            -- 8. Log deployment
-            Stdout githash <- cmd (["git", "rev-parse", "--verify", "HEAD"] :: [String])
-            Stdout gitmsg <- cmd (["git", "log", "-1", "--pretty=%B"] :: [String])
-            putInfo $ "Deployed " ++ (head $ lines githash) ++ ": " ++ (head $ lines gitmsg)
-
-defineCodegenRules :: Rules ()
-defineCodegenRules = do
-    "_build/codegen" %> \out -> do
-        srcs <- concat <$> sequence [getCoreSources, getServerSources, getCodegenSources]
-        need srcs
-        
-        cmd_ (["cabal", "build", "codegen"] :: [String])
-        Stdout binPath <- cmd (["cabal", "list-bin", "codegen"] :: [String])
-        copyFile' (head $ lines binPath) out
-
-    "vtt-react/src/generated/types.ts" %> \out -> do
-        need ["_build/codegen"]
-        cmd_ (["_build/codegen", out] :: [String])
-        cmd_ (["npm", "exec", "prettier", "--", "--write", out] :: [String])
-
-    "vtt-react/src/generated/types.zod.ts" %> \out -> do
-        let src = "vtt-react/src/generated/types.ts"
-        let config = "vtt-react/ts-to-zod.config.cjs"
-        need [src, config]
-        -- Run ts-to-zod in vtt-react directory
-        cmd_ (Cwd "vtt-react") (["npm", "exec", "ts-to-zod"] :: [String])
-        cmd_ (["npm", "exec", "prettier", "--", "--write", out] :: [String])
-
--- | Source helpers
--- | Generic source helper
-getPackageSources :: FilePath -> FilePath -> Action [FilePath]
-getPackageSources pkgDir srcSub = do
-    let srcDir = pkgDir </> srcSub
-    hs <- getDirectoryFiles srcDir ["//*.hs"]
-    cabal <- getDirectoryFiles pkgDir ["*.cabal"]
-    return $ map (srcDir </>) hs ++ map (pkgDir </>) cabal
-
-getCoreSources :: Action [FilePath]
-getCoreSources = getPackageSources "cardpg-core" "src"
-
-getServerSources :: Action [FilePath]
-getServerSources = getPackageSources "cardpg-server" "src"
-
-getCodegenSources :: Action [FilePath]
-getCodegenSources = getPackageSources "tools/codegen" "."
-
-getCardCompilerSources :: Action [FilePath]
-getCardCompilerSources = getPackageSources "tools/card-compiler" "."
-
-getFrontendSources :: Action [FilePath]
-getFrontendSources = do
-    let dir = "vtt-react"
-    srcs <- getDirectoryFiles dir ["src//*.ts", "src//*.tsx", "package.json", "tsconfig.json", "vite.config.ts"]
-    return $ map (dir </>) srcs
+        Cards.defineVttRule pcDecks monsterDecks
+        Cards.defineDeckRules "pc" "data/cards/pc"
+        Cards.defineDeckRules "monster" "data/cards/monsters"
+        Codegen.defineCodegenRules
+        Haskell.defineHaskellTestRules Codegen.getCardCompilerSources
+        Frontend.defineFrontendRules
+        Frontend.defineFrontendTestRules
