@@ -3,34 +3,74 @@
 
 default: card-data
 
-_build-shake:
-    cabal build shake-build
+# Define output binary path
+shake := '_build/shake-build'
+
+# Helper to ensure shake binary exists
+bootstrap:
+    cabal install shake-build --installdir=_build --install-method=copy --overwrite-policy=always
 
 # Compiles all card data to VTT JSON
-card-data: _build-shake
-    cabal run shake-build -- card-data
+card-data:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} card-data
 
 # Syncs card data from Google Sheets
-sync: _build-shake
-    cabal run shake-build -- sync
+sync:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} sync
 
 # Clean build artifacts
-clean: _build-shake
-    cabal run shake-build -- clean
+clean:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} clean
 
 # Regenerate the Justfile
-gen-just: _build-shake
+gen-just:
     cabal run shake-build -- gen-just
 
 # Generate TypeScript types
-gen-types: _build-shake
-    cabal run shake-build -- gen-types
+gen-types:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} gen-types
 
 # Build cardpg-core
-build-core: _build-shake
-    cabal run shake-build -- build-core
+build-core:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} build-core
 
 # Build cardpg-server
-build-server: _build-shake
-    cabal run shake-build -- build-server
+build-server:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} build-server
+
+# Build all targets
+build:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} build
+
+# Run all tests
+test:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} test
+
+# Test cardpg-core
+test-core:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} test-core
+
+# Test card-compiler
+test-compiler:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} test-compiler
+
+# REPL for cardpg-core
+repl-core:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} repl-core
+
+# REPL for cardpg-server
+repl-server:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} repl-server
 

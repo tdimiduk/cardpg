@@ -56,6 +56,12 @@ main = do
             , ("gen-types", "Generate TypeScript types",          buildGenTypes)
             , ("build-core", "Build cardpg-core",                 buildCore)
             , ("build-server", "Build cardpg-server",             buildServer)
+            , ("build",       "Build all targets",                buildAll)
+            , ("test",        "Run all tests",                    testAll)
+            , ("test-core",   "Test cardpg-core",                 need ["_build/tests/.cardpg-core.timestamp"])
+            , ("test-compiler","Test card-compiler",              need ["_build/tests/.card-compiler.timestamp"])
+            , ("repl-core",   "REPL for cardpg-core",             replCore)
+            , ("repl-server", "REPL for cardpg-server",           replServer)
             ]
 
     shakeArgs shakeOptions{shakeFiles=buildDir, shakeColor=True} $ do
@@ -70,6 +76,7 @@ main = do
         defineDeckRules "pc" "data/cards/pc"
         defineDeckRules "monster" "data/cards/monsters"
         defineCodegenRules
+        defineTestRules
 
 -- | Directory for build artifacts
 buildDir :: FilePath
@@ -105,15 +112,29 @@ generateJustfile defs = do
             , ""
             , "default: card-data"
             , ""
-            , "_build-shake:"
-            , "    cabal build shake-build"
+            , "# Define output binary path"
+            , "shake := '_build/shake-build'"
+            , ""
+            , "# Helper to ensure shake binary exists"
+            , "bootstrap:"
+            , "    cabal install shake-build --installdir=_build --install-method=copy --overwrite-policy=always"
             , ""
             ] ++ concatMap (\(name, desc, _) -> 
-                [ "# " ++ desc
-                , name ++ ": _build-shake"
-                , "    cabal run shake-build -- " ++ name
-                , ""
-                ]) defs
+                if name == "gen-just" then
+                    -- gen-just always uses cabal run to ensure it runs with latest source code changes
+                    [ "# " ++ desc
+                    , name ++ ":"
+                    , "    cabal run shake-build -- " ++ name
+                    , ""
+                    ]
+                else
+                    -- Other targets use the bootstrapped binary
+                    [ "# " ++ desc
+                    , name ++ ":"
+                    , "    @test -f {{shake}} || just bootstrap"
+                    , "    @{{shake}} " ++ name
+                    , ""
+                    ]) defs
     writeFileChanged "Justfile" justfileContent
 
 -- | Define rule for VTT JSON generation
@@ -174,6 +195,42 @@ buildServer = do
     need srcs
     cmd_ (["cabal", "build", "cardpg-server"] :: [String])
 
+-- | Build everything
+buildAll :: Action ()
+buildAll = do
+    need ["vtt-react/src/generated/types.ts"] -- Ensure types are gen'd first usually?
+    cmd_ (["cabal", "build", "all"] :: [String])
+
+-- | Run all tests
+testAll :: Action ()
+testAll = need 
+    [ "_build/tests/.cardpg-core.timestamp"
+    , "_build/tests/.card-compiler.timestamp"
+    ]
+
+-- | Run REPL for core
+replCore :: Action ()
+replCore = cmd_ (["cabal", "repl", "cardpg-core"] :: [String])
+
+-- | Run REPL for server
+replServer :: Action ()
+replServer = cmd_ (["cabal", "repl", "cardpg-server"] :: [String])
+
+-- | Define rules for test caching
+defineTestRules :: Rules ()
+defineTestRules = do
+    "_build/tests/.cardpg-core.timestamp" %> \out -> do
+        srcs <- getCoreSources
+        need srcs
+        cmd_ (["cabal", "test", "cardpg-core"] :: [String])
+        cmd_ (["touch", out] :: [String])
+        
+    "_build/tests/.card-compiler.timestamp" %> \out -> do
+        srcs <- getCardCompilerSources
+        need srcs
+        cmd_ (["cabal", "test", "card-compiler"] :: [String])
+        cmd_ (["touch", out] :: [String])
+
 -- | Define rules for codegen and types
 defineCodegenRules :: Rules ()
 defineCodegenRules = do
@@ -215,3 +272,6 @@ getServerSources = getPackageSources "cardpg-server" "src"
 
 getCodegenSources :: Action [FilePath]
 getCodegenSources = getPackageSources "tools/codegen" "."
+
+getCardCompilerSources :: Action [FilePath]
+getCardCompilerSources = getPackageSources "tools/card-compiler" "."
