@@ -1,4 +1,4 @@
-module Rules.Haskell where
+module Rules.Haskell (buildCore, buildServer, replCore, replServer, defineHaskellTestRules, format) where
 
 import Common (getPackageSources)
 import Development.Shake
@@ -40,3 +40,18 @@ defineHaskellTestRules getCardCompilerSources = do
     need srcs
     cmd_ (["cabal", "test", "card-compiler"] :: [String])
     cmd_ (["touch", out] :: [String])
+
+-- | Format Haskell code using fourmolu
+format :: Bool -> Action ()
+format checkOnly = do
+  let mode = if checkOnly then "--mode=check" else "--mode=inplace"
+  let srcDirs =
+        [ "cardpg-core/src"
+        , "cardpg-core/tests"
+        , "cardpg-server/src"
+        , "cardpg-server/tests"
+        , "shake-build/src"
+        , "tools"
+        ]
+  srcFiles <- getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
+  cmd_ (["fourmolu", mode] ++ srcFiles)

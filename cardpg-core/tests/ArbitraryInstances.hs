@@ -1,36 +1,34 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE GeneralisedNewtypeDeriving #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DisambiguateRecordFields #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GeneralisedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE OverloadedRecordDot #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module ArbitraryInstances where
 
-import Test.Tasty.QuickCheck
-import Generic.Random
-import qualified Data.Text as T
-import Data.Text (Text)
-import Data.List.NonEmpty (NonEmpty(..))
+import Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NE
 import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+import qualified Data.Text as T
+import Generic.Random
+import Test.Tasty.QuickCheck
 
 import CardPG.Core.Card
-import CardPG.Core.Types
-import CardPG.Core.RichText
-import CardPG.Core.NonEmptyText (NonEmptyText(..), unsafeNonEmptyText, getNonEmptyText)
 import CardPG.Core.DSL.Printer (richToString)
-
-
+import CardPG.Core.NonEmptyText (NonEmptyText (..), getNonEmptyText, unsafeNonEmptyText)
+import CardPG.Core.RichText
+import CardPG.Core.Types
 
 -- Arbitrary Instances
 
 instance Arbitrary Text where
-  arbitrary = T.pack <$> listOf (elements ['a'..'z'])
+  arbitrary = T.pack <$> listOf (elements ['a' .. 'z'])
   shrink t = T.pack <$> shrink (T.unpack t)
 
 instance Arbitrary ResourceType where
@@ -41,12 +39,13 @@ instance Arbitrary StackPower where
   arbitrary = do
     base <- arbitrary
     modVal <- arbitrary
-    cond <- oneof 
-      [ pure Nothing
-      , do
-          t <- T.pack <$> listOf1 (elements ['a'..'z'])
-          pure $ Just $ "(" <> t <> ")"
-      ]
+    cond <-
+      oneof
+        [ pure Nothing
+        , do
+            t <- T.pack <$> listOf1 (elements ['a' .. 'z'])
+            pure $ Just $ "(" <> t <> ")"
+        ]
     pure $ StackPower base modVal cond
   shrink = genericShrink
 
@@ -70,7 +69,7 @@ instance Arbitrary RichString where
     case mkRichString inlines of
       Nothing -> return $ unsafeSimpleString "empty" -- Fallback, though listOf1 shouldn't be empty, stripping might make it empty
       Just rs -> return rs
-  shrink rs = 
+  shrink rs =
     [ rs'
     | l <- shrink (NE.toList (unRichText (unRichString rs)))
     , not (null l)
@@ -85,19 +84,19 @@ instance Arbitrary PassiveDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary rt => Arbitrary (AttackDefT rt) where
+instance (Arbitrary rt) => Arbitrary (AttackDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary rt => Arbitrary (GeneralDefT rt) where
+instance (Arbitrary rt) => Arbitrary (GeneralDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary rt => Arbitrary (StanceDefT rt) where
+instance (Arbitrary rt) => Arbitrary (StanceDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary rt => Arbitrary (ChannelDefT rt) where
+instance (Arbitrary rt) => Arbitrary (ChannelDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
@@ -109,11 +108,11 @@ instance Arbitrary (PrimeDefT RichString) where
     return $ PrimeDef trig simpleReaction
   shrink _ = []
 
-instance Arbitrary rt => Arbitrary (TriggerDefT rt) where
+instance (Arbitrary rt) => Arbitrary (TriggerDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary rt => Arbitrary (TaskDefT rt) where
+instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
   arbitrary = do
     name <- arbitrary
     check <- arbitrary
@@ -124,17 +123,18 @@ instance Arbitrary rt => Arbitrary (TaskDefT rt) where
   shrink = genericShrink
 
 instance Arbitrary DSLBase where
-  arbitrary = oneof
-    [ RuleAttack <$> arbitrary
-    , RuleGeneral <$> arbitrary
-    , RuleTask <$> arbitrary
-    , RuleTrigger <$> arbitrary
-    , RuleStance <$> arbitrary
-    , RuleChannel <$> arbitrary
-    , RulePrime <$> arbitrary
-    , RulePassive <$> arbitrary
-    , RuleNarrative <$> arbitrarySafeRichString
-    ]
+  arbitrary =
+    oneof
+      [ RuleAttack <$> arbitrary
+      , RuleGeneral <$> arbitrary
+      , RuleTask <$> arbitrary
+      , RuleTrigger <$> arbitrary
+      , RuleStance <$> arbitrary
+      , RuleChannel <$> arbitrary
+      , RulePrime <$> arbitrary
+      , RulePassive <$> arbitrary
+      , RuleNarrative <$> arbitrarySafeRichString
+      ]
   shrink = genericShrink
 
 instance Arbitrary DSLRule where
@@ -150,8 +150,16 @@ arbitrarySafeRichString = do
     then arbitrarySafeRichString
     else return rs
   where
-    keywords = 
-      [ "Attack", "Action:", "General:", "Task:", "When", "Stance", "Channel", "Prime", "Passive:"
+    keywords =
+      [ "Attack"
+      , "Action:"
+      , "General:"
+      , "Task:"
+      , "When"
+      , "Stance"
+      , "Channel"
+      , "Prime"
+      , "Passive:"
       ]
 
 -- Need richToString for the check, but it's in Printer.hs which imports RuleDefs.
@@ -203,18 +211,18 @@ instance Arbitrary EncounterMechanics where
 
 instance Arbitrary NonEmptyText where
   arbitrary = do
-    t <- T.pack <$> listOf1 (elements ['a'..'z'])
+    t <- T.pack <$> listOf1 (elements ['a' .. 'z'])
     return $ unsafeNonEmptyText t
-  shrink ne = 
-    [ unsafeNonEmptyText (T.pack s) 
+  shrink ne =
+    [ unsafeNonEmptyText (T.pack s)
     | s <- shrink (T.unpack (getNonEmptyText ne))
     , not (null s)
     ]
 
 -- Helper for NonEmpty
-instance Arbitrary a => Arbitrary (NonEmpty a) where
+instance (Arbitrary a) => Arbitrary (NonEmpty a) where
   arbitrary = do
     x <- arbitrary
     xs <- arbitrary
     return (x :| xs)
-  shrink ne = [ NE.fromList l | l <- shrink (NE.toList ne), not (null l) ]
+  shrink ne = [NE.fromList l | l <- shrink (NE.toList ne), not (null l)]

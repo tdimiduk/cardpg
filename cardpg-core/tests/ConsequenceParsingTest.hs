@@ -1,16 +1,18 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module ConsequenceParsingTest where
 
-import Data.Yaml (decodeFileEither, ParseException, encode)
 import qualified Data.ByteString as BS
-import Test.Tasty
-import Test.Tasty.HUnit
-import CardPG.Core.Card (ConsequenceCardT(..), ConsequenceCard)
-import CardPG.Core.RuleInstances () -- Import orphan instances
-import CardPG.Core.RuleDefs (RuleT(..), DSLRule(..))
 import qualified Data.List.NonEmpty as NE
 import Data.Maybe (fromMaybe)
+import Data.Yaml (ParseException, decodeFileEither, encode)
+import Test.Tasty
+import Test.Tasty.HUnit
+
+import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT (..))
+import CardPG.Core.RuleDefs (DSLRule (..), RuleT (..))
+import CardPG.Core.RuleInstances ()
 
 test_consequenceParsing :: TestTree
 test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
@@ -21,24 +23,24 @@ test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
     Right cards -> do
       case cards of
         [] -> assertFailure $ "Should have at least one card"
-        firstCard:_ -> do
+        firstCard : _ -> do
           -- Verify that rules are parsed as Task or Trigger, not Narrative (fallback)
           let rules = case firstCard of
-                        ConsequenceCard{_rules=r} -> fromMaybe (error "No rules") r
+                ConsequenceCard{_rules = r} -> fromMaybe (error "No rules") r
           case NE.head rules of
-              DSLRule (RuleTask _) -> return ()
-              DSLRule (RuleTrigger _) -> return ()
-              DSLRule (RuleGeneral _) -> return () -- Some might be general actions
-              r -> assertFailure $ "Expected RuleTask, RuleTrigger, or RuleGeneral, got: " ++ show r
+            DSLRule (RuleTask _) -> return ()
+            DSLRule (RuleTrigger _) -> return ()
+            DSLRule (RuleGeneral _) -> return () -- Some might be general actions
+            r -> assertFailure $ "Expected RuleTask, RuleTrigger, or RuleGeneral, got: " ++ show r
 
           -- Roundtrip check
           let encoded = encode cards
           original <- BS.readFile path
 
           if encoded /= original
-              then do
+            then do
               let reformattedPath = "../data/cards/consequences/baseline.reformatted.yaml"
               BS.writeFile reformattedPath encoded
               assertFailure $ "YAML output mismatch. Reformatted content written to " ++ reformattedPath
-              else
+            else
               return ()

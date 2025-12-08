@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module ReadmeExamplesTest where
 
-import Test.Tasty
-import Test.Tasty.HUnit
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
+import Test.Tasty
+import Test.Tasty.HUnit
+
 import CardPG.Core.DSL.Parser (parseRule)
 
 test_readmeExamples :: TestTree
@@ -14,15 +16,17 @@ test_readmeExamples = testCase "README Syntax Examples" $ do
       -- Filter lines that look like examples
       -- Note: The indentation might vary slightly, so we trim first to check prefix
       examples = filter (\l -> T.isPrefixOf "- _Example:_" (T.strip l)) ls
-      
-      cleanExample line = 
-        let -- Remove the prefix part
-            stripped = T.strip line
-            withoutPrefix = T.drop (T.length "- _Example:_ ") stripped
-            -- Remove backticks
-            withoutBackticks = T.replace "`" "" withoutPrefix
-        in T.strip withoutBackticks
-      
+
+      cleanExample line =
+        let
+          -- Remove the prefix part
+          stripped = T.strip line
+          withoutPrefix = T.drop (T.length "- _Example:_ ") stripped
+          -- Remove backticks
+          withoutBackticks = T.replace "`" "" withoutPrefix
+         in
+          T.strip withoutBackticks
+
   mapM_ checkExample (map cleanExample examples)
 
 checkExample :: T.Text -> Assertion

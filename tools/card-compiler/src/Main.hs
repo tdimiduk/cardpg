@@ -1,12 +1,9 @@
+{-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE DuplicateRecordFields #-}
 
 module Main where
 
-import CardCompiler.Parser (ParsedCard (..), RawCard (..), convertCard)
-import qualified CardCompiler.VttExporter as Vtt
-import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard)
 import Control.Monad (forM_, unless)
 import Data.Aeson (Result (..), Value (..), eitherDecode, fromJSON)
 import qualified Data.ByteString as BS
@@ -23,6 +20,10 @@ import System.Environment (getArgs)
 import System.Exit (die)
 import System.FilePath ((</>))
 
+import CardCompiler.Parser (ParsedCard (..), RawCard (..), convertCard)
+import qualified CardCompiler.VttExporter as Vtt
+import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard)
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -30,7 +31,9 @@ main = do
     [inputFile, outputDir] -> run inputFile outputDir Nothing
     [inputFile, outputDir, tag] -> run inputFile outputDir (Just tag)
     ("export-vtt" : outputFile : inputFiles) -> Vtt.loadAndExport inputFiles outputFile
-    _ -> die "Usage: hs-card-compiler <input.json> <output_dir> [tag] OR hs-card-compiler export-vtt <output.json> <input_yaml>..."
+    _ ->
+      die
+        "Usage: hs-card-compiler <input.json> <output_dir> [tag] OR hs-card-compiler export-vtt <output.json> <input_yaml>..."
 
 run :: FilePath -> FilePath -> Maybe String -> IO ()
 run inputFile outputDir tag = do
@@ -67,15 +70,21 @@ processCards outputDir cards tag = do
       let (items, deck) = splitCards successes
 
       if length deck /= 24
-        then putStrLn $ "Warning: Actor " ++ show actorName ++ " has " ++ show (length deck) ++ " cards in deck. Expected 24. Skipping."
+        then
+          putStrLn $
+            "Warning: Actor "
+              ++ show actorName
+              ++ " has "
+              ++ show (length deck)
+              ++ " cards in deck. Expected 24. Skipping."
         else do
           let actorData =
                 Actor
-                  { _name = actorName,
-                    _tags = fmap (\t -> NE.fromList [T.pack t]) tag,
-                    _items = items,
-                    _deck = deck,
-                    _id = Just (Vtt.slugify actorName)
+                  { _name = actorName
+                  , _tags = fmap (\t -> NE.fromList [T.pack t]) tag
+                  , _items = items
+                  , _deck = deck
+                  , _id = Just (Vtt.slugify actorName)
                   }
           let fileName = T.unpack (sanitize actorName) ++ ".yaml"
           let outputPath = outputDir </> fileName

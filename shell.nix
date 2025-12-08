@@ -16,6 +16,7 @@ backendPkgs.shellFor {
     cabal-install
     haskell-language-server
     hlint
+    fourmolu
 
     # Python environment
     python313

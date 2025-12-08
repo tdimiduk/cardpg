@@ -1,4 +1,4 @@
-module CardPG.Core.TextFmt (TextFmt(..)) where
+module CardPG.Core.TextFmt (TextFmt (..)) where
 
 import Data.Text (Text)
 

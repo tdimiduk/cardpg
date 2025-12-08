@@ -1,17 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module StatusParsingTest where
+
 import qualified Control.Monad
-import CardPG.Core.Card (CoreCard, CoreCardT (..))
--- Import orphan instances
-import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))
-import CardPG.Core.RuleInstances ()
 import qualified Data.ByteString as BS
 import qualified Data.List.NonEmpty as NE
 import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
 import Test.Tasty
 import Test.Tasty.HUnit
+
+import CardPG.Core.Card (CoreCard, CoreCardT (..))
+import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))
+import CardPG.Core.RuleInstances ()
 
 test_statusParsing :: TestTree
 test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do

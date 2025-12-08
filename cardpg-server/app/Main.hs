@@ -23,7 +23,6 @@ import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
 import qualified Network.WebSockets as WS
 
-
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..))
 
 -- | The state of the server, mapping client IDs to clients and storing action history.
