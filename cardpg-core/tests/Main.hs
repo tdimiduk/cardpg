@@ -22,8 +22,7 @@ import ReadmeExamplesTest (test_readmeExamples)
 import Test.Tasty
 import Test.Tasty.QuickCheck
 import Data.Aeson (encode, eitherDecode, ToJSON, FromJSON)
-import Data.IORef
-import System.IO.Unsafe (unsafePerformIO)
+
 
 import CardPG.Core.Card
 import CardPG.Core.DSL.Parser (parseRule)
@@ -60,14 +59,4 @@ prop_dslRoundtrip r =
       parsed = parseRule printed
   in counterexample ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $ parsed === Right r
 
--- Debugging Helpers
 
-{-# NOINLINE debugRef #-}
-debugRef :: IORef (Maybe DSLBase)
-debugRef = unsafePerformIO (newIORef Nothing)
-
-captureFailure :: DSLBase -> Property -> Property
-captureFailure x prop = whenFail (writeIORef debugRef (Just x)) prop
-
-prop_dslRoundtrip_debug :: DSLBase -> Property
-prop_dslRoundtrip_debug r = captureFailure r (prop_dslRoundtrip r)
