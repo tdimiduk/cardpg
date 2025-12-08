@@ -2,7 +2,6 @@ module Rules.Frontend where
 
 import Development.Shake
 import Development.Shake.FilePath
-import Common (getPackageSources)
 
 getFrontendSources :: Action [FilePath]
 getFrontendSources = do

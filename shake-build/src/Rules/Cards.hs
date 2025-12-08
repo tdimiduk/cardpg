@@ -44,8 +44,8 @@ getDecks :: IO ([ManifestEntry], [ManifestEntry])
 getDecks = do
     manifestValue <- decodeFileThrow "design/manifest.yaml" :: IO Value
     let entries = extractCards manifestValue
-    let pcDecks = filter (\e -> maybe False ("type:pc-deck" `elem`) (entryTags e)) entries
-    let monsterDecks = filter (\e -> maybe False ("type:monster-deck" `elem`) (entryTags e)) entries
+    let pcDecks = filter (maybe False ("type:pc-deck" `elem`) . entryTags) entries
+    let monsterDecks = filter (maybe False ("type:monster-deck" `elem`) . entryTags) entries
     return (pcDecks, monsterDecks)
 
 -- | Compile card data

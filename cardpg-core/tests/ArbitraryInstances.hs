@@ -25,7 +25,7 @@ import CardPG.Core.RichText
 import CardPG.Core.NonEmptyText (NonEmptyText(..), unsafeNonEmptyText, getNonEmptyText)
 import CardPG.Core.DSL.Printer (richToString)
 
-import CardPG.Core.RuleDefs
+
 
 -- Arbitrary Instances
 

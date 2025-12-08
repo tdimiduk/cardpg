@@ -18,7 +18,7 @@ module CardPG.Core.NonEmptyText
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Aeson (ToJSON(..), FromJSON(..), withText)
-import CardPG.Core.Json (cardpgJsonDef)
+
 
 import Control.Monad (mzero)
 

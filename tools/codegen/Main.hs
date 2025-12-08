@@ -2,64 +2,62 @@
 
 module Main where
 
-import Data.Aeson.TypeScript.TH
-import Data.Proxy
-import System.IO (writeFile)
-
-import CardPG.Core.Types (ResourceType, StackPower, Difficulty)
+import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.RichText (TextStyle, Inline, RichString, RichText, Block)
+import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
-import CardPG.Core.Card (Stats, GeneralActionDef, EncounterMechanics)
-import CardPG.Server.Types (ClientMessage, ServerMessage, BroadcastAction, Token)
-
+import CardPG.Core.Types (Difficulty, ResourceType, StackPower)
+import CardPG.Server.Types (BroadcastAction, ClientMessage, ServerMessage, Token)
+import Data.Aeson.TypeScript.TH
 import Data.List (intercalate)
-import Data.Text (pack, unpack, replace)
+import Data.Proxy
+import Data.Text (pack, replace, unpack)
 import System.Environment (getArgs)
-
-import TypeScriptInstances (CoreCard, Actor, Rule, AttackDef, GeneralDef, TaskDef, TriggerDef, StanceDef, ChannelDef, PrimeDef, ItemCard, NatureCard, TalentCard, EncounterCard, ConsequenceCard)
+import System.IO (writeFile)
+import TypeScriptInstances (Actor, AttackDef, ChannelDef, ConsequenceCard, CoreCard, EncounterCard, GeneralDef, ItemCard, NatureCard, PrimeDef, Rule, StanceDef, TalentCard, TaskDef, TriggerDef)
 
 main :: IO ()
 main = do
   args <- getArgs
   let outputFile = case args of
-        (x:_) -> x
-        []    -> "types.ts"
-  
-  let declarations = formatTSDeclarations (
-        (getTypeScriptDeclarations (Proxy :: Proxy ResourceType)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy StackPower)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Difficulty)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy NonEmptyText)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy TextStyle)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Inline)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy RichText)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy RichString)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Block)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy PassiveDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy AttackDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy GeneralDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy StanceDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy ChannelDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy PrimeDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy TaskDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy TriggerDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Rule)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Stats)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy CoreCard)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy ItemCard)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy NatureCard)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy TalentCard)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy GeneralActionDef)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy EncounterMechanics)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy EncounterCard)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Actor)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy Token)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)) <>
-        (getTypeScriptDeclarations (Proxy :: Proxy ServerMessage))
-        )
+        (x : _) -> x
+        [] -> "types.ts"
+
+  let declarations =
+        formatTSDeclarations
+          ( getTypeScriptDeclarations (Proxy :: Proxy ResourceType)
+              <> getTypeScriptDeclarations (Proxy :: Proxy StackPower)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Difficulty)
+              <> getTypeScriptDeclarations (Proxy :: Proxy NonEmptyText)
+              <> getTypeScriptDeclarations (Proxy :: Proxy TextStyle)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Inline)
+              <> getTypeScriptDeclarations (Proxy :: Proxy RichText)
+              <> getTypeScriptDeclarations (Proxy :: Proxy RichString)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Block)
+              <> getTypeScriptDeclarations (Proxy :: Proxy PassiveDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy AttackDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy GeneralDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy StanceDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ChannelDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy PrimeDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy TaskDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy TriggerDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Rule)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Stats)
+              <> getTypeScriptDeclarations (Proxy :: Proxy CoreCard)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ItemCard)
+              <> getTypeScriptDeclarations (Proxy :: Proxy NatureCard)
+              <> getTypeScriptDeclarations (Proxy :: Proxy TalentCard)
+              <> getTypeScriptDeclarations (Proxy :: Proxy GeneralActionDef)
+              <> getTypeScriptDeclarations (Proxy :: Proxy EncounterMechanics)
+              <> getTypeScriptDeclarations (Proxy :: Proxy EncounterCard)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Actor)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Token)
+              <> getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)
+          )
 
   let exportedDeclarations = unpack $ replace "interface " "export interface " $ replace "type " "export type " $ pack declarations
 

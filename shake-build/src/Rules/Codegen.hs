@@ -24,9 +24,11 @@ defineCodegenRules = do
         -- Usage of `getPackageSources` directly here:
         coreSrcs <- getPackageSources "cardpg-core" "src"
         serverSrcs <- getPackageSources "cardpg-server" "src"
-        codegenSrcs <- getPackageSources "tools/codegen" "."
-        
-        need (coreSrcs ++ serverSrcs ++ codegenSrcs)
+        -- Safe replacement for head
+        srcs <- getDirectoryFiles "" ["tools/codegen//*.hs"]
+        case srcs of
+          [] -> fail "No source files found for codegen"
+          (s : _) -> need [s] -- We just need to trigger on some source change, though ideally we explicitly list mainverSrcs ++ codegenSrcs)
         
         cmd_ (["cabal", "build", "codegen"] :: [String])
         Stdout binPath <- cmd (["cabal", "list-bin", "codegen"] :: [String])

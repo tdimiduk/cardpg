@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TupleSections #-}
+
 
 module CardPG.Core.DSL.Parser (parseRule) where
 
@@ -36,7 +35,7 @@ ruleParser = choice
   , try (taskParser <* eof)
   , try (triggerParser <* eof)
   , try (generalParser <* eof)
-  , (narrativeParser <* eof)
+  , narrativeParser <* eof
   ]
 
 -- Attack
@@ -62,8 +61,7 @@ stanceParser = do
   duration <- takeWhilePNonEmpty Nothing (/= ')')
   _ <- char ')'
   _ <- separatorParser
-  effect <- richTextParser
-  pure $ RuleStance $ StanceDef duration effect
+  RuleStance . StanceDef duration <$> richTextParser
 
 -- The parser p must not consume ')'
 betweenParens :: Parser a -> Parser a
@@ -71,7 +69,7 @@ betweenParens p = do
   _ <- char '('
   r <- p
   _ <- char ')'
-  pure $ r
+  pure r
 
 effectArrow :: Parser Text
 effectArrow = string "->"
@@ -83,8 +81,7 @@ channelParser = do
   _ <- space
   duration <- betweenParens $ takeWhilePNonEmpty Nothing (/= ')')
   _ <- separatorParser
-  effect <- richTextParser
-  pure $ RuleChannel $ ChannelDef duration effect
+  RuleChannel . ChannelDef duration <$> richTextParser
 
 -- Prime
 primeParser :: Parser DSLBase
@@ -95,8 +92,7 @@ primeParser = do
   _ <- hspace
   _ <- char ':'
   _ <- hspace
-  reaction <- ruleParser -- Recursive parse for the reaction
-  pure $ RulePrime $ PrimeDef trigger reaction
+  RulePrime . PrimeDef trigger <$> ruleParser -- Recursive parse for the reaction
 
 -- Passive
 passiveParser :: Parser DSLBase
@@ -124,20 +120,17 @@ taskParser = do
       let checkP = try $ do
             _ <- string' "Check"
             _ <- hspace1
-            p <- difficultyParser
-            pure p
+            difficultyParser
 
       let timeP = try $ do
             _ <- string' "Time"
             _ <- hspace1
-            t <- richTextParserWith [';', ')']
-            pure t
+            richTextParserWith [';', ')']
 
       let costP = try $ do
             _ <- string' "Cost"
             _ <- hspace1
-            c <- richTextParserWith [';', ')']
-            pure c
+            richTextParserWith [';', ')']
 
       let clause = choice 
             [ (\c -> (Just c, Nothing, Nothing)) <$> checkP
@@ -159,8 +152,7 @@ taskParser = do
   _ <- effectArrow
   _ <- hspace
   
-  effect <- richTextParser
-  pure $ RuleTask $ TaskDef name check time cost effect
+  RuleTask . TaskDef name check time cost <$> richTextParser
 
 -- Trigger (When)
 -- When [Trigger] -> [Effect]
@@ -174,8 +166,7 @@ triggerParser = do
   _ <- effectArrow
   _ <- hspace
   
-  effect <- richTextParser
-  pure $ RuleTrigger $ TriggerDef trigger effect
+  RuleTrigger . TriggerDef trigger <$> richTextParser
 
 -- General (Explicit Action)
 generalParser :: Parser DSLBase
@@ -193,15 +184,11 @@ generalParser = do
   _ <- effectArrow
   _ <- hspace
 
-  effect <- richTextParser
-  
-  pure $ RuleGeneral $ GeneralDef name cost difficulty effect
+  RuleGeneral . GeneralDef name cost difficulty <$> richTextParser
 
 -- Narrative (Fallback for General)
 narrativeParser :: Parser DSLBase
-narrativeParser = do
-  rt <- richTextParser
-  pure $ RuleNarrative rt
+narrativeParser = RuleNarrative <$> richTextParser
 
 -- Separator Parser
 separatorParser :: Parser ()
@@ -328,8 +315,7 @@ stackPowerParser = do
   modVal <- optional $ try $ do
     sign <- (id <$ char '+') <|> (negate <$ char '-')
     _ <- hspace
-    n <- L.decimal
-    pure (sign n)
+    sign <$> L.decimal
   _ <- hspace
   conditional <- optional $ try $ do
     _ <- char '('
@@ -349,5 +335,5 @@ difficultyParser = do
     hspace
   base <- resourceSymbol
   _ <- hspace
-  val <- L.decimal
-  pure $ Difficulty base val
+  Difficulty base <$> L.decimal
+

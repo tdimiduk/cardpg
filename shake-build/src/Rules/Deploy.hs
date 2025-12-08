@@ -3,7 +3,6 @@ module Rules.Deploy where
 import Development.Shake
 import System.Environment (lookupEnv)
 import System.Exit (ExitCode(..))
-import Control.Monad.IO.Class (liftIO)
 
 serverHost :: String
 serverHost = "tgd.me"
@@ -25,7 +24,11 @@ deploy forceRebuild = do
             putInfo "Building default.nix..."
             cmd_ (["nix-build", "default.nix"] :: [String])
             Stdout packageOut <- cmd (["nix-build", "default.nix", "--no-out-link"] :: [String])
-            let package = head (lines packageOut)
+            let packageLines = lines packageOut
+            if null packageLines
+                then fail "No package output from nix-build"
+                else return ()
+            let package = head packageLines
             putInfo $ "Built package: " ++ package
 
             -- 3. Sign package
@@ -76,4 +79,10 @@ deploy forceRebuild = do
             -- 8. Log deployment
             Stdout githash <- cmd (["git", "rev-parse", "--verify", "HEAD"] :: [String])
             Stdout gitmsg <- cmd (["git", "log", "-1", "--pretty=%B"] :: [String])
-            putInfo $ "Deployed " ++ (head $ lines githash) ++ ": " ++ (head $ lines gitmsg)
+            let githashStr = case lines githash of
+                    (x:_) -> x
+                    [] -> "unknown"
+            let gitmsgStr = case lines gitmsg of
+                    (x:_) -> x
+                    [] -> "unknown"
+            putInfo $ "Deployed " ++ githashStr ++ ": " ++ gitmsgStr

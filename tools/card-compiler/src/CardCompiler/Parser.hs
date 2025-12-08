@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TupleSections #-}
+
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module CardCompiler.Parser where
@@ -154,10 +154,10 @@ nonEmptyText (Just t)
   | otherwise = Just t
 
 parseAction :: Text -> Either String DSLBase
-parseAction t = parseRule t
+parseAction = parseRule
 
 parseEffect :: Text -> Either String DSLBase
-parseEffect t = parseRule t
+parseEffect = parseRule
 
 parseDetails :: Text -> Either String DSLBase
-parseDetails t = parseRule t
+parseDetails = parseRule
