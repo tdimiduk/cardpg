@@ -8,7 +8,7 @@ export const useGameSync = () => {
 
   useEffect(() => {
     if (lastMessage) {
-      if (lastMessage.tag === 'BroadcastMessage') {
+      if (lastMessage.type === 'broadcastMessage') {
         // Ignore our own messages (we apply them optimistically)
         if (lastMessage.fromClientId === clientId) return;
 
@@ -16,7 +16,7 @@ export const useGameSync = () => {
         console.log('Received broadcast:', action);
 
         _applyAction(action);
-      } else if (lastMessage.tag === 'Welcome') {
+      } else if (lastMessage.type === 'welcome') {
         console.log('Replaying history:', lastMessage.history.length, 'actions');
         lastMessage.history.forEach((action) => {
           _applyAction(action);

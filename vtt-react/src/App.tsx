@@ -76,7 +76,7 @@ const App: React.FC = () => {
     if (!activeTokenId) return;
 
     dispatch({
-      type: 'PLAY_STACK',
+      type: 'playStack',
       activeTokenId,
       selectedCards,
       strengthColor,
@@ -89,7 +89,7 @@ const App: React.FC = () => {
 
   const handlePass = () => {
     if (!activeTokenId || phase !== 'planning') return;
-    dispatch({ type: 'PASS', activeTokenId });
+    dispatch({ type: 'pass', activeTokenId });
   };
 
   return (
@@ -98,36 +98,36 @@ const App: React.FC = () => {
         deckState={currentDeck}
         onDraw={(count) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'DRAW_CARDS', activeTokenId, count });
+          dispatch({ type: 'drawCards', activeTokenId, count });
         }}
         onDefend={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'DEFEND', activeTokenId });
+          dispatch({ type: 'defend', activeTokenId });
         }}
         onClearDefense={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'CLEAR_DEFENSE', activeTokenId });
+          dispatch({ type: 'clearDefense', activeTokenId });
         }}
         onReshuffle={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'RESHUFFLE', activeTokenId });
+          dispatch({ type: 'reshuffle', activeTokenId });
         }}
         onSelectToken={(id) => setActiveToken(id)}
         onAddConsequence={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'ADD_CONSEQUENCE', activeTokenId });
+          dispatch({ type: 'addConsequence', activeTokenId });
         }}
         onRemoveConsequence={(cardId) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'REMOVE_CONSEQUENCE', activeTokenId, cardId });
+          dispatch({ type: 'removeConsequence', activeTokenId, cardId });
         }}
         onAddStatusCard={(statusType, destination) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'ADD_STATUS', activeTokenId, statusType, destination });
+          dispatch({ type: 'addStatus', activeTokenId, statusType, destination });
         }}
         onRemoveStatusCard={(statusType) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'REMOVE_STATUS', activeTokenId, statusType });
+          dispatch({ type: 'removeStatus', activeTokenId, statusType });
         }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
@@ -153,7 +153,7 @@ const App: React.FC = () => {
         <MapBoard
           tokens={tokens}
           onUpdateToken={(token) => {
-            dispatch({ type: 'MOVE_TOKEN', token });
+            dispatch({ type: 'moveToken', token });
           }}
           activeTokenId={activeTokenId}
           setActiveTokenId={(id) => setActiveToken(id)}
@@ -170,17 +170,17 @@ const App: React.FC = () => {
             onDiscard={(cards) =>
               activeTokenId &&
               dispatch({
-                type: 'DISCARD_CARDS',
+                type: 'discardCards',
                 activeTokenId,
                 cardIds: cards.map((c) => c.id),
               })
             }
             onPass={handlePass}
-            onCancelPlan={() => activeTokenId && dispatch({ type: 'CANCEL_PLAN', activeTokenId })}
+            onCancelPlan={() => activeTokenId && dispatch({ type: 'cancelPlan', activeTokenId })}
             onReturnToDeck={(cards) =>
               activeTokenId &&
               dispatch({
-                type: 'RETURN_TO_DECK',
+                type: 'returnToDeck',
                 activeTokenId,
                 cardIds: cards.map((c) => c.id),
               })
@@ -197,10 +197,10 @@ const App: React.FC = () => {
         onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
         onRevealActions={() => {
-          dispatch({ type: 'REVEAL' });
+          dispatch({ type: 'reveal' });
         }}
         onEndRound={() => {
-          dispatch({ type: 'END_ROUND' });
+          dispatch({ type: 'endRound' });
         }}
         readyCount={readyCount}
         totalCount={tokens.length}

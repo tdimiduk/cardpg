@@ -1,6 +1,6 @@
 import { useWebSocket } from '../contexts/WebSocketContext';
 import { useGameAction } from './useGameAction';
-import { BroadcastAction } from '../types/sync';
+import { BroadcastAction } from '../types';
 
 export const useGameDispatch = () => {
   const { sendMessage } = useWebSocket();
@@ -11,7 +11,7 @@ export const useGameDispatch = () => {
     _applyAction(action);
 
     // 2. Broadcast to other clients
-    sendMessage({ tag: 'Broadcast', payload: action });
+    sendMessage({ type: 'broadcast', payload: action });
   };
 
   return { dispatch };

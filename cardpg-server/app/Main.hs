@@ -23,12 +23,13 @@ import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
 import qualified Network.WebSockets as WS
 
-import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..))
+
+import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..))
 
 -- | The state of the server, mapping client IDs to clients and storing action history.
 data ServerState = ServerState
   { clients :: Map UUID Client
-  , actionLog :: [Value]
+  , actionLog :: [BroadcastAction]
   }
 
 newServerState :: ServerState
@@ -46,7 +47,7 @@ addClient client state = state { clients = Map.insert (clientId client) client (
 removeClient :: Client -> ServerState -> ServerState
 removeClient client state = state { clients = Map.delete (clientId client) (clients state) }
 
-addAction :: Value -> ServerState -> ServerState
+addAction :: BroadcastAction -> ServerState -> ServerState
 addAction action state = state { actionLog = actionLog state ++ [action] }
 
 broadcast :: ServerMessage -> ServerState -> IO ()

@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { useGameAction } from './useGameAction';
 import { useGameStore } from '../store/gameStore';
-import { BroadcastAction } from '../types/sync';
+import { BroadcastAction } from '../types';
 import { RESOURCE_TYPES } from '../constants';
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest';
 
@@ -47,19 +47,19 @@ describe('useGameAction', () => {
 
   it('should handle REVEAL action', () => {
     const { result } = renderHook(() => useGameAction());
-    result.current._applyAction({ type: 'REVEAL' });
+    result.current._applyAction({ type: 'reveal' });
     expect(mockRevealAndResolve).toHaveBeenCalled();
   });
 
   it('should handle PASS action', () => {
     const { result } = renderHook(() => useGameAction());
-    result.current._applyAction({ type: 'PASS', activeTokenId: 'token-1' });
+    result.current._applyAction({ type: 'pass', activeTokenId: 'token-1' });
     expect(mockPassTurn).toHaveBeenCalledWith('token-1');
   });
 
   it('should handle PLAY_STACK action in planning phase', () => {
     const payload: BroadcastAction = {
-      type: 'PLAY_STACK',
+      type: 'playStack',
       activeTokenId: 'token-1',
       selectedCards: [],
       strengthColor: RESOURCE_TYPES.RED,
@@ -83,7 +83,7 @@ describe('useGameAction', () => {
   it('should handle DISCARD_CARDS action', () => {
     const { result } = renderHook(() => useGameAction());
     result.current._applyAction({
-      type: 'DISCARD_CARDS',
+      type: 'discardCards',
       activeTokenId: 'token-1',
       cardIds: ['c1'],
     });

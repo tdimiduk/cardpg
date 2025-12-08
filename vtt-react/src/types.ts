@@ -59,14 +59,11 @@ export interface Actor {
 export type ActorData = Gen.Actor;
 export const ActorDataSchema = GenSchemas.actorSchema;
 
-export const TokenSchema = z.object({
-  id: z.string(),
-  actorId: z.string(),
-  x: z.number(),
-  y: z.number(),
-  size: z.number(),
-});
-export type Token = z.infer<typeof TokenSchema>;
+export const TokenSchema = GenSchemas.tokenSchema;
+export type Token = Gen.Token;
+
+export const BroadcastActionSchema = GenSchemas.broadcastActionSchema;
+export type BroadcastAction = Gen.BroadcastAction;
 
 export interface LogEntry {
   id: string;

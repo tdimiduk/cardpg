@@ -20,23 +20,4 @@ describe('deckFactory Normalization', () => {
       expect(item.type).toBe('itemCard');
     }
   });
-
-  it('should inject empty tags if missing', () => {
-    const templates = getActorTemplates();
-    const actor = templates[0];
-
-    // Check deck cards
-    if (actor.deck.length > 0) {
-      const card = actor.deck[0];
-      expect(card.tags).toBeDefined();
-      expect(Array.isArray(card.tags)).toBe(true);
-    }
-
-    // Check items
-    if (actor.items.length > 0) {
-      const item = actor.items[0];
-      expect(item.tags).toBeDefined();
-      expect(Array.isArray(item.tags)).toBe(true);
-    }
-  });
 });

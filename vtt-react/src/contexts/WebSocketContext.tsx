@@ -1,24 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { z } from 'zod';
-import { BroadcastActionSchema } from '../types/sync';
-import { BroadcastAction } from '../types/sync';
-import {
-  IWelcome,
-  IBroadcastMessage,
-  IClientJoined,
-  IClientLeft,
-  IErrorMessage,
-} from '../generated/types';
-
-// Refine generated types to use BroadcastAction for payload
-type ClientMessage = { tag: 'Join'; name: string } | { tag: 'Broadcast'; payload: BroadcastAction };
-
-type ServerMessage =
-  | (Omit<IWelcome, 'history'> & { history: BroadcastAction[] })
-  | (Omit<IBroadcastMessage, 'payload'> & { payload: BroadcastAction })
-  | IClientJoined
-  | IClientLeft
-  | IErrorMessage;
+import { ServerMessage, ClientMessage } from '../generated/types';
+import { serverMessageSchema } from '../generated/schemas';
 
 interface WebSocketContextType {
   isConnected: boolean;
@@ -53,7 +35,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       console.log('Connected to WebSocket server');
       setIsConnected(true);
       // Auto-join for now
-      sendMessage({ tag: 'Join', name: 'Player-' + Math.floor(Math.random() * 1000) });
+      sendMessage({ type: 'join', name: 'Player-' + Math.floor(Math.random() * 1000) });
     };
 
     socket.onclose = () => {
@@ -76,64 +58,21 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, []);
 
-  // Define ServerMessage Schema
-  // We can reuse parts of this, or just keep it as the runtime validation layer
-  // since the generated types are just TS types, not Zod schemas (yet, though we have schemas.ts too)
-  const ServerMessageSchema = z.discriminatedUnion('tag', [
-    z.object({
-      tag: z.literal('Welcome'),
-      yourClientId: z.string(),
-      connectedClients: z.array(z.string()),
-      history: z.array(BroadcastActionSchema),
-    }),
-    z.object({
-      tag: z.literal('BroadcastMessage'),
-      fromClientId: z.string(),
-      payload: BroadcastActionSchema,
-    }),
-    z.object({
-      tag: z.literal('ClientJoined'),
-      newClientName: z.string(),
-      newClientId: z.string(),
-    }),
-    z.object({ tag: z.literal('ClientLeft'), leftClientId: z.string() }),
-    z.object({ tag: z.literal('ErrorMessage'), error: z.string() }),
-  ]);
-
   const handleMessage = (msg: unknown) => {
-    // Basic normalization if needed
-    let normalized: unknown = msg;
-
-    const raw = msg as {
-      tag?: string;
-      Welcome?: { yourClientId: string; connectedClients: string[] };
-    };
-
-    // Legacy/Default Aeson normalization
-    if (raw.Welcome && !raw.tag) {
-      normalized = {
-        tag: 'Welcome',
-        yourClientId: raw.Welcome.yourClientId,
-        connectedClients: raw.Welcome.connectedClients,
-        history: [], // Legacy fallback if history is missing
-      };
-    }
-
-    const result = ServerMessageSchema.safeParse(normalized);
+    const result = serverMessageSchema.safeParse(msg);
 
     if (result.success) {
-      // The Zod schema output matches our refined ServerMessage type
-      const message = result.data as ServerMessage;
+      const message = result.data;
       setLastMessage(message);
-      switch (message.tag) {
-        case 'Welcome':
+      switch (message.type) {
+        case 'welcome':
           setClientId(message.yourClientId);
           setConnectedClients(message.connectedClients);
           break;
-        case 'ClientJoined':
+        case 'clientJoined':
           setConnectedClients((prev) => [...prev, message.newClientName]);
           break;
-        case 'ClientLeft':
+        case 'clientLeft':
           // We don't have the name here easily unless we track a map.
           break;
       }

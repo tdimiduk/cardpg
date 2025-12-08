@@ -25,7 +25,7 @@ import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (TextStyle, Inline, RichString, RichText, Block)
 import CardPG.Core.RuleDefs hiding (Rule, AttackDef, GeneralDef, TaskDef, TriggerDef, StanceDef, ChannelDef, PrimeDef) 
 import CardPG.Core.Card (Stats, ItemCardT(..), NatureCardT(..), TalentCardT(..), GeneralActionDef, EncounterMechanics, EncounterCardT(..), ConsequenceCardT(..), ActorT(..), CoreCardT(..))
-import CardPG.Server.Types (ClientMessage, ServerMessage)
+import CardPG.Server.Types (ClientMessage, ServerMessage, Token, BroadcastAction(..))
 
 instance TypeScript DSLRule where
   getTypeScriptType _ = "string"
@@ -132,12 +132,19 @@ $(do
   i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
   i_encMech <- deriveTypeScript cardpgJsonDef ''EncounterMechanics
   
+  -- Server Types
+  i_token <- deriveTypeScript cardpgJsonDef ''Token
+  i_broadcast <- deriveTypeScript cardpgJsonDef ''BroadcastAction
+  i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
+  i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
+
   return (i_attack ++ b_attack ++ i_general ++ b_general ++ i_task ++ b_task 
           ++ i_trigger ++ b_trigger ++ i_stance ++ b_stance ++ i_channel ++ b_channel 
           ++ i_prime ++ b_prime ++ i_rule ++ b_rule ++ i_passive 
           ++ i_core ++ i_item ++ i_nature ++ i_talent 
           ++ i_encounter ++ i_consequence 
-          ++ i_actor ++ i_genAction ++ i_encMech)
+          ++ i_actor ++ i_genAction ++ i_encMech
+          ++ i_token ++ i_broadcast ++ i_clientMsg ++ i_serverMsg)
  )
 
 instance TypeScript (CoreCardT Text Rule [Inline]) where

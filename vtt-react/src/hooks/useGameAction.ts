@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { BroadcastAction } from '../types/sync';
+import { BroadcastAction } from '../types';
 
 function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
@@ -34,7 +34,7 @@ export const useGameAction = () => {
   const _applyAction = useCallback(
     (action: BroadcastAction) => {
       switch (action.type) {
-        case 'PLAY_STACK':
+        case 'playStack':
           if (action.phase === 'planning') {
             commitPlan(
               action.activeTokenId,
@@ -55,53 +55,53 @@ export const useGameAction = () => {
             );
           }
           break;
-        case 'PASS':
+        case 'pass':
           passTurn(action.activeTokenId);
           break;
-        case 'REVEAL':
+        case 'reveal':
           revealAndResolve();
           break;
-        case 'END_ROUND':
+        case 'endRound':
           endRound();
           break;
-        case 'MOVE_TOKEN':
+        case 'moveToken':
           updateTokenPosition(action.token);
           break;
-        case 'DRAW_CARDS':
+        case 'drawCards':
           drawCards(action.activeTokenId, action.count);
           break;
-        case 'DEFEND':
+        case 'defend':
           defend(action.activeTokenId);
           break;
-        case 'CLEAR_DEFENSE':
+        case 'clearDefense':
           clearDefense(action.activeTokenId);
           break;
-        case 'RESHUFFLE':
+        case 'reshuffle':
           reshuffle(action.activeTokenId);
           break;
-        case 'ADD_CONSEQUENCE':
+        case 'addConsequence':
           addConsequence(action.activeTokenId);
           break;
-        case 'REMOVE_CONSEQUENCE':
+        case 'removeConsequence':
           removeConsequence(action.activeTokenId, action.cardId);
           break;
-        case 'ADD_STATUS':
+        case 'addStatus':
           addStatus(
             action.activeTokenId,
             action.statusType,
             action.destination as 'discard' | 'hand' | 'draw',
           );
           break;
-        case 'REMOVE_STATUS':
+        case 'removeStatus':
           removeStatus(action.activeTokenId, action.statusType);
           break;
-        case 'DISCARD_CARDS':
+        case 'discardCards':
           discardCards(action.activeTokenId, action.cardIds);
           break;
-        case 'CANCEL_PLAN':
+        case 'cancelPlan':
           cancelPlan(action.activeTokenId);
           break;
-        case 'RETURN_TO_DECK':
+        case 'returnToDeck':
           returnToDeck(action.activeTokenId, action.cardIds);
           break;
         default:

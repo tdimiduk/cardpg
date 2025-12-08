@@ -11,7 +11,7 @@ import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (TextStyle, Inline, RichString, RichText, Block)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.Card (Stats, GeneralActionDef, EncounterMechanics)
-import CardPG.Server.Types (ClientMessage, ServerMessage)
+import CardPG.Server.Types (ClientMessage, ServerMessage, BroadcastAction, Token)
 
 import Data.List (intercalate)
 import Data.Text (pack, unpack, replace)
@@ -55,6 +55,8 @@ main = do
         (getTypeScriptDeclarations (Proxy :: Proxy EncounterCard)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy Actor)) <>
+        (getTypeScriptDeclarations (Proxy :: Proxy Token)) <>
+        (getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)) <>
         (getTypeScriptDeclarations (Proxy :: Proxy ServerMessage))
         )

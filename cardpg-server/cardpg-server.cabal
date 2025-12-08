@@ -10,7 +10,6 @@ cabal-version:       >=1.10
 library
   exposed-modules:
     CardPG.Server.Types
-    CardPG.Server.Json
   hs-source-dirs:      src
   build-depends:       base >= 4.7 && < 5
                      , websockets
