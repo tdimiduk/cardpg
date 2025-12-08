@@ -69,7 +69,7 @@ test-suite cardpg-core-test
   hs-source-dirs: tests
   ghc-options:
     -Wall -Wredundant-constraints -Wincomplete-uni-patterns
-    -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
+    -Wincomplete-record-updates -O -fno-show-valid-hole-fits
   build-depends: base
                , cardpg-core
                , aeson
