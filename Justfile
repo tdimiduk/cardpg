@@ -49,6 +49,11 @@ build:
     @test -f {{shake}} || just bootstrap
     @{{shake}} build
 
+# Run dev servers
+dev:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} dev
+
 # Run all tests
 test:
     @test -f {{shake}} || just bootstrap

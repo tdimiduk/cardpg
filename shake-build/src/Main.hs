@@ -57,6 +57,7 @@ main = do
             , ("build-core", "Build cardpg-core",                 buildCore)
             , ("build-server", "Build cardpg-server",             buildServer)
             , ("build",       "Build all targets",                buildAll)
+            , ("dev",         "Run dev servers",                  runDev)
             , ("test",        "Run all tests",                    testAll)
             , ("test-core",   "Test cardpg-core",                 need ["_build/tests/.cardpg-core.timestamp"])
             , ("test-compiler","Test card-compiler",              need ["_build/tests/.card-compiler.timestamp"])
@@ -64,7 +65,7 @@ main = do
             , ("repl-server", "REPL for cardpg-server",           replServer)
             ]
 
-    shakeArgs shakeOptions{shakeFiles=buildDir, shakeColor=True} $ do
+    shakeArgs shakeOptions{shakeFiles=buildDir, shakeColor=True, shakeThreads=0} $ do
         
         want ["card-data"]
 
@@ -199,14 +200,50 @@ buildServer = do
 buildAll :: Action ()
 buildAll = do
     need ["vtt-react/src/generated/types.ts"] -- Ensure types are gen'd first usually?
+    -- Build Haskell
     cmd_ (["cabal", "build", "all"] :: [String])
+    -- Build Frontend
+    cmd_ (Cwd "vtt-react") (["npm", "run", "build"] :: [String])
+
+-- | Run dev servers
+runDev :: Action ()
+runDev = do
+    -- We want to run both the haskell server and the vite dev server
+    -- 'par' runs actions in parallel
+    -- Note: This assumes cardpg-server can run from the root or we adjust Cwd
+    -- 'cabal run' handles the build if needed.
+    
+    -- We can't really use 'need' here effectively for long running processes 
+    -- if we want them to stream output to the user.
+    -- We'll use 'cmd' with Async or just rely on the fact that if we fire them off
+    -- Shake might wait?
+    -- Shake's normal behavior is to wait for commands.
+    -- If we use 'par' on two actions that run commands, they run in parallel.
+    
+    -- We also want to make sure generated types exist before starting frontend?
+    need ["gen-types"]
+
+    let runServer = do
+           putInfo "Starting cardpg-server..."
+           cmd_ (["cabal", "run", "cardpg-server"] :: [String])
+    
+    let runFrontend = do
+           putInfo "Starting Vite dev server..."
+           cmd_ (Cwd "vtt-react") (["npm", "run", "dev"] :: [String])
+
+    -- Actions in the list passed to 'parallel' run in parallel
+    _ <- parallel [runServer, runFrontend]
+    return ()
 
 -- | Run all tests
+-- | Run all tests
 testAll :: Action ()
-testAll = need 
-    [ "_build/tests/.cardpg-core.timestamp"
-    , "_build/tests/.card-compiler.timestamp"
-    ]
+testAll = do
+    need 
+        [ "_build/tests/.cardpg-core.timestamp"
+        , "_build/tests/.card-compiler.timestamp"
+        , "_build/tests/.vtt-react.timestamp"
+        ]
 
 -- | Run REPL for core
 replCore :: Action ()
@@ -229,6 +266,12 @@ defineTestRules = do
         srcs <- getCardCompilerSources
         need srcs
         cmd_ (["cabal", "test", "card-compiler"] :: [String])
+        cmd_ (["touch", out] :: [String])
+
+    "_build/tests/.vtt-react.timestamp" %> \out -> do
+        srcs <- getFrontendSources
+        need srcs
+        cmd_ (Cwd "vtt-react") (["npm", "exec", "vitest", "run"] :: [String])
         cmd_ (["touch", out] :: [String])
 
 -- | Define rules for codegen and types
@@ -275,3 +318,9 @@ getCodegenSources = getPackageSources "tools/codegen" "."
 
 getCardCompilerSources :: Action [FilePath]
 getCardCompilerSources = getPackageSources "tools/card-compiler" "."
+
+getFrontendSources :: Action [FilePath]
+getFrontendSources = do
+    let dir = "vtt-react"
+    srcs <- getDirectoryFiles dir ["src//*.ts", "src//*.tsx", "package.json", "tsconfig.json", "vite.config.ts"]
+    return $ map (dir </>) srcs
