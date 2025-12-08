@@ -1,4 +1,4 @@
-module Rules.Frontend where
+module Rules.Frontend (defineFrontendRules, defineFrontendTestRules, format) where
 
 import Development.Shake
 import Development.Shake.FilePath
@@ -33,3 +33,9 @@ defineFrontendTestRules = do
     need srcs
     cmd_ (Cwd "vtt-react") (["npm", "exec", "vitest", "run"] :: [String])
     cmd_ (["touch", out] :: [String])
+
+format :: Bool -> Action ()
+format checkOnly = do
+  let args = if checkOnly then ["--check"] else ["--write"]
+  let files = ["src/**/*.{ts,tsx,css,md}"]
+  cmd_ (Cwd "vtt-react") (["npm", "exec", "prettier", "--"] ++ args ++ files)

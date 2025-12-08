@@ -99,12 +99,12 @@ deploy-rebuild:
     @test -f {{shake}} || just bootstrap
     @{{shake}} deploy-rebuild
 
-# Format Haskell code
+# Format code
 format:
     @test -f {{shake}} || just bootstrap
     @{{shake}} format
 
-# Check Haskell code formatting
+# Check code formatting
 format-check:
     @test -f {{shake}} || just bootstrap
     @{{shake}} format-check

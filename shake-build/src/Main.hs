@@ -38,8 +38,20 @@ main = do
         , ("repl-server", "REPL for cardpg-server", Haskell.replServer)
         , ("deploy-prod", "Deploy to prod (smart rebuild)", Deploy.deploy False)
         , ("deploy-rebuild", "Deploy to prod (force rebuild)", Deploy.deploy True)
-        , ("format", "Format Haskell code", Haskell.format False)
-        , ("format-check", "Check Haskell code formatting", Haskell.format True)
+        ,
+          ( "format"
+          , "Format code"
+          , do
+              Haskell.format False
+              Frontend.format False
+          )
+        ,
+          ( "format-check"
+          , "Check code formatting"
+          , do
+              Haskell.format True
+              Frontend.format True
+          )
         ]
 
   shakeArgs shakeOptions{shakeFiles = buildDir, shakeColor = True, shakeThreads = 0} $ do

@@ -57,5 +57,5 @@ prop_dslRoundtrip r =
   let printed = prettyRule r
       parsed = parseRule printed
    in counterexample
-        ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed) $
-        parsed === Right r
+        ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed)
+        $ parsed === Right r
