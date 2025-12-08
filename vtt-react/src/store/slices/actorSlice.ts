@@ -1,5 +1,12 @@
 import { StateCreator } from 'zustand';
-import { Actor, TokenType, PlayerDeckState, Token, CoreCard, ConsequenceCard } from '../../types';
+import {
+  ActorState,
+  TokenType,
+  PlayerDeckState,
+  Token,
+  CoreCard,
+  ConsequenceCard,
+} from '../../types';
 import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
 import { generateDeck } from '../../services/deckFactory';
 import {
@@ -15,7 +22,7 @@ import { LogSlice, createLog } from './logSlice';
 import { createActor } from '../../services/actorFactory';
 
 export interface ActorSlice {
-  actors: Record<string, Actor>;
+  actors: Record<string, ActorState>;
   initializeGame: () => void;
   addActor: (name: string, type: TokenType, color: string, templateId?: string) => void;
   removeActor: (actorId: string) => void;
@@ -40,7 +47,10 @@ export interface ActorSlice {
 }
 
 // Helper to get actor from state
-const getActor = (state: { tokens: Token[]; actors: Record<string, Actor> }, tokenId: string) => {
+const getActor = (
+  state: { tokens: Token[]; actors: Record<string, ActorState> },
+  tokenId: string,
+) => {
   const token = state.tokens.find((t) => t.id === tokenId);
   if (!token) return undefined;
   return state.actors[token.actorId];

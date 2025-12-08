@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { Token, TokenType, Actor } from '../../types';
+import { Token, TokenType, ActorState } from '../../types';
 import { GRID_SIZE } from '../../constants';
 import { User, Skull, Sword, X } from 'lucide-react';
 
 interface TokenEntityProps {
   token: Token;
-  actor: Actor;
+  actor: ActorState;
   isSelected: boolean;
   onMouseDown: (e: React.MouseEvent, token: Token) => void;
   isDefeated?: boolean;

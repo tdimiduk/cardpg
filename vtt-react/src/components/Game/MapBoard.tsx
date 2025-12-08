@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Token, PlannedAction, Actor } from '../../types';
+import { Token, PlannedAction, ActorState } from '../../types';
 import { GRID_SIZE } from '../../constants';
 import { TokenEntity } from './TokenEntity';
 
@@ -10,7 +10,7 @@ interface MapBoardProps {
   setActiveTokenId: (id: string | null) => void;
   plannedActions?: Record<string, PlannedAction>;
   defeatedTokenIds?: string[];
-  actors: Record<string, Actor>;
+  actors: Record<string, ActorState>;
 }
 
 export const MapBoard: React.FC<MapBoardProps> = ({

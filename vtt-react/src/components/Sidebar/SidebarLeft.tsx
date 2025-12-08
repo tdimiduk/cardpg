@@ -1,5 +1,5 @@
 import React from 'react';
-import { Token, TokenType, PlayerDeckState, Actor, ActorData } from '../../types';
+import { Token, TokenType, PlayerDeckState, ActorState, Actor } from '../../types';
 import { getActorTemplates } from '../../services/deckFactory';
 import { useActorStats } from '../../hooks/useActorStats';
 import { ACTOR_COLORS } from '../../theme';
@@ -31,7 +31,7 @@ interface SidebarLeftProps {
   activeToken?: Token;
   activeTokenId: string;
   hasPlannedAction?: boolean;
-  actors: Record<string, Actor>;
+  actors: Record<string, ActorState>;
   onAddActor: (name: string, type: TokenType, color: string, templateId?: string) => void;
   onRemoveActor: (actorId: string) => void;
 }
@@ -65,7 +65,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     setShowActorSelector(true);
   };
 
-  const handleSelectTemplate = (template: ActorData) => {
+  const handleSelectTemplate = (template: Actor) => {
     // Use template name, but append random number if needed or just use it as base
     // We'll use the template name + random number to ensure uniqueness if multiple are added
     const name = `${template.name} ${Math.floor(Math.random() * 100)}`;

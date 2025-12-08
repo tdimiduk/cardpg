@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Actor, CoreCard, ResourceType } from './types';
+import { ActorState, CoreCard, ResourceType } from './types';
 import { MapBoard } from './components/Game/MapBoard';
 import { SidebarLeft } from './components/Sidebar/SidebarLeft';
 import { SidebarRight } from './components/Sidebar/SidebarRight';
@@ -10,7 +10,6 @@ import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
 
 const App: React.FC = () => {
-  // --- Store Hooks ---
   // --- Store Hooks ---
   const phase = useGameStore((state) => state.phase);
   const plannedActions = useGameStore((state) => state.plannedActions);
@@ -33,7 +32,7 @@ const App: React.FC = () => {
     // But initializeGame populates decks.
     // Check if decks are empty (need initialization)
     const needsInit = Object.values(actors).some(
-      (a: Actor) => a.deck.hand.length === 0 && a.deck.drawPile.length === 0,
+      (a: ActorState) => a.deck.hand.length === 0 && a.deck.drawPile.length === 0,
     );
 
     if (needsInit) {

@@ -1,4 +1,4 @@
-import { Actor, TokenType, PlayerDeckState } from '../types';
+import { ActorState, TokenType, PlayerDeckState } from '../types';
 import { generateDeck, getActorTemplate } from './deckFactory';
 import { drawCards } from './ruleService';
 import { ACTOR_COLORS } from '../theme';
@@ -8,7 +8,7 @@ export const createActor = (
   type: TokenType,
   color?: string,
   templateId?: string,
-): Actor => {
+): ActorState => {
   const id = Math.random().toString(36).substr(2, 9);
   let finalTemplateId = templateId;
 

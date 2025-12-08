@@ -1,9 +1,9 @@
-import { Token, Actor, TokenType } from './types';
+import { Token, ActorState, TokenType } from './types';
 import { ACTOR_COLORS } from './theme';
 
 export const GRID_SIZE = 64; // pixels per square
 
-export const INITIAL_ACTORS: Record<string, Actor> = {
+export const INITIAL_ACTORS: Record<string, ActorState> = {
   'hero-1': {
     id: 'hero-1',
     name: 'Swashbuckler',

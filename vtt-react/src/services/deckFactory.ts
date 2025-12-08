@@ -1,28 +1,28 @@
-import { CoreCard, ItemCard, ActorData, ActorDataSchema, CoreCardSchema } from '../types';
+import { CoreCard, ItemCard, Actor, actorSchema, coreCardSchema } from '../types';
 import generatedCards from '../data/generated_cards.json';
 import { z } from 'zod';
 
 // Schema for the entire generated cards JSON file to ensure type safety at runtime
 const GeneratedDataSchema = z.object({
-  actors: z.array(ActorDataSchema),
-  statuses: z.array(CoreCardSchema),
+  actors: z.array(actorSchema),
+  statuses: z.array(coreCardSchema),
 });
 
 // Cast the imported JSON to the correct type and normalize
 const rawData = GeneratedDataSchema.parse(generatedCards);
 
-export const ACTOR_DATA: ActorData[] = rawData.actors;
+export const ACTOR_DATA: Actor[] = rawData.actors;
 
 export const STATUS_DATA: CoreCard[] = rawData.statuses;
 
-export const getActorTemplates = (type?: 'pc' | 'monster'): ActorData[] => {
+export const getActorTemplates = (type?: 'pc' | 'monster'): Actor[] => {
   if (!type) {
     return ACTOR_DATA;
   }
   return ACTOR_DATA.filter((actor) => actor.tags?.includes(type));
 };
 
-export const getActorTemplate = (id: string): ActorData | undefined => {
+export const getActorTemplate = (id: string): Actor | undefined => {
   return ACTOR_DATA.find((actor) => actor.id === id);
 };
 

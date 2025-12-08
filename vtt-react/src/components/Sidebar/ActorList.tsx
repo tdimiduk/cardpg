@@ -1,11 +1,11 @@
 import React from 'react';
 import { Skull, User, X, Plus } from 'lucide-react';
-import { Token, TokenType, Actor } from '../../types';
+import { Token, TokenType, ActorState } from '../../types';
 import { ACTOR_COLORS } from '../../theme';
 
 interface ActorListProps {
   tokens: Token[];
-  actors: Record<string, Actor>;
+  actors: Record<string, ActorState>;
   onSelectToken: (tokenId: string) => void;
   onRemoveActor: (actorId: string) => void;
   onAddActor: (type: TokenType) => void;

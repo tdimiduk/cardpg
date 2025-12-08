@@ -1,10 +1,10 @@
 import React from 'react';
 import { Skull, User } from 'lucide-react';
-import { TokenType, Actor } from '../../types';
+import { TokenType, ActorState } from '../../types';
 
 interface ActiveActorHeaderProps {
   activeTokenId: string;
-  actor: Actor;
+  actor: ActorState;
 }
 
 export const ActiveActorHeader: React.FC<ActiveActorHeaderProps> = ({ actor }) => {

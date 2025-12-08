@@ -1,41 +1,14 @@
 import { z } from 'zod';
-import * as Gen from './generated/types';
-import * as GenSchemas from './generated/schemas';
+import { CoreCard, ItemCard } from './generated/types';
 
-// --- Core Enums ---
-export const ResourceTypeSchema = GenSchemas.resourceTypeSchema;
-export type ResourceType = Gen.ResourceType;
+// Export all generated types and schemas
+export * from './generated/types';
+export * from './generated/types.zod';
 
-export const StackPowerSchema = GenSchemas.stackPowerSchema;
-export type StackPower = Gen.StackPower;
+import { coreCardSchema, itemCardSchema } from './generated/types.zod';
 
-// --- Rich Text ---
-export const TextStyleSchema = GenSchemas.textStyleSchema;
-export type TextStyle = Gen.TextStyle;
-
-export const InlineSchema = GenSchemas.inlineSchema;
-export type Inline = Gen.Inline;
-
-export const RichStringSchema = GenSchemas.richStringSchema;
-export type RichString = Gen.RichString;
-
-// --- Rules ---
-export type Rule = Gen.Rule;
-export const RuleSchema = GenSchemas.ruleSchema;
-
-// --- Card ---
-export const StatsSchema = GenSchemas.statsSchema;
-export type Stats = Gen.Stats;
-
-// Extend generated schemas to include the discriminator 'type'
-// Extend generated schemas to include the discriminator 'type'
-export const CoreCardSchema = GenSchemas.coreCardSchema;
-export type CoreCard = Gen.CoreCard;
-
-export const ItemCardSchema = GenSchemas.itemCardSchema;
-export type ItemCard = Gen.ItemCard;
-
-export const CardSchema = z.union([CoreCardSchema, ItemCardSchema]);
+// --- Card Union ---
+export const CardSchema = z.union([coreCardSchema, itemCardSchema]);
 export type Card = CoreCard | ItemCard;
 
 // --- Legacy / Game State Types ---
@@ -47,23 +20,13 @@ export enum TokenType {
 }
 
 // Frontend Actor State
-export interface Actor {
+export interface ActorState {
   id: string;
   name: string;
   type: TokenType;
   color: string;
   deck: PlayerDeckState;
 }
-
-// Generated Actor Data (renamed to avoid conflict)
-export type ActorData = Gen.Actor;
-export const ActorDataSchema = GenSchemas.actorSchema;
-
-export const TokenSchema = GenSchemas.tokenSchema;
-export type Token = Gen.Token;
-
-export const BroadcastActionSchema = GenSchemas.broadcastActionSchema;
-export type BroadcastAction = Gen.BroadcastAction;
 
 export interface LogEntry {
   id: string;
@@ -73,22 +36,19 @@ export interface LogEntry {
   type: 'chat' | 'action' | 'info';
   actionResult?: {
     total: number;
-    color: ResourceType;
-    targetColor?: ResourceType;
+    color: import('./generated/types').ResourceType;
+    targetColor?: import('./generated/types').ResourceType;
     label: string;
   };
 }
 
 export interface GameState {
-  actors: Record<string, Actor>;
-  tokens: Token[];
+  actors: Record<string, ActorState>;
+  tokens: import('./generated/types').Token[];
   logs: LogEntry[];
   gridSize: number;
   activeTokenId: string | null;
 }
-
-export const ConsequenceCardSchema = GenSchemas.consequenceCardSchema;
-export type ConsequenceCard = Gen.ConsequenceCard;
 
 export interface PlayerDeckState {
   drawPile: CoreCard[];
@@ -96,7 +56,7 @@ export interface PlayerDeckState {
   discardPile: CoreCard[];
   flippedPile: CoreCard[];
   equipped: Card[];
-  consequences: ConsequenceCard[];
+  consequences: import('./generated/types').ConsequenceCard[];
 }
 
 export type GamePhase = 'planning' | 'resolution';
@@ -105,9 +65,9 @@ export interface PlannedAction {
   actorId: string;
   actorName: string;
   cards: CoreCard[];
-  strengthColor: ResourceType;
+  strengthColor: import('./generated/types').ResourceType;
   modifier: number;
-  targetDefense?: ResourceType;
+  targetDefense?: import('./generated/types').ResourceType;
   actionName?: string;
   move?: {
     x: number;

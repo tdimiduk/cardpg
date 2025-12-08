@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { ServerMessage, ClientMessage } from '../generated/types';
-import { serverMessageSchema } from '../generated/schemas';
+import { serverMessageSchema, ClientMessage, ServerMessage } from '../types';
 
 interface WebSocketContextType {
   isConnected: boolean;

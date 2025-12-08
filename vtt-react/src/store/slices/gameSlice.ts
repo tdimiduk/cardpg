@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { GamePhase, PlannedAction, CoreCard, ResourceType, Token, Actor } from '../../types';
+import { GamePhase, PlannedAction, CoreCard, ResourceType, Token, ActorState } from '../../types';
 import { RESOURCE_TYPES } from '../../constants';
 import { calculateStackStrength, drawCards } from '../../services/ruleService';
 import { resolveMovement } from '../../services/resolutionService';
@@ -33,14 +33,17 @@ export interface GameSlice {
 }
 
 // Helper to get actor
-const getActor = (state: { tokens: Token[]; actors: Record<string, Actor> }, tokenId: string) => {
+const getActor = (
+  state: { tokens: Token[]; actors: Record<string, ActorState> },
+  tokenId: string,
+) => {
   const token = state.tokens.find((t) => t.id === tokenId);
   if (!token) return undefined;
   return state.actors[token.actorId];
 };
 
 export const createGameSlice: StateCreator<
-  GameSlice & LogSlice & ActorSlice & { tokens: Token[]; actors: Record<string, Actor> },
+  GameSlice & LogSlice & ActorSlice & { tokens: Token[]; actors: Record<string, ActorState> },
   [['zustand/immer', never]],
   [],
   GameSlice
