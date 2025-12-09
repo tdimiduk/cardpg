@@ -20,14 +20,14 @@ import CardPG.Core.Card
   , ItemCardT (..)
   , NatureCard
   , NatureCardT (..)
-  , Stats (..)
   , SpecialDefend (..)
+  , Stats (..)
   )
-import CardPG.Core.Types (ResourceType (..))
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
 import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
+import CardPG.Core.Types (ResourceType (..))
 
 -- | Sum type for different card types
 data ParsedCard
@@ -123,7 +123,7 @@ convertCard RawCard{..} = do
               pure $
                 PNature
                   NatureCard
-                    { _specialDefend = parseSpecialDefend rcRed rcYellow rcBlue 
+                    { _specialDefend = parseSpecialDefend rcRed rcYellow rcBlue
                     , ..
                     }
             else pure $ PItem ItemCard{..}

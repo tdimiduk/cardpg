@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module CardCompiler.VttExporter where
@@ -106,44 +107,31 @@ loadAndExport inputFiles outputFile = do
 
 -- | Convert Actor (Human) to ActorMachine (Machine)
 convertActor :: Actor -> ActorMachine
-convertActor (Actor i n t items nature d) =
-  let actorId = fromMaybe (slugify n) i
-   in Actor
-        { _name = n
-        , _id = actorId
-        , _tags = t
-        , _items = map (convertItem actorId) items
-        , _nature = map (convertNature actorId) nature
-        , _deck = processDeck actorId d
-        }
+convertActor Actor{..} =
+  Actor
+    { _id = actorId
+    , _items = map (convertItem actorId) _items
+    , _nature = map (convertNature actorId) _nature
+    , _deck = processDeck actorId _deck
+    , ..
+    }
+  where
+    actorId = fromMaybe (slugify _name) _id
 
 convertItem :: Text -> ItemCard -> ItemCardMachine
-convertItem actorId (ItemCard i n t f w v tr p d r) =
+convertItem actorId ItemCard{..} =
   ItemCard
-    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText n)) i
-    , _name = n
-    , _tags = t
-    , _flavor = fmap unRichString f
-    , _weight = w
-    , _value = v
-    , _traits = tr
-    , _passive = p
-    , _defense = d
-    , _resilience = r
+    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText _name)) _id
+    , _flavor = fmap unRichString _flavor
+    , ..
     }
 
 convertNature :: Text -> NatureCardT (Maybe Text) RichString -> NatureCardT Text RichText
-convertNature actorId (NatureCard i n t f tr p d r sd) =
+convertNature actorId NatureCard{..} =
   NatureCard
-    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText n)) i
-    , _name = n
-    , _tags = t
-    , _flavor = fmap unRichString f
-    , _traits = tr
-    , _passive = p
-    , _defense = d
-    , _resilience = r
-    , _specialDefend = sd
+    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText _name)) _id
+    , _flavor = fmap unRichString _flavor
+    , ..
     }
 
 -- | Process deck to ensure unique IDs for duplicates
@@ -185,15 +173,12 @@ assignId actorId freqMap counters card@(CoreCard _ n _ _ _ _ _) =
 
 -- | Convert CoreCard to CoreCardMachine with specific ID
 toVttCoreCard :: CoreCard -> Text -> CoreCardMachine
-toVttCoreCard (CoreCard _ n t s c r f) finalId =
+toVttCoreCard CoreCard{..} finalId =
   CoreCard
     { _id = finalId
-    , _name = n
-    , _tags = t
-    , _stats = s
-    , _cost = c
-    , _rules = fmap (fmap convertRule) r
-    , _flavor = fmap unRichString f
+    , _rules = fmap (fmap convertRule) _rules
+    , _flavor = fmap unRichString _flavor
+    , ..
     }
 
 convertRule :: DSLRule -> Rule
@@ -204,14 +189,9 @@ slugify :: Text -> Text
 slugify = T.toLower . T.replace " " "-"
 
 toVttConsequenceCard :: ConsequenceCard -> ConsequenceCardMachine
-toVttConsequenceCard (ConsequenceCard i n t p e s nota r) =
+toVttConsequenceCard ConsequenceCard{..} =
   ConsequenceCard
-    { _id = fromMaybe (slugify (getNonEmptyText n)) i
-    , _name = n
-    , _tags = t
-    , _passive = p
-    , _effects = e
-    , _severity = s
-    , _notes = nota
-    , _rules = fmap (fmap convertRule) r
+    { _id = fromMaybe (slugify (getNonEmptyText _name)) _id
+    , _rules = fmap (fmap convertRule) _rules
+    , ..
     }
