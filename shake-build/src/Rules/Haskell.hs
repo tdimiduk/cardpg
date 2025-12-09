@@ -8,7 +8,7 @@ module Rules.Haskell
   , defineHaskellFormatRules
   ) where
 
-import Common (getPackageSources, persistentTask)
+import Common (getPackageSources, persistentTask, persistentTaskWithSrcs)
 import Development.Shake
 
 getCoreSources :: Action [FilePath]
@@ -64,18 +64,17 @@ getHaskellSources = do
 defineHaskellFormatRules :: Rules ()
 defineHaskellFormatRules = do
   -- Formatter
-  persistentTask "_build/haskell/.format.timestamp" getHaskellSources $ do
-    srcFiles <- getHaskellSources
+  persistentTaskWithSrcs "_build/haskell/.format.timestamp" getHaskellSources $ \srcFiles -> do
+    need ["fourmolu.yaml"]
     cmd_ (["fourmolu", "--mode=inplace"] ++ srcFiles)
 
   -- Format checker
-  persistentTask "_build/haskell/.format-check.timestamp" getHaskellSources $ do
-    srcFiles <- getHaskellSources
+  persistentTaskWithSrcs "_build/haskell/.format-check.timestamp" getHaskellSources $ \srcFiles -> do
+    need ["fourmolu.yaml"]
     cmd_ (["fourmolu", "--mode=check"] ++ srcFiles)
 
 -- | Lint Haskell code using hlint
 defineHaskellLintRules :: Rules ()
 defineHaskellLintRules = do
-  persistentTask "_build/haskell/.lint.timestamp" getHaskellSources $ do
-    srcFiles <- getHaskellSources
+  persistentTaskWithSrcs "_build/haskell/.lint.timestamp" getHaskellSources $ \srcFiles -> do
     cmd_ ("hlint" : srcFiles)
