@@ -57,7 +57,10 @@ defineCardCompilerRule = do
     coreSrcs <- getCoreSources
     compilerSrcs <- getCardCompilerSources
     need (coreSrcs ++ compilerSrcs)
-    cmd_ (["cabal", "install", "card-compiler", "--installdir=_build/bin", "--overwrite-policy=always"] :: [String])
+    cmd_
+      ( ["cabal", "install", "card-compiler", "--installdir=_build/bin", "--overwrite-policy=always"] ::
+          [String]
+      )
 
 getHaskellSources :: Action [FilePath]
 getHaskellSources = do

@@ -1,6 +1,7 @@
 module Rules.Frontend (defineFrontendRules, defineFrontendTestRules, defineFrontendFormatRules) where
 
 import Common (persistentTask)
+import Data.List (isInfixOf)
 import Development.Shake
 import Development.Shake.FilePath
 
@@ -10,6 +11,11 @@ getFrontendSources = do
   srcs <-
     getDirectoryFiles dir ["src//*.ts", "src//*.tsx", "package.json", "tsconfig.json", "vite.config.ts"]
   return $ map (dir </>) srcs
+
+getFrontendFormatSources :: Action [FilePath]
+getFrontendFormatSources = do
+  srcs <- getFrontendSources
+  return $ filter (not . ("/src/generated/" `isInfixOf`)) srcs
 
 defineFrontendRules :: Rules ()
 defineFrontendRules = do
@@ -27,11 +33,13 @@ defineFrontendTestRules = do
 defineFrontendFormatRules :: Rules ()
 defineFrontendFormatRules = do
   -- Formatter
-  persistentTask "_build/frontend/.format.timestamp" getFrontendSources $ do
+  -- We use a filtered source list here to avoid triggering the generation of types
+  -- which would require building the codegen tool and thus all of Haskell.
+  persistentTask "_build/frontend/.format.timestamp" getFrontendFormatSources $ do
     let files = ["src/**/*.{ts,tsx,css,md}", "!src/generated/**"]
     cmd_ (Cwd "vtt-react") (["npm", "exec", "prettier", "--", "--write"] ++ files)
 
   -- Format checker
-  persistentTask "_build/frontend/.format-check.timestamp" getFrontendSources $ do
+  persistentTask "_build/frontend/.format-check.timestamp" getFrontendFormatSources $ do
     let files = ["src/**/*.{ts,tsx,css,md}", "!src/generated/**"]
     cmd_ (Cwd "vtt-react") (["npm", "exec", "prettier", "--", "--check"] ++ files)
