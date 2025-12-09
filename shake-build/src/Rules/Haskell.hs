@@ -64,17 +64,15 @@ getHaskellSources = do
 defineHaskellFormatRules :: Rules ()
 defineHaskellFormatRules = do
   -- Formatter
-  persistentTaskWithSrcs "_build/haskell/.format.timestamp" getHaskellSources $ \srcFiles -> do
-    need ["fourmolu.yaml"]
+  persistentTaskWithSrcs "_build/haskell/.format.timestamp" getHaskellSources ["fourmolu.yaml"] $ \srcFiles -> do
     cmd_ (["fourmolu", "--mode=inplace"] ++ srcFiles)
 
   -- Format checker
-  persistentTaskWithSrcs "_build/haskell/.format-check.timestamp" getHaskellSources $ \srcFiles -> do
-    need ["fourmolu.yaml"]
+  persistentTaskWithSrcs "_build/haskell/.format-check.timestamp" getHaskellSources ["fourmolu.yaml"] $ \srcFiles -> do
     cmd_ (["fourmolu", "--mode=check"] ++ srcFiles)
 
 -- | Lint Haskell code using hlint
 defineHaskellLintRules :: Rules ()
 defineHaskellLintRules = do
-  persistentTaskWithSrcs "_build/haskell/.lint.timestamp" getHaskellSources $ \srcFiles -> do
+  persistentTaskWithSrcs "_build/haskell/.lint.timestamp" getHaskellSources [] $ \srcFiles -> do
     cmd_ ("hlint" : srcFiles)
