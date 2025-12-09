@@ -10,6 +10,7 @@ cabal-version:       >=1.10
 library
   exposed-modules:
     CardPG.Server.Types
+    CardPG.Server.Engine
   hs-source-dirs:      src
   build-depends:       base >= 4.7 && < 5
                      , websockets
@@ -20,6 +21,7 @@ library
                      , containers
                      , uuid
                      , cardpg-core
+                     , random
   default-language:    Haskell2010
 
 executable cardpg-server
@@ -39,3 +41,22 @@ executable cardpg-server
   default-extensions:  DuplicateRecordFields
                      , OverloadedStrings
   default-language:    Haskell2010
+
+test-suite cardpg-server-test
+  type:                exitcode-stdio-1.0
+  main-is:             Main.hs
+  other-modules:       EngineTest
+  hs-source-dirs:      test
+  build-depends:       base >= 4.7 && < 5
+                     , cardpg-server
+                     , cardpg-core
+                     , tasty
+                     , tasty-hunit
+                     , tasty-quickcheck
+                     , random
+                     , containers
+                     , text
+  default-extensions:  DuplicateRecordFields
+                     , OverloadedStrings
+  default-language:    Haskell2010
+

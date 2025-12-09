@@ -41,6 +41,12 @@ defineHaskellTestRules getCardCompilerSources = do
     cmd_ (["cabal", "test", "card-compiler"] :: [String])
     cmd_ (["touch", out] :: [String])
 
+  "_build/tests/.cardpg-server.timestamp" %> \out -> do
+    srcs <- getServerSources
+    need srcs
+    cmd_ (["cabal", "test", "cardpg-server"] :: [String])
+    cmd_ (["touch", out] :: [String])
+
 -- | Format Haskell code using fourmolu
 format :: Bool -> Action ()
 format checkOnly = do

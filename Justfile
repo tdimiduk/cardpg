@@ -84,6 +84,11 @@ test-core:
     @test -f {{shake}} || just bootstrap
     @{{shake}} test-core
 
+# Test cardpg-server
+test-server:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} test-server
+
 # Test card-compiler
 test-compiler:
     @test -f {{shake}} || just bootstrap
