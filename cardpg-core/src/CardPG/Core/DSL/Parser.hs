@@ -144,40 +144,41 @@ taskParser = do
   name <- takeWhilePNonEmptyStripped (Just "Task name") (\c -> c /= '(' && c /= '{' && c /= '-')
 
   (check, time, cost) <-
-    ( try $ do
-        _ <- char '('
+    try
+      ( do
+          _ <- char '('
 
-        let checkP = try $ do
-              _ <- string' "Check"
-              _ <- hspace1
-              difficultyParser
+          let checkP = try $ do
+                _ <- string' "Check"
+                _ <- hspace1
+                difficultyParser
 
-        let timeP = try $ do
-              _ <- string' "Time"
-              _ <- hspace1
-              richTextParserWith [';', ')']
+          let timeP = try $ do
+                _ <- string' "Time"
+                _ <- hspace1
+                richTextParserWith [';', ')']
 
-        let costP = try $ do
-              _ <- string' "Cost"
-              _ <- hspace1
-              richTextParserWith [';', ')']
+          let costP = try $ do
+                _ <- string' "Cost"
+                _ <- hspace1
+                richTextParserWith [';', ')']
 
-        let clause =
-              choice
-                [ (\c -> (Just c, Nothing, Nothing)) <$> checkP
-                , (\t -> (Nothing, Just t, Nothing)) <$> timeP
-                , (\c -> (Nothing, Nothing, Just c)) <$> costP
-                ]
+          let clause =
+                choice
+                  [ (\c -> (Just c, Nothing, Nothing)) <$> checkP
+                  , (\t -> (Nothing, Just t, Nothing)) <$> timeP
+                  , (\c -> (Nothing, Nothing, Just c)) <$> costP
+                  ]
 
-        clauses <- sepBy1 clause (try $ space >> char ';' >> space)
+          clauses <- sepBy1 clause (try $ space >> char ';' >> space)
 
-        _ <- char ')'
+          _ <- char ')'
 
-        let merge (c1, t1, co1) (c2, t2, co2) = (c1 <|> c2, t1 <|> t2, co1 <|> co2)
-        let (finalCheck, finalTime, finalCost) = foldl merge (Nothing, Nothing, Nothing) clauses
+          let merge (c1, t1, co1) (c2, t2, co2) = (c1 <|> c2, t1 <|> t2, co1 <|> co2)
+          let (finalCheck, finalTime, finalCost) = foldl merge (Nothing, Nothing, Nothing) clauses
 
-        pure (finalCheck, finalTime, finalCost)
-    )
+          pure (finalCheck, finalTime, finalCost)
+      )
       <|> pure (Nothing, Nothing, Nothing)
 
   _ <- space

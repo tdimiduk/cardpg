@@ -1,8 +1,4 @@
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module CardPG.Core.NonEmptyText
   ( NonEmptyText
@@ -56,9 +52,7 @@ instance ToJSON NonEmptyText where
 
 instance FromJSON NonEmptyText where
   parseJSON = withText "NonEmptyText" $ \t ->
-    case mkNonEmptyText t of
-      Nothing -> mzero
-      Just ne -> pure ne
+    maybe mzero pure (mkNonEmptyText t)
 
 -- | Allow string literals if they are non-empty (runtime check?)
 -- Ideally we avoid IsString to prevent runtime errors, but it's convenient.

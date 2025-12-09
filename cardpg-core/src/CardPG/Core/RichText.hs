@@ -7,7 +7,6 @@ module CardPG.Core.RichText
   , RichText (..)
   , RichString (..)
   , mkRichString
-  , unRichString
   , Block (..)
   , CardBody
   , StackPower (..)
@@ -87,7 +86,7 @@ mkRichString :: [Inline] -> Maybe RichString
 mkRichString inlines =
   let merged = mergeAdjacent inlines
       stripped = stripBoundaryWhitespace merged
-   in (RichString . RichText) <$> NE.nonEmpty stripped
+   in RichString . RichText <$> NE.nonEmpty stripped
 
 mergeAdjacent :: [Inline] -> [Inline]
 mergeAdjacent (TextRun s1 c1 : TextRun s2 c2 : xs)

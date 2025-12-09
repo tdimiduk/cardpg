@@ -1,5 +1,6 @@
 module Rules.Deploy where
 
+import Control.Monad (when)
 import Development.Shake
 import System.Environment (lookupEnv)
 import System.Exit (ExitCode (..))
@@ -25,9 +26,8 @@ deploy forceRebuild = do
       cmd_ (["nix-build", "default.nix"] :: [String])
       Stdout packageOut <- cmd (["nix-build", "default.nix", "--no-out-link"] :: [String])
       let packageLines = lines packageOut
-      if null packageLines
-        then fail "No package output from nix-build"
-        else return ()
+      when (null packageLines) $
+        fail "No package output from nix-build"
       let package = case packageLines of
             (p : _) -> p
             [] -> error "No package output"

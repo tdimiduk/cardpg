@@ -28,9 +28,7 @@ module CardPG.Core.RuleDefs
   , DSLRule (..)
   ) where
 
-import Data.Aeson (FromJSON, ToJSON)
 import Data.Aeson.TH (deriveJSON)
-import Data.Functor.Classes (Eq1, Show1, eq1, liftEq, liftShowsPrec, showsPrec1)
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)

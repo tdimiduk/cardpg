@@ -1,20 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module CardPG.Core.RuleInstances () where
 
-import Control.Applicative ((<|>))
-import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON, genericToJSON, (.:))
-import Data.Aeson.TH (deriveJSON)
+import Data.Aeson (FromJSON (..), ToJSON (..), Value (..))
 import Data.Aeson.Types (Parser)
-import Data.Text (Text)
 
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
-import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
-import CardPG.Core.RuleDefs (DSLBase, DSLRule (DSLRule), RuleT (..))
+import CardPG.Core.RuleDefs (DSLBase, DSLRule (DSLRule))
 import CardPG.Core.TextFmt (TextFmt (..))
 
 -- Component Instances

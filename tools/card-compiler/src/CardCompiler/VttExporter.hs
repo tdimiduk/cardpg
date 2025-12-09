@@ -37,7 +37,6 @@ import CardPG.Core.Card
 import CardPG.Core.Json (cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (getNonEmptyText)
 import CardPG.Core.RichText (unRichString)
-import CardPG.Core.RuleDefs (DSLBase, RuleT (..))
 
 -- | VTT Export Data
 data VttExport = VttExport

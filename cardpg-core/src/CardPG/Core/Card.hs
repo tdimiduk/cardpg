@@ -29,9 +29,7 @@ module CardPG.Core.Card
   , EncounterCardMachine
   ) where
 
-import Data.Aeson (FromJSON, ToJSON)
 import Data.Aeson.TH (deriveJSON)
-import Data.Functor.Classes (Eq1, Show1)
 import Data.List.NonEmpty (NonEmpty)
 import Data.Text (Text)
 import GHC.Generics (Generic)

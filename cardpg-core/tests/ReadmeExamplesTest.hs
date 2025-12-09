@@ -15,7 +15,9 @@ test_readmeExamples = testCase "README Syntax Examples" $ do
   let ls = T.lines content
       -- Filter lines that look like examples
       -- Note: The indentation might vary slightly, so we trim first to check prefix
-      examples = filter (\l -> T.isPrefixOf "- _Example:_" (T.strip l)) ls
+      isExampleHeader :: T.Text -> Bool
+      isExampleHeader = T.isPrefixOf "- _Example:_" . T.strip
+      examples = filter isExampleHeader ls
 
       cleanExample line =
         let
@@ -27,7 +29,7 @@ test_readmeExamples = testCase "README Syntax Examples" $ do
          in
           T.strip withoutBackticks
 
-  mapM_ checkExample (map cleanExample examples)
+  mapM_ (checkExample . cleanExample) examples
 
 checkExample :: T.Text -> Assertion
 checkExample ex = do

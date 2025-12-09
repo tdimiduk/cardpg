@@ -1,12 +1,9 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module ArbitraryInstances where
@@ -118,8 +115,7 @@ instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
     check <- arbitrary
     time <- arbitrary
     cost <- arbitrary
-    effect <- arbitrary
-    pure $ TaskDef name check time cost effect
+    TaskDef name check time cost <$> arbitrary
   shrink = genericShrink
 
 instance Arbitrary DSLBase where

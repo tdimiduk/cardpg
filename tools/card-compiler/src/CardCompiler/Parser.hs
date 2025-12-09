@@ -144,6 +144,7 @@ parseRules actionStr effectStr detailsStr = do
 mergeEffect :: AttackDefT RichString -> RichString -> AttackDefT RichString
 mergeEffect (AttackDef p r e) rt = AttackDef p r (mergeRichString e rt)
 
+mergeRichString :: Maybe RichString -> RichString -> Maybe RichString
 mergeRichString Nothing new = Just new
 mergeRichString (Just old) new =
   case mkRichString [Break] of

@@ -25,7 +25,9 @@ import CardPG.Core.RuleDefs
   , TriggerDefT (..)
   )
 import CardPG.Core.Types (Difficulty (..), ResourceType (..))
+
 import Data.List.NonEmpty qualified as NE
+import Data.Maybe (catMaybes)
 import Data.Text (Text)
 import Data.Text qualified as T
 
@@ -78,7 +80,7 @@ prettyRule (RuleTask TaskDef{..}) =
     costStr = fmap (\c -> "Cost " <> richToString c) _cost
 
     parts = [checkStr, timeStr, costStr]
-    inner = T.intercalate "; " [p | Just p <- parts]
+    inner = T.intercalate "; " (catMaybes parts)
 
     parensContent = if T.null inner then "" else " (" <> inner <> ")"
 prettyRule (RuleTrigger TriggerDef{..}) =
