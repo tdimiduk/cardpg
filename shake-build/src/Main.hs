@@ -30,7 +30,7 @@ main = do
         , ("build", "Build all targets", Orchestration.buildAll)
         , ("dev", "Run dev servers", Orchestration.runDev)
         , ("test", "Run all tests", need ["test-core", "test-server", "test-compiler", "check-types"])
-        , ("lint-backend", "Lint backend code", Haskell.lint)
+        , ("lint-backend", "Lint backend code", need ["_build/haskell/.lint.timestamp"])
         , ("lint", "Lint all code", need ["lint-backend", "lint-frontend"])
         , ("lint-frontend", "Lint frontend code", need ["_build/frontend/.lint.timestamp"])
         , ("check-types", "Typecheck frontend code", need ["_build/frontend/.typecheck.timestamp"])
@@ -44,16 +44,12 @@ main = do
         ,
           ( "format"
           , "Format code"
-          , do
-              Haskell.format False
-              Frontend.format False
+          , need ["_build/haskell/.format.timestamp", "_build/frontend/.format.timestamp"]
           )
         ,
           ( "format-check"
           , "Check code formatting"
-          , do
-              Haskell.format True
-              Frontend.format True
+          , need ["_build/haskell/.format-check.timestamp", "_build/frontend/.format-check.timestamp"]
           )
         ]
 
@@ -69,5 +65,8 @@ main = do
     Cards.defineDeckRules "monster" "data/cards/monsters"
     Codegen.defineCodegenRules
     Haskell.defineHaskellTestRules Codegen.getCardCompilerSources
+    Haskell.defineHaskellLintRules
+    Haskell.defineHaskellFormatRules
     Frontend.defineFrontendRules
     Frontend.defineFrontendTestRules
+    Frontend.defineFrontendFormatRules

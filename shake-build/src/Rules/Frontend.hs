@@ -1,5 +1,6 @@
-module Rules.Frontend (defineFrontendRules, defineFrontendTestRules, format) where
+module Rules.Frontend (defineFrontendRules, defineFrontendTestRules, defineFrontendFormatRules) where
 
+import Common (persistentTask)
 import Development.Shake
 import Development.Shake.FilePath
 
@@ -12,30 +13,25 @@ getFrontendSources = do
 
 defineFrontendRules :: Rules ()
 defineFrontendRules = do
-  "_build/frontend/.lint.timestamp" %> \out -> do
-    srcs <- getFrontendSources
-    need srcs
+  persistentTask "_build/frontend/.lint.timestamp" getFrontendSources $
     cmd_ (Cwd "vtt-react") (["npm", "run", "lint"] :: [String])
-    cmd_ (["mkdir", "-p", takeDirectory out] :: [String])
-    cmd_ (["touch", out] :: [String])
 
-  "_build/frontend/.typecheck.timestamp" %> \out -> do
-    srcs <- getFrontendSources
-    need srcs
+  persistentTask "_build/frontend/.typecheck.timestamp" getFrontendSources $
     cmd_ (Cwd "vtt-react") (["npm", "exec", "tsc", "--", "--noEmit"] :: [String])
-    cmd_ (["mkdir", "-p", takeDirectory out] :: [String])
-    cmd_ (["touch", out] :: [String])
 
 defineFrontendTestRules :: Rules ()
 defineFrontendTestRules = do
-  "_build/tests/.vtt-react.timestamp" %> \out -> do
-    srcs <- getFrontendSources
-    need srcs
+  persistentTask "_build/tests/.vtt-react.timestamp" getFrontendSources $
     cmd_ (Cwd "vtt-react") (["npm", "exec", "vitest", "run"] :: [String])
-    cmd_ (["touch", out] :: [String])
 
-format :: Bool -> Action ()
-format checkOnly = do
-  let args = if checkOnly then ["--check"] else ["--write"]
-  let files = ["src/**/*.{ts,tsx,css,md}"]
-  cmd_ (Cwd "vtt-react") (["npm", "exec", "prettier", "--"] ++ args ++ files)
+defineFrontendFormatRules :: Rules ()
+defineFrontendFormatRules = do
+  -- Formatter
+  persistentTask "_build/frontend/.format.timestamp" getFrontendSources $ do
+    let files = ["src/**/*.{ts,tsx,css,md}", "!src/generated/**"]
+    cmd_ (Cwd "vtt-react") (["npm", "exec", "prettier", "--", "--write"] ++ files)
+
+  -- Format checker
+  persistentTask "_build/frontend/.format-check.timestamp" getFrontendSources $ do
+    let files = ["src/**/*.{ts,tsx,css,md}", "!src/generated/**"]
+    cmd_ (Cwd "vtt-react") (["npm", "exec", "prettier", "--", "--check"] ++ files)

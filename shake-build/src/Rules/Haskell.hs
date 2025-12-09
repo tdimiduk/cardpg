@@ -1,6 +1,14 @@
-module Rules.Haskell (buildCore, buildServer, replCore, replServer, defineHaskellTestRules, format, lint) where
+module Rules.Haskell
+  ( buildCore
+  , buildServer
+  , replCore
+  , replServer
+  , defineHaskellTestRules
+  , defineHaskellLintRules
+  , defineHaskellFormatRules
+  ) where
 
-import Common (getPackageSources)
+import Common (getPackageSources, persistentTask)
 import Development.Shake
 
 getCoreSources :: Action [FilePath]
@@ -29,42 +37,17 @@ replServer = cmd_ (["cabal", "repl", "cardpg-server"] :: [String])
 
 defineHaskellTestRules :: Action [FilePath] -> Rules ()
 defineHaskellTestRules getCardCompilerSources = do
-  "_build/tests/.cardpg-core.timestamp" %> \out -> do
-    srcs <- getCoreSources
-    need srcs
+  persistentTask "_build/tests/.cardpg-core.timestamp" getCoreSources $
     cmd_ (["cabal", "test", "cardpg-core"] :: [String])
-    cmd_ (["touch", out] :: [String])
 
-  "_build/tests/.card-compiler.timestamp" %> \out -> do
-    srcs <- getCardCompilerSources
-    need srcs
+  persistentTask "_build/tests/.card-compiler.timestamp" getCardCompilerSources $
     cmd_ (["cabal", "test", "card-compiler"] :: [String])
-    cmd_ (["touch", out] :: [String])
 
-  "_build/tests/.cardpg-server.timestamp" %> \out -> do
-    srcs <- getServerSources
-    need srcs
+  persistentTask "_build/tests/.cardpg-server.timestamp" getServerSources $
     cmd_ (["cabal", "test", "cardpg-server"] :: [String])
-    cmd_ (["touch", out] :: [String])
 
--- | Format Haskell code using fourmolu
-format :: Bool -> Action ()
-format checkOnly = do
-  let mode = if checkOnly then "--mode=check" else "--mode=inplace"
-  let srcDirs =
-        [ "cardpg-core/src"
-        , "cardpg-core/tests"
-        , "cardpg-server/src"
-        , "cardpg-server/tests"
-        , "shake-build/src"
-        , "tools"
-        ]
-  srcFiles <- getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
-  cmd_ (["fourmolu", mode] ++ srcFiles)
-
--- | Lint Haskell code using hlint
-lint :: Action ()
-lint = do
+getHaskellSources :: Action [FilePath]
+getHaskellSources = do
   let srcDirs =
         [ "cardpg-core/src"
         , "cardpg-core/tests"
@@ -75,5 +58,24 @@ lint = do
         , "tools/card-compiler/test"
         , "tools/codegen"
         ]
-  srcFiles <- getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
-  cmd_ ("hlint" : srcFiles)
+  getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
+
+-- | Format Haskell code using fourmolu
+defineHaskellFormatRules :: Rules ()
+defineHaskellFormatRules = do
+  -- Formatter
+  persistentTask "_build/haskell/.format.timestamp" getHaskellSources $ do
+    srcFiles <- getHaskellSources
+    cmd_ (["fourmolu", "--mode=inplace"] ++ srcFiles)
+
+  -- Format checker
+  persistentTask "_build/haskell/.format-check.timestamp" getHaskellSources $ do
+    srcFiles <- getHaskellSources
+    cmd_ (["fourmolu", "--mode=check"] ++ srcFiles)
+
+-- | Lint Haskell code using hlint
+defineHaskellLintRules :: Rules ()
+defineHaskellLintRules = do
+  persistentTask "_build/haskell/.lint.timestamp" getHaskellSources $ do
+    srcFiles <- getHaskellSources
+    cmd_ ("hlint" : srcFiles)
