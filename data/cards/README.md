@@ -36,6 +36,7 @@ Refer to the Haskell types (`CoreCard`, `ItemCard`, `NatureCard`) for the exact 
 - **Table Cards (`ItemCard`, `NatureCard`)**:
   - Represent permanent state (Equipment, Monsters, Characters).
   - Use `defense` and `resilience` for durability.
+  - Use `burden` to set the metabolic cost.
   - Use `traits` and `passive` for static effects.
 
 ## Syntax Reference

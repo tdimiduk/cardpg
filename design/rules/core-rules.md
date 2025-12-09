@@ -94,7 +94,7 @@ Your deck is a finite resource. When you need to draw a card but your deck is em
 
 **Fatigue Cycle Procedure:**
 
-1. Add 2 **Fatigue** cards to your expended pile.
+1. Add 2 **Fatigue** cards (plus your **Burden**) to your expended pile.
 2. Reshuffle your expended pile to form your new deck.
 3. Draw the card you needed.
 

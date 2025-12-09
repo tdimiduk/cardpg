@@ -47,7 +47,7 @@ The primary drivers of this cost are the distribution of mass onto the limbs, th
 
 ### The Energetic Tax of Armor
 
-The following table synthesizes the findings from our research reports, using a **Metabolic Cost Multiplier** to quantify the increased energy expenditure of wearing different armor tiers compared to being unarmored. A higher multiplier means a greater drain on stamina for any given action.
+The following table synthesizes the findings from our research reports, using a **Metabolic Cost Multiplier** to quantify the increased energy expenditure of wearing different armor tiers. In game terms, this cost is modeled by the **Burden** keyword, which adds Fatigue during every cycle.
 
 | Armor Tier | Approx. Weight (kg) | Metabolic Cost Multiplier (vs. Unarmored) | Key Fatigue Mechanisms | Source Confidence |
 | :--- | :--- | :--- | :--- | :--- |
