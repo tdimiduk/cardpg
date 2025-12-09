@@ -30,6 +30,8 @@ main = do
         , ("build", "Build all targets", Orchestration.buildAll)
         , ("dev", "Run dev servers", Orchestration.runDev)
         , ("test", "Run all tests", Orchestration.testAll)
+        , ("lint-backend", "Lint backend code", Haskell.lint)
+        , ("lint", "Lint all code", need ["lint-backend", "lint-frontend"])
         , ("lint-frontend", "Lint frontend code", need ["_build/frontend/.lint.timestamp"])
         , ("check-types", "Typecheck frontend code", need ["_build/frontend/.typecheck.timestamp"])
         , ("test-core", "Test cardpg-core", need ["_build/tests/.cardpg-core.timestamp"])

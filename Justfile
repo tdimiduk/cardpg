@@ -59,6 +59,16 @@ test:
     @test -f {{shake}} || just bootstrap
     @{{shake}} test
 
+# Lint backend code
+lint-backend:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} lint-backend
+
+# Lint all code
+lint:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} lint
+
 # Lint frontend code
 lint-frontend:
     @test -f {{shake}} || just bootstrap

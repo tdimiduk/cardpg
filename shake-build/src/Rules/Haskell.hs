@@ -1,4 +1,4 @@
-module Rules.Haskell (buildCore, buildServer, replCore, replServer, defineHaskellTestRules, format) where
+module Rules.Haskell (buildCore, buildServer, replCore, replServer, defineHaskellTestRules, format, lint) where
 
 import Common (getPackageSources)
 import Development.Shake
@@ -55,3 +55,19 @@ format checkOnly = do
         ]
   srcFiles <- getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
   cmd_ (["fourmolu", mode] ++ srcFiles)
+
+-- | Lint Haskell code using hlint
+lint :: Action ()
+lint = do
+  let srcDirs =
+        [ "cardpg-core/src"
+        , "cardpg-core/tests"
+        , "cardpg-server/src"
+        , "cardpg-server/tests"
+        , "shake-build/src"
+        , "tools/card-compiler/src"
+        , "tools/card-compiler/test"
+        , "tools/codegen"
+        ]
+  srcFiles <- getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
+  cmd_ ("hlint" : srcFiles)

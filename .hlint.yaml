@@ -1,0 +1,16 @@
+# HLint configuration file
+# https://github.com/ndmitchell/hlint
+#####################################################################
+# SETTINGS
+
+# Squelch some noisy hints
+- ignore: {name: "Use String"} # We prefer Text usually, but sometimes String is necessary
+- ignore: {name: "Use on"} # Often harder to read
+
+# Add custom hints for project-specific best practices
+# - warn: {lhs: "map f (map g x)", rhs: "map (f . g) x"}
+
+# Define arguments to pass to extensions
+- arguments: [-XTypeApplications, -XOverloadedStrings]
+
+#####################################################################

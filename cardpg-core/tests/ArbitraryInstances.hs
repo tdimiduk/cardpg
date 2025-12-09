@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric #-}
+
 {-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedRecordDot #-}
