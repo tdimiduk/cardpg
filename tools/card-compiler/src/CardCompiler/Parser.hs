@@ -13,9 +13,17 @@ import qualified Data.Text as T
 import qualified Data.Text.Read as TR
 import GHC.Generics (Generic)
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..), ItemCard, ItemCardT (..), Stats (..))
+import CardPG.Core.Card
+  ( CoreCard
+  , CoreCardT (..)
+  , ItemCard
+  , ItemCardT (..)
+  , NatureCard
+  , NatureCardT (..)
+  , Stats (..)
+  )
 import CardPG.Core.DSL.Parser (parseRule)
-import CardPG.Core.NonEmptyText (mkNonEmptyText)
+import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
 import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
 
@@ -23,85 +31,97 @@ import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
 data ParsedCard
   = PCore CoreCard
   | PItem ItemCard
+  | PNature NatureCard
   deriving (Show, Generic)
 
 instance ToJSON ParsedCard where
   toJSON (PCore c) = toJSON c
   toJSON (PItem i) = toJSON i
+  toJSON (PNature n) = toJSON n
 
 compareParsedCard :: ParsedCard -> ParsedCard -> Ordering
 compareParsedCard (PItem _) (PCore _) = LT
 compareParsedCard (PCore _) (PItem _) = GT
+compareParsedCard (PNature _) (PCore _) = LT
+compareParsedCard (PCore _) (PNature _) = GT
+compareParsedCard (PItem _) (PNature _) = LT
+compareParsedCard (PNature _) (PItem _) = GT
 compareParsedCard _ _ = EQ
 
 -- | Raw JSON Card structure
 data RawCard = RawCard
-  { rcName :: Text
+  { _name :: Text
   , rcActor :: Maybe Text
   , rcRed :: Maybe Value
   , rcYellow :: Maybe Value
   , rcBlue :: Maybe Value
   , rcCost :: Maybe Value
-  , rcAction :: Maybe Text
+  , _passive :: Maybe Text -- was rcAction, used as passive for Item/Nature
+  , rcAction :: Maybe Text -- raw action string, kept for CoreCard parsing
   , rcEffect :: Maybe Text
   , rcDetails :: Maybe Text
-  , rcFlavor :: Maybe Text
-  , rcTags :: Maybe [Text]
-  , rcKeywordProvide :: Maybe Text
-  , rcId :: Maybe Text
+  , _flavor :: Maybe RichString
+  , _tags :: Maybe (NE.NonEmpty Text)
+  , _traits :: Maybe (NE.NonEmpty Text)
+  , _id :: Maybe Text
+  , _weight :: Maybe Int
+  , _value :: Maybe Int
+  , _defense :: Maybe Int
+  , _resilience :: Maybe Int
   }
   deriving (Show, Generic)
 
 instance FromJSON RawCard where
   parseJSON = withObject "RawCard" $ \v -> do
-    rcName <- v .: "name"
+    _name <- v .: "name"
     rcActor <- v .:? "actor"
     rcRed <- v .:? "red"
     rcYellow <- v .:? "yellow"
     rcBlue <- v .:? "blue"
     rcCost <- v .:? "cost"
-    rcAction <- v .:? "action"
+
+    rawAction <- v .:? "action"
+    let _passive = nonEmptyText rawAction
+        rcAction = rawAction
+
     rcEffect <- v .:? "effect"
     rcDetails <- v .:? "details"
-    rcFlavor <- v .:? "flavor"
-    rcTags <- v .:? "tags"
-    rcKeywordProvide <- v .:? "keywordProvide"
-    rcId <- v .:? "id"
+
+    rawFlavor <- v .:? "flavor"
+    let _flavor = rawFlavor >>= simpleString
+
+    rawTags <- v .:? "tags"
+    let _tags = rawTags >>= NE.nonEmpty
+
+    rawProvide <- v .:? "keywordProvide"
+    let _traits = rawProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
+
+    _id <- v .:? "id"
+
+    -- Placeholder defaults for now as they aren't in JSON yet or handled by other logic
+    let _weight = Nothing
+        _value = Nothing
+        _defense = Nothing
+        _resilience = Nothing
+
     pure RawCard{..}
 
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
 convertCard RawCard{..} = do
-  let mRed = toIntMaybe rcRed
-      mYellow = toIntMaybe rcYellow
-      mBlue = toIntMaybe rcBlue
-
-  case mkNonEmptyText (T.strip rcName) of
+  case mkNonEmptyText (T.strip _name) of
     Nothing -> Left "Skipping empty card row"
     Just name -> do
-      case (mRed, mYellow, mBlue) of
+      let _name = name
+
+      case (toIntMaybe rcRed, toIntMaybe rcYellow, toIntMaybe rcBlue) of
         (Nothing, Nothing, Nothing) ->
-          pure $
-            PItem
-              ItemCard
-                { _id = rcId
-                , _name = name
-                , _tags = rcTags >>= NE.nonEmpty
-                , _flavor = rcFlavor >>= simpleString
-                , _weight = Nothing
-                , _value = Nothing
-                , _traits = rcKeywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
-                , _passive = nonEmptyText rcAction
-                , _defense = Nothing
-                , _resilience = Nothing
-                }
+          if Just (T.toLower (getNonEmptyText name)) == (T.toLower <$> rcActor)
+            then pure $ PNature NatureCard{..}
+            else pure $ PItem ItemCard{..}
         (Just r, Just y, Just b) -> do
-          let _name = name
-              _id = rcId
-              _tags = rcTags >>= NE.nonEmpty
-              _stats = Stats r y b
+          let _stats = Stats r y b
               _cost = toIntMaybe rcCost
-              _flavor = rcFlavor >>= simpleString
           rules <- parseRules rcAction rcEffect rcDetails
           let _rules = NE.nonEmpty (map DSLRule rules)
           pure $ PCore CoreCard{..}

@@ -32,11 +32,12 @@ import CardPG.Core.Card
   , ItemCard
   , ItemCardMachine
   , ItemCardT (..)
+  , NatureCardT (..)
   , Rule
   )
 import CardPG.Core.Json (cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (getNonEmptyText)
-import CardPG.Core.RichText (unRichString)
+import CardPG.Core.RichText (RichString, RichText, unRichString)
 
 -- | VTT Export Data
 data VttExport = VttExport
@@ -105,13 +106,14 @@ loadAndExport inputFiles outputFile = do
 
 -- | Convert Actor (Human) to ActorMachine (Machine)
 convertActor :: Actor -> ActorMachine
-convertActor (Actor i n t items d) =
+convertActor (Actor i n t items nature d) =
   let actorId = fromMaybe (slugify n) i
    in Actor
         { _name = n
         , _id = actorId
         , _tags = t
         , _items = map (convertItem actorId) items
+        , _nature = map (convertNature actorId) nature
         , _deck = processDeck actorId d
         }
 
@@ -130,14 +132,27 @@ convertItem actorId (ItemCard i n t f w v tr p d r) =
     , _resilience = r
     }
 
+convertNature :: Text -> NatureCardT (Maybe Text) RichString -> NatureCardT Text RichText
+convertNature actorId (NatureCard i n t f tr p d r) =
+  NatureCard
+    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText n)) i
+    , _name = n
+    , _tags = t
+    , _flavor = fmap unRichString f
+    , _traits = tr
+    , _passive = p
+    , _defense = d
+    , _resilience = r
+    }
+
 -- | Process deck to ensure unique IDs for duplicates
 processDeck :: Text -> [CoreCard] -> [CoreCardMachine]
 processDeck actorId cards =
   let
     -- 1. Calculate frequencies of card slugs (names)
     -- Use pattern matching to disambiguate _name
-    getNameSlug (CoreCard _ n _ _ _ _ _) = slugify (getNonEmptyText n)
-    cardSlugs = map getNameSlug cards
+    getCardNameSlug (CoreCard _ n _ _ _ _ _) = slugify (getNonEmptyText n)
+    cardSlugs = map getCardNameSlug cards
     freqMap = Map.fromListWith (+) $ zip cardSlugs (repeat 1 :: [Int])
 
     -- 2. Map over cards with state (counter map)

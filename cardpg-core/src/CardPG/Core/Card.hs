@@ -189,6 +189,7 @@ data ActorT id rule rt = Actor
   , _name :: Text
   , _tags :: Maybe (NonEmpty Text)
   , _items :: [ItemCardT id rt]
+  , _nature :: [NatureCardT id rt]
   , _deck :: [CoreCardT id rule rt]
   }
   deriving stock (Eq, Show, Generic)

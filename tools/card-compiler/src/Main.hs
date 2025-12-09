@@ -22,7 +22,7 @@ import System.FilePath ((</>))
 
 import CardCompiler.Parser (ParsedCard (..), RawCard (..), convertCard)
 import qualified CardCompiler.VttExporter as Vtt
-import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard)
+import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard, NatureCard)
 
 main :: IO ()
 main = do
@@ -67,7 +67,7 @@ processCards outputDir cards tag = do
     forM_ meaningfulFailures $ \err -> putStrLn $ "Failed to convert card for actor " ++ show actorName ++ ": " ++ err
 
     unless (null successes) $ do
-      let (items, deck) = splitCards successes
+      let (items, nature, deck) = partitionCards successes
 
       if length deck /= 24
         then
@@ -82,6 +82,7 @@ processCards outputDir cards tag = do
                 Actor
                   { _name = actorName
                   , _tags = fmap (\t -> NE.fromList [T.pack t]) tag
+                  , _nature = nature
                   , _items = items
                   , _deck = deck
                   , _id = Just (Vtt.slugify actorName)
@@ -97,11 +98,12 @@ isValidCard c = case rcActor c of
   Just t | T.null (T.strip t) -> False
   _ -> True
 
-splitCards :: [ParsedCard] -> ([ItemCard], [CoreCard])
-splitCards = foldr f ([], [])
+partitionCards :: [ParsedCard] -> ([ItemCard], [NatureCard], [CoreCard])
+partitionCards = foldr f ([], [], [])
   where
-    f (PItem i) (is, cs) = (i : is, cs)
-    f (PCore c) (is, cs) = (is, c : cs)
+    f (PItem i) (is, ns, cs) = (i : is, ns, cs)
+    f (PNature n) (is, ns, cs) = (is, n : ns, cs)
+    f (PCore c) (is, ns, cs) = (is, ns, c : cs)
 
 sanitize :: Text -> Text
 sanitize = T.replace " " "_" . T.toLower
