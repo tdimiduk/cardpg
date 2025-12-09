@@ -19,10 +19,13 @@ backendPkgs.shellFor {
     fourmolu
 
     # Python environment
-    python313
+    (python313.withPackages (ps: with ps; [
+      ipython
+      pyyaml
+      google-genai
+    ]))
     uv
     ruff
-    python313Packages.ipython
 
     # JS/TS environment
     nodejs

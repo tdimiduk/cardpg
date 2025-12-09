@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import yaml
 import os
 from pathlib import Path
@@ -51,11 +52,14 @@ def get_repo_files(root_dir):
     return files
 
 def main():
-    root_dir = os.getcwd()
+    # Use script location as the anchor
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = script_dir  # We want to scan the design directory (where the script is)
+    
     manifest_path = os.path.join(root_dir, 'manifest.yaml')
     
     if not os.path.exists(manifest_path):
-        print("Error: manifest.yaml not found")
+        print(f"Error: manifest.yaml not found at {manifest_path}")
         return
 
     try:
@@ -67,25 +71,36 @@ def main():
     manifest_files = get_manifest_files(manifest_data)
     repo_files = get_repo_files(root_dir)
 
-    # Find discrepancies
-    missing_from_repo = manifest_files - repo_files
-    unindexed_in_repo = repo_files - manifest_files
+    # 1. Check for Missing Files (In Manifest, Not on Disk)
+    missing_from_disk = set()
+    for file_path in manifest_files:
+        # manifest paths are relative to design/ (root_dir)
+        # They might contain ../ to go up a level
+        full_path = os.path.join(root_dir, file_path)
+        if not os.path.exists(full_path):
+            missing_from_disk.add(file_path)
+
+    # 2. Check for Unindexed Files (In Design Dir, Not in Manifest)
+    # We only care about unindexed files inside the design directory itself
+    # So we filter manifest_files to only those starting with neither / nor ..
+    manifest_files_in_design = {f for f in manifest_files if not f.startswith('..') and not os.path.isabs(f)}
+    unindexed_in_repo = repo_files - manifest_files_in_design
 
     print("--- Audit Results ---")
     
-    if missing_from_repo:
-        print(f"\n[MISSING] Files in manifest but not found in repo ({len(missing_from_repo)}):")
-        for f in sorted(missing_from_repo):
+    if missing_from_disk:
+        print(f"\n[MISSING] Files in manifest but not found on disk ({len(missing_from_disk)}):")
+        for f in sorted(missing_from_disk):
             print(f"  - {f}")
     else:
-        print("\n[OK] All manifest files exist in repo.")
+        print("\n[OK] All manifest files found on disk.")
 
     if unindexed_in_repo:
-        print(f"\n[UNINDEXED] Files in repo but not in manifest ({len(unindexed_in_repo)}):")
+        print(f"\n[UNINDEXED] Files in design/ but not in manifest ({len(unindexed_in_repo)}):")
         for f in sorted(unindexed_in_repo):
             print(f"  - {f}")
     else:
-        print("\n[OK] All repo files are indexed in manifest.")
+        print("\n[OK] All design/ files are indexed in manifest.")
 
 if __name__ == "__main__":
     main()

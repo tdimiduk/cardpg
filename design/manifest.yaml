@@ -34,7 +34,7 @@ introductory_materials:
 ai_configuration:
   - name: "Chronicler Persona"
     id: "ai-chronicler"
-    path: "ai/chronicler-prompt.md"
+    path: "ai/personas/chronicler.md"
     source_type: "local_file"
     purpose: "The persona definition for the Lead Technical Researcher."
     type: "AI Persona"
@@ -42,20 +42,20 @@ ai_configuration:
     tags: ["doc-type:ai-prompt", "audience:ai"]
   - name: "Artificer Persona"
     id: "ai-artificer"
-    path: "ai/artificer-prompt.md"
+    path: "ai/personas/artificer.md"
     source_type: "local_file"
     purpose: "The persona definition for the Lead Systems Designer."
     type: "AI Persona"
     status: "Canon"
     tags: ["doc-type:ai-prompt", "audience:ai"]
-  - name: "Code Persona"
-    id: "ai-code"
-    path: "ai/code-prompt.md"
+  - name: "Common Standards"
+    id: "ai-standards"
+    path: "ai/common/standards.md"
     source_type: "local_file"
-    purpose: "The persona definition for the Lead Full-Stack Engineer."
-    type: "AI Persona"
+    purpose: "Common standards and shared context for all AI personas."
+    type: "AI Standards"
     status: "Canon"
-    tags: ["doc-type:ai-prompt", "audience:ai"]
+    tags: ["doc-type:meta", "audience:ai"]
 
 project_foundation:
   philosophy:
@@ -117,14 +117,14 @@ project_foundation:
       type: "Meta Document"
       status: "Canon"
       tags: ["doc-type:meta", "audience:designer-facing"]
-    - name: "Documentation Standards"
-      id: "documentation-standards"
-      path: "methodology/documentation-standards.md"
+    - name: "Manifest Audit Tool"
+      id: "tool-audit-manifest"
+      path: "audit_manifest.py"
       source_type: "local_file"
-      purpose: "The official style guide for creating and formatting all design documents in the project, ensuring clarity, consistency, and structural integrity."
-      type: "Meta Document"
+      purpose: "Script to audit and maintain the design manifest."
+      type: "Tool"
       status: "Canon"
-      tags: ["doc-type:meta", "audience:designer-facing"]
+      tags: ["doc-type:tool", "audience:designer-facing"]
 
 game_system_and_rules:
   core_rules_and_guides:
@@ -159,6 +159,14 @@ game_system_and_rules:
       purpose: "Reference for the keywords in the game"
       status: "Canon"
       tags: ["doc-type:rules", "audience:player-facing", "core-concept:keywords"]
+    - name: "Reading the Cards"
+      id: "rules-reading-cards"
+      path: "rules/reading-the-cards.md"
+      source_type: "local_file"
+      purpose: "Guide on interpreting card rules and keywords."
+      type: "Game Rules"
+      status: "Canon"
+      tags: ["doc-type:rules", "audience:player-facing"]
   lexicons:
     - name: "Colors of Action"
       id: "colors-of-action"
@@ -276,6 +284,13 @@ design_process_and_research:
       purpose: "A biomechanical, perceptual, and cognitive analysis of positional advantage in pre-modern melee. Used for designing mechanics related to facing, angular attacks, and multi-combatant engagements."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:perception", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/positional-advantage/report.md", meta_file: "research/reports/positional-advantage/meta.yaml", prompt_file: "research/reports/positional-advantage/prompt.md" }
+    - name: "Armor Effectiveness Research"
+      id: "report-armor-effectiveness"
+      type: "Research Report"
+      status: "Canon"
+      purpose: "Research on armor effectiveness against different damage types."
+      tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:armor", "core-concept:verisimilitude"]
+      components: { report_file: "research/reports/armor_effectiveness/report.md", meta_file: "research/reports/armor_effectiveness/meta.yaml", prompt_file: "research/reports/armor_effectiveness/prompt.md" }
   research_synthesis:
     - name: "Factual Basis for Design: The Armor Tradeoff"
       id: "synthesis-armor"
@@ -350,6 +365,30 @@ design_process_and_research:
       type: "Ideation"
       status: "Canon"
       tags: ["doc-type:ideation", "audience:designer-facing"]
+    - name: "Defense Action Iteration"
+      id: "ideation-defense-action"
+      path: "iteration/defense-action.md"
+      source_type: "local_file"
+      purpose: "Exploration of defense action mechanics."
+      type: "Ideation"
+      status: "Leading-Edge"
+      tags: ["doc-type:ideation", "core-concept:defense"]
+    - name: "Armor Rework Proposal"
+      id: "discussion-armor-rework"
+      path: "discussions/armor-rework.md"
+      source_type: "local_file"
+      purpose: "Discussion on reworking armor mechanics."
+      type: "Discussion"
+      status: "Leading-Edge"
+      tags: ["doc-type:discussion", "core-concept:armor"]
+    - name: "Armor Physics Proposal"
+      id: "discussion-armor-physics"
+      path: "discussions/armor-proposal-physics.md"
+      source_type: "local_file"
+      purpose: "Physics-based model for armor mechanics."
+      type: "Discussion"
+      status: "Leading-Edge"
+      tags: ["doc-type:discussion", "core-concept:armor"]
   archived_research:
     - name: "Armor Research"
       id: "synthesis-armor-old"
