@@ -7,7 +7,7 @@ module Main where
 import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
 import Control.Exception (finally)
 import Control.Monad (forM_, forever)
-import Data.Aeson (FromJSON(..), ToJSON(..), Value, encode, decode, genericToJSON, genericParseJSON, defaultOptions, Options(..), SumEncoding(..))
+import Data.Aeson (FromJSON(..), ToJSON(..), Value, encode, decode, genericToJSON, genericParseJSON, defaultOptions, Options(..), SumEncoding(..), eitherDecodeFileStrict)
 import qualified Data.ByteString.Lazy as B
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -23,16 +23,8 @@ import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
 import qualified Network.WebSockets as WS
 
-import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..))
+import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..))
 
--- | The state of the server, mapping client IDs to clients and storing action history.
-data ServerState = ServerState
-  { clients :: Map UUID Client
-  , actionLog :: [BroadcastAction]
-  }
-
-newServerState :: ServerState
-newServerState = ServerState Map.empty []
 
 numClients :: ServerState -> Int
 numClients = Map.size . clients
@@ -57,7 +49,22 @@ broadcast msg state = do
 
 main :: IO ()
 main = do
-    state <- newMVar newServerState
+    let cardsFile = "vtt-react/src/data/generated_cards.json"
+    T.putStrLn $ "Loading card library from " <> T.pack cardsFile <> "..."
+    cardLibraryResult <- eitherDecodeFileStrict cardsFile
+    
+    initialState <- case cardLibraryResult of
+        Left err -> do
+             T.putStrLn $ "WARNING: Failed to load card library: " <> T.pack err
+             return newServerState
+        Right lib -> do
+             T.putStrLn $ "Card Library Loaded: " 
+                <> T.pack (show (length (actors lib))) <> " actors, " 
+                <> T.pack (show (length (statuses lib))) <> " statuses, "
+                <> T.pack (show (length (consequences lib))) <> " consequences."
+             return $ newServerState { library = lib }
+
+    state <- newMVar initialState
     
     portStr <- lookupEnv "PORT"
     let port = fromMaybe 8080 (fmap read portStr)
@@ -100,7 +107,7 @@ talk client state = forever $ do
             
             -- Notify others
             -- We construct a temporary state for broadcasting to everyone else
-            let broadcastState = ServerState (Map.delete (clientId newClient) currentClients) []
+            let broadcastState = ServerState (Map.delete (clientId newClient) currentClients) [] (CardLibrary [] [] [])
             broadcast (ClientJoined name (clientId newClient)) broadcastState
             
             -- Continue loop with updated client info
@@ -113,7 +120,7 @@ talk client state = forever $ do
                 return (s', clients s')
 
             -- Broadcast to others
-            let broadcastState = ServerState (Map.delete (clientId client) currentClients) []
+            let broadcastState = ServerState (Map.delete (clientId client) currentClients) [] (CardLibrary [] [] [])
             broadcast (BroadcastMessage (clientId client) payload) broadcastState
             
             -- Continue loop
@@ -142,7 +149,7 @@ talkLoop client state = do
                 let s' = addAction payload s
                 return (s', clients s')
 
-            let broadcastState = ServerState (Map.delete (clientId client) currentClients) []
+            let broadcastState = ServerState (Map.delete (clientId client) currentClients) [] (CardLibrary [] [] [])
             broadcast (BroadcastMessage (clientId client) payload) broadcastState
             
             talkLoop client state

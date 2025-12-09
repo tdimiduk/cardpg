@@ -26,6 +26,7 @@ runDev = do
   need ["gen-types"]
 
   let runServer = do
+        need ["vtt-react/src/data/generated_cards.json"]
         putInfo "Starting cardpg-server..."
         cmd_ (["cabal", "run", "cardpg-server"] :: [String])
 

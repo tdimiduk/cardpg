@@ -12,6 +12,9 @@ module CardPG.Server.Types
   , ServerMessage (..)
   , Token (..)
   , BroadcastAction (..)
+  , CardLibrary (..)
+  , ServerState (..)
+  , newServerState
   ) where
 
 import Data.Aeson
@@ -27,13 +30,15 @@ import Data.Aeson
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (TypeScript (..), deriveTypeScript)
 import Data.Char (toUpper)
+import Data.Map (Map)
+import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Network.WebSockets (Connection)
 
-import CardPG.Core.Card (CoreCard)
+import CardPG.Core.Card (ActorMachine, ConsequenceCardMachine, CoreCard (..), CoreCardMachine, ItemCardMachine)
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Types (ResourceType)
 
@@ -122,3 +127,27 @@ data ServerMessage
   deriving (Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ServerMessage)
+
+-- | The library of all known cards/actors loaded from disk.
+data CardLibrary = CardLibrary
+  { actors :: [ActorMachine]
+  , statuses :: [CoreCardMachine]
+  , consequences :: [ConsequenceCardMachine]
+  }
+  deriving (Show, Eq, Generic)
+
+instance FromJSON CardLibrary where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+instance ToJSON CardLibrary where
+  toJSON = genericToJSON cardpgJsonDef
+
+-- | The state of the server, mapping client IDs to clients and storing action history.
+data ServerState = ServerState
+  { clients :: Map UUID Client
+  , actionLog :: [BroadcastAction]
+  , library :: CardLibrary
+  }
+
+newServerState :: ServerState
+newServerState = ServerState Map.empty [] (CardLibrary [] [] [])
