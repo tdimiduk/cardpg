@@ -1,0 +1,4 @@
+report_date: 2025-12-09
+generation_details:
+  tool: "Gemini 3.5 Pro with Deep Research"
+  prompt_file: "prompt.md"
