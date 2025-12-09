@@ -4,6 +4,7 @@
 module CardPG.Core.Card
   ( module CardPG.Core.RuleDefs
   , Stats (..)
+  , SpecialDefend (..)
   , CoreCardT (..)
   , CoreCard
   , CoreCardMachine
@@ -45,6 +46,15 @@ data Stats = Stats {_red :: Int, _yellow :: Int, _blue :: Int}
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''Stats)
+
+data SpecialDefend = SpecialDefend
+  { _red :: ResourceType
+  , _yellow :: ResourceType
+  , _blue :: ResourceType
+  }
+  deriving stock (Eq, Show, Generic)
+
+$(deriveJSON cardpgJsonDef ''SpecialDefend)
 
 data CoreCardT id rule rt = CoreCard
   { _id :: id
@@ -98,6 +108,7 @@ data NatureCardT id rt = NatureCard
   , _passive :: Maybe Text
   , _defense :: Maybe Int
   , _resilience :: Maybe Int
+  , _specialDefend :: Maybe SpecialDefend
   }
   deriving stock (Eq, Show, Generic)
 

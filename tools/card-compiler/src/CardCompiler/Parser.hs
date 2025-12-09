@@ -21,7 +21,9 @@ import CardPG.Core.Card
   , NatureCard
   , NatureCardT (..)
   , Stats (..)
+  , SpecialDefend (..)
   )
+import CardPG.Core.Types (ResourceType (..))
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
@@ -117,7 +119,13 @@ convertCard RawCard{..} = do
       case (toIntMaybe rcRed, toIntMaybe rcYellow, toIntMaybe rcBlue) of
         (Nothing, Nothing, Nothing) ->
           if Just (T.toLower (getNonEmptyText name)) == (T.toLower <$> rcActor)
-            then pure $ PNature NatureCard{..}
+            then
+              pure $
+                PNature
+                  NatureCard
+                    { _specialDefend = parseSpecialDefend rcRed rcYellow rcBlue 
+                    , ..
+                    }
             else pure $ PItem ItemCard{..}
         (Just r, Just y, Just b) -> do
           let _stats = Stats r y b
@@ -185,3 +193,20 @@ parseEffect = parseRule
 
 parseDetails :: Text -> Either String DSLBase
 parseDetails = parseRule
+
+parseSpecialDefend :: Maybe Value -> Maybe Value -> Maybe Value -> Maybe SpecialDefend
+parseSpecialDefend r y b =
+  let redDef = parseDefenseColor r Red
+      yellowDef = parseDefenseColor y Yellow
+      blueDef = parseDefenseColor b Blue
+   in if redDef == Red && yellowDef == Yellow && blueDef == Blue
+        then Nothing
+        else Just $ SpecialDefend redDef yellowDef blueDef
+
+parseDefenseColor :: Maybe Value -> ResourceType -> ResourceType
+parseDefenseColor (Just (String s)) _
+  | s == "x" = Red
+  | s == "y" = Yellow
+  | s == "z" = Blue
+  | s == "b" = Blue
+parseDefenseColor _ def = def

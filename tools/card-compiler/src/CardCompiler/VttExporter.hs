@@ -133,7 +133,7 @@ convertItem actorId (ItemCard i n t f w v tr p d r) =
     }
 
 convertNature :: Text -> NatureCardT (Maybe Text) RichString -> NatureCardT Text RichText
-convertNature actorId (NatureCard i n t f tr p d r) =
+convertNature actorId (NatureCard i n t f tr p d r sd) =
   NatureCard
     { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText n)) i
     , _name = n
@@ -143,6 +143,7 @@ convertNature actorId (NatureCard i n t f tr p d r) =
     , _passive = p
     , _defense = d
     , _resilience = r
+    , _specialDefend = sd
     }
 
 -- | Process deck to ensure unique IDs for duplicates

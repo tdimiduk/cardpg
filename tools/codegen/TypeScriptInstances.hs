@@ -26,6 +26,7 @@ import CardPG.Core.Card
   , GeneralActionDef
   , ItemCardT (..)
   , NatureCardT (..)
+  , SpecialDefend
   , Stats
   , TalentCardT (..)
   )
@@ -66,6 +67,7 @@ $(deriveTypeScript cardpgJsonDef ''Block)
 
 -- Stats
 $(deriveTypeScript cardpgJsonDef ''Stats)
+$(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 
 -- Helper for creating splices
 -- Using runIO or just simple do block
