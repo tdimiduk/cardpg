@@ -83,7 +83,8 @@ defineVttRule pcDecks monsterDecks = do
     -- Track content of all YAMLs
     need allYamls
 
-    cmd_ (["cabal", "run", "card-compiler", "--", "export-vtt", out] ++ allYamls)
+    need ["_build/bin/card-compiler"]
+    cmd_ (["_build/bin/card-compiler", "export-vtt", out] ++ allYamls)
 
 -- | Define generic rule for deck compilation using stamps
 defineDeckRules :: String -> FilePath -> Rules ()
@@ -91,7 +92,7 @@ defineDeckRules tag dir = do
   (dir </> ".stamp-*") %> \out -> do
     let deckId = drop 7 (takeFileName out) -- drop ".stamp-"
     let jsonSrc = "data/cards/raw" </> deckId <.> "json"
-    need [jsonSrc]
+    need [jsonSrc, "_build/bin/card-compiler"]
     let outDir = takeDirectory out
-    cmd_ (["cabal", "run", "card-compiler", "--", jsonSrc, outDir, tag] :: [String])
+    cmd_ (["_build/bin/card-compiler", jsonSrc, outDir, tag] :: [String])
     cmd_ (["touch", out] :: [String])

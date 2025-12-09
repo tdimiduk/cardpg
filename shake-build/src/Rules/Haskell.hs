@@ -6,16 +6,21 @@ module Rules.Haskell
   , defineHaskellTestRules
   , defineHaskellLintRules
   , defineHaskellFormatRules
+  , defineCardCompilerRule
   ) where
 
 import Common (getPackageSources, persistentTask, persistentTaskWithSrcs)
 import Development.Shake
+import Development.Shake.FilePath
 
 getCoreSources :: Action [FilePath]
 getCoreSources = getPackageSources "cardpg-core" "src"
 
 getServerSources :: Action [FilePath]
 getServerSources = getPackageSources "cardpg-server" "src"
+
+getCardCompilerSources :: Action [FilePath]
+getCardCompilerSources = getPackageSources "tools/card-compiler" "src"
 
 buildCore :: Action ()
 buildCore = do
@@ -36,7 +41,7 @@ replServer :: Action ()
 replServer = cmd_ (["cabal", "repl", "cardpg-server"] :: [String])
 
 defineHaskellTestRules :: Action [FilePath] -> Rules ()
-defineHaskellTestRules getCardCompilerSources = do
+defineHaskellTestRules _ = do
   persistentTask "_build/tests/.cardpg-core.timestamp" getCoreSources $
     cmd_ (["cabal", "test", "cardpg-core"] :: [String])
 
@@ -45,6 +50,14 @@ defineHaskellTestRules getCardCompilerSources = do
 
   persistentTask "_build/tests/.cardpg-server.timestamp" getServerSources $
     cmd_ (["cabal", "test", "cardpg-server"] :: [String])
+
+defineCardCompilerRule :: Rules ()
+defineCardCompilerRule = do
+  "_build/bin/card-compiler" %> \out -> do
+    coreSrcs <- getCoreSources
+    compilerSrcs <- getCardCompilerSources
+    need (coreSrcs ++ compilerSrcs)
+    cmd_ (["cabal", "install", "card-compiler", "--installdir=_build/bin", "--overwrite-policy=always"] :: [String])
 
 getHaskellSources :: Action [FilePath]
 getHaskellSources = do

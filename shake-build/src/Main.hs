@@ -64,6 +64,7 @@ main = do
     Cards.defineDeckRules "pc" "data/cards/pc"
     Cards.defineDeckRules "monster" "data/cards/monsters"
     Codegen.defineCodegenRules
+    Haskell.defineCardCompilerRule
     Haskell.defineHaskellTestRules Codegen.getCardCompilerSources
     Haskell.defineHaskellLintRules
     Haskell.defineHaskellFormatRules
