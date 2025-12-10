@@ -1,0 +1,231 @@
+deck:
+- cost: 0
+  name: Wind up
+  rules:
+  - 'action: you may use this as a resource to attack next turn at +3'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 0
+  name: Opportunistic Kick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> Minor: daze 1, Major: Minor wound, Critical:
+    major wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 0
+  name: Opportunistic Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- name: Follow up
+  rules:
+  - strength +4 as a resource for an action (not defense) if you acted last turn
+  stats:
+    blue: 3
+    red: 2
+    yellow: 1
+  type: coreCard
+- name: Take it
+  rules:
+  - |-
+    strength +4 when used to defend from anywhere
+    you suffer at least a minor success an action when you defend with this
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- name: Fend Off
+  rules:
+  - 'defend |x|, |y|, or |z|: strength = |x|+1'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Second wind
+  rules:
+  - Fatigue this face up
+  - recover 4 face down fatigue to spent
+  - When you recover this from face up fatigue, fatigue 4 cards face down (if you
+    have recovery points remaining from your rest you can recover them as normal)
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Mighty Blow
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> upgraded wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Deathblow
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> Minor: No Effect, Major or Critical: Kill
+    target'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Frantic Defense
+  rules:
+  - 'Defense: Flip 2 cards and add to this defense'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Push yourself
+  rules:
+  - 'Action: Draw 3 extra cards at upkeep this turn'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Frenzy
+  rules:
+  - 'Attack {Red}: Strength = {Red}'
+  - Draw 1 card
+  stats:
+    blue: 1
+    red: 2
+    yellow: 1
+  type: coreCard
+- name: Sweeping defense
+  rules:
+  - 'defend |x| or |y|: strength = |x|+1'
+  - You may apply sweeping defense against 2 attacks (use seperate resources for each)
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Pain drives me
+  rules:
+  - 'If this card is part of a defense where you take a wound: draw 2 cards'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 1
+  name: Bully
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - target must expend a card to attack next roud
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  type: coreCard
+- name: Athletics
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  type: coreCard
+- name: Backswing
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Clumsy Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- name: Make Opportunity
+  rules:
+  - 'defend |x|: strength = |x| you may use this as a resource to attack next turn'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- name: Pressing Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - can spend this on an attack next turn
+  stats:
+    blue: 1
+    red: 4
+    yellow: 1
+  type: coreCard
+- name: Endure
+  rules:
+  - strength +4 when used to defend from anywhere
+  stats:
+    blue: 0
+    red: 1
+    yellow: 0
+  type: coreCard
+- cost: 1
+  name: Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Power Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- name: Power
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  type: coreCard
+id: berserker
+items:
+- name: Greateaxe
+  traits:
+  - weapon
+  - blade
+  - axe
+  - large weapon
+  type: itemCard
+- burden: 1
+  defense: 3
+  name: Hide Armor
+  type: itemCard
+name: berserker
+nature:
+- defense: 2
+  name: Hero
+  resilience: 3
+tags:
+- pc

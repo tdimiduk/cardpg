@@ -1,0 +1,237 @@
+deck:
+- cost: 1
+  name: Snack attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - Other wolves attacking this round +1
+  stats:
+    blue: 2
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Snack attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - Other wolves attacking this round +1
+  stats:
+    blue: 2
+    red: 5
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Snack attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - Other wolves attacking this round +1
+  stats:
+    blue: 2
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Snack attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - Other wolves attacking this round +1
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: On A roll
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 5
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: On A roll
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: On A roll
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: On A roll
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: On A roll
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 1
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Crust claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - 2 + when spent to defend
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Crust claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - 2 + when spent to defend
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Crust claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - 2 + when spent to defend
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Crust claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - 2 + when spent to defend
+  stats:
+    blue: 2
+    red: 1
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Crust claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - 2 + when spent to defend
+  stats:
+    blue: 2
+    red: 1
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Bread bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 2
+    red: 1
+    yellow: 2
+  type: coreCard
+id: bread-wolf
+items: []
+name: Bread Wolf
+nature:
+- defense: 2
+  name: Bread Wolf
+  resilience: 2
+  traits:
+  - Teeth Claws
+tags:
+- monster

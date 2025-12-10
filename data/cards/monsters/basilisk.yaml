@@ -1,0 +1,210 @@
+deck:
+- cost: 2
+  name: Tail slap
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5'
+  stats:
+    blue: 5
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Tail slap
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5'
+  stats:
+    blue: 5
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Tail slap
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5'
+  stats:
+    blue: 5
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Tail slap
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5'
+  stats:
+    blue: 5
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Stone Gaze
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} -> slow 3/skip 3 turns/stone statue'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 6
+  type: coreCard
+- cost: 1
+  name: Stone Gaze
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} -> slow 3/skip 3 turns/stone statue'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 6
+  type: coreCard
+- cost: 2
+  name: Pounce
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 7
+  type: coreCard
+- cost: 2
+  name: Pounce
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7'
+  - affects all enemies
+  stats:
+    blue: 3
+    red: 5
+    yellow: 7
+  type: coreCard
+- cost: 2
+  name: Pounce
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 7
+  type: coreCard
+- cost: 2
+  name: Pounce
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 7
+  type: coreCard
+- name: Magical nature
+  stats:
+    blue: 8
+    red: 2
+    yellow: 4
+  type: coreCard
+- name: Magical nature
+  stats:
+    blue: 8
+    red: 2
+    yellow: 4
+  type: coreCard
+- cost: 0
+  name: Claws
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  stats:
+    blue: 4
+    red: 5
+    yellow: 6
+  type: coreCard
+- cost: 0
+  name: Claws
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  stats:
+    blue: 4
+    red: 5
+    yellow: 6
+  type: coreCard
+- cost: 0
+  name: Claws
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  stats:
+    blue: 4
+    red: 5
+    yellow: 6
+  type: coreCard
+- cost: 0
+  name: Claws
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  stats:
+    blue: 4
+    red: 5
+    yellow: 6
+  type: coreCard
+- cost: 1
+  name: Bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4'
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4'
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4'
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4'
+  - affects all enemies
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  type: coreCard
+- name: Basilisk strength
+  stats:
+    blue: 3
+    red: 9
+    yellow: 5
+  type: coreCard
+- name: Basilisk strength
+  stats:
+    blue: 3
+    red: 9
+    yellow: 5
+  type: coreCard
+- name: Basilisk strength
+  stats:
+    blue: 3
+    red: 9
+    yellow: 5
+  type: coreCard
+- name: Basilisk strength
+  stats:
+    blue: 3
+    red: 9
+    yellow: 5
+  type: coreCard
+id: basilisk
+items: []
+name: Basilisk
+nature:
+- defense: 2
+  name: Basilisk
+  resilience: 2
+tags:
+- monster

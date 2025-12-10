@@ -1,0 +1,235 @@
+deck:
+- cost: 2
+  name: Mob
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  - each sucessive attack +1 strength
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Mob
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  - each sucessive attack +1 strength
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Mob
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  - each sucessive attack +1 strength
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Mob
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  - each sucessive attack +1 strength
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Mob
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  - each sucessive attack +1 strength
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Mob
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  - each sucessive attack +1 strength
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Whack
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 1
+  name: Whack
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 1
+  name: Whack
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 1
+  name: Whack
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 1
+  name: Whack
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 1
+  name: Whack
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 2 -> basic wound'
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  type: coreCard
+- cost: 2
+  name: Slash with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Poke with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Poke with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Poke with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Poke with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Poke with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Poke with stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} - 1 -> basic wound'
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+id: goblin
+items: []
+name: Goblin
+nature:
+- defense: 2
+  name: Goblin
+  passive: All attacks copy per goblin
+  resilience: 2
+  traits:
+  - Sword
+tags:
+- monster

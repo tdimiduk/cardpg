@@ -1,0 +1,213 @@
+deck:
+- cost: 0
+  name: Become invisible
+  rules:
+  - 'action : Ignore all attacks this turn'
+  stats:
+    blue: 6
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 0
+  name: Become invisible
+  rules:
+  - 'action : Ignore all attacks this turn'
+  stats:
+    blue: 6
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Water breath
+  rules:
+  - 'Attack {Blue}: Strength = {Red} + 4 -> basic wound'
+  - hits multiple opponents
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- cost: 1
+  name: Water breath
+  rules:
+  - 'Attack {Blue}: Strength = {Red} + 4 -> basic wound'
+  - hits multiple opponents
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- cost: 1
+  name: Water breath
+  rules:
+  - 'Attack {Blue}: Strength = {Red} + 4 -> basic wound'
+  - hits multiple opponents
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: magical strength
+  stats:
+    blue: 7
+    red: 7
+    yellow: 0
+  type: coreCard
+- name: magical strength
+  stats:
+    blue: 7
+    red: 7
+    yellow: 0
+  type: coreCard
+- name: magical strength
+  stats:
+    blue: 7
+    red: 7
+    yellow: 0
+  type: coreCard
+- name: magical strength
+  stats:
+    blue: 7
+    red: 7
+    yellow: 0
+  type: coreCard
+- name: Super strong
+  stats:
+    blue: 2
+    red: 8
+    yellow: 3
+  type: coreCard
+- name: Super strong
+  stats:
+    blue: 2
+    red: 8
+    yellow: 3
+  type: coreCard
+- name: Super strong
+  stats:
+    blue: 2
+    red: 8
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Claw grab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound, skip next turn'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Claw grab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound, skip next turn'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Claw grab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound, skip next turn'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Bite
+  rules:
+  - 'Attack {Blue}: Strength = {Red} + 5 -> basic wound'
+  stats:
+    blue: 2
+    red: 5
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Bite
+  rules:
+  - 'Attack {Blue}: Strength = {Red} + 5 -> basic wound'
+  stats:
+    blue: 2
+    red: 5
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Bite
+  rules:
+  - 'Attack {Blue}: Strength = {Red} + 5 -> basic wound'
+  stats:
+    blue: 2
+    red: 5
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Rend
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Rend
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Rend
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Claw
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  type: coreCard
+id: gazinia
+items: []
+name: Gazinia
+nature:
+- defense: 2
+  name: Gazinia
+  passive: Can turn invisible
+  resilience: 2
+  traits:
+  - water
+  - claws
+  - teeth
+tags:
+- monster

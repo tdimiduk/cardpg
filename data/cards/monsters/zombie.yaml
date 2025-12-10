@@ -1,0 +1,231 @@
+deck:
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 6
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 3
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 3
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 3
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 3
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 3
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 2
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 2
+    yellow: 0
+  type: coreCard
+- cost: 2
+  name: Shamble at
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 0
+    red: 2
+    yellow: 0
+  type: coreCard
+id: zombie
+items: []
+name: Zombie
+nature:
+- defense: 2
+  name: Zombie
+  passive: Always attacks or blocks if possible
+  resilience: 2
+  specialDefend:
+    blue: red
+    red: red
+    yellow: red
+tags:
+- monster

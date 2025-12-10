@@ -1,0 +1,206 @@
+deck:
+- name: Wave Power
+  stats:
+    blue: 3
+    red: 7
+    yellow: 3
+  type: coreCard
+- name: Wave Power
+  stats:
+    blue: 3
+    red: 7
+    yellow: 3
+  type: coreCard
+- name: Wave Power
+  stats:
+    blue: 3
+    red: 7
+    yellow: 3
+  type: coreCard
+- name: Water breathing
+  rules:
+  - Get +4 to defend water based attacks from anywhere
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Water breathing
+  rules:
+  - Get +4 to defend water based attacks from anywhere
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Water breathing
+  rules:
+  - Get +4 to defend water based attacks from anywhere
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Swiming speed
+  stats:
+    blue: 3
+    red: 3
+    yellow: 5
+  type: coreCard
+- name: Swiming speed
+  stats:
+    blue: 3
+    red: 3
+    yellow: 5
+  type: coreCard
+- name: Swiming speed
+  stats:
+    blue: 3
+    red: 3
+    yellow: 5
+  type: coreCard
+- name: Swiming speed
+  stats:
+    blue: 3
+    red: 3
+    yellow: 5
+  type: coreCard
+- cost: 1
+  name: Spray
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - Hits up to 255 enemies
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Spray
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - Hits up to 255 enemies
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Spray
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - Hits up to 255 enemies
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Spray
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - Hits up to 255 enemies
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Splash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Splash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Splash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Splash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 1
+  name: Make waves
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5 -> Knockdown'
+  stats:
+    blue: 1
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Make waves
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5 -> Knockdown'
+  stats:
+    blue: 1
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Make waves
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5 -> Knockdown'
+  stats:
+    blue: 1
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 4
+  name: Drown
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7 -> Stun 4, stun 8, kill'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 3
+  type: coreCard
+- cost: 4
+  name: Drown
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7 -> Stun 4, stun 8, kill'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 3
+  type: coreCard
+- cost: 4
+  name: Drown
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 7 -> Stun 4, stun 8, kill'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 3
+  type: coreCard
+id: water-spirit
+items: []
+name: Water spirit
+nature:
+- defense: 3
+  name: Water spirit
+  resilience: 2
+tags:
+- monster

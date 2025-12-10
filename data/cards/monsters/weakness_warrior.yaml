@@ -1,0 +1,226 @@
+deck:
+- cost: 2
+  name: Weakening whack
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    -1,-2,-4 to red on all cards
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 0
+  name: weakening poke
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    -1,-2,-4 to red on all cards
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  type: coreCard
+- name: Magic
+  stats:
+    blue: 6
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Strength
+  stats:
+    blue: 3
+    red: 6
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Paralyzing Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5 -> Basic wound + -2,-4, paralyzed to red on
+    all cards'
+  stats:
+    blue: 5
+    red: 5
+    yellow: 1
+  type: coreCard
+- name: Shield Weakness
+  rules:
+  - 'Defend : |x| or |z| with |x|'
+  - 'State : Attacker next attack at -4 strength'
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Weakness Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> Basic wound + -1,-2,-4 to red on all cards'
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Weakening whack
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    -1,-2,-4 to red on all cards
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 0
+  name: weakening poke
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    -1,-2,-4 to red on all cards
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  type: coreCard
+- name: Magic
+  stats:
+    blue: 6
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Strength
+  stats:
+    blue: 3
+    red: 6
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Paralyzing Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5 -> Basic wound + -2,-4, paralyzed to red on
+    all cards'
+  stats:
+    blue: 5
+    red: 5
+    yellow: 1
+  type: coreCard
+- name: Shield Weakness
+  rules:
+  - 'Defend : |x| or |z| with |x|'
+  - 'State : Attacker next attack at -4 strength'
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Weakness Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> Basic wound + -1,-2,-4 to red on all cards'
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Weakening whack
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    -1,-2,-4 to red on all cards
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 0
+  name: weakening poke
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    -1,-2,-4 to red on all cards
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  type: coreCard
+- name: Magic
+  stats:
+    blue: 6
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Strength
+  stats:
+    blue: 3
+    red: 6
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Paralyzing Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5 -> Basic wound + -2,-4, paralyzed to red on
+    all cards'
+  stats:
+    blue: 5
+    red: 5
+    yellow: 1
+  type: coreCard
+- name: Shield Weakness
+  rules:
+  - 'Defend : |x| or |z| with |x|'
+  - 'State : Attacker next attack at -4 strength'
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Weakness Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> Basic wound + -1,-2,-4 to red on all cards'
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  type: coreCard
+id: weakness-warrior
+items: []
+name: Weakness Warrior
+nature:
+- defense: 2
+  name: Weakness Warrior
+  resilience: 2
+  traits:
+  - Sword
+  - Shield
+tags:
+- monster

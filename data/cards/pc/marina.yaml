@@ -1,0 +1,276 @@
+deck:
+- cost: 3
+  name: Double flame
+  rules:
+  - 'Attack {Red}: Strength = {Blue} + 3 -> Fire wound'
+  - Attacks 2 monsters
+  stats:
+    blue: 8
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Moon Darkness
+  rules:
+  - 'Action: all attacks miss this round, recover if no attacks'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 2
+  type: coreCard
+- name: Moon Forcefield
+  rules:
+  - get +4 when used to block a attack
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Mirror image
+  rules:
+  - 'action: place this as state with it''s resources under it'
+  - Expend this or a card under it to negate an attack
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  type: coreCard
+- cost: 1
+  name: Make sneeze
+  rules:
+  - |-
+    Attack {Blue}: Strength = {Blue} + 3 -> ignore armor
+    Minor discard their hand
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Wave
+  rules:
+  - |-
+    Attack {Yellow}: Strength = {Blue} + 4 -> attack all within small area
+    minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun 2
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 4
+  name: Crystal crush
+  rules:
+  - |-
+    Attack {Blue}: Strength = {Blue} + 4 -> Minor magic attacks at half strength
+    major magic attacks at 0 strength
+  stats:
+    blue: 5
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Plant trap
+  rules:
+  - |-
+    Attack {Red}: Strength = {Blue} + 2 -> ignore armor
+    minor: slow 2, major: slow 5, slow 24
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Burning blades
+  rules:
+  - Place this and it's resources on a weapon. Include this as a bonus on attacks
+    with this weapon. Each time it is used expend it or one resource from under it.
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  type: coreCard
+- name: Spikes
+  rules:
+  - 'Action: put out to defend'
+  - Next time some one attacks you attack them |x| strength 6
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 3
+  name: Poison bolt
+  rules:
+  - 'Attack {Red}: Strength = {Blue} + 3 -> Poison wound'
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Shrinking sky
+  rules:
+  - Monsters can't fly for 5 turns
+  stats:
+    blue: 3
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Black beam
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} + 1 -> basic wound'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 4
+  name: Snow storm
+  rules:
+  - 'Attack {Red}: Strength = {Blue} -> Slow 2, stun 2 slow 5, stun 5 slow 10'
+  - Affects all enemies
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Lightning block
+  rules:
+  - 'Attack {Red}: Strength = {Blue}'
+  - you may apply this and it's resources to any defense this round
+  stats:
+    blue: 2
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Tornado
+  rules:
+  - 'Attack {Red}: Strength = {Blue} + 3 -> minor: stun 2, major: stun 4, stun 10'
+  - Attack all adjacent monsters
+  stats:
+    blue: 3
+    red: 2
+    yellow: 5
+  type: coreCard
+- name: Golden eyes
+  rules:
+  - Show this card, you can see invisible this turn
+  stats:
+    blue: 5
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Fire armor
+  rules:
+  - 'action: place this as state'
+  - you can use this as a resource on defense without expending it. If you take a
+    red wound, fatigue this instead.
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Shining sun
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} + 2 -> minor: stun 2, major: stun 4, stun 10'
+  - Used at range
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  type: coreCard
+- cost: 4
+  name: Spirit creatures
+  rules:
+  - 'Attack: 7 for 5 turns starting now'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Triple lightning
+  rules:
+  - 'Attack {Red}: Strength = {Blue} -> basic wound'
+  - Used at range, hits up to 3 monsters
+  stats:
+    blue: 3
+    red: 1
+    yellow: 3
+  type: coreCard
+- name: Invisibility
+  rules:
+  - Turn invisible for a few minutes out of combat to sneak around
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Speed boost
+  rules:
+  - Draw an extra card each turn
+  stats:
+    blue: 3
+    red: 1
+    yellow: 4
+  type: coreCard
+- cost: 5
+  name: Fireball
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} + 4 -> attack all within medium area
+    basic fire wound
+  - Attacks multiple enemies
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Stone blast
+  rules:
+  - 'Attack {Red}: Strength = {Blue} + 3 -> basic wound'
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Ice cage
+  rules:
+  - 'Attack |y|: |z}|+ 4'
+  - Cant act or draw cards for 1,2,5
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  type: coreCard
+- name: Star shield
+  rules:
+  - get +4 when used to block a magic attack
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  type: coreCard
+id: marina
+items:
+- name: Moon Hat
+  traits:
+  - Moon
+  type: itemCard
+- name: Sizzling Staff
+  traits:
+  - Staff
+  type: itemCard
+name: Marina
+nature:
+- name: Marina
+  passive: A wizard
+tags:
+- pc

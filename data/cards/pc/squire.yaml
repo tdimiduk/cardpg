@@ -1,0 +1,258 @@
+deck:
+- name: Interceed
+  rules:
+  - May contribute this to an adjacent ally's defense
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- name: Healing Hands
+  rules:
+  - 'Action: remove a 1 consequence from creature touched'
+  - 'Action: Replace a Consequence:2 with an Injury or a Consequence:3 with 5 Injury(s)'
+  - 'Action (1 minute): Replace an Injury with a Fatigue'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  type: coreCard
+- name: Nobility
+  rules:
+  - Use this card to invoke your noble privileges
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- name: Chivalry
+  rules:
+  - '|z| + 3 when defending from anywhere'
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 0
+  name: Inspire
+  rules:
+  - 'Action: Your allies attacks get +4 strength this turn'
+  stats:
+    blue: 1
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Sunder Armor
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} + 2 -> ignore 1 armor
+    Armor damage (on any success)
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Rebound
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> basic wound'
+  - If this does not deliver a wound, recover it's resource
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Knockdown
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} + 2 -> Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- name: Make Opportunity
+  rules:
+  - 'defend: you may use this as a resource to attack next turn'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 1
+  name: Gauntlet Punch
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 0
+  name: Opportunistic Kick
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} + 3 -> Minor: daze 1
+     Major: Minor wound
+    Critical: major wound
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 3
+  name: Crush through
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} + 2 -> non |x| defends at -2
+    crushing wound
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- name: Endure
+  rules:
+  - strength +2 when used to defend from anywhere
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 0
+  name: Wind up
+  rules:
+  - 'action: you may use this as a resource to attack next turn at +3'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Power Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Backswing
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  - You must have attacked last turn to play backswing
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Sweeping defense
+  rules:
+  - 'defend |x| or |y|: strength = |x|+1'
+  - You may apply sweeping defense against 2 attacks (use seperate resources for each)
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Athletics
+  rules:
+  - 'Action: Move 8'
+  - recover this to your hand
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Ring the Bell
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> ignore armor
+    stun 2/5/10
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 1
+  name: Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Crushing blow
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} + 1 -> ignore one armor
+    basic wound
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Armor Deflect
+  rules:
+  - '|x| or |y| +2 defense from anywhere if you have deflecting armor'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Power Attack
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Rattling blow
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  - If defender adds cards with armor, stun 1
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  type: coreCard
+id: squire
+items:
+- name: Waterskin
+  passive: 'Action (10 minutes): Consume 1 use, reshuffle your expended into your
+    deck'
+  traits:
+  - 4 uses
+  type: itemCard
+- name: Great Hammer
+  traits:
+  - impact
+  - pierce
+  - large weapon
+  type: itemCard
+- burden: 2
+  defense: 5
+  name: Breastplate and Mail
+  traits:
+  - armored
+  - heavy
+  - deflecting
+  type: itemCard
+name: squire
+nature:
+- defense: 2
+  name: Hero
+  resilience: 3
+tags:
+- pc

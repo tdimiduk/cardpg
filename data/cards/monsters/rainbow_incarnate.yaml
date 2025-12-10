@@ -1,0 +1,225 @@
+deck:
+- name: Purple
+  rules:
+  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 5
+  type: coreCard
+- name: Purple
+  rules:
+  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 5
+  type: coreCard
+- name: Purple
+  rules:
+  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 5
+  type: coreCard
+- name: Purple
+  rules:
+  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
+  stats:
+    blue: 6
+    red: 4
+    yellow: 5
+  type: coreCard
+- name: Blue
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} -> slow 2, 10, 24'
+  - Ignore armor
+  stats:
+    blue: 8
+    red: 2
+    yellow: 2
+  type: coreCard
+- name: Blue
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} -> slow 2, 10, 24'
+  - Ignore armor
+  stats:
+    blue: 8
+    red: 2
+    yellow: 2
+  type: coreCard
+- name: Blue
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} -> slow 2, 10, 24'
+  - Ignore armor
+  stats:
+    blue: 8
+    red: 2
+    yellow: 2
+  type: coreCard
+- name: Blue
+  rules:
+  - 'Attack {Blue}: Strength = {Blue} -> slow 2, 10, 24'
+  - Ignore armor
+  stats:
+    blue: 8
+    red: 2
+    yellow: 2
+  type: coreCard
+- name: Green
+  stats:
+    blue: 7
+    red: 7
+    yellow: 7
+  type: coreCard
+- name: Green
+  stats:
+    blue: 7
+    red: 7
+    yellow: 7
+  type: coreCard
+- name: Green
+  stats:
+    blue: 7
+    red: 7
+    yellow: 7
+  type: coreCard
+- name: Green
+  stats:
+    blue: 7
+    red: 7
+    yellow: 7
+  type: coreCard
+- cost: 2
+  name: Yellow
+  rules:
+  - 'Attack {Yellow}: Strength = {Yellow} + 2 -> stun 2, 6, paralyze'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 8
+  type: coreCard
+- cost: 2
+  name: Yellow
+  rules:
+  - 'Attack {Yellow}: Strength = {Yellow} + 2 -> stun 2, 6, paralyze'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 8
+  type: coreCard
+- cost: 2
+  name: Yellow
+  rules:
+  - 'Attack {Yellow}: Strength = {Yellow} + 2 -> stun 2, 6, paralyze'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 8
+  type: coreCard
+- cost: 2
+  name: Yellow
+  rules:
+  - 'Attack {Yellow}: Strength = {Yellow} + 2 -> stun 2, 6, paralyze'
+  stats:
+    blue: 2
+    red: 2
+    yellow: 8
+  type: coreCard
+- cost: 1
+  name: Orange
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> or |y|
+    basic wound
+  stats:
+    blue: 4
+    red: 6
+    yellow: 5
+  type: coreCard
+- cost: 1
+  name: Orange
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> or |y|
+    basic wound
+  stats:
+    blue: 4
+    red: 6
+    yellow: 5
+  type: coreCard
+- cost: 1
+  name: Orange
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> or |y|
+    basic wound
+  stats:
+    blue: 4
+    red: 6
+    yellow: 5
+  type: coreCard
+- cost: 1
+  name: Orange
+  rules:
+  - |-
+    Attack {Red}: Strength = {Red} -> or |y|
+    basic wound
+  stats:
+    blue: 4
+    red: 6
+    yellow: 5
+  type: coreCard
+- cost: 2
+  name: Red
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> fire wound'
+  stats:
+    blue: 2
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Red
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> fire wound'
+  stats:
+    blue: 2
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Red
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> fire wound'
+  stats:
+    blue: 2
+    red: 8
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Red
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> fire wound'
+  stats:
+    blue: 2
+    red: 8
+    yellow: 2
+  type: coreCard
+id: rainbow-incarnate
+items: []
+name: Rainbow Incarnate
+nature:
+- defense: 2
+  name: Rainbow Incarnate
+  resilience: 2
+  traits:
+  - Red
+  - Orange
+  - Yellow
+  - Green
+  - Blue
+  - Purple
+tags:
+- monster

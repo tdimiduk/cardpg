@@ -1,0 +1,220 @@
+deck:
+- cost: 4
+  name: Treetment
+  rules:
+  - remove 4 bad cards and one condition
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 2
+  name: Splinter
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 1'
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  type: coreCard
+- name: Regrowth
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  type: coreCard
+- name: Plant growth
+  rules:
+  - Makes plants around you grow
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  type: coreCard
+- name: Ancient wisdom
+  stats:
+    blue: 5
+    red: 2
+    yellow: 2
+  type: coreCard
+- name: Might of the oaks
+  stats:
+    blue: 2
+    red: 6
+    yellow: 0
+  type: coreCard
+- name: Flow with the wind
+  stats:
+    blue: 4
+    red: 4
+    yellow: 4
+  type: coreCard
+- cost: 1
+  name: Stick stick
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 6
+  name: Timber
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 10 -> Stun 2 self'
+  stats:
+    blue: 1
+    red: 6
+    yellow: 0
+  type: coreCard
+- cost: 4
+  name: Root tangle
+  stats:
+    blue: 1
+    red: 4
+    yellow: 4
+  type: coreCard
+- name: Durian spikes
+  rules:
+  - 'Action: play. Attack 5 |x| attackers. expend if triggered, ottherwise recover'
+  - Attacker discards a card or stuns 1
+  - Attackers get attacked and discard a card
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Bark worse than bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  - Melee attack
+  stats:
+    blue: 3
+    red: 5
+    yellow: 1
+  type: coreCard
+- name: Root network
+  rules:
+  - Ask nearby trees what they have heard
+  stats:
+    blue: 5
+    red: 4
+    yellow: 1
+  type: coreCard
+- cost: 4
+  name: Thrashing branches
+  rules:
+  - 'Attack {Red}: Strength = {Red} -> Up to 4 melee targets'
+  - Multi melee attack
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  type: coreCard
+- cost: 5
+  name: Trunk Thunk
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 5'
+  - Big melee attack
+  stats:
+    blue: 3
+    red: 5
+    yellow: 0
+  type: coreCard
+- cost: 5
+  name: Durian Stink bomb
+  rules:
+  - 'Attack {Red}: Strength = {Blue} + 2'
+  - Discard 3/7/11/15, slow remainder
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 23
+  name: Healing mango
+  rules:
+  - Eating the mango heals someone removing all bad cards and conditions
+  stats:
+    blue: 4
+    red: 2
+    yellow: 1
+  type: coreCard
+- name: Revitilizing growth
+  rules:
+  - heals plants
+  stats:
+    blue: 4
+    red: 2
+    yellow: 1
+  type: coreCard
+- cost: 4
+  name: Mango mace
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4'
+  - Attack with a mango
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Branch bash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 3'
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  type: coreCard
+- cost: 2
+  name: Bite
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2'
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  type: coreCard
+- cost: 3
+  name: Launch rotten fruit
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> ranged'
+  - Attack with a fruit bomb
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  type: coreCard
+- name: Fall foliage
+  rules:
+  - The next 2 attacks against you, ignore the resource number on the top card
+  - Send a blast of leaves out to make it hard to attack
+  stats:
+    blue: 4
+    red: 2
+    yellow: 4
+  type: coreCard
+- name: Just a normal tree
+  rules:
+  - Appear as just a normal tree for a time
+  stats:
+    blue: 5
+    red: 4
+    yellow: 0
+  type: coreCard
+id: culorn
+items: []
+name: Culorn
+nature:
+- defense: 2
+  name: Hero
+  resilience: 3
+- name: Culorn
+  traits:
+  - Tree
+  - mango
+  - durian
+tags:
+- pc

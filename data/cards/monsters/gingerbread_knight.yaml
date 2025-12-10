@@ -1,0 +1,184 @@
+deck:
+- name: Tough cookie
+  stats:
+    blue: 3
+    red: 8
+    yellow: 4
+  type: coreCard
+- name: Tough cookie
+  stats:
+    blue: 3
+    red: 8
+    yellow: 4
+  type: coreCard
+- name: Tough cookie
+  stats:
+    blue: 3
+    red: 8
+    yellow: 4
+  type: coreCard
+- name: Tough cookie
+  stats:
+    blue: 3
+    red: 8
+    yellow: 4
+  type: coreCard
+- name: Tough cookie
+  stats:
+    blue: 3
+    red: 8
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  type: coreCard
+- cost: 3
+  name: Slash
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  type: coreCard
+- name: Run run run
+  stats:
+    blue: 2
+    red: 5
+    yellow: 7
+  type: coreCard
+- name: Run run run
+  stats:
+    blue: 2
+    red: 5
+    yellow: 7
+  type: coreCard
+- name: Run run run
+  stats:
+    blue: 2
+    red: 5
+    yellow: 7
+  type: coreCard
+- name: Run run run
+  stats:
+    blue: 2
+    red: 5
+    yellow: 7
+  type: coreCard
+- name: Run run run
+  stats:
+    blue: 2
+    red: 5
+    yellow: 7
+  type: coreCard
+- cost: 2
+  name: Stab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Stab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Stab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Stab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- cost: 2
+  name: Stab
+  rules:
+  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  type: coreCard
+- name: Animate food
+  stats:
+    blue: 5
+    red: 5
+    yellow: 4
+  type: coreCard
+- name: Animate food
+  stats:
+    blue: 5
+    red: 5
+    yellow: 4
+  type: coreCard
+- name: Animate food
+  stats:
+    blue: 5
+    red: 5
+    yellow: 4
+  type: coreCard
+- name: Animate food
+  stats:
+    blue: 5
+    red: 5
+    yellow: 4
+  type: coreCard
+id: gingerbread-knight
+items: []
+name: Gingerbread Knight
+nature:
+- defense: 3
+  name: Gingerbread Knight
+  resilience: 2
+tags:
+- monster
