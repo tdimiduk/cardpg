@@ -59,8 +59,8 @@ processCards outputDir cards tag = do
     unless (null successes) $ do
       let (items, natureList, deck) = partitionCards successes
 
-      let finalNature = if tag == Just "pc"
-            then
+      let finalNature = case tag of
+            Just "pc" ->
                let heroCard = NatureCard
                      { _id = Nothing
                      , _name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
@@ -73,7 +73,8 @@ processCards outputDir cards tag = do
                      , _specialDefend = Nothing
                      }
                in heroCard : natureList
-            else natureList
+            Just "monster" -> map updateMonsterNature natureList
+            _ -> natureList
 
       if length deck /= 24
         then
@@ -113,3 +114,34 @@ partitionCards = foldr f ([], [], [])
 
 sanitize :: Text -> Text
 sanitize = T.replace " " "_" . T.toLower
+
+updateMonsterNature :: NatureCard -> NatureCard
+updateMonsterNature n@NatureCard{_passive = mPassive} =
+  let passive = case mPassive of
+        Nothing -> ""
+        Just p -> p
+      
+      lowerPassive = T.toLower passive
+      hasLight = "light armor" `T.isInfixOf` lowerPassive
+      hasHeavy = "heavy armor" `T.isInfixOf` lowerPassive
+      
+      def = if hasHeavy then 4 else if hasLight then 3 else 2
+      
+      -- Strip armor text
+      strippedPassive = T.strip $ 
+        T.replace "heavy armor" "" $ 
+        T.replace "Heavy Armor" "" $
+        T.replace "Heavy armor" "" $
+        T.replace "light armor" "" $
+        T.replace "Light Armor" "" $
+        T.replace "Light armor" "" $
+        T.replace "no armor" "" $
+        T.replace "No Armor" "" $
+        T.replace "No armor" "" passive
+        
+      finalPassive = if T.null strippedPassive then Nothing else Just strippedPassive
+
+  in n { _defense = Just def
+       , _resilience = Just 2
+       , _passive = finalPassive
+       }
