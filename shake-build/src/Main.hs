@@ -15,12 +15,10 @@ import qualified Rules.Orchestration as Orchestration
 
 main :: IO ()
 main = do
-  -- Parse manifest and extract decks
-  (pcDecks, monsterDecks) <- Cards.getDecks
-
   -- Define phony targets
   let defs =
         [ ("card-data", "Compiles all card data to VTT JSON", Cards.buildCardData)
+        , ("compile-legacy-cards", "Compiles legacy cards (JSON -> YAML)", Cards.compileLegacyCards)
         , ("sync", "Syncs card data from Google Sheets", Cards.runSync)
         , ("clean", "Clean build artifacts", Orchestration.cleanBuild)
         , ("gen-just", "Regenerate the Justfile", Justfile.generateJustfile defs)
@@ -60,9 +58,7 @@ main = do
     forM_ defs $ \(name, _, ruleAction) -> phony name ruleAction
 
     -- Define build rules
-    Cards.defineVttRule pcDecks monsterDecks
-    Cards.defineDeckRules "pc" "data/cards/pc"
-    Cards.defineDeckRules "monster" "data/cards/monsters"
+    Cards.defineVttRule
     Codegen.defineCodegenRules
     Haskell.defineCardCompilerRule
     Haskell.defineHaskellTestRules Codegen.getCardCompilerSources

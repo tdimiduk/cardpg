@@ -2,6 +2,9 @@
 
 module Rules.Cards where
 
+import Control.Monad (forM_)
+
+
 import Data.Aeson (withObject, (.:), (.:?))
 import qualified Data.Aeson.KeyMap as KM
 import Data.Maybe (mapMaybe)
@@ -50,6 +53,24 @@ getDecks = do
   let monsterDecks = filter (maybe False ("type:monster-deck" `elem`) . entryTags) entries
   return (pcDecks, monsterDecks)
 
+-- | Compile legacy cards (JSON -> YAML)
+compileLegacyCards :: Action ()
+compileLegacyCards = do
+  (pcDecks, monsterDecks) <- liftIO getDecks
+  need ["_build/bin/card-compiler"]
+  
+  forM_ pcDecks $ \deck -> do
+    let deckId = entryId deck
+    let jsonSrc = "data/cards/raw" </> deckId <.> "json"
+    let outDir = "data/cards/pc"
+    cmd_ (["_build/bin/card-compiler", jsonSrc, outDir, "pc"] :: [String])
+
+  forM_ monsterDecks $ \deck -> do
+    let deckId = entryId deck
+    let jsonSrc = "data/cards/raw" </> deckId <.> "json"
+    let outDir = "data/cards/monsters"
+    cmd_ (["_build/bin/card-compiler", jsonSrc, outDir, "monster"] :: [String])
+
 -- | Compile card data
 buildCardData :: Action ()
 buildCardData = need ["vtt-react/src/data/generated_cards.json"]
@@ -59,14 +80,9 @@ runSync :: Action ()
 runSync = cmd_ (["python3", "tools/gsheet_sync/sync-cards-gsheet.py", "--all", "true"] :: [String])
 
 -- | Define rule for VTT JSON generation
-defineVttRule :: [ManifestEntry] -> [ManifestEntry] -> Rules ()
-defineVttRule pcDecks monsterDecks = do
+defineVttRule :: Rules ()
+defineVttRule = do
   "vtt-react/src/data/generated_cards.json" %> \out -> do
-    let pcStamps = ["data/cards/pc/.stamp-" ++ entryId e | e <- pcDecks]
-    let monsterStamps = ["data/cards/monsters/.stamp-" ++ entryId e | e <- monsterDecks]
-
-    -- Ensure all compilations are done
-    need (pcStamps ++ monsterStamps)
 
     -- Now that compilation is done, dynamically find all generated YAML files
     pcYamls <- getDirectoryFiles "data/cards/pc" ["*.yaml"]
@@ -85,14 +101,3 @@ defineVttRule pcDecks monsterDecks = do
 
     need ["_build/bin/card-compiler"]
     cmd_ (["_build/bin/card-compiler", "export-vtt", out] ++ allYamls)
-
--- | Define generic rule for deck compilation using stamps
-defineDeckRules :: String -> FilePath -> Rules ()
-defineDeckRules tag dir = do
-  (dir </> ".stamp-*") %> \out -> do
-    let deckId = drop 7 (takeFileName out) -- drop ".stamp-"
-    let jsonSrc = "data/cards/raw" </> deckId <.> "json"
-    need [jsonSrc, "_build/bin/card-compiler"]
-    let outDir = takeDirectory out
-    cmd_ (["_build/bin/card-compiler", jsonSrc, outDir, tag] :: [String])
-    cmd_ (["touch", out] :: [String])

@@ -15,6 +15,11 @@ card-data:
     @test -f {{shake}} || just bootstrap
     @{{shake}} card-data
 
+# Compiles legacy cards (JSON -> YAML)
+compile-legacy-cards:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} compile-legacy-cards
+
 # Syncs card data from Google Sheets
 sync:
     @test -f {{shake}} || just bootstrap
