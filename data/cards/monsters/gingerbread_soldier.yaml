@@ -180,5 +180,6 @@ nature:
 - defense: 3
   name: Gingerbread Soldier
   resilience: 2
+  type: natureCard
 tags:
 - monster

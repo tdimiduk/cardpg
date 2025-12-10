@@ -37,9 +37,9 @@ deck:
   type: coreCard
 - name: Take it
   rules:
-  - |-
-    strength +4 when used to defend from anywhere
-    you suffer at least a minor success an action when you defend with this
+  - 'strength +4 when used to defend from anywhere
+
+    you suffer at least a minor success an action when you defend with this'
   stats:
     blue: 2
     red: 3
@@ -227,5 +227,6 @@ nature:
 - defense: 2
   name: Hero
   resilience: 3
+  type: natureCard
 tags:
 - pc

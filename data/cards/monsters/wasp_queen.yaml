@@ -214,5 +214,6 @@ nature:
 - defense: 2
   name: Wasp Queen
   resilience: 2
+  type: natureCard
 tags:
 - monster

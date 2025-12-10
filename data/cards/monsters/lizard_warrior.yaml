@@ -206,5 +206,6 @@ nature:
   - Sword
   - Teeth
   - Scales
+  type: natureCard
 tags:
 - monster

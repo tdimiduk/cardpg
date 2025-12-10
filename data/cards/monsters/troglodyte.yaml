@@ -198,5 +198,6 @@ nature:
   - claws
   - teeth
   - blindsight
+  type: natureCard
 tags:
 - monster

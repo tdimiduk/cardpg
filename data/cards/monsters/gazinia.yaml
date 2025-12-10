@@ -209,5 +209,6 @@ nature:
   - water
   - claws
   - teeth
+  type: natureCard
 tags:
 - monster

@@ -2,9 +2,9 @@ deck:
 - cost: 4
   name: Life Leech
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} + 3 -> ignore armor
-    basic wound
+  - 'Attack {Red}: Strength = {Red} + 3 -> ignore armor
+
+    basic wound'
   stats:
     blue: 0
     red: 6
@@ -13,9 +13,9 @@ deck:
 - cost: 4
   name: Life Leech
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} + 3 -> ignore armor
-    basic wound
+  - 'Attack {Red}: Strength = {Red} + 3 -> ignore armor
+
+    basic wound'
   stats:
     blue: 0
     red: 5
@@ -227,5 +227,6 @@ nature:
   name: Sky Zombie
   passive: Always attacks or blocks if possible, defends every attack with red
   resilience: 2
+  type: natureCard
 tags:
 - monster

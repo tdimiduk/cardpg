@@ -228,5 +228,6 @@ nature:
   - Teeth
   - Claws
   - Wings
+  type: natureCard
 tags:
 - monster

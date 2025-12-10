@@ -222,5 +222,6 @@ nature:
 - defense: 2
   name: Ant Queen
   resilience: 2
+  type: natureCard
 tags:
 - monster

@@ -130,9 +130,9 @@ deck:
 - cost: 1
   name: Orange
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} -> or |y|
-    basic wound
+  - 'Attack {Red}: Strength = {Red} -> or |y|
+
+    basic wound'
   stats:
     blue: 4
     red: 6
@@ -141,9 +141,9 @@ deck:
 - cost: 1
   name: Orange
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} -> or |y|
-    basic wound
+  - 'Attack {Red}: Strength = {Red} -> or |y|
+
+    basic wound'
   stats:
     blue: 4
     red: 6
@@ -152,9 +152,9 @@ deck:
 - cost: 1
   name: Orange
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} -> or |y|
-    basic wound
+  - 'Attack {Red}: Strength = {Red} -> or |y|
+
+    basic wound'
   stats:
     blue: 4
     red: 6
@@ -163,9 +163,9 @@ deck:
 - cost: 1
   name: Orange
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} -> or |y|
-    basic wound
+  - 'Attack {Red}: Strength = {Red} -> or |y|
+
+    basic wound'
   stats:
     blue: 4
     red: 6
@@ -221,5 +221,6 @@ nature:
   - Green
   - Blue
   - Purple
+  type: natureCard
 tags:
 - monster

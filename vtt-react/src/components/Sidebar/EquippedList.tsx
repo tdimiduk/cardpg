@@ -14,9 +14,13 @@ export const EquippedList: React.FC<EquippedListProps> = ({ equipped }) => {
       </span>
       <div className="space-y-1">
         {equipped.map((c) => {
-          const isItem = c.type === 'itemCard';
-          const def = isItem ? c.defense : undefined;
-          const res = isItem ? c.resilience : undefined;
+          const hasStats = c.type === 'itemCard' || c.type === 'natureCard';
+          // Cast to any to access optional properties safely or rely on discriminated union if TS is smart enough
+          // But since we are iterating Card[], TS knows c.type.
+          // We can just access properties if we check type or if we cast.
+          // Simpler: Just check if 'defense' in c
+          const def = hasStats ? (c as any).defense : undefined;
+          const res = hasStats ? (c as any).resilience : undefined;
 
           return (
             <div

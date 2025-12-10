@@ -211,10 +211,12 @@ nature:
 - defense: 2
   name: Hero
   resilience: 3
+  type: natureCard
 - name: Culorn
   traits:
   - Tree
   - mango
   - durian
+  type: natureCard
 tags:
 - pc

@@ -2,9 +2,9 @@ deck:
 - cost: 1
   name: Demoralize
   rules:
-  - |-
-    Attack {Blue}: Strength = {Red} + 3 -> no armor
-    Target discards 1/3/All cards
+  - 'Attack {Blue}: Strength = {Red} + 3 -> no armor
+
+    Target discards 1/3/All cards'
   stats:
     blue: 2
     red: 4
@@ -47,9 +47,9 @@ deck:
 - cost: 2
   name: Sunder Armor
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} + 2 -> ignore 1 armor
-    Armor damage (on any success)
+  - 'Attack {Red}: Strength = {Red} + 2 -> ignore 1 armor
+
+    Armor damage (on any success)'
   stats:
     blue: 3
     red: 4
@@ -239,5 +239,6 @@ nature:
 - defense: 2
   name: Hero
   resilience: 3
+  type: natureCard
 tags:
 - pc

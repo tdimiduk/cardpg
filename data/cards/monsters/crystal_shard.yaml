@@ -186,5 +186,6 @@ nature:
 - defense: 4
   name: Crystal Shard
   resilience: 2
+  type: natureCard
 tags:
 - monster

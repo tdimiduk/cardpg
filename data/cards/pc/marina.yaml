@@ -38,9 +38,9 @@ deck:
 - cost: 1
   name: Make sneeze
   rules:
-  - |-
-    Attack {Blue}: Strength = {Blue} + 3 -> ignore armor
-    Minor discard their hand
+  - 'Attack {Blue}: Strength = {Blue} + 3 -> ignore armor
+
+    Minor discard their hand'
   stats:
     blue: 3
     red: 2
@@ -49,9 +49,10 @@ deck:
 - cost: 3
   name: Wave
   rules:
-  - |-
-    Attack {Yellow}: Strength = {Blue} + 4 -> attack all within small area
-    minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun 2
+  - 'Attack {Yellow}: Strength = {Blue} + 4 -> attack all within small area
+
+    minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun
+    2'
   stats:
     blue: 3
     red: 3
@@ -60,9 +61,9 @@ deck:
 - cost: 4
   name: Crystal crush
   rules:
-  - |-
-    Attack {Blue}: Strength = {Blue} + 4 -> Minor magic attacks at half strength
-    major magic attacks at 0 strength
+  - 'Attack {Blue}: Strength = {Blue} + 4 -> Minor magic attacks at half strength
+
+    major magic attacks at 0 strength'
   stats:
     blue: 5
     red: 3
@@ -71,9 +72,9 @@ deck:
 - cost: 2
   name: Plant trap
   rules:
-  - |-
-    Attack {Red}: Strength = {Blue} + 2 -> ignore armor
-    minor: slow 2, major: slow 5, slow 24
+  - 'Attack {Red}: Strength = {Blue} + 2 -> ignore armor
+
+    minor: slow 2, major: slow 5, slow 24'
   stats:
     blue: 3
     red: 3
@@ -222,9 +223,9 @@ deck:
 - cost: 5
   name: Fireball
   rules:
-  - |-
-    Attack {Red}: Strength = {Red} + 4 -> attack all within medium area
-    basic fire wound
+  - 'Attack {Red}: Strength = {Red} + 4 -> attack all within medium area
+
+    basic fire wound'
   - Attacks multiple enemies
   stats:
     blue: 3
@@ -272,5 +273,6 @@ name: Marina
 nature:
 - name: Marina
   passive: A wizard
+  type: natureCard
 tags:
 - pc

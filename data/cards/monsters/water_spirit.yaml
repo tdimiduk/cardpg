@@ -202,5 +202,6 @@ nature:
 - defense: 3
   name: Water spirit
   resilience: 2
+  type: natureCard
 tags:
 - monster

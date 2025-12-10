@@ -1,9 +1,9 @@
 deck:
 - name: Close wounds
   rules:
-  - |-
-    Spend to recover 1 minor wound or
-    spend 3 to recover 1 major wound
+  - 'Spend to recover 1 minor wound or
+
+    spend 3 to recover 1 major wound'
   stats:
     blue: 6
     red: 6
@@ -11,9 +11,9 @@ deck:
   type: coreCard
 - name: Close wounds
   rules:
-  - |-
-    Spend to recover 1 minor wound or
-    spend 3 to recover 1 major wound
+  - 'Spend to recover 1 minor wound or
+
+    spend 3 to recover 1 major wound'
   stats:
     blue: 6
     red: 6
@@ -220,5 +220,6 @@ nature:
     blue: blue
     red: red
     yellow: red
+  type: natureCard
 tags:
 - monster

@@ -227,5 +227,6 @@ nature:
     blue: red
     red: red
     yellow: red
+  type: natureCard
 tags:
 - monster

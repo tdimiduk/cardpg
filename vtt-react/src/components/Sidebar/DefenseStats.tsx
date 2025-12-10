@@ -64,7 +64,7 @@ export const DefenseStats: React.FC<DefenseStatsProps> = ({
       {/* Derived Stats */}
       <div className="space-y-3 text-xs border-t border-slate-800 pt-3">
         <div className="flex justify-between items-center">
-          <span className="text-slate-400">Defense (From Items):</span>
+          <span className="text-slate-400">Defense:</span>
           <span className="text-white font-mono font-bold">{defenseStat}</span>
         </div>
         <div className="flex justify-between items-center">

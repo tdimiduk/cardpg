@@ -231,5 +231,6 @@ nature:
   resilience: 2
   traits:
   - Sword
+  type: natureCard
 tags:
 - monster

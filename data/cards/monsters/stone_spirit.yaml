@@ -212,5 +212,6 @@ nature:
 - defense: 2
   name: Stone spirit
   resilience: 2
+  type: natureCard
 tags:
 - monster

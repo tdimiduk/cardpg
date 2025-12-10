@@ -117,6 +117,10 @@ instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
     TaskDef name check time cost <$> arbitrary
   shrink = genericShrink
 
+instance Arbitrary SpecialDefend where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary DSLBase where
   arbitrary =
     oneof

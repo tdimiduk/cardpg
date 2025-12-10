@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CoreCard, ItemCard } from '../../types';
+import { Card, CoreCard, TableCard } from '../../types';
 import { Square, Circle, Diamond, Shield, Heart } from 'lucide-react';
 import { InlineIcon } from './InlineIcon';
 import { RichTextRenderer } from './RichTextRenderer';
@@ -169,7 +169,7 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
   );
 };
 
-const ItemCardView: React.FC<{ card: ItemCard }> = ({ card }) => {
+const TableCardView: React.FC<{ card: TableCard }> = ({ card }) => {
   return (
     <div className="w-full h-full p-2 flex flex-col">
       <div className="h-24 bg-slate-300 mb-2 rounded border border-slate-400 overflow-hidden relative shrink-0">
@@ -192,7 +192,8 @@ const ItemCardView: React.FC<{ card: ItemCard }> = ({ card }) => {
               <Shield size={12} /> Def: {card.defense}
             </div>
           )}
-          {card.resilience !== undefined && (
+          {/* Check for resilience existence since it is optional on TableCard union members */}
+          {'resilience' in card && card.resilience !== undefined && (
             <div className="flex items-center gap-1">
               <Heart size={12} /> Res: {card.resilience}
             </div>
@@ -219,7 +220,7 @@ export const CardComponent: React.FC<CardProps> = (props) => {
       {props.card.type === 'coreCard' ? (
         <CoreCardView card={props.card} />
       ) : (
-        <ItemCardView card={props.card} />
+        <TableCardView card={props.card} />
       )}
     </BaseCard>
   );

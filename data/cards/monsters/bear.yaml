@@ -2,9 +2,9 @@ deck:
 - cost: 0
   name: Roar
   rules:
-  - |-
-    Attack {Blue}: Strength = {Red} -> ignore armor
-    Discard 1/2/4 cards
+  - 'Attack {Blue}: Strength = {Red} -> ignore armor
+
+    Discard 1/2/4 cards'
   - Affects all enemies
   stats:
     blue: 3
@@ -14,9 +14,9 @@ deck:
 - cost: 0
   name: Roar
   rules:
-  - |-
-    Attack {Blue}: Strength = {Red} -> ignore armor
-    Discard 1/2/4 cards
+  - 'Attack {Blue}: Strength = {Red} -> ignore armor
+
+    Discard 1/2/4 cards'
   - Affects all enemies
   stats:
     blue: 3
@@ -26,9 +26,9 @@ deck:
 - cost: 0
   name: Roar
   rules:
-  - |-
-    Attack {Blue}: Strength = {Red} -> ignore armor
-    Discard 1/2/4 cards
+  - 'Attack {Blue}: Strength = {Red} -> ignore armor
+
+    Discard 1/2/4 cards'
   - Affects all enemies
   stats:
     blue: 3
@@ -219,5 +219,6 @@ nature:
 - defense: 3
   name: Bear
   resilience: 2
+  type: natureCard
 tags:
 - monster

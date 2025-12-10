@@ -1,4 +1,4 @@
-import { CoreCard, ItemCard, Actor, actorSchema, coreCardSchema } from '../types';
+import { CoreCard, Card, Actor, actorSchema, coreCardSchema } from '../types';
 import generatedCards from '../data/generated_cards.json';
 import { z } from 'zod';
 
@@ -26,7 +26,7 @@ export const getActorTemplate = (id: string): Actor | undefined => {
   return ACTOR_DATA.find((actor) => actor.id === id);
 };
 
-export const generateDeck = (templateId: string): { deck: CoreCard[]; equipped: ItemCard[] } => {
+export const generateDeck = (templateId: string): { deck: CoreCard[]; equipped: Card[] } => {
   const template = getActorTemplate(templateId);
 
   if (!template) {
@@ -36,7 +36,10 @@ export const generateDeck = (templateId: string): { deck: CoreCard[]; equipped: 
 
   // Deep copy to avoid mutating the template
   const deck = JSON.parse(JSON.stringify(template.deck));
-  const equipped = JSON.parse(JSON.stringify(template.items));
+  const equipped = [
+    ...JSON.parse(JSON.stringify(template.items)),
+    ...JSON.parse(JSON.stringify(template.nature)),
+  ];
 
   return { deck, equipped };
 };

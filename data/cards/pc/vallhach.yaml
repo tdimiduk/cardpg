@@ -227,9 +227,11 @@ nature:
 - defense: 2
   name: Hero
   resilience: 3
+  type: natureCard
 - name: Vallhach
   passive: An elf mage
   traits:
   - Fire
+  type: natureCard
 tags:
 - pc

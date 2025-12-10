@@ -222,5 +222,6 @@ nature:
 - defense: 2
   name: Wasp Soldier
   resilience: 2
+  type: natureCard
 tags:
 - monster

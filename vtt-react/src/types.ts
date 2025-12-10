@@ -1,15 +1,18 @@
 import { z } from 'zod';
-import { CoreCard, ItemCard } from './generated/types';
+import { CoreCard, ItemCard, NatureCard, TalentCard } from './generated/types';
 
 // Export all generated types and schemas
 export * from './generated/types';
 export * from './generated/types.zod';
 
-import { coreCardSchema, itemCardSchema } from './generated/types.zod';
+import { coreCardSchema, itemCardSchema, natureCardSchema, talentCardSchema } from './generated/types.zod';
 
 // --- Card Union ---
-export const CardSchema = z.union([coreCardSchema, itemCardSchema]);
-export type Card = CoreCard | ItemCard;
+export const TableCardSchema = z.union([itemCardSchema, natureCardSchema, talentCardSchema]);
+export type TableCard = ItemCard | NatureCard | TalentCard;
+
+export const CardSchema = z.union([coreCardSchema, TableCardSchema]);
+export type Card = CoreCard | TableCard;
 
 // --- Legacy / Game State Types ---
 

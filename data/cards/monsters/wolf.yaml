@@ -233,5 +233,6 @@ nature:
   resilience: 2
   traits:
   - Teeth Claws
+  type: natureCard
 tags:
 - monster

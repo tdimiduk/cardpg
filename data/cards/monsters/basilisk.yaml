@@ -206,5 +206,6 @@ nature:
 - defense: 2
   name: Basilisk
   resilience: 2
+  type: natureCard
 tags:
 - monster

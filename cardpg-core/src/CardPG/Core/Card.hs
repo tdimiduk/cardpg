@@ -116,7 +116,7 @@ data NatureCardT id rt = NatureCard
 type NatureCard = NatureCardT (Maybe Text) RichString
 type NatureCardMachine = NatureCardT Text RichText
 
-$(deriveJSON cardpgJsonDef ''NatureCardT)
+$(deriveJSON (cardpgTaggedOptions "") ''NatureCardT)
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
 data TalentCardT id rt = TalentCard
@@ -133,7 +133,7 @@ data TalentCardT id rt = TalentCard
 type TalentCard = TalentCardT (Maybe Text) RichString
 type TalentCardMachine = TalentCardT Text RichText
 
-$(deriveJSON cardpgJsonDef ''TalentCardT)
+$(deriveJSON (cardpgTaggedOptions "") ''TalentCardT)
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef

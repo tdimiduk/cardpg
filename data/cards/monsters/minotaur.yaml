@@ -204,5 +204,6 @@ nature:
   resilience: 2
   traits:
   - Axe
+  type: natureCard
 tags:
 - monster
