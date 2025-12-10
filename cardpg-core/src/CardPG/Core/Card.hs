@@ -90,6 +90,7 @@ data ItemCardT id rt = ItemCard
   , _passive :: Maybe Text
   , _defense :: Maybe Int
   , _resilience :: Maybe Int
+  , _burden :: Maybe Int
   }
   deriving stock (Eq, Show, Generic)
 

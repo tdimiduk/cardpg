@@ -97,7 +97,7 @@ convertCard RawCard{..} = do
                     { _specialDefend = parseSpecialDefend red yellow blue
                     , ..
                     }
-            else pure $ PItem ItemCard{..}
+            else pure $ PItem ItemCard{_burden = Nothing, ..}
         (Just r, Just y, Just b) -> do
           let _stats = Stats r y b
               _cost = toIntMaybe cost
