@@ -25,7 +25,7 @@ defineCodegenRules = do
     srcs <- getDirectoryFiles "" ["tools/codegen//*.hs"]
     case srcs of
       [] -> fail "No source files found for codegen"
-      (s : _) -> need [s] -- We just need to trigger on some source change, though ideally we explicitly list mainverSrcs ++ codegenSrcs)
+      srcs' -> need srcs'
     cmd_ (["cabal", "build", "codegen"] :: [String])
     Stdout binPath <- cmd (["cabal", "list-bin", "codegen"] :: [String])
     let binPath' = case lines binPath of

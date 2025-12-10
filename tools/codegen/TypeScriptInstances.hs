@@ -157,13 +157,13 @@ $( do
      i_item <- deriveTypeScript (cardpgTaggedOptions "") ''ItemCard
      -- b_item moved to manual instance
 
-     i_nature <- deriveTypeScript cardpgJsonDef ''NatureCard
+     i_nature <- deriveTypeScript (cardpgTaggedOptions "") ''NatureCard
      -- b_nature moved to manual instance
 
-     i_talent <- deriveTypeScript cardpgJsonDef ''TalentCard
+     i_talent <- deriveTypeScript (cardpgTaggedOptions "") ''TalentCard
      -- b_talent moved to manual instance
 
-     i_encounter <- deriveTypeScript cardpgJsonDef ''EncounterCard
+     i_encounter <- deriveTypeScript (cardpgTaggedOptions "") ''EncounterCard
      -- b_encounter moved to manual instance
 
      i_consequence <- deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard
