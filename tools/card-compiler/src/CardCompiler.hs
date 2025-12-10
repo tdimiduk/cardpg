@@ -22,10 +22,9 @@ import Data.Yaml (encode)
 import System.Directory (createDirectoryIfMissing)
 import System.Exit (die)
 import System.FilePath ((</>))
-import Text.Megaparsec (Parsec, parseMaybe, takeWhile1P)
-import Text.Megaparsec.Char (space, string')
+import Text.Megaparsec (Parsec, parseMaybe)
 
-import CardCompiler.Parser (ParsedCard (..), RawCard (..), convertCard)
+import CardCompiler.Parser (ArmorType (..), ParsedPassive (..), ParsedCard (..), RawCard (..), passiveParser, convertCard)
 import qualified CardCompiler.VttExporter as Vtt
 import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
@@ -50,6 +49,20 @@ run inputFile outputDir tag = do
       createDirectoryIfMissing True outputDir
       processCards outputDir cards tag
 
+heroCard :: NatureCard
+heroCard =
+  NatureCard
+    { _id = Nothing
+    , _name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
+    , _tags = Nothing
+    , _flavor = Nothing
+    , _traits = Nothing
+    , _passive = Nothing
+    , _defense = Just 2
+    , _resilience = Just 3
+    , _specialDefend = Nothing
+    }
+
 processCards :: FilePath -> [RawCard] -> Maybe String -> IO ()
 processCards outputDir cards tag = do
   let validCards = filter isValidCard cards
@@ -67,20 +80,7 @@ processCards outputDir cards tag = do
       let (items, natureList, deck) = partitionCards successes
 
       let finalNature = case tag of
-            Just "pc" ->
-              let heroCard =
-                    NatureCard
-                      { _id = Nothing
-                      , _name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
-                      , _tags = Nothing
-                      , _flavor = Nothing
-                      , _traits = Nothing
-                      , _passive = Nothing
-                      , _defense = Just 2
-                      , _resilience = Just 3
-                      , _specialDefend = Nothing
-                      }
-               in heroCard : natureList
+            Just "pc" -> heroCard : natureList
             Just "monster" -> map updateMonsterNature natureList
             _ -> natureList
 
@@ -123,37 +123,19 @@ partitionCards = foldr f ([], [], [])
 sanitize :: Text -> Text
 sanitize = T.replace " " "_" . T.toLower
 
-data ArmorType = LightArmor | HeavyArmor
-
-data InterpretedPassive = InterpretedPassive
-  { _armor :: Maybe ArmorType
-  , _passive :: Maybe Text
-  }
-
-armorParser :: Parser InterpretedPassive
-armorParser = do
-  _ <- space
-  _armor <-
-    Just LightArmor <$ string' "light armor"
-      <|> Just HeavyArmor <$ string' "heavy armor"
-      <|> Nothing <$ string' "no armor"
-      <|> pure Nothing
-  _ <- space
-  _passive <- optional $ T.strip <$> takeWhile1P (Just "remaining text") (const True)
-  return InterpretedPassive{..}
+armorDefenseMonster :: Maybe ArmorType -> Int
+armorDefenseMonster Nothing = 2
+armorDefenseMonster (Just LightArmor) = 3
+armorDefenseMonster (Just HeavyArmor) = 4
 
 updateMonsterNature :: NatureCard -> NatureCard
 updateMonsterNature n@NatureCard{_passive = mPassive} =
   n
     { _defense = Just def
     , _resilience = Just 2
-    , _passive = (._passive) =<< r
+    , _passive = newPassive
     }
   where
-    r = parseMaybe armorParser =<< mPassive
-    def = case r of
-      Just (InterpretedPassive{..}) -> case _armor of
-        Just LightArmor -> 3
-        Just HeavyArmor -> 4
-        Nothing -> 2
-      Nothing -> 2
+    (def, newPassive) = case parseMaybe passiveParser =<< mPassive of
+      Nothing -> (2, mPassive)
+      Just ParsedPassive{..} -> (armorDefenseMonster armor, T.strip <$> remainder)

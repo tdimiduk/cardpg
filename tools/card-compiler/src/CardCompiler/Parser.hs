@@ -6,6 +6,7 @@
 
 module CardCompiler.Parser where
 
+import Control.Applicative (optional, (<|>))
 import Data.Aeson (ToJSON (..), Value (..))
 import Data.Aeson.TH (defaultOptions, deriveJSON)
 import qualified Data.List.NonEmpty as NE
@@ -13,7 +14,10 @@ import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Read as TR
+import Data.Void (Void)
 import GHC.Generics (Generic)
+import Text.Megaparsec (Parsec, parseMaybe, takeWhile1P)
+import Text.Megaparsec.Char (space, string')
 
 import CardPG.Core.Card
   ( CoreCard
@@ -30,6 +34,29 @@ import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
 import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
 import CardPG.Core.Types (ResourceType (..))
+
+type Parser = Parsec Void Text
+
+data ArmorType = LightArmor | HeavyArmor
+  deriving (Show, Eq)
+
+armorParser :: Parser (Maybe ArmorType)
+armorParser =
+  space
+    >> Just LightArmor <$ string' "light armor"
+      <|> Just HeavyArmor <$ string' "heavy armor"
+      <|> Nothing <$ string' "no armor"
+      <|> pure Nothing
+
+passiveParser :: Parser ParsedPassive
+passiveParser = do
+  armor <- armorParser
+  remainder <- optional (takeWhile1P Nothing (const True))
+  return ParsedPassive{..}
+
+data ParsedPassive = ParsedPassive
+  { armor :: Maybe ArmorType
+  , remainder:: Maybe Text}
 
 -- | Sum type for different card types
 data ParsedCard
@@ -70,6 +97,14 @@ data RawCard = RawCard
 
 $(deriveJSON defaultOptions ''RawCard)
 
+itemDefense :: ArmorType -> Int
+itemDefense LightArmor = 3
+itemDefense HeavyArmor = 5
+
+itemBurden :: ArmorType -> Int
+itemBurden LightArmor = 1
+itemBurden HeavyArmor = 2
+
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
 convertCard RawCard{..} = do
@@ -97,7 +132,17 @@ convertCard RawCard{..} = do
                     { _specialDefend = parseSpecialDefend red yellow blue
                     , ..
                     }
-            else pure $ PItem ItemCard{_burden = Nothing, ..}
+            else
+              let (def, bur, pas) = case action of
+                    Just actRaw ->
+                      case parseMaybe passiveParser actRaw of
+                        Just (ParsedPassive (Just armor) _) -> (Just (itemDefense armor), Just (itemBurden armor), Nothing)
+                        Just (ParsedPassive Nothing remainder) -> (Nothing, Nothing, nonEmptyText remainder)
+                        _ -> (Nothing, Nothing, nonEmptyText action)
+                    Nothing -> (Nothing, Nothing, Nothing)
+                  _defense = def
+                  _passive = pas
+               in pure $ PItem ItemCard{_burden = bur, ..}
         (Just r, Just y, Just b) -> do
           let _stats = Stats r y b
               _cost = toIntMaybe cost
