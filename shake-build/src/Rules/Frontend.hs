@@ -13,9 +13,7 @@ getFrontendSources = do
   return $ map (dir </>) srcs
 
 getFrontendFormatSources :: Action [FilePath]
-getFrontendFormatSources = do
-  srcs <- getFrontendSources
-  return $ filter (not . ("/src/generated/" `isInfixOf`)) srcs
+getFrontendFormatSources = filter (not . ("/src/generated/" `isInfixOf`)) <$> getFrontendSources
 
 defineFrontendRules :: Rules ()
 defineFrontendRules = do

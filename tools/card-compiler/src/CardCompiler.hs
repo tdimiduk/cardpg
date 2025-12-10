@@ -147,7 +147,7 @@ updateMonsterNature n@NatureCard{_passive = mPassive} =
   n
     { _defense = Just def
     , _resilience = Just 2
-    , _passive = ((._passive) =<< r)
+    , _passive = (._passive) =<< r
     }
   where
     r = parseMaybe armorParser =<< mPassive

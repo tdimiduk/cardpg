@@ -5,7 +5,7 @@ module Main where
 import System.Environment (getArgs)
 import System.Exit (die)
 
-import qualified CardCompiler as CardCompiler
+import qualified CardCompiler
 import qualified CardCompiler.VttExporter as Vtt
 
 main :: IO ()
