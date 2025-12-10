@@ -1,10 +1,12 @@
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module CardCompiler where
 
+import Control.Applicative (optional, (<|>))
 import Control.Monad (forM_, unless)
 import Data.Aeson (Result (..), Value (..), eitherDecode, fromJSON)
 import qualified Data.ByteString as BS
@@ -15,15 +17,20 @@ import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Void (Void)
 import Data.Yaml (encode)
 import System.Directory (createDirectoryIfMissing)
-import System.FilePath ((</>))
 import System.Exit (die)
+import System.FilePath ((</>))
+import Text.Megaparsec (Parsec, parseMaybe, takeWhile1P)
+import Text.Megaparsec.Char (space, string')
 
 import CardCompiler.Parser (ParsedCard (..), RawCard (..), convertCard)
 import qualified CardCompiler.VttExporter as Vtt
-import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard, NatureCard, NatureCardT(..))
+import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
+
+type Parser = Parsec Void Text
 
 run :: FilePath -> FilePath -> Maybe String -> IO ()
 run inputFile outputDir tag = do
@@ -61,17 +68,18 @@ processCards outputDir cards tag = do
 
       let finalNature = case tag of
             Just "pc" ->
-               let heroCard = NatureCard
-                     { _id = Nothing
-                     , _name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
-                     , _tags = Nothing
-                     , _flavor = Nothing
-                     , _traits = Nothing
-                     , _passive = Nothing
-                     , _defense = Just 2
-                     , _resilience = Just 3
-                     , _specialDefend = Nothing
-                     }
+              let heroCard =
+                    NatureCard
+                      { _id = Nothing
+                      , _name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
+                      , _tags = Nothing
+                      , _flavor = Nothing
+                      , _traits = Nothing
+                      , _passive = Nothing
+                      , _defense = Just 2
+                      , _resilience = Just 3
+                      , _specialDefend = Nothing
+                      }
                in heroCard : natureList
             Just "monster" -> map updateMonsterNature natureList
             _ -> natureList
@@ -115,33 +123,37 @@ partitionCards = foldr f ([], [], [])
 sanitize :: Text -> Text
 sanitize = T.replace " " "_" . T.toLower
 
+data ArmorType = LightArmor | HeavyArmor
+
+data InterpretedPassive = InterpretedPassive
+  { _armor :: Maybe ArmorType
+  , _passive :: Maybe Text
+  }
+
+armorParser :: Parser InterpretedPassive
+armorParser = do
+  _ <- space
+  _armor <-
+    Just LightArmor <$ string' "light armor"
+      <|> Just HeavyArmor <$ string' "heavy armor"
+      <|> Nothing <$ string' "no armor"
+      <|> pure Nothing
+  _ <- space
+  _passive <- optional $ T.strip <$> takeWhile1P (Just "remaining text") (const True)
+  return InterpretedPassive{..}
+
 updateMonsterNature :: NatureCard -> NatureCard
 updateMonsterNature n@NatureCard{_passive = mPassive} =
-  let passive = case mPassive of
-        Nothing -> ""
-        Just p -> p
-      
-      lowerPassive = T.toLower passive
-      hasLight = "light armor" `T.isInfixOf` lowerPassive
-      hasHeavy = "heavy armor" `T.isInfixOf` lowerPassive
-      
-      def = if hasHeavy then 4 else if hasLight then 3 else 2
-      
-      -- Strip armor text
-      strippedPassive = T.strip $ 
-        T.replace "heavy armor" "" $ 
-        T.replace "Heavy Armor" "" $
-        T.replace "Heavy armor" "" $
-        T.replace "light armor" "" $
-        T.replace "Light Armor" "" $
-        T.replace "Light armor" "" $
-        T.replace "no armor" "" $
-        T.replace "No Armor" "" $
-        T.replace "No armor" "" passive
-        
-      finalPassive = if T.null strippedPassive then Nothing else Just strippedPassive
-
-  in n { _defense = Just def
-       , _resilience = Just 2
-       , _passive = finalPassive
-       }
+  n
+    { _defense = Just def
+    , _resilience = Just 2
+    , _passive = ((._passive) =<< r)
+    }
+  where
+    r = parseMaybe armorParser =<< mPassive
+    def = case r of
+      Just (InterpretedPassive{..}) -> case _armor of
+        Just LightArmor -> 3
+        Just HeavyArmor -> 4
+        Nothing -> 2
+      Nothing -> 2

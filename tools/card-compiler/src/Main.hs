@@ -4,8 +4,9 @@ module Main where
 
 import System.Environment (getArgs)
 import System.Exit (die)
-import qualified CardCompiler.VttExporter as Vtt
+
 import qualified CardCompiler as CardCompiler
+import qualified CardCompiler.VttExporter as Vtt
 
 main :: IO ()
 main = do
@@ -17,4 +18,3 @@ main = do
     _ ->
       die
         "Usage: hs-card-compiler <input.json> <output_dir> [tag] OR hs-card-compiler export-vtt <output.json> <input_yaml>..."
-
