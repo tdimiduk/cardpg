@@ -2,10 +2,12 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module CardCompiler.Parser where
 
-import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), withObject, (.:), (.:?))
+import Data.Aeson (ToJSON (..), Value (..))
+import Data.Aeson.TH (defaultOptions, deriveJSON)
 import qualified Data.List.NonEmpty as NE
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
@@ -52,85 +54,54 @@ compareParsedCard _ _ = EQ
 
 -- | Raw JSON Card structure
 data RawCard = RawCard
-  { _name :: Text
-  , rcActor :: Maybe Text
-  , rcRed :: Maybe Value
-  , rcYellow :: Maybe Value
-  , rcBlue :: Maybe Value
-  , rcCost :: Maybe Value
-  , _passive :: Maybe Text -- was rcAction, used as passive for Item/Nature
-  , rcAction :: Maybe Text -- raw action string, kept for CoreCard parsing
-  , rcEffect :: Maybe Text
-  , rcDetails :: Maybe Text
-  , _flavor :: Maybe RichString
-  , _tags :: Maybe (NE.NonEmpty Text)
-  , _traits :: Maybe (NE.NonEmpty Text)
-  , _id :: Maybe Text
-  , _weight :: Maybe Int
-  , _value :: Maybe Int
-  , _defense :: Maybe Int
-  , _resilience :: Maybe Int
+  { name :: Text
+  , actor :: Maybe Text
+  , red :: Maybe Value
+  , yellow :: Maybe Value
+  , blue :: Maybe Value
+  , cost :: Maybe Value
+  , keywordProvide :: Maybe Text
+  , action :: Maybe Text
+  , effect :: Maybe Text
+  , details :: Maybe Text
+  , flavor :: Maybe Text
   }
   deriving (Show, Generic)
 
-instance FromJSON RawCard where
-  parseJSON = withObject "RawCard" $ \v -> do
-    _name <- v .: "name"
-    rcActor <- v .:? "actor"
-    rcRed <- v .:? "red"
-    rcYellow <- v .:? "yellow"
-    rcBlue <- v .:? "blue"
-    rcCost <- v .:? "cost"
-
-    rawAction <- v .:? "action"
-    let _passive = nonEmptyText rawAction
-        rcAction = rawAction
-
-    rcEffect <- v .:? "effect"
-    rcDetails <- v .:? "details"
-
-    rawFlavor <- v .:? "flavor"
-    let _flavor = rawFlavor >>= simpleString
-
-    rawTags <- v .:? "tags"
-    let _tags = rawTags >>= NE.nonEmpty
-
-    rawProvide <- v .:? "keywordProvide"
-    let _traits = rawProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
-
-    _id <- v .:? "id"
-
-    -- Placeholder defaults for now as they aren't in JSON yet or handled by other logic
-    let _weight = Nothing
-        _value = Nothing
-        _defense = Nothing
-        _resilience = Nothing
-
-    pure RawCard{..}
+$(deriveJSON defaultOptions ''RawCard)
 
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
 convertCard RawCard{..} = do
-  case mkNonEmptyText (T.strip _name) of
+  case mkNonEmptyText (T.strip name) of
     Nothing -> Left "Skipping empty card row"
-    Just name -> do
-      let _name = name
+    Just validName -> do
+      let _name = validName
+          _tags = Nothing
+          _traits = keywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
+          _flavor = flavor >>= simpleString
+          _id = Nothing
+          _weight = Nothing
+          _value = Nothing
+          _defense = Nothing
+          _resilience = Nothing
+          _passive = nonEmptyText action
 
-      case (toIntMaybe rcRed, toIntMaybe rcYellow, toIntMaybe rcBlue) of
+      case (toIntMaybe red, toIntMaybe yellow, toIntMaybe blue) of
         (Nothing, Nothing, Nothing) ->
-          if Just (T.toLower (getNonEmptyText name)) == (T.toLower <$> rcActor)
+          if Just (T.toLower (getNonEmptyText validName)) == (T.toLower <$> actor)
             then
               pure $
                 PNature
                   NatureCard
-                    { _specialDefend = parseSpecialDefend rcRed rcYellow rcBlue
+                    { _specialDefend = parseSpecialDefend red yellow blue
                     , ..
                     }
             else pure $ PItem ItemCard{..}
         (Just r, Just y, Just b) -> do
           let _stats = Stats r y b
-              _cost = toIntMaybe rcCost
-          rules <- parseRules rcAction rcEffect rcDetails
+              _cost = toIntMaybe cost
+          rules <- parseRules action effect details
           let _rules = NE.nonEmpty (map DSLRule rules)
           pure $ PCore CoreCard{..}
         _ ->

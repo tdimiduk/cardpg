@@ -26,7 +26,7 @@ import TypeScriptInstances
   , TriggerDef
   )
 
-import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, Stats)
+import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
@@ -61,6 +61,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy TriggerDef)
               <> getTypeScriptDeclarations (Proxy :: Proxy Rule)
               <> getTypeScriptDeclarations (Proxy :: Proxy Stats)
+              <> getTypeScriptDeclarations (Proxy :: Proxy SpecialDefend)
               <> getTypeScriptDeclarations (Proxy :: Proxy CoreCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ItemCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy NatureCard)
