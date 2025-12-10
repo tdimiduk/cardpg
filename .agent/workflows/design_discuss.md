@@ -17,7 +17,12 @@ description: Open-ended discussion about rules and mechanics using the Artificer
    - Check `design/manifest.yaml` for files with tags matching the user's topic.
    - **Crucial:** If the topic involves physical reality (combat, movement, injury), look for `research/synthesis/` docs or the `research/reports/` if you need more detail.
 
-4. Engage in a wide-ranging conversation with the user.
-   - Goal: Explore ideas and brainstorm reworkings.
-   - Tone: Creative, collaborative, and open-minded. Avoid jumping to conclusions.
-   - Use the Artificer persona's "Ludonarrative Harmony" and "Tangible Materiality" principles to guide the creative process, but keep the focus on exploration.
+4. Engage in a deep, exploratory conversation.
+   - **PRIMARY DIRECTIVE:** Do NOT propose file edits, code changes, or final solutions yet.
+   - **GOAL:** Iterate on the *concepts* until the user is satisfied. 
+   - **BEHAVIOR:** 
+     - Ask clarifying questions.
+     - Challenging assumptions based on the "Factual Bedrock" (research).
+     - Propose abstract models (e.g., "What if we treated armor like a shield buffer?") rather than concrete syntax.
+   - **EXIT CONDITION:** Continue the discussion until the user explicitly asks to "finalize", "implement", or "write up" the changes. Only then should you transition to suggesting concrete file modifications.
+
