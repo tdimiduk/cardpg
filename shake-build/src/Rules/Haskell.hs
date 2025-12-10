@@ -7,6 +7,7 @@ module Rules.Haskell
   , defineHaskellLintRules
   , defineHaskellFormatRules
   , defineCardCompilerRule
+  , defineHaskellLibraryRules
   ) where
 
 import Common (getPackageSources, persistentTask, persistentTaskWithSrcs)
@@ -23,16 +24,10 @@ getCardCompilerSources :: Action [FilePath]
 getCardCompilerSources = getPackageSources "tools/card-compiler" "src"
 
 buildCore :: Action ()
-buildCore = do
-  srcs <- getCoreSources
-  need srcs
-  cmd_ (["cabal", "build", "cardpg-core"] :: [String])
+buildCore = need ["_build/libs/cardpg-core"]
 
 buildServer :: Action ()
-buildServer = do
-  srcs <- getServerSources
-  need srcs
-  cmd_ (["cabal", "build", "cardpg-server"] :: [String])
+buildServer = need ["_build/libs/cardpg-server"]
 
 replCore :: Action ()
 replCore = cmd_ (["cabal", "repl", "cardpg-core"] :: [String])
@@ -51,12 +46,27 @@ defineHaskellTestRules _ = do
   persistentTask "_build/tests/.cardpg-server.timestamp" getServerSources $
     cmd_ (["cabal", "test", "cardpg-server"] :: [String])
 
+defineHaskellLibraryRules :: Rules ()
+defineHaskellLibraryRules = do
+  "_build/libs/cardpg-core" %> \out -> do
+    srcs <- getCoreSources
+    need srcs
+    cmd_ (["cabal", "build", "cardpg-core"] :: [String])
+    cmd_ (["touch", out] :: [String])
+
+  "_build/libs/cardpg-server" %> \out -> do
+    srcs <- getServerSources
+    need srcs
+    need ["_build/libs/cardpg-core"]
+    cmd_ (["cabal", "build", "cardpg-server"] :: [String])
+    cmd_ (["touch", out] :: [String])
+
 defineCardCompilerRule :: Rules ()
 defineCardCompilerRule = do
   "_build/bin/card-compiler" %> \out -> do
-    coreSrcs <- getCoreSources
     compilerSrcs <- getCardCompilerSources
-    need (coreSrcs ++ compilerSrcs)
+    need compilerSrcs
+    need ["_build/libs/cardpg-core"]
     cmd_
       ( ["cabal", "install", "card-compiler", "--installdir=_build/bin", "--overwrite-policy=always"] ::
           [String]

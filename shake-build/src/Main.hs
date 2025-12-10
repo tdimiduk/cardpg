@@ -61,6 +61,7 @@ main = do
     Cards.defineVttRule
     Codegen.defineCodegenRules
     Haskell.defineCardCompilerRule
+    Haskell.defineHaskellLibraryRules
     Haskell.defineHaskellTestRules Codegen.getCardCompilerSources
     Haskell.defineHaskellLintRules
     Haskell.defineHaskellFormatRules

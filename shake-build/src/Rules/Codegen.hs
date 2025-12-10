@@ -20,6 +20,7 @@ buildGenTypes =
 defineCodegenRules :: Rules ()
 defineCodegenRules = do
   "_build/codegen" %> \out -> do
+    need ["_build/libs/cardpg-core", "_build/libs/cardpg-server"]
     -- We need core and server sources too.
     -- Safe replacement for head
     srcs <- getDirectoryFiles "" ["tools/codegen//*.hs"]
