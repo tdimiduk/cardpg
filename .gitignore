@@ -5,8 +5,6 @@ vtt-react/src/data/generated_cards.json
 
 # Temporary while we are still iterating on the parsers
 data/cards/encounters
-data/cards/monsters
-data/cards/pc
 data/cards/items
 
 # --- Haskell 
