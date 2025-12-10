@@ -15,6 +15,7 @@ executable card-compiler
     main-is:          Main.hs
     other-modules:    CardCompiler.Parser
                     , CardCompiler.VttExporter
+                    , CardCompiler
     -- other-extensions:
     build-depends:    base >= 4.16 && < 5
                     , aeson
