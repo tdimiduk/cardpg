@@ -23,6 +23,7 @@ backendPkgs.shellFor {
       ipython
       pyyaml
       google-genai
+      gspread
     ]))
     uv
     ruff

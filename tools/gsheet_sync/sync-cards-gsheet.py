@@ -7,7 +7,7 @@ import re
 import yaml
 import gspread
 from pathlib import Path
-import clifun
+import argparse
 
 
 MANIFEST_PATH = Path(__file__).parents[2] / "design/manifest.yaml"
@@ -166,4 +166,10 @@ def main(key: str | None = None, sheet_name: str | None = None, all: bool = Fals
         print("Error: Must specify either --all or a key/id.", file=sys.stderr)
 
 if __name__ == "__main__":
-    clifun.call(main)
+    parser = argparse.ArgumentParser(description="Sync Google Sheets to JSON")
+    parser.add_argument("key", nargs="?", help="GSheet key or Manifest ID")
+    parser.add_argument("--sheet-name", help="Specific sheet name to sync (only used if key is provided directly)")
+    parser.add_argument("--all", action="store_true", help="Sync all cards defined in manifest")
+
+    args = parser.parse_args()
+    main(key=args.key, sheet_name=args.sheet_name, all=args.all)
