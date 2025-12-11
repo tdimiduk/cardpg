@@ -4,6 +4,7 @@
 module StateTests where
 
 import Data.Aeson (eitherDecode, encode)
+import Control.Monad.State (runState)
 import System.Random (mkStdGen)
 import Test.Tasty
 import Test.Tasty.QuickCheck
@@ -39,8 +40,8 @@ prop_fatigueCycleCounts (Small burdenRaw) st =
     expectedDeckSize = initialDiscardSize + 2 + burden
 
     gen = mkStdGen 42 -- We can use a fixed seed for the cycle itself, the randomness comes from 'st'.
-    -- Or we could take a seed as input, but it doesn't affect the size property.
-    (newState, _) = performFatigueCycle burden gen st
+    -- Or we could take a seed as input, but it doesn't verify the size property.
+    (newState, _) = runState (performFatigueCycle burden st) gen
     newCore = _coreState newState
    in
     length (_deck newCore) === expectedDeckSize

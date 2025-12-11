@@ -11,17 +11,22 @@ module CardPG.Core.Primitives
   , Difficulty (..)
   ) where
 
-import CardPG.Core.Json (cardpgJsonDef)
 import Data.Aeson (FromJSONKey, ToJSONKey)
 import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
+import System.Random.Stateful (Uniform (..), uniformM)
+
+import CardPG.Core.Json (cardpgJsonDef)
 
 -- | Unique Identity for any card instance
 newtype CardInstanceId = CardInstanceId UUID
   deriving stock (Show, Eq, Ord)
   deriving newtype (FromJSONKey, ToJSONKey)
+
+instance Uniform CardInstanceId where
+  uniformM g = CardInstanceId <$> uniformM g
 
 $(deriveJSON cardpgJsonDef ''CardInstanceId)
 
@@ -29,6 +34,9 @@ $(deriveJSON cardpgJsonDef ''CardInstanceId)
 newtype TargetId = TargetId UUID
   deriving stock (Show, Eq, Ord)
   deriving newtype (FromJSONKey, ToJSONKey)
+
+instance Uniform TargetId where
+  uniformM g = TargetId <$> uniformM g
 
 $(deriveJSON cardpgJsonDef ''TargetId)
 

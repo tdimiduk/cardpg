@@ -1,7 +1,14 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
+
 module CardPG.Core.Util
   ( shuffleList
+  , shuffleListM
   ) where
 
+import Control.Monad (replicateM)
+import Control.Monad.State (MonadState, state)
 import Data.List (sortOn)
 import System.Random (Random (..), RandomGen)
 
@@ -13,6 +20,15 @@ shuffleList xs gen =
       (randomInts, gen') = splitGenList len gen
       shuffled = map snd $ sortOn fst $ zip randomInts xs
    in (shuffled, gen')
+
+-- | Monadic version of shuffleList
+shuffleListM :: forall g m a. (RandomGen g, MonadState g m) => [a] -> m [a]
+shuffleListM xs = do
+  let len = length xs
+  randomInts <- replicateM len (state (random @Int @g) :: m Int)
+  pure $ map snd $ sortOn fst $ zip randomInts xs
+
+
 
 splitGenList :: (RandomGen g) => Int -> g -> ([Int], g)
 splitGenList 0 g = ([], g)

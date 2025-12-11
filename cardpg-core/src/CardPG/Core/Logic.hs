@@ -1,18 +1,17 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
 
 module CardPG.Core.Logic
   ( performFatigueCycle
   ) where
 
+import Control.Monad (replicateM)
+import Control.Monad.State (MonadState, state)
 import Data.Map.Strict qualified as Map
-import Data.UUID (UUID)
-import System.Random (Random (..), RandomGen)
+import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.Primitives (CardInstanceId (..))
 import CardPG.Core.State (ActorState (..), CoreCardState (..))
-import CardPG.Core.Util (shuffleList)
+import CardPG.Core.Util (shuffleListM)
 
 -- | Perform the Fatigue Cycle
 -- 1. Take Discard
@@ -20,37 +19,28 @@ import CardPG.Core.Util (shuffleList)
 -- 3. Update Registry with new Fatigue Cards
 -- 4. Shuffle (Discard + NewFatigue) -> Deck
 -- 5. Clear Discard
-performFatigueCycle :: (RandomGen g) => Int -> g -> ActorState -> (ActorState, g)
-performFatigueCycle burden gen st =
+performFatigueCycle :: (RandomGen g, MonadState g m) => Int -> ActorState -> m ActorState
+performFatigueCycle burden st = do
   let
     core = _coreState st
     sources = _discard core
 
     countNeeded = 2 + burden
 
-    -- Recursive generator to get N UUIDs and final generator state
-    genUUIDs :: (RandomGen g) => Int -> g -> ([UUID], g)
-    genUUIDs 0 g_ = ([], g_)
-    genUUIDs n g_ =
-      let (u, g1) = random @UUID g_
-          (us, g2) = genUUIDs (n - 1) g1
-       in (u : us, g2)
+  -- Generate UUIDs (CardInstanceIds via Uniform instance)
+  newFatigueIds <- replicateM countNeeded (state uniform)
 
-    (newFatigueUUIDs, gen2) = genUUIDs countNeeded gen
-    newFatigueIds = map CardInstanceId newFatigueUUIDs
+  -- Update Registry
+  let newRegistryEntries = Map.fromList [(cid, fatigueCard) | cid <- newFatigueIds]
+  let updatedRegistry = Map.union (_coreRegistry st) newRegistryEntries
 
-    -- Update Registry
-    newRegistryEntries = Map.fromList [(cid, fatigueCard) | cid <- newFatigueIds]
-    updatedRegistry = Map.union (_coreRegistry st) newRegistryEntries
+  -- Shuffle
+  let toShuffle = sources ++ newFatigueIds
+  newDeck <- shuffleListM toShuffle
 
-    -- Shuffle
-    toShuffle = sources ++ newFatigueIds
-    (newDeck, gen3) = shuffleList toShuffle gen2
-
-    newCore =
-      core
-        { _deck = newDeck
-        , _discard = []
-        }
-   in
-    (st{_coreState = newCore, _coreRegistry = updatedRegistry}, gen3)
+  let newCore =
+        core
+          { _deck = newDeck
+          , _discard = []
+          }
+  pure st{_coreState = newCore, _coreRegistry = updatedRegistry}
