@@ -23,6 +23,7 @@ executable codegen
   main-is:             Main.hs
   other-modules:       DeriveSpecialized, TypeScriptInstances
   build-depends:       base >= 4.7 && < 5
+                     , aeson
                      , aeson-typescript
                      , cardpg-core
                      , cardpg-server

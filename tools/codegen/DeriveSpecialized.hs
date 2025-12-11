@@ -1,5 +1,7 @@
-module DeriveSpecialized (specializeType, makeBridgeInstance, makeProxyInstance) where
+module DeriveSpecialized (specializeType, makeBridgeInstance, makeProxyInstance, deriveSpecializedInstance) where
 
+import Data.Aeson (Options)
+import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Language.Haskell.TH
@@ -15,6 +17,7 @@ import Language.Haskell.TH
 -- data CardWithId = CardWithId { ... fields with f substituted ... } deriving (Generic)
 --
 -- It substitutes the first N type parameters found, where N is the length of the provided list of types.
+-- Also derives the TypeScript instance using provided Options.
 
 specializeType :: Name -> [Type] -> String -> Q [Dec]
 specializeType typeName paramTypes newTypeNameStr = do
@@ -39,9 +42,36 @@ specializeType typeName paramTypes newTypeNameStr = do
       -- Generate the new data declaration
       -- We add Generic to deriving clauses to support Aeson/TypeScript derivation
       let derivingClauses = [DerivClause Nothing [ConT (mkName "Generic")]]
-
-      return [DataD [] newName [] Nothing newConstructors derivingClauses]
+      let dataDec = DataD [] newName [] Nothing newConstructors derivingClauses
+      
+      return [dataDec]
     _ -> fail "specializeType: Expected a data type declaration"
+
+deriveSpecializedInstance :: Options -> Name -> Name -> [Type] -> Q [Dec]
+deriveSpecializedInstance options newName origName paramTypes = do
+  -- Generate Primary Instance
+  primaryInsts <- deriveTypeScript options newName
+  
+  -- Generate Bridge Instance
+  let newTypeNameStr = nameBase newName
+  let instanceHead = AppT (ConT (mkName "TypeScript")) (foldl AppT (ConT origName) paramTypes)
+  
+  let getTypeScriptTypeDec =
+        FunD
+          (mkName "getTypeScriptType")
+          [Clause [WildP] (NormalB (LitE (StringL newTypeNameStr))) []]
+
+  let proxyExp = SigE (ConE (mkName "Proxy")) (AppT (ConT (mkName "Proxy")) (ConT newName))
+  let tsTypeExp = AppE (ConE (mkName "TSType")) proxyExp
+  let listExp = ListE [tsTypeExp]
+  let getParentTypesDec =
+        FunD
+          (mkName "getParentTypes")
+          [Clause [WildP] (NormalB listExp) []]
+          
+  let bridgeInstDec = InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getParentTypesDec]
+
+  return $ primaryInsts ++ [bridgeInstDec]
 
 getBinderName :: TyVarBndr flag -> Name
 getBinderName (PlainTV n _) = n
