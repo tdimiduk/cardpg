@@ -1,5 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -18,6 +20,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Yaml as Yaml
 import GHC.Generics (Generic)
+import Optics ((^.))
 
 import CardPG.Core.Card
   ( ActorDefinition
@@ -37,8 +40,8 @@ import CardPG.Core.Card
   , Rule
   )
 import CardPG.Core.Json (cardpgJsonOptions)
-import CardPG.Core.NonEmptyText (getNonEmptyText)
-import CardPG.Core.RichText (RichString, RichText, unRichString)
+import CardPG.Core.NonEmptyText (getRawText)
+import CardPG.Core.RichText (RichString, RichText, getRichText)
 
 -- | VTT Export Data
 data VttExport = VttExport
@@ -90,7 +93,7 @@ loadAndExport inputFiles outputFile = do
             Right (cards :: [CoreCard]) -> do
               let vttCards =
                     map
-                      (\c@(CoreCard i n _ _ _ _ _) -> toVttCoreCard c (fromMaybe (slugify (getNonEmptyText n)) i))
+                      (\c -> toVttCoreCard c (fromMaybe (slugify (getRawText (c ^. #name))) (c ^. #id)))
                       cards
               return (accActors, vttCards ++ accStatuses, accConsequences)
             Left _ -> do
@@ -109,28 +112,28 @@ loadAndExport inputFiles outputFile = do
 convertActor :: ActorDefinition -> ActorMachine
 convertActor ActorDefinition{..} =
   ActorDefinition
-    { _id = actorId
-    , _items = map (convertItem actorId) _items
-    , _nature = map (convertNature actorId) _nature
-    , _deck = processDeck actorId _deck
+    { id = actorId
+    , items = map (convertItem actorId) items
+    , nature = map (convertNature actorId) nature
+    , deck = processDeck actorId deck
     , ..
     }
   where
-    actorId = fromMaybe (slugify _name) _id
+    actorId = fromMaybe (slugify name) id
 
 convertItem :: Text -> ItemCard -> ItemCardMachine
 convertItem actorId ItemCard{..} =
   ItemCard
-    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText _name)) _id
-    , _flavor = fmap unRichString _flavor
+    { id = fromMaybe (actorId <> "-" <> slugify (getRawText name)) id
+    , flavor = fmap getRichText flavor
     , ..
     }
 
 convertNature :: Text -> NatureCardT (Maybe Text) RichString -> NatureCardT Text RichText
 convertNature actorId NatureCard{..} =
   NatureCard
-    { _id = fromMaybe (actorId <> "-" <> slugify (getNonEmptyText _name)) _id
-    , _flavor = fmap unRichString _flavor
+    { id = fromMaybe (actorId <> "-" <> slugify (getRawText name)) id
+    , flavor = fmap getRichText flavor
     , ..
     }
 
@@ -139,8 +142,8 @@ processDeck :: Text -> [CoreCard] -> [CoreCardMachine]
 processDeck actorId cards =
   let
     -- 1. Calculate frequencies of card slugs (names)
-    -- Use pattern matching to disambiguate _name
-    getCardNameSlug (CoreCard _ n _ _ _ _ _) = slugify (getNonEmptyText n)
+    -- Use lens to disambiguate name
+    getCardNameSlug c = slugify (getRawText (c ^. #name))
     cardSlugs = map getCardNameSlug cards
     freqMap = Map.fromListWith (+) $ zip cardSlugs (repeat 1 :: [Int])
 
@@ -152,8 +155,8 @@ processDeck actorId cards =
 -- | Assign ID based on frequency and current count
 assignId ::
   Text -> Map.Map Text Int -> Map.Map Text Int -> CoreCard -> (Map.Map Text Int, CoreCardMachine)
-assignId actorId freqMap counters card@(CoreCard _ n _ _ _ _ _) =
-  let cardSlug = slugify (getNonEmptyText n)
+assignId actorId freqMap counters card =
+  let cardSlug = slugify (getRawText (card ^. #name))
       count = Map.findWithDefault 0 cardSlug counters
       total = Map.findWithDefault 0 cardSlug freqMap
 
@@ -175,14 +178,14 @@ assignId actorId freqMap counters card@(CoreCard _ n _ _ _ _ _) =
 toVttCoreCard :: CoreCard -> Text -> CoreCardMachine
 toVttCoreCard CoreCard{..} finalId =
   CoreCard
-    { _id = finalId
-    , _rules = fmap (fmap convertRule) _rules
-    , _flavor = fmap unRichString _flavor
+    { id = finalId
+    , rules = fmap (fmap convertRule) rules
+    , flavor = fmap getRichText flavor
     , ..
     }
 
 convertRule :: DSLRule -> Rule
-convertRule (DSLRule r) = fmap unRichString r
+convertRule (DSLRule r) = fmap getRichText r
 
 -- | Simple slugify
 slugify :: Text -> Text
@@ -191,7 +194,7 @@ slugify = T.toLower . T.replace " " "-"
 toVttConsequenceCard :: ConsequenceCard -> ConsequenceCardMachine
 toVttConsequenceCard ConsequenceCard{..} =
   ConsequenceCard
-    { _id = fromMaybe (slugify (getNonEmptyText _name)) _id
-    , _rules = fmap (fmap convertRule) _rules
+    { id = fromMaybe (slugify (getRawText name)) id
+    , rules = fmap (fmap convertRule) rules
     , ..
     }

@@ -22,7 +22,7 @@ import System.Random (StdGen)
 
 import GHC.Generics (Generic)
 
-import CardPG.Core.Logic (GameM(..))
+import CardPG.Core.Logic (GameM, runGameM)
 import CardPG.Core.Primitives (TargetId)
 import CardPG.Core.State (ActorState, GameEnv(..), GameEvent)
 

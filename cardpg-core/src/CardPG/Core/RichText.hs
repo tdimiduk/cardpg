@@ -6,6 +6,8 @@ module CardPG.Core.RichText
   , Inline (..)
   , RichText (..)
   , RichString (..)
+  , getRichText
+  , getInlines
   , mkRichString
   , Block (..)
   , CardBody
@@ -23,7 +25,7 @@ import Data.Text qualified as T
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json
-import CardPG.Core.NonEmptyText (NonEmptyText, getNonEmptyText, mkNonEmptyText, unsafeNonEmptyText)
+import CardPG.Core.NonEmptyText (NonEmptyText, getRawText, mkNonEmptyText, unsafeNonEmptyText)
 import CardPG.Core.Primitives (Difficulty, StackPower (..))
 
 -- | 1. The Token Stream
@@ -48,14 +50,14 @@ $(deriveJSON cardpgJsonDef ''TextStyle)
 -- | Refactored to use inline records for standard JSON derivation.
 data Inline
   = TextRun
-      { _style :: Maybe TextStyle
-      , _content :: NonEmptyText
+      { style :: Maybe TextStyle
+      , content :: NonEmptyText
       }
   | ColorValue
-      { _value :: StackPower
+      { value :: StackPower
       }
   | DifficultyValue
-      { _difficulty :: Difficulty
+      { difficulty :: Difficulty
       }
   | Break
   deriving stock (Eq, Show, Generic)
@@ -67,8 +69,11 @@ $(deriveJSON cardpgJsonDef ''Inline)
 -- | MOVED BELOW RichString to avoid scope issues if any (though usually not needed in Haskell, TH might be picky)
 
 -- | The Base Machine Type (Always an Array)
-newtype RichText = RichText {unRichText :: NE.NonEmpty Inline}
+newtype RichText = RichText {inlines :: NE.NonEmpty Inline}
   deriving stock (Eq, Show, Generic)
+
+getInlines :: RichText -> NE.NonEmpty Inline
+getInlines (RichText x) = x
 
 $(deriveJSON cardpgJsonDef ''RichText)
 
@@ -77,8 +82,11 @@ instance Semigroup RichText where
     RichText $ NE.fromList $ mergeAdjacent (NE.toList a ++ NE.toList b)
 
 -- | The Human Wrapper (Supports "String" or Array)
-newtype RichString = RichString {unRichString :: RichText}
+newtype RichString = RichString {richText :: RichText}
   deriving stock (Eq, Show, Generic)
+
+getRichText :: RichString -> RichText
+getRichText (RichString x) = x
 
 -- | Smart constructor that merges adjacent TextRuns with the same style
 -- | and strips leading/trailing whitespace from the entire RichString.
@@ -103,7 +111,7 @@ stripBoundaryWhitespace inlines =
   where
     stripStart [] = []
     stripStart (TextRun s c : xs) =
-      let strippedText = T.stripStart (getNonEmptyText c)
+      let strippedText = T.stripStart (getRawText c)
        in case mkNonEmptyText strippedText of
             Nothing -> stripStart xs
             Just c' -> TextRun s c' : xs
@@ -120,10 +128,10 @@ simpleString :: Text -> Maybe RichString
 simpleString t = mkRichString [TextRun Nothing (unsafeNonEmptyText t)]
 
 instance ToJSON RichString where
-  toJSON (RichString (RichText (TextRun Nothing t NE.:| []))) = toJSON (getNonEmptyText t)
+  toJSON (RichString (RichText (TextRun Nothing t NE.:| []))) = toJSON (getRawText t)
   toJSON (RichString rs) = toJSON rs
 
-  toEncoding (RichString (RichText (TextRun Nothing t NE.:| []))) = toEncoding (getNonEmptyText t)
+  toEncoding (RichString (RichText (TextRun Nothing t NE.:| []))) = toEncoding (getRawText t)
   toEncoding (RichString rs) = toEncoding rs
 
 instance FromJSON RichString where

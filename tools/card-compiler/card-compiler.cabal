@@ -23,6 +23,7 @@ executable card-compiler
                     , text
                     , yaml
                     , megaparsec
+                    , optics
                     , vector
                     , cardpg-core
                     , filepath

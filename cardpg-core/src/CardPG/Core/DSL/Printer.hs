@@ -10,8 +10,8 @@ import CardPG.Core.RichText
   , RichText (..)
   , StackPower (..)
   , TextStyle (..)
-  , unRichString
-  , unRichText
+  , getRichText
+  , getInlines
   )
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)
@@ -31,7 +31,7 @@ import Data.Maybe (catMaybes)
 import Data.Text (Text)
 import Data.Text qualified as T
 
-import CardPG.Core.NonEmptyText (NonEmptyText, getNonEmptyText)
+import CardPG.Core.NonEmptyText (NonEmptyText, getRawText)
 
 effectArrow :: Text
 effectArrow = "->"
@@ -45,51 +45,51 @@ inParens t = "(" <> t <> ")"
 prettyRule :: DSLBase -> Text
 prettyRule (RuleAttack AttackDef{..}) =
   "Attack "
-    <> prettyResource _resistedBy
+    <> prettyResource resistedBy
     <> ": Strength = "
-    <> prettyPower _power
-    <> prettyExtra _effect
+    <> prettyPower power
+    <> prettyExtra effect
 prettyRule (RuleGeneral GeneralDef{..}) =
   "Action: "
-    <> getNonEmptyText _name
-    <> maybe "" ((" " <>) . inParens . richToString) _cost
-    <> maybe "" ((" " <>) . prettyDifficulty) _difficulty
+    <> getRawText name
+    <> maybe "" ((" " <>) . inParens . richToString) cost
+    <> maybe "" ((" " <>) . prettyDifficulty) difficulty
     <> " "
     <> effectArrow
     <> " "
-    <> richToString _effect
+    <> richToString effect
 prettyRule (RuleStance StanceDef{..}) =
-  "Stance " <> inParens (getNonEmptyText _duration) <> prettyExtra (Just _effect)
+  "Stance " <> inParens (getRawText duration) <> prettyExtra (Just effect)
 prettyRule (RuleChannel ChannelDef{..}) =
-  "Channel " <> inParens (getNonEmptyText _duration) <> prettyExtra (Just _effect)
+  "Channel " <> inParens (getRawText duration) <> prettyExtra (Just effect)
 prettyRule (RulePrime PrimeDef{..}) =
-  "Prime " <> inParens (getNonEmptyText _trigger) <> ": " <> prettyRule _reaction
+  "Prime " <> inParens (getRawText trigger) <> ": " <> prettyRule reaction
 prettyRule (RulePassive PassiveDef{..}) =
-  "Passive: " <> prettyPower _bonus <> prettyCondition _condition
+  "Passive: " <> prettyPower bonus <> prettyCondition condition
 prettyRule (RuleTask TaskDef{..}) =
   "Task: "
-    <> getNonEmptyText _name
+    <> getRawText name
     <> parensContent
     <> " "
     <> effectArrow
     <> " "
-    <> richToString _effect
+    <> richToString effect
   where
-    checkStr = fmap (\c -> "Check " <> prettyDifficulty c) _check
-    timeStr = fmap (\t -> "Time " <> richToString t) _time
-    costStr = fmap (\c -> "Cost " <> richToString c) _cost
+    checkStr = fmap (\c -> "Check " <> prettyDifficulty c) check
+    timeStr = fmap (\t -> "Time " <> richToString t) time
+    costStr = fmap (\c -> "Cost " <> richToString c) cost
 
     parts = [checkStr, timeStr, costStr]
     inner = T.intercalate "; " (catMaybes parts)
 
     parensContent = if T.null inner then "" else " (" <> inner <> ")"
 prettyRule (RuleTrigger TriggerDef{..}) =
-  "When " <> getNonEmptyText _trigger <> " " <> effectArrow <> " " <> richToString _effect
+  "When " <> getRawText trigger <> " " <> effectArrow <> " " <> richToString effect
 prettyRule (RuleNarrative rt) = richToString rt
 
 prettyCondition :: Maybe NonEmptyText -> Text
 prettyCondition Nothing = ""
-prettyCondition (Just c) = " " <> getNonEmptyText c
+prettyCondition (Just c) = " " <> getRawText c
 
 prettyResource :: ResourceType -> Text
 prettyResource Red = "{Red}"
@@ -118,13 +118,13 @@ prettyExtra Nothing = ""
 prettyExtra (Just rt) = " -> " <> richToString rt
 
 richToString :: RichString -> Text
-richToString rs = T.concat . map inlineToString . NE.toList . unRichText $ unRichString rs
+richToString rs = T.concat . map inlineToString . NE.toList . getInlines $ getRichText rs
 
 inlineToString :: Inline -> Text
-inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getNonEmptyText content
-inlineToString (TextRun (Just Italic) content) = wrapped "*" $ getNonEmptyText content
-inlineToString (TextRun (Just GameKeyword) content) = wrapped "`" $ getNonEmptyText content
-inlineToString (TextRun _ content) = getNonEmptyText content
+inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getRawText content
+inlineToString (TextRun (Just Italic) content) = wrapped "*" $ getRawText content
+inlineToString (TextRun (Just GameKeyword) content) = wrapped "`" $ getRawText content
+inlineToString (TextRun _ content) = getRawText content
 inlineToString (ColorValue power) = prettyPower power
 inlineToString (DifficultyValue diff) = prettyDifficulty diff
 inlineToString Break = "\n"

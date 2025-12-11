@@ -58,15 +58,15 @@ run inputFile outputDir tag = do
 heroCard :: NatureCard
 heroCard =
   NatureCard
-    { _id = Nothing
-    , _name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
-    , _tags = Nothing
-    , _flavor = Nothing
-    , _traits = Nothing
-    , _passive = Nothing
-    , _defense = Just 2
-    , _resilience = Just 3
-    , _specialDefend = Nothing
+    { id = Nothing
+    , name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
+    , tags = Nothing
+    , flavor = Nothing
+    , traits = Nothing
+    , passive = Nothing
+    , defense = Just 2
+    , resilience = Just 3
+    , specialDefend = Nothing
     }
 
 processCards :: FilePath -> [RawCard] -> Maybe String -> IO ()
@@ -101,12 +101,12 @@ processCards outputDir cards tag = do
         else do
           let actorData =
                 ActorDefinition
-                  { _name = actorName
-                  , _tags = fmap (\t -> NE.fromList [T.pack t]) tag
-                  , _nature = finalNature
-                  , _items = items
-                  , _deck = deck
-                  , _id = Just (Vtt.slugify actorName)
+                  { name = actorName
+                  , tags = fmap (\t -> NE.fromList [T.pack t]) tag
+                  , nature = finalNature
+                  , items = items
+                  , deck = deck
+                  , id = Just (Vtt.slugify actorName)
                   }
           let fileName = T.unpack (sanitize actorName) ++ ".yaml"
           let outputPath = outputDir </> fileName
@@ -135,11 +135,12 @@ armorDefenseMonster (Just LightArmor) = 3
 armorDefenseMonster (Just HeavyArmor) = 4
 
 updateMonsterNature :: NatureCard -> NatureCard
-updateMonsterNature n@NatureCard{_passive = mPassive} =
-  n
-    { _defense = Just def
-    , _resilience = Just 2
-    , _passive = newPassive
+updateMonsterNature n@NatureCard{passive = mPassive} =
+  let def = maybe 0 (const 2) mPassive
+   in n
+    { defense = Just def
+    , resilience = Just 2
+    , passive = newPassive
     }
   where
     (def, newPassive) = case parseMaybe passiveParser =<< mPassive of

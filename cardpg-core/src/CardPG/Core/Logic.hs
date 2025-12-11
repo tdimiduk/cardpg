@@ -2,6 +2,7 @@
 
 module CardPG.Core.Logic
   ( GameM(..)
+  , runGameM
   , performFatigueCycle
   , drawCard
   , flipCardToDefense
@@ -37,6 +38,9 @@ newtype GameM g a = GameM
     , MonadState ActorState
     )
 
+runGameM :: GameM g a -> RWST GameEnv [GameEvent] ActorState (State g) a
+runGameM (GameM x) = x
+
 -- | Helper to access the random generator from the base monad
 liftRandom :: (g -> (a, g)) -> GameM g a
 liftRandom f = GameM . lift $ state f
@@ -47,7 +51,7 @@ calculateTotalBurden = do
   let equippedItems = [ item | (cid, Equipped _) <- Map.toList (tblSt ^. #assets)
                              , Just (TCItem item) <- [Map.lookup cid (tblSt ^. #registry)]
                              ]
-  let burden = sum [ b | item <- equippedItems, let b = maybe 0 id (_burden item) ]
+  let burden = sum [ b | item <- equippedItems, let b = maybe 0 id (item ^. #burden) ]
   return burden
 
 performFatigueCycle :: RandomGen g => GameM g ()

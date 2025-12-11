@@ -57,17 +57,17 @@ data ResourceType = Red | Yellow | Blue
 $(deriveJSON cardpgJsonDef ''ResourceType)
 
 data StackPower = StackPower
-  { _source :: ResourceType
-  , _modifier :: Int
-  , _conditional :: Maybe Text
+  { source :: ResourceType
+  , modifier :: Int
+  , conditional :: Maybe Text
   }
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''StackPower)
 
 data Difficulty = Difficulty
-  { _attribute :: ResourceType
-  , _value :: Int
+  { attribute :: ResourceType
+  , value :: Int
   }
   deriving stock (Eq, Show, Generic)
 

@@ -39,64 +39,64 @@ import CardPG.Core.RichText (RichString, RichText, StackPower)
 -- | A static modifier.
 -- | Addresses: "+2 to resource values when used in a defense stack"
 data PassiveDef = PassiveDef
-  { _bonus :: StackPower
-  , _condition :: Maybe NonEmptyText
+  { bonus :: StackPower
+  , condition :: Maybe NonEmptyText
   }
   deriving (Show, Eq, Generic)
 
 -- | Standard Attack Logic
 data AttackDefT rt = AttackDef
-  { _power :: StackPower
-  , _resistedBy :: ResourceType
-  , _effect :: Maybe rt
+  { power :: StackPower
+  , resistedBy :: ResourceType
+  , effect :: Maybe rt
   }
   deriving (Show, Eq, Generic, Functor)
 
 -- | General/Utility Actions
 -- | Addresses: "Fatigue: Action (Sleep 2 hours): Remove this"
 data GeneralDefT rt = GeneralDef
-  { _name :: NonEmptyText
-  , _cost :: Maybe rt
+  { name :: NonEmptyText
+  , cost :: Maybe rt
   -- ^ Narrative Cost: "Sleep 2 hours"
-  , _difficulty :: Maybe Difficulty
+  , difficulty :: Maybe Difficulty
   -- ^ Optional. Fatigue removal isn't a check.
-  , _effect :: rt
+  , effect :: rt
   -- ^ Effect: "Remove this card"
   }
   deriving (Show, Eq, Generic, Functor)
 
 -- | Persistent Effects: Stance
 data StanceDefT rt = StanceDef
-  { _duration :: NonEmptyText
-  , _effect :: rt
+  { duration :: NonEmptyText
+  , effect :: rt
   }
   deriving (Show, Eq, Generic, Functor)
 
 -- | Persistent Effects: Channel
 data ChannelDefT rt = ChannelDef
-  { _duration :: NonEmptyText
-  , _effect :: rt
+  { duration :: NonEmptyText
+  , effect :: rt
   }
   deriving (Show, Eq, Generic, Functor)
 
 -- | Persistent Effects: Prime
 data PrimeDefT rt = PrimeDef
-  { _trigger :: NonEmptyText
-  , _reaction :: RuleT rt
+  { trigger :: NonEmptyText
+  , reaction :: RuleT rt
   }
   deriving (Show, Eq, Generic, Functor)
 
 -- | Task Actions (Downtime/Narrative)
 -- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
 data TaskDefT rt = TaskDef
-  { _name :: NonEmptyText
-  , _check :: Maybe Difficulty
+  { name :: NonEmptyText
+  , check :: Maybe Difficulty
   -- ^ The difficulty check: "Check {Blue} 3"
-  , _time :: Maybe rt
+  , time :: Maybe rt
   -- ^ Duration: "Time 1 min"
-  , _cost :: Maybe rt
+  , cost :: Maybe rt
   -- ^ Narrative Cost: "Cost Bandage"
-  , _effect :: rt
+  , effect :: rt
   -- ^ Effect: "Remove this card"
   }
   deriving (Show, Eq, Generic, Functor)
@@ -104,8 +104,8 @@ data TaskDefT rt = TaskDef
 -- | Triggered Effects (When)
 -- | Addresses: "When removed -> Add 1 Wound"
 data TriggerDefT rt = TriggerDef
-  { _trigger :: NonEmptyText
-  , _effect :: rt
+  { trigger :: NonEmptyText
+  , effect :: rt
   }
   deriving (Show, Eq, Generic, Functor)
 

@@ -54,13 +54,13 @@ test_game = testGroup "Server Game Engine"
 
 mockCard :: Text -> CoreCard
 mockCard id' = CoreCard
-  { _id = Just id'
-  , _name = undefined -- Safe for this test
-  , _cost = Nothing
-  , _tags = Nothing
-  , _stats = undefined
-  , _rules = Nothing
-  , _flavor = Nothing
+  { id = Just id'
+  , name = undefined -- Safe for this test
+  , cost = Nothing
+  , tags = Nothing
+  , stats = undefined
+  , rules = Nothing
+  , flavor = Nothing
   }
 
 emptyActorState :: ActorState

@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLabels #-}
 
 module StatusParsingTest where
 
@@ -9,6 +10,7 @@ import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
 import Test.Tasty
 import Test.Tasty.HUnit
+import Optics ((^.))
 
 import CardPG.Core.Card (CoreCard, CoreCardT (..))
 import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))
@@ -25,7 +27,7 @@ test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
         [] -> assertFailure "Should have at least one card"
         fatigue : _ -> do
           -- Verify that rules are parsed as General, not Narrative (fallback)
-          let rules = fromMaybe (error "No rules") (_rules fatigue)
+          let rules = fromMaybe (error "No rules") (fatigue ^. #rules)
           case NE.head rules of
             DSLRule (RuleGeneral _) -> return ()
             DSLRule (RuleTask _) -> return ()

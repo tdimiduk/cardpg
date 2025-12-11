@@ -30,7 +30,7 @@ import CardPG.Core.Card
   , Stats (..)
   )
 import CardPG.Core.DSL.Parser (parseRule)
-import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
+import CardPG.Core.NonEmptyText (getRawText, mkNonEmptyText)
 import CardPG.Core.Primitives (ResourceType (..))
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
 import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
@@ -108,47 +108,47 @@ itemBurden HeavyArmor = 2
 
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
-convertCard RawCard{..} = do
-  case mkNonEmptyText (T.strip name) of
+convertCard RawCard{name=rawName, flavor=rawFlavor, cost=rawCost, action=rawAction, ..} = do
+  case mkNonEmptyText (T.strip rawName) of
     Nothing -> Left "Skipping empty card row"
     Just validName -> do
-      let _name = validName
-          _tags = Nothing
-          _traits = keywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
-          _flavor = flavor >>= simpleString
-          _id = Nothing
-          _weight = Nothing
-          _value = Nothing
-          _defense = Nothing
-          _resilience = Nothing
-          _passive = nonEmptyText action
+      let name = validName
+          tags = Nothing
+          traits = keywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
+          flavor = rawFlavor >>= simpleString
+          id = Nothing
+          weight = Nothing
+          value = Nothing
+          defense = Nothing
+          resilience = Nothing
+          passive = nonEmptyText rawAction
 
       case (toIntMaybe red, toIntMaybe yellow, toIntMaybe blue) of
         (Nothing, Nothing, Nothing) ->
-          if Just (T.toLower (getNonEmptyText validName)) == (T.toLower <$> actor)
+          if Just (T.toLower (getRawText validName)) == (T.toLower <$> actor)
             then
               pure $
                 PNature
                   NatureCard
-                    { _specialDefend = parseSpecialDefend red yellow blue
+                    { specialDefend = parseSpecialDefend red yellow blue
                     , ..
                     }
             else
-              let (def, bur, pas) = case action of
+              let (def, bur, pas) = case rawAction of
                     Just actRaw ->
                       case parseMaybe passiveParser actRaw of
                         Just (ParsedPassive (Just armor) _) -> (Just (itemDefense armor), Just (itemBurden armor), Nothing)
                         Just (ParsedPassive Nothing remainder) -> (Nothing, Nothing, nonEmptyText remainder)
-                        _ -> (Nothing, Nothing, nonEmptyText action)
+                        _ -> (Nothing, Nothing, nonEmptyText rawAction)
                     Nothing -> (Nothing, Nothing, Nothing)
-                  _defense = def
-                  _passive = pas
-               in pure $ PItem ItemCard{_burden = bur, ..}
+                  passive = pas
+                  defense = def
+               in pure $ PItem ItemCard{burden = bur, ..}
         (Just r, Just y, Just b) -> do
-          let _stats = Stats r y b
-              _cost = toIntMaybe cost
-          rules <- parseRules action effect details
-          let _rules = NE.nonEmpty (map DSLRule rules)
+          let stats = Stats r y b
+              cost = toIntMaybe rawCost
+          parsedRules <- parseRules rawAction effect details
+          let rules = NE.nonEmpty (map DSLRule parsedRules)
           pure $ PCore CoreCard{..}
         _ ->
           Left

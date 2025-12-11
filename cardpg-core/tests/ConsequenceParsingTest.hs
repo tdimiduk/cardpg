@@ -28,7 +28,7 @@ test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
             [] -> error "Impossible: length 1 but empty"
       -- Verify that rules are parsed as Task or Trigger, not Narrative (fallback)
       let rules = case firstCard of
-            ConsequenceCard{_rules = r} -> fromMaybe (error "No rules") r
+            ConsequenceCard{rules = r} -> fromMaybe (error "No rules") r
       case NE.head rules of
         DSLRule (RuleTask _) -> return ()
         DSLRule (RuleTrigger _) -> return ()

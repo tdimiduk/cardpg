@@ -14,7 +14,7 @@ import Test.Tasty.QuickCheck hiding (discard)
 
 import ArbitraryInstances ()
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.Logic (performFatigueCycle, GameM(..))
+import CardPG.Core.Logic (performFatigueCycle, GameM(..), runGameM)
 import CardPG.Core.State
 import CardPG.Core.Card (ItemCard, ItemCardT(..))
 import CardPG.Core.Primitives (CardInstanceId(..), EquipSlot(..))
@@ -44,17 +44,17 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
     -- Construct ActorState with specific burden
     dummyItem :: ItemCard
     dummyItem = ItemCard
-      { _id = Nothing
-      , _name = unsafeNonEmptyText "Heavy Armor"
-      , _tags = Nothing
-      , _flavor = Nothing
-      , _weight = Nothing
-      , _value = Nothing
-      , _traits = Nothing
-      , _passive = Nothing
-      , _defense = Nothing
-      , _resilience = Nothing
-      , _burden = Just burden
+      { id = Nothing
+      , name = unsafeNonEmptyText "Heavy Armor"
+      , tags = Nothing
+      , flavor = Nothing
+      , weight = Nothing
+      , value = Nothing
+      , traits = Nothing
+      , passive = Nothing
+      , defense = Nothing
+      , resilience = Nothing
+      , burden = Just burden
       }
 
 

@@ -7,7 +7,7 @@ module CardPG.Core.NonEmptyText
   , unsafeNonEmptyText
   , takeWhilePNonEmpty
   , takeWhilePNonEmptyStripped
-  , getNonEmptyText
+  , getRawText
   ) where
 
 import Control.Monad (mzero)
@@ -29,8 +29,11 @@ takeWhilePNonEmptyStripped name p = do
     Just t -> pure t
     Nothing -> fail "only whitespace"
 
-newtype NonEmptyText = NonEmptyText {getNonEmptyText :: Text}
+newtype NonEmptyText = NonEmptyText {rawText :: Text}
   deriving newtype (Show, Eq, Ord, Semigroup)
+
+getRawText :: NonEmptyText -> Text
+getRawText (NonEmptyText t) = t
 
 -- | Smart constructor
 mkNonEmptyText :: Text -> Maybe NonEmptyText
@@ -48,7 +51,7 @@ unsafeNonEmptyText :: Text -> NonEmptyText
 unsafeNonEmptyText = NonEmptyText
 
 instance ToJSON NonEmptyText where
-  toJSON = toJSON . getNonEmptyText
+  toJSON = toJSON . getRawText
 
 instance FromJSON NonEmptyText where
   parseJSON = withText "NonEmptyText" $ \t ->

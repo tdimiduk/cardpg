@@ -17,7 +17,7 @@ import Test.Tasty.QuickCheck
 
 import CardPG.Core.Card
 import CardPG.Core.DSL.Printer (richToString)
-import CardPG.Core.NonEmptyText (NonEmptyText (..), getNonEmptyText, unsafeNonEmptyText)
+import CardPG.Core.NonEmptyText (NonEmptyText (..), getRawText, unsafeNonEmptyText)
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
 import CardPG.Core.State
@@ -53,7 +53,7 @@ instance Arbitrary Difficulty where
     attr <- arbitrary
     val <- getPositive <$> arbitrary
     pure $ Difficulty attr val
-  shrink d = filter (\d' -> d'._value >= 1) (genericShrink d)
+  shrink d = filter (\d' -> d'.value >= 1) (genericShrink d)
 
 instance Arbitrary TextStyle where
   arbitrary = genericArbitrary uniform
@@ -70,7 +70,7 @@ instance Arbitrary RichString where
       Just rs -> return rs
   shrink rs =
     [ rs'
-    | l <- shrink (NE.toList (unRichText (unRichString rs)))
+    | l <- shrink (NE.toList (getInlines (getRichText rs)))
     , not (null l)
     , Just rs' <- [mkRichString l]
     ]
@@ -217,7 +217,7 @@ instance Arbitrary NonEmptyText where
     return $ unsafeNonEmptyText t
   shrink ne =
     [ unsafeNonEmptyText (T.pack s)
-    | s <- shrink (T.unpack (getNonEmptyText ne))
+    | s <- shrink (T.unpack (getRawText ne))
     , not (null s)
     ]
 

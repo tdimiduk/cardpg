@@ -17,8 +17,7 @@ import Data.Vector qualified as V
 cardpgJsonOptions :: String -> Options
 cardpgJsonOptions prefixToStrip =
   defaultOptions
-    { fieldLabelModifier = stripUnderscore
-    , constructorTagModifier = lowerFirst . stripPrefix' prefixToStrip
+    { constructorTagModifier = lowerFirst . stripPrefix' prefixToStrip
     , -- \| TS Discrimination: { "type": "attack", ... }
       sumEncoding =
         TaggedObject
@@ -32,8 +31,7 @@ cardpgJsonOptions prefixToStrip =
       unwrapUnaryRecords = True
     }
   where
-    stripUnderscore ('_' : xs) = xs
-    stripUnderscore xs = xs
+
 
     lowerFirst (x : xs) = toLower x : xs
     lowerFirst [] = []
