@@ -6,7 +6,6 @@
 
 module CardCompiler where
 
-import Control.Applicative (optional, (<|>))
 import Control.Monad (forM_, unless)
 import Data.Aeson (Result (..), Value (..), eitherDecode, fromJSON)
 import qualified Data.ByteString as BS
