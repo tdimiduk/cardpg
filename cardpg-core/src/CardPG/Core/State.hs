@@ -82,6 +82,8 @@ $(deriveJSON cardpgJsonDef ''ActorState)
 data GameEvent
   = CardsCreated [CardInstanceId]
   | DeckShuffled
+  | CardDrawn CardInstanceId
+  | CardDefended CardInstanceId
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)

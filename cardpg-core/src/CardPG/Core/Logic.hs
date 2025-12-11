@@ -84,6 +84,7 @@ drawCard = do
     (top:rest) -> do
       modify $ #coreState % #deck .~ rest
       modify $ #coreState % #hand %~ (top :)
+      tell [CardDrawn top]
 
 flipCardToDefense :: RandomGen g => GameM g ()
 flipCardToDefense = do
@@ -95,3 +96,4 @@ flipCardToDefense = do
     (top:rest) -> do
       modify $ #coreState % #deck .~ rest
       modify $ #coreState % #defending %~ (top :)
+      tell [CardDefended top]
