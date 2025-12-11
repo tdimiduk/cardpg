@@ -1,9 +1,9 @@
 module Main where
 
 import Test.Tasty (defaultMain, testGroup)
-import qualified EngineTest
+import qualified GameTest
 
 main :: IO ()
 main = defaultMain $ testGroup "CardPG Server Tests"
-  [ EngineTest.tests
+  [ GameTest.test_game
   ]

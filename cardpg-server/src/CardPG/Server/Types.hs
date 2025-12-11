@@ -14,7 +14,6 @@ module CardPG.Server.Types
   , BroadcastAction (..)
   , CardLibrary (..)
   , ServerState (..)
-  , PlayerDeckState (..)
   , newServerState
   ) where
 
@@ -159,17 +158,4 @@ data ServerState = ServerState
 newServerState :: ServerState
 newServerState = ServerState Map.empty [] (CardLibrary [] [] [])
 
--- | State of a player's deck, hand, and discard piles.
-data PlayerDeckState = PlayerDeckState
-  { drawPile :: [CoreCardMachine]
-  , hand :: [CoreCardMachine]
-  , discardPile :: [CoreCardMachine]
-  , flippedPile :: [CoreCardMachine]
-  }
-  deriving (Show, Eq, Generic)
 
-instance ToJSON PlayerDeckState where
-  toJSON = genericToJSON cardpgJsonDef
-
-instance FromJSON PlayerDeckState where
-  parseJSON = genericParseJSON cardpgJsonDef
