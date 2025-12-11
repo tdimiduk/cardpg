@@ -17,8 +17,8 @@ import ArbitraryInstances ()
 import ConsequenceParsingTest (test_consequenceParsing)
 import ReadmeExamplesTest (test_readmeExamples)
 import RuleJsonTest (prop_ruleJsonParsing)
-import StatusParsingTest (test_statusParsing)
 import StateTests (test_stateTests)
+import StatusParsingTest (test_statusParsing)
 
 main :: IO ()
 main = defaultMain tests

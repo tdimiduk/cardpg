@@ -4,7 +4,6 @@ module Rules.Cards where
 
 import Control.Monad (forM_)
 
-
 import Data.Aeson (withObject, (.:), (.:?))
 import qualified Data.Aeson.KeyMap as KM
 import Data.Maybe (mapMaybe)
@@ -58,7 +57,7 @@ compileLegacyCards :: Action ()
 compileLegacyCards = do
   (pcDecks, monsterDecks) <- liftIO getDecks
   need ["_build/bin/card-compiler"]
-  
+
   forM_ pcDecks $ \deck -> do
     let deckId = entryId deck
     let jsonSrc = "data/cards/raw" </> deckId <.> "json"
@@ -83,7 +82,6 @@ runSync = cmd_ (["python3", "tools/gsheet_sync/sync-cards-gsheet.py", "--all", "
 defineVttRule :: Rules ()
 defineVttRule = do
   "vtt-react/src/data/generated_cards.json" %> \out -> do
-
     -- Now that compilation is done, dynamically find all generated YAML files
     pcYamls <- getDirectoryFiles "data/cards/pc" ["*.yaml"]
     monsterYamls <- getDirectoryFiles "data/cards/monsters" ["*.yaml"]

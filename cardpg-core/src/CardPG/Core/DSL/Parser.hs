@@ -31,6 +31,7 @@ import CardPG.Core.NonEmptyText
   , takeWhilePNonEmptyStripped
   , unsafeNonEmptyText
   )
+import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 import CardPG.Core.RichText (Inline (..), RichString, StackPower (..), TextStyle (..), mkRichString)
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)
@@ -44,7 +45,6 @@ import CardPG.Core.RuleDefs
   , TaskDefT (..)
   , TriggerDefT (..)
   )
-import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 
 type Parser = Parsec Void Text
 

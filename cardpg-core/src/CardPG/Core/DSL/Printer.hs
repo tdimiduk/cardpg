@@ -3,6 +3,7 @@
 
 module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 
+import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 import CardPG.Core.RichText
   ( Inline (..)
   , RichString
@@ -24,7 +25,6 @@ import CardPG.Core.RuleDefs
   , TaskDefT (..)
   , TriggerDefT (..)
   )
-import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 
 import Data.List.NonEmpty qualified as NE
 import Data.Maybe (catMaybes)

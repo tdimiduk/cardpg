@@ -31,9 +31,9 @@ import CardPG.Core.Card
   )
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
+import CardPG.Core.Primitives (ResourceType (..))
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
 import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
-import CardPG.Core.Primitives (ResourceType (..))
 
 type Parser = Parsec Void Text
 
@@ -56,7 +56,8 @@ passiveParser = do
 
 data ParsedPassive = ParsedPassive
   { armor :: Maybe ArmorType
-  , remainder:: Maybe Text}
+  , remainder :: Maybe Text
+  }
 
 -- | Sum type for different card types
 data ParsedCard

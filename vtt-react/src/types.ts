@@ -5,7 +5,12 @@ import { CoreCard, ItemCard, NatureCard, TalentCard } from './generated/types';
 export * from './generated/types';
 export * from './generated/types.zod';
 
-import { coreCardSchema, itemCardSchema, natureCardSchema, talentCardSchema } from './generated/types.zod';
+import {
+  coreCardSchema,
+  itemCardSchema,
+  natureCardSchema,
+  talentCardSchema,
+} from './generated/types.zod';
 
 // --- Card Union ---
 export const TableCardSchema = z.union([itemCardSchema, natureCardSchema, talentCardSchema]);

@@ -24,7 +24,14 @@ import System.Exit (die)
 import System.FilePath ((</>))
 import Text.Megaparsec (Parsec, parseMaybe)
 
-import CardCompiler.Parser (ArmorType (..), ParsedPassive (..), ParsedCard (..), RawCard (..), passiveParser, convertCard)
+import CardCompiler.Parser
+  ( ArmorType (..)
+  , ParsedCard (..)
+  , ParsedPassive (..)
+  , RawCard (..)
+  , convertCard
+  , passiveParser
+  )
 import qualified CardCompiler.VttExporter as Vtt
 import CardPG.Core.Card (ActorDefinitionT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
 import CardPG.Core.NonEmptyText (mkNonEmptyText)

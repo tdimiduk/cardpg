@@ -21,8 +21,8 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Card
   ( ActorDefinition
-  , ActorMachine
   , ActorDefinitionT (..)
+  , ActorMachine
   , ConsequenceCard
   , ConsequenceCardMachine
   , ConsequenceCardT (..)

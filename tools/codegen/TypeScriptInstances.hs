@@ -32,6 +32,7 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
+import CardPG.Core.Primitives (Difficulty, ResourceType (..), StackPower)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
@@ -43,7 +44,6 @@ import CardPG.Core.RuleDefs hiding
   , TaskDef
   , TriggerDef
   )
-import CardPG.Core.Primitives (Difficulty, ResourceType (..), StackPower)
 import CardPG.Server.Types (BroadcastAction (..), ClientMessage, ServerMessage, Token)
 import DeriveSpecialized (makeBridgeInstance, specializeType, specializeType2, specializeType3)
 
@@ -92,7 +92,12 @@ $( do
          (AppT ListT (ConT ''Inline))
          "CoreCard"
      d_actor <-
-       specializeType3 ''ActorDefinitionT (ConT ''Text) (ConT (mkName "Rule")) (AppT ListT (ConT ''Inline)) "ActorDefinition"
+       specializeType3
+         ''ActorDefinitionT
+         (ConT ''Text)
+         (ConT (mkName "Rule"))
+         (AppT ListT (ConT ''Inline))
+         "ActorDefinition"
 
      d_item <- specializeType2 ''ItemCardT (ConT ''Text) (AppT ListT (ConT ''Inline)) "ItemCard"
      d_nature <- specializeType2 ''NatureCardT (ConT ''Text) (AppT ListT (ConT ''Inline)) "NatureCard"

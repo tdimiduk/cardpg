@@ -37,10 +37,10 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText)
+import CardPG.Core.Primitives (Difficulty, ResourceType (..), StackPower)
 import CardPG.Core.RichText
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
-import CardPG.Core.Primitives (ResourceType (..), Difficulty, StackPower)
 
 data Stats = Stats {_red :: Int, _yellow :: Int, _blue :: Int}
   deriving stock (Eq, Show, Generic)
