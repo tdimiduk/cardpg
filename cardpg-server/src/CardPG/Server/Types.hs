@@ -10,6 +10,7 @@ module CardPG.Server.Types
   , ServerState (..)
   , Command (..)
   , StateUpdate (..)
+  , GameState (..)
   , newServerState
   ) where
 
@@ -33,6 +34,7 @@ import qualified Data.Text as T
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Network.WebSockets (Connection)
+import System.Random (StdGen)
 
 import CardPG.Core.Card
   ( ActorMachine
@@ -43,8 +45,15 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ResourceType, TargetId)
-import CardPG.Core.State (ActorState)
-import CardPG.Server.Game (GameState)
+import CardPG.Core.State (ActorState, GameEnv)
+
+-- | The authoritative state for a game session
+data GameState = GameState
+  { env :: GameEnv
+  , rng :: StdGen
+  , actors :: Map TargetId ActorState
+  }
+  deriving (Show, Generic)
 
 -- | A client connection with a unique ID and a name.
 data Client = Client
@@ -95,6 +104,7 @@ data BroadcastAction
   | RemoveStatus
       { activeTokenId :: Text
       , statusType :: Text
+      , destination :: Text
       }
   | DiscardCards
       { activeTokenId :: Text
