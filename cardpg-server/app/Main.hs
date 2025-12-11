@@ -27,25 +27,25 @@ import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), Br
 
 
 numClients :: ServerState -> Int
-numClients = Map.size . clients
+numClients = Map.size . (.clients)
 
 clientExists :: Client -> ServerState -> Bool
-clientExists client state = Map.member (clientId client) (clients state)
+clientExists client state = Map.member (client.clientId) (state.clients)
 
 addClient :: Client -> ServerState -> ServerState
-addClient client state = state { clients = Map.insert (clientId client) client (clients state) }
+addClient client state = state { clients = Map.insert (client.clientId) client (state.clients) }
 
 removeClient :: Client -> ServerState -> ServerState
-removeClient client state = state { clients = Map.delete (clientId client) (clients state) }
+removeClient client state = state { clients = Map.delete (client.clientId) (state.clients) }
 
 addAction :: BroadcastAction -> ServerState -> ServerState
-addAction action state = state { actionLog = actionLog state ++ [action] }
+addAction action state = state { actionLog = state.actionLog ++ [action] }
 
 broadcast :: ServerMessage -> ServerState -> IO ()
 broadcast msg state = do
     let msgBytes = encode msg
-    forM_ (Map.elems (clients state)) $ \client ->
-        sendTextData (clientConn client) msgBytes
+    forM_ (Map.elems (state.clients)) $ \client ->
+        sendTextData (client.clientConn) msgBytes
 
 main :: IO ()
 main = do
@@ -59,9 +59,9 @@ main = do
              return newServerState
         Right lib -> do
              T.putStrLn $ "Card Library Loaded: " 
-                <> T.pack (show (length (actors lib))) <> " actors, " 
-                <> T.pack (show (length (statuses lib))) <> " statuses, "
-                <> T.pack (show (length (consequences lib))) <> " consequences."
+                <> T.pack (show (length (lib.actors))) <> " actors, " 
+                <> T.pack (show (length (lib.statuses))) <> " statuses, "
+                <> T.pack (show (length (lib.consequences))) <> " consequences."
              return $ newServerState { library = lib }
 
     state <- newMVar initialState
@@ -86,29 +86,29 @@ application state pending = do
 
 talk :: Client -> MVar ServerState -> IO ()
 talk client state = forever $ do
-    msgBytes <- receiveData (clientConn client)
+    msgBytes <- receiveData (client.clientConn)
     case decode msgBytes of
         Nothing -> do
             T.putStrLn "Received invalid JSON"
-            sendTextData (clientConn client) (encode $ ErrorMessage "Invalid JSON")
+            sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
         Just (Join name) -> do
             let newClient = client { clientName = name }
             
             -- Update state with new client
             (currentClients, historyLog) <- modifyMVar state $ \s -> do
                 let s' = addClient newClient s
-                return (s', (clients s', actionLog s'))
+                return (s', (s'.clients, s'.actionLog))
             
-            T.putStrLn $ "Client joined: " <> name <> " (" <> T.pack (show $ clientId newClient) <> ")"
+            T.putStrLn $ "Client joined: " <> name <> " (" <> T.pack (show $ newClient.clientId) <> ")"
             
             -- Send Welcome to the new client
-            let clientNames = map clientName $ Map.elems currentClients
-            sendTextData (clientConn newClient) $ encode $ Welcome (clientId newClient) clientNames historyLog
+            let clientNames = map (.clientName) $ Map.elems currentClients
+            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) clientNames historyLog
             
             -- Notify others
             -- We construct a temporary state for broadcasting to everyone else
-            let broadcastState = ServerState (Map.delete (clientId newClient) currentClients) [] (CardLibrary [] [] [])
-            broadcast (ClientJoined name (clientId newClient)) broadcastState
+            let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) [] (CardLibrary [] [] [])
+            broadcast (ClientJoined name (newClient.clientId)) broadcastState
             
             -- Continue loop with updated client info
             talkLoop newClient state
@@ -117,11 +117,11 @@ talk client state = forever $ do
             -- Update log and broadcast
             currentClients <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
-                return (s', clients s')
+                return (s', s'.clients)
 
             -- Broadcast to others
-            let broadcastState = ServerState (Map.delete (clientId client) currentClients) [] (CardLibrary [] [] [])
-            broadcast (BroadcastMessage (clientId client) payload) broadcastState
+            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] [])
+            broadcast (BroadcastMessage (client.clientId) payload) broadcastState
             
             -- Continue loop
             talkLoop client state
@@ -131,11 +131,11 @@ talk client state = forever $ do
 -- But since 'Join' updates the client record (name), we need to pass that updated record around.
 talkLoop :: Client -> MVar ServerState -> IO ()
 talkLoop client state = do
-    msgBytes <- receiveData (clientConn client)
+    msgBytes <- receiveData (client.clientConn)
     case decode msgBytes of
         Nothing -> do
             T.putStrLn "Received invalid JSON"
-            sendTextData (clientConn client) (encode $ ErrorMessage "Invalid JSON")
+            sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
             talkLoop client state
         Just (Join name) -> do
              -- Allow renaming?
@@ -147,17 +147,17 @@ talkLoop client state = do
             -- Update log and broadcast
             currentClients <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
-                return (s', clients s')
+                return (s', s'.clients)
 
-            let broadcastState = ServerState (Map.delete (clientId client) currentClients) [] (CardLibrary [] [] [])
-            broadcast (BroadcastMessage (clientId client) payload) broadcastState
+            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] [])
+            broadcast (BroadcastMessage (client.clientId) payload) broadcastState
             
             talkLoop client state
 
 disconnect :: Client -> MVar ServerState -> IO ()
 disconnect client state = do
-    T.putStrLn $ "Client disconnected: " <> clientName client
+    T.putStrLn $ "Client disconnected: " <> client.clientName
     s <- modifyMVar state $ \s -> do
         let s' = removeClient client s
         return (s', s')
-    broadcast (ClientLeft (clientId client)) s
+    broadcast (ClientLeft (client.clientId)) s

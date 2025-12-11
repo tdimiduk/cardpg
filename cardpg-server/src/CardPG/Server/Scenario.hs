@@ -3,7 +3,7 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE OverloadedRecordDot #-}
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module CardPG.Server.Scenario where
@@ -82,7 +82,7 @@ loadScenarioActors baseDir actorsList = do
     -- In the future, we might want to map the ScenarioActor.id to this TargetId explicitly
     -- or store it in a lookup table if we need to reference them by name.
     gameState <- get
-    let (tid, newRng) = uniform (rng gameState) :: (TargetId, StdGen)
+    let (tid, newRng) = uniform (gameState.rng) :: (TargetId, StdGen)
     put $ gameState { rng = newRng }
     
     let updatedGame = addActor tid actorState (gameState { rng = newRng })

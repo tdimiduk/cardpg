@@ -27,6 +27,10 @@ library
                      , mtl
                      , yaml
                      , filepath
+  default-extensions:  DuplicateRecordFields
+                     , OverloadedStrings
+                     , OverloadedRecordDot
+                     , NoFieldSelectors
   default-language:    Haskell2010
 
 executable cardpg-server
@@ -45,6 +49,8 @@ executable cardpg-server
                      , bytestring
   default-extensions:  DuplicateRecordFields
                      , OverloadedStrings
+                     , OverloadedRecordDot
+                     , NoFieldSelectors
   default-language:    Haskell2010
 
 test-suite cardpg-server-test
@@ -69,5 +75,7 @@ test-suite cardpg-server-test
                      , filepath
   default-extensions:  DuplicateRecordFields
                      , OverloadedStrings
+                     , OverloadedRecordDot
+                     , NoFieldSelectors
   default-language:    Haskell2010
 
