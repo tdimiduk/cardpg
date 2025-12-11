@@ -192,13 +192,13 @@ talkLoop client state = do
                     Just (targetId, actions, actorSt) -> do
                         -- Update GameHistory
                         let s' = foldl (flip addAction) (s { gameState = newGame }) actions
-                        return (s', Just (actions, actorSt, s'.clients))
+                        return (s', Just (targetId, actions, actorSt, s'.clients))
 
             -- Broadcast results
             case res of
                 Nothing -> 
                     T.putStrLn $ "Command failed (invalid actor?)"
-                Just (actions, actorSt, clientsMap) -> do
+                Just (targetId, actions, actorSt, clientsMap) -> do
                     -- 1. Broadcast Animations (Legacy/FX)
                     let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
                     
@@ -206,7 +206,7 @@ talkLoop client state = do
                         broadcast (BroadcastMessage (client.clientId) act) tempState
                         
                     -- 2. Broadcast State Update
-                    let updateMsg = GameStateUpdate (FullStateUpdate actorSt)
+                    let updateMsg = GameStateUpdate (StateUpdate targetId actorSt)
                     broadcast updateMsg tempState
             
             talkLoop client state

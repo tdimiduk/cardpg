@@ -141,8 +141,10 @@ data ClientMessage
 $(deriveJSON cardpgJsonDef ''ClientMessage)
 
 -- | Updates to the authoritative state
-data StateUpdate
-  = FullStateUpdate { actorState :: ActorState }
+data StateUpdate = StateUpdate
+  { updateTargetId :: TargetId
+  , updateActorState :: ActorState
+  }
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''StateUpdate)

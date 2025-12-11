@@ -30,7 +30,7 @@ import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives (Difficulty, ResourceType, StackPower)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
-import CardPG.Server.Types (BroadcastAction, ClientMessage, ServerMessage, Token)
+import CardPG.Server.Types (BroadcastAction, ClientMessage, ServerMessage, Token, StateUpdate)
 
 main :: IO ()
 main = do
@@ -74,6 +74,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)
               <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)
+              <> getTypeScriptDeclarations (Proxy :: Proxy StateUpdate)
           )
 
   let exportedDeclarations =
