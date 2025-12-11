@@ -21,8 +21,6 @@ import CardPG.Core.NonEmptyText (NonEmptyText (..), getNonEmptyText, unsafeNonEm
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
 import CardPG.Core.State
-import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
 import Data.UUID (UUID)
 import qualified Data.UUID as UUID
 

@@ -21,7 +21,6 @@ import CardPG.Core.Json (cardpgJsonDef)
 
 import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..), TargetId (..))
 
--- | Sum type for all Table Assets
 data TableCard
   = TCItem ItemCard
   | TCNature NatureCard
@@ -39,12 +38,11 @@ data CorePlayState
 $(deriveJSON cardpgJsonDef ''CorePlayState)
 
 data CoreCardState = CoreCardState
-  { -- Ordered Zones
+  { 
     deck :: [CardInstanceId] -- Top is head
   , hand :: [CardInstanceId] -- User-defined order
   , discard :: [CardInstanceId] -- Top is head (most recently played)
-  , -- Unordered / Active Zones
-    defending :: Set CardInstanceId -- Currently committed to a defense
+  , defending :: [CardInstanceId] -- Currently committed to a defense
   , inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
   , registry :: Map CardInstanceId CoreCard -- ^ The Registry (Source of Truth for Core Cards)
   }
