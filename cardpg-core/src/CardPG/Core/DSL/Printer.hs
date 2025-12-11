@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 

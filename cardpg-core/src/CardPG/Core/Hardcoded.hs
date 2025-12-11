@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 
 module CardPG.Core.Hardcoded where
 

@@ -7,11 +7,26 @@ author:             Antigravity
 maintainer:         antigravity@google.com
 build-type:         Simple
 
-common warnings
+common project-config
     ghc-options: -Wall
+    default-language: GHC2021
+    default-extensions:
+        -- Project Standard
+        DerivingStrategies
+        DuplicateRecordFields
+        NoFieldSelectors
+        OverloadedLabels
+        OverloadedRecordDot
+        OverloadedStrings
+        QuantifiedConstraints
+        RecordWildCards
+        TemplateHaskell
+
+        -- Control Flow
+        MultiWayIf
 
 executable card-compiler
-    import:           warnings
+    import:           project-config
     main-is:          Main.hs
     other-modules:    CardCompiler.Parser
                     , CardCompiler.VttExporter
@@ -30,9 +45,9 @@ executable card-compiler
                     , directory
                     , containers
     hs-source-dirs:   src
-    default-language: Haskell2010
 
 test-suite card-compiler-test
+    import:           project-config
     type:             exitcode-stdio-1.0
     main-is:          Spec.hs
     hs-source-dirs:   test, src
@@ -47,4 +62,3 @@ test-suite card-compiler-test
                     , vector
                     , megaparsec
                     , containers
-    default-language: Haskell2010

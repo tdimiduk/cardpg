@@ -1,5 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module CardPG.Core.RichText
   ( TextStyle (..)

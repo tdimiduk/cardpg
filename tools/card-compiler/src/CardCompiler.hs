@@ -1,8 +1,3 @@
-{-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE OverloadedRecordDot #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 module CardCompiler where
 
@@ -72,7 +67,7 @@ heroCard =
 processCards :: FilePath -> [RawCard] -> Maybe String -> IO ()
 processCards outputDir cards tag = do
   let validCards = filter isValidCard cards
-      cardsByActor = Map.fromListWith (++) [(fromMaybe "unknown" (actor c), [c]) | c <- validCards]
+      cardsByActor = Map.fromListWith (++) [(fromMaybe "unknown" (c.actor), [c]) | c <- validCards]
 
   forM_ (Map.toList cardsByActor) $ \(actorName, actorCards) -> do
     let results = map convertCard actorCards
@@ -114,7 +109,7 @@ processCards outputDir cards tag = do
           putStrLn $ "Wrote " ++ outputPath
 
 isValidCard :: RawCard -> Bool
-isValidCard c = case actor c of
+isValidCard c = case c.actor of
   Nothing -> False
   Just t | T.null (T.strip t) -> False
   _ -> True

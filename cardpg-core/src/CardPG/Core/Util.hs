@@ -1,6 +1,4 @@
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
 
 module CardPG.Core.Util
   ( shuffleList

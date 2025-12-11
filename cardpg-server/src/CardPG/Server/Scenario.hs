@@ -1,10 +1,6 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE NamedFieldPuns #-}
 
-{-# LANGUAGE ScopedTypeVariables #-}
 
 module CardPG.Server.Scenario where
 

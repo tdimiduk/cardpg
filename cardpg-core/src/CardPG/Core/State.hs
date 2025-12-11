@@ -1,7 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE DuplicateRecordFields #-}
 
 module CardPG.Core.State where
 

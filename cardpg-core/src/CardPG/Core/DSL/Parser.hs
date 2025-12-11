@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 
 module CardPG.Core.DSL.Parser (parseRule) where
 
