@@ -11,6 +11,7 @@ library
   exposed-modules:
     CardPG.Server.Types
     CardPG.Server.Game
+    CardPG.Server.Scenario
   hs-source-dirs:      src
   build-depends:       base >= 4.7 && < 5
                      , websockets
@@ -24,6 +25,8 @@ library
                      , random
                      , optics
                      , mtl
+                     , yaml
+                     , filepath
   default-language:    Haskell2010
 
 executable cardpg-server
@@ -48,6 +51,7 @@ test-suite cardpg-server-test
   type:                exitcode-stdio-1.0
   main-is:             Main.hs
   other-modules:       GameTest
+                     , ScenarioTest
   hs-source-dirs:      test
   build-depends:       base >= 4.7 && < 5
                      , cardpg-server
@@ -58,8 +62,11 @@ test-suite cardpg-server-test
                      , random
                      , containers
                      , text
+                     , directory
                      , optics
                      , mtl
+                     , yaml
+                     , filepath
   default-extensions:  DuplicateRecordFields
                      , OverloadedStrings
   default-language:    Haskell2010

@@ -11,7 +11,7 @@ deck:
   type: coreCard
 - name: Lightning Dodge
   rules:
-  - Use |y| + |x| on |x| defense
+  - Use {yellow} + {red} for {Red} defense
   stats:
     blue: 2
     red: 2
@@ -77,7 +77,7 @@ deck:
 - name: Supercharged
   rules:
   - 'Action: Put in play. Attack 10 |x| anyone who attacks you. At the end of resolution
-    expend this if it triggered, expend it if it does'
+    expend this if it triggered, recover it to hand if it did not'
   stats:
     blue: 1
     red: 2
