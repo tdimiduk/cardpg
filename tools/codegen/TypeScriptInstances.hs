@@ -51,7 +51,7 @@ import CardPG.Core.State
   )
 import CardPG.Server.Types (BroadcastAction (..), ClientMessage, Command (..), ServerMessage, StateUpdate (..), Token)
 import qualified CardPG.Core.Card as CC
-import DeriveSpecialized (makeBridgeInstance, specializeType, specializeType2, specializeType3)
+import DeriveSpecialized (makeBridgeInstance, makeProxyInstance, specializeType, specializeType2, specializeType3)
 
 instance TypeScript DSLRule where
   getTypeScriptType _ = "string"
@@ -183,6 +183,51 @@ $( do
      i_consequence <- deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard
      i_actor <- deriveTypeScript cardpgJsonDef ''ActorDefinition
      
+
+     -- Proxy Instances (Bridge original types to local specialized types)
+     let inline = AppT ListT (ConT ''Inline)
+     let richStr = ConT ''RichString
+     let richTxt = ConT ''RichText
+     let text = ConT ''Text
+     let maybeText = AppT (ConT ''Maybe) (ConT ''Text)
+     let dslRule = ConT ''DSLRule
+     let rule = ConT ''Rule
+
+     -- CoreCard
+     p_core1 <- makeProxyInstance [t| CoreCardT Text Rule [Inline] |] ''CoreCard "CoreCard"
+     p_core2 <- makeProxyInstance [t| CoreCardT (Maybe Text) DSLRule RichString |] ''CoreCard "CoreCard"
+
+     -- ActorDefinition
+     p_actor <- makeProxyInstance [t| ActorDefinitionT (Maybe Text) DSLRule RichString |] ''ActorDefinition "ActorDefinition"
+     
+     -- ItemCard
+     p_item1 <- makeProxyInstance [t| ItemCardT Text [Inline] |] ''ItemCard "ItemCard"
+     p_item2 <- makeProxyInstance [t| ItemCardT (Maybe Text) [Inline] |] ''ItemCard "ItemCard"
+     p_item3 <- makeProxyInstance [t| ItemCardT Text RichText |] ''ItemCard "ItemCard"
+     p_item4 <- makeProxyInstance [t| ItemCardT (Maybe Text) RichString |] ''ItemCard "ItemCard"
+
+     -- NatureCard
+     p_nature1 <- makeProxyInstance [t| NatureCardT Text [Inline] |] ''NatureCard "NatureCard"
+     p_nature2 <- makeProxyInstance [t| NatureCardT (Maybe Text) [Inline] |] ''NatureCard "NatureCard"
+     p_nature3 <- makeProxyInstance [t| NatureCardT Text RichText |] ''NatureCard "NatureCard"
+     p_nature4 <- makeProxyInstance [t| NatureCardT (Maybe Text) RichString |] ''NatureCard "NatureCard"
+
+     -- TalentCard
+     p_talent1 <- makeProxyInstance [t| TalentCardT Text [Inline] |] ''TalentCard "TalentCard"
+     p_talent2 <- makeProxyInstance [t| TalentCardT (Maybe Text) [Inline] |] ''TalentCard "TalentCard"
+     p_talent3 <- makeProxyInstance [t| TalentCardT Text RichText |] ''TalentCard "TalentCard"
+     p_talent4 <- makeProxyInstance [t| TalentCardT (Maybe Text) RichString |] ''TalentCard "TalentCard"
+
+     -- EncounterCard
+     p_encounter1 <- makeProxyInstance [t| EncounterCardT Text [Inline] |] ''EncounterCard "EncounterCard"
+     p_encounter2 <- makeProxyInstance [t| EncounterCardT (Maybe Text) [Inline] |] ''EncounterCard "EncounterCard"
+     p_encounter3 <- makeProxyInstance [t| EncounterCardT Text RichText |] ''EncounterCard "EncounterCard"
+     p_encounter4 <- makeProxyInstance [t| EncounterCardT (Maybe Text) RichString |] ''EncounterCard "EncounterCard"
+
+     -- ConsequenceCard
+     p_consequence1 <- makeProxyInstance [t| ConsequenceCardT Text Rule |] ''ConsequenceCard "ConsequenceCard"
+     p_consequence2 <- makeProxyInstance [t| ConsequenceCardT (Maybe Text) DSLRule |] ''ConsequenceCard "ConsequenceCard"
+      
      return
        ( i_attack
            ++ b_attack
@@ -211,114 +256,19 @@ $( do
            ++ i_encounter
            ++ i_consequence
            ++ i_actor
+           
+           ++ p_core1 ++ p_core2
+           ++ p_actor
+           ++ p_item1 ++ p_item2 ++ p_item3 ++ p_item4
+           ++ p_nature1 ++ p_nature2 ++ p_nature3 ++ p_nature4
+           ++ p_talent1 ++ p_talent2 ++ p_talent3 ++ p_talent4
+           ++ p_encounter1 ++ p_encounter2 ++ p_encounter3 ++ p_encounter4
+           ++ p_consequence1 ++ p_consequence2
        )
  )
 
 
-instance TypeScript (CoreCardT Text Rule [Inline]) where
-  getTypeScriptType _ = "CoreCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy CoreCard)]
 
-instance TypeScript (CoreCardT (Maybe Text) DSLRule RichString) where
-  getTypeScriptType _ = "CoreCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy CoreCard)]
-
-instance TypeScript (ActorDefinitionT (Maybe Text) DSLRule RichString) where
-  getTypeScriptType _ = "ActorDefinition"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ActorDefinition)]
-
-instance TypeScript (ItemCardT Text [Inline]) where
-  getTypeScriptType _ = "ItemCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
-
-instance TypeScript (ItemCardT (Maybe Text) [Inline]) where
-  getTypeScriptType _ = "ItemCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
-
-instance TypeScript (ItemCardT Text RichText) where
-  getTypeScriptType _ = "ItemCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
-
-instance TypeScript (ItemCardT (Maybe Text) RichString) where
-  getTypeScriptType _ = "ItemCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
-
-instance TypeScript (NatureCardT Text [Inline]) where
-  getTypeScriptType _ = "NatureCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
-
-instance TypeScript (NatureCardT (Maybe Text) [Inline]) where
-  getTypeScriptType _ = "NatureCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
-
-instance TypeScript (NatureCardT Text RichText) where
-  getTypeScriptType _ = "NatureCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
-
-instance TypeScript (NatureCardT (Maybe Text) RichString) where
-  getTypeScriptType _ = "NatureCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
-
-instance TypeScript (TalentCardT Text [Inline]) where
-  getTypeScriptType _ = "TalentCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
-
-instance TypeScript (TalentCardT (Maybe Text) [Inline]) where
-  getTypeScriptType _ = "TalentCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
-
-instance TypeScript (TalentCardT Text RichText) where
-  getTypeScriptType _ = "TalentCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
-
-instance TypeScript (TalentCardT (Maybe Text) RichString) where
-  getTypeScriptType _ = "TalentCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
-
-instance TypeScript (EncounterCardT Text [Inline]) where
-  getTypeScriptType _ = "EncounterCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
-
-instance TypeScript (EncounterCardT (Maybe Text) [Inline]) where
-  getTypeScriptType _ = "EncounterCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
-
-instance TypeScript (EncounterCardT Text RichText) where
-  getTypeScriptType _ = "EncounterCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
-
-instance TypeScript (EncounterCardT (Maybe Text) RichString) where
-  getTypeScriptType _ = "EncounterCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
-
-instance TypeScript (ConsequenceCardT Text Rule) where
-  getTypeScriptType _ = "ConsequenceCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ConsequenceCard)]
-
-instance TypeScript (ConsequenceCardT (Maybe Text) DSLRule) where
-  getTypeScriptType _ = "ConsequenceCard"
-  getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy ConsequenceCard)]
 
 
 

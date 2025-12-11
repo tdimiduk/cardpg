@@ -1,4 +1,4 @@
-module DeriveSpecialized (specializeType, specializeType2, specializeType3, makeBridgeInstance) where
+module DeriveSpecialized (specializeType, specializeType2, specializeType3, makeBridgeInstance, makeProxyInstance) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -163,3 +163,43 @@ makeBridgeInstance paramTypeName paramType targetTypeNameStr = do
           [Clause [WildP] (NormalB listExp) []]
 
   return [InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getParentTypesDec]]
+
+-- | Creates a "Proxy Instance" that points a Type to a Parent Type via Proxy.
+--
+-- Usage:
+-- $(makeProxyInstance [t| ItemCardT Text [Inline] |] ''ItemCard "ItemCard")
+--
+-- Generates:
+-- instance TypeScript (ItemCardT Text [Inline]) where
+--   getTypeScriptType _ = "ItemCard"
+--   getTypeScriptDeclarations _ = []
+--   getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
+
+makeProxyInstance :: TypeQ -> Name -> String -> Q [Dec]
+makeProxyInstance instanceTypeQ targetTypeName nameStr = do
+  instanceType <- instanceTypeQ
+  let targetType = ConT targetTypeName
+  let instanceHead = AppT (ConT (mkName "TypeScript")) instanceType
+
+  -- getTypeScriptType _ = nameStr
+  let getTypeScriptTypeDec =
+        FunD
+          (mkName "getTypeScriptType")
+          [Clause [WildP] (NormalB (LitE (StringL nameStr))) []]
+
+  -- getTypeScriptDeclarations _ = []
+  let getTypeScriptDeclarationsDec =
+        FunD
+          (mkName "getTypeScriptDeclarations")
+          [Clause [WildP] (NormalB (ListE [])) []]
+
+  -- getParentTypes _ = [TSType (Proxy :: Proxy TargetType)]
+  let proxyExp = SigE (ConE (mkName "Proxy")) (AppT (ConT (mkName "Proxy")) targetType)
+  let tsTypeExp = AppE (ConE (mkName "TSType")) proxyExp
+  let listExp = ListE [tsTypeExp]
+  let getParentTypesDec =
+        FunD
+          (mkName "getParentTypes")
+          [Clause [WildP] (NormalB listExp) []]
+
+  return [InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getTypeScriptDeclarationsDec, getParentTypesDec]]
