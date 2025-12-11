@@ -11,7 +11,6 @@ common project-config
     ghc-options: -Wall
     default-language: GHC2021
     default-extensions:
-        -- Project Standard
         DerivingStrategies
         DuplicateRecordFields
         NoFieldSelectors
@@ -21,8 +20,6 @@ common project-config
         QuantifiedConstraints
         RecordWildCards
         TemplateHaskell
-
-        -- Control Flow
         MultiWayIf
 
 executable card-compiler
