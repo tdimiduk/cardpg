@@ -1,13 +1,13 @@
 import React from 'react';
 import { Skull, User, X, Plus } from 'lucide-react';
-import { TokenType, Actor } from '../../types';
+import { TokenType, ActorDefinition } from '../../types';
 
 interface ActorSelectorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectTemplate: (template: Actor) => void;
+  onSelectTemplate: (template: ActorDefinition) => void;
   selectorType: TokenType;
-  availableTemplates: Actor[];
+  availableTemplates: ActorDefinition[];
 }
 
 export const ActorSelectorModal: React.FC<ActorSelectorModalProps> = ({
