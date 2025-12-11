@@ -7,10 +7,11 @@ module CardPG.Core.Logic
 import Control.Monad (replicateM)
 import Control.Monad.State (MonadState, state)
 import Data.Map.Strict qualified as Map
+import Optics
 import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.State (ActorState (..), CoreCardState (..))
+import CardPG.Core.State (ActorState (..), coreRegistry, coreState, deck, discard)
 import CardPG.Core.Util (shuffleListM)
 
 -- | Perform the Fatigue Cycle
@@ -21,26 +22,19 @@ import CardPG.Core.Util (shuffleListM)
 -- 5. Clear Discard
 performFatigueCycle :: (RandomGen g, MonadState g m) => Int -> ActorState -> m ActorState
 performFatigueCycle burden st = do
-  let
-    core = _coreState st
-    sources = _discard core
-
-    countNeeded = 2 + burden
+  let countNeeded = 2 + burden
 
   -- Generate UUIDs (CardInstanceIds via Uniform instance)
   newFatigueIds <- replicateM countNeeded (state uniform)
 
   -- Update Registry
   let newRegistryEntries = Map.fromList [(cid, fatigueCard) | cid <- newFatigueIds]
-  let updatedRegistry = Map.union (_coreRegistry st) newRegistryEntries
 
   -- Shuffle
-  let toShuffle = sources ++ newFatigueIds
-  newDeck <- shuffleListM toShuffle
+  let currentDiscard = st ^. coreState % discard
+  newDeck <- shuffleListM $ newFatigueIds ++ currentDiscard
 
-  let newCore =
-        core
-          { _deck = newDeck
-          , _discard = []
-          }
-  pure st{_coreState = newCore, _coreRegistry = updatedRegistry}
+  pure $ st
+    & coreRegistry %~ (`Map.union` newRegistryEntries)
+    & coreState % deck .~ newDeck
+    & coreState % discard .~ []
