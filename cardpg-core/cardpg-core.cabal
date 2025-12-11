@@ -95,5 +95,7 @@ test-suite cardpg-core-test
                , yaml
                , uuid
                , random
+               , random
                , mtl
+               , optics
   default-language: Haskell2010

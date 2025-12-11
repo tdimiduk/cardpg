@@ -269,6 +269,10 @@ instance Arbitrary AssetState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary TableState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary ActorState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

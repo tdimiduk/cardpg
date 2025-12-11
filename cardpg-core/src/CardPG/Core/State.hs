@@ -1,24 +1,25 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 
 module CardPG.Core.State where
 
-import Data.Aeson (FromJSONKey, ToJSONKey)
+
 import Data.Aeson.TH (deriveJSON)
-import Data.List (sortOn)
+
 import Data.Map.Strict (Map)
-import Data.Map.Strict qualified as Map
+
 import Data.Set (Set)
-import Data.UUID (UUID)
+
 import GHC.Generics (Generic)
 import Optics.TH (makeLenses)
-import System.Random (Random (..), RandomGen)
+
 
 import CardPG.Core.Card (ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
 import CardPG.Core.Json (cardpgJsonDef)
 
-import CardPG.Core.Primitives (CardInstanceId (..), CardKind (..), EquipSlot (..), TargetId (..))
+import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..), TargetId (..))
 
 -- | Sum type for all Table Assets
 data TableCard
@@ -47,6 +48,7 @@ data CoreCardState = CoreCardState
   , -- Unordered / Active Zones
     _defending :: Set CardInstanceId -- Currently committed to a defense
   , _inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
+  , _coreRegistry :: Map CardInstanceId CoreCard -- ^ The Registry (Source of Truth for Core Cards)
   }
   deriving stock (Show, Eq, Generic)
 
@@ -54,7 +56,12 @@ $(deriveJSON cardpgJsonDef ''CoreCardState)
 $(makeLenses ''CoreCardState)
 
 -- | Table Asset State (Dynamic)
-type TableAssetState = Map CardInstanceId AssetState
+-- type TableAssetState = Map CardInstanceId AssetState
+data TableState = TableState
+  { _assets :: Map CardInstanceId AssetState
+  , _tableRegistry :: Map CardInstanceId TableCard -- ^ The Registry (Source of Truth for Table Cards)
+  }
+  deriving stock (Show, Eq, Generic)
 
 data AssetState
   = InCollection -- Passive / Stored / Sideboard
@@ -67,14 +74,14 @@ data AssetState
 $(deriveJSON cardpgJsonDef ''AssetState)
 $(makeLenses ''AssetState)
 
+$(deriveJSON cardpgJsonDef ''TableState)
+$(makeLenses ''TableState)
+
 -- | The Authoritative State Container
 data ActorState = ActorState
-  { -- 1. The Registry (Source of Truth)
-    _coreRegistry :: Map CardInstanceId CoreCard
-  , _tableRegistry :: Map CardInstanceId TableCard
-  , -- 2. The Regimes
-    _coreState :: CoreCardState -- Handles Deck/Hand/Discard flow
-  , _assetState :: TableAssetState -- Handles Equipment/Conditions
+  { -- 1. The Regimes (Self-contained with their registries)
+    _coreState :: CoreCardState -- Handles Core Cards (Deck/Hand/Discard)
+  , _tableState :: TableState -- Handles Table Cards (Equipment/Conditions)
   }
   deriving stock (Show, Eq, Generic)
 
