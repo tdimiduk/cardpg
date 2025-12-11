@@ -14,7 +14,7 @@ import Test.Tasty.QuickCheck hiding (discard)
 import ArbitraryInstances ()
 import CardPG.Core.Logic (performFatigueCycle)
 import CardPG.Core.State
-import Optics ((^.), (%))
+import Optics ((^.))
 
 -- Bring instances into scope
 
@@ -29,7 +29,7 @@ test_stateTests =
 -- | Property: performFatigueCycle should result in a new deck size equal to
 -- the old discard size + 2 (base fatigue) + burden.
 -- We verify this for any initial state and any burden (>= 0).
-prop_fatigueCycleCounts :: Small Int -> ActorState -> Property
+prop_fatigueCycleCounts :: Small Int -> CoreCardState -> Property
 prop_fatigueCycleCounts (Small burdenRaw) st =
   let
     burden = abs burdenRaw -- Ensure non-negative burden for logic
@@ -39,16 +39,15 @@ prop_fatigueCycleCounts (Small burdenRaw) st =
     -- So strictly speaking, it doesn't matter if deck was empty or not,
     -- the result size is deterministic based on discard.
 
-    initialDiscardSize = length (st ^. #coreState % #discard)
+    initialDiscardSize = length (st ^. #discard)
     expectedDeckSize = initialDiscardSize + 2 + burden
 
     gen = mkStdGen 42 -- We can use a fixed seed for the cycle itself, the randomness comes from 'st'.
     -- Or we could take a seed as input, but it doesn't verify the size property.
-    stCore = st ^. #coreState
-    (newCore, _) = runState (performFatigueCycle burden stCore) gen
+    (newState, _) = runState (performFatigueCycle burden st) gen
    in
-    length (newCore ^. #deck) === expectedDeckSize
-      .&&. length (newCore ^. #discard) === 0
+    length (newState ^. #deck) === expectedDeckSize
+      .&&. length (newState ^. #discard) === 0
 
 -- | Property: ActorState should roundtrip through JSON encoding/decoding.
 -- We resize the generator because the full unchecked recursion with default
