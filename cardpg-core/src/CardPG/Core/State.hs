@@ -13,7 +13,7 @@ import Data.Map.Strict (Map)
 import Data.Set (Set)
 
 import GHC.Generics (Generic)
-import Optics.TH (makeLenses)
+
 
 
 import CardPG.Core.Card (ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
@@ -37,29 +37,24 @@ data CorePlayState
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''CorePlayState)
-$(makeLenses ''CorePlayState)
 
--- | Core Card State (Dynamic)
 data CoreCardState = CoreCardState
   { -- Ordered Zones
-    _deck :: [CardInstanceId] -- Top is head
-  , _hand :: [CardInstanceId] -- User-defined order
-  , _discard :: [CardInstanceId] -- Top is head (most recently played)
+    deck :: [CardInstanceId] -- Top is head
+  , hand :: [CardInstanceId] -- User-defined order
+  , discard :: [CardInstanceId] -- Top is head (most recently played)
   , -- Unordered / Active Zones
-    _defending :: Set CardInstanceId -- Currently committed to a defense
-  , _inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
-  , _coreRegistry :: Map CardInstanceId CoreCard -- ^ The Registry (Source of Truth for Core Cards)
+    defending :: Set CardInstanceId -- Currently committed to a defense
+  , inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
+  , registry :: Map CardInstanceId CoreCard -- ^ The Registry (Source of Truth for Core Cards)
   }
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''CoreCardState)
-$(makeLenses ''CoreCardState)
 
--- | Table Asset State (Dynamic)
--- type TableAssetState = Map CardInstanceId AssetState
 data TableState = TableState
-  { _assets :: Map CardInstanceId AssetState
-  , _tableRegistry :: Map CardInstanceId TableCard -- ^ The Registry (Source of Truth for Table Cards)
+  { assets :: Map CardInstanceId AssetState
+  , registry :: Map CardInstanceId TableCard -- ^ The Registry (Source of Truth for Table Cards)
   }
   deriving stock (Show, Eq, Generic)
 
@@ -72,18 +67,15 @@ data AssetState
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''AssetState)
-$(makeLenses ''AssetState)
 
 $(deriveJSON cardpgJsonDef ''TableState)
-$(makeLenses ''TableState)
 
 -- | The Authoritative State Container
 data ActorState = ActorState
   { -- 1. The Regimes (Self-contained with their registries)
-    _coreState :: CoreCardState -- Handles Core Cards (Deck/Hand/Discard)
-  , _tableState :: TableState -- Handles Table Cards (Equipment/Conditions)
+    coreState :: CoreCardState -- Handles Core Cards (Deck/Hand/Discard)
+  , tableState :: TableState -- Handles Table Cards (Equipment/Conditions)
   }
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''ActorState)
-$(makeLenses ''ActorState)

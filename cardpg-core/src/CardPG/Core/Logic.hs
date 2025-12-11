@@ -11,7 +11,7 @@ import Optics
 import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.State (CoreCardState (..), coreRegistry, deck, discard)
+import CardPG.Core.State (CoreCardState (..))
 import CardPG.Core.Util (shuffleListM)
 
 -- | Perform the Fatigue Cycle
@@ -31,10 +31,10 @@ performFatigueCycle burden st = do
   let newRegistryEntries = Map.fromList [(cid, fatigueCard) | cid <- newFatigueIds]
 
   -- Shuffle
-  let currentDiscard = st ^. discard
+  let currentDiscard = st ^. #discard
   newDeck <- shuffleListM $ newFatigueIds ++ currentDiscard
 
   pure $ st
-    & coreRegistry %~ (`Map.union` newRegistryEntries)
-    & deck .~ newDeck
-    & discard .~ []
+    & #registry %~ (`Map.union` newRegistryEntries)
+    & #deck .~ newDeck
+    & #discard .~ []
