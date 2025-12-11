@@ -26,7 +26,7 @@ import Text.Megaparsec (Parsec, parseMaybe)
 
 import CardCompiler.Parser (ArmorType (..), ParsedPassive (..), ParsedCard (..), RawCard (..), passiveParser, convertCard)
 import qualified CardCompiler.VttExporter as Vtt
-import CardPG.Core.Card (ActorT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
+import CardPG.Core.Card (ActorDefinitionT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
 
 type Parser = Parsec Void Text
@@ -94,7 +94,7 @@ processCards outputDir cards tag = do
               ++ " cards in deck. Expected 24. Skipping."
         else do
           let actorData =
-                Actor
+                ActorDefinition
                   { _name = actorName
                   , _tags = fmap (\t -> NE.fromList [T.pack t]) tag
                   , _nature = finalNature

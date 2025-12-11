@@ -18,6 +18,7 @@ import ConsequenceParsingTest (test_consequenceParsing)
 import ReadmeExamplesTest (test_readmeExamples)
 import RuleJsonTest (prop_ruleJsonParsing)
 import StatusParsingTest (test_statusParsing)
+import StateTests (test_stateTests)
 
 main :: IO ()
 main = defaultMain tests
@@ -37,6 +38,7 @@ tests =
     , test_statusParsing
     , test_consequenceParsing
     , test_readmeExamples
+    , test_stateTests
     ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

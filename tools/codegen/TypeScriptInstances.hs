@@ -18,7 +18,7 @@ import GHC.Generics (Generic)
 import Language.Haskell.TH (Type (AppT, ConT, ListT), mkName)
 
 import CardPG.Core.Card
-  ( ActorT (..)
+  ( ActorDefinitionT (..)
   , ConsequenceCardT (..)
   , CoreCardT (..)
   , EncounterCardT (..)
@@ -92,7 +92,7 @@ $( do
          (AppT ListT (ConT ''Inline))
          "CoreCard"
      d_actor <-
-       specializeType3 ''ActorT (ConT ''Text) (ConT (mkName "Rule")) (AppT ListT (ConT ''Inline)) "Actor"
+       specializeType3 ''ActorDefinitionT (ConT ''Text) (ConT (mkName "Rule")) (AppT ListT (ConT ''Inline)) "ActorDefinition"
 
      d_item <- specializeType2 ''ItemCardT (ConT ''Text) (AppT ListT (ConT ''Inline)) "ItemCard"
      d_nature <- specializeType2 ''NatureCardT (ConT ''Text) (AppT ListT (ConT ''Inline)) "NatureCard"
@@ -169,7 +169,7 @@ $( do
      i_consequence <- deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard
      -- b_consequence moved to manual instance
 
-     i_actor <- deriveTypeScript cardpgJsonDef ''Actor
+     i_actor <- deriveTypeScript cardpgJsonDef ''ActorDefinition
 
      -- Helpers
      i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
@@ -225,10 +225,10 @@ instance TypeScript (CoreCardT (Maybe Text) DSLRule RichString) where
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy CoreCard)]
 
-instance TypeScript (ActorT Text Rule [Inline]) where
-  getTypeScriptType _ = "Actor"
+instance TypeScript (ActorDefinitionT Text Rule [Inline]) where
+  getTypeScriptType _ = "ActorDefinition"
   getTypeScriptDeclarations _ = []
-  getParentTypes _ = [TSType (Proxy :: Proxy Actor)]
+  getParentTypes _ = [TSType (Proxy :: Proxy ActorDefinition)]
 
 instance TypeScript (ItemCardT Text [Inline]) where
   getTypeScriptType _ = "ItemCard"

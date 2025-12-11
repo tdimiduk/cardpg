@@ -9,7 +9,7 @@ import Data.Text (pack, replace, unpack)
 import System.Environment (getArgs)
 import System.IO (writeFile)
 import TypeScriptInstances
-  ( Actor
+  ( ActorDefinition
   , AttackDef
   , ChannelDef
   , ConsequenceCard
@@ -70,7 +70,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy EncounterMechanics)
               <> getTypeScriptDeclarations (Proxy :: Proxy EncounterCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)
-              <> getTypeScriptDeclarations (Proxy :: Proxy Actor)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ActorDefinition)
               <> getTypeScriptDeclarations (Proxy :: Proxy Token)
               <> getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)
               <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)

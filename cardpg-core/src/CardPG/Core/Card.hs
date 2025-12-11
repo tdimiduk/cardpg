@@ -21,8 +21,8 @@ module CardPG.Core.Card
   , ConsequenceCardT (..)
   , ConsequenceCard
   , ConsequenceCardMachine
-  , ActorT (..)
-  , Actor
+  , ActorDefinitionT (..)
+  , ActorDefinition
   , ActorMachine
   , ItemCardMachine
   , NatureCardMachine
@@ -195,8 +195,9 @@ type ConsequenceCardMachine = ConsequenceCardT Text Rule
 
 $(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCardT)
 
--- | Represents an Actor (Character/Monster/NPC).
-data ActorT id rule rt = Actor
+-- | Represents the *Static Definition* or "Character Sheet" of an Actor.
+-- This is used for initialization and templates, not for running game state.
+data ActorDefinitionT id rule rt = ActorDefinition
   { _id :: id
   , _name :: Text
   , _tags :: Maybe (NonEmpty Text)
@@ -206,7 +207,7 @@ data ActorT id rule rt = Actor
   }
   deriving stock (Eq, Show, Generic)
 
-type Actor = ActorT (Maybe Text) DSLRule RichString
-type ActorMachine = ActorT Text Rule RichText
+type ActorDefinition = ActorDefinitionT (Maybe Text) DSLRule RichString
+type ActorMachine = ActorDefinitionT Text Rule RichText
 
-$(deriveJSON cardpgJsonDef ''ActorT)
+$(deriveJSON cardpgJsonDef ''ActorDefinitionT)

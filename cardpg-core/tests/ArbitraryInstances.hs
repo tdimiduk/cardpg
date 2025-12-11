@@ -19,7 +19,12 @@ import CardPG.Core.Card
 import CardPG.Core.DSL.Printer (richToString)
 import CardPG.Core.NonEmptyText (NonEmptyText (..), getNonEmptyText, unsafeNonEmptyText)
 import CardPG.Core.RichText
+import CardPG.Core.State
 import CardPG.Core.Types
+import Data.UUID (UUID)
+import qualified Data.UUID as UUID
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 
 -- Arbitrary Instances
 
@@ -225,3 +230,45 @@ instance (Arbitrary a) => Arbitrary (NonEmpty a) where
     xs <- arbitrary
     return (x :| xs)
   shrink ne = [NE.fromList l | l <- shrink (NE.toList ne), not (null l)]
+
+-- State Types
+
+instance Arbitrary UUID where
+  arbitrary = UUID.fromWords <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+  shrink _ = [] -- UUIDs don't shrink meaningfully for uniqueness
+
+instance Arbitrary CardInstanceId where
+  arbitrary = CardInstanceId <$> arbitrary
+  shrink (CardInstanceId u) = CardInstanceId <$> shrink u
+
+instance Arbitrary TargetId where
+  arbitrary = TargetId <$> arbitrary
+  shrink (TargetId u) = TargetId <$> shrink u
+
+instance Arbitrary CardKind where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary TableCard where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary CorePlayState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary CoreCardState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary EquipSlot where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary AssetState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary ActorState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink

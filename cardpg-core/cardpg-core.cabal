@@ -17,6 +17,10 @@ library
                , containers
                , generic-lens
                , megaparsec
+               , uuid
+               , random
+               , optics
+               , optics-th
   default-extensions:
     ConstraintKinds
     DataKinds
@@ -45,6 +49,8 @@ library
     TypeOperators
     UndecidableInstances
   exposed-modules:
+    CardPG.Core.State
+    CardPG.Core.Hardcoded
     CardPG.Core.Card
     CardPG.Core.Json
     CardPG.Core.RichText
@@ -62,6 +68,7 @@ test-suite cardpg-core-test
   main-is: Main.hs
   other-modules: 
     ArbitraryInstances
+    StateTests
     RuleJsonTest
     StatusParsingTest
     ConsequenceParsingTest
@@ -75,6 +82,7 @@ test-suite cardpg-core-test
                , aeson
                , text
                , vector
+               , containers
                , QuickCheck
                , tasty
                , tasty-quickcheck
@@ -82,4 +90,6 @@ test-suite cardpg-core-test
                , generic-random
                , bytestring
                , yaml
+               , uuid
+               , random
   default-language: Haskell2010

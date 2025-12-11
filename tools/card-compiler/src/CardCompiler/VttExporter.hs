@@ -20,9 +20,9 @@ import qualified Data.Yaml as Yaml
 import GHC.Generics (Generic)
 
 import CardPG.Core.Card
-  ( Actor
+  ( ActorDefinition
   , ActorMachine
-  , ActorT (..)
+  , ActorDefinitionT (..)
   , ConsequenceCard
   , ConsequenceCardMachine
   , ConsequenceCardT (..)
@@ -81,7 +81,7 @@ loadAndExport inputFiles outputFile = do
     processFile (accActors, accStatuses, accConsequences) file = do
       result <- Yaml.decodeFileEither file
       case result of
-        Right (actor :: Actor) -> do
+        Right (actor :: ActorDefinition) -> do
           return (convertActor actor : accActors, accStatuses, accConsequences)
         Left _ -> do
           -- Try parsing as list of CoreCards (Status Library)
@@ -106,9 +106,9 @@ loadAndExport inputFiles outputFile = do
                   return (accActors, accStatuses, accConsequences)
 
 -- | Convert Actor (Human) to ActorMachine (Machine)
-convertActor :: Actor -> ActorMachine
-convertActor Actor{..} =
-  Actor
+convertActor :: ActorDefinition -> ActorMachine
+convertActor ActorDefinition{..} =
+  ActorDefinition
     { _id = actorId
     , _items = map (convertItem actorId) _items
     , _nature = map (convertNature actorId) _nature
