@@ -23,7 +23,12 @@ import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
 import qualified Network.WebSockets as WS
 
-import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..))
+import System.Random (newStdGen)
+
+import CardPG.Core.Hardcoded (fatigueCard)
+import CardPG.Core.State (GameEnv(..))
+import CardPG.Server.Game (GameState, emptyGame)
+import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
 
 
 numClients :: ServerState -> Int
@@ -49,6 +54,11 @@ broadcast msg state = do
 
 main :: IO ()
 main = do
+    -- Initialize GameState
+    rng <- newStdGen
+    let env = GameEnv { fatigueCardTemplate = fatigueCard }
+    let emptyGs = emptyGame env rng
+    
     let cardsFile = "vtt-react/src/data/generated_cards.json"
     T.putStrLn $ "Loading card library from " <> T.pack cardsFile <> "..."
     cardLibraryResult <- eitherDecodeFileStrict cardsFile
@@ -56,13 +66,13 @@ main = do
     initialState <- case cardLibraryResult of
         Left err -> do
              T.putStrLn $ "WARNING: Failed to load card library: " <> T.pack err
-             return newServerState
+             return (newServerState emptyGs)
         Right lib -> do
              T.putStrLn $ "Card Library Loaded: " 
                 <> T.pack (show (length (lib.actors))) <> " actors, " 
                 <> T.pack (show (length (lib.statuses))) <> " statuses, "
                 <> T.pack (show (length (lib.consequences))) <> " consequences."
-             return $ newServerState { library = lib }
+             return $ (newServerState emptyGs) { library = lib }
 
     state <- newMVar initialState
     
@@ -95,19 +105,33 @@ talk client state = forever $ do
             let newClient = client { clientName = name }
             
             -- Update state with new client
-            (currentClients, historyLog) <- modifyMVar state $ \s -> do
+            (currentClients, currentGs) <- modifyMVar state $ \s -> do
                 let s' = addClient newClient s
-                return (s', (s'.clients, s'.actionLog))
+                return (s', (s'.clients, s'.gameState))
             
             T.putStrLn $ "Client joined: " <> name <> " (" <> T.pack (show $ newClient.clientId) <> ")"
             
             -- Send Welcome to the new client
             let clientNames = map (.clientName) $ Map.elems currentClients
-            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) clientNames historyLog
+            -- We can pass empty history for now or s.actionLog if we had it
+            -- The original code passed 'historyLog' which was returned.
+            -- Wait, let's look at original code.
+            -- original: (currentClients, historyLog) <- modifyMVar ... return (s', (s'.clients, s'.actionLog))
+            -- I should preserve that.
+            
+            -- Re-reading original code:
+            -- (currentClients, historyLog) <- modifyMVar state $ \s -> return (s', (s'.clients, s'.actionLog))
+            
+            -- New version:
+            (currentClients, historyLog, currentGs) <- modifyMVar state $ \s -> do
+                let s' = addClient newClient s
+                return (s', (s'.clients, s'.actionLog, s'.gameState))
+
+            -- Send Welcome
+            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) historyLog
             
             -- Notify others
-            -- We construct a temporary state for broadcasting to everyone else
-            let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) [] (CardLibrary [] [] [])
+            let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
             broadcast (ClientJoined name (newClient.clientId)) broadcastState
             
             -- Continue loop with updated client info
@@ -115,12 +139,12 @@ talk client state = forever $ do
             
         Just (Broadcast payload) -> do
             -- Update log and broadcast
-            currentClients <- modifyMVar state $ \s -> do
+            (currentClients, currentGs) <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
-                return (s', s'.clients)
+                return (s', (s'.clients, s'.gameState))
 
             -- Broadcast to others
-            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] [])
+            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState
             
             -- Continue loop
@@ -145,13 +169,18 @@ talkLoop client state = do
             talkLoop newClient state
         Just (Broadcast payload) -> do
             -- Update log and broadcast
-            currentClients <- modifyMVar state $ \s -> do
+            (currentClients, currentGs) <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
-                return (s', s'.clients)
+                return (s', (s'.clients, s'.gameState))
 
-            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] [])
+            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState
             
+            talkLoop client state
+        Just (GameCommand cmd) -> do
+            T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
+            -- TODO: Process command using Game logic
+            -- For now, just acknowledge (or do nothing)
             talkLoop client state
 
 disconnect :: Client -> MVar ServerState -> IO ()

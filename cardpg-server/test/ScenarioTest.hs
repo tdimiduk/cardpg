@@ -20,6 +20,6 @@ test_scenario = testGroup "Scenario"
       let path = "../data/scenarios/starter.yaml"
       
       game <- loadScenario path
-      let actorCount = Map.size (actors game)
+      let actorCount = Map.size (game.actors)
       actorCount @?= 2
   ]

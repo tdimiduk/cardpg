@@ -26,7 +26,8 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (Difficulty, ResourceType (..), StackPower)
+import CardPG.Core.NonEmptyText (NonEmptyText)
+import CardPG.Core.Primitives (CardInstanceId, Difficulty, EquipSlot (..), ResourceType (..), StackPower, TargetId)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
@@ -37,8 +38,19 @@ import CardPG.Core.RuleDefs hiding
   , StanceDef
   , TaskDef
   , TriggerDef
+  , TriggerDef
   )
-import CardPG.Server.Types (BroadcastAction (..), ClientMessage, ServerMessage, Token)
+import CardPG.Core.State
+  ( ActorState (..)
+  , AssetState (..)
+  , CoreCardState (..)
+  , CorePlayState (..)
+  , GameEvent (..)
+  , TableCard (..)
+  , TableState (..)
+  )
+import CardPG.Server.Types (BroadcastAction (..), ClientMessage, Command (..), ServerMessage, StateUpdate (..), Token)
+import qualified CardPG.Core.Card as CC
 import DeriveSpecialized (makeBridgeInstance, specializeType, specializeType2, specializeType3)
 
 instance TypeScript DSLRule where
@@ -47,7 +59,15 @@ instance TypeScript DSLRule where
 -- Basic Types
 $(deriveTypeScript cardpgJsonDef ''ResourceType)
 $(deriveTypeScript cardpgJsonDef ''StackPower)
+
 $(deriveTypeScript cardpgJsonDef ''Difficulty)
+$(deriveTypeScript cardpgJsonDef ''EquipSlot)
+
+instance TypeScript CardInstanceId where
+  getTypeScriptType _ = "string"
+
+instance TypeScript TargetId where
+  getTypeScriptType _ = "string"
 
 -- NonEmptyText
 $(deriveTypeScript cardpgJsonDef ''NonEmptyText)
@@ -120,9 +140,9 @@ $( do
        )
  )
 
--- 2. Instance Generation Scope (Mutually Recursive)
+-- 1.5 Base Card Instances
 $( do
-     -- Defs
+     -- Rules & Bridges
      i_attack <- deriveTypeScript (cardpgJsonOptions "Rule") ''AttackDef
      b_attack <- makeBridgeInstance ''AttackDefT (AppT ListT (ConT ''Inline)) "AttackDef"
 
@@ -147,39 +167,22 @@ $( do
      -- Rule (Machine)
      i_rule <- deriveTypeScript (cardpgJsonOptions "RuleRule") ''Rule
      b_rule <- makeBridgeInstance ''RuleT (AppT ListT (ConT ''Inline)) "Rule"
-
+     
      -- Def Helpers
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
-
-     -- Cards
-     i_core <- deriveTypeScript (cardpgTaggedOptions "") ''CoreCard
-     i_item <- deriveTypeScript (cardpgTaggedOptions "") ''ItemCard
-     -- b_item moved to manual instance
-
-     i_nature <- deriveTypeScript (cardpgTaggedOptions "") ''NatureCard
-     -- b_nature moved to manual instance
-
-     i_talent <- deriveTypeScript (cardpgTaggedOptions "") ''TalentCard
-     -- b_talent moved to manual instance
-
-     i_encounter <- deriveTypeScript (cardpgTaggedOptions "") ''EncounterCard
-     -- b_encounter moved to manual instance
-
-     i_consequence <- deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard
-     -- b_consequence moved to manual instance
-
-     i_actor <- deriveTypeScript cardpgJsonDef ''ActorDefinition
-
-     -- Helpers
+     
+     -- Helpers (GenAction, EncMech)
      i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
      i_encMech <- deriveTypeScript cardpgJsonDef ''EncounterMechanics
 
-     -- Server Types
-     i_token <- deriveTypeScript cardpgJsonDef ''Token
-     i_broadcast <- deriveTypeScript cardpgJsonDef ''BroadcastAction
-     i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
-     i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
-
+     i_core <- deriveTypeScript (cardpgTaggedOptions "") ''CoreCard
+     i_item <- deriveTypeScript (cardpgTaggedOptions "") ''ItemCard
+     i_nature <- deriveTypeScript (cardpgTaggedOptions "") ''NatureCard
+     i_talent <- deriveTypeScript (cardpgTaggedOptions "") ''TalentCard
+     i_encounter <- deriveTypeScript (cardpgTaggedOptions "") ''EncounterCard
+     i_consequence <- deriveTypeScript (cardpgTaggedOptions "") ''ConsequenceCard
+     i_actor <- deriveTypeScript cardpgJsonDef ''ActorDefinition
+     
      return
        ( i_attack
            ++ b_attack
@@ -198,6 +201,9 @@ $( do
            ++ i_rule
            ++ b_rule
            ++ i_passive
+           
+           ++ i_genAction
+           ++ i_encMech
            ++ i_core
            ++ i_item
            ++ i_nature
@@ -205,14 +211,9 @@ $( do
            ++ i_encounter
            ++ i_consequence
            ++ i_actor
-           ++ i_genAction
-           ++ i_encMech
-           ++ i_token
-           ++ i_broadcast
-           ++ i_clientMsg
-           ++ i_serverMsg
        )
  )
+
 
 instance TypeScript (CoreCardT Text Rule [Inline]) where
   getTypeScriptType _ = "CoreCard"
@@ -224,7 +225,7 @@ instance TypeScript (CoreCardT (Maybe Text) DSLRule RichString) where
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy CoreCard)]
 
-instance TypeScript (ActorDefinitionT Text Rule [Inline]) where
+instance TypeScript (ActorDefinitionT (Maybe Text) DSLRule RichString) where
   getTypeScriptType _ = "ActorDefinition"
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy ActorDefinition)]
@@ -234,7 +235,37 @@ instance TypeScript (ItemCardT Text [Inline]) where
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
 
+instance TypeScript (ItemCardT (Maybe Text) [Inline]) where
+  getTypeScriptType _ = "ItemCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
+
+instance TypeScript (ItemCardT Text RichText) where
+  getTypeScriptType _ = "ItemCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
+
+instance TypeScript (ItemCardT (Maybe Text) RichString) where
+  getTypeScriptType _ = "ItemCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
+
 instance TypeScript (NatureCardT Text [Inline]) where
+  getTypeScriptType _ = "NatureCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
+
+instance TypeScript (NatureCardT (Maybe Text) [Inline]) where
+  getTypeScriptType _ = "NatureCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
+
+instance TypeScript (NatureCardT Text RichText) where
+  getTypeScriptType _ = "NatureCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
+
+instance TypeScript (NatureCardT (Maybe Text) RichString) where
   getTypeScriptType _ = "NatureCard"
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy NatureCard)]
@@ -244,7 +275,37 @@ instance TypeScript (TalentCardT Text [Inline]) where
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
 
+instance TypeScript (TalentCardT (Maybe Text) [Inline]) where
+  getTypeScriptType _ = "TalentCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
+
+instance TypeScript (TalentCardT Text RichText) where
+  getTypeScriptType _ = "TalentCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
+
+instance TypeScript (TalentCardT (Maybe Text) RichString) where
+  getTypeScriptType _ = "TalentCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy TalentCard)]
+
 instance TypeScript (EncounterCardT Text [Inline]) where
+  getTypeScriptType _ = "EncounterCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
+
+instance TypeScript (EncounterCardT (Maybe Text) [Inline]) where
+  getTypeScriptType _ = "EncounterCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
+
+instance TypeScript (EncounterCardT Text RichText) where
+  getTypeScriptType _ = "EncounterCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
+
+instance TypeScript (EncounterCardT (Maybe Text) RichString) where
   getTypeScriptType _ = "EncounterCard"
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy EncounterCard)]
@@ -253,3 +314,47 @@ instance TypeScript (ConsequenceCardT Text Rule) where
   getTypeScriptType _ = "ConsequenceCard"
   getTypeScriptDeclarations _ = []
   getParentTypes _ = [TSType (Proxy :: Proxy ConsequenceCard)]
+
+instance TypeScript (ConsequenceCardT (Maybe Text) DSLRule) where
+  getTypeScriptType _ = "ConsequenceCard"
+  getTypeScriptDeclarations _ = []
+  getParentTypes _ = [TSType (Proxy :: Proxy ConsequenceCard)]
+
+
+
+-- 3. Dependent Types (Must see ItemCard instance etc)
+$( do
+     -- State Types
+     i_token <- deriveTypeScript cardpgJsonDef ''Token
+     i_command <- deriveTypeScript cardpgJsonDef ''Command
+     i_broadcast <- deriveTypeScript cardpgJsonDef ''BroadcastAction
+     i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
+     
+     i_tableCard <- deriveTypeScript cardpgJsonDef ''TableCard
+     i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
+     i_coreState <- deriveTypeScript cardpgJsonDef ''CoreCardState
+     i_tableState <- deriveTypeScript cardpgJsonDef ''TableState
+     i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
+     i_actorState <- deriveTypeScript cardpgJsonDef ''ActorState
+     i_gameEvent <- deriveTypeScript cardpgJsonDef ''GameEvent
+     i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
+     i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
+
+     return
+       ( i_token
+           ++ i_command
+           ++ i_broadcast
+           ++ i_clientMsg
+           ++ i_serverMsg
+           ++ i_tableCard
+           ++ i_corePlay
+           ++ i_coreState
+           ++ i_tableState
+           ++ i_assetState
+           ++ i_actorState
+           ++ i_gameEvent
+           ++ i_stateUpdate
+       )
+ )
+
+

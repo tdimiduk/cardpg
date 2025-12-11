@@ -61,6 +61,7 @@ executable cardpg-server
                      , uuid
                      , cardpg-core
                      , bytestring
+                     , random
 
 test-suite cardpg-server-test
   import: project-config

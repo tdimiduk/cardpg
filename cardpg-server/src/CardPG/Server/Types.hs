@@ -8,6 +8,8 @@ module CardPG.Server.Types
   , BroadcastAction (..)
   , CardLibrary (..)
   , ServerState (..)
+  , Command (..)
+  , StateUpdate (..)
   , newServerState
   ) where
 
@@ -41,6 +43,8 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ResourceType)
+import CardPG.Core.State (ActorState)
+import CardPG.Server.Game (GameState)
 
 -- | A client connection with a unique ID and a name.
 data Client = Client
@@ -109,13 +113,29 @@ instance ToJSON BroadcastAction where
 instance FromJSON BroadcastAction where
   parseJSON = genericParseJSON cardpgJsonDef
 
+-- | Commands for game actions (Intents)
+data Command
+  = DrawIntent
+  | DefendIntent
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''Command)
+
 -- | Messages sent from Client to Server.
 data ClientMessage
   = Join {name :: Text}
   | Broadcast {payload :: BroadcastAction}
+  | GameCommand {command :: Command}
   deriving (Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ClientMessage)
+
+-- | Updates to the authoritative state
+data StateUpdate
+  = FullStateUpdate { actorState :: ActorState }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''StateUpdate)
 
 -- | Messages sent from Server to Client.
 data ServerMessage
@@ -124,6 +144,7 @@ data ServerMessage
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}
+  | GameStateUpdate {update :: StateUpdate}
   deriving (Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ServerMessage)
@@ -147,9 +168,10 @@ data ServerState = ServerState
   { clients :: Map UUID Client
   , actionLog :: [BroadcastAction]
   , library :: CardLibrary
+  , gameState :: GameState
   }
 
-newServerState :: ServerState
-newServerState = ServerState Map.empty [] (CardLibrary [] [] [])
+newServerState :: GameState -> ServerState
+newServerState gs = ServerState Map.empty [] (CardLibrary [] [] []) gs
 
 
