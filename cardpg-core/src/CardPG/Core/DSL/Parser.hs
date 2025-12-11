@@ -44,7 +44,7 @@ import CardPG.Core.RuleDefs
   , TaskDefT (..)
   , TriggerDefT (..)
   )
-import CardPG.Core.Types (Difficulty (..), ResourceType (..))
+import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 
 type Parser = Parsec Void Text
 

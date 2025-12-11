@@ -11,7 +11,7 @@ module CardPG.Server.Engine
 
 import CardPG.Core.Card (CoreCardMachine, CoreCardT (..), Stats (..), _stats)
 
-import CardPG.Core.Types (ResourceType (..))
+import CardPG.Core.Primitives (ResourceType (..))
 import CardPG.Server.Types (CardLibrary (..), PlayerDeckState (..))
 import Data.List (find)
 

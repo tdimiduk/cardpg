@@ -47,7 +47,7 @@ import CardPG.Core.Card
   , ItemCardMachine
   )
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Types (ResourceType)
+import CardPG.Core.Primitives (ResourceType)
 
 -- | A client connection with a unique ID and a name.
 data Client = Client

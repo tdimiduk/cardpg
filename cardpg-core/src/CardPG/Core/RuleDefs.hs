@@ -34,7 +34,7 @@ import GHC.Generics (Generic)
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText (RichString, RichText, StackPower)
-import CardPG.Core.Types (Difficulty, ResourceType (..))
+import CardPG.Core.Primitives (Difficulty, ResourceType (..))
 
 -- | A static modifier.
 -- | Addresses: "+2 to resource values when used in a defense stack"

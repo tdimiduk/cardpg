@@ -40,7 +40,7 @@ import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.RichText
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
-import CardPG.Core.Types (ResourceType (..))
+import CardPG.Core.Primitives (ResourceType (..), Difficulty, StackPower)
 
 data Stats = Stats {_red :: Int, _yellow :: Int, _blue :: Int}
   deriving stock (Eq, Show, Generic)

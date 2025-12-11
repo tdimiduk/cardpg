@@ -17,7 +17,7 @@ import Data.List.NonEmpty (NonEmpty(..), (<|))
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
-import CardPG.Core.Types (ResourceType(..))
+import CardPG.Core.Primitives (ResourceType(..))
 
 
 data CardType

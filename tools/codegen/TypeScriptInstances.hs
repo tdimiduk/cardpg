@@ -43,7 +43,7 @@ import CardPG.Core.RuleDefs hiding
   , TaskDef
   , TriggerDef
   )
-import CardPG.Core.Types (Difficulty, ResourceType (..), StackPower)
+import CardPG.Core.Primitives (Difficulty, ResourceType (..), StackPower)
 import CardPG.Server.Types (BroadcastAction (..), ClientMessage, ServerMessage, Token)
 import DeriveSpecialized (makeBridgeInstance, specializeType, specializeType2, specializeType3)
 

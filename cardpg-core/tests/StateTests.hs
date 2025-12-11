@@ -9,6 +9,7 @@ import System.Random (mkStdGen)
 import Data.Aeson (encode, eitherDecode)
 
 import CardPG.Core.State
+import CardPG.Core.Logic (performFatigueCycle)
 import ArbitraryInstances () -- Bring instances into scope
 
 test_stateTests :: TestTree

@@ -24,7 +24,7 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText, getNonEmptyText, mkNonEmptyText, unsafeNonEmptyText)
-import CardPG.Core.Types (Difficulty, StackPower (..))
+import CardPG.Core.Primitives (Difficulty, StackPower (..))
 
 -- | 1. The Token Stream
 

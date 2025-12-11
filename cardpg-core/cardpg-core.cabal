@@ -50,11 +50,13 @@ library
     UndecidableInstances
   exposed-modules:
     CardPG.Core.State
+    CardPG.Core.Logic
     CardPG.Core.Hardcoded
     CardPG.Core.Card
+    CardPG.Core.Primitives
+    CardPG.Core.Util
     CardPG.Core.Json
     CardPG.Core.RichText
-    CardPG.Core.Types
     CardPG.Core.DSL.Parser
     CardPG.Core.DSL.Printer
     CardPG.Core.RuleDefs

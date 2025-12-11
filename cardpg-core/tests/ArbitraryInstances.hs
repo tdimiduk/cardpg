@@ -20,7 +20,7 @@ import CardPG.Core.DSL.Printer (richToString)
 import CardPG.Core.NonEmptyText (NonEmptyText (..), getNonEmptyText, unsafeNonEmptyText)
 import CardPG.Core.RichText
 import CardPG.Core.State
-import CardPG.Core.Types
+import CardPG.Core.Primitives
 import Data.UUID (UUID)
 import qualified Data.UUID as UUID
 import qualified Data.Map.Strict as Map

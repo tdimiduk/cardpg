@@ -33,7 +33,7 @@ import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (getNonEmptyText, mkNonEmptyText)
 import CardPG.Core.RichText (Inline (..), RichString, mkRichString, simpleString)
 import CardPG.Core.RuleDefs (AttackDefT (..), DSLBase, DSLRule (..), RuleT (..))
-import CardPG.Core.Types (ResourceType (..))
+import CardPG.Core.Primitives (ResourceType (..))
 
 type Parser = Parsec Void Text
 
