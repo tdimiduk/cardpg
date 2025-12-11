@@ -22,6 +22,7 @@ library
                , optics
                , optics-th
                , mtl
+               , transformers
   default-extensions:
     ConstraintKinds
     DataKinds

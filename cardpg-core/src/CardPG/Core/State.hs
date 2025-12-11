@@ -78,4 +78,16 @@ data ActorState = ActorState
   }
   deriving stock (Show, Eq, Generic)
 
+
 $(deriveJSON cardpgJsonDef ''ActorState)
+
+data GameEvent
+  = CardsCreated [CardInstanceId]
+  | DeckShuffled
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''GameEvent)
+
+data GameEnv = GameEnv
+  { fatigueCardTemplate :: CoreCard
+  } deriving stock (Show, Eq, Generic)

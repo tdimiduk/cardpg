@@ -1,40 +1,71 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module CardPG.Core.Logic
-  ( performFatigueCycle
+  ( GameM(..)
+  , performFatigueCycle
   ) where
 
 import Control.Monad (replicateM)
-import Control.Monad.State (MonadState, state)
+import Control.Monad.RWS (RWST, ask, tell, MonadReader, MonadWriter)
+import Control.Monad.State (MonadState, state, State, modify)
+import Control.Monad.Trans.Class (lift)
 import Data.Map.Strict qualified as Map
 import Optics
 import System.Random (RandomGen, uniform)
 
-import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.State (CoreCardState (..))
+import CardPG.Core.State (CoreCardState (..), GameEnv (..), GameEvent (..))
 import CardPG.Core.Util (shuffleListM)
 
+-- | The Game Monad
+-- Stack:
+--   Reader: GameEnv (static context)
+--   Writer: [GameEvent] (log of events)
+--   State: CoreCardState (game state)
+--   Base: State g (random number generator state)
+newtype GameM g a = GameM
+  { runGameM :: RWST GameEnv [GameEvent] CoreCardState (State g) a
+  }
+  deriving newtype
+    ( Functor
+    , Applicative
+    , Monad
+    , MonadReader GameEnv
+    , MonadWriter [GameEvent]
+    , MonadState CoreCardState
+    )
+
+-- | Helper to access the random generator from the base monad
+liftRandom :: (g -> (a, g)) -> GameM g a
+liftRandom f = GameM . lift $ state f
+
 -- | Perform the Fatigue Cycle
--- 1. Take Discard
--- 2. Generate (2 + burden) new Fatigue Cards with new UUIDs (requires RandomGen)
--- 3. Update Registry with new Fatigue Cards
--- 4. Shuffle (Discard + NewFatigue) -> Deck
--- 5. Clear Discard
-performFatigueCycle :: (RandomGen g, MonadState g m) => Int -> CoreCardState -> m CoreCardState
-performFatigueCycle burden st = do
+performFatigueCycle :: RandomGen g => Int -> GameM g ()
+performFatigueCycle burden = do
+  env <- ask
+  let fatigueTemplate = env ^. #fatigueCardTemplate
+  
   let countNeeded = 2 + burden
 
-  -- Generate UUIDs (CardInstanceIds via Uniform instance)
-  newFatigueIds <- replicateM countNeeded (state uniform)
+  -- Generate UUIDs
+  newFatigueIds <- replicateM countNeeded $ liftRandom uniform
 
   -- Update Registry
-  let newRegistryEntries = Map.fromList [(cid, fatigueCard) | cid <- newFatigueIds]
+  let newRegistryEntries = Map.fromList [(cid, fatigueTemplate) | cid <- newFatigueIds]
+  
+  -- Log Event
+  tell [CardsCreated newFatigueIds]
 
-  -- Shuffle
-  let currentDiscard = st ^. #discard
-  newDeck <- shuffleListM $ newFatigueIds ++ currentDiscard
+  -- Modify State: Update Registry
+  modify $ #registry %~ (`Map.union` newRegistryEntries)
 
-  pure $ st
-    & #registry %~ (`Map.union` newRegistryEntries)
-    & #deck .~ newDeck
-    & #discard .~ []
+  -- Get Discard and set it to empty
+  currentDiscard <- use #discard
+  modify $ #discard .~ []
+
+  -- Shuffle (Discard + NewFatigue) -> Deck
+  -- shuffleListM :: (RandomGen g, MonadState g m) => [a] -> m [a]
+  -- We specialized GameM base monad to (State g), so we can lift directly.
+  newDeck <- GameM . lift $ shuffleListM (newFatigueIds ++ currentDiscard)
+  
+  modify $ #deck .~ newDeck
+  tell [DeckShuffled]

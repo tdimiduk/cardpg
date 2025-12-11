@@ -6,13 +6,15 @@
 module StateTests where
 
 import Data.Aeson (eitherDecode, encode)
+import Control.Monad.RWS (runRWST)
 import Control.Monad.State (runState)
 import System.Random (mkStdGen)
 import Test.Tasty
 import Test.Tasty.QuickCheck hiding (discard)
 
 import ArbitraryInstances ()
-import CardPG.Core.Logic (performFatigueCycle)
+import CardPG.Core.Hardcoded (fatigueCard)
+import CardPG.Core.Logic (performFatigueCycle, GameM(..))
 import CardPG.Core.State
 import Optics ((^.))
 
@@ -34,17 +36,17 @@ prop_fatigueCycleCounts (Small burdenRaw) st =
   let
     burden = abs burdenRaw -- Ensure non-negative burden for logic
 
-    -- We force the deck to be empty?
-    -- The logic of performFatigueCycle replaces the deck.
-    -- So strictly speaking, it doesn't matter if deck was empty or not,
-    -- the result size is deterministic based on discard.
-
     initialDiscardSize = length (st ^. #discard)
     expectedDeckSize = initialDiscardSize + 2 + burden
 
-    gen = mkStdGen 42 -- We can use a fixed seed for the cycle itself, the randomness comes from 'st'.
-    -- Or we could take a seed as input, but it doesn't verify the size property.
-    (newState, _) = runState (performFatigueCycle burden st) gen
+    gen = mkStdGen 42
+    env = GameEnv { fatigueCardTemplate = fatigueCard }
+    
+    -- Run GameM
+    action = performFatigueCycle burden
+    stateAction = runRWST (runGameM action) env st
+    ((_, newState, _events), _) = runState stateAction gen
+
    in
     length (newState ^. #deck) === expectedDeckSize
       .&&. length (newState ^. #discard) === 0
