@@ -16,7 +16,12 @@ import ArbitraryInstances ()
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic (performFatigueCycle, GameM(..))
 import CardPG.Core.State
-import Optics ((^.))
+import CardPG.Core.Card (ItemCard, ItemCardT(..))
+import CardPG.Core.Primitives (CardInstanceId(..), EquipSlot(..))
+import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
+import qualified Data.Map.Strict as Map
+
+import Optics ((^.), (%))
 
 -- Bring instances into scope
 
@@ -31,25 +36,52 @@ test_stateTests =
 -- | Property: performFatigueCycle should result in a new deck size equal to
 -- the old discard size + 2 (base fatigue) + burden.
 -- We verify this for any initial state and any burden (>= 0).
-prop_fatigueCycleCounts :: Small Int -> CoreCardState -> Property
-prop_fatigueCycleCounts (Small burdenRaw) st =
+prop_fatigueCycleCounts :: Small Int -> CoreCardState -> CardInstanceId -> Property
+prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
   let
     burden = abs burdenRaw -- Ensure non-negative burden for logic
+    
+    -- Construct ActorState with specific burden
+    dummyItem :: ItemCard
+    dummyItem = ItemCard
+      { _id = Nothing
+      , _name = unsafeNonEmptyText "Heavy Armor"
+      , _tags = Nothing
+      , _flavor = Nothing
+      , _weight = Nothing
+      , _value = Nothing
+      , _traits = Nothing
+      , _passive = Nothing
+      , _defense = Nothing
+      , _resilience = Nothing
+      , _burden = Just burden
+      }
 
-    initialDiscardSize = length (st ^. #discard)
+
+    tableSt = TableState
+      { assets = Map.singleton itemId (Equipped SlotMainHand)
+      , registry = Map.singleton itemId (TCItem dummyItem)
+      }
+
+    actorSt = ActorState
+      { coreState = coreSt
+      , tableState = tableSt
+      }
+
+    initialDiscardSize = length (coreSt ^. #discard)
     expectedDeckSize = initialDiscardSize + 2 + burden
 
     gen = mkStdGen 42
     env = GameEnv { fatigueCardTemplate = fatigueCard }
     
     -- Run GameM
-    action = performFatigueCycle burden
-    stateAction = runRWST (runGameM action) env st
+    action = performFatigueCycle
+    stateAction = runRWST (runGameM action) env actorSt
     ((_, newState, _events), _) = runState stateAction gen
 
    in
-    length (newState ^. #deck) === expectedDeckSize
-      .&&. length (newState ^. #discard) === 0
+    length (newState ^. #coreState % #deck) === expectedDeckSize
+      .&&. length (newState ^. #coreState % #discard) === 0
 
 -- | Property: ActorState should roundtrip through JSON encoding/decoding.
 -- We resize the generator because the full unchecked recursion with default
