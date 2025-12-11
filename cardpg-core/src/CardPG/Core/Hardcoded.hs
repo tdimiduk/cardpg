@@ -14,8 +14,7 @@ import CardPG.Core.RuleDefs (DSLRule (..), RuleT (RuleTask), TaskDefT (..))
 fatigueCard :: CoreCard
 fatigueCard =
   CoreCard
-    { id = Just "status-fatigue"
-    , name = unsafeNonEmptyText "Fatigue"
+    { name = unsafeNonEmptyText "Fatigue"
     , tags = Just ("Status" :| ["Fatigue", "Physical"])
     , stats = Stats 1 1 1
     , cost = Nothing

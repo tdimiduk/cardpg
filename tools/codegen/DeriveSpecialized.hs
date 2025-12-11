@@ -1,37 +1,37 @@
-module DeriveSpecialized (specializeType, specializeType2, specializeType3, makeBridgeInstance, makeProxyInstance) where
+module DeriveSpecialized (specializeType, makeBridgeInstance, makeProxyInstance) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Language.Haskell.TH
 
 -- | specializeType creates a new concrete data type from a parameterized one by substituting
--- a specific type for a type variable.
+-- a list of specific types for the type variables.
 --
 -- Usage:
-
--- $(specializeType ''BaseCard (ConT ''Identity) "CardWithId")
+--
+-- $(specializeType ''BaseCard [ConT ''Identity] "CardWithId")
 --
 -- This generates:
 -- data CardWithId = CardWithId { ... fields with f substituted ... } deriving (Generic)
 --
--- Note: This currently assumes the type has a single constructor and uses record syntax.
--- It substitutes the first type parameter found.
+-- It substitutes the first N type parameters found, where N is the length of the provided list of types.
 
-specializeType :: Name -> Type -> String -> Q [Dec]
-specializeType typeName paramType newTypeNameStr = do
+specializeType :: Name -> [Type] -> String -> Q [Dec]
+specializeType typeName paramTypes newTypeNameStr = do
   info <- reify typeName
   case info of
     TyConI (DataD _cxt _name binders _kind constructors _deriv) -> do
       let newName = mkName newTypeNameStr
 
-      -- Identify the type variable to substitute.
-      -- Assuming the first binder is the one to substitute.
-      let (targetVar, _otherBinders) = case binders of
-            (b : _) -> (getBinderName b, [])
-            [] -> error "specializeType: Type has no parameters to specialize"
+      -- Identify the type variables to substitute.
+      let binderNames = map getBinderName binders
+      
+      if length binderNames < length paramTypes
+        then fail $ "specializeType: Too many parameter types provided. Expected at most " ++ show (length binderNames)
+        else return ()
 
       -- Create substitution map
-      let subst = Map.singleton targetVar paramType
+      let subst = Map.fromList $ zip binderNames paramTypes
 
       -- Process constructors
       newConstructors <- mapM (substConstructor subst newName) constructors
@@ -42,50 +42,6 @@ specializeType typeName paramType newTypeNameStr = do
 
       return [DataD [] newName [] Nothing newConstructors derivingClauses]
     _ -> fail "specializeType: Expected a data type declaration"
-
--- | specializeType2 substitutes the first *two* type parameters.
-specializeType2 :: Name -> Type -> Type -> String -> Q [Dec]
-specializeType2 typeName param1 param2 newTypeNameStr = do
-  info <- reify typeName
-  case info of
-    TyConI (DataD _cxt _name binders _kind constructors _deriv) -> do
-      let newName = mkName newTypeNameStr
-
-      -- Identify variables
-      let (var1, var2) = case binders of
-            (b1 : b2 : _) -> (getBinderName b1, getBinderName b2)
-            _ -> error "specializeType2: Type must have at least 2 parameters"
-
-      let subst = Map.fromList [(var1, param1), (var2, param2)]
-
-      newConstructors <- mapM (substConstructor subst newName) constructors
-
-      let derivingClauses = [DerivClause Nothing [ConT (mkName "Generic")]]
-
-      return [DataD [] newName [] Nothing newConstructors derivingClauses]
-    _ -> fail "specializeType2: Expected a data type declaration"
-
--- | specializeType3 substitutes the first *three* type parameters.
-specializeType3 :: Name -> Type -> Type -> Type -> String -> Q [Dec]
-specializeType3 typeName param1 param2 param3 newTypeNameStr = do
-  info <- reify typeName
-  case info of
-    TyConI (DataD _cxt _name binders _kind constructors _deriv) -> do
-      let newName = mkName newTypeNameStr
-
-      -- Identify variables
-      let (var1, var2, var3) = case binders of
-            (b1 : b2 : b3 : _) -> (getBinderName b1, getBinderName b2, getBinderName b3)
-            _ -> error "specializeType3: Type must have at least 3 parameters"
-
-      let subst = Map.fromList [(var1, param1), (var2, param2), (var3, param3)]
-
-      newConstructors <- mapM (substConstructor subst newName) constructors
-
-      let derivingClauses = [DerivClause Nothing [ConT (mkName "Generic")]]
-
-      return [DataD [] newName [] Nothing newConstructors derivingClauses]
-    _ -> fail "specializeType3: Expected a data type declaration"
 
 getBinderName :: TyVarBndr flag -> Name
 getBinderName (PlainTV n _) = n
@@ -138,7 +94,7 @@ substType subst t = case t of
 -- and link it to the definition of the specialized type.
 --
 -- Usage:
-
+--
 -- $(makeBridgeInstance ''AttackDefT (ConT ''RichText) "AttackDef")
 
 makeBridgeInstance :: Name -> Type -> String -> Q [Dec]

@@ -17,7 +17,7 @@ import qualified Data.Text.IO as T
 import System.Environment (lookupEnv)
 import Data.Maybe (fromMaybe)
 import qualified Network.WebSockets as WST
-import Data.UUID (UUID)
+import Data.UUID (UUID, toText)
 import qualified Data.UUID.V4 as UUID
 import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
@@ -26,8 +26,10 @@ import qualified Network.WebSockets as WS
 import System.Random (newStdGen)
 
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.State (GameEnv(..))
-import CardPG.Server.Game (GameState, emptyGame)
+import CardPG.Core.State (GameEnv(..), GameEvent(..), ActorState)
+import CardPG.Core.Primitives (TargetId(..))
+import qualified CardPG.Core.Logic as Logic
+import CardPG.Server.Game (GameState(..), emptyGame, runActorAction)
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
 
 
@@ -179,9 +181,70 @@ talkLoop client state = do
             talkLoop client state
         Just (GameCommand cmd) -> do
             T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
-            -- TODO: Process command using Game logic
-            -- For now, just acknowledge (or do nothing)
+            
+            -- Determine target and action
+            let (targetId, action) = case cmd of
+                    DrawIntent tid -> (tid, Logic.drawCard)
+                    DefendIntent tid -> (tid, Logic.flipCardToDefense)
+            
+            -- Run action against authoritative state
+            res <- modifyMVar state $ \s -> do
+                let game = s.gameState
+                -- tid is already TargetId
+                let (maybeEvents, newGame) = runActorAction targetId action game
+                
+                case maybeEvents of
+                    Nothing -> return (s, Nothing) -- Actor not found or error
+                    Just events -> do
+                        -- Update GameHistory with events converted to BroadcastActions
+                        -- Convert TargetId to Text for broadcast (if needed by existing API)
+                        let TargetId uuid = targetId
+                        let tidText = toText uuid
+                        let actions = eventsToBroadcastActions tidText events
+                        let s' = foldl (flip addAction) (s { gameState = newGame }) actions
+                        
+                        -- Prepare StateUpdate
+                        -- We need the specific ActorState that changed
+                        -- Use pattern match to avoid field selector ambiguity
+                        let GameState { actors = newActors } = newGame
+                        let maybeActorState = Map.lookup targetId newActors
+                        
+                        return (s', Just (events, actions, maybeActorState, s'.clients))
+
+            -- Broadcast results
+            case res of
+                Nothing -> 
+                    T.putStrLn $ "Command failed (invalid actor?): " <> T.pack (show targetId)
+                Just (events, actions, maybeActorState, clientsMap) -> do
+                    -- 1. Broadcast Animations (Legacy/FX)
+                    -- Actually broadcast helper iterates over clients map passed in state.
+                    -- We can reconstruct a temporary state for broadcasting or just use sendTextData manually.
+                    -- Re-using `broadcast` helper:
+                    -- broadcast msg state -> iterates state.clients.
+                    -- We have `clientsMap` from the MVar.
+                    
+                    let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
+                    
+                    forM_ actions $ \act -> 
+                        broadcast (BroadcastMessage (client.clientId) act) tempState
+                        
+                    -- 2. Broadcast State Update
+                    case maybeActorState of
+                        Just actorSt -> do
+                            let updateMsg = GameStateUpdate (FullStateUpdate actorSt)
+                            broadcast updateMsg tempState
+                        Nothing -> return ()
+            
             talkLoop client state
+
+-- | Helper to map internal GameEvents to Protocol BroadcastActions
+eventsToBroadcastActions :: Text -> [GameEvent] -> [BroadcastAction]
+eventsToBroadcastActions tid events = concatMap toAction events
+  where
+    toAction (CardDrawn _) = [DrawCards tid 1]
+    toAction (CardDefended _) = [Defend tid]
+    toAction DeckShuffled = [Reshuffle tid]
+    toAction (CardsCreated _) = [] -- No visual action for creating cards (usually happens before shuffle)
 
 disconnect :: Client -> MVar ServerState -> IO ()
 disconnect client state = do

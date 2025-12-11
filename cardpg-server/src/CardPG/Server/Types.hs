@@ -42,7 +42,7 @@ import CardPG.Core.Card
   , ItemCardMachine
   )
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (ResourceType)
+import CardPG.Core.Primitives (ResourceType, TargetId)
 import CardPG.Core.State (ActorState)
 import CardPG.Server.Game (GameState)
 
@@ -115,8 +115,8 @@ instance FromJSON BroadcastAction where
 
 -- | Commands for game actions (Intents)
 data Command
-  = DrawIntent
-  | DefendIntent
+  = DrawIntent { actorId :: TargetId }
+  | DefendIntent { actorId :: TargetId }
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)
