@@ -43,6 +43,7 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
       style={style}
       onMouseDown={(e) => onMouseDown(e, token)}
       className={`group flex items-center justify-center relative ${isDefeated ? 'grayscale opacity-70' : ''}`}
+      data-testid="token-entity"
     >
       {/* Selection/Active Indicator Ring */}
       {isSelected && !isDefeated && (

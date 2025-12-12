@@ -12,6 +12,7 @@ import qualified Rules.Frontend as Frontend
 import qualified Rules.Haskell as Haskell
 import qualified Rules.Justfile as Justfile
 import qualified Rules.Orchestration as Orchestration
+import qualified Rules.Integration as Integration
 
 main :: IO ()
 main = do
@@ -49,6 +50,7 @@ main = do
           , "Check code formatting"
           , need ["_build/haskell/.format-check.timestamp", "_build/frontend/.format-check.timestamp"]
           )
+        , ("test-integration", "Run integration tests", Integration.runIntegrationTests)
         ]
 
   shakeArgs shakeOptions{shakeFiles = buildDir, shakeColor = True, shakeThreads = 0} $ do
@@ -65,6 +67,7 @@ main = do
     Haskell.defineHaskellTestRules Codegen.getCardCompilerSources
     Haskell.defineHaskellLintRules
     Haskell.defineHaskellFormatRules
+    Frontend.defineFrontendRules
     Frontend.defineFrontendRules
     Frontend.defineFrontendTestRules
     Frontend.defineFrontendFormatRules

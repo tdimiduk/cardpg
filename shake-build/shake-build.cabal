@@ -25,12 +25,14 @@ executable shake-build
                     , bytestring
                     , unordered-containers
                     , extra
+                    , process
     other-modules:    Common
                     , Rules.Cards
                     , Rules.Codegen
                     , Rules.Deploy
                     , Rules.Frontend
                     , Rules.Haskell
+                    , Rules.Integration
                     , Rules.Justfile
                     , Rules.Orchestration
     hs-source-dirs:   src

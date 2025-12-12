@@ -15,6 +15,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import System.Environment (lookupEnv)
+import System.IO (hSetBuffering, stdout, BufferMode(..))
 import Data.Maybe (fromMaybe)
 import qualified Network.WebSockets as WST
 import Data.UUID (UUID, toText)
@@ -57,6 +58,7 @@ broadcast msg state = do
 
 main :: IO ()
 main = do
+    hSetBuffering stdout NoBuffering
     T.putStrLn "Loading starter scenario..."
     initialGs <- loadScenario "data/scenarios/starter.yaml"
     

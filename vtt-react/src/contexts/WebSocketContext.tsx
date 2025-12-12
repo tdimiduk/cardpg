@@ -11,7 +11,10 @@ interface WebSocketContextType {
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
-export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: string }> = ({
+  children,
+  url,
+}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
   const [connectedClients, setConnectedClients] = useState<string[]>([]);
@@ -22,9 +25,12 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     // Connect to local server
     // Determine WebSocket URL based on current location
     // Connect to local server relative to current host (handled by Vite proxy in dev)
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/api`;
+    let wsUrl = url;
+    if (!wsUrl) {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host;
+      wsUrl = `${protocol}//${host}/api`;
+    }
 
     const socket = new WebSocket(wsUrl);
     ws.current = socket;

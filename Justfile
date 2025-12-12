@@ -129,3 +129,8 @@ format-check:
     @test -f {{shake}} || just bootstrap
     @{{shake}} format-check
 
+# Run integration tests
+test-integration:
+    @test -f {{shake}} || just bootstrap
+    @{{shake}} test-integration
+
