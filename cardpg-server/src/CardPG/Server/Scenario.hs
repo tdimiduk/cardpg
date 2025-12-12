@@ -34,9 +34,12 @@ import CardPG.Core.State qualified as State
 import CardPG.Server.Game (GameState (..), addActor, emptyGame)
 
 -- | Definition of an actor within a scenario
+
 data ScenarioActor = ScenarioActor
-  { id :: Text
+  { name :: Text
   , file :: FilePath
+  , x :: Int
+  , y :: Int
   }
   deriving (Show, Eq, Generic)
 
@@ -73,7 +76,6 @@ loadScenarioActors :: FilePath -> [ScenarioActor] -> StateT GameState IO ()
 loadScenarioActors baseDir actorsList = do
   forM_ actorsList $ \actorDef -> do
     let actorPath = baseDir </> actorDef.file
-    actorState <- liftIO $ loadActorState actorPath
 
     -- For now, we generate a random TargetId for the actor.
     -- In the future, we might want to map the ScenarioActor.id to this TargetId explicitly
@@ -82,22 +84,24 @@ loadScenarioActors baseDir actorsList = do
     let (tid, newRng) = uniform (gameState.rng) :: (TargetId, StdGen)
     put $ gameState{rng = newRng}
 
+    actorState <- liftIO $ loadActorState actorPath (actorDef.x) (actorDef.y)
+
     let updatedGame = addActor tid actorState (gameState{rng = newRng})
     put updatedGame
 
 -- | Load a single actor from a YAML file and instantiate it into an ActorState
-loadActorState :: FilePath -> IO ActorState
-loadActorState path = do
+loadActorState :: FilePath -> Int -> Int -> IO ActorState
+loadActorState path x y = do
   -- Parse the static definition
   def :: ActorDefinition <- decodeFileThrow path
 
   -- Instantiate with fresh UUIDs
   rng <- newStdGen
-  evalStateT (instantiateActor def) rng
+  evalStateT (instantiateActor def x y) rng
 
 -- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
-instantiateActor :: ActorDefinition -> StateT StdGen IO ActorState
-instantiateActor def = do
+instantiateActor :: ActorDefinition -> Int -> Int -> StateT StdGen IO ActorState
+instantiateActor def x y = do
   -- Process Deck (Core Cards)
   (deckIds, coreRegistry) <- processCards (def.deck)
 
@@ -145,6 +149,8 @@ instantiateActor def = do
       , actorType = actorTypeVal
       , coreState = coreSt
       , tableState = tableSt
+      , spatial = State.SpatialState { posX = x, posY = y, size = 1, mapId = Nothing }
+      , plannedMove = Nothing
       }
 
 -- | Helper to instantiate a list of cards

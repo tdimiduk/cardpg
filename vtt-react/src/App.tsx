@@ -158,11 +158,12 @@ const App: React.FC = () => {
         <MapBoard
           tokens={tokens}
           onUpdateToken={(token) => {
-            dispatch({ type: 'moveToken', token });
+            if (token.actorId) {
+              dispatchCommand({ type: 'planMove', actorId: token.actorId, x: token.x, y: token.y });
+            }
           }}
           activeTokenId={activeTokenId}
           setActiveTokenId={(id) => setActiveToken(id)}
-          plannedActions={plannedActions}
           defeatedTokenIds={defeatedTokenIds}
           actors={actors}
         />

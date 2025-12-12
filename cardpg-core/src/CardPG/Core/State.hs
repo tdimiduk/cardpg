@@ -58,12 +58,25 @@ $(deriveJSON cardpgJsonDef ''AssetState)
 
 $(deriveJSON cardpgJsonDef ''TableState)
 
+
+data SpatialState = SpatialState
+  { posX :: Int
+  , posY :: Int
+  , size :: Int
+  , mapId :: Maybe Text
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''SpatialState)
+
 -- | The Authoritative State Container
 data ActorState = ActorState
   { name :: Text
   , actorType :: Text
   , coreState :: CoreCardState -- Handles Core Cards (Deck/Hand/Discard)
   , tableState :: TableState -- Handles Table Cards (Equipment/Conditions)
+  , spatial :: SpatialState
+  , plannedMove :: Maybe (Int, Int)
   }
   deriving stock (Show, Eq, Generic)
 
@@ -74,6 +87,8 @@ data GameEvent
   | DeckShuffled
   | CardDrawn CardInstanceId
   | CardDefended CardInstanceId
+  | MovePlanned (Int, Int)
+  | ActorMoved (Int, Int)
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)

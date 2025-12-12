@@ -48,6 +48,7 @@ export interface ActorState {
   type: TokenType;
   color: string;
   deck: PlayerDeckState;
+  plannedMove?: { x: number; y: number };
 }
 
 export interface LogEntry {

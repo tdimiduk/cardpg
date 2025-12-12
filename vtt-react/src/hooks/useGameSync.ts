@@ -31,8 +31,10 @@ export const useGameSync = () => {
           });
         }
       } else if (lastMessage.type === 'gameStateUpdate') {
-        console.log('Received State Update:', lastMessage.update);
-        useGameStore.getState().updateActorState(lastMessage.update);
+        console.log('Received State Updates:', lastMessage.updates);
+        lastMessage.updates.forEach((update) => {
+          useGameStore.getState().updateActorState(update);
+        });
       }
     }
   }, [lastMessage, clientId, _applyAction]);

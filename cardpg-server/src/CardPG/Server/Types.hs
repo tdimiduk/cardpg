@@ -127,6 +127,7 @@ instance FromJSON BroadcastAction where
 data Command
   = DrawIntent {actorId :: TargetId}
   | DefendIntent {actorId :: TargetId}
+  | PlanMove {actorId :: TargetId, x :: Int, y :: Int}
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)
@@ -161,7 +162,7 @@ data ServerMessage
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}
-  | GameStateUpdate {update :: StateUpdate}
+  | GameStateUpdate {updates :: [StateUpdate]}
   deriving (Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ServerMessage)

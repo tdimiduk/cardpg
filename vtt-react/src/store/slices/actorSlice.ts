@@ -1,6 +1,8 @@
-import { StateCreator } from 'zustand';
 import { ActorState, PlayerDeckState, Token, CoreCard, StateUpdate, TokenType } from '../../types';
-import { ActorState as ServerActorState } from '../../generated/types';
+import {
+  ActorState as ServerActorState,
+  CoreCard as GenCoreCard,
+} from '../../generated/types';
 
 import { ACTOR_COLORS } from '../../theme';
 import { INITIAL_ACTORS } from '../../constants';
@@ -40,7 +42,10 @@ export interface ActorSlice {
   removeStatus: (tokenId: string, statusType: string) => void;
 }
 
-const hydrateCards = (ids: string[], registry: Record<string, any>): CoreCard[] => {
+const hydrateCards = (
+  ids: string[],
+  registry: Record<string, GenCoreCard | undefined>,
+): CoreCard[] => {
   return ids.map((id) => {
     const def = registry[id];
     if (!def) {
@@ -139,6 +144,24 @@ export const createActorSlice: StateCreator<
       const currentActor = state.actors[targetId];
       const core = serverState.coreState;
       const registry = core.registry;
+
+      // Sync Spatial State to Token
+      const token = state.tokens.find((t) => t.actorId === targetId);
+      if (token && serverState.spatial) {
+        token.x = serverState.spatial.posX;
+        token.y = serverState.spatial.posY;
+        token.size = serverState.spatial.size ?? 1;
+      }
+
+      // Sync Planned Move
+      if (serverState.plannedMove) {
+        state.actors[targetId].plannedMove = {
+          x: serverState.plannedMove[0],
+          y: serverState.plannedMove[1],
+        };
+      } else {
+        state.actors[targetId].plannedMove = undefined;
+      }
 
       // Hydrate Deck State
       const newDeckState: PlayerDeckState = {

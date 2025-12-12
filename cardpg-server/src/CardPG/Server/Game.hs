@@ -4,6 +4,7 @@ module CardPG.Server.Game
   , addActor
   , runActorAction
   , processCommand
+  , resolveRound
   , eventsToBroadcastActions
   ) where
 
@@ -19,7 +20,7 @@ import CardPG.Core.Logic (GameM, runGameM)
 import CardPG.Core.Logic qualified as Logic
 import CardPG.Core.Primitives (TargetId (..))
 import CardPG.Core.State (ActorState, GameEnv, GameEvent (..))
-import CardPG.Server.Types (BroadcastAction (..), Command (..), GameState (..))
+import CardPG.Server.Types (BroadcastAction (..), Command (..), GameState (..), StateUpdate (..))
 
 emptyGame :: GameEnv -> StdGen -> GameState
 emptyGame env rng =
@@ -47,6 +48,7 @@ processCommand cmd game =
   let (targetId, action) = case cmd of
         DrawIntent tid -> (tid, Logic.drawCard)
         DefendIntent tid -> (tid, Logic.flipCardToDefense)
+        PlanMove tid x y -> (tid, Logic.planMove x y)
 
       (maybeEvents, newGame) = runActorAction targetId action game
    in case maybeEvents of
@@ -62,6 +64,19 @@ processCommand cmd game =
               , Just (targetId, broadcastActions, maybe (error "Actor missing after update") id updatedActorState)
               )
 
+resolveRound :: GameState -> (GameState, [StateUpdate])
+resolveRound game = foldl step (game, []) (Map.keys (game.actors))
+  where
+    step (g, updates) tid =
+      let (maybeEvents, newG) = runActorAction tid Logic.applyPlannedMove g
+       in case maybeEvents of
+            Nothing -> (newG, updates)
+            Just _ ->
+              let updatedActor = Map.lookup tid (newG.actors)
+               in case updatedActor of
+                    Just actor -> (newG, updates ++ [StateUpdate tid actor])
+                    Nothing -> (newG, updates)
+
 -- | Helper to map internal GameEvents to Protocol BroadcastActions
 eventsToBroadcastActions :: Text -> [GameEvent] -> [BroadcastAction]
 eventsToBroadcastActions tid events = concatMap toAction events
@@ -70,3 +85,5 @@ eventsToBroadcastActions tid events = concatMap toAction events
     toAction (CardDefended _) = [Defend tid]
     toAction DeckShuffled = [Reshuffle tid]
     toAction (CardsCreated _) = [] -- No visual action for creating cards
+    toAction (MovePlanned _) = [] -- State update handles ghost
+    toAction (ActorMoved _) = [] -- State update handles position

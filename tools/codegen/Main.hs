@@ -34,6 +34,7 @@ import CardPG.Core.State
   , AssetState
   , CoreCardState
   , CorePlayState
+  , SpatialState
   , TableCard
   , TableState
   )
@@ -97,6 +98,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy StateUpdate)
+              <> getTypeScriptDeclarations (Proxy :: Proxy SpatialState)
           )
 
   let exportedDeclarations =

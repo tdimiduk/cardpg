@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Token, PlannedAction, ActorState } from '../../types';
+import { Token, ActorState } from '../../types';
 import { GRID_SIZE } from '../../constants';
 import { TokenEntity } from './TokenEntity';
 
@@ -8,7 +8,6 @@ interface MapBoardProps {
   onUpdateToken: (token: Token) => void;
   activeTokenId: string | null;
   setActiveTokenId: (id: string | null) => void;
-  plannedActions?: Record<string, PlannedAction>;
   defeatedTokenIds?: string[];
   actors: Record<string, ActorState>;
 }
@@ -18,11 +17,9 @@ export const MapBoard: React.FC<MapBoardProps> = ({
   onUpdateToken,
   activeTokenId,
   setActiveTokenId,
-  plannedActions = {},
   defeatedTokenIds = [],
   actors,
 }) => {
-  // ... (keep existing refs and state)
   const boardRef = useRef<HTMLDivElement>(null);
   const [draggingToken, setDraggingToken] = useState<{
     id: string;
@@ -95,14 +92,14 @@ export const MapBoard: React.FC<MapBoardProps> = ({
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible">
           {tokens.map((token) => {
             const actor = actors[token.actorId];
-            if (!actor) return null;
+            if (!actor || !actor.plannedMove) return null;
 
-            const plan = plannedActions[token.id];
-            if (plan && plan.move && (plan.move.x !== token.x || plan.move.y !== token.y)) {
+            const { x: targetX, y: targetY } = actor.plannedMove;
+            if (targetX !== token.x || targetY !== token.y) {
               const startX = token.x * GRID_SIZE + GRID_SIZE / 2;
               const startY = token.y * GRID_SIZE + GRID_SIZE / 2;
-              const endX = plan.move.x * GRID_SIZE + GRID_SIZE / 2;
-              const endY = plan.move.y * GRID_SIZE + GRID_SIZE / 2;
+              const endX = targetX * GRID_SIZE + GRID_SIZE / 2;
+              const endY = targetY * GRID_SIZE + GRID_SIZE / 2;
               return (
                 <g key={`path-${token.id}`}>
                   <line
@@ -129,31 +126,33 @@ export const MapBoard: React.FC<MapBoardProps> = ({
           if (!actor) return null;
 
           const isDragging = draggingToken?.id === token.id;
-          const plan = plannedActions[token.id];
           const isDefeated = defeatedTokenIds.includes(token.id);
 
           // 1. Render Planned "Ghost" Token if it exists and is different from start
           let GhostEntity = null;
-          if (plan && plan.move && (plan.move.x !== token.x || plan.move.y !== token.y)) {
-            GhostEntity = (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: plan.move.x * GRID_SIZE,
-                  top: plan.move.y * GRID_SIZE,
-                  zIndex: 40,
-                  opacity: 0.5,
-                }}
-                className="pointer-events-none grayscale"
-              >
-                <TokenEntity
-                  token={token}
-                  actor={actor}
-                  isSelected={false}
-                  onMouseDown={() => {}}
-                />
-              </div>
-            );
+          if (actor.plannedMove) {
+            const { x: planX, y: planY } = actor.plannedMove;
+            if (planX !== token.x || planY !== token.y) {
+              GhostEntity = (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: planX * GRID_SIZE,
+                    top: planY * GRID_SIZE,
+                    zIndex: 40,
+                    opacity: 0.5,
+                  }}
+                  className="pointer-events-none grayscale"
+                >
+                  <TokenEntity
+                    token={token}
+                    actor={actor}
+                    isSelected={false}
+                    onMouseDown={() => {}}
+                  />
+                </div>
+              );
+            }
           }
 
           // 2. Render Real Token

@@ -4,6 +4,8 @@ module CardPG.Core.Logic
   , performFatigueCycle
   , drawCard
   , flipCardToDefense
+  , planMove
+  , applyPlannedMove
   ) where
 
 import Control.Monad (replicateM)
@@ -22,7 +24,9 @@ import CardPG.Core.State
   , GameEnv (..)
   , GameEvent (..)
   , TableCard (..)
+  , TableCard (..)
   , TableState (..)
+  , SpatialState (..)
   )
 import CardPG.Core.Util (shuffleListM)
 
@@ -98,6 +102,7 @@ drawCard = do
       modify $ #coreState % #hand %~ (top :)
       tell [CardDrawn top]
 
+
 flipCardToDefense :: (RandomGen g) => GameM g ()
 flipCardToDefense = do
   currentDeck <- use (#coreState % #deck)
@@ -109,3 +114,19 @@ flipCardToDefense = do
       modify $ #coreState % #deck .~ rest
       modify $ #coreState % #defending %~ (top :)
       tell [CardDefended top]
+
+planMove :: (RandomGen g) => Int -> Int -> GameM g ()
+planMove x y = do
+  modify $ #plannedMove ?~ (x, y)
+  tell [MovePlanned (x, y)]
+
+applyPlannedMove :: (RandomGen g) => GameM g ()
+applyPlannedMove = do
+  maybePlan <- use #plannedMove
+  case maybePlan of
+    Nothing -> return ()
+    Just (newX, newY) -> do
+      modify $ #spatial % lens (.posX) (\s v -> s{posX = v}) .~ newX
+      modify $ #spatial % lens (.posY) (\s v -> s{posY = v}) .~ newY
+      modify $ #plannedMove .~ Nothing
+      tell [ActorMoved (newX, newY)]

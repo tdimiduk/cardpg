@@ -29,7 +29,7 @@ import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.State (GameEnv(..), GameEvent(..), ActorState)
 import CardPG.Core.Primitives (TargetId(..))
 import qualified CardPG.Core.Logic as Logic
-import CardPG.Server.Game (GameState(..), runActorAction, processCommand)
+import CardPG.Server.Game (GameState(..), runActorAction, processCommand, resolveRound)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
 
@@ -129,15 +129,30 @@ talk client state = forever $ do
             talkLoop newClient state
             
         Just (Broadcast payload) -> do
-            -- Update log and broadcast
-            (currentClients, currentGs) <- modifyMVar state $ \s -> do
-                let s' = addAction payload s
-                return (s', (s'.clients, s'.gameState))
+            T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
 
-            -- Broadcast to others
-            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
+            -- Update log and broadcast
+            (currentClients, currentGs, movesUpdates) <- modifyMVar state $ \s -> do
+                let s' = addAction payload s
+                -- Special handling for EndRound
+                case payload of
+                     EndRound -> do
+                        T.putStrLn "Resolving round..."
+                        let (newGame, updates) = CardPG.Server.Game.resolveRound (s'.gameState)
+                        T.putStrLn $ "Round resolved. Updates: " <> T.pack (show $ length updates)
+                        let s'' = s' { gameState = newGame }
+                        return (s'', (s''.clients, s''.gameState, updates))
+                     _ -> return (s', (s'.clients, s'.gameState, []))
+
+            -- Broadcast to ALL (was others)
+            let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState
-            
+
+            -- If there were updates from EndRound, broadcast them to ALL (batched)
+            case movesUpdates of
+                 [] -> return ()
+                 updates -> broadcast (GameStateUpdate updates) broadcastState
+
             -- Continue loop
             talkLoop client state
 
@@ -156,13 +171,28 @@ talkLoop client state = do
             T.putStrLn $ "Client renamed: " <> name
             talkLoop newClient state
         Just (Broadcast payload) -> do
+            T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
+            
             -- Update log and broadcast
-            (currentClients, currentGs) <- modifyMVar state $ \s -> do
+            (currentClients, currentGs, movesUpdates) <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
-                return (s', (s'.clients, s'.gameState))
+                -- Special handling for EndRound
+                case payload of
+                     EndRound -> do
+                        T.putStrLn "Resolving round..."
+                        let (newGame, updates) = CardPG.Server.Game.resolveRound (s'.gameState)
+                        T.putStrLn $ "Round resolved. Updates: " <> T.pack (show $ length updates)
+                        let s'' = s' { gameState = newGame }
+                        return (s'', (s''.clients, s''.gameState, updates))
+                     _ -> return (s', (s'.clients, s'.gameState, []))
 
-            let broadcastState = ServerState (Map.delete (client.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
+            let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState
+
+            -- If there were updates from EndRound, broadcast them to ALL (batched)
+            case movesUpdates of
+                 [] -> return ()
+                 updates -> broadcast (GameStateUpdate updates) broadcastState
             
             talkLoop client state
         Just (GameCommand cmd) -> do
@@ -192,7 +222,7 @@ talkLoop client state = do
                         broadcast (BroadcastMessage (client.clientId) act) tempState
                         
                     -- 2. Broadcast State Update
-                    let updateMsg = GameStateUpdate (StateUpdate targetId actorSt)
+                    let updateMsg = GameStateUpdate [StateUpdate targetId actorSt]
                     broadcast updateMsg tempState
             
             talkLoop client state

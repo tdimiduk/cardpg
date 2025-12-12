@@ -1,6 +1,10 @@
 name: Starter Scenario
 actors:
-  - id: vallhach
+  - name: vallhach
     file: ../cards/pc/vallhach.yaml
-  - id: wolf
+    x: 0
+    y: 0
+  - name: wolf
     file: ../cards/monsters/wolf.yaml
+    x: 1
+    y: 1
