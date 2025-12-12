@@ -1,4 +1,3 @@
-
 module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 
 import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
@@ -8,8 +7,8 @@ import CardPG.Core.RichText
   , RichText (..)
   , StackPower (..)
   , TextStyle (..)
-  , getRichText
   , getInlines
+  , getRichText
   )
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)

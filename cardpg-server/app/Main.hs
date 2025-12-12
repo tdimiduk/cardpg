@@ -29,7 +29,8 @@ import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.State (GameEnv(..), GameEvent(..), ActorState)
 import CardPG.Core.Primitives (TargetId(..))
 import qualified CardPG.Core.Logic as Logic
-import CardPG.Server.Game (GameState(..), emptyGame, runActorAction, processCommand)
+import CardPG.Server.Game (GameState(..), runActorAction, processCommand)
+import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
 
 
@@ -56,10 +57,8 @@ broadcast msg state = do
 
 main :: IO ()
 main = do
-    -- Initialize GameState
-    rng <- newStdGen
-    let env = GameEnv { fatigueCardTemplate = fatigueCard }
-    let emptyGs = emptyGame env rng
+    T.putStrLn "Loading starter scenario..."
+    initialGs <- loadScenario "data/scenarios/starter.yaml"
     
     let cardsFile = "vtt-react/src/data/generated_cards.json"
     T.putStrLn $ "Loading card library from " <> T.pack cardsFile <> "..."
@@ -68,13 +67,13 @@ main = do
     initialState <- case cardLibraryResult of
         Left err -> do
              T.putStrLn $ "WARNING: Failed to load card library: " <> T.pack err
-             return (newServerState emptyGs)
+             return (newServerState initialGs)
         Right lib -> do
              T.putStrLn $ "Card Library Loaded: " 
                 <> T.pack (show (length (lib.actors))) <> " actors, " 
                 <> T.pack (show (length (lib.statuses))) <> " statuses, "
                 <> T.pack (show (length (lib.consequences))) <> " consequences."
-             return $ (newServerState emptyGs) { library = lib }
+             return $ (newServerState initialGs) { library = lib }
 
     state <- newMVar initialState
     
@@ -115,22 +114,12 @@ talk client state = forever $ do
             
             -- Send Welcome to the new client
             let clientNames = map (.clientName) $ Map.elems currentClients
-            -- We can pass empty history for now or s.actionLog if we had it
-            -- The original code passed 'historyLog' which was returned.
-            -- Wait, let's look at original code.
-            -- original: (currentClients, historyLog) <- modifyMVar ... return (s', (s'.clients, s'.actionLog))
-            -- I should preserve that.
-            
-            -- Re-reading original code:
-            -- (currentClients, historyLog) <- modifyMVar state $ \s -> return (s', (s'.clients, s'.actionLog))
-            
-            -- New version:
             (currentClients, historyLog, currentGs) <- modifyMVar state $ \s -> do
                 let s' = addClient newClient s
                 return (s', (s'.clients, s'.actionLog, s'.gameState))
 
-            -- Send Welcome
-            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) historyLog
+            let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (currentGs.actors)
+            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) historyLog initialUpdates
             
             -- Notify others
             let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
@@ -152,9 +141,6 @@ talk client state = forever $ do
             -- Continue loop
             talkLoop client state
 
--- | Inner loop after initial handshake/join logic if needed. 
--- Actually 'talk' handles dispatching, so we can just recurse 'talk' or have a dedicated loop.
--- But since 'Join' updates the client record (name), we need to pass that updated record around.
 talkLoop :: Client -> MVar ServerState -> IO ()
 talkLoop client state = do
     msgBytes <- receiveData (client.clientConn)

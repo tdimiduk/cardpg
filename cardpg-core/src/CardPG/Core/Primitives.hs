@@ -1,4 +1,3 @@
-
 module CardPG.Core.Primitives
   ( CardInstanceId (..)
   , TargetId (..)

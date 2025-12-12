@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { GamePhase, PlannedAction, CoreCard, ResourceType, Token, ActorState } from '../../types';
 import { RESOURCE_TYPES } from '../../constants';
-import { calculateStackStrength, drawCards } from '../../services/ruleService';
+import { calculateStackStrength } from '../../services/ruleService';
 import { resolveMovement } from '../../services/resolutionService';
 import { LogSlice, createLog } from './logSlice';
 import { ActorSlice } from './actorSlice';
@@ -187,22 +187,7 @@ export const createGameSlice: StateCreator<
       state.plannedActions = nextPlans;
       state.phase = 'planning';
 
-      // Draw Cards
-      let activeCount = 0;
-      let fatigueMsg = '';
-
-      Object.values(state.actors).forEach((actor) => {
-        if (defeatedIds.includes(actor.id)) return;
-
-        const { newState, fatigueTriggered } = drawCards(actor.deck, 2);
-        actor.deck = newState;
-        activeCount++;
-        if (fatigueTriggered) fatigueMsg += ` Fatigue for ${actor.name}.`;
-      });
-
-      state.logs.push(
-        createLog(`Round Ended. ${activeCount} active actors drew cards.${fatigueMsg}`, 'GM'),
-      );
+      state.logs.push(createLog('Round Ended.', 'GM'));
     }),
 
   playImmediate: (tokenId, cards, strengthColor, modifier, actionName, targetDefense) =>

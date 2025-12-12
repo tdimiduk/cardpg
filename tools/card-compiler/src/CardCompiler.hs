@@ -1,16 +1,15 @@
-
 module CardCompiler where
 
 import Control.Monad (forM_, unless)
 import Data.Aeson (Result (..), Value (..), eitherDecode, fromJSON)
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as LBS
+import Data.ByteString qualified as BS
+import Data.ByteString.Lazy qualified as LBS
 import Data.Either (partitionEithers)
-import qualified Data.List.NonEmpty as NE
-import qualified Data.Map.Strict as Map
+import Data.List.NonEmpty qualified as NE
+import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Data.Void (Void)
 import Data.Yaml (encode)
 import System.Directory (createDirectoryIfMissing)
@@ -26,7 +25,7 @@ import CardCompiler.Parser
   , convertCard
   , passiveParser
   )
-import qualified CardCompiler.VttExporter as Vtt
+import CardCompiler.VttExporter qualified as Vtt
 import CardPG.Core.Card (ActorDefinitionT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
 
@@ -53,8 +52,7 @@ run inputFile outputDir tag = do
 heroCard :: NatureCard
 heroCard =
   NatureCard
-    { id = Nothing
-    , name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
+    { name = fromMaybe (error "Invalid hero name") $ mkNonEmptyText "Hero"
     , tags = Nothing
     , flavor = Nothing
     , traits = Nothing
@@ -101,7 +99,6 @@ processCards outputDir cards tag = do
                   , nature = finalNature
                   , items = items
                   , deck = deck
-                  , id = Just (Vtt.slugify actorName)
                   }
           let fileName = T.unpack (sanitize actorName) ++ ".yaml"
           let outputPath = outputDir </> fileName
@@ -133,10 +130,10 @@ updateMonsterNature :: NatureCard -> NatureCard
 updateMonsterNature n@NatureCard{passive = mPassive} =
   let def = maybe 0 (const 2) mPassive
    in n
-    { defense = Just def
-    , resilience = Just 2
-    , passive = newPassive
-    }
+        { defense = Just def
+        , resilience = Just 2
+        , passive = newPassive
+        }
   where
     (def, newPassive) = case parseMaybe passiveParser =<< mPassive of
       Nothing -> (2, mPassive)

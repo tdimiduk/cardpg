@@ -11,9 +11,15 @@ const GeneratedDataSchema = z.object({
 // Cast the imported JSON to the correct type and normalize
 const rawData = GeneratedDataSchema.parse(generatedCards);
 
-export const ACTOR_DATA: ActorDefinition[] = rawData.actors;
+export const ACTOR_DATA: ActorDefinition[] = rawData.actors.map((actor: any) => ({
+  ...actor,
+  id: actor.id || actor.name, // Fallback to name as ID if missing
+}));
 
-export const STATUS_DATA: CoreCard[] = rawData.statuses;
+export const STATUS_DATA: CoreCard[] = rawData.statuses.map((s: any) => ({
+  ...s,
+  id: s.id || Math.random().toString(),
+}));
 
 export const getActorTemplates = (type?: 'pc' | 'monster'): ActorDefinition[] => {
   if (!type) {

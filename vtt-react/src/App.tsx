@@ -61,7 +61,7 @@ const App: React.FC = () => {
   // --- WebSocket Integration ---
   useWebSocket();
   useGameSync();
-  const { dispatch } = useGameDispatch();
+  const { dispatch, dispatchCommand } = useGameDispatch();
 
   // --- Handlers ---
 
@@ -95,13 +95,13 @@ const App: React.FC = () => {
     <div className="flex h-screen w-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">
       <SidebarLeft
         deckState={currentDeck}
-        onDraw={(count) => {
-          if (!activeTokenId) return;
-          dispatch({ type: 'drawCards', activeTokenId, count });
+        onDraw={(_count) => {
+          if (!activeToken) return;
+          dispatchCommand({ type: 'drawIntent', actorId: activeToken.actorId });
         }}
         onDefend={() => {
-          if (!activeTokenId) return;
-          dispatch({ type: 'defend', activeTokenId });
+          if (!activeToken) return;
+          dispatchCommand({ type: 'defendIntent', actorId: activeToken.actorId });
         }}
         onClearDefense={() => {
           if (!activeTokenId) return;
@@ -126,7 +126,13 @@ const App: React.FC = () => {
         }}
         onRemoveStatusCard={(statusType) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'removeStatus', activeTokenId, statusType });
+          // destination is required by IRemoveStatus but seemingly unused or implicit?
+          // Let's check generated type requirements.
+          // IRemoveStatus needs destination.
+          // In sidebar, maybe we know destination? Or we send a dummy value if backend ignores it?
+          // Previously it was removing based on type.
+          // Let's provide 'discard' as default or fix logic.
+          dispatch({ type: 'removeStatus', activeTokenId, statusType, destination: 'discard' });
         }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}

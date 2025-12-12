@@ -21,11 +21,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     // Connect to local server
     // Determine WebSocket URL based on current location
+    // Connect to local server relative to current host (handled by Vite proxy in dev)
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
-    // If in development (localhost:5173), connect to localhost:8080
-    // Otherwise (production), connect to /api on the same host
-    const wsUrl = host.includes('localhost') ? 'ws://localhost:8080' : `${protocol}//${host}/api`;
+    const wsUrl = `${protocol}//${host}/api`;
 
     const socket = new WebSocket(wsUrl);
     ws.current = socket;

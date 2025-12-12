@@ -1,6 +1,5 @@
-
 module CardPG.Core.Logic
-  ( GameM(..)
+  ( GameM (..)
   , runGameM
   , performFatigueCycle
   , drawCard
@@ -8,15 +7,23 @@ module CardPG.Core.Logic
   ) where
 
 import Control.Monad (replicateM)
-import Control.Monad.RWS (RWST, ask, tell, MonadReader, MonadWriter)
-import Control.Monad.State (MonadState, state, State, modify)
+import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
+import Control.Monad.State (MonadState, State, modify, state)
 import Control.Monad.Trans.Class (lift)
 import Data.Map.Strict qualified as Map
 import Optics
 import System.Random (RandomGen, uniform)
 
-import CardPG.Core.State (ActorState (..), CoreCardState (..), GameEnv (..), GameEvent (..), TableState (..), AssetState (..), TableCard (..))
 import CardPG.Core.Card (ItemCardT (..))
+import CardPG.Core.State
+  ( ActorState (..)
+  , AssetState (..)
+  , CoreCardState (..)
+  , GameEnv (..)
+  , GameEvent (..)
+  , TableCard (..)
+  , TableState (..)
+  )
 import CardPG.Core.Util (shuffleListM)
 
 -- | The Game Monad
@@ -47,24 +54,26 @@ liftRandom f = GameM . lift $ state f
 calculateTotalBurden :: GameM g Int
 calculateTotalBurden = do
   tblSt <- use #tableState
-  let equippedItems = [ item | (cid, Equipped _) <- Map.toList (tblSt ^. #assets)
-                             , Just (TCItem item) <- [Map.lookup cid (tblSt ^. #registry)]
-                             ]
-  let burden = sum [ b | item <- equippedItems, let b = maybe 0 id (item ^. #burden) ]
+  let equippedItems =
+        [ item
+        | (cid, Equipped _) <- Map.toList (tblSt ^. #assets)
+        , Just (TCItem item) <- [Map.lookup cid (tblSt ^. #registry)]
+        ]
+  let burden = sum [b | item <- equippedItems, let b = maybe 0 id (item ^. #burden)]
   return burden
 
-performFatigueCycle :: RandomGen g => GameM g ()
+performFatigueCycle :: (RandomGen g) => GameM g ()
 performFatigueCycle = do
   env <- ask
   burden <- calculateTotalBurden
   let fatigueTemplate = env ^. #fatigueCardTemplate
-  
+
   let countNeeded = 2 + burden
 
   newFatigueIds <- replicateM countNeeded $ liftRandom uniform
 
   let newRegistryEntries = Map.fromList [(cid, fatigueTemplate) | cid <- newFatigueIds]
-  
+
   tell [CardsCreated newFatigueIds]
 
   modify $ #coreState % #registry %~ (`Map.union` newRegistryEntries)
@@ -73,30 +82,30 @@ performFatigueCycle = do
   modify $ #coreState % #discard .~ []
 
   newDeck <- GameM . lift $ shuffleListM (newFatigueIds ++ currentDiscard)
-  
+
   modify $ #coreState % #deck .~ newDeck
   tell [DeckShuffled]
 
-drawCard :: RandomGen g => GameM g ()
+drawCard :: (RandomGen g) => GameM g ()
 drawCard = do
   currentDeck <- use (#coreState % #deck)
   case currentDeck of
     [] -> do
       performFatigueCycle
       drawCard
-    (top:rest) -> do
+    (top : rest) -> do
       modify $ #coreState % #deck .~ rest
       modify $ #coreState % #hand %~ (top :)
       tell [CardDrawn top]
 
-flipCardToDefense :: RandomGen g => GameM g ()
+flipCardToDefense :: (RandomGen g) => GameM g ()
 flipCardToDefense = do
   currentDeck <- use (#coreState % #deck)
   case currentDeck of
     [] -> do
       performFatigueCycle
       flipCardToDefense
-    (top:rest) -> do
+    (top : rest) -> do
       modify $ #coreState % #deck .~ rest
       modify $ #coreState % #defending %~ (top :)
       tell [CardDefended top]

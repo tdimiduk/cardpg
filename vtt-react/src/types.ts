@@ -1,5 +1,19 @@
 import { z } from 'zod';
-import { CoreCard, ItemCard, NatureCard, TalentCard } from './generated/types';
+import {
+  CoreCard as GenCoreCard,
+  ItemCard as GenItemCard,
+  NatureCard as GenNatureCard,
+  TalentCard as GenTalentCard,
+  ConsequenceCard as GenConsequenceCard,
+  ActorDefinition as GenActorDefinition,
+} from './generated/types';
+
+export type CoreCard = GenCoreCard & { id: string };
+export type ItemCard = GenItemCard & { id: string };
+export type NatureCard = GenNatureCard & { id: string };
+export type TalentCard = GenTalentCard & { id: string };
+export type ConsequenceCard = GenConsequenceCard & { id: string };
+export type ActorDefinition = GenActorDefinition & { id: string };
 
 // Export all generated types and schemas
 export * from './generated/types';
@@ -64,7 +78,7 @@ export interface PlayerDeckState {
   discardPile: CoreCard[];
   flippedPile: CoreCard[];
   equipped: Card[];
-  consequences: import('./generated/types').ConsequenceCard[];
+  consequences: ConsequenceCard[];
 }
 
 export type GamePhase = 'planning' | 'resolution';

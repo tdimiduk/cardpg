@@ -1,27 +1,27 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE DuplicateRecordFields #-}
 
 module StateTests where
 
-import Data.Aeson (eitherDecode, encode)
 import Control.Monad.RWS (runRWST)
 import Control.Monad.State (runState)
+import Data.Aeson (eitherDecode, encode)
 import System.Random (mkStdGen)
 import Test.Tasty
 import Test.Tasty.QuickCheck hiding (discard)
 
 import ArbitraryInstances ()
+import CardPG.Core.Card (ItemCard, ItemCardT (..))
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.Logic (performFatigueCycle, GameM(..), runGameM)
-import CardPG.Core.State
-import CardPG.Core.Card (ItemCard, ItemCardT(..))
-import CardPG.Core.Primitives (CardInstanceId(..), EquipSlot(..))
+import CardPG.Core.Logic (GameM (..), performFatigueCycle, runGameM)
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
-import qualified Data.Map.Strict as Map
+import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..))
+import CardPG.Core.State
+import Data.Map.Strict qualified as Map
 
-import Optics ((^.), (%))
+import Optics ((%), (^.))
 
 -- Bring instances into scope
 
@@ -40,45 +40,46 @@ prop_fatigueCycleCounts :: Small Int -> CoreCardState -> CardInstanceId -> Prope
 prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
   let
     burden = abs burdenRaw -- Ensure non-negative burden for logic
-    
+
     -- Construct ActorState with specific burden
     dummyItem :: ItemCard
-    dummyItem = ItemCard
-      { id = Nothing
-      , name = unsafeNonEmptyText "Heavy Armor"
-      , tags = Nothing
-      , flavor = Nothing
-      , weight = Nothing
-      , value = Nothing
-      , traits = Nothing
-      , passive = Nothing
-      , defense = Nothing
-      , resilience = Nothing
-      , burden = Just burden
-      }
+    dummyItem =
+      ItemCard
+        { id = Nothing
+        , name = unsafeNonEmptyText "Heavy Armor"
+        , tags = Nothing
+        , flavor = Nothing
+        , weight = Nothing
+        , value = Nothing
+        , traits = Nothing
+        , passive = Nothing
+        , defense = Nothing
+        , resilience = Nothing
+        , burden = Just burden
+        }
 
+    tableSt =
+      TableState
+        { assets = Map.singleton itemId (Equipped SlotMainHand)
+        , registry = Map.singleton itemId (TCItem dummyItem)
+        }
 
-    tableSt = TableState
-      { assets = Map.singleton itemId (Equipped SlotMainHand)
-      , registry = Map.singleton itemId (TCItem dummyItem)
-      }
-
-    actorSt = ActorState
-      { coreState = coreSt
-      , tableState = tableSt
-      }
+    actorSt =
+      ActorState
+        { coreState = coreSt
+        , tableState = tableSt
+        }
 
     initialDiscardSize = length (coreSt ^. #discard)
     expectedDeckSize = initialDiscardSize + 2 + burden
 
     gen = mkStdGen 42
-    env = GameEnv { fatigueCardTemplate = fatigueCard }
-    
+    env = GameEnv{fatigueCardTemplate = fatigueCard}
+
     -- Run GameM
     action = performFatigueCycle
     stateAction = runRWST (runGameM action) env actorSt
     ((_, newState, _events), _) = runState stateAction gen
-
    in
     length (newState ^. #coreState % #deck) === expectedDeckSize
       .&&. length (newState ^. #coreState % #discard) === 0

@@ -26,8 +26,6 @@ shuffleListM xs = do
   randomInts <- replicateM len (state (random @Int @g) :: m Int)
   pure $ map snd $ sortOn fst $ zip randomInts xs
 
-
-
 splitGenList :: (RandomGen g) => Int -> g -> ([Int], g)
 splitGenList 0 g = ([], g)
 splitGenList n g =

@@ -4,6 +4,7 @@
 
 module TypeScriptInstances where
 
+import Data.Aeson (Options (..))
 import Data.Aeson.TypeScript.TH
 import Data.List.NonEmpty (NonEmpty)
 import Data.Proxy (Proxy (..))
@@ -24,10 +25,17 @@ import CardPG.Core.Card
   , Stats
   , TalentCardT (..)
   )
+import CardPG.Core.Card qualified as CC
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId, Difficulty, EquipSlot (..), ResourceType (..), StackPower, TargetId)
+import CardPG.Core.Primitives
+  ( CardInstanceId
+  , Difficulty
+  , EquipSlot (..)
+  , ResourceType (..)
+  , StackPower
+  , TargetId
+  )
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
@@ -37,7 +45,6 @@ import CardPG.Core.RuleDefs hiding
   , Rule
   , StanceDef
   , TaskDef
-  , TriggerDef
   , TriggerDef
   )
 import CardPG.Core.State
@@ -49,9 +56,20 @@ import CardPG.Core.State
   , TableCard (..)
   , TableState (..)
   )
-import CardPG.Server.Types (BroadcastAction (..), ClientMessage, Command (..), ServerMessage, StateUpdate (..), Token)
-import qualified CardPG.Core.Card as CC
-import DeriveSpecialized (deriveSpecializedInstance, makeBridgeInstance, makeProxyInstance, specializeType)
+import CardPG.Server.Types
+  ( BroadcastAction (..)
+  , ClientMessage
+  , Command (..)
+  , ServerMessage
+  , StateUpdate (..)
+  , Token
+  )
+import DeriveSpecialized
+  ( deriveSpecializedInstance
+  , makeBridgeInstance
+  , makeProxyInstance
+  , specializeType
+  )
 
 instance TypeScript DSLRule where
   getTypeScriptType _ = "string"
@@ -70,13 +88,14 @@ instance TypeScript TargetId where
   getTypeScriptType _ = "string"
 
 -- NonEmptyText
-$(deriveTypeScript cardpgJsonDef ''NonEmptyText)
+instance TypeScript NonEmptyText where
+  getTypeScriptType _ = "string"
 
 -- RichText
 $(deriveTypeScript cardpgJsonDef ''TextStyle)
 $(deriveTypeScript cardpgJsonDef ''Inline)
-$(deriveTypeScript cardpgJsonDef ''RichText)
-$(deriveTypeScript cardpgJsonDef ''RichString)
+$(deriveTypeScript (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichText)
+$(deriveTypeScript (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichString)
 $(deriveTypeScript cardpgJsonDef ''Block)
 
 -- Stats
@@ -86,7 +105,6 @@ $(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 -- Helper for creating splices
 -- Using runIO or just simple do block
 -- We separate Data Generation (Specialize) from Instance Generation
-
 
 -- 1. Data Generation Scope
 $( do
@@ -140,34 +158,53 @@ $( do
 -- 1.5 Base Card Instances
 $( do
      let inline = AppT ListT (ConT ''Inline)
-     
+
      -- Rules & Bridges
      i_attack <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''AttackDef ''AttackDefT [inline]
-     i_general <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''GeneralDef ''GeneralDefT [inline]
+     i_general <-
+       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''GeneralDef ''GeneralDefT [inline]
      i_task <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TaskDef ''TaskDefT [inline]
-     i_trigger <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TriggerDef ''TriggerDefT [inline]
+     i_trigger <-
+       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TriggerDef ''TriggerDefT [inline]
      i_stance <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''StanceDef ''StanceDefT [inline]
-     i_channel <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''ChannelDef ''ChannelDefT [inline]
+     i_channel <-
+       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''ChannelDef ''ChannelDefT [inline]
      i_prime <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''PrimeDef ''PrimeDefT [inline]
-     
+
      -- Rule (Machine)
      i_rule <- deriveSpecializedInstance (cardpgJsonOptions "RuleRule") ''Rule ''RuleT [inline]
 
      -- Def Helpers
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
-     
+
      -- Helpers (GenAction, EncMech)
      i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
      i_encMech <- deriveTypeScript cardpgJsonDef ''EncounterMechanics
-     
+
      -- Core Cards
-     i_core <- deriveSpecializedInstance (cardpgTaggedOptions "") ''CoreCard ''CoreCardT [ConT (mkName "Rule"), inline]
-     i_actor <- deriveSpecializedInstance cardpgJsonDef ''ActorDefinition ''ActorDefinitionT [ConT (mkName "Rule"), inline]
+     i_core <-
+       deriveSpecializedInstance
+         (cardpgTaggedOptions "")
+         ''CoreCard
+         ''CoreCardT
+         [ConT (mkName "Rule"), inline]
+     i_actor <-
+       deriveSpecializedInstance
+         cardpgJsonDef
+         ''ActorDefinition
+         ''ActorDefinitionT
+         [ConT (mkName "Rule"), inline]
      i_item <- deriveSpecializedInstance (cardpgTaggedOptions "") ''ItemCard ''ItemCardT [inline]
      i_nature <- deriveSpecializedInstance (cardpgTaggedOptions "") ''NatureCard ''NatureCardT [inline]
      i_talent <- deriveSpecializedInstance (cardpgTaggedOptions "") ''TalentCard ''TalentCardT [inline]
-     i_encounter <- deriveSpecializedInstance (cardpgTaggedOptions "") ''EncounterCard ''EncounterCardT [inline]
-     i_consequence <- deriveSpecializedInstance (cardpgTaggedOptions "") ''ConsequenceCard ''ConsequenceCardT [ConT (mkName "Rule")]
+     i_encounter <-
+       deriveSpecializedInstance (cardpgTaggedOptions "") ''EncounterCard ''EncounterCardT [inline]
+     i_consequence <-
+       deriveSpecializedInstance
+         (cardpgTaggedOptions "")
+         ''ConsequenceCard
+         ''ConsequenceCardT
+         [ConT (mkName "Rule")]
 
      -- Proxy Instances (Bridge original types to local specialized types)
      let inline = AppT ListT (ConT ''Inline)
@@ -180,30 +217,32 @@ $( do
 
      -- CoreCard
      -- p_core1 handled by d_core implicit instance
-     p_core2 <- makeProxyInstance [t| CoreCardT DSLRule RichString |] ''CoreCard "CoreCard"
+     p_core2 <- makeProxyInstance [t|CoreCardT DSLRule RichString|] ''CoreCard "CoreCard"
 
      -- ActorDefinition
-     p_actor <- makeProxyInstance [t| ActorDefinitionT DSLRule RichString |] ''ActorDefinition "ActorDefinition"
-     
+     p_actor <-
+       makeProxyInstance [t|ActorDefinitionT DSLRule RichString|] ''ActorDefinition "ActorDefinition"
+
      -- ItemCard
-     p_item2 <- makeProxyInstance [t| ItemCardT RichText |] ''ItemCard "ItemCard"
-     p_item3 <- makeProxyInstance [t| ItemCardT RichString |] ''ItemCard "ItemCard"
+     p_item2 <- makeProxyInstance [t|ItemCardT RichText|] ''ItemCard "ItemCard"
+     p_item3 <- makeProxyInstance [t|ItemCardT RichString|] ''ItemCard "ItemCard"
 
      -- NatureCard
-     p_nature2 <- makeProxyInstance [t| NatureCardT RichText |] ''NatureCard "NatureCard"
-     p_nature3 <- makeProxyInstance [t| NatureCardT RichString |] ''NatureCard "NatureCard"
+     p_nature2 <- makeProxyInstance [t|NatureCardT RichText|] ''NatureCard "NatureCard"
+     p_nature3 <- makeProxyInstance [t|NatureCardT RichString|] ''NatureCard "NatureCard"
 
      -- TalentCard
-     p_talent2 <- makeProxyInstance [t| TalentCardT RichText |] ''TalentCard "TalentCard"
-     p_talent3 <- makeProxyInstance [t| TalentCardT RichString |] ''TalentCard "TalentCard"
+     p_talent2 <- makeProxyInstance [t|TalentCardT RichText|] ''TalentCard "TalentCard"
+     p_talent3 <- makeProxyInstance [t|TalentCardT RichString|] ''TalentCard "TalentCard"
 
      -- EncounterCard
-     p_encounter2 <- makeProxyInstance [t| EncounterCardT RichText |] ''EncounterCard "EncounterCard"
-     p_encounter3 <- makeProxyInstance [t| EncounterCardT RichString |] ''EncounterCard "EncounterCard"
+     p_encounter2 <- makeProxyInstance [t|EncounterCardT RichText|] ''EncounterCard "EncounterCard"
+     p_encounter3 <- makeProxyInstance [t|EncounterCardT RichString|] ''EncounterCard "EncounterCard"
 
      -- ConsequenceCard
-     p_consequence2 <- makeProxyInstance [t| ConsequenceCardT DSLRule |] ''ConsequenceCard "ConsequenceCard"
-      
+     p_consequence2 <-
+       makeProxyInstance [t|ConsequenceCardT DSLRule|] ''ConsequenceCard "ConsequenceCard"
+
      return
        ( i_attack
            ++ i_general
@@ -214,7 +253,6 @@ $( do
            ++ i_prime
            ++ i_rule
            ++ i_passive
-           
            ++ i_genAction
            ++ i_encMech
            ++ i_core
@@ -224,22 +262,19 @@ $( do
            ++ i_talent
            ++ i_encounter
            ++ i_consequence
-           
            ++ p_core2
            ++ p_actor
-           
-           ++ p_item2 ++ p_item3
-           ++ p_nature2 ++ p_nature3
-           ++ p_talent2 ++ p_talent3
-           ++ p_encounter2 ++ p_encounter3
+           ++ p_item2
+           ++ p_item3
+           ++ p_nature2
+           ++ p_nature3
+           ++ p_talent2
+           ++ p_talent3
+           ++ p_encounter2
+           ++ p_encounter3
            ++ p_consequence2
        )
  )
-
-
-
-
-
 
 -- 3. Dependent Types (Must see ItemCard instance etc)
 $( do
@@ -248,7 +283,7 @@ $( do
      i_command <- deriveTypeScript cardpgJsonDef ''Command
      i_broadcast <- deriveTypeScript cardpgJsonDef ''BroadcastAction
      i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
-     
+
      i_tableCard <- deriveTypeScript cardpgJsonDef ''TableCard
      i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
      i_coreState <- deriveTypeScript cardpgJsonDef ''CoreCardState
@@ -275,5 +310,3 @@ $( do
            ++ i_stateUpdate
        )
  )
-
-

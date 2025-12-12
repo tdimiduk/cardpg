@@ -4,15 +4,15 @@ module CardCompiler.VttExporter where
 
 import Control.Monad (foldM)
 import Data.Aeson (ToJSON (..), genericToJSON)
-import qualified Data.Aeson as Aeson
-import qualified Data.ByteString.Lazy as LBS
+import Data.Aeson qualified as Aeson
+import Data.ByteString.Lazy qualified as LBS
 import Data.List (mapAccumL)
 
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Yaml as Yaml
+import Data.Text qualified as T
+import Data.Yaml qualified as Yaml
 import GHC.Generics (Generic)
 import Optics ((^.))
 
@@ -39,9 +39,9 @@ import CardPG.Core.RichText (RichString, RichText, getRichText)
 
 -- | VTT Export Data
 data VttExport = VttExport
-  { _actors :: [ActorMachine]
-  , _statuses :: [CoreCardMachine]
-  , _consequences :: [ConsequenceCardMachine]
+  { actors :: [ActorMachine]
+  , statuses :: [CoreCardMachine]
+  , consequences :: [ConsequenceCardMachine]
   }
   deriving (Show, Generic)
 
@@ -55,9 +55,9 @@ loadAndExport inputFiles outputFile = do
 
   let exportData =
         VttExport
-          { _actors = actors
-          , _statuses = statuses
-          , _consequences = consequences
+          { actors = actors
+          , statuses = statuses
+          , consequences = consequences
           }
 
   LBS.writeFile outputFile (Aeson.encode exportData)
@@ -85,10 +85,7 @@ loadAndExport inputFiles outputFile = do
           resultCards <- Yaml.decodeFileEither file
           case resultCards of
             Right (cards :: [CoreCard]) -> do
-              let vttCards =
-                    map
-                      (\c -> toVttCoreCard c (fromMaybe (slugify (getRawText (c ^. #name))) (c ^. #id)))
-                      cards
+              let vttCards = toVttCoreCard <$> cards
               return (accActors, vttCards ++ accStatuses, accConsequences)
             Left _ -> do
               -- Try parsing as list of ConsequenceCards
@@ -106,74 +103,31 @@ loadAndExport inputFiles outputFile = do
 convertActor :: ActorDefinition -> ActorMachine
 convertActor ActorDefinition{..} =
   ActorDefinition
-    { id = actorId
-    , items = map (convertItem actorId) items
-    , nature = map (convertNature actorId) nature
-    , deck = processDeck actorId deck
+    { items = map convertItem items
+    , nature = map convertNature nature
+    , deck = toVttCoreCard <$> deck
     , ..
     }
-  where
-    actorId = fromMaybe (slugify name) id
 
-convertItem :: Text -> ItemCard -> ItemCardMachine
-convertItem actorId ItemCard{..} =
+convertItem :: ItemCard -> ItemCardMachine
+convertItem ItemCard{..} =
   ItemCard
-    { id = fromMaybe (actorId <> "-" <> slugify (getRawText name)) id
-    , flavor = fmap getRichText flavor
+    { flavor = fmap getRichText flavor
     , ..
     }
 
-convertNature :: Text -> NatureCardT (Maybe Text) RichString -> NatureCardT Text RichText
-convertNature actorId NatureCard{..} =
+convertNature :: NatureCardT RichString -> NatureCardT RichText
+convertNature NatureCard{..} =
   NatureCard
-    { id = fromMaybe (actorId <> "-" <> slugify (getRawText name)) id
-    , flavor = fmap getRichText flavor
+    { flavor = fmap getRichText flavor
     , ..
     }
-
--- | Process deck to ensure unique IDs for duplicates
-processDeck :: Text -> [CoreCard] -> [CoreCardMachine]
-processDeck actorId cards =
-  let
-    -- 1. Calculate frequencies of card slugs (names)
-    -- Use lens to disambiguate name
-    getCardNameSlug c = slugify (getRawText (c ^. #name))
-    cardSlugs = map getCardNameSlug cards
-    freqMap = Map.fromListWith (+) $ zip cardSlugs (repeat 1 :: [Int])
-
-    -- 2. Map over cards with state (counter map)
-    (_, vttCards) = mapAccumL (assignId actorId freqMap) Map.empty cards
-   in
-    vttCards
-
--- | Assign ID based on frequency and current count
-assignId ::
-  Text -> Map.Map Text Int -> Map.Map Text Int -> CoreCard -> (Map.Map Text Int, CoreCardMachine)
-assignId actorId freqMap counters card =
-  let cardSlug = slugify (getRawText (card ^. #name))
-      count = Map.findWithDefault 0 cardSlug counters
-      total = Map.findWithDefault 0 cardSlug freqMap
-
-      -- Determine new ID: {actorId}-{cardSlug} or {actorId}-{cardSlug}_{count}
-      baseId = actorId <> "-" <> cardSlug
-      finalId =
-        if total > 1
-          then baseId <> "_" <> T.pack (show count)
-          else baseId
-
-      -- Update counter
-      newCounters = Map.insert cardSlug (count + 1) counters
-
-      -- Create VttCoreCard
-      vttCard = toVttCoreCard card finalId
-   in (newCounters, vttCard)
 
 -- | Convert CoreCard to CoreCardMachine with specific ID
-toVttCoreCard :: CoreCard -> Text -> CoreCardMachine
-toVttCoreCard CoreCard{..} finalId =
+toVttCoreCard :: CoreCard -> CoreCardMachine
+toVttCoreCard CoreCard{..} =
   CoreCard
-    { id = finalId
-    , rules = fmap (fmap convertRule) rules
+    { rules = fmap (fmap convertRule) rules
     , flavor = fmap getRichText flavor
     , ..
     }
@@ -188,7 +142,6 @@ slugify = T.toLower . T.replace " " "-"
 toVttConsequenceCard :: ConsequenceCard -> ConsequenceCardMachine
 toVttConsequenceCard ConsequenceCard{..} =
   ConsequenceCard
-    { id = fromMaybe (slugify (getRawText name)) id
-    , rules = fmap (fmap convertRule) rules
+    { rules = fmap (fmap convertRule) rules
     , ..
     }

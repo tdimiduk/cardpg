@@ -1,4 +1,3 @@
-
 module CardPG.Core.RichText
   ( TextStyle (..)
   , Inline (..)
@@ -15,7 +14,7 @@ module CardPG.Core.RichText
   )
 where
 
-import Data.Aeson (FromJSON (..), ToJSON (..), Value (..))
+import Data.Aeson (FromJSON (..), Options (..), ToJSON (..), Value (..))
 import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty qualified as NE
 import Data.Text (Text)
@@ -73,7 +72,7 @@ newtype RichText = RichText {inlines :: NE.NonEmpty Inline}
 getInlines :: RichText -> NE.NonEmpty Inline
 getInlines (RichText x) = x
 
-$(deriveJSON cardpgJsonDef ''RichText)
+$(deriveJSON (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichText)
 
 instance Semigroup RichText where
   (RichText a) <> (RichText b) =
@@ -126,10 +125,7 @@ simpleString :: Text -> Maybe RichString
 simpleString t = mkRichString [TextRun Nothing (unsafeNonEmptyText t)]
 
 instance ToJSON RichString where
-  toJSON (RichString (RichText (TextRun Nothing t NE.:| []))) = toJSON (getRawText t)
   toJSON (RichString rs) = toJSON rs
-
-  toEncoding (RichString (RichText (TextRun Nothing t NE.:| []))) = toEncoding (getRawText t)
   toEncoding (RichString rs) = toEncoding rs
 
 instance FromJSON RichString where

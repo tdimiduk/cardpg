@@ -1,14 +1,13 @@
-
 module CardCompiler.Parser where
 
 import Control.Applicative (optional, (<|>))
 import Data.Aeson (ToJSON (..), Value (..))
 import Data.Aeson.TH (defaultOptions, deriveJSON)
-import qualified Data.List.NonEmpty as NE
+import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Text.Read as TR
+import Data.Text qualified as T
+import Data.Text.Read qualified as TR
 import Data.Void (Void)
 import GHC.Generics (Generic)
 import Text.Megaparsec (Parsec, parseMaybe, takeWhile1P)
@@ -103,7 +102,7 @@ itemBurden HeavyArmor = 2
 
 -- | Conversion function
 convertCard :: RawCard -> Either String ParsedCard
-convertCard RawCard{name=rawName, flavor=rawFlavor, cost=rawCost, action=rawAction, ..} = do
+convertCard RawCard{name = rawName, flavor = rawFlavor, cost = rawCost, action = rawAction, ..} = do
   case mkNonEmptyText (T.strip rawName) of
     Nothing -> Left "Skipping empty card row"
     Just validName -> do

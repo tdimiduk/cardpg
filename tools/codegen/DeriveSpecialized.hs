@@ -3,14 +3,14 @@ module DeriveSpecialized (specializeType, makeBridgeInstance, makeProxyInstance,
 import Data.Aeson (Options)
 import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Language.Haskell.TH
 
 -- | specializeType creates a new concrete data type from a parameterized one by substituting
 -- a list of specific types for the type variables.
 --
 -- Usage:
---
+
 -- $(specializeType ''BaseCard [ConT ''Identity] "CardWithId")
 --
 -- This generates:
@@ -28,9 +28,11 @@ specializeType typeName paramTypes newTypeNameStr = do
 
       -- Identify the type variables to substitute.
       let binderNames = map getBinderName binders
-      
+
       if length binderNames < length paramTypes
-        then fail $ "specializeType: Too many parameter types provided. Expected at most " ++ show (length binderNames)
+        then
+          fail $
+            "specializeType: Too many parameter types provided. Expected at most " ++ show (length binderNames)
         else return ()
 
       -- Create substitution map
@@ -43,7 +45,7 @@ specializeType typeName paramTypes newTypeNameStr = do
       -- We add Generic to deriving clauses to support Aeson/TypeScript derivation
       let derivingClauses = [DerivClause Nothing [ConT (mkName "Generic")]]
       let dataDec = DataD [] newName [] Nothing newConstructors derivingClauses
-      
+
       return [dataDec]
     _ -> fail "specializeType: Expected a data type declaration"
 
@@ -51,11 +53,11 @@ deriveSpecializedInstance :: Options -> Name -> Name -> [Type] -> Q [Dec]
 deriveSpecializedInstance options newName origName paramTypes = do
   -- Generate Primary Instance
   primaryInsts <- deriveTypeScript options newName
-  
+
   -- Generate Bridge Instance
   let newTypeNameStr = nameBase newName
   let instanceHead = AppT (ConT (mkName "TypeScript")) (foldl AppT (ConT origName) paramTypes)
-  
+
   let getTypeScriptTypeDec =
         FunD
           (mkName "getTypeScriptType")
@@ -68,7 +70,7 @@ deriveSpecializedInstance options newName origName paramTypes = do
         FunD
           (mkName "getParentTypes")
           [Clause [WildP] (NormalB listExp) []]
-          
+
   let bridgeInstDec = InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getParentTypesDec]
 
   return $ primaryInsts ++ [bridgeInstDec]
@@ -124,7 +126,7 @@ substType subst t = case t of
 -- and link it to the definition of the specialized type.
 --
 -- Usage:
---
+
 -- $(makeBridgeInstance ''AttackDefT (ConT ''RichText) "AttackDef")
 
 makeBridgeInstance :: Name -> Type -> String -> Q [Dec]
@@ -153,6 +155,7 @@ makeBridgeInstance paramTypeName paramType targetTypeNameStr = do
 -- | Creates a "Proxy Instance" that points a Type to a Parent Type via Proxy.
 --
 -- Usage:
+
 -- $(makeProxyInstance [t| ItemCardT Text [Inline] |] ''ItemCard "ItemCard")
 --
 -- Generates:
@@ -188,4 +191,10 @@ makeProxyInstance instanceTypeQ targetTypeName nameStr = do
           (mkName "getParentTypes")
           [Clause [WildP] (NormalB listExp) []]
 
-  return [InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getTypeScriptDeclarationsDec, getParentTypesDec]]
+  return
+    [ InstanceD
+        Nothing
+        []
+        instanceHead
+        [getTypeScriptTypeDec, getTypeScriptDeclarationsDec, getParentTypesDec]
+    ]

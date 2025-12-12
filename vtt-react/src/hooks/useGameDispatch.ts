@@ -1,6 +1,6 @@
 import { useWebSocket } from '../contexts/WebSocketContext';
 import { useGameAction } from './useGameAction';
-import { BroadcastAction } from '../types';
+import { BroadcastAction, Command } from '../types';
 
 export const useGameDispatch = () => {
   const { sendMessage } = useWebSocket();
@@ -14,5 +14,9 @@ export const useGameDispatch = () => {
     sendMessage({ type: 'broadcast', payload: action });
   };
 
-  return { dispatch };
+  const dispatchCommand = (command: Command) => {
+    sendMessage({ type: 'gameCommand', command });
+  };
+
+  return { dispatch, dispatchCommand };
 };

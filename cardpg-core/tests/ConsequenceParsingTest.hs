@@ -4,8 +4,8 @@
 module ConsequenceParsingTest where
 
 import Control.Monad (when)
-import qualified Data.ByteString as BS
-import qualified Data.List.NonEmpty as NE
+import Data.ByteString qualified as BS
+import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
 import Test.Tasty

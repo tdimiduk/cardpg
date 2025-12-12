@@ -1,11 +1,10 @@
-
 module Main where
 
 import System.Environment (getArgs)
 import System.Exit (die)
 
-import qualified CardCompiler
-import qualified CardCompiler.VttExporter as Vtt
+import CardCompiler qualified
+import CardCompiler.VttExporter qualified as Vtt
 
 main :: IO ()
 main = do

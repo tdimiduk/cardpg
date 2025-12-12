@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import { calculateStackStrength, drawCards, performDefend } from '../services/ruleService';
-import { CoreCard, PlayerDeckState, ItemCard, RichString } from '../types';
+import { calculateStackStrength } from '../services/ruleService';
+import { CoreCard, ItemCard, Inline } from '../types';
 import { T } from '../utils';
 import { RESOURCE_TYPES } from '../constants';
 
@@ -10,7 +10,7 @@ const createCard = (
   red?: number,
   yellow?: number,
   blue?: number,
-  flavor: RichString = [],
+  flavor: Inline[] = [],
   id?: string,
   tags?: string[],
   type: 'coreCard' | 'itemCard' | 'fatigue' = 'coreCard',
@@ -52,40 +52,6 @@ describe('Rule Service', () => {
     'fatigue',
   ) as CoreCard; // 0/0/0
 
-  test('Basic Draw', () => {
-    const deck1: PlayerDeckState = {
-      drawPile: [cardA, cardB], // Stack: Top is right (pop)
-      hand: [],
-      discardPile: [],
-      flippedPile: [],
-      equipped: [],
-      consequences: [],
-    };
-
-    const res1 = drawCards(deck1, 1);
-    expect(res1.drawn.length).toBe(1);
-    expect(res1.newState.hand.length).toBe(1);
-    expect(res1.newState.drawPile.length).toBe(1);
-  });
-
-  test('Fatigue Cycle', () => {
-    const deck2: PlayerDeckState = {
-      drawPile: [],
-      hand: [],
-      discardPile: [cardA, cardB],
-      flippedPile: [],
-      equipped: [],
-      consequences: [],
-    };
-
-    // Requesting 1 card from empty pile should trigger shuffle
-    const res2 = drawCards(deck2, 1);
-    expect(res2.fatigueTriggered).toBe(true);
-    // Discard (2) + Fatigue (2) - Drawn (1) = 3 remaining in draw pile
-    expect(res2.newState.drawPile.length).toBe(3);
-    expect(res2.newState.discardPile.length).toBe(0);
-  });
-
   test('Strength Calculation', () => {
     // Stack: CardA (2 Red) + CardB (3 Red)
     const stack = [cardA, cardB];
@@ -97,23 +63,6 @@ describe('Rule Service', () => {
 
     const strBlue = calculateStackStrength([fatigueCard], RESOURCE_TYPES.BLUE, 0);
     expect(strBlue).toBe(0); // 0
-  });
-
-  test('Defense Logic', () => {
-    const deck3: PlayerDeckState = {
-      drawPile: [cardB], // Top is CardB (3)
-      hand: [],
-      discardPile: [],
-      flippedPile: [cardA], // Already flipped CardA (2)
-      equipped: [],
-      consequences: [],
-    };
-
-    // Defending vs Target 10. Current flipeed (2). Next card (3). Total should be 5.
-    const defRes = performDefend(deck3, 10, RESOURCE_TYPES.RED);
-    expect(defRes.total).toBe(5);
-    expect(defRes.newState.flippedPile.length).toBe(2);
-    expect(defRes.newState.drawPile.length).toBe(0);
   });
 
   test('Plan & Cancel Simulation', () => {

@@ -1,5 +1,5 @@
 module CardPG.Server.Game
-  ( GameState(..)
+  ( GameState (..)
   , emptyGame
   , addActor
   , runActorAction
@@ -10,26 +10,27 @@ module CardPG.Server.Game
 import Control.Monad.RWS (runRWST)
 import Control.Monad.State (runState)
 import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.UUID (toText)
 import System.Random (StdGen)
 
 import CardPG.Core.Logic (GameM, runGameM)
-import qualified CardPG.Core.Logic as Logic
-import CardPG.Core.Primitives (TargetId(..))
-import CardPG.Core.State (ActorState, GameEnv, GameEvent(..))
-import CardPG.Server.Types (Command(..), BroadcastAction(..), GameState(..))
+import CardPG.Core.Logic qualified as Logic
+import CardPG.Core.Primitives (TargetId (..))
+import CardPG.Core.State (ActorState, GameEnv, GameEvent (..))
+import CardPG.Server.Types (BroadcastAction (..), Command (..), GameState (..))
 
 emptyGame :: GameEnv -> StdGen -> GameState
-emptyGame env rng = GameState
-  { env = env
-  , rng = rng
-  , actors = Map.empty
-  }
+emptyGame env rng =
+  GameState
+    { env = env
+    , rng = rng
+    , actors = Map.empty
+    }
 
 addActor :: TargetId -> ActorState -> GameState -> GameState
-addActor tid state game = game { actors = Map.insert tid state (game.actors) }
+addActor tid state game = game{actors = Map.insert tid state (game.actors)}
 
 runActorAction :: TargetId -> GameM StdGen a -> GameState -> (Maybe [GameEvent], GameState)
 runActorAction tid action game =
@@ -37,26 +38,29 @@ runActorAction tid action game =
     Nothing -> (Nothing, game)
     Just actorState ->
       let ((_, newState, events), newRng) = runState (runRWST (runGameM action) (game.env) actorState) (game.rng)
-          newGame = game { rng = newRng, actors = Map.insert tid newState (game.actors) }
-      in (Just events, newGame)
+          newGame = game{rng = newRng, actors = Map.insert tid newState (game.actors)}
+       in (Just events, newGame)
 
-processCommand :: Command -> GameState -> (GameState, Maybe (TargetId, [BroadcastAction], ActorState))
+processCommand ::
+  Command -> GameState -> (GameState, Maybe (TargetId, [BroadcastAction], ActorState))
 processCommand cmd game =
-    let (targetId, action) = case cmd of
-            DrawIntent tid -> (tid, Logic.drawCard)
-            DefendIntent tid -> (tid, Logic.flipCardToDefense)
-        
-        (maybeEvents, newGame) = runActorAction targetId action game
-    in case maybeEvents of
+  let (targetId, action) = case cmd of
+        DrawIntent tid -> (tid, Logic.drawCard)
+        DefendIntent tid -> (tid, Logic.flipCardToDefense)
+
+      (maybeEvents, newGame) = runActorAction targetId action game
+   in case maybeEvents of
         Nothing -> (game, Nothing)
         Just events ->
-            let TargetId uuid = targetId
-                tidText = toText uuid
-                broadcastActions = eventsToBroadcastActions tidText events
-                
-                -- Retrieve updated actor state safely
-                updatedActorState = Map.lookup targetId (newGame.actors)
-            in (newGame, Just (targetId, broadcastActions, maybe (error "Actor missing after update") id updatedActorState))
+          let TargetId uuid = targetId
+              tidText = toText uuid
+              broadcastActions = eventsToBroadcastActions tidText events
+
+              -- Retrieve updated actor state safely
+              updatedActorState = Map.lookup targetId (newGame.actors)
+           in ( newGame
+              , Just (targetId, broadcastActions, maybe (error "Actor missing after update") id updatedActorState)
+              )
 
 -- | Helper to map internal GameEvents to Protocol BroadcastActions
 eventsToBroadcastActions :: Text -> [GameEvent] -> [BroadcastAction]

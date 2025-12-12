@@ -1,16 +1,16 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module StatusParsingTest where
 
-import qualified Control.Monad
-import qualified Data.ByteString as BS
-import qualified Data.List.NonEmpty as NE
+import Control.Monad qualified
+import Data.ByteString qualified as BS
+import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
+import Optics ((^.))
 import Test.Tasty
 import Test.Tasty.HUnit
-import Optics ((^.))
 
 import CardPG.Core.Card (CoreCard, CoreCardT (..))
 import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))

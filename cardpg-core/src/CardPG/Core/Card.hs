@@ -1,4 +1,3 @@
-
 module CardPG.Core.Card
   ( module CardPG.Core.RuleDefs
   , Stats (..)
@@ -30,7 +29,14 @@ module CardPG.Core.Card
   , CardInstance
   ) where
 
-import Data.Aeson (FromJSON (..), ToJSON (..), Value (Object), genericParseJSON, genericToJSON, (.:))
+import Data.Aeson
+  ( FromJSON (..)
+  , ToJSON (..)
+  , Value (Object)
+  , genericParseJSON
+  , genericToJSON
+  , (.:)
+  )
 import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty (NonEmpty)
 import Data.Text (Text)
@@ -38,11 +44,7 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (Difficulty, ResourceType (..), StackPower)
-import CardPG.Core.RichText
-import CardPG.Core.RuleDefs
-import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (Difficulty, CardInstanceId, ResourceType (..), StackPower)
+import CardPG.Core.Primitives (CardInstanceId, Difficulty, ResourceType (..), StackPower)
 import CardPG.Core.RichText
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()

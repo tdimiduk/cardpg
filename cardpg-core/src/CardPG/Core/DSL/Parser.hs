@@ -1,4 +1,3 @@
-
 module CardPG.Core.DSL.Parser (parseRule) where
 
 import Control.Applicative (optional, some, (<|>))

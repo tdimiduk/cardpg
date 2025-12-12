@@ -2,8 +2,8 @@
 
 module ReadmeExamplesTest where
 
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
+import Data.Text qualified as T
+import Data.Text.IO qualified as TIO
 import Test.Tasty
 import Test.Tasty.HUnit
 

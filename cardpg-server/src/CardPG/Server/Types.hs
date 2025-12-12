@@ -28,9 +28,9 @@ import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (TypeScript (..), deriveTypeScript)
 import Data.Char (toUpper)
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Network.WebSockets (Connection)
@@ -125,8 +125,8 @@ instance FromJSON BroadcastAction where
 
 -- | Commands for game actions (Intents)
 data Command
-  = DrawIntent { actorId :: TargetId }
-  | DefendIntent { actorId :: TargetId }
+  = DrawIntent {actorId :: TargetId}
+  | DefendIntent {actorId :: TargetId}
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)
@@ -151,7 +151,12 @@ $(deriveJSON cardpgJsonDef ''StateUpdate)
 
 -- | Messages sent from Server to Client.
 data ServerMessage
-  = Welcome {yourClientId :: UUID, connectedClients :: [Text], history :: [BroadcastAction]}
+  = Welcome
+      { yourClientId :: UUID
+      , connectedClients :: [Text]
+      , history :: [BroadcastAction]
+      , initialActors :: [StateUpdate]
+      }
   | BroadcastMessage {fromClientId :: UUID, payload :: BroadcastAction}
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
@@ -185,5 +190,3 @@ data ServerState = ServerState
 
 newServerState :: GameState -> ServerState
 newServerState gs = ServerState Map.empty [] (CardLibrary [] [] []) gs
-
-

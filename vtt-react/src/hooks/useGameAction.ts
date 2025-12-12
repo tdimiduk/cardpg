@@ -34,11 +34,33 @@ export const useGameAction = () => {
   const _applyAction = useCallback(
     (action: BroadcastAction) => {
       switch (action.type) {
-        case 'playStack':
+        case 'playStack': {
+          const state = useGameStore.getState();
+          const token = state.tokens.find((t) => t.id === action.activeTokenId);
+          const actor = token ? state.actors[token.actorId] : undefined;
+
+          // Hydrate cards with IDs from hand if possible
+          // We need to track used IDs to avoid mapping same hand-card to multiple action-cards
+          const usedIds = new Set<string>();
+
+          const hydratedCards = action.selectedCards.map((c) => {
+            if (actor) {
+              // Find a card in hand that matches name and hasn't been used yet
+              const match = actor.deck.hand.find((h) => h.name === c.name && !usedIds.has(h.id));
+              if (match) {
+                usedIds.add(match.id);
+                return match;
+              }
+            }
+            // Fallback: Use server definition but add a fake ID to satisfy type reqs
+            // This is safe because server state update will overwrite the hand authoritatively anyway.
+            return { ...c, id: `broadcast-${Math.random()}` };
+          });
+
           if (action.phase === 'planning') {
             commitPlan(
               action.activeTokenId,
-              action.selectedCards,
+              hydratedCards,
               action.strengthColor,
               action.modifier,
               action.actionName,
@@ -47,7 +69,7 @@ export const useGameAction = () => {
           } else {
             playImmediate(
               action.activeTokenId,
-              action.selectedCards,
+              hydratedCards,
               action.strengthColor,
               action.modifier,
               action.actionName,
@@ -55,6 +77,7 @@ export const useGameAction = () => {
             );
           }
           break;
+        }
         case 'pass':
           passTurn(action.activeTokenId);
           break;

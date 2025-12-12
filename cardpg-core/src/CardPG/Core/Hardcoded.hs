@@ -1,4 +1,3 @@
-
 module CardPG.Core.Hardcoded where
 
 import Data.List.NonEmpty (NonEmpty (..))

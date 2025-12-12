@@ -1,6 +1,5 @@
 import { ActorState, TokenType, PlayerDeckState } from '../types';
 import { generateDeck, getActorTemplate } from './deckFactory';
-import { drawCards } from './ruleService';
 import { ACTOR_COLORS } from '../theme';
 
 export const createActor = (
@@ -32,14 +31,11 @@ export const createActor = (
     consequences: [],
   };
 
-  // Draw initial hand
-  const drawRes = drawCards(initialDeckState, 4);
-
   return {
     id,
     name,
     type,
     color: color || (type === TokenType.MONSTER ? ACTOR_COLORS.MONSTER : ACTOR_COLORS.PC),
-    deck: drawRes.newState,
+    deck: initialDeckState,
   };
 };

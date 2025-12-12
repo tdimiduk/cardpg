@@ -1,4 +1,3 @@
-
 module Main where
 
 import Data.Aeson.TypeScript.TH
@@ -27,10 +26,25 @@ import TypeScriptInstances
 
 import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (Difficulty, ResourceType, StackPower)
+import CardPG.Core.Primitives (Difficulty, EquipSlot, ResourceType, StackPower)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
-import CardPG.Server.Types (BroadcastAction, ClientMessage, ServerMessage, Token, StateUpdate)
+import CardPG.Core.State
+  ( ActorState
+  , AssetState
+  , CoreCardState
+  , CorePlayState
+  , TableCard
+  , TableState
+  )
+import CardPG.Server.Types
+  ( BroadcastAction
+  , ClientMessage
+  , Command
+  , ServerMessage
+  , StateUpdate
+  , Token
+  )
 
 main :: IO ()
 main = do
@@ -70,8 +84,16 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy EncounterCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ActorDefinition)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ActorState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy AssetState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy CoreCardState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy CorePlayState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy EquipSlot)
+              <> getTypeScriptDeclarations (Proxy :: Proxy TableState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy TableCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy Token)
               <> getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Command)
               <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy StateUpdate)

@@ -8,10 +8,10 @@
 module ArbitraryInstances where
 
 import Data.List.NonEmpty (NonEmpty (..))
-import qualified Data.List.NonEmpty as NE
+import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Generic.Random
 import Test.Tasty.QuickCheck
 
@@ -22,7 +22,7 @@ import CardPG.Core.Primitives
 import CardPG.Core.RichText
 import CardPG.Core.State
 import Data.UUID (UUID)
-import qualified Data.UUID as UUID
+import Data.UUID qualified as UUID
 
 -- Arbitrary Instances
 
