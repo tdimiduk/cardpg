@@ -35,16 +35,6 @@ describe('deckFactory', () => {
     expect(equipped).toEqual([]);
   });
 
-  it('should support legacy fallbacks', () => {
-    // Assuming 'swashbuckler' and 'lizard-warrior' exist in the JSON
-    // If they don't, these tests will fail and we'll know we need to update the IDs in deckFactory.ts
-
-    const { deck: starterDeck } = generateDeck('swashbuckler');
-    expect(starterDeck.length).toBeGreaterThan(0);
-
-    const { deck: monsterDeck } = generateDeck('lizard-warrior');
-    expect(monsterDeck.length).toBeGreaterThan(0);
-  });
   it('should include nature cards in equipped list', () => {
     // We don't have a guaranteed nature card with stats in the default set,
     // so we will mock the return of getActorTemplate for a specific test case

@@ -21,27 +21,32 @@ describe('useGameAction', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    
+    const mockState = {
+      commitPlan: mockCommitPlan,
+      playImmediate: mockPlayImmediate,
+      passTurn: mockPassTurn,
+      revealAndResolve: mockRevealAndResolve,
+      endRound: mockEndRound,
+      updateTokenPosition: mockUpdateTokenPosition,
+      drawCards: vi.fn(),
+      defend: vi.fn(),
+      clearDefense: vi.fn(),
+      reshuffle: vi.fn(),
+      addConsequence: vi.fn(),
+      removeConsequence: vi.fn(),
+      addStatus: vi.fn(),
+      removeStatus: vi.fn(),
+      discardCards: mockDiscardCards,
+      cancelPlan: mockCancelPlan,
+      returnToDeck: mockReturnToDeck,
+      tokens: [{ id: 'token-1', actorId: 'actor-1' }],
+      actors: { 'actor-1': { id: 'actor-1', name: 'Test Actor' } },
+    };
+
+    (useGameStore as unknown as Mock).getState = vi.fn(() => mockState);
     (useGameStore as unknown as Mock).mockImplementation((selector) => {
-      const state = {
-        commitPlan: mockCommitPlan,
-        playImmediate: mockPlayImmediate,
-        passTurn: mockPassTurn,
-        revealAndResolve: mockRevealAndResolve,
-        endRound: mockEndRound,
-        updateTokenPosition: mockUpdateTokenPosition,
-        drawCards: vi.fn(),
-        defend: vi.fn(),
-        clearDefense: vi.fn(),
-        reshuffle: vi.fn(),
-        addConsequence: vi.fn(),
-        removeConsequence: vi.fn(),
-        addStatus: vi.fn(),
-        removeStatus: vi.fn(),
-        discardCards: mockDiscardCards,
-        cancelPlan: mockCancelPlan,
-        returnToDeck: mockReturnToDeck,
-      };
-      return selector(state);
+      return selector(mockState);
     });
   });
 
