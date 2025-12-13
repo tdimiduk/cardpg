@@ -12,14 +12,14 @@ import Optics ((^.))
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..))
+import CardPG.Core.Card (CoreCardDSL, CoreCardT (..))
 import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))
 import CardPG.Core.RuleInstances ()
 
 test_statusParsing :: TestTree
 test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
   let path = "../data/cards/status/core.yaml"
-  result <- decodeFileEither path :: IO (Either ParseException [CoreCard])
+  result <- decodeFileEither path :: IO (Either ParseException [CoreCardDSL])
   case result of
     Left err -> assertFailure $ "Failed to parse status cards: " ++ show err
     Right cards -> do

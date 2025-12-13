@@ -2,7 +2,8 @@ module CardPG.Core.Hardcoded where
 
 import Data.List.NonEmpty (NonEmpty (..))
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..), Stats (..))
+import CardPG.Core.Card (CoreCard, CoreCardDSL, CoreCardT (..), Stats (..))
+import CardPG.Core.Conversion (compileCoreCard)
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.RichText (unsafeSimpleString)
 import CardPG.Core.RuleDefs (DSLRule (..), RuleT (RuleTask), TaskDefT (..))
@@ -10,8 +11,8 @@ import CardPG.Core.RuleDefs (DSLRule (..), RuleT (RuleTask), TaskDefT (..))
 -- | The canonical Fatigue Card
 -- Hardcoded here as a fundamental mechanic of the engine.
 -- Matches data/cards/status/core.yaml
-fatigueCard :: CoreCard
-fatigueCard =
+fatigueCardDSL :: CoreCardDSL
+fatigueCardDSL =
   CoreCard
     { name = unsafeNonEmptyText "Fatigue"
     , tags = Just ("Status" :| ["Fatigue", "Physical"])
@@ -42,3 +43,6 @@ fatigueCard =
                ]
     , flavor = Just (unsafeSimpleString "Fatigue is setting in ...")
     }
+
+fatigueCard :: CoreCard
+fatigueCard = compileCoreCard fatigueCardDSL

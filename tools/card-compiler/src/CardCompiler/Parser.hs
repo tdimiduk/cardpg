@@ -15,14 +15,18 @@ import Text.Megaparsec.Char (space, string')
 
 import CardPG.Core.Card
   ( CoreCard
+  , CoreCardDSL
   , CoreCardT (..)
   , ItemCard
+  , ItemCardDSL
   , ItemCardT (..)
   , NatureCard
+  , NatureCardDSL
   , NatureCardT (..)
   , SpecialDefend (..)
   , Stats (..)
   )
+import CardPG.Core.Conversion (compileCoreCard, compileItemCard, compileNatureCard)
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.NonEmptyText (getRawText, mkNonEmptyText)
 import CardPG.Core.Primitives (ResourceType (..))
@@ -121,12 +125,11 @@ convertCard RawCard{name = rawName, flavor = rawFlavor, cost = rawCost, action =
         (Nothing, Nothing, Nothing) ->
           if Just (T.toLower (getRawText validName)) == (T.toLower <$> actor)
             then
-              pure $
-                PNature
-                  NatureCard
-                    { specialDefend = parseSpecialDefend red yellow blue
-                    , ..
-                    }
+              let dsl = NatureCard
+                          { specialDefend = parseSpecialDefend red yellow blue
+                          , ..
+                          } :: NatureCardDSL
+               in pure $ PNature (compileNatureCard dsl)
             else
               let (def, bur, pas) = case rawAction of
                     Just actRaw ->
@@ -137,13 +140,15 @@ convertCard RawCard{name = rawName, flavor = rawFlavor, cost = rawCost, action =
                     Nothing -> (Nothing, Nothing, Nothing)
                   passive = pas
                   defense = def
-               in pure $ PItem ItemCard{burden = bur, ..}
+                  dsl = ItemCard{burden = bur, ..} :: ItemCardDSL
+               in pure $ PItem (compileItemCard dsl)
         (Just r, Just y, Just b) -> do
           let stats = Stats r y b
               cost = toIntMaybe rawCost
           parsedRules <- parseRules rawAction effect details
           let rules = NE.nonEmpty (map DSLRule parsedRules)
-          pure $ PCore CoreCard{..}
+              dsl = CoreCard{..} :: CoreCardDSL
+          pure $ PCore (compileCoreCard dsl)
         _ ->
           Left
             "Data Error: Partial stats found. Either all stats (red, yellow, blue) must be present, or none."

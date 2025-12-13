@@ -17,31 +17,28 @@ import GHC.Generics (Generic)
 import Optics ((^.))
 
 import CardPG.Core.Card
-  ( ActorDefinition
-  , ActorDefinitionT (..)
-  , ActorMachine
+  ( ActorDefinitionDSL
+  , ActorDefinition
+  , ConsequenceCardDSL
   , ConsequenceCard
-  , ConsequenceCardMachine
-  , ConsequenceCardT (..)
+  , CoreCardDSL
   , CoreCard
-  , CoreCardMachine
-  , CoreCardT (..)
-  , DSLRule (..)
+  , ItemCardDSL
   , ItemCard
-  , ItemCardMachine
-  , ItemCardT (..)
-  , NatureCardT (..)
+  , NatureCardDSL
+  , NatureCard
   , Rule
   )
+import CardPG.Core.Conversion (compileActorDefinition, compileConsequenceCard, compileCoreCard)
 import CardPG.Core.Json (cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.RichText (RichString, RichText, getRichText)
 
--- | VTT Export Data
+-- | Vtt Export Data
 data VttExport = VttExport
-  { actors :: [ActorMachine]
-  , statuses :: [CoreCardMachine]
-  , consequences :: [ConsequenceCardMachine]
+  { actors :: [ActorDefinition]
+  , statuses :: [CoreCard]
+  , consequences :: [ConsequenceCard]
   }
   deriving (Show, Generic)
 
@@ -72,76 +69,34 @@ loadAndExport inputFiles outputFile = do
       ++ outputFile
   where
     processFile ::
-      ([ActorMachine], [CoreCardMachine], [ConsequenceCardMachine]) ->
+      ([ActorDefinition], [CoreCard], [ConsequenceCard]) ->
       FilePath ->
-      IO ([ActorMachine], [CoreCardMachine], [ConsequenceCardMachine])
+      IO ([ActorDefinition], [CoreCard], [ConsequenceCard])
     processFile (accActors, accStatuses, accConsequences) file = do
       result <- Yaml.decodeFileEither file
       case result of
-        Right (actor :: ActorDefinition) -> do
-          return (convertActor actor : accActors, accStatuses, accConsequences)
+        Right (actor :: ActorDefinitionDSL) -> do
+          return (compileActorDefinition actor : accActors, accStatuses, accConsequences)
         Left _ -> do
           -- Try parsing as list of CoreCards (Status Library)
           resultCards <- Yaml.decodeFileEither file
           case resultCards of
-            Right (cards :: [CoreCard]) -> do
-              let vttCards = toVttCoreCard <$> cards
+            Right (cards :: [CoreCardDSL]) -> do
+              let vttCards = compileCoreCard <$> cards
               return (accActors, vttCards ++ accStatuses, accConsequences)
             Left _ -> do
               -- Try parsing as list of ConsequenceCards
               resultConsequences <- Yaml.decodeFileEither file
               case resultConsequences of
-                Right (consequences :: [ConsequenceCard]) -> do
-                  let vttConsequences = map toVttConsequenceCard consequences
+                Right (consequences :: [ConsequenceCardDSL]) -> do
+                  let vttConsequences = map compileConsequenceCard consequences
                   return (accActors, accStatuses, vttConsequences ++ accConsequences)
                 Left err -> do
                   putStrLn $
                     "Warning: Failed to parse " ++ file ++ " as Actor, Card List, or Consequence List: " ++ show err
                   return (accActors, accStatuses, accConsequences)
 
--- | Convert Actor (Human) to ActorMachine (Machine)
-convertActor :: ActorDefinition -> ActorMachine
-convertActor ActorDefinition{..} =
-  ActorDefinition
-    { items = map convertItem items
-    , nature = map convertNature nature
-    , deck = toVttCoreCard <$> deck
-    , ..
-    }
-
-convertItem :: ItemCard -> ItemCardMachine
-convertItem ItemCard{..} =
-  ItemCard
-    { flavor = fmap getRichText flavor
-    , ..
-    }
-
-convertNature :: NatureCardT RichString -> NatureCardT RichText
-convertNature NatureCard{..} =
-  NatureCard
-    { flavor = fmap getRichText flavor
-    , ..
-    }
-
--- | Convert CoreCard to CoreCardMachine with specific ID
-toVttCoreCard :: CoreCard -> CoreCardMachine
-toVttCoreCard CoreCard{..} =
-  CoreCard
-    { rules = fmap (fmap convertRule) rules
-    , flavor = fmap getRichText flavor
-    , ..
-    }
-
-convertRule :: DSLRule -> Rule
-convertRule (DSLRule r) = fmap getRichText r
-
 -- | Simple slugify
 slugify :: Text -> Text
 slugify = T.toLower . T.replace " " "-"
 
-toVttConsequenceCard :: ConsequenceCard -> ConsequenceCardMachine
-toVttConsequenceCard ConsequenceCard{..} =
-  ConsequenceCard
-    { rules = fmap (fmap convertRule) rules
-    , ..
-    }

@@ -122,33 +122,33 @@ $(deriveTypeScript cardpgJsonDef ''RealizedAttack)
 
 -- 1. Data Generation Scope
 $( do
-     d_attack <- specializeType ''AttackDefT [AppT ListT (ConT ''Inline)] "AttackDef"
-     d_general <- specializeType ''GeneralDefT [AppT ListT (ConT ''Inline)] "GeneralDef"
-     d_task <- specializeType ''TaskDefT [AppT ListT (ConT ''Inline)] "TaskDef"
-     d_trigger <- specializeType ''TriggerDefT [AppT ListT (ConT ''Inline)] "TriggerDef"
-     d_stance <- specializeType ''StanceDefT [AppT ListT (ConT ''Inline)] "StanceDef"
-     d_channel <- specializeType ''ChannelDefT [AppT ListT (ConT ''Inline)] "ChannelDef"
-     d_prime <- specializeType ''PrimeDefT [AppT ListT (ConT ''Inline)] "PrimeDef"
-     d_rule <- specializeType ''RuleT [AppT ListT (ConT ''Inline)] "Rule"
+     d_attack <- specializeType ''AttackDefT [ConT ''RichText] "AttackDef"
+     d_general <- specializeType ''GeneralDefT [ConT ''RichText] "GeneralDef"
+     d_task <- specializeType ''TaskDefT [ConT ''RichText] "TaskDef"
+     d_trigger <- specializeType ''TriggerDefT [ConT ''RichText] "TriggerDef"
+     d_stance <- specializeType ''StanceDefT [ConT ''RichText] "StanceDef"
+     d_channel <- specializeType ''ChannelDefT [ConT ''RichText] "ChannelDef"
+     d_prime <- specializeType ''PrimeDefT [ConT ''RichText] "PrimeDef"
+     d_rule <- specializeType ''RuleT [ConT ''RichText] "Rule"
 
      d_core <-
        specializeType
          ''CoreCardT
-         [ConT (mkName "Rule"), AppT ListT (ConT ''Inline)]
+         [ConT ''CC.Rule, ConT ''RichText]
          "CoreCard"
      d_actor <-
        specializeType
          ''ActorDefinitionT
-         [ConT (mkName "Rule"), AppT ListT (ConT ''Inline)]
+         [ConT ''CC.Rule, ConT ''RichText]
          "ActorDefinition"
 
-     d_item <- specializeType ''ItemCardT [AppT ListT (ConT ''Inline)] "ItemCard"
-     d_nature <- specializeType ''NatureCardT [AppT ListT (ConT ''Inline)] "NatureCard"
-     d_talent <- specializeType ''TalentCardT [AppT ListT (ConT ''Inline)] "TalentCard"
+     d_item <- specializeType ''ItemCardT [ConT ''RichText] "ItemCard"
+     d_nature <- specializeType ''NatureCardT [ConT ''RichText] "NatureCard"
+     d_talent <- specializeType ''TalentCardT [ConT ''RichText] "TalentCard"
      d_encounter <-
-       specializeType ''EncounterCardT [AppT ListT (ConT ''Inline)] "EncounterCard"
+       specializeType ''EncounterCardT [ConT ''RichText] "EncounterCard"
      d_consequence <-
-       specializeType ''ConsequenceCardT [ConT (mkName "Rule")] "ConsequenceCard"
+       specializeType ''ConsequenceCardT [ConT ''CC.Rule] "ConsequenceCard"
 
      return
        ( d_attack
@@ -171,7 +171,7 @@ $( do
 
 -- 1.5 Base Card Instances
 $( do
-     let inline = AppT ListT (ConT ''Inline)
+     let inline = ConT ''RichText
 
      -- Rules & Bridges
      i_attack <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''AttackDef ''AttackDefT [inline]
@@ -201,13 +201,13 @@ $( do
          (cardpgTaggedOptions "")
          ''CoreCard
          ''CoreCardT
-         [ConT (mkName "Rule"), inline]
+         [ConT ''CC.Rule, inline]
      i_actor <-
        deriveSpecializedInstance
          cardpgJsonDef
          ''ActorDefinition
          ''ActorDefinitionT
-         [ConT (mkName "Rule"), inline]
+         [ConT ''CC.Rule, inline]
      i_item <- deriveSpecializedInstance (cardpgTaggedOptions "") ''ItemCard ''ItemCardT [inline]
      i_nature <- deriveSpecializedInstance (cardpgTaggedOptions "") ''NatureCard ''NatureCardT [inline]
      i_talent <- deriveSpecializedInstance (cardpgTaggedOptions "") ''TalentCard ''TalentCardT [inline]
@@ -218,7 +218,7 @@ $( do
          (cardpgTaggedOptions "")
          ''ConsequenceCard
          ''ConsequenceCardT
-         [ConT (mkName "Rule")]
+         [ConT ''CC.Rule]
 
      -- Proxy Instances (Bridge original types to local specialized types)
      let inline = AppT ListT (ConT ''Inline)
@@ -238,19 +238,19 @@ $( do
        makeProxyInstance [t|ActorDefinitionT DSLRule RichString|] ''ActorDefinition "ActorDefinition"
 
      -- ItemCard
-     p_item2 <- makeProxyInstance [t|ItemCardT RichText|] ''ItemCard "ItemCard"
+
      p_item3 <- makeProxyInstance [t|ItemCardT RichString|] ''ItemCard "ItemCard"
 
      -- NatureCard
-     p_nature2 <- makeProxyInstance [t|NatureCardT RichText|] ''NatureCard "NatureCard"
+
      p_nature3 <- makeProxyInstance [t|NatureCardT RichString|] ''NatureCard "NatureCard"
 
      -- TalentCard
-     p_talent2 <- makeProxyInstance [t|TalentCardT RichText|] ''TalentCard "TalentCard"
+
      p_talent3 <- makeProxyInstance [t|TalentCardT RichString|] ''TalentCard "TalentCard"
 
      -- EncounterCard
-     p_encounter2 <- makeProxyInstance [t|EncounterCardT RichText|] ''EncounterCard "EncounterCard"
+
      p_encounter3 <- makeProxyInstance [t|EncounterCardT RichString|] ''EncounterCard "EncounterCard"
 
      -- ConsequenceCard
@@ -278,13 +278,9 @@ $( do
            ++ i_consequence
            ++ p_core2
            ++ p_actor
-           ++ p_item2
            ++ p_item3
-           ++ p_nature2
            ++ p_nature3
-           ++ p_talent2
            ++ p_talent3
-           ++ p_encounter2
            ++ p_encounter3
            ++ p_consequence2
        )

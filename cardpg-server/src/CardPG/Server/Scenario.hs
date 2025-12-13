@@ -18,8 +18,9 @@ import System.FilePath (takeDirectory, (</>))
 import System.Random (StdGen, getStdGen, newStdGen, uniform)
 import System.Random.Stateful (Uniform (..), uniformM)
 
-import CardPG.Core.Card (ActorDefinition, CoreCard, ItemCard, NatureCard, TalentCard)
+import CardPG.Core.Card (ActorDefinition, CoreCard, ItemCard, NatureCard, TalentCard, ActorDefinitionDSL)
 import CardPG.Core.Card qualified as Card
+import CardPG.Core.Conversion (compileActorDefinition)
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Primitives (CardInstanceId, EquipSlot (..), TargetId, ActorId)
 import CardPG.Core.State
@@ -88,11 +89,15 @@ loadScenarioActors baseDir actorsList = do
     let updatedGame = addActor tid actorState (gameState{rng = newRng})
     put updatedGame
 
+
 -- | Load a single actor from a YAML file and instantiate it into an ActorState
 loadActorState :: FilePath -> Int -> Int -> IO ActorState
 loadActorState path x y = do
-  -- Parse the static definition
-  def :: ActorDefinition <- decodeFileThrow path
+  -- Parse the static definition (DSL)
+  dsl :: ActorDefinitionDSL <- decodeFileThrow path
+  
+  -- Compile to Machine Type
+  let def = compileActorDefinition dsl
 
   -- Instantiate with fresh UUIDs
   rng <- newStdGen

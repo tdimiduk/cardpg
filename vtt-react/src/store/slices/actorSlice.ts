@@ -7,6 +7,7 @@ import {
   PlannedAction,
   StateUpdate,
   Token,
+  ResourceType,
 } from '../../types';
 import {
   ActorState as ServerActorState,
@@ -220,9 +221,9 @@ export const createActorSlice: StateCreator<
            const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
 
            // Infer Action logic for UI
-           let color = RESOURCE_TYPES.RED as string; // Default
+           let color: ResourceType = RESOURCE_TYPES.RED; // Default
            let modifier = 0;
-           let targetDefense = undefined;
+           let targetDefense: ResourceType | undefined = undefined;
            
            const rules = actionCard.rules || [];
            const attackRule = rules.find(r => r.type === 'attack');

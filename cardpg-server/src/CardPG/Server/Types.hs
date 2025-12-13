@@ -37,11 +37,10 @@ import Network.WebSockets (Connection)
 import System.Random (StdGen)
 
 import CardPG.Core.Card
-  ( ActorMachine
-  , ConsequenceCardMachine
+  ( ActorDefinition
+  , ConsequenceCard
   , CoreCard (..)
-  , CoreCardMachine
-  , ItemCardMachine
+  , ItemCard
   )
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ActorId, ResourceType)
@@ -170,9 +169,9 @@ $(deriveJSON cardpgJsonDef ''ServerMessage)
 
 -- | The library of all known cards/actors loaded from disk.
 data CardLibrary = CardLibrary
-  { actors :: [ActorMachine]
-  , statuses :: [CoreCardMachine]
-  , consequences :: [ConsequenceCardMachine]
+  { actors :: [ActorDefinition]
+  , statuses :: [CoreCard]
+  , consequences :: [ConsequenceCard]
   }
   deriving (Show, Eq, Generic)
 

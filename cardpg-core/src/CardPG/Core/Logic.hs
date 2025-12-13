@@ -29,8 +29,8 @@ import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Card (CoreCard, CoreCardT (..), ItemCardT (..), Stats (..))
 import CardPG.Core.Primitives (CardInstanceId, ResourceType (..), StackPower (..))
-import CardPG.Core.RichText (RichString)
-import CardPG.Core.RuleDefs (AttackDefT (..), DSLRule (..), RuleT (RuleAttack))
+import CardPG.Core.RichText (RichText)
+import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
   ( ActionStack (..)
   , ActionStackMaterialized (..)
@@ -198,10 +198,10 @@ endDefense = do
       modify $ #coreState % #discard %~ (stack ++)
       tell [DefenseEnded stack]
 
-getAttackRule :: CoreCard -> Either Text (AttackDefT RichString)
+getAttackRule :: CoreCard -> Either Text (AttackDefT RichText)
 getAttackRule card = case card.rules of
   Nothing -> Left "no attack rule"
-  Just rules -> case [r | RuleAttack r <- map (.unDSLRule) (toList rules)] of
+  Just rules -> case [r | RuleAttack r <- toList rules] of
     [] -> Left "no attack rule"
     [r] -> Right r
     _ -> Left "cards with multiple attack rules are not implemented yet"

@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 
 module ResolutionTests where
 
@@ -10,7 +11,8 @@ import System.Random (mkStdGen, StdGen)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCard (..), ItemCard, ItemCardT (..), Stats (..))
+import CardPG.Core.Card (CoreCardT (..), CoreCard, ItemCard, ItemCardT (..), Stats (..))
+import CardPG.Core.Card qualified as Card
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic (GameM, runGameM)
 import CardPG.Core.Logic qualified as Logic
@@ -32,13 +34,23 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
     
     dummyCard = fatigueCard -- simple card
     
+    -- Action card for planning test (ensure cost matches resource count)
+    dummyActionCard = CoreCard
+      { name = fatigueCard.name
+      , tags = fatigueCard.tags
+      , stats = fatigueCard.stats
+      , cost = Just 1
+      , rules = fatigueCard.rules
+      , flavor = fatigueCard.flavor
+      }
+    
     initialCore = CoreCardState
       { deck = []
       , hand = [c1Id, c2Id, c3Id]
       , discard = []
       , defending = []
       , inPlay = Map.empty
-      , registry = Map.fromList [(c1Id, dummyCard), (c2Id, dummyCard), (c3Id, dummyCard)]
+      , registry = Map.fromList [(c1Id, dummyActionCard), (c2Id, dummyCard), (c3Id, dummyCard)]
       , planned = Nothing
       }
       

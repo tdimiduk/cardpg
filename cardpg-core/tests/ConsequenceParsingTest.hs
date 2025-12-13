@@ -11,14 +11,14 @@ import Data.Yaml (ParseException, decodeFileEither, encode)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT (..))
-import CardPG.Core.RuleDefs (DSLRule (..), RuleT (..))
+import CardPG.Core.Card (ConsequenceCardDSL, ConsequenceCardT (..))
+import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))
 import CardPG.Core.RuleInstances ()
 
 test_consequenceParsing :: TestTree
 test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
   let path = "../data/cards/consequences/baseline.yaml"
-  result <- decodeFileEither path :: IO (Either ParseException [ConsequenceCard])
+  result <- decodeFileEither path :: IO (Either ParseException [ConsequenceCardDSL])
   case result of
     Left err -> assertFailure $ "Failed to parse consequence cards: " ++ show err
     Right cards -> do

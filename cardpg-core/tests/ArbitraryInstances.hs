@@ -108,6 +108,13 @@ instance Arbitrary (PrimeDefT RichString) where
     return $ PrimeDef trig simpleReaction
   shrink _ = []
 
+instance Arbitrary (PrimeDefT RichText) where
+  arbitrary = do
+    trig <- arbitrary
+    let simpleReaction = RuleNarrative (getRichText (unsafeSimpleString "Reaction"))
+    return $ PrimeDef trig simpleReaction
+  shrink _ = []
+
 instance (Arbitrary rt) => Arbitrary (TriggerDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
@@ -270,5 +277,12 @@ instance Arbitrary TableState where
   shrink = genericShrink
 
 instance Arbitrary ActorState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+instance Arbitrary RichText where
+  arbitrary = RichText <$> arbitrary
+  shrink (RichText rs) = [RichText rs' | rs' <- shrink rs]
+
+instance Arbitrary (RuleT RichText) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
