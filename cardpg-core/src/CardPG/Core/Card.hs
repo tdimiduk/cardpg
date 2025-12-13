@@ -44,7 +44,7 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId, Difficulty, ResourceType (..), StackPower)
+import CardPG.Core.Primitives (CardInstanceId, ResourceType (..))
 import CardPG.Core.RichText
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
@@ -98,12 +98,10 @@ data CoreCardT rule rt = CoreCard
   }
   deriving stock (Eq, Show, Generic)
 
-
 type CoreCardDSL = CoreCardT DSLRule RichString
 type CoreCard = CoreCardT Rule RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''CoreCardT)
-
 
 -- | Represents Items/Equipment that stay in play (Table Cards).
 data ItemCardT rt = ItemCard
@@ -120,12 +118,10 @@ data ItemCardT rt = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-
 type ItemCardDSL = ItemCardT RichString
 type ItemCard = ItemCardT RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''ItemCardT)
-
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCardT rt = NatureCard
@@ -140,12 +136,10 @@ data NatureCardT rt = NatureCard
   }
   deriving stock (Eq, Show, Generic)
 
-
 type NatureCardDSL = NatureCardT RichString
 type NatureCard = NatureCardT RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''NatureCardT)
-
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
 data TalentCardT rt = TalentCard
@@ -158,12 +152,10 @@ data TalentCardT rt = TalentCard
   }
   deriving stock (Eq, Show, Generic)
 
-
 type TalentCardDSL = TalentCardT RichString
 type TalentCard = TalentCardT RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''TalentCardT)
-
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef
@@ -201,12 +193,10 @@ data EncounterCardT rt = EncounterCard
   }
   deriving stock (Eq, Show, Generic)
 
-
 type EncounterCardDSL = EncounterCardT RichString
 type EncounterCard = EncounterCardT RichText
 
 $(deriveJSON cardpgJsonDef ''EncounterCardT)
-
 
 -- | Represents Status Effects / Consequences.
 data ConsequenceCardT rule = ConsequenceCard
@@ -220,12 +210,10 @@ data ConsequenceCardT rule = ConsequenceCard
   }
   deriving stock (Eq, Show, Generic)
 
-
 type ConsequenceCardDSL = ConsequenceCardT DSLRule
 type ConsequenceCard = ConsequenceCardT Rule
 
 $(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCardT)
-
 
 -- | Represents the *Static Definition* or "Character Sheet" of an Actor.
 -- This is used for initialization and templates, not for running game state.
@@ -238,9 +226,7 @@ data ActorDefinitionT rule rt = ActorDefinition
   }
   deriving stock (Eq, Show, Generic)
 
-
 type ActorDefinitionDSL = ActorDefinitionT DSLRule RichString
 type ActorDefinition = ActorDefinitionT Rule RichText
 
 $(deriveJSON cardpgJsonDef ''ActorDefinitionT)
-

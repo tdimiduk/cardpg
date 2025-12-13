@@ -26,19 +26,19 @@ import TypeScriptInstances
 
 import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (Difficulty, EquipSlot, ResourceType, StackPower, ActorId)
+import CardPG.Core.Primitives (ActorId, Difficulty, EquipSlot, ResourceType, StackPower)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.State
-  ( ActorState
+  ( ActionStack
+  , ActorState
   , AssetState
   , CoreCardState
   , CorePlayState
+  , RealizedAttack
   , SpatialState
   , TableCard
   , TableState
-  , ActionStack
-  , RealizedAttack
   )
 import CardPG.Server.Types
   ( BroadcastAction

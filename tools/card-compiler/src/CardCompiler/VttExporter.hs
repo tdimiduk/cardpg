@@ -17,16 +17,16 @@ import GHC.Generics (Generic)
 import Optics ((^.))
 
 import CardPG.Core.Card
-  ( ActorDefinitionDSL
-  , ActorDefinition
-  , ConsequenceCardDSL
+  ( ActorDefinition
+  , ActorDefinitionDSL
   , ConsequenceCard
-  , CoreCardDSL
+  , ConsequenceCardDSL
   , CoreCard
-  , ItemCardDSL
+  , CoreCardDSL
   , ItemCard
-  , NatureCardDSL
+  , ItemCardDSL
   , NatureCard
+  , NatureCardDSL
   , Rule
   )
 import CardPG.Core.Conversion (compileActorDefinition, compileConsequenceCard, compileCoreCard)
@@ -99,4 +99,3 @@ loadAndExport inputFiles outputFile = do
 -- | Simple slugify
 slugify :: Text -> Text
 slugify = T.toLower . T.replace " " "-"
-

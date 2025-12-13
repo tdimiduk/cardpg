@@ -1,4 +1,5 @@
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 
 module CardPG.Core.Logic
@@ -15,20 +16,35 @@ module CardPG.Core.Logic
   , discardPlannedActions
   , attackAction
   , endDefense
+  , reshuffleDeck
+  , addStatus
+  , removeStatus
+  , addConsequence
+  , removeConsequence
+  , discardCards
+  , returnCardsToDeck
+  , passAction
   ) where
 
 import Control.Monad (replicateM)
 import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
-import Control.Monad.State (MonadState, State, modify, state)
+import Control.Monad.State (MonadState, State, get, modify, put, state)
 import Control.Monad.Trans.Class (lift)
 import Data.List (partition)
 import Data.Map.Strict qualified as Map
-import Data.Text (Text)
+import Data.Text (Text, unpack)
 import Optics
-import System.Random (RandomGen, uniform)
+import System.Random (RandomGen, uniform, uniformR)
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..), ItemCardT (..), Stats (..))
-import CardPG.Core.Primitives (CardInstanceId, ResourceType (..), StackPower (..))
+import CardPG.Core.Card
+  ( ConsequenceCardT (..)
+  , CoreCard
+  , CoreCardT (..)
+  , ItemCardT (..)
+  , Stats (..)
+  )
+import CardPG.Core.NonEmptyText (getRawText, unsafeNonEmptyText)
+import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..), StackPower (..))
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
@@ -36,10 +52,10 @@ import CardPG.Core.State
   , ActionStackMaterialized (..)
   , ActorState (..)
   , AssetState (..)
-  , RealizedAttack (..)
   , CoreCardState (..)
   , GameEnv (..)
   , GameEvent (..)
+  , RealizedAttack (..)
   , SpatialState (..)
   , TableCard (..)
   , TableState (..)
@@ -156,12 +172,13 @@ planAction actionCardId resourceIds = do
 
   -- Validate all cards are in hand AND cost is correct
   if length found == length allIds
-    then if correctCost
-      then do
-        modify $ #coreState % #hand .~ remaining
-        modify $ #coreState % #planned ?~ plan
-        tell [ActionPlanned plan]
-      else tell [IllegalAction plan (Just "incorrect resource cost")]
+    then
+      if correctCost
+        then do
+          modify $ #coreState % #hand .~ remaining
+          modify $ #coreState % #planned ?~ plan
+          tell [ActionPlanned plan]
+        else tell [IllegalAction plan (Just "incorrect resource cost")]
     else tell [IllegalAction plan (Just "cards not in hand")]
 
 plannedActionTo ::
@@ -228,3 +245,147 @@ attackAction stack = case getAttackRule (stack.actionCard) of
         , attackStrength = stackPower stack attackRule.power
         , defenseColor = attackRule.resistedBy
         }
+
+reshuffleDeck :: (RandomGen g) => GameM g ()
+reshuffleDeck = do
+  discarded <- use (#coreState % #discard)
+  currentDeck <- use (#coreState % #deck)
+  newDeck <- GameM . lift $ shuffleListM (discarded ++ currentDeck)
+  modify $ #coreState % #discard .~ []
+  modify $ #coreState % #deck .~ newDeck
+  tell [DeckShuffled]
+
+addStatus :: (RandomGen g) => Text -> Text -> GameM g ()
+addStatus statusType destination = do
+  env <- ask
+  let maybeTemplate = Map.lookup statusType (env ^. #statusCardTemplates)
+  case maybeTemplate of
+    Nothing -> return () -- Invalid status type?
+    Just template -> do
+      ids <- createCards template 1
+      case ids of
+        [cid] -> do
+          case destination of
+            "hand" -> modify $ #coreState % #hand %~ (cid :)
+            "discard" -> modify $ #coreState % #discard %~ (cid :)
+            "deck" -> modify $ #coreState % #deck %~ (cid :)
+            _ -> modify $ #coreState % #discard %~ (cid :)
+          tell [ActionPlanned (ActionStack cid [])]
+        _ -> return ()
+
+removeStatus :: Text -> Maybe Text -> GameM g ()
+removeStatus statusType maybeCardId = do
+  registry <- use (#coreState % #registry)
+
+  let matchFunc cid c =
+        case maybeCardId of
+          Just specificId -> unpack specificId == show cid
+          Nothing -> getRawText c.name == statusType
+
+  let findAndRemove :: Lens' CoreCardState [CardInstanceId] -> GameM g Bool
+      findAndRemove lens = do
+        currentList <- use (#coreState % lens)
+        let (before, foundAndAfter) =
+              break
+                ( \cid -> case Map.lookup cid registry of
+                    Just c -> matchFunc cid c
+                    Nothing -> False
+                )
+                currentList
+        case foundAndAfter of
+          (x : xs) -> do
+            -- Found one element 'x'
+            modify $ #coreState % lens .~ (before ++ xs)
+            return True
+          [] -> return False
+
+  -- Search order: Hand, Discard, Deck
+  removedFromHand <- findAndRemove #hand
+  if removedFromHand
+    then return ()
+    else do
+      removedFromDiscard <- findAndRemove #discard
+      if removedFromDiscard
+        then return ()
+        else do
+          _ <- findAndRemove #deck -- No need to check result, it's the last one
+          return ()
+
+addConsequence :: (RandomGen g) => Int -> GameM g ()
+addConsequence severityVal = do
+  env <- ask
+  let candidates = filter (\c -> c.severity == severityVal) (Map.elems (env ^. #consequenceCardTemplates))
+
+  case candidates of
+    [] -> return ()
+    _ -> do
+      -- Pick random index
+      g <- GameM . lift $ get
+      let (idx, g') = uniformR (0, length candidates - 1) g
+      GameM . lift $ put g'
+      let template = candidates !! idx
+
+      -- Create a new ID
+      let (cid, g'') = uniform g'
+      GameM . lift $ put g''
+
+      -- Add to TableState registry and list
+      modify $ #tableState % #consequenceRegistry %~ Map.insert cid template
+      modify $ #tableState % #consequences %~ (cid :)
+
+      -- We might need a generic event for "AssetCreated" or reused CardsCreated?
+      -- CardsCreated takes [CardInstanceId]. It doesn't imply CoreCard necessarily.
+      tell [CardsCreated [cid]]
+      return ()
+
+passAction :: (RandomGen g) => GameM g ()
+passAction = do
+  -- Create a transient "Pass" card
+  let passCard =
+        CoreCard
+          { name = unsafeNonEmptyText "Pass"
+          , tags = Nothing
+          , stats = Stats 0 0 0
+          , cost = Nothing
+          , rules = Nothing
+          , flavor = Nothing
+          }
+  ids <- createCards passCard 1
+  -- Plan it
+  case ids of
+    [cid] -> do
+      modify $ #coreState % #planned ?~ ActionStack cid []
+      tell [ActionPlanned (ActionStack cid [])]
+    _ -> return ()
+
+removeConsequence :: Text -> GameM g ()
+removeConsequence cardIdStr = do
+  let cid = CardInstanceId (read (unpack cardIdStr))
+  -- Remove from TableState
+  modify $ #tableState % #consequences %~ filter (/= cid)
+  modify $ #tableState % #consequenceRegistry %~ Map.delete cid
+
+discardCards :: [Text] -> GameM g ()
+discardCards cardIdStrs = do
+  let cids = map (CardInstanceId . read . unpack) cardIdStrs
+  currentHand <- use (#coreState % #hand)
+  let (toDiscard, keep) = partition (`elem` cids) currentHand
+  modify $ #coreState % #hand .~ keep
+  modify $ #coreState % #discard %~ (toDiscard ++)
+
+-- Generic 'CardsMoved' event? Or just state update.
+
+returnCardsToDeck :: (RandomGen g) => [Text] -> GameM g ()
+returnCardsToDeck cardIdStrs = do
+  let cids = map (CardInstanceId . read . unpack) cardIdStrs
+  currentHand <- use (#coreState % #hand)
+  let (toReturn, keep) = partition (`elem` cids) currentHand
+  modify $ #coreState % #hand .~ keep
+
+  -- Shuffle into deck? Or put on top? "ReturnToDeck" often implies top or shuffle.
+  -- Let's shuffle them in for now or top?
+  -- Usually "Return to Deck" -> Shuffle.
+  currentDeck <- use (#coreState % #deck)
+  newDeck <- GameM . lift $ shuffleListM (toReturn ++ currentDeck)
+  modify $ #coreState % #deck .~ newDeck
+  tell [DeckShuffled]

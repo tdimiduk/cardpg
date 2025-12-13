@@ -12,11 +12,9 @@ module CardPG.Core.Conversion
   ) where
 
 import Data.List.NonEmpty (NonEmpty)
-import qualified Data.List.NonEmpty as NE
 
 import CardPG.Core.Card
 import CardPG.Core.RichText (RichString, RichText, getRichText)
-import CardPG.Core.RuleDefs (DSLRule(..), Rule)
 
 -- | Compile a Rule from DSL (String) to Machine (RichText)
 compileRule :: DSLRule -> Rule

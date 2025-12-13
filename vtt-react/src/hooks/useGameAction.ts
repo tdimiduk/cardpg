@@ -35,11 +35,11 @@ export const useGameAction = () => {
     (action: BroadcastAction) => {
       switch (action.type) {
         case 'attackAction': {
-           // Handle visualized attack from server
-           // Maybe show animation?
-           // For now, no storage update needed as GameStateUpdate handles state.
-           // Can trigger 'revealAndResolve' visual equivalent if needed.
-           break;
+          // Handle visualized attack from server
+          // Maybe show animation?
+          // For now, no storage update needed as GameStateUpdate handles state.
+          // Can trigger 'revealAndResolve' visual equivalent if needed.
+          break;
         }
         case 'pass':
           passTurn(action.actingActor);

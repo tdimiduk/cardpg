@@ -82,30 +82,30 @@ export type AttackDef = IAttackDef;
 export interface IAttackDef {
   power: StackPower;
   resistedBy: ResourceType;
-  effect?: Inline[];
+  effect?: RichText;
 }
 
 export type GeneralDef = IGeneralDef;
 
 export interface IGeneralDef {
   name: string;
-  cost?: Inline[];
+  cost?: RichText;
   difficulty?: Difficulty;
-  effect: Inline[];
+  effect: RichText;
 }
 
 export type StanceDef = IStanceDef;
 
 export interface IStanceDef {
   duration: string;
-  effect: Inline[];
+  effect: RichText;
 }
 
 export type ChannelDef = IChannelDef;
 
 export interface IChannelDef {
   duration: string;
-  effect: Inline[];
+  effect: RichText;
 }
 
 export type PrimeDef = IPrimeDef;
@@ -120,16 +120,16 @@ export type TaskDef = ITaskDef;
 export interface ITaskDef {
   name: string;
   check?: Difficulty;
-  time?: Inline[];
-  cost?: Inline[];
-  effect: Inline[];
+  time?: RichText;
+  cost?: RichText;
+  effect: RichText;
 }
 
 export type TriggerDef = ITriggerDef;
 
 export interface ITriggerDef {
   trigger: string;
-  effect: Inline[];
+  effect: RichText;
 }
 
 export type Rule = IRuleRuleAttack | IRuleRuleGeneral | IRuleRuleTask | IRuleRuleTrigger | IRuleRuleStance | IRuleRuleChannel | IRuleRulePrime | IRuleRuleNarrative | IRuleRulePassive;
@@ -171,7 +171,7 @@ export interface IRuleRulePrime {
 
 export interface IRuleRuleNarrative {
   type: "narrative";
-  data: Inline[];
+  data: RichText;
 }
 
 export interface IRuleRulePassive {
@@ -204,7 +204,7 @@ export interface ICoreCard {
   stats: Stats;
   cost?: number;
   rules?: Rule[];
-  flavor?: Inline[];
+  flavor?: RichText;
 }
 
 export type ItemCard = IItemCard;
@@ -213,7 +213,7 @@ export interface IItemCard {
   type: "itemCard";
   name: string;
   tags?: string[];
-  flavor?: Inline[];
+  flavor?: RichText;
   weight?: number;
   value?: number;
   traits?: string[];
@@ -229,7 +229,7 @@ export interface INatureCard {
   type: "natureCard";
   name: string;
   tags?: string[];
-  flavor?: Inline[];
+  flavor?: RichText;
   traits?: string[];
   passive?: string;
   defense?: number;
@@ -243,7 +243,7 @@ export interface ITalentCard {
   type: "talentCard";
   name: string;
   tags?: string[];
-  flavor?: Inline[];
+  flavor?: RichText;
   traits?: string[];
   passive?: string;
   defense?: number;
@@ -272,7 +272,7 @@ export interface IEncounterCard {
   type: "encounterCard";
   name: string;
   tags?: string[];
-  narrative: Inline[];
+  narrative: RichText;
   options?: string[];
   mechanics?: EncounterMechanics;
 }
@@ -364,6 +364,8 @@ export type TableState = ITableState;
 export interface ITableState {
   assets: {[k in string]?: AssetState};
   registry: {[k in string]?: TableCard};
+  consequences: string[];
+  consequenceRegistry: {[k in string]?: ConsequenceCard};
 }
 
 export type TableCard = ITCItem | ITCNature | ITCTalent | ITCConsequence;
@@ -498,7 +500,7 @@ export interface IInvalidAction {
   message: string;
 }
 
-export type Command = IDrawIntent | IDefendIntent | IPlanMove | IPlanAction | ICancelPlanIntent | IStartResolutionIntent | IEndDefenseIntent;
+export type Command = IDrawIntent | IDefendIntent | IPlanMove | IPlanAction | ICancelPlanIntent | IStartResolutionIntent | IEndDefenseIntent | IReshuffleIntent | IAddStatusIntent | IRemoveStatusIntent | IAddConsequenceIntent | IRemoveConsequenceIntent | IDiscardCardsIntent | IReturnToDeckIntent | IEndRoundIntent | IPassIntent;
 
 export interface IDrawIntent {
   type: "drawIntent";
@@ -536,6 +538,59 @@ export interface IStartResolutionIntent {
 
 export interface IEndDefenseIntent {
   type: "endDefenseIntent";
+  actorId: string;
+}
+
+export interface IReshuffleIntent {
+  type: "reshuffleIntent";
+  actorId: string;
+}
+
+export interface IAddStatusIntent {
+  type: "addStatusIntent";
+  actorId: string;
+  statusType: string;
+  destination: string;
+}
+
+export interface IRemoveStatusIntent {
+  type: "removeStatusIntent";
+  actorId: string;
+  statusType: string;
+  targetCardId?: string;
+}
+
+export interface IAddConsequenceIntent {
+  type: "addConsequenceIntent";
+  actorId: string;
+  severity: number;
+}
+
+export interface IRemoveConsequenceIntent {
+  type: "removeConsequenceIntent";
+  actorId: string;
+  cardId: string;
+}
+
+export interface IDiscardCardsIntent {
+  type: "discardCardsIntent";
+  actorId: string;
+  cardIds: string[];
+}
+
+export interface IReturnToDeckIntent {
+  type: "returnToDeckIntent";
+  actorId: string;
+  cardIds: string[];
+}
+
+export interface IEndRoundIntent {
+  type: "endRoundIntent";
+  actorId: string;
+}
+
+export interface IPassIntent {
+  type: "passIntent";
   actorId: string;
 }
 

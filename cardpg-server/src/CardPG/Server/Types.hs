@@ -128,6 +128,15 @@ data Command
   | CancelPlanIntent {actorId :: ActorId}
   | StartResolutionIntent {actorId :: ActorId}
   | EndDefenseIntent {actorId :: ActorId}
+  | ReshuffleIntent {actorId :: ActorId}
+  | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: Text}
+  | RemoveStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe Text}
+  | AddConsequenceIntent {actorId :: ActorId, severity :: Int}
+  | RemoveConsequenceIntent {actorId :: ActorId, cardId :: Text}
+  | DiscardCardsIntent {actorId :: ActorId, cardIds :: [Text]}
+  | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [Text]}
+  | EndRoundIntent {actorId :: ActorId}
+  | PassIntent {actorId :: ActorId}
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)

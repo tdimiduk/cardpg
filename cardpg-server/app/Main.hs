@@ -26,10 +26,12 @@ import qualified Network.WebSockets as WS
 
 import System.Random (newStdGen)
 
+import CardPG.Core.Card (ActorDefinition, CoreCard, CoreCardT(..), ItemCard, NatureCard, TalentCard, ActorDefinitionDSL, ConsequenceCardT(..))
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.State (GameEnv(..), GameEvent(..), ActorState)
 import CardPG.Core.Primitives (TargetId(..))
 import qualified CardPG.Core.Logic as Logic
+import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Server.Game (GameState(..), runActorAction, processCommand, concludeRound, revealPlannedActions)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
@@ -75,7 +77,15 @@ main = do
                 <> T.pack (show (length (lib.actors))) <> " actors, " 
                 <> T.pack (show (length (lib.statuses))) <> " statuses, "
                 <> T.pack (show (length (lib.consequences))) <> " consequences."
-             return $ (newServerState initialGs) { library = lib }
+             
+             let env = initialGs.env
+             let statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
+             let consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
+             
+             let newEnv = env { statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap }
+             let newGs = initialGs { env = newEnv }
+             
+             return $ (newServerState newGs) { library = lib }
 
     state <- newMVar initialState
     
@@ -186,62 +196,42 @@ talkLoop client state = do
             T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
             
             -- Update log and broadcast
-            (currentClients, currentGs, movesUpdates, extraBroadcasts) <- modifyMVar state $ \s -> do
-                let s' = addAction payload s
-                -- Special handling for EndRound
-                case payload of
-                     EndRound -> do
-                        T.putStrLn "Resolving round..."
-                        let (newGame, updates) = CardPG.Server.Game.concludeRound (s'.gameState)
-                        T.putStrLn $ "Round resolved. Updates: " <> T.pack (show $ length updates)
-                        let s'' = s' { gameState = newGame }
-                        return (s'', (s''.clients, s''.gameState, updates, []))
-                     StartResolutionPhase -> do
-                        T.putStrLn "Starting resolution phase..."
-                        let (newGame, broadcasts) = CardPG.Server.Game.revealPlannedActions (s'.gameState)
-                        T.putStrLn $ "Revealed actions: " <> T.pack (show $ length broadcasts)
-                        let s'' = s' { gameState = newGame }
-                        return (s'', (s''.clients, s''.gameState, [], broadcasts))
-                     _ -> return (s', (s'.clients, s'.gameState, [], []))
+            -- Update log and broadcast
+            (currentClients, currentGs, _, _) <- modifyMVar state $ \s -> do
+                 -- Simplify Broadcast handling: Only log, do NOT execute game logic.
+                 -- All game logic should be in GameCommand.
+                 -- We still allow broadcasting messages (like chat) if we had them.
+                 -- For now, just pass through or ignore.
+                 let s' = addAction payload s
+                 return (s', (s'.clients, s'.gameState, [], []))
 
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState
-
-            -- If there were updates from EndRound, broadcast them to ALL (batched)
-            case movesUpdates of
-                 [] -> return ()
-                 updates -> broadcast (GameStateUpdate updates) broadcastState
             
             talkLoop client state
         Just (GameCommand cmd) -> do
             T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
             
-            -- Run action against authoritative state via Game module
-            res <- modifyMVar state $ \s -> do
+            -- Run action against authoritative state
+            (updates, actions, clientsMap) <- modifyMVar state $ \s -> do
                 let game = s.gameState
-                let (newGame, result) = processCommand cmd game
+                let (newGame, updates, actions) = processCommand cmd game
                 
-                case result of
-                    Nothing -> return (s, Nothing) -- Actor not found or error
-                    Just (targetId, actions, actorSt) -> do
-                        -- Update GameHistory
-                        let s' = foldl (flip addAction) (s { gameState = newGame }) actions
-                        return (s', Just (targetId, actions, actorSt, s'.clients))
+                -- Update GameHistory
+                let s' = foldl (flip addAction) (s { gameState = newGame }) actions
+                return (s', (updates, actions, s'.clients))
 
             -- Broadcast results
-            case res of
-                Nothing -> 
-                    T.putStrLn $ "Command failed (invalid actor?)"
-                Just (targetId, actions, actorSt, clientsMap) -> do
-                    -- 1. Broadcast Animations (Legacy/FX)
-                    let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
-                    
-                    forM_ actions $ \act -> 
-                        broadcast (BroadcastMessage (client.clientId) act) tempState
-                        
-                    -- 2. Broadcast State Update
-                    let updateMsg = GameStateUpdate [StateUpdate targetId actorSt]
-                    broadcast updateMsg tempState
+            let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
+            
+            -- 1. Broadcast Actions (Animations/Logs)
+            forM_ actions $ \act -> 
+                broadcast (BroadcastMessage (client.clientId) act) tempState
+                
+            -- 2. Broadcast State Updates
+            case updates of
+                 [] -> return ()
+                 ups -> broadcast (GameStateUpdate ups) tempState
             
             talkLoop client state
 

@@ -61,7 +61,7 @@ const App: React.FC = () => {
   // --- WebSocket Integration ---
   useWebSocket();
   useGameSync();
-  const { dispatch, dispatchCommand } = useGameDispatch();
+  const { dispatchCommand } = useGameDispatch();
 
   // --- Handlers ---
 
@@ -77,15 +77,13 @@ const App: React.FC = () => {
 
     if (phase === 'planning') {
       if (selectedCards.length === 0) return;
-      
+
       // If actionCardId provided, use it. Otherwise try to infer or fallback (e.g. improvise)
       let finalActionId = actionCardId;
       let resourceIds: string[] = [];
 
       if (finalActionId) {
-        resourceIds = selectedCards
-          .filter(c => c.id !== finalActionId)
-          .map(c => c.id);
+        resourceIds = selectedCards.filter((c) => c.id !== finalActionId).map((c) => c.id);
       } else {
         // Fallback for Improvise (No specific action card)
         // Improvise usually treats all cards as resources and uses a "Basic Action" implicit card?
@@ -99,7 +97,7 @@ const App: React.FC = () => {
         // If Improvise, usually we pick one card as the "Action" (top card)?
         // Let's assume the first selected card is the action card if not specified.
         finalActionId = selectedCards[0].id;
-        resourceIds = selectedCards.slice(1).map(c => c.id);
+        resourceIds = selectedCards.slice(1).map((c) => c.id);
       }
 
       dispatchCommand({
@@ -119,7 +117,7 @@ const App: React.FC = () => {
 
   const handlePass = () => {
     if (!activeTokenId || !activeToken || phase !== 'planning') return;
-    dispatch({ type: 'pass', actingActor: activeToken.actorId });
+    dispatchCommand({ type: 'passIntent', actorId: activeToken.actorId });
   };
 
   return (
@@ -136,34 +134,34 @@ const App: React.FC = () => {
         }}
         onClearDefense={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'clearDefense', actingActor: activeTokenId });
+          dispatchCommand({ type: 'endDefenseIntent', actorId: activeTokenId });
         }}
         onReshuffle={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'reshuffle', actingActor: activeTokenId });
+          dispatchCommand({ type: 'reshuffleIntent', actorId: activeTokenId });
         }}
         onSelectToken={(id) => setActiveToken(id)}
         onAddConsequence={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'addConsequence', actingActor: activeTokenId });
+          dispatchCommand({ type: 'addConsequenceIntent', actorId: activeTokenId, severity: 1 });
         }}
         onRemoveConsequence={(cardId) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'removeConsequence', actingActor: activeTokenId, cardId });
+          dispatchCommand({ type: 'removeConsequenceIntent', actorId: activeTokenId, cardId });
         }}
         onAddStatusCard={(statusType, destination) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'addStatus', actingActor: activeTokenId, statusType, destination });
+          dispatchCommand({
+            type: 'addStatusIntent',
+            actorId: activeTokenId,
+            statusType,
+            destination,
+          });
         }}
         onRemoveStatusCard={(statusType) => {
           if (!activeTokenId) return;
-          // destination is required by IRemoveStatus but seemingly unused or implicit?
-          // Let's check generated type requirements.
-          // IRemoveStatus needs destination.
-          // In sidebar, maybe we know destination? Or we send a dummy value if backend ignores it?
-          // Previously it was removing based on type.
-          // Let's provide 'discard' as default or fix logic.
-          dispatch({ type: 'removeStatus', actingActor: activeTokenId, statusType, destination: 'discard' });
+          // removeStatusIntent with targetCardId undefined implies remove by type
+          dispatchCommand({ type: 'removeStatusIntent', actorId: activeTokenId, statusType });
         }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
@@ -206,19 +204,21 @@ const App: React.FC = () => {
             onPlayStack={handlePlayStack}
             onDiscard={(cards) =>
               activeTokenId &&
-              dispatch({
-                type: 'discardCards',
-                actingActor: activeTokenId,
+              dispatchCommand({
+                type: 'discardCardsIntent',
+                actorId: activeTokenId,
                 cardIds: cards.map((c) => c.id),
               })
             }
             onPass={handlePass}
-            onCancelPlan={() => activeTokenId && dispatch({ type: 'cancelPlan', actingActor: activeTokenId })}
+            onCancelPlan={() =>
+              activeTokenId && dispatchCommand({ type: 'cancelPlanIntent', actorId: activeTokenId })
+            }
             onReturnToDeck={(cards) =>
               activeTokenId &&
-              dispatch({
-                type: 'returnToDeck',
-                actingActor: activeTokenId,
+              dispatchCommand({
+                type: 'returnToDeckIntent',
+                actorId: activeTokenId,
                 cardIds: cards.map((c) => c.id),
               })
             }
@@ -234,10 +234,23 @@ const App: React.FC = () => {
         onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
         onRevealActions={() => {
-          dispatch({ type: 'startResolutionPhase' });
+          // Assuming activeTokenId is the "Actor" triggering this, or any valid ID.
+          // If no active token, we might need a fallback or block.
+          if (activeTokenId) {
+            dispatchCommand({ type: 'startResolutionIntent', actorId: activeTokenId });
+          } else {
+            // Fallback: pick first token? or just fail gracefully?
+            const first = tokens[0];
+            if (first) dispatchCommand({ type: 'startResolutionIntent', actorId: first.actorId });
+          }
         }}
         onEndRound={() => {
-          dispatch({ type: 'endRound' });
+          if (activeTokenId) {
+            dispatchCommand({ type: 'endRoundIntent', actorId: activeTokenId });
+          } else {
+            const first = tokens[0];
+            if (first) dispatchCommand({ type: 'endRoundIntent', actorId: first.actorId });
+          }
         }}
         readyCount={readyCount}
         totalCount={tokens.length}

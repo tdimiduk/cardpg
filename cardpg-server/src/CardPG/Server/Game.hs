@@ -23,8 +23,16 @@ import System.Random (StdGen)
 import CardPG.Core.Card (CoreCard)
 import CardPG.Core.Logic (GameM, runGameM)
 import CardPG.Core.Logic qualified as Logic
-import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..), ActorId (..))
-import CardPG.Core.State (ActorState (..), GameEnv, GameEvent (..), ActionStack (..), CardRegistry (..), materializeStack, CoreCardState (..))
+import CardPG.Core.Primitives (ActorId (..), CardInstanceId (..), ResourceType (..))
+import CardPG.Core.State
+  ( ActionStack (..)
+  , ActorState (..)
+  , CardRegistry (..)
+  , CoreCardState (..)
+  , GameEnv
+  , GameEvent (..)
+  , materializeStack
+  )
 import CardPG.Server.Types (BroadcastAction (..), Command (..), GameState (..), StateUpdate (..))
 
 emptyGame :: GameEnv -> StdGen -> GameState
@@ -48,15 +56,24 @@ runActorAction tid action game =
        in (Just events, newGame)
 
 processCommand ::
-  Command -> GameState -> (GameState, Maybe (ActorId, [BroadcastAction], ActorState))
+  Command -> GameState -> (GameState, [StateUpdate], [BroadcastAction])
 processCommand cmd game =
   case cmd of
     StartResolutionIntent tid ->
       let (newGame, broadcasts) = revealPlannedActions game
-          updatedActorState = Map.lookup tid (newGame.actors)
-       in ( newGame
-          , Just (tid, StartResolutionPhase : broadcasts, maybe (error "Actor missing after update") id updatedActorState)
-          )
+          -- We also need to send the 'StartResolution' signal itself
+          allBroadcasts = StartResolutionPhase : broadcasts
+       in (newGame, [], allBroadcasts)
+    EndRoundIntent _ ->
+      let (newGame, updates) = concludeRound game
+          -- We need to send 'EndRound' signal?
+          -- Legacy broadcast sent EndRound.
+          -- If we make EndRoundIntent a command, should we broadcast it?
+          -- The client might expect it to trigger animations.
+          -- But StateUpdates should handle the movement.
+          -- Let's broadcast EndRound as well for clients to clear logs etc.
+          allBroadcasts = [EndRound]
+       in (newGame, updates, allBroadcasts)
     _ ->
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)
@@ -70,25 +87,32 @@ processCommand cmd game =
                   (map (CardInstanceId . read . T.unpack) resourceIds)
               )
             CancelPlanIntent tid -> (tid, Logic.cancelPlan)
-
-
+            ReshuffleIntent tid -> (tid, Logic.reshuffleDeck)
+            AddStatusIntent tid st dest -> (tid, Logic.addStatus st dest)
+            RemoveStatusIntent tid st cid -> (tid, Logic.removeStatus st cid)
+            AddConsequenceIntent tid sev -> (tid, Logic.addConsequence sev)
+            RemoveConsequenceIntent tid cid -> (tid, Logic.removeConsequence cid)
+            DiscardCardsIntent tid cids -> (tid, Logic.discardCards cids)
+            ReturnToDeckIntent tid cids -> (tid, Logic.returnCardsToDeck cids)
+            PassIntent tid -> (tid, Logic.passAction)
+            _ -> error "Unreachable" -- Handled above
           (maybeEvents, newGame) = runActorAction targetId action game
        in case maybeEvents of
-            Nothing -> (game, Nothing)
+            Nothing -> (game, [], []) -- Actor missing or no action
             Just events ->
               let
-                  -- Retrieve updated actor state safely
-                  updatedActorState = case Map.lookup targetId (newGame.actors) of
-                    Just a -> a
-                    Nothing -> error "Actor missing after update"
+                -- Retrieve updated actor state safely
+                updatedActorState = case Map.lookup targetId (newGame.actors) of
+                  Just a -> a
+                  Nothing -> error "Actor missing after update"
 
-                  -- Registry is on the actor
-                  registry = updatedActorState.coreState.registry
-                  broadcastActions = eventsToBroadcastActions registry targetId events
+                -- Registry is on the actor
+                registry = updatedActorState.coreState.registry
+                broadcastActions = eventsToBroadcastActions registry targetId events
 
-               in ( newGame
-                  , Just (targetId, broadcastActions, updatedActorState)
-                  )
+                stateUpdates = [StateUpdate targetId updatedActorState]
+               in
+                (newGame, stateUpdates, broadcastActions)
 
 concludeRound :: GameState -> (GameState, [StateUpdate])
 concludeRound game = foldl step (game, []) (Map.keys (game.actors))
@@ -120,11 +144,11 @@ revealPlannedActions game = foldl step (game, []) (Map.keys (game.actors))
        in case maybeEvents of
             Nothing -> (newG, broadcasts)
             Just events ->
-               let actorState = case Map.lookup actorId (newG.actors) of
-                      Just a -> a
-                      Nothing -> error "Actor missing logic error"
-                   registry = actorState.coreState.registry
-                   newBroadcasts = eventsToBroadcastActions registry actorId events
+              let actorState = case Map.lookup actorId (newG.actors) of
+                    Just a -> a
+                    Nothing -> error "Actor missing logic error"
+                  registry = actorState.coreState.registry
+                  newBroadcasts = eventsToBroadcastActions registry actorId events
                in (newG, broadcasts ++ newBroadcasts)
 
 -- | Helper to map internal GameEvents to Protocol BroadcastActions

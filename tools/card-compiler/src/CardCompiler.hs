@@ -25,7 +25,6 @@ import CardCompiler.Parser
   , convertCard
   , passiveParser
   )
-import CardCompiler.VttExporter qualified as Vtt
 import CardPG.Core.Card (ActorDefinitionT (..), CoreCard, ItemCard, NatureCard, NatureCardT (..))
 import CardPG.Core.NonEmptyText (mkNonEmptyText)
 
@@ -128,12 +127,11 @@ armorDefenseMonster (Just HeavyArmor) = 4
 
 updateMonsterNature :: NatureCard -> NatureCard
 updateMonsterNature n@NatureCard{passive = mPassive} =
-  let def = maybe 0 (const 2) mPassive
-   in n
-        { defense = Just def
-        , resilience = Just 2
-        , passive = newPassive
-        }
+  n
+    { defense = Just def
+    , resilience = Just 2
+    , passive = newPassive
+    }
   where
     (def, newPassive) = case parseMaybe passiveParser =<< mPassive of
       Nothing -> (2, mPassive)

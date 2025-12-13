@@ -9,10 +9,7 @@ import {
   Token,
   ResourceType,
 } from '../../types';
-import {
-  ActorState as ServerActorState,
-  CoreCard as GenCoreCard,
-} from '../../generated/types';
+import { ActorState as ServerActorState, CoreCard as GenCoreCard } from '../../generated/types';
 
 import { ACTOR_COLORS } from '../../theme';
 import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
@@ -207,48 +204,50 @@ export const createActorSlice: StateCreator<
       if (planned) {
         const actionCardId = planned.actionCard;
         const resourceIds = planned.resources as string[];
-        
+
         const actionDef = registry[actionCardId];
         if (actionDef) {
-           const actionCard = { ...actionDef, id: actionCardId };
-           const resources = resourceIds.map(id => {
-               const def = registry[id];
-               return def ? { ...def, id } : { ...actionDef, id, name: 'Unknown', type: 'coreCard' } as CoreCard; 
-               // Fallback is quick hack, ideally hydrate properly using hydrateCards
-           });
-           
-           // Re-hydrate strictly using hydrateCards helper
-           const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
+          const actionCard = { ...actionDef, id: actionCardId };
+          const resources = resourceIds.map((id) => {
+            const def = registry[id];
+            return def
+              ? { ...def, id }
+              : ({ ...actionDef, id, name: 'Unknown', type: 'coreCard' } as CoreCard);
+            // Fallback is quick hack, ideally hydrate properly using hydrateCards
+          });
 
-           // Infer Action logic for UI
-           let color: ResourceType = RESOURCE_TYPES.RED; // Default
-           let modifier = 0;
-           let targetDefense: ResourceType | undefined = undefined;
-           
-           const rules = actionCard.rules || [];
-           const attackRule = rules.find(r => r.type === 'attack');
-           const generalRule = rules.find(r => r.type === 'general');
-           
-           if (attackRule && attackRule.type === 'attack') {
-               color = attackRule.data.power.source;
-               modifier = attackRule.data.power.modifier;
-               targetDefense = attackRule.data.resistedBy;
-           } else if (generalRule && generalRule.type === 'general') {
-               color = generalRule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
-           }
+          // Re-hydrate strictly using hydrateCards helper
+          const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
 
-           state.plannedActions[targetId] = {
-             actorId: targetId,
-             actorName: serverState.name,
-             cards: allCards,
-             strengthColor: color,
-             modifier: modifier,
-             actionName: actionCard.name,
-             targetDefense,
-           };
+          // Infer Action logic for UI
+          let color: ResourceType = RESOURCE_TYPES.RED; // Default
+          let modifier = 0;
+          let targetDefense: ResourceType | undefined = undefined;
+
+          const rules = actionCard.rules || [];
+          const attackRule = rules.find((r) => r.type === 'attack');
+          const generalRule = rules.find((r) => r.type === 'general');
+
+          if (attackRule && attackRule.type === 'attack') {
+            color = attackRule.data.power.source;
+            modifier = attackRule.data.power.modifier;
+            targetDefense = attackRule.data.resistedBy;
+          } else if (generalRule && generalRule.type === 'general') {
+            color = generalRule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
+          }
+
+          state.plannedActions[targetId] = {
+            actorId: targetId,
+            actorName: serverState.name,
+            cards: allCards,
+            strengthColor: color,
+            modifier: modifier,
+            actionName: actionCard.name,
+            targetDefense,
+          };
         }
       } else {
-        // If server says no plan, ensure we don't have one (unless we are locally optimistically planning? 
+        // If server says no plan, ensure we don't have one (unless we are locally optimistically planning?
         // Syncing strictly is safer to avoid desync state sticking around).
         delete state.plannedActions[targetId];
       }

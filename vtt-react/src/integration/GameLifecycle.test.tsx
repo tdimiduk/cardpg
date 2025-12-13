@@ -76,6 +76,10 @@ describe('Game Lifecycle Integration', () => {
 
       // Wait for Sidebar to update
       const drawBtn = await screen.findByRole('button', { name: /Draw 1/i }, { timeout: 3000 });
+      // Draw 4 cards to ensure we can pay for costs (e.g. Cost 2 needs 1 action + 2 resources = 3 cards)
+      fireEvent.click(drawBtn);
+      fireEvent.click(drawBtn);
+      fireEvent.click(drawBtn);
       fireEvent.click(drawBtn);
 
       // Plan move
@@ -121,12 +125,20 @@ describe('Game Lifecycle Integration', () => {
       // Select first card in hand
       const cards = await screen.findAllByTestId('card');
       if (cards.length > 0) {
+        cards.forEach((c, i) => console.log(`Card ${i}:`, c.textContent));
+        // Select up to 3 cards
         fireEvent.click(cards[0]);
         // Click "Plan [CardName]" button (was Play/Cast)
         // The button text changes based on selection.
         // We look for a button containing "Plan"
-        const planActionBtn = await screen.findByText(/Plan /i);
-        fireEvent.click(planActionBtn);
+        const planByttons = await screen.findAllByRole('button', { name: /Plan /i });
+        const enabledButtons = planByttons.filter((b) => !b.hasAttribute('disabled'));
+
+        if (enabledButtons.length > 0) {
+           fireEvent.click(enabledButtons[0]);
+        } else {
+           throw new Error('No enabled Plan buttons found');
+        }
 
         // Verify plan is locked
         await screen.findByText(/Plan Locked/i);

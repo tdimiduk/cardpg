@@ -20,6 +20,7 @@ const BaseCard: React.FC<{
 }> = ({ card, children, selected, onClick, scale = 1 }) => {
   return (
     <div
+      data-testid="card"
       onClick={onClick}
       className={`
         relative bg-slate-200 text-slate-900 rounded-lg shadow-xl overflow-hidden select-none

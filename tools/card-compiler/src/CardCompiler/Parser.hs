@@ -114,7 +114,6 @@ convertCard RawCard{name = rawName, flavor = rawFlavor, cost = rawCost, action =
           tags = Nothing
           traits = keywordProvide >>= NE.nonEmpty . filter (not . T.null) . map T.strip . T.splitOn ","
           flavor = rawFlavor >>= simpleString
-          id = Nothing
           weight = Nothing
           value = Nothing
           defense = Nothing
@@ -125,10 +124,12 @@ convertCard RawCard{name = rawName, flavor = rawFlavor, cost = rawCost, action =
         (Nothing, Nothing, Nothing) ->
           if Just (T.toLower (getRawText validName)) == (T.toLower <$> actor)
             then
-              let dsl = NatureCard
-                          { specialDefend = parseSpecialDefend red yellow blue
-                          , ..
-                          } :: NatureCardDSL
+              let dsl =
+                    NatureCard
+                      { specialDefend = parseSpecialDefend red yellow blue
+                      , ..
+                      } ::
+                      NatureCardDSL
                in pure $ PNature (compileNatureCard dsl)
             else
               let (def, bur, pas) = case rawAction of
@@ -138,9 +139,7 @@ convertCard RawCard{name = rawName, flavor = rawFlavor, cost = rawCost, action =
                         Just (ParsedPassive Nothing remainder) -> (Nothing, Nothing, nonEmptyText remainder)
                         _ -> (Nothing, Nothing, nonEmptyText rawAction)
                     Nothing -> (Nothing, Nothing, Nothing)
-                  passive = pas
-                  defense = def
-                  dsl = ItemCard{burden = bur, ..} :: ItemCardDSL
+                  dsl = ItemCard{burden = bur, defense = def, passive = pas, ..} :: ItemCardDSL
                in pure $ PItem (compileItemCard dsl)
         (Just r, Just y, Just b) -> do
           let stats = Stats r y b

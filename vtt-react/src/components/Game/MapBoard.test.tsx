@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
@@ -8,7 +7,7 @@ import { Token, ActorState, TokenType } from '../../types';
 describe('MapBoard', () => {
   const mockUpdateToken = vi.fn();
   const mockSetActiveToken = vi.fn();
-  
+
   const mockToken: Token = {
     id: 'token-1',
     actorId: 'actor-1',
@@ -23,12 +22,12 @@ describe('MapBoard', () => {
     color: '#ff0000',
     type: TokenType.PC,
     deck: {
-        hand: [],
-        drawPile: [],
-        discardPile: [],
-        flippedPile: [],
-        equipped: [],
-        consequences: [],
+      hand: [],
+      drawPile: [],
+      discardPile: [],
+      flippedPile: [],
+      equipped: [],
+      consequences: [],
     },
     plannedMove: undefined,
   };
@@ -62,25 +61,27 @@ describe('MapBoard', () => {
 
     // Simulate Drag
     fireEvent.mouseDown(tokenElement, { clientX: 100, clientY: 100 });
-    
+
     // Move enough to change grid position (Grid size is 64)
     // Move from (2,2) -> 128px, 128px.
     // Move to (3,3) -> 192px, 192px.
     // Delta +64
     fireEvent.mouseMove(boardElement, { clientX: 164, clientY: 164 }); // +64
-    
+
     fireEvent.mouseUp(boardElement, { clientX: 164, clientY: 164 });
 
     expect(mockUpdateToken).toHaveBeenCalledTimes(1);
-    expect(mockUpdateToken).toHaveBeenCalledWith(expect.objectContaining({
-      x: 3, // 2 + 1 (+64px / 64) = 3?
-            // Initial token X=2. 
-            // In MapBoard:
-            // deltaX = 164 - 100 = 64.
-            // setDragPreview: initialTokenX * 64 + delta = 2*64 + 64 = 192.
-            // onMouseUp: newGridX = round(192 / 64) = 3.
-            // So X should be 3.
-      y: 3
-    }));
+    expect(mockUpdateToken).toHaveBeenCalledWith(
+      expect.objectContaining({
+        x: 3, // 2 + 1 (+64px / 64) = 3?
+        // Initial token X=2.
+        // In MapBoard:
+        // deltaX = 164 - 100 = 64.
+        // setDragPreview: initialTokenX * 64 + delta = 2*64 + 64 = 192.
+        // onMouseUp: newGridX = round(192 / 64) = 3.
+        // So X should be 3.
+        y: 3,
+      }),
+    );
   });
 });

@@ -82,7 +82,8 @@ $(deriveJSON cardpgJsonDef ''CoreCardState)
 data TableState = TableState
   { assets :: Map CardInstanceId AssetState
   , registry :: CardRegistry TableCard
-  -- ^ The Registry (Source of Truth for Table Cards)
+  , consequences :: [CardInstanceId]
+  , consequenceRegistry :: CardRegistry ConsequenceCard
   }
   deriving stock (Show, Eq, Generic)
 
@@ -139,5 +140,7 @@ $(deriveJSON cardpgJsonDef ''GameEvent)
 
 data GameEnv = GameEnv
   { fatigueCardTemplate :: CoreCard
+  , statusCardTemplates :: Map Text CoreCard
+  , consequenceCardTemplates :: Map Text ConsequenceCard
   }
   deriving stock (Show, Eq, Generic)

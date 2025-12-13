@@ -4,6 +4,7 @@
 
 module TypeScriptInstances where
 
+-- Force rebuild
 import Data.Aeson (Options (..))
 import Data.Aeson.TypeScript.TH
 import Data.List.NonEmpty (NonEmpty)
@@ -29,8 +30,8 @@ import CardPG.Core.Card qualified as CC
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives
-  ( CardInstanceId
-  , ActorId
+  ( ActorId
+  , CardInstanceId
   , Difficulty
   , EquipSlot (..)
   , ResourceType (..)
@@ -49,16 +50,16 @@ import CardPG.Core.RuleDefs hiding
   , TriggerDef
   )
 import CardPG.Core.State
-  ( ActorState (..)
+  ( ActionStack (..)
+  , ActorState (..)
   , AssetState (..)
   , CoreCardState (..)
   , CorePlayState (..)
   , GameEvent (..)
-  , ActionStack (..)
+  , RealizedAttack (..)
   , SpatialState (..)
   , TableCard (..)
   , TableState (..)
-  , RealizedAttack (..)
   )
 import CardPG.Server.Types
   ( BroadcastAction (..)
@@ -112,9 +113,6 @@ $(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
 $(deriveTypeScript cardpgJsonDef ''ActionStack)
 $(deriveTypeScript cardpgJsonDef ''RealizedAttack)
-
-
-
 
 -- Helper for creating splices
 -- Using runIO or just simple do block

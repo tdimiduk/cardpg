@@ -16,10 +16,10 @@ import CardPG.Core.DSL.Printer (prettyRule)
 import ArbitraryInstances ()
 import ConsequenceParsingTest (test_consequenceParsing)
 import ReadmeExamplesTest (test_readmeExamples)
+import ResolutionTests (test_resolutionCycle)
 import RuleJsonTest (prop_ruleJsonParsing)
 import StateTests (test_stateTests)
 import StatusParsingTest (test_statusParsing)
-import ResolutionTests (test_resolutionCycle)
 
 main :: IO ()
 main = defaultMain tests
