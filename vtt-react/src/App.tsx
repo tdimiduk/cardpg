@@ -118,8 +118,8 @@ const App: React.FC = () => {
   };
 
   const handlePass = () => {
-    if (!activeTokenId || phase !== 'planning') return;
-    dispatch({ type: 'pass', actingActor: activeTokenId });
+    if (!activeTokenId || !activeToken || phase !== 'planning') return;
+    dispatch({ type: 'pass', actingActor: activeToken.actorId });
   };
 
   return (
