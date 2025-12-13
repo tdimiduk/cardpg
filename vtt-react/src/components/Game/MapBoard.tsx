@@ -68,7 +68,10 @@ export const MapBoard: React.FC<MapBoardProps> = ({
       if (token) {
         const finalX = Math.max(0, newGridX);
         const finalY = Math.max(0, newGridY);
-        onUpdateToken({ ...token, x: finalX, y: finalY });
+        // Only update if position changed
+        if (finalX !== token.x || finalY !== token.y) {
+          onUpdateToken({ ...token, x: finalX, y: finalY });
+        }
       }
     }
     setDraggingToken(null);
