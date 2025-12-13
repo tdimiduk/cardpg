@@ -26,4 +26,3 @@ describe('actorFactory', () => {
     expect(actor.name).toBe('My Custom Hero');
   });
 });
-

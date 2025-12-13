@@ -45,8 +45,7 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
     dummyItem :: ItemCard
     dummyItem =
       ItemCard
-        { id = Nothing
-        , name = unsafeNonEmptyText "Heavy Armor"
+        { name = unsafeNonEmptyText "Heavy Armor"
         , tags = Nothing
         , flavor = Nothing
         , weight = Nothing
@@ -68,6 +67,10 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
       ActorState
         { coreState = coreSt
         , tableState = tableSt
+        , name = "Dummy"
+        , actorType = "NPC"
+        , spatial = SpatialState 0 0 1 Nothing
+        , plannedMove = Nothing
         }
 
     initialDiscardSize = length (coreSt ^. #discard)

@@ -30,7 +30,7 @@ import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.State (GameEnv(..), GameEvent(..), ActorState)
 import CardPG.Core.Primitives (TargetId(..))
 import qualified CardPG.Core.Logic as Logic
-import CardPG.Server.Game (GameState(..), runActorAction, processCommand, resolveRound)
+import CardPG.Server.Game (GameState(..), runActorAction, processCommand, concludeRound, revealPlannedActions)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
 
@@ -134,21 +134,31 @@ talk client state = forever $ do
             T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
 
             -- Update log and broadcast
-            (currentClients, currentGs, movesUpdates) <- modifyMVar state $ \s -> do
+            (currentClients, currentGs, movesUpdates, extraBroadcasts) <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
                 -- Special handling for EndRound
                 case payload of
                      EndRound -> do
                         T.putStrLn "Resolving round..."
-                        let (newGame, updates) = CardPG.Server.Game.resolveRound (s'.gameState)
+                        let (newGame, updates) = CardPG.Server.Game.concludeRound (s'.gameState)
                         T.putStrLn $ "Round resolved. Updates: " <> T.pack (show $ length updates)
                         let s'' = s' { gameState = newGame }
-                        return (s'', (s''.clients, s''.gameState, updates))
-                     _ -> return (s', (s'.clients, s'.gameState, []))
+                        return (s'', (s''.clients, s''.gameState, updates, []))
+                     StartResolutionPhase -> do
+                        T.putStrLn "Starting resolution phase..."
+                        let (newGame, broadcasts) = CardPG.Server.Game.revealPlannedActions (s'.gameState)
+                        T.putStrLn $ "Revealed actions: " <> T.pack (show $ length broadcasts)
+                        let s'' = s' { gameState = newGame }
+                        return (s'', (s''.clients, s''.gameState, [], broadcasts))
+                     _ -> return (s', (s'.clients, s'.gameState, [], []))
 
             -- Broadcast to ALL (was others)
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState
+
+            -- If there were extra broadcasts (e.g. Revealed Actions)
+            forM_ extraBroadcasts $ \act ->
+                broadcast (BroadcastMessage (client.clientId) act) broadcastState
 
             -- If there were updates from EndRound, broadcast them to ALL (batched)
             case movesUpdates of
@@ -176,17 +186,23 @@ talkLoop client state = do
             T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
             
             -- Update log and broadcast
-            (currentClients, currentGs, movesUpdates) <- modifyMVar state $ \s -> do
+            (currentClients, currentGs, movesUpdates, extraBroadcasts) <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
                 -- Special handling for EndRound
                 case payload of
                      EndRound -> do
                         T.putStrLn "Resolving round..."
-                        let (newGame, updates) = CardPG.Server.Game.resolveRound (s'.gameState)
+                        let (newGame, updates) = CardPG.Server.Game.concludeRound (s'.gameState)
                         T.putStrLn $ "Round resolved. Updates: " <> T.pack (show $ length updates)
                         let s'' = s' { gameState = newGame }
-                        return (s'', (s''.clients, s''.gameState, updates))
-                     _ -> return (s', (s'.clients, s'.gameState, []))
+                        return (s'', (s''.clients, s''.gameState, updates, []))
+                     StartResolutionPhase -> do
+                        T.putStrLn "Starting resolution phase..."
+                        let (newGame, broadcasts) = CardPG.Server.Game.revealPlannedActions (s'.gameState)
+                        T.putStrLn $ "Revealed actions: " <> T.pack (show $ length broadcasts)
+                        let s'' = s' { gameState = newGame }
+                        return (s'', (s''.clients, s''.gameState, [], broadcasts))
+                     _ -> return (s', (s'.clients, s'.gameState, [], []))
 
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
             broadcast (BroadcastMessage (client.clientId) payload) broadcastState

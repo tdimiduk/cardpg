@@ -21,7 +21,7 @@ describe('useGameAction', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockState = {
       commitPlan: mockCommitPlan,
       playImmediate: mockPlayImmediate,

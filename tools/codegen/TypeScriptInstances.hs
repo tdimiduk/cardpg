@@ -53,10 +53,10 @@ import CardPG.Core.State
   , CoreCardState (..)
   , CorePlayState (..)
   , GameEvent (..)
-  , TableCard (..)
+  , PlannedAction (..)
+  , SpatialState (..)
   , TableCard (..)
   , TableState (..)
-  , SpatialState (..)
   )
 import CardPG.Server.Types
   ( BroadcastAction (..)
@@ -105,6 +105,7 @@ $(deriveTypeScript cardpgJsonDef ''Stats)
 $(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
+$(deriveTypeScript cardpgJsonDef ''PlannedAction)
 
 -- Helper for creating splices
 -- Using runIO or just simple do block

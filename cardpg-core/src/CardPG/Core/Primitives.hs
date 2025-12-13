@@ -1,6 +1,7 @@
 module CardPG.Core.Primitives
   ( CardInstanceId (..)
   , TargetId (..)
+  , ActorId (..)
   , CardKind (..)
   , EquipSlot (..)
   , ResourceType (..)
@@ -36,6 +37,15 @@ instance Uniform TargetId where
   uniformM g = TargetId <$> uniformM g
 
 $(deriveJSON cardpgJsonDef ''TargetId)
+
+newtype ActorId = ActorId UUID
+  deriving stock (Show, Eq, Ord)
+  deriving newtype (FromJSONKey, ToJSONKey)
+
+instance Uniform ActorId where
+  uniformM g = ActorId <$> uniformM g
+
+$(deriveJSON cardpgJsonDef ''ActorId)
 
 -- | Discriminator for Logic
 data CardKind = KindCore | KindTable

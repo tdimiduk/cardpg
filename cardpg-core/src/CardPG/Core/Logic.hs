@@ -1,3 +1,6 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedRecordDot #-}
+
 module CardPG.Core.Logic
   ( GameM (..)
   , runGameM
@@ -6,29 +9,44 @@ module CardPG.Core.Logic
   , flipCardToDefense
   , planMove
   , applyPlannedMove
+  , planAction
+  , cancelPlan
+  , revealPlannedActions
+  , discardPlannedActions
+  , attackAction
+  , endDefense
   ) where
 
 import Control.Monad (replicateM)
 import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
 import Control.Monad.State (MonadState, State, modify, state)
 import Control.Monad.Trans.Class (lift)
+import Data.List (partition)
 import Data.Map.Strict qualified as Map
+import Data.Text (Text)
 import Optics
 import System.Random (RandomGen, uniform)
 
-import CardPG.Core.Card (ItemCardT (..))
+import CardPG.Core.Card (CoreCard, CoreCardT (..), ItemCardT (..), Stats (..))
+import CardPG.Core.Primitives (CardInstanceId, ResourceType (..), StackPower (..))
+import CardPG.Core.RichText (RichString)
+import CardPG.Core.RuleDefs (AttackDefT (..), DSLRule (..), RuleT (RuleAttack))
 import CardPG.Core.State
-  ( ActorState (..)
+  ( ActionStack (..)
+  , ActionStackMaterialized (..)
+  , ActorState (..)
   , AssetState (..)
+  , RealizedAttack (..)
   , CoreCardState (..)
   , GameEnv (..)
   , GameEvent (..)
-  , TableCard (..)
+  , SpatialState (..)
   , TableCard (..)
   , TableState (..)
-  , SpatialState (..)
+  , actionStack
   )
 import CardPG.Core.Util (shuffleListM)
+import Data.List.NonEmpty (toList)
 
 -- | The Game Monad
 -- Stack:
@@ -66,21 +84,19 @@ calculateTotalBurden = do
   let burden = sum [b | item <- equippedItems, let b = maybe 0 id (item ^. #burden)]
   return burden
 
+createCards :: (RandomGen g) => CoreCard -> Int -> GameM g [CardInstanceId]
+createCards template n = do
+  newIds <- replicateM n $ liftRandom uniform
+  modify $ #coreState % #registry %~ (`Map.union` Map.fromList [(cid, template) | cid <- newIds])
+  tell [CardsCreated newIds]
+  return newIds
+
 performFatigueCycle :: (RandomGen g) => GameM g ()
 performFatigueCycle = do
   env <- ask
   burden <- calculateTotalBurden
-  let fatigueTemplate = env ^. #fatigueCardTemplate
 
-  let countNeeded = 2 + burden
-
-  newFatigueIds <- replicateM countNeeded $ liftRandom uniform
-
-  let newRegistryEntries = Map.fromList [(cid, fatigueTemplate) | cid <- newFatigueIds]
-
-  tell [CardsCreated newFatigueIds]
-
-  modify $ #coreState % #registry %~ (`Map.union` newRegistryEntries)
+  newFatigueIds <- createCards (env ^. #fatigueCardTemplate) (2 + burden)
 
   currentDiscard <- use (#coreState % #discard)
   modify $ #coreState % #discard .~ []
@@ -90,37 +106,32 @@ performFatigueCycle = do
   modify $ #coreState % #deck .~ newDeck
   tell [DeckShuffled]
 
-drawCard :: (RandomGen g) => GameM g ()
-drawCard = do
+deckCardTo ::
+  (RandomGen g) =>
+  Lens' CoreCardState [CardInstanceId] -> (CardInstanceId -> GameEvent) -> GameM g ()
+deckCardTo dst gameLog = do
   currentDeck <- use (#coreState % #deck)
   case currentDeck of
     [] -> do
       performFatigueCycle
-      drawCard
+      deckCardTo dst gameLog
     (top : rest) -> do
       modify $ #coreState % #deck .~ rest
-      modify $ #coreState % #hand %~ (top :)
-      tell [CardDrawn top]
+      modify $ #coreState % dst %~ (top :)
+      tell [gameLog top]
 
+drawCard :: (RandomGen g) => GameM g ()
+drawCard = deckCardTo #hand CardDrawn
 
 flipCardToDefense :: (RandomGen g) => GameM g ()
-flipCardToDefense = do
-  currentDeck <- use (#coreState % #deck)
-  case currentDeck of
-    [] -> do
-      performFatigueCycle
-      flipCardToDefense
-    (top : rest) -> do
-      modify $ #coreState % #deck .~ rest
-      modify $ #coreState % #defending %~ (top :)
-      tell [CardDefended top]
+flipCardToDefense = deckCardTo #defending CardDefended
 
-planMove :: (RandomGen g) => Int -> Int -> GameM g ()
+planMove :: Int -> Int -> GameM g ()
 planMove x y = do
   modify $ #plannedMove ?~ (x, y)
   tell [MovePlanned (x, y)]
 
-applyPlannedMove :: (RandomGen g) => GameM g ()
+applyPlannedMove :: GameM g ()
 applyPlannedMove = do
   maybePlan <- use #plannedMove
   case maybePlan of
@@ -130,3 +141,83 @@ applyPlannedMove = do
       modify $ #spatial % lens (.posY) (\s v -> s{posY = v}) .~ newY
       modify $ #plannedMove .~ Nothing
       tell [ActorMoved (newX, newY)]
+
+planAction :: CardInstanceId -> [CardInstanceId] -> GameM g ()
+planAction actionCardId resourceIds = do
+  currentHand <- use (#coreState % #hand)
+  let allIds = actionCardId : resourceIds
+      (found, remaining) = partition (`elem` allIds) currentHand
+      plan = ActionStack actionCardId resourceIds
+
+  -- Validate all cards are in hand
+  if length found == length allIds
+    then do
+      modify $ #coreState % #hand .~ remaining
+      modify $ #coreState % #planned ?~ plan
+      tell [ActionPlanned plan]
+    else tell [IllegalAction plan (Just "cards not in hand")]
+
+plannedActionTo ::
+  Lens' CoreCardState [CardInstanceId] -> (ActionStack -> GameEvent) -> GameM g ()
+plannedActionTo dst gameLog = do
+  maybePlan <- use (#coreState % #planned)
+  case maybePlan of
+    Nothing -> return ()
+    Just plan -> do
+      modify $ #coreState % #planned .~ Nothing
+      modify $ #coreState % dst %~ ((actionStack plan) ++)
+      tell [gameLog plan]
+
+cancelPlan :: GameM g ()
+cancelPlan = plannedActionTo #hand PlanCanceled
+
+revealPlannedActions :: GameM g ()
+revealPlannedActions = do
+  maybePlan <- use (#coreState % #planned)
+  case maybePlan of
+    Nothing -> return ()
+    Just plan -> tell [ActionRevealed plan]
+
+discardPlannedActions :: GameM g ()
+discardPlannedActions = plannedActionTo #discard PlanCanceled
+
+endDefense :: GameM g ()
+endDefense = do
+  stack <- use (#coreState % #defending)
+  case stack of
+    [] -> return ()
+    _ -> do
+      modify $ #coreState % #defending .~ []
+      modify $ #coreState % #discard %~ (stack ++)
+      tell [DefenseEnded stack]
+
+getAttackRule :: CoreCard -> Either Text (AttackDefT RichString)
+getAttackRule card = case card.rules of
+  Nothing -> Left "no attack rule"
+  Just rules -> case [r | RuleAttack r <- map (.unDSLRule) (toList rules)] of
+    [] -> Left "no attack rule"
+    [r] -> Right r
+    _ -> Left "cards with multiple attack rules are not implemented yet"
+
+stackPower :: ActionStackMaterialized -> StackPower -> Int
+stackPower stack power =
+  let
+    allCards = stack.actionCard : stack.resources
+    relevantStat c = case power.source of
+      Red -> c.stats.red
+      Yellow -> c.stats.yellow
+      Blue -> c.stats.blue
+    rawTotal = sum (map relevantStat allCards)
+   in
+    rawTotal + power.modifier
+
+attackAction :: ActionStackMaterialized -> Either Text RealizedAttack
+attackAction stack = case getAttackRule (stack.actionCard) of
+  Left err -> Left err
+  Right attackRule ->
+    Right $
+      RealizedAttack
+        { attackCard = stack.actionCardId
+        , attackStrength = stackPower stack attackRule.power
+        , defenseColor = attackRule.resistedBy
+        }

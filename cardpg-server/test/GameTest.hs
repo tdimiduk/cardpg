@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 
 module GameTest where
 
@@ -12,12 +13,12 @@ import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=), assertBool)
 
 import CardPG.Core.Logic (drawCard)
-import CardPG.Core.Primitives (CardInstanceId(..), TargetId(..))
-import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..))
+import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..))
+import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..), SpatialState(..))
 import CardPG.Core.Card (CoreCard(..), CoreCardT(..))
 
-import CardPG.Server.Game (GameState(..), emptyGame, addActor, runActorAction, processCommand)
-import CardPG.Server.Types (Command(..), BroadcastAction(..))
+import CardPG.Server.Game (GameState(..), emptyGame, addActor, runActorAction, processCommand, concludeRound)
+import CardPG.Server.Types (Command(..), BroadcastAction(..), StateUpdate(..))
 
 test_game :: TestTree
 test_game = testGroup "Server Game Engine"
@@ -26,7 +27,7 @@ test_game = testGroup "Server Game Engine"
       let gen = mkStdGen 0
       let game0 = emptyGame env gen
       
-      let actorId = TargetId (read "00000000-0000-0000-0000-000000000001")
+      let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
       let deck = [CardInstanceId (read "00000000-0000-0000-0000-000000000002")]
       let actorState = emptyActorState & #coreState % #deck .~ deck
       
@@ -54,7 +55,7 @@ test_game = testGroup "Server Game Engine"
       let gen = mkStdGen 1
       let game0 = emptyGame env gen
       
-      let actorId = TargetId (read "00000000-0000-0000-0000-000000000001")
+      let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
       let card1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       let card2 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
       let deck = [card1, card2]
@@ -70,7 +71,7 @@ test_game = testGroup "Server Game Engine"
         Just (tid, actions, st) -> do
           tid @?= actorId
           length actions @?= 1
-          head actions @?= DrawCards (Data.Text.pack $ show $ let TargetId u = actorId in u) 1
+          head actions @?= DrawCards actorId 1
           (st ^. #coreState % #hand) @?= [card1]
           (st ^. #coreState % #deck) @?= [card2]
       
@@ -92,7 +93,7 @@ test_game = testGroup "Server Game Engine"
       let gen = mkStdGen 2
       let game0 = emptyGame env gen
       
-      let actorId = TargetId (read "00000000-0000-0000-0000-000000000001")
+      let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
       let actorState = emptyActorState -- Empty deck, empty discard
       let game1 = addActor actorId actorState game0
       
@@ -117,6 +118,40 @@ test_game = testGroup "Server Game Engine"
           
           -- Verify Deck has remaining cards (2 default - 1 drawn = 1)
           length (st ^. #coreState % #deck) @?= 1
+
+  , testCase "Round Conclusion (concludeRound)" $ do
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
+      let gen = mkStdGen 3
+      let game0 = emptyGame env gen
+      
+      let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
+      let card1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      let deck = [] -- Empty deck
+      let defending = [card1] -- Actor has active defense
+      
+      let actorState = emptyActorState 
+            & #coreState % #defending .~ defending
+            & #coreState % #discard .~ []
+            
+      let game1 = addActor actorId actorState game0
+      
+      -- Run concludeRound
+      let (game2, updates) = concludeRound game1
+      
+      -- Verify Updates
+      length updates @?= 1
+      let StateUpdate { updateActorId = uid } = head updates
+      uid @?= actorId
+      
+      -- Verify Actor State in Game
+      let actorSt' = game2 ^. #actors % at actorId
+      case actorSt' of
+        Nothing -> assertBool "Actor state lost" False
+        Just st -> do
+           -- Defense should be cleared
+           (st ^. #coreState % #defending) @?= []
+           -- Card should be in discard
+           (st ^. #coreState % #discard) @?= [card1]
 
   ]
 
@@ -148,9 +183,14 @@ emptyActorState = ActorState
       , defending = []
       , inPlay = Map.empty
       , registry = Map.empty
+      , planned = Nothing
       }
   , tableState = TableState
       { assets = Map.empty
       , registry = Map.empty
       }
+  , name = "Tester"
+  , actorType = "PC"
+  , spatial = SpatialState 0 0 1 Nothing
+  , plannedMove = Nothing
   }

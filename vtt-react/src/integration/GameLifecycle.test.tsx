@@ -14,7 +14,7 @@ describe('Game Lifecycle Integration', () => {
     render(
       <WebSocketProvider url={TEST_WS_URL}>
         <App />
-      </WebSocketProvider>
+      </WebSocketProvider>,
     );
 
     // 1. Wait for connection and initial state
@@ -22,7 +22,7 @@ describe('Game Lifecycle Integration', () => {
       () => {
         expect(screen.getByText(/Phase: PLANNING/i)).toBeInTheDocument();
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
 
     // Wait for tokens to appear.
@@ -30,7 +30,7 @@ describe('Game Lifecycle Integration', () => {
       () => {
         expect(screen.getAllByTestId('token-entity').length).toBeGreaterThan(0);
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
 
     const tokens = screen.getAllByTestId('token-entity');
@@ -51,25 +51,27 @@ describe('Game Lifecycle Integration', () => {
 
       // Wait for store update
       await waitFor(() => {
-         const activeId = useGameStore.getState().activeTokenId;
-         expect(activeId).toBeTruthy();
+        const activeId = useGameStore.getState().activeTokenId;
+        expect(activeId).toBeTruthy();
       });
 
       console.log(`State after click: activeTokenId=${useGameStore.getState().activeTokenId}`);
-      
+
       const state = useGameStore.getState();
       const activeTokenId = state.activeTokenId;
-      const activeToken = state.tokens.find(t => t.id === activeTokenId);
-      
+      const activeToken = state.tokens.find((t) => t.id === activeTokenId);
+
       if (activeToken) {
-          // Record expected position (current + 1 grid unit)
-          expectedPositions[activeToken.id] = { 
-              x: activeToken.x + 1, 
-              y: activeToken.y + 1 
-          };
-          console.log(`Active Actor: ${state.actors[activeToken.actorId].name}, Token: ${activeToken.id} @ ${activeToken.x},${activeToken.y}`);
+        // Record expected position (current + 1 grid unit)
+        expectedPositions[activeToken.id] = {
+          x: activeToken.x + 1,
+          y: activeToken.y + 1,
+        };
+        console.log(
+          `Active Actor: ${state.actors[activeToken.actorId].name}, Token: ${activeToken.id} @ ${activeToken.x},${activeToken.y}`,
+        );
       } else {
-          throw new Error('Active token found in state');
+        throw new Error('Active token found in state');
       }
 
       // Wait for Sidebar to update
@@ -92,17 +94,67 @@ describe('Game Lifecycle Integration', () => {
       fireEvent.mouseUp(mapBoard, { bubbles: true });
 
       // Wait for move to be planned (round-trip to server)
-      await waitFor(() => {
+      await waitFor(
+        () => {
           const updatedState = useGameStore.getState();
           const actor = updatedState.actors[activeToken!.actorId];
           expect(actor.plannedMove).toBeDefined();
           expect(actor.plannedMove?.x).toBe(activeToken!.x + 1);
           expect(actor.plannedMove?.y).toBe(activeToken!.y + 1);
-      }, { timeout: 2000 });
+        },
+        { timeout: 2000 },
+      );
 
-      // Click Pass
-      const passBtn = await screen.findByRole('button', { name: /Pass/i });
-      fireEvent.click(passBtn);
+      // Plan Move
+      await waitFor(
+        () => {
+          const updatedState = useGameStore.getState();
+          const actor = updatedState.actors[activeToken!.actorId];
+          expect(actor.plannedMove).toBeDefined();
+          expect(actor.plannedMove?.x).toBe(activeToken!.x + 1);
+          expect(actor.plannedMove?.y).toBe(activeToken!.y + 1);
+        },
+        { timeout: 2000 },
+      );
+
+      // Plan Action
+      // Select first card in hand
+      const cards = await screen.findAllByTestId('card');
+      if (cards.length > 0) {
+        fireEvent.click(cards[0]);
+        // Click "Plan [CardName]" button (was Play/Cast)
+        // The button text changes based on selection.
+        // We look for a button containing "Plan"
+        const planActionBtn = await screen.findByText(/Plan /i);
+        fireEvent.click(planActionBtn);
+
+        // Verify plan is locked
+        await screen.findByText(/Plan Locked/i);
+      } else {
+        console.warn('No cards in hand to plan action with');
+      }
+
+      // Click Pass (which might now be hidden/disabled if we planned? Check PlayerHand logic)
+      // If we planned, "Plan Locked" shows. "Click to Cancel" shows.
+      // Can we Pass?
+      // Sidebar "Pass/Wait" is shown if "Empty Selection State".
+      // If we planned, PlayerHand returns an overlay "Plan Locked".
+      // Does it cover "Pass"?
+      // "Plan Locked" overlay is absolute bottom. Sidebar buttons might be separate?
+      // Sidebar "Pass" is inside "Empty Selection State" block.
+      // If we planned, `hasPlanned` is true.
+      // PlayerHand component returns early with overlay if `hasPlanned`.
+      // So Sidebar Pass button is replaced by Lock overlay.
+      // So we CANNOT click Pass if we planned action.
+      // We are done with this actor.
+
+      // If logic requires clicking Pass to advance turn?
+      // No, planning is simultaneous. We just wait.
+      // Or maybe existing test relied on Pass?
+      // Iterate to next token.
+
+      // If we DON'T click Pass, does the test proceed?
+      // Loop continues to next token.
     }
 
     // 3. Resolve Round
@@ -111,7 +163,7 @@ describe('Game Lifecycle Integration', () => {
 
     // Wait for phase change
     await waitFor(() => {
-        expect(screen.getByText(/Phase: RESOLUTION/i)).toBeInTheDocument();
+      expect(screen.getByText(/Phase: RESOLUTION/i)).toBeInTheDocument();
     });
 
     const endRoundBtn = await screen.findByRole('button', { name: /End Round/i });
@@ -123,17 +175,20 @@ describe('Game Lifecycle Integration', () => {
     });
 
     // Verify token movement
-    await waitFor(() => {
+    await waitFor(
+      () => {
         const currentState = useGameStore.getState();
         Object.entries(expectedPositions).forEach(([tokenId, expected]) => {
-            const token = currentState.tokens.find(t => t.id === tokenId);
-            expect(token).toBeDefined();
-            if (token) {
-                // console.log(`Verifying token ${tokenId}: Expected (${expected.x}, ${expected.y}), Got (${token.x}, ${token.y})`);
-                expect(token.x).toBe(expected.x);
-                expect(token.y).toBe(expected.y);
-            }
+          const token = currentState.tokens.find((t) => t.id === tokenId);
+          expect(token).toBeDefined();
+          if (token) {
+            // console.log(`Verifying token ${tokenId}: Expected (${expected.x}, ${expected.y}), Got (${token.x}, ${token.y})`);
+            expect(token.x).toBe(expected.x);
+            expect(token.y).toBe(expected.y);
+          }
         });
-    }, { timeout: 2000 });
+      },
+      { timeout: 2000 },
+    );
   });
 });

@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest --exclude 'src/integration/**' --exclude 'src/tests/integration.test.ts'",
-    "test:integration": "vitest run --mode integration -c vitest.integration.config.ts --reporter=verbose",
+    "test:integration": "vitest run --mode integration -c vitest.integration.config.ts",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
     "gen:types": "cabal run codegen -- $(pwd)/src/generated/types.ts && ts-to-zod && prettier --write src/generated/*"

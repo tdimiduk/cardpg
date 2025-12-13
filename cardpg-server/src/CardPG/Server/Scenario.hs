@@ -21,7 +21,7 @@ import System.Random.Stateful (Uniform (..), uniformM)
 import CardPG.Core.Card (ActorDefinition, CoreCard, ItemCard, NatureCard, TalentCard)
 import CardPG.Core.Card qualified as Card
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.Primitives (CardInstanceId, EquipSlot (..), TargetId)
+import CardPG.Core.Primitives (CardInstanceId, EquipSlot (..), TargetId, ActorId)
 import CardPG.Core.State
   ( ActorState (..)
   , AssetState (..)
@@ -34,7 +34,6 @@ import CardPG.Core.State qualified as State
 import CardPG.Server.Game (GameState (..), addActor, emptyGame)
 
 -- | Definition of an actor within a scenario
-
 data ScenarioActor = ScenarioActor
   { name :: Text
   , file :: FilePath
@@ -81,7 +80,7 @@ loadScenarioActors baseDir actorsList = do
     -- In the future, we might want to map the ScenarioActor.id to this TargetId explicitly
     -- or store it in a lookup table if we need to reference them by name.
     gameState <- get
-    let (tid, newRng) = uniform (gameState.rng) :: (TargetId, StdGen)
+    let (tid, newRng) = uniform (gameState.rng) :: (ActorId, StdGen)
     put $ gameState{rng = newRng}
 
     actorState <- liftIO $ loadActorState actorPath (actorDef.x) (actorDef.y)
@@ -123,6 +122,7 @@ instantiateActor def x y = do
           , defending = []
           , inPlay = Map.empty
           , registry = coreRegistry
+          , planned = Nothing
           }
 
   -- Process Table Cards (Items, Nature)
@@ -149,7 +149,7 @@ instantiateActor def x y = do
       , actorType = actorTypeVal
       , coreState = coreSt
       , tableState = tableSt
-      , spatial = State.SpatialState { posX = x, posY = y, size = 1, mapId = Nothing }
+      , spatial = State.SpatialState{posX = x, posY = y, size = 1, mapId = Nothing}
       , plannedMove = Nothing
       }
 

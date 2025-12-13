@@ -10,9 +10,9 @@ import qualified Rules.Codegen as Codegen
 import qualified Rules.Deploy as Deploy
 import qualified Rules.Frontend as Frontend
 import qualified Rules.Haskell as Haskell
+import qualified Rules.Integration as Integration
 import qualified Rules.Justfile as Justfile
 import qualified Rules.Orchestration as Orchestration
-import qualified Rules.Integration as Integration
 
 main :: IO ()
 main = do

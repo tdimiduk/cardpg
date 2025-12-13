@@ -1,8 +1,5 @@
 import { ActorState, PlayerDeckState, Token, CoreCard, StateUpdate, TokenType } from '../../types';
-import {
-  ActorState as ServerActorState,
-  CoreCard as GenCoreCard,
-} from '../../generated/types';
+import { ActorState as ServerActorState, CoreCard as GenCoreCard } from '../../generated/types';
 
 import { ACTOR_COLORS } from '../../theme';
 import { INITIAL_ACTORS } from '../../constants';

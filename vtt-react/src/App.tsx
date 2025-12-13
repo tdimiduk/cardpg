@@ -74,6 +74,22 @@ const App: React.FC = () => {
   ) => {
     if (!activeTokenId) return;
 
+    if (phase === 'planning') {
+      if (selectedCards.length === 0) return;
+      // First card is Action, rest are Resources
+      // Frontend card objects have IDs even if strict type definition misses it
+      const actionCardId = (selectedCards[0] as any).id;
+      const resourceCardIds = selectedCards.slice(1).map((c) => (c as any).id);
+
+      dispatchCommand({
+        type: 'planAction',
+        actorId: activeTokenId,
+        actionCardId,
+        resourceCardIds,
+      });
+      return;
+    }
+
     dispatch({
       type: 'playStack',
       activeTokenId,
@@ -203,7 +219,7 @@ const App: React.FC = () => {
         onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
         onRevealActions={() => {
-          dispatch({ type: 'reveal' });
+          dispatch({ type: 'startResolutionPhase' });
         }}
         onEndRound={() => {
           dispatch({ type: 'endRound' });

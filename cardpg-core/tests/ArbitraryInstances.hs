@@ -20,6 +20,7 @@ import CardPG.Core.DSL.Printer (richToString)
 import CardPG.Core.NonEmptyText (NonEmptyText (..), getRawText, unsafeNonEmptyText)
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
+import CardPG.Core.RuleDefs (AttackDefT (..), DSLRule (..), RuleT (RuleAttack))
 import CardPG.Core.State
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
@@ -164,17 +165,6 @@ arbitrarySafeRichString = do
       , "Passive:"
       ]
 
--- Need richToString for the check, but it's in Printer.hs which imports RuleDefs.
--- ArbitraryInstances imports CardPG.Core.Card (which exports RuleDefs) and RichText.
--- It does NOT import Printer.
--- So I cannot use richToString here easily without circular dependency if Printer imports RuleDefs.
--- Printer imports RuleDefs. ArbitraryInstances imports RuleDefs.
--- So I can import Printer in ArbitraryInstances?
--- Printer imports RuleDefs. RuleDefs does NOT import Printer.
--- So ArbitraryInstances -> Printer -> RuleDefs.
--- ArbitraryInstances -> RuleDefs.
--- This is fine.
-
 instance Arbitrary Stats where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
@@ -252,6 +242,14 @@ instance Arbitrary TableCard where
   shrink = genericShrink
 
 instance Arbitrary CorePlayState where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary ActionStack where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary SpatialState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 

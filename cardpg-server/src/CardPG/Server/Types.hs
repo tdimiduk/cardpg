@@ -44,14 +44,14 @@ import CardPG.Core.Card
   , ItemCardMachine
   )
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (ResourceType, TargetId)
-import CardPG.Core.State (ActorState, GameEnv)
+import CardPG.Core.Primitives (ActorId, ResourceType)
+import CardPG.Core.State (ActorState, GameEnv, RealizedAttack)
 
 -- | The authoritative state for a game session
 data GameState = GameState
   { env :: GameEnv
   , rng :: StdGen
-  , actors :: Map TargetId ActorState
+  , actors :: Map ActorId ActorState
   }
   deriving (Show, Generic)
 
@@ -77,44 +77,41 @@ data Token = Token
 $(deriveJSON cardpgJsonDef ''Token)
 
 data BroadcastAction
-  = PlayStack
-      { activeTokenId :: Text
-      , selectedCards :: [CoreCard]
-      , strengthColor :: ResourceType
-      , modifier :: Int
-      , targetDefense :: Maybe ResourceType
-      , actionName :: Maybe Text
-      , phase :: Text
+  = AttackAction
+      { actingActor :: ActorId
+      , attack :: RealizedAttack
       }
-  | Pass {activeTokenId :: Text}
+  | Pass {actingActor :: ActorId}
   | Reveal
+  | StartResolutionPhase
   | EndRound
-  | MoveToken {token :: Token}
-  | DrawCards {activeTokenId :: Text, count :: Int}
-  | Defend {activeTokenId :: Text}
-  | ClearDefense {activeTokenId :: Text}
-  | Reshuffle {activeTokenId :: Text}
-  | AddConsequence {activeTokenId :: Text}
-  | RemoveConsequence {activeTokenId :: Text, cardId :: Text}
+  | MoveToken {actingActor :: ActorId, token :: Token}
+  | DrawCards {actingActor :: ActorId, count :: Int}
+  | Defend {actingActor :: ActorId}
+  | ClearDefense {actingActor :: ActorId}
+  | Reshuffle {actingActor :: ActorId}
+  | AddConsequence {actingActor :: ActorId}
+  | RemoveConsequence {actingActor :: ActorId, cardId :: Text}
   | AddStatus
-      { activeTokenId :: Text
+      { actingActor :: ActorId
       , statusType :: Text
       , destination :: Text
       }
   | RemoveStatus
-      { activeTokenId :: Text
+      { actingActor :: ActorId
       , statusType :: Text
       , destination :: Text
       }
   | DiscardCards
-      { activeTokenId :: Text
+      { actingActor :: ActorId
       , cardIds :: [Text]
       }
-  | CancelPlan {activeTokenId :: Text}
+  | CancelPlan {actingActor :: ActorId}
   | ReturnToDeck
-      { activeTokenId :: Text
+      { actingActor :: ActorId
       , cardIds :: [Text]
       }
+  | InvalidAction {actingActor :: ActorId, message :: Text}
   deriving (Show, Eq, Generic)
 
 instance ToJSON BroadcastAction where
@@ -125,9 +122,13 @@ instance FromJSON BroadcastAction where
 
 -- | Commands for game actions (Intents)
 data Command
-  = DrawIntent {actorId :: TargetId}
-  | DefendIntent {actorId :: TargetId}
-  | PlanMove {actorId :: TargetId, x :: Int, y :: Int}
+  = DrawIntent {actorId :: ActorId}
+  | DefendIntent {actorId :: ActorId}
+  | PlanMove {actorId :: ActorId, x :: Int, y :: Int}
+  | PlanAction {actorId :: ActorId, actionCardId :: Text, resourceCardIds :: [Text]}
+  | CancelPlanIntent {actorId :: ActorId}
+  | StartResolutionIntent {actorId :: ActorId}
+  | EndDefenseIntent {actorId :: ActorId}
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)
@@ -143,7 +144,7 @@ $(deriveJSON cardpgJsonDef ''ClientMessage)
 
 -- | Updates to the authoritative state
 data StateUpdate = StateUpdate
-  { updateTargetId :: TargetId
+  { updateActorId :: ActorId
   , updateActorState :: ActorState
   }
   deriving (Show, Eq, Generic)
