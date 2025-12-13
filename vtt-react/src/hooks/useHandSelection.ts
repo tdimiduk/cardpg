@@ -10,6 +10,7 @@ export interface UseHandSelectionProps {
     modifier: number,
     targetDefense?: ResourceType,
     actionName?: string,
+    actionCardId?: string,
   ) => void;
 }
 
@@ -65,11 +66,12 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
         rule.data.power.modifier,
         rule.data.resistedBy,
         card.name,
+        card.id,
       );
     } else if (rule.type === 'general') {
       const source = rule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
       const modifier = 0;
-      onPlayStack(selectedCards, source, modifier, undefined, card.name);
+      onPlayStack(selectedCards, source, modifier, undefined, card.name, card.id);
     }
     clearSelection();
   };

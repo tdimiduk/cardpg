@@ -71,40 +71,55 @@ const App: React.FC = () => {
     modifier: number,
     targetDefense?: ResourceType,
     actionName?: string,
+    actionCardId?: string,
   ) => {
     if (!activeTokenId) return;
 
     if (phase === 'planning') {
       if (selectedCards.length === 0) return;
-      // First card is Action, rest are Resources
-      // Frontend card objects have IDs even if strict type definition misses it
-      const actionCardId = (selectedCards[0] as any).id;
-      const resourceCardIds = selectedCards.slice(1).map((c) => (c as any).id);
+      
+      // If actionCardId provided, use it. Otherwise try to infer or fallback (e.g. improvise)
+      let finalActionId = actionCardId;
+      let resourceIds: string[] = [];
+
+      if (finalActionId) {
+        resourceIds = selectedCards
+          .filter(c => c.id !== finalActionId)
+          .map(c => c.id);
+      } else {
+        // Fallback for Improvise (No specific action card)
+        // Improvise usually treats all cards as resources and uses a "Basic Action" implicit card?
+        // Or one of the cards IS the action?
+        // Rules say: "Play a stack... Play that card on top...".
+        // Narrative Action: "If no specific Action Card... describe... GM provides modifier".
+        // For Improvise button in UI, we pass 'Improvised Action'.
+        // Backend 'ActionStack' requires 'actionCardId'.
+        // This implies even Improvise needs an Action Card, or we use a "Basic Attack" card?
+        // Current Backend Logic: Logic.hs planAction takes actionCardId.
+        // If Improvise, usually we pick one card as the "Action" (top card)?
+        // Let's assume the first selected card is the action card if not specified.
+        finalActionId = selectedCards[0].id;
+        resourceIds = selectedCards.slice(1).map(c => c.id);
+      }
 
       dispatchCommand({
         type: 'planAction',
         actorId: activeTokenId,
-        actionCardId,
-        resourceCardIds,
+        actionCardId: finalActionId,
+        resourceCardIds: resourceIds,
       });
       return;
     }
 
-    dispatch({
-      type: 'playStack',
-      activeTokenId,
-      selectedCards,
-      strengthColor,
-      modifier,
-      targetDefense,
-      actionName,
-      phase,
-    });
+    // Legacy immediate play dispatch removed.
+    // In Server Authoritative mode, actions are Planned then Resolved.
+    // If in Resolution phase, manual play is likely disabled or should use PlanAction if supported (e.g. Improvise).
+    console.warn('Attempted to play stack in non-planning phase or fallback.');
   };
 
   const handlePass = () => {
     if (!activeTokenId || phase !== 'planning') return;
-    dispatch({ type: 'pass', activeTokenId });
+    dispatch({ type: 'pass', actingActor: activeTokenId });
   };
 
   return (
@@ -121,24 +136,24 @@ const App: React.FC = () => {
         }}
         onClearDefense={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'clearDefense', activeTokenId });
+          dispatch({ type: 'clearDefense', actingActor: activeTokenId });
         }}
         onReshuffle={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'reshuffle', activeTokenId });
+          dispatch({ type: 'reshuffle', actingActor: activeTokenId });
         }}
         onSelectToken={(id) => setActiveToken(id)}
         onAddConsequence={() => {
           if (!activeTokenId) return;
-          dispatch({ type: 'addConsequence', activeTokenId });
+          dispatch({ type: 'addConsequence', actingActor: activeTokenId });
         }}
         onRemoveConsequence={(cardId) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'removeConsequence', activeTokenId, cardId });
+          dispatch({ type: 'removeConsequence', actingActor: activeTokenId, cardId });
         }}
         onAddStatusCard={(statusType, destination) => {
           if (!activeTokenId) return;
-          dispatch({ type: 'addStatus', activeTokenId, statusType, destination });
+          dispatch({ type: 'addStatus', actingActor: activeTokenId, statusType, destination });
         }}
         onRemoveStatusCard={(statusType) => {
           if (!activeTokenId) return;
@@ -148,7 +163,7 @@ const App: React.FC = () => {
           // In sidebar, maybe we know destination? Or we send a dummy value if backend ignores it?
           // Previously it was removing based on type.
           // Let's provide 'discard' as default or fix logic.
-          dispatch({ type: 'removeStatus', activeTokenId, statusType, destination: 'discard' });
+          dispatch({ type: 'removeStatus', actingActor: activeTokenId, statusType, destination: 'discard' });
         }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
@@ -193,17 +208,17 @@ const App: React.FC = () => {
               activeTokenId &&
               dispatch({
                 type: 'discardCards',
-                activeTokenId,
+                actingActor: activeTokenId,
                 cardIds: cards.map((c) => c.id),
               })
             }
             onPass={handlePass}
-            onCancelPlan={() => activeTokenId && dispatch({ type: 'cancelPlan', activeTokenId })}
+            onCancelPlan={() => activeTokenId && dispatch({ type: 'cancelPlan', actingActor: activeTokenId })}
             onReturnToDeck={(cards) =>
               activeTokenId &&
               dispatch({
                 type: 'returnToDeck',
-                activeTokenId,
+                actingActor: activeTokenId,
                 cardIds: cards.map((c) => c.id),
               })
             }

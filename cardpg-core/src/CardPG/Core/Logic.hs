@@ -149,12 +149,19 @@ planAction actionCardId resourceIds = do
       (found, remaining) = partition (`elem` allIds) currentHand
       plan = ActionStack actionCardId resourceIds
 
-  -- Validate all cards are in hand
+  core <- use (#coreState % #registry)
+  let maybeActionCard = Map.lookup actionCardId core
+  let cost = maybe 0 (\c -> maybe 0 id (c.cost)) maybeActionCard
+  let correctCost = length resourceIds == cost
+
+  -- Validate all cards are in hand AND cost is correct
   if length found == length allIds
-    then do
-      modify $ #coreState % #hand .~ remaining
-      modify $ #coreState % #planned ?~ plan
-      tell [ActionPlanned plan]
+    then if correctCost
+      then do
+        modify $ #coreState % #hand .~ remaining
+        modify $ #coreState % #planned ?~ plan
+        tell [ActionPlanned plan]
+      else tell [IllegalAction plan (Just "incorrect resource cost")]
     else tell [IllegalAction plan (Just "cards not in hand")]
 
 plannedActionTo ::

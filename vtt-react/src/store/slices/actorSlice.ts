@@ -1,13 +1,28 @@
-import { ActorState, PlayerDeckState, Token, CoreCard, StateUpdate, TokenType } from '../../types';
-import { ActorState as ServerActorState, CoreCard as GenCoreCard } from '../../generated/types';
+import { StateCreator } from 'zustand';
+import {
+  ActorState,
+  PlayerDeckState,
+  TokenType,
+  CoreCard,
+  PlannedAction,
+  StateUpdate,
+  Token,
+} from '../../types';
+import {
+  ActorState as ServerActorState,
+  CoreCard as GenCoreCard,
+} from '../../generated/types';
 
 import { ACTOR_COLORS } from '../../theme';
-import { INITIAL_ACTORS } from '../../constants';
+import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
 import { LogSlice, createLog } from './logSlice';
 import { createActor } from '../../services/actorFactory';
 
 export interface ActorSlice {
   actors: Record<string, ActorState>;
+  tokens: Token[];
+  plannedActions: Record<string, PlannedAction>;
+
   initializeGame: () => void;
   addActor: (
     name: string,
@@ -60,12 +75,14 @@ const hydrateCards = (
 };
 
 export const createActorSlice: StateCreator<
-  ActorSlice & LogSlice & { tokens: Token[] },
+  ActorSlice & LogSlice, // removed explicit tokens requirement as it's part of ActorSlice now
   [['zustand/immer', never]],
   [],
   ActorSlice
 > = (set) => ({
   actors: INITIAL_ACTORS,
+  tokens: [],
+  plannedActions: {},
 
   initializeGame: () =>
     set((_state) => {
@@ -90,7 +107,7 @@ export const createActorSlice: StateCreator<
       state.logs.push(createLog(`Added actor: ${name}`, 'GM'));
     }),
 
-  removeActor: (actorId) =>
+  removeActor: (actorId: string) =>
     set((state) => {
       if (!state.actors[actorId]) return;
       state.tokens = state.tokens.filter((t) => t.actorId !== actorId);
@@ -100,7 +117,7 @@ export const createActorSlice: StateCreator<
 
   updateActorState: (update: StateUpdate) =>
     set((state) => {
-      const targetId = update.updateTargetId; // UUID
+      const targetId = update.updateActorId; // UUID
       const serverState = update.updateActorState as unknown as ServerActorState;
       // Cast needed if types mismatch structurally due to imports
 
@@ -143,7 +160,7 @@ export const createActorSlice: StateCreator<
       const registry = core.registry;
 
       // Sync Spatial State to Token
-      const token = state.tokens.find((t) => t.actorId === targetId);
+      const token = state.tokens.find((t: Token) => t.actorId === targetId);
       if (token && serverState.spatial) {
         token.x = serverState.spatial.posX;
         token.y = serverState.spatial.posY;
@@ -180,56 +197,110 @@ export const createActorSlice: StateCreator<
       };
 
       state.actors[targetId].deck = newDeckState;
+
+      // Sync Planned Actions (Authoritative)
+      // core.planned is ActionStack { actionCard: string, resources: string[] }
+      // Casting to any because of generated type confusion
+      const planned = core.planned as any;
+
+      if (planned) {
+        const actionCardId = planned.actionCard;
+        const resourceIds = planned.resources as string[];
+        
+        const actionDef = registry[actionCardId];
+        if (actionDef) {
+           const actionCard = { ...actionDef, id: actionCardId };
+           const resources = resourceIds.map(id => {
+               const def = registry[id];
+               return def ? { ...def, id } : { ...actionDef, id, name: 'Unknown', type: 'coreCard' } as CoreCard; 
+               // Fallback is quick hack, ideally hydrate properly using hydrateCards
+           });
+           
+           // Re-hydrate strictly using hydrateCards helper
+           const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
+
+           // Infer Action logic for UI
+           let color = RESOURCE_TYPES.RED as string; // Default
+           let modifier = 0;
+           let targetDefense = undefined;
+           
+           const rules = actionCard.rules || [];
+           const attackRule = rules.find(r => r.type === 'attack');
+           const generalRule = rules.find(r => r.type === 'general');
+           
+           if (attackRule && attackRule.type === 'attack') {
+               color = attackRule.data.power.source;
+               modifier = attackRule.data.power.modifier;
+               targetDefense = attackRule.data.resistedBy;
+           } else if (generalRule && generalRule.type === 'general') {
+               color = generalRule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
+           }
+
+           state.plannedActions[targetId] = {
+             actorId: targetId,
+             actorName: serverState.name,
+             cards: allCards,
+             strengthColor: color,
+             modifier: modifier,
+             actionName: actionCard.name,
+             targetDefense,
+           };
+        }
+      } else {
+        // If server says no plan, ensure we don't have one (unless we are locally optimistically planning? 
+        // Syncing strictly is safer to avoid desync state sticking around).
+        delete state.plannedActions[targetId];
+      }
       // state.logs.push(createLog(`Updated state for ${currentActor.name}`, 'System'));
     }),
 
-  drawCards: (_tokenId, _count) =>
+  drawCards: (_tokenId: string, _count: number) =>
     set((_state) => {
       // Deprecated: Command sent via PlayerHand/DeckStats
       console.log('local drawCards called (deprecated)');
     }),
 
-  defend: (_tokenId) =>
+  defend: (_tokenId: string) =>
     set((_state) => {
       console.log('local defend called (deprecated)');
     }),
 
-  clearDefense: (_tokenId) =>
+  clearDefense: (_tokenId: string) =>
     set((_state) => {
       console.log('local clearDefense called (deprecated)');
     }),
 
-  reshuffle: (_tokenId) =>
+  reshuffle: (_tokenId: string) =>
     set((_state) => {
       console.log('local reshuffle called (deprecated)');
     }),
 
-  discardCards: (_tokenId, _cardIds) =>
+  discardCards: (_tokenId: string, _cardIds: string[]) =>
     set((_state) => {
       console.log('local discardCards called (deprecated)');
     }),
 
-  returnToDeck: (_tokenId, _cardIds) =>
+  returnToDeck: (_tokenId: string, _cardIds: string[]) =>
     set((_state) => {
       console.log('local returnToDeck called (deprecated)');
     }),
 
-  addConsequence: (_tokenId) =>
+  addConsequence: (_tokenId: string) =>
     set((_state) => {
       console.log('local addConsequence called (deprecated)');
     }),
 
-  removeConsequence: (_tokenId, _cardId) =>
+  removeConsequence: (_tokenId: string, _cardId: string) =>
     set((_state) => {
       console.log('local removeConsequence called (deprecated)');
     }),
 
-  addStatus: (_tokenId, _statusType, _destination) =>
+  addStatus: (_tokenId: string, _statusType: string, _destination: 'discard' | 'hand' | 'draw') =>
     set((_state) => {
       console.log('local addStatus called (deprecated)');
     }),
 
-  removeStatus: (_tokenId, _statusType) =>
+  removeStatus: (_tokenId: string, _statusType: string) =>
     set((_state) => {
       console.log('local removeStatus called (deprecated)');
     }),

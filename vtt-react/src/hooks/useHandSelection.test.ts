@@ -117,6 +117,7 @@ describe('useHandSelection', () => {
       2,
       RESOURCE_TYPES.BLUE,
       'Strike',
+      '1',
     );
     expect(result.current.selectedIds.size).toBe(0);
   });

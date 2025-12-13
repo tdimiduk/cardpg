@@ -30,6 +30,7 @@ import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives
   ( CardInstanceId
+  , ActorId
   , Difficulty
   , EquipSlot (..)
   , ResourceType (..)
@@ -53,10 +54,11 @@ import CardPG.Core.State
   , CoreCardState (..)
   , CorePlayState (..)
   , GameEvent (..)
-  , PlannedAction (..)
+  , ActionStack (..)
   , SpatialState (..)
   , TableCard (..)
   , TableState (..)
+  , RealizedAttack (..)
   )
 import CardPG.Server.Types
   ( BroadcastAction (..)
@@ -89,6 +91,9 @@ instance TypeScript CardInstanceId where
 instance TypeScript TargetId where
   getTypeScriptType _ = "string"
 
+instance TypeScript ActorId where
+  getTypeScriptType _ = "string"
+
 -- NonEmptyText
 instance TypeScript NonEmptyText where
   getTypeScriptType _ = "string"
@@ -105,7 +110,11 @@ $(deriveTypeScript cardpgJsonDef ''Stats)
 $(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
-$(deriveTypeScript cardpgJsonDef ''PlannedAction)
+$(deriveTypeScript cardpgJsonDef ''ActionStack)
+$(deriveTypeScript cardpgJsonDef ''RealizedAttack)
+
+
+
 
 -- Helper for creating splices
 -- Using runIO or just simple do block

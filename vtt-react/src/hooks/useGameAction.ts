@@ -34,52 +34,15 @@ export const useGameAction = () => {
   const _applyAction = useCallback(
     (action: BroadcastAction) => {
       switch (action.type) {
-        case 'playStack': {
-          const state = useGameStore.getState();
-          const token = state.tokens.find((t) => t.id === action.activeTokenId);
-          const actor = token ? state.actors[token.actorId] : undefined;
-
-          // Hydrate cards with IDs from hand if possible
-          // We need to track used IDs to avoid mapping same hand-card to multiple action-cards
-          const usedIds = new Set<string>();
-
-          const hydratedCards = action.selectedCards.map((c) => {
-            if (actor) {
-              // Find a card in hand that matches name and hasn't been used yet
-              const match = actor.deck.hand.find((h) => h.name === c.name && !usedIds.has(h.id));
-              if (match) {
-                usedIds.add(match.id);
-                return match;
-              }
-            }
-            // Fallback: Use server definition but add a fake ID to satisfy type reqs
-            // This is safe because server state update will overwrite the hand authoritatively anyway.
-            return { ...c, id: `broadcast-${Math.random()}` };
-          });
-
-          if (action.phase === 'planning') {
-            commitPlan(
-              action.activeTokenId,
-              hydratedCards,
-              action.strengthColor,
-              action.modifier,
-              action.actionName,
-              action.targetDefense,
-            );
-          } else {
-            playImmediate(
-              action.activeTokenId,
-              hydratedCards,
-              action.strengthColor,
-              action.modifier,
-              action.actionName,
-              action.targetDefense,
-            );
-          }
-          break;
+        case 'attackAction': {
+           // Handle visualized attack from server
+           // Maybe show animation?
+           // For now, no storage update needed as GameStateUpdate handles state.
+           // Can trigger 'revealAndResolve' visual equivalent if needed.
+           break;
         }
         case 'pass':
-          passTurn(action.activeTokenId);
+          passTurn(action.actingActor);
           break;
         case 'reveal':
           revealAndResolve();
@@ -88,44 +51,51 @@ export const useGameAction = () => {
           endRound();
           break;
         case 'moveToken':
+          // MoveToken actingActor field exists but logic uses action.token
           updateTokenPosition(action.token);
           break;
         case 'drawCards':
-          drawCards(action.activeTokenId, action.count);
+          drawCards(action.actingActor, action.count);
           break;
         case 'defend':
-          defend(action.activeTokenId);
+          defend(action.actingActor);
           break;
         case 'clearDefense':
-          clearDefense(action.activeTokenId);
+          clearDefense(action.actingActor);
           break;
         case 'reshuffle':
-          reshuffle(action.activeTokenId);
+          reshuffle(action.actingActor);
           break;
         case 'addConsequence':
-          addConsequence(action.activeTokenId);
+          addConsequence(action.actingActor);
           break;
         case 'removeConsequence':
-          removeConsequence(action.activeTokenId, action.cardId);
+          removeConsequence(action.actingActor, action.cardId);
           break;
         case 'addStatus':
           addStatus(
-            action.activeTokenId,
+            action.actingActor,
             action.statusType,
             action.destination as 'discard' | 'hand' | 'draw',
           );
           break;
         case 'removeStatus':
-          removeStatus(action.activeTokenId, action.statusType);
+          removeStatus(action.actingActor, action.statusType);
           break;
         case 'discardCards':
-          discardCards(action.activeTokenId, action.cardIds);
+          discardCards(action.actingActor, action.cardIds);
           break;
         case 'cancelPlan':
-          cancelPlan(action.activeTokenId);
+          cancelPlan(action.actingActor);
           break;
         case 'returnToDeck':
-          returnToDeck(action.activeTokenId, action.cardIds);
+          returnToDeck(action.actingActor, action.cardIds);
+          break;
+        case 'startResolutionPhase':
+          // Optional: Show phase change specific UI if needed
+          break;
+        case 'invalidAction':
+          console.error(`Invalid Action for ${action.actingActor}: ${action.message}`);
           break;
         default:
           assertUnreachable(action);

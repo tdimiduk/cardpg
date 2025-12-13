@@ -24,6 +24,7 @@ interface PlayerHandProps {
     modifier: number,
     targetDefense?: ResourceType,
     actionName?: string,
+    actionCardId?: string,
   ) => void;
   onDiscard: (selectedCards: CoreCard[]) => void;
   onPass: () => void;

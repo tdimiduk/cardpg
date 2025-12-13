@@ -26,7 +26,7 @@ import TypeScriptInstances
 
 import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (Difficulty, EquipSlot, ResourceType, StackPower)
+import CardPG.Core.Primitives (Difficulty, EquipSlot, ResourceType, StackPower, ActorId)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.State
@@ -37,6 +37,8 @@ import CardPG.Core.State
   , SpatialState
   , TableCard
   , TableState
+  , ActionStack
+  , RealizedAttack
   )
 import CardPG.Server.Types
   ( BroadcastAction
@@ -59,6 +61,7 @@ main = do
           ( getTypeScriptDeclarations (Proxy :: Proxy ResourceType)
               <> getTypeScriptDeclarations (Proxy :: Proxy StackPower)
               <> getTypeScriptDeclarations (Proxy :: Proxy Difficulty)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ActorId)
               <> getTypeScriptDeclarations (Proxy :: Proxy NonEmptyText)
               <> getTypeScriptDeclarations (Proxy :: Proxy TextStyle)
               <> getTypeScriptDeclarations (Proxy :: Proxy Inline)
@@ -99,6 +102,8 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy StateUpdate)
               <> getTypeScriptDeclarations (Proxy :: Proxy SpatialState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ActionStack)
+              <> getTypeScriptDeclarations (Proxy :: Proxy RealizedAttack)
           )
 
   let exportedDeclarations =
