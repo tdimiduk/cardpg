@@ -1,14 +1,12 @@
 import { StateCreator } from 'zustand';
-import { GamePhase, PlannedAction, CoreCard, ResourceType, Token, ActorState } from '../../types';
+import { GamePhase, UIPlannedAction, CoreCard, ResourceType, Token, ActorState } from '../../types';
 import { RESOURCE_TYPES } from '../../constants';
-import { calculateStackStrength } from '../../services/ruleService';
-import { resolveMovement } from '../../services/resolutionService';
 import { LogSlice, createLog } from './logSlice';
 import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
   phase: GamePhase;
-  plannedActions: Record<string, PlannedAction>;
+  plannedActions: Record<string, UIPlannedAction>;
 
   commitPlan: (
     tokenId: string,
@@ -115,111 +113,31 @@ export const createGameSlice: StateCreator<
   revealAndResolve: () =>
     set((state) => {
       state.phase = 'resolution';
-      state.logs.push(createLog('All actions revealed! Resolving now...', 'GM'));
-
-      // Resolve Actions & Discard Played Cards
-      Object.entries(state.plannedActions).forEach(([tokenId, plan]) => {
-        const actor = getActor(state, tokenId);
-
-        if (plan.actionName === 'Pass' && plan.cards.length === 0) {
-          state.logs.push(createLog(`${plan.actorName} takes no action.`, 'System'));
-          return;
-        }
-
-        if (plan.cards.length > 0) {
-          const cards = plan.cards as CoreCard[];
-          const strength = calculateStackStrength(cards, plan.strengthColor, plan.modifier);
-          const cardNames = cards.map((c) => c.name).join(' + ');
-
-          state.logs.push(
-            createLog(
-              plan.actionName
-                ? `${plan.actorName} resolves ${plan.actionName} (${cardNames})`
-                : `${plan.actorName} resolves Action (${cardNames})`,
-              'System',
-              'action',
-              {
-                total: strength,
-                color: plan.strengthColor,
-                targetColor: plan.targetDefense,
-                label: 'Strength',
-              },
-            ),
-          );
-
-          // Move to discard
-          if (actor) {
-            actor.deck.discardPile.push(...cards);
-          }
-        }
-      });
+      state.logs.push(createLog('Phase changed to Resolution.', 'System'));
+      // Actual resolution happens on server. State updates will follow.
     }),
 
   endRound: () =>
     set((state) => {
-      // 1. Resolve Movement
-      const { movedTokens, logs: moveLogs } = resolveMovement(state.tokens, state.plannedActions);
-      state.tokens = movedTokens;
-      if (moveLogs.length > 0) {
-        state.logs.push(createLog(moveLogs.join(' '), 'System'));
-      }
-
-      // Identify defeated
-      const defeatedIds = Object.values(state.actors)
-        .filter((a) => a.deck.consequences.some((c) => c.name === 'Taken Out'))
-        .map((a) => a.id);
-
-      // Reset Plans
-      const nextPlans: Record<string, PlannedAction> = {};
-      state.tokens.forEach((t) => {
-        const actor = state.actors[t.actorId];
-        if (actor && defeatedIds.includes(actor.id)) {
-          nextPlans[t.id] = {
-            actorId: t.id,
-            actorName: actor.name,
-            cards: [],
-            strengthColor: RESOURCE_TYPES.RED,
-            modifier: 0,
-            actionName: 'Pass',
-          };
-        }
-      });
-      state.plannedActions = nextPlans;
+      // Logic handled by server (movement, clearing plans, etc)
+      // We process StateUpdates to reflect changes.
+      // We optimistically switch phase here to update UI immediately? 
+      // Or better wait for server? 
+      // Safe to switch phase as next round implies Planning.
       state.phase = 'planning';
-
-      state.logs.push(createLog('Round Ended.', 'GM'));
+      state.logs.push(createLog('Round Ended. Starting new Planning Phase.', 'GM'));
     }),
 
-  playImmediate: (tokenId, cards, strengthColor, modifier, actionName, targetDefense) =>
+  playImmediate: (tokenId, cards, _strengthColor, _modifier, actionName, _targetDefense) =>
     set((state) => {
+      // Deprecated/Optimistic Only - Server Authoritative now.
+      // This might be removed entirely if 'playImmediate' is not used.
       const actor = getActor(state, tokenId);
       if (!actor) return;
-
-      // Remove from hand
-      const cardIds = new Set(cards.map((c) => c.id));
-      actor.deck.hand = actor.deck.hand.filter((c) => !cardIds.has(c.id));
-
-      // Discard
-      actor.deck.discardPile.push(...cards);
-
-      // Log
-      const strength = calculateStackStrength(cards, strengthColor, modifier);
       const cardNames = cards.map((c) => c.name).join(' + ');
 
       state.logs.push(
-        createLog(
-          actionName
-            ? `${actor.name} used ${actionName} (${cardNames})`
-            : `${actor.name} performed Action (${cardNames})`,
-          'Player',
-          'action',
-          {
-            total: strength,
-            color: strengthColor,
-            targetColor: targetDefense,
-            label: 'Strength',
-          },
-        ),
+        createLog(`Action performed: ${actionName || 'Improvise'} (${cardNames})`, 'Player'),
       );
     }),
 });

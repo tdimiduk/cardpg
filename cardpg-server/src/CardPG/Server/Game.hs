@@ -31,7 +31,7 @@ import CardPG.Core.State
   , CoreCardState (..)
   , GameEnv
   , GameEvent (..)
-  , materializeStack
+  , materializePlannedAction
   )
 import CardPG.Server.Types (BroadcastAction (..), Command (..), GameState (..), StateUpdate (..))
 
@@ -86,6 +86,12 @@ processCommand cmd game =
                   (CardInstanceId . read $ T.unpack actionId)
                   (map (CardInstanceId . read . T.unpack) resourceIds)
               )
+            PlanNarrative tid cardIds color ->
+              ( tid
+              , Logic.planNarrative
+                  (map (CardInstanceId . read . T.unpack) cardIds)
+                  color
+              )
             CancelPlanIntent tid -> (tid, Logic.cancelPlan)
             ReshuffleIntent tid -> (tid, Logic.reshuffleDeck)
             AddStatusIntent tid st dest -> (tid, Logic.addStatus st dest)
@@ -108,7 +114,17 @@ processCommand cmd game =
 
                 -- Registry is on the actor
                 registry = updatedActorState.coreState.registry
-                broadcastActions = eventsToBroadcastActions registry targetId events
+                logicBroadcasts = eventsToBroadcastActions registry targetId events
+                
+                -- Augment broadcasts based on Intent
+                extraBroadcasts = case cmd of
+                  AddConsequenceIntent _ _ -> [AddConsequence targetId]
+                  RemoveConsequenceIntent _ cid -> [RemoveConsequence targetId cid]
+                  AddStatusIntent _ st dest -> [AddStatus targetId st dest]
+                  RemoveStatusIntent _ st _ -> [RemoveStatus targetId st "unknown"] -- "destination" is unknown here, maybe fix later or safe to ignore?
+                  _ -> []
+
+                broadcastActions = logicBroadcasts ++ extraBroadcasts
 
                 stateUpdates = [StateUpdate targetId updatedActorState]
                in
@@ -164,7 +180,7 @@ eventsToBroadcastActions registry actorId events = concatMap toAction events
     toAction (ActorMoved _) = [] -- State update handles position
     toAction (ActionPlanned _) = [] -- Secret until revealed
     toAction (PlanCanceled _) = [] -- State update handles hand restoration
-    toAction (ActionRevealed wireAction) = case materializeStack registry wireAction of
+    toAction (ActionRevealed wireAction) = case materializePlannedAction registry wireAction of
       Nothing -> [InvalidAction actorId "you don't have all these cards"]
       Just action -> case Logic.attackAction action of
         Left err -> [InvalidAction actorId err]

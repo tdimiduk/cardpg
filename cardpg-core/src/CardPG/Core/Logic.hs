@@ -11,6 +11,7 @@ module CardPG.Core.Logic
   , planMove
   , applyPlannedMove
   , planAction
+  , planNarrative
   , cancelPlan
   , revealPlannedActions
   , discardPlannedActions
@@ -33,6 +34,7 @@ import Control.Monad.Trans.Class (lift)
 import Data.List (partition)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text, unpack)
+import Data.UUID (nil)
 import Optics
 import System.Random (RandomGen, uniform, uniformR)
 
@@ -55,14 +57,18 @@ import CardPG.Core.State
   , CoreCardState (..)
   , GameEnv (..)
   , GameEvent (..)
+  , NarrativeStack (..)
+  , NarrativeStackMaterialized (..)
+  , PlannedAction (..)
+  , PlannedActionMaterialized (..)
   , RealizedAttack (..)
   , SpatialState (..)
   , TableCard (..)
   , TableState (..)
-  , actionStack
+  , plannedActionCards
   )
 import CardPG.Core.Util (shuffleListM)
-import Data.List.NonEmpty (toList)
+import Data.List.NonEmpty (NonEmpty (..), nonEmpty, toList)
 
 -- | The Game Monad
 -- Stack:
@@ -163,7 +169,7 @@ planAction actionCardId resourceIds = do
   currentHand <- use (#coreState % #hand)
   let allIds = actionCardId : resourceIds
       (found, remaining) = partition (`elem` allIds) currentHand
-      plan = ActionStack actionCardId resourceIds
+      plan = PStandard (ActionStack actionCardId resourceIds)
 
   core <- use (#coreState % #registry)
   let maybeActionCard = Map.lookup actionCardId core
@@ -181,15 +187,42 @@ planAction actionCardId resourceIds = do
         else tell [IllegalAction plan (Just "incorrect resource cost")]
     else tell [IllegalAction plan (Just "cards not in hand")]
 
+planNarrative :: [CardInstanceId] -> ResourceType -> GameM g ()
+planNarrative cardIds color = do
+  currentHand <- use (#coreState % #hand)
+  let (found, remaining) = partition (`elem` cardIds) currentHand
+      maybeNeIds = nonEmpty cardIds
+
+  case maybeNeIds of
+    Nothing -> tell [IllegalAction (PNarrative (NarrativeStack (CardInstanceId nil :| []) color)) (Just "no cards selected")] -- Dummy empty stack for error? Or separate error?
+    -- Creating a dummy NonEmpty is ugly.
+    -- Maybe IllegalAction should just take Maybe PlannedAction?
+    -- Or just don't emit ActionPlanned/IllegalAction with a stack if we can't build one.
+    -- Just tell "IllegalAction" generic?
+    -- IllegalAction takes PlannedAction.
+    -- If we can't build a PlannedAction, we can't emit IllegalAction with it.
+    -- Let's just return early or emit a different error?
+    -- For now effectively ignore or log error?
+    -- Let's assume frontend prevents empty selection.
+    -- If empty, ignore.
+    Just neIds -> do
+      let plan = PNarrative (NarrativeStack neIds color)
+      if length found == length cardIds
+        then do
+          modify $ #coreState % #hand .~ remaining
+          modify $ #coreState % #planned ?~ plan
+          tell [ActionPlanned plan]
+        else tell [IllegalAction plan (Just "cards not in hand")]
+
 plannedActionTo ::
-  Lens' CoreCardState [CardInstanceId] -> (ActionStack -> GameEvent) -> GameM g ()
+  Lens' CoreCardState [CardInstanceId] -> (PlannedAction -> GameEvent) -> GameM g ()
 plannedActionTo dst gameLog = do
   maybePlan <- use (#coreState % #planned)
   case maybePlan of
     Nothing -> return ()
     Just plan -> do
       modify $ #coreState % #planned .~ Nothing
-      modify $ #coreState % dst %~ ((actionStack plan) ++)
+      modify $ #coreState % dst %~ ((plannedActionCards plan) ++)
       tell [gameLog plan]
 
 cancelPlan :: GameM g ()
@@ -235,16 +268,34 @@ stackPower stack power =
    in
     rawTotal + power.modifier
 
-attackAction :: ActionStackMaterialized -> Either Text RealizedAttack
-attackAction stack = case getAttackRule (stack.actionCard) of
-  Left err -> Left err
-  Right attackRule ->
-    Right $
-      RealizedAttack
-        { attackCard = stack.actionCardId
-        , attackStrength = stackPower stack attackRule.power
-        , defenseColor = attackRule.resistedBy
-        }
+attackAction :: PlannedActionMaterialized -> Either Text RealizedAttack
+attackAction matPlan = case matPlan of
+  PMStandard stack -> case getAttackRule (stack.actionCard) of
+    Left err -> Left err
+    Right attackRule ->
+      Right $
+        RealizedAttack
+          { attackCard = stack.actionCardId
+          , attackStrength = stackPower stack attackRule.power
+          , defenseColor = attackRule.resistedBy
+          }
+  PMNarrative (NarrativeStackMaterialized { cards = cs, cardIds = cIds, color = col }) ->
+    -- Narrative Action Logic
+    let
+      -- Helper to get stat based on color
+      getStat :: ResourceType -> Stats -> Int
+      getStat Red s = s.red
+      getStat Yellow s = s.yellow
+      getStat Blue s = s.blue
+
+      rawTotal = sum [getStat col c.stats | c <- toList cs]
+    in
+      Right $
+        RealizedAttack
+          { attackCard = let (h :| _) = cIds in h -- Safe as narrative stack must have cards
+          , attackStrength = rawTotal -- Modifier 0 for now
+          , defenseColor = col -- Defense matches Action Color
+          }
 
 reshuffleDeck :: (RandomGen g) => GameM g ()
 reshuffleDeck = do
@@ -270,7 +321,7 @@ addStatus statusType destination = do
             "discard" -> modify $ #coreState % #discard %~ (cid :)
             "deck" -> modify $ #coreState % #deck %~ (cid :)
             _ -> modify $ #coreState % #discard %~ (cid :)
-          tell [ActionPlanned (ActionStack cid [])]
+          tell [ActionPlanned (PStandard (ActionStack cid []))]
         _ -> return ()
 
 removeStatus :: Text -> Maybe Text -> GameM g ()
@@ -354,8 +405,8 @@ passAction = do
   -- Plan it
   case ids of
     [cid] -> do
-      modify $ #coreState % #planned ?~ ActionStack cid []
-      tell [ActionPlanned (ActionStack cid [])]
+      modify $ #coreState % #planned ?~ PStandard (ActionStack cid [])
+      tell [ActionPlanned (PStandard (ActionStack cid []))]
     _ -> return ()
 
 removeConsequence :: Text -> GameM g ()

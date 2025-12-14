@@ -39,6 +39,8 @@ import CardPG.Core.State
   , SpatialState
   , TableCard
   , TableState
+  , NarrativeStack
+  , PlannedAction
   )
 import CardPG.Server.Types
   ( BroadcastAction
@@ -103,6 +105,8 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy StateUpdate)
               <> getTypeScriptDeclarations (Proxy :: Proxy SpatialState)
               <> getTypeScriptDeclarations (Proxy :: Proxy ActionStack)
+              <> getTypeScriptDeclarations (Proxy :: Proxy NarrativeStack)
+              <> getTypeScriptDeclarations (Proxy :: Proxy PlannedAction)
               <> getTypeScriptDeclarations (Proxy :: Proxy RealizedAttack)
           )
 

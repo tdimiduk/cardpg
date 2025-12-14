@@ -125,6 +125,7 @@ data Command
   | DefendIntent {actorId :: ActorId}
   | PlanMove {actorId :: ActorId, x :: Int, y :: Int}
   | PlanAction {actorId :: ActorId, actionCardId :: Text, resourceCardIds :: [Text]}
+  | PlanNarrative {actorId :: ActorId, cardIds :: [Text], color :: ResourceType}
   | CancelPlanIntent {actorId :: ActorId}
   | StartResolutionIntent {actorId :: ActorId}
   | EndDefenseIntent {actorId :: ActorId}

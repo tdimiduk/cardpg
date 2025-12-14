@@ -79,33 +79,23 @@ const App: React.FC = () => {
       if (selectedCards.length === 0) return;
 
       // If actionCardId provided, use it. Otherwise try to infer or fallback (e.g. improvise)
-      let finalActionId = actionCardId;
-      let resourceIds: string[] = [];
-
-      if (finalActionId) {
-        resourceIds = selectedCards.filter((c) => c.id !== finalActionId).map((c) => c.id);
+      if (actionCardId) {
+        const resourceIds = selectedCards.filter((c) => c.id !== actionCardId).map((c) => c.id);
+        dispatchCommand({
+          type: 'planAction',
+          actorId: activeTokenId,
+          actionCardId: actionCardId,
+          resourceCardIds: resourceIds,
+        });
       } else {
-        // Fallback for Improvise (No specific action card)
-        // Improvise usually treats all cards as resources and uses a "Basic Action" implicit card?
-        // Or one of the cards IS the action?
-        // Rules say: "Play a stack... Play that card on top...".
-        // Narrative Action: "If no specific Action Card... describe... GM provides modifier".
-        // For Improvise button in UI, we pass 'Improvised Action'.
-        // Backend 'ActionStack' requires 'actionCardId'.
-        // This implies even Improvise needs an Action Card, or we use a "Basic Attack" card?
-        // Current Backend Logic: Logic.hs planAction takes actionCardId.
-        // If Improvise, usually we pick one card as the "Action" (top card)?
-        // Let's assume the first selected card is the action card if not specified.
-        finalActionId = selectedCards[0].id;
-        resourceIds = selectedCards.slice(1).map((c) => c.id);
+        // Narrative Action / Improvise
+        dispatchCommand({
+          type: 'planNarrative',
+          actorId: activeTokenId,
+          cardIds: selectedCards.map((c) => c.id),
+          color: strengthColor,
+        });
       }
-
-      dispatchCommand({
-        type: 'planAction',
-        actorId: activeTokenId,
-        actionCardId: finalActionId,
-        resourceCardIds: resourceIds,
-      });
       return;
     }
 

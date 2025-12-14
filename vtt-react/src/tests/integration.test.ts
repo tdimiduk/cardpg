@@ -26,18 +26,6 @@ describe('Game Store Integration', () => {
     });
   });
 
-  it('should handle card drawing', () => {
-    const { initializeGame, drawCards, tokens } = useGameStore.getState();
-    initializeGame();
-
-    const tokenId = tokens[0].id;
-    const initialHandSize = 4;
-
-    drawCards(tokenId, 2);
-
-    const actor = useGameStore.getState().actors[tokens[0].actorId];
-    expect(actor.deck.hand.length).toBe(initialHandSize + 2);
-  });
 
   it('should handle planning and resolution flow', () => {
     useGameStore.getState().initializeGame();

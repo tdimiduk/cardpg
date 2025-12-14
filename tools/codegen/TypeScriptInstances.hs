@@ -56,6 +56,8 @@ import CardPG.Core.State
   , CoreCardState (..)
   , CorePlayState (..)
   , GameEvent (..)
+  , NarrativeStack (..)
+  , PlannedAction (..)
   , RealizedAttack (..)
   , SpatialState (..)
   , TableCard (..)
@@ -112,6 +114,8 @@ $(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
 $(deriveTypeScript cardpgJsonDef ''ActionStack)
+$(deriveTypeScript cardpgJsonDef ''NarrativeStack)
+$(deriveTypeScript cardpgJsonDef ''PlannedAction)
 $(deriveTypeScript cardpgJsonDef ''RealizedAttack)
 
 -- Helper for creating splices

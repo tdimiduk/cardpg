@@ -4,7 +4,7 @@ import {
   PlayerDeckState,
   TokenType,
   CoreCard,
-  PlannedAction,
+  UIPlannedAction,
   StateUpdate,
   Token,
   ResourceType,
@@ -19,7 +19,7 @@ import { createActor } from '../../services/actorFactory';
 export interface ActorSlice {
   actors: Record<string, ActorState>;
   tokens: Token[];
-  plannedActions: Record<string, PlannedAction>;
+  plannedActions: Record<string, UIPlannedAction>;
 
   initializeGame: () => void;
   addActor: (
@@ -32,25 +32,8 @@ export interface ActorSlice {
 
   // Server Sync
   updateActorState: (update: StateUpdate) => void;
-
-  // Deck Actions (Legacy/Optimistic - now just log or no-op)
-  drawCards: (tokenId: string, count: number) => void;
-  defend: (tokenId: string) => void;
-  clearDefense: (tokenId: string) => void;
-  reshuffle: (tokenId: string) => void;
-  discardCards: (tokenId: string, cardIds: string[]) => void;
-  returnToDeck: (tokenId: string, cardIds: string[]) => void;
-
-  // Status & Consequences
-  addConsequence: (tokenId: string) => void;
-  removeConsequence: (tokenId: string, cardId: string) => void;
-  addStatus: (
-    tokenId: string,
-    statusType: string,
-    destination: 'discard' | 'hand' | 'draw',
-  ) => void;
-  removeStatus: (tokenId: string, statusType: string) => void;
 }
+
 
 const hydrateCards = (
   ids: string[],
@@ -153,7 +136,6 @@ export const createActorSlice: StateCreator<
         state.logs.push(createLog(`Synced new actor: ${targetId}`, 'System'));
       }
 
-      const currentActor = state.actors[targetId];
       const core = serverState.coreState;
       const registry = core.registry;
 
@@ -181,17 +163,31 @@ export const createActorSlice: StateCreator<
         hand: hydrateCards(core.hand, registry),
         discardPile: hydrateCards(core.discard, registry),
         flippedPile: hydrateCards(core.defending, registry),
-        // Preserve equipped/consequences if server doesn't manage them yet?
-        // Server ActorState SHOULD manage them.
-        // Assuming coreState has them or they are separate?
-        // Current Haskell CoreState has: registry, deck, hand, discard, flipped.
-        // It DOES NOT yet have equipped/consequences fully integrated in types possibly?
-        // Checking Haskell: ActorState has `equipped :: [CardInstanceId]`?
-        // CardPG.Core.State: data ActorState = ActorState { deck, hand, discard, flipped, registry ... }
-        // It seems `equipped` and `consequences` might be missing from CoreState in Main branch?
-        // If so, we must preserve them from current state or default.
-        equipped: currentActor.deck.equipped,
-        consequences: currentActor.deck.consequences,
+
+        // Hydrate Equipped
+        equipped: Object.entries(serverState.tableState.assets || {})
+          .filter((entry) => entry[1]?.type === 'equipped')
+          .map(([id, _]) => {
+            const wrapper = serverState.tableState.registry[id];
+            if (!wrapper) return undefined;
+            const data = wrapper.data;
+            return { ...data, id } as any;
+          })
+          .filter((c): c is import('../../types').Card => !!c),
+
+        // Hydrate Consequences
+        consequences: (serverState.tableState.consequences || []).map((id) => {
+          const def = serverState.tableState.consequenceRegistry[id];
+          if (!def) {
+            return {
+              id,
+              name: 'Unknown Consequence',
+              type: 'consequenceCard',
+              severity: 1,
+            } as any;
+          }
+          return { ...def, id };
+        }),
       };
 
       state.actors[targetId].deck = newDeckState;
@@ -208,14 +204,6 @@ export const createActorSlice: StateCreator<
         const actionDef = registry[actionCardId];
         if (actionDef) {
           const actionCard = { ...actionDef, id: actionCardId };
-          const resources = resourceIds.map((id) => {
-            const def = registry[id];
-            return def
-              ? { ...def, id }
-              : ({ ...actionDef, id, name: 'Unknown', type: 'coreCard' } as CoreCard);
-            // Fallback is quick hack, ideally hydrate properly using hydrateCards
-          });
-
           // Re-hydrate strictly using hydrateCards helper
           const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
 
@@ -254,54 +242,5 @@ export const createActorSlice: StateCreator<
       // state.logs.push(createLog(`Updated state for ${currentActor.name}`, 'System'));
     }),
 
-  drawCards: (_tokenId: string, _count: number) =>
-    set((_state) => {
-      // Deprecated: Command sent via PlayerHand/DeckStats
-      console.log('local drawCards called (deprecated)');
-    }),
-
-  defend: (_tokenId: string) =>
-    set((_state) => {
-      console.log('local defend called (deprecated)');
-    }),
-
-  clearDefense: (_tokenId: string) =>
-    set((_state) => {
-      console.log('local clearDefense called (deprecated)');
-    }),
-
-  reshuffle: (_tokenId: string) =>
-    set((_state) => {
-      console.log('local reshuffle called (deprecated)');
-    }),
-
-  discardCards: (_tokenId: string, _cardIds: string[]) =>
-    set((_state) => {
-      console.log('local discardCards called (deprecated)');
-    }),
-
-  returnToDeck: (_tokenId: string, _cardIds: string[]) =>
-    set((_state) => {
-      console.log('local returnToDeck called (deprecated)');
-    }),
-
-  addConsequence: (_tokenId: string) =>
-    set((_state) => {
-      console.log('local addConsequence called (deprecated)');
-    }),
-
-  removeConsequence: (_tokenId: string, _cardId: string) =>
-    set((_state) => {
-      console.log('local removeConsequence called (deprecated)');
-    }),
-
-  addStatus: (_tokenId: string, _statusType: string, _destination: 'discard' | 'hand' | 'draw') =>
-    set((_state) => {
-      console.log('local addStatus called (deprecated)');
-    }),
-
-  removeStatus: (_tokenId: string, _statusType: string) =>
-    set((_state) => {
-      console.log('local removeStatus called (deprecated)');
-    }),
+  // No local logic methods needed - actions are dispatched as commands
 });

@@ -1,6 +1,7 @@
 module CardPG.Core.State where
 
 import Data.Aeson.TH (deriveJSON)
+import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
@@ -36,8 +37,24 @@ data ActionStack = ActionStack
 
 $(deriveJSON cardpgJsonDef ''ActionStack)
 
-actionStack :: ActionStack -> [CardInstanceId]
-actionStack (ActionStack ac res) = ac : res
+data NarrativeStack = NarrativeStack
+  { cards :: NonEmpty CardInstanceId
+  , color :: ResourceType
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''NarrativeStack)
+
+data PlannedAction
+  = PStandard ActionStack
+  | PNarrative NarrativeStack
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''PlannedAction)
+
+plannedActionCards :: PlannedAction -> [CardInstanceId]
+plannedActionCards (PStandard (ActionStack ac res)) = ac : res
+plannedActionCards (PNarrative (NarrativeStack cs _)) = toList cs
 
 data ActionStackMaterialized = ActionStackMaterialized
   { actionCard :: CoreCard
@@ -47,14 +64,27 @@ data ActionStackMaterialized = ActionStackMaterialized
   }
   deriving stock (Show, Eq, Generic)
 
-materializeStack :: CardRegistry CoreCard -> ActionStack -> Maybe ActionStackMaterialized
-materializeStack registry (ActionStack acId resIds) = do
-  ac <- Map.lookup acId registry
-  res <- traverse (`Map.lookup` registry) resIds
-  return $ ActionStackMaterialized ac acId res resIds
+data NarrativeStackMaterialized = NarrativeStackMaterialized
+  { cards :: NonEmpty CoreCard
+  , cardIds :: NonEmpty CardInstanceId
+  , color :: ResourceType
+  }
+  deriving stock (Show, Eq, Generic)
 
-dematerializeStack :: ActionStackMaterialized -> ActionStack
-dematerializeStack (ActionStackMaterialized _ acId _ resIds) = ActionStack acId resIds
+data PlannedActionMaterialized
+  = PMStandard ActionStackMaterialized
+  | PMNarrative NarrativeStackMaterialized
+  deriving stock (Show, Eq, Generic)
+
+materializePlannedAction :: CardRegistry CoreCard -> PlannedAction -> Maybe PlannedActionMaterialized
+materializePlannedAction registry plan = case plan of
+  PStandard (ActionStack acId resIds) -> do
+    ac <- Map.lookup acId registry
+    res <- traverse (`Map.lookup` registry) resIds
+    return $ PMStandard $ ActionStackMaterialized ac acId res resIds
+  PNarrative (NarrativeStack cIds c) -> do
+    cs <- traverse (`Map.lookup` registry) cIds
+    return $ PMNarrative $ NarrativeStackMaterialized cs cIds c
 
 data RealizedAttack = RealizedAttack
   { attackCard :: CardInstanceId
@@ -69,7 +99,7 @@ data CoreCardState = CoreCardState
   { deck :: [CardInstanceId] -- Top is head
   , hand :: [CardInstanceId] -- User-defined order
   , discard :: [CardInstanceId] -- Top is head (most recently played)
-  , planned :: Maybe ActionStack
+  , planned :: Maybe PlannedAction
   , defending :: [CardInstanceId] -- Currently committed to a defense
   , inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
   , registry :: CardRegistry CoreCard
@@ -129,11 +159,11 @@ data GameEvent
   | CardDefended CardInstanceId
   | MovePlanned (Int, Int)
   | ActorMoved (Int, Int)
-  | ActionPlanned ActionStack
-  | PlanCanceled ActionStack
-  | ActionRevealed ActionStack
+  | ActionPlanned PlannedAction
+  | PlanCanceled PlannedAction
+  | ActionRevealed PlannedAction
   | DefenseEnded [CardInstanceId]
-  | IllegalAction ActionStack (Maybe Text)
+  | IllegalAction PlannedAction (Maybe Text)
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)

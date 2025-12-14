@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHandSelection } from '../../hooks/useHandSelection';
-import { CoreCard, ResourceType, GamePhase, PlannedAction } from '../../types';
+import { CoreCard, ResourceType, GamePhase, UIPlannedAction } from '../../types';
 import { CardComponent } from '../Card/Card';
 import {
   Square,
@@ -32,7 +32,7 @@ interface PlayerHandProps {
   onReturnToDeck: (selectedCards: CoreCard[]) => void;
   phase: GamePhase;
   hasPlanned: boolean;
-  plannedAction?: PlannedAction;
+  plannedAction?: UIPlannedAction;
 }
 
 // Helper Component for Action Button Icons

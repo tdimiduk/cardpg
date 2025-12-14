@@ -1,15 +1,5 @@
-import { CoreCard, ResourceType, Stats, Card, ConsequenceCard } from '../types';
+import { Card, ConsequenceCard } from '../types';
 
-export const calculateStackStrength = (
-  stack: CoreCard[],
-  strengthColor: ResourceType,
-  modifier: number = 0,
-): number => {
-  // Rule: Sum of color values in stack + modifier
-  const key = strengthColor.toLowerCase() as keyof Stats;
-  const base = stack.reduce((sum, card) => sum + (card.stats[key] ?? 0), 0);
-  return base + modifier;
-};
 
 export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number => {
   let max = 0;

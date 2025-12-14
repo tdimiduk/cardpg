@@ -14,22 +14,13 @@ function assertUnreachable(_x: never): never {
 export const useGameAction = () => {
   // Store actions
   const commitPlan = useGameStore((state) => state.commitPlan);
+  const cancelPlan = useGameStore((state) => state.cancelPlan);
   const playImmediate = useGameStore((state) => state.playImmediate);
   const passTurn = useGameStore((state) => state.passTurn);
   const revealAndResolve = useGameStore((state) => state.revealAndResolve);
   const endRound = useGameStore((state) => state.endRound);
   const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
-  const drawCards = useGameStore((state) => state.drawCards);
-  const defend = useGameStore((state) => state.defend);
-  const clearDefense = useGameStore((state) => state.clearDefense);
-  const reshuffle = useGameStore((state) => state.reshuffle);
-  const addConsequence = useGameStore((state) => state.addConsequence);
-  const removeConsequence = useGameStore((state) => state.removeConsequence);
-  const addStatus = useGameStore((state) => state.addStatus);
-  const removeStatus = useGameStore((state) => state.removeStatus);
-  const discardCards = useGameStore((state) => state.discardCards);
-  const cancelPlan = useGameStore((state) => state.cancelPlan);
-  const returnToDeck = useGameStore((state) => state.returnToDeck);
+  const addLog = useGameStore((state) => state.addLog);
 
   const _applyAction = useCallback(
     (action: BroadcastAction) => {
@@ -55,46 +46,59 @@ export const useGameAction = () => {
           updateTokenPosition(action.token);
           break;
         case 'drawCards':
-          drawCards(action.actingActor, action.count);
+          addLog(`${action.actingActor} drew ${action.count} card(s).`, 'System', 'info');
           break;
         case 'defend':
-          defend(action.actingActor);
+          addLog(`${action.actingActor} is defending.`, 'System', 'info');
           break;
         case 'clearDefense':
-          clearDefense(action.actingActor);
+          addLog(`${action.actingActor} cleared defense.`, 'System', 'info');
           break;
         case 'reshuffle':
-          reshuffle(action.actingActor);
+          addLog(`${action.actingActor} reshuffled their deck.`, 'System', 'info');
           break;
         case 'addConsequence':
-          addConsequence(action.actingActor);
+          addLog(`${action.actingActor} gained a consequence.`, 'System', 'info');
           break;
         case 'removeConsequence':
-          removeConsequence(action.actingActor, action.cardId);
+          addLog(`${action.actingActor} removed a consequence.`, 'System', 'info');
           break;
         case 'addStatus':
-          addStatus(
-            action.actingActor,
-            action.statusType,
-            action.destination as 'discard' | 'hand' | 'draw',
+          addLog(
+            `${action.actingActor} added status "${action.statusType}" to ${action.destination}.`,
+            'System',
+            'info',
           );
           break;
         case 'removeStatus':
-          removeStatus(action.actingActor, action.statusType);
+          addLog(
+            `${action.actingActor} removed status "${action.statusType}" from ${action.destination}.`,
+            'System',
+            'info',
+          );
           break;
         case 'discardCards':
-          discardCards(action.actingActor, action.cardIds);
+          addLog(
+            `${action.actingActor} discarded ${action.cardIds.length} card(s).`,
+            'System',
+            'info',
+          );
           break;
         case 'cancelPlan':
           cancelPlan(action.actingActor);
           break;
         case 'returnToDeck':
-          returnToDeck(action.actingActor, action.cardIds);
+          addLog(
+            `${action.actingActor} returned ${action.cardIds.length} card(s) to deck.`,
+            'System',
+            'info',
+          );
           break;
         case 'startResolutionPhase':
           // Optional: Show phase change specific UI if needed
           break;
         case 'invalidAction':
+          addLog(`Invalid Action for ${action.actingActor}: ${action.message}`, 'System');
           console.error(`Invalid Action for ${action.actingActor}: ${action.message}`);
           break;
         default:
@@ -108,17 +112,8 @@ export const useGameAction = () => {
       revealAndResolve,
       endRound,
       updateTokenPosition,
-      drawCards,
-      defend,
-      clearDefense,
-      reshuffle,
-      addConsequence,
-      removeConsequence,
-      addStatus,
-      removeStatus,
-      discardCards,
       cancelPlan,
-      returnToDeck,
+      addLog,
     ],
   );
 

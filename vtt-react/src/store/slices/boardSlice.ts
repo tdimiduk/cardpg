@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { Token, PlannedAction, ActorState } from '../../types';
+import { Token, UIPlannedAction, ActorState } from '../../types';
 import { INITIAL_TOKENS, RESOURCE_TYPES } from '../../constants';
 
 export interface BoardSlice {
@@ -15,7 +15,7 @@ export interface BoardSlice {
 export const createBoardSlice: StateCreator<
   BoardSlice & {
     phase: string;
-    plannedActions: Record<string, PlannedAction>;
+    plannedActions: Record<string, UIPlannedAction>;
     actors: Record<string, ActorState>;
   }, // Partial definition of full store for TS
   [['zustand/immer', never]],

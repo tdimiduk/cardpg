@@ -146,21 +146,7 @@ talk client state = forever $ do
             -- Update log and broadcast
             (currentClients, currentGs, movesUpdates, extraBroadcasts) <- modifyMVar state $ \s -> do
                 let s' = addAction payload s
-                -- Special handling for EndRound
-                case payload of
-                     EndRound -> do
-                        T.putStrLn "Resolving round..."
-                        let (newGame, updates) = CardPG.Server.Game.concludeRound (s'.gameState)
-                        T.putStrLn $ "Round resolved. Updates: " <> T.pack (show $ length updates)
-                        let s'' = s' { gameState = newGame }
-                        return (s'', (s''.clients, s''.gameState, updates, []))
-                     StartResolutionPhase -> do
-                        T.putStrLn "Starting resolution phase..."
-                        let (newGame, broadcasts) = CardPG.Server.Game.revealPlannedActions (s'.gameState)
-                        T.putStrLn $ "Revealed actions: " <> T.pack (show $ length broadcasts)
-                        let s'' = s' { gameState = newGame }
-                        return (s'', (s''.clients, s''.gameState, [], broadcasts))
-                     _ -> return (s', (s'.clients, s'.gameState, [], []))
+                return (s', (s'.clients, s'.gameState, [], []))
 
             -- Broadcast to ALL (was others)
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs

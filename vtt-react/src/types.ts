@@ -84,7 +84,7 @@ export interface PlayerDeckState {
 
 export type GamePhase = 'planning' | 'resolution';
 
-export interface PlannedAction {
+export interface UIPlannedAction {
   actorId: string;
   actorName: string;
   cards: CoreCard[];
