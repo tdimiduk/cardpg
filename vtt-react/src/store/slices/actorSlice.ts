@@ -121,6 +121,7 @@ export const createActorSlice: StateCreator<
             equipped: [],
             consequences: [],
           },
+          registry: {},
         };
 
         // Recursively call addActor-like logic or just push token
@@ -137,6 +138,12 @@ export const createActorSlice: StateCreator<
 
       const core = serverState.coreState;
       const registry = core.registry;
+
+      // Sync Registry
+      state.actors[targetId].registry = registry as Record<
+        string,
+        import('../../generated/types').CoreCard
+      >;
 
       // Sync Spatial State to Token
       const token = state.tokens.find((t: Token) => t.actorId === targetId);

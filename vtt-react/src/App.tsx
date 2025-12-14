@@ -261,16 +261,8 @@ const App: React.FC = () => {
                   const actor = actors[currentResolution.actorId];
                   if (!actor) return 'Unknown Card';
                   const cardId = currentResolution.attack.attackCard;
-                  // Search in deck lists
-                  const allCards = [
-                    ...actor.deck.hand,
-                    ...actor.deck.drawPile,
-                    ...actor.deck.discardPile,
-                    ...actor.deck.equipped,
-                    ...actor.deck.consequences,
-                  ];
-                  const card = allCards.find((c) => c.id === cardId);
-                  return card?.name || 'Unknown Card';
+                  const def = actor.registry[cardId];
+                  return def?.name || 'Unknown Card';
                 })(),
               }
             : null

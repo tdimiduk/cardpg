@@ -30,6 +30,7 @@ describe('MapBoard', () => {
       consequences: [],
     },
     plannedMove: undefined,
+    registry: {},
   };
 
   const defaultProps = {

@@ -49,6 +49,7 @@ export interface ActorState {
   color: string;
   deck: PlayerDeckState;
   plannedMove?: { x: number; y: number };
+  registry: Record<string, import('./generated/types').CoreCard>;
 }
 
 export interface LogEntry {
