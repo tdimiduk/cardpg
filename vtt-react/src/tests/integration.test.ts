@@ -9,7 +9,7 @@ describe('Game Store Integration', () => {
       tokens: INITIAL_TOKENS,
       logs: [],
       phase: 'planning',
-      activeTokenId: INITIAL_TOKENS[0]?.id || null,
+      activeActorId: Object.keys(INITIAL_ACTORS)[0] || null,
       plannedActions: {},
     });
   });
@@ -38,8 +38,10 @@ describe('Game Store Integration', () => {
     // Commit Plan
     store.commitPlan(tokenId, [cardToPlay], RESOURCE_TYPES.RED, 0);
 
-    expect(useGameStore.getState().plannedActions[tokenId]).toBeDefined();
-    expect(useGameStore.getState().plannedActions[tokenId].cards[0].id).toBe(cardToPlay.id);
+    // plannedActions stored by actorId
+    const actingActorId = store.tokens.find((t) => t.id === tokenId)?.actorId || '';
+    expect(useGameStore.getState().plannedActions[actingActorId]).toBeDefined();
+    expect(useGameStore.getState().plannedActions[actingActorId].cards[0].id).toBe(cardToPlay.id);
 
     // Reveal
     store.revealAndResolve();
@@ -48,6 +50,8 @@ describe('Game Store Integration', () => {
     // End Round
     store.endRound();
     expect(useGameStore.getState().phase).toBe('planning');
-    expect(useGameStore.getState().plannedActions[tokenId]).toBeUndefined();
+    // plan stored by actorId
+    // We already have actingActorId
+    expect(useGameStore.getState().plannedActions[actingActorId]).toBeUndefined();
   });
 });

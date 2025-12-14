@@ -29,7 +29,7 @@ interface SidebarLeftProps {
   onRemoveStatusCard: (type: string) => void;
   tokens: Token[];
   activeToken?: Token;
-  activeTokenId: string;
+  activeActorId: string;
   hasPlannedAction?: boolean;
   actors: Record<string, ActorState>;
   onAddActor: (name: string, type: TokenType, color: string, templateId?: string) => void;
@@ -49,7 +49,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
   onRemoveStatusCard,
   tokens,
   activeToken,
-  activeTokenId,
+  activeActorId,
   actors,
   onAddActor,
   onRemoveActor,
@@ -136,7 +136,7 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
 
       {activeToken && actors[activeToken.actorId] && (
         <ActiveActorHeader
-          activeTokenId={activeTokenId}
+          activeActorId={activeActorId}
           actor={activeToken ? actors[activeToken.actorId] : actors[Object.keys(actors)[0]]}
         />
       )}

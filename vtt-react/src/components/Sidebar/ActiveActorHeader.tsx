@@ -3,7 +3,7 @@ import { Skull, User } from 'lucide-react';
 import { TokenType, ActorState } from '../../types';
 
 interface ActiveActorHeaderProps {
-  activeTokenId: string;
+  activeActorId: string;
   actor: ActorState;
 }
 

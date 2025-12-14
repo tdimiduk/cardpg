@@ -44,22 +44,23 @@ describe('Game Lifecycle Integration', () => {
 
     for (let i = 0; i < tokens.length; i++) {
       const tokenEl = tokens[i];
-      console.log(`State before click: activeTokenId=${useGameStore.getState().activeTokenId}`);
+      console.log(`State before click: activeActorId=${useGameStore.getState().activeActorId}`);
 
       // Select token
       fireEvent.mouseDown(tokenEl);
 
       // Wait for store update
       await waitFor(() => {
-        const activeId = useGameStore.getState().activeTokenId;
+        const activeId = useGameStore.getState().activeActorId;
         expect(activeId).toBeTruthy();
       });
 
-      console.log(`State after click: activeTokenId=${useGameStore.getState().activeTokenId}`);
+      console.log(`State after click: activeActorId=${useGameStore.getState().activeActorId}`);
 
       const state = useGameStore.getState();
-      const activeTokenId = state.activeTokenId;
-      const activeToken = state.tokens.find((t) => t.id === activeTokenId);
+      const activeActorId = state.activeActorId;
+      // Find token that belongs to this actor (integration assumption: only one token per actor usually, or at least one exists)
+      const activeToken = state.tokens.find((t) => t.actorId === activeActorId);
 
       if (activeToken) {
         // Record expected position (current + 1 grid unit)
@@ -71,7 +72,7 @@ describe('Game Lifecycle Integration', () => {
           `Active Actor: ${state.actors[activeToken.actorId].name}, Token: ${activeToken.id} @ ${activeToken.x},${activeToken.y}`,
         );
       } else {
-        throw new Error('Active token found in state');
+        throw new Error('No active token found for active actor');
       }
 
       // Wait for Sidebar to update

@@ -6,8 +6,8 @@ import { TokenEntity } from './TokenEntity';
 interface MapBoardProps {
   tokens: Token[];
   onUpdateToken: (token: Token) => void;
-  activeTokenId: string | null;
-  setActiveTokenId: (id: string | null) => void;
+  activeActorId: string | null;
+  setActiveActorId: (id: string | null) => void;
   defeatedTokenIds?: string[];
   actors: Record<string, ActorState>;
 }
@@ -15,8 +15,8 @@ interface MapBoardProps {
 export const MapBoard: React.FC<MapBoardProps> = ({
   tokens,
   onUpdateToken,
-  activeTokenId,
-  setActiveTokenId,
+  activeActorId,
+  setActiveActorId,
   defeatedTokenIds = [],
   actors,
 }) => {
@@ -33,7 +33,7 @@ export const MapBoard: React.FC<MapBoardProps> = ({
   const handleMouseDown = (e: React.MouseEvent, token: Token) => {
     // ... (keep existing logic)
     e.stopPropagation();
-    setActiveTokenId(token.id);
+    setActiveActorId(token.actorId);
 
     setDraggingToken({
       id: token.id,
@@ -89,7 +89,7 @@ export const MapBoard: React.FC<MapBoardProps> = ({
         ref={boardRef}
         className="relative min-w-[2000px] min-h-[2000px] bg-grid-pattern bg-slate-800"
         style={{ backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px` }}
-        onClick={() => setActiveTokenId(null)}
+        onClick={() => setActiveActorId(null)}
       >
         {/* SVG Layer for Planned Paths */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible">
@@ -175,14 +175,14 @@ export const MapBoard: React.FC<MapBoardProps> = ({
                   left: renderX,
                   top: renderY,
                   transition: isDragging ? 'none' : 'all 0.2s ease-out',
-                  zIndex: activeTokenId === token.id ? 50 : 10,
+                  zIndex: activeActorId === token.actorId ? 50 : 10,
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <TokenEntity
                   token={token}
                   actor={actor}
-                  isSelected={activeTokenId === token.id}
+                  isSelected={activeActorId === token.actorId}
                   onMouseDown={handleMouseDown}
                   isDefeated={isDefeated}
                 />

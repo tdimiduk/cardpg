@@ -4,8 +4,8 @@ import { INITIAL_TOKENS, RESOURCE_TYPES } from '../../constants';
 
 export interface BoardSlice {
   tokens: Token[];
-  activeTokenId: string | null;
-  setActiveToken: (tokenId: string | null) => void;
+  activeActorId: string | null;
+  setActiveActor: (actorId: string | null) => void;
   updateTokenPosition: (token: Token) => void;
   spawnToken: (actorId: string, x: number, y: number) => void;
   despawnToken: (tokenId: string) => void;
@@ -23,11 +23,11 @@ export const createBoardSlice: StateCreator<
   BoardSlice
 > = (set) => ({
   tokens: INITIAL_TOKENS,
-  activeTokenId: INITIAL_TOKENS[0]?.id || null,
+  activeActorId: null, // Default to null, or maybe first actor?
 
-  setActiveToken: (tokenId) =>
+  setActiveActor: (actorId) =>
     set((state) => {
-      state.activeTokenId = tokenId;
+      state.activeActorId = actorId;
     }),
 
   updateTokenPosition: (token) =>
@@ -68,10 +68,11 @@ export const createBoardSlice: StateCreator<
 
   despawnToken: (tokenId) =>
     set((state) => {
+      const token = state.tokens.find((t) => t.id === tokenId);
+      if (token && state.activeActorId === token.actorId) {
+        state.activeActorId = null;
+      }
       state.tokens = state.tokens.filter((t) => t.id !== tokenId);
       delete state.plannedActions[tokenId];
-      if (state.activeTokenId === tokenId) {
-        state.activeTokenId = null;
-      }
     }),
 });

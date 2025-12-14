@@ -35,8 +35,8 @@ describe('MapBoard', () => {
   const defaultProps = {
     tokens: [mockToken],
     onUpdateToken: mockUpdateToken,
-    activeTokenId: null,
-    setActiveTokenId: mockSetActiveToken,
+    activeActorId: null,
+    setActiveActorId: mockSetActiveToken, // Function signature compatible
     actors: { 'actor-1': mockActor },
     defeatedTokenIds: [],
   };
@@ -51,7 +51,7 @@ describe('MapBoard', () => {
     fireEvent.mouseUp(boardElement, { clientX: 100, clientY: 100 });
 
     expect(mockUpdateToken).not.toHaveBeenCalled();
-    expect(mockSetActiveToken).toHaveBeenCalledWith('token-1'); // It should still select
+    expect(mockSetActiveToken).toHaveBeenCalledWith('actor-1'); // It should select actorId
   });
 
   it('should call onUpdateToken when dragging to a new position', () => {
