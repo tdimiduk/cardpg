@@ -133,7 +133,7 @@ export const createActorSlice: StateCreator<
           size: 1,
         });
 
-        state.logs.push(createLog(`Synced new actor: ${targetId}`, 'System'));
+        state.logs.push(createLog(`Synced new actor: ${serverState.name}`, 'System'));
       }
 
       const core = serverState.coreState;
