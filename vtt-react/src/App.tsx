@@ -52,7 +52,7 @@ const App: React.FC = () => {
     .filter((actor) => actor.deck.consequences.some((c) => c.name === 'Taken Out'))
     .flatMap((actor) => tokens.filter((t) => t.actorId === actor.id).map((t) => t.id));
 
-  const activeAction = activeTokenId ? plannedActions[activeTokenId] : undefined;
+  const activeAction = activeTokenId && activeToken ? plannedActions[activeToken.actorId] : undefined;
   const isActionPlanned = (action?: { cards: CoreCard[]; actionName?: string }) =>
     !!action && (action.cards.length > 0 || action.actionName === 'Pass');
   const userHasPlannedAction = isActionPlanned(activeAction);
@@ -73,7 +73,7 @@ const App: React.FC = () => {
     actionName?: string,
     actionCardId?: string,
   ) => {
-    if (!activeTokenId) return;
+    if (!activeToken) return;
 
     if (phase === 'planning') {
       if (selectedCards.length === 0) return;
@@ -83,7 +83,7 @@ const App: React.FC = () => {
         const resourceIds = selectedCards.filter((c) => c.id !== actionCardId).map((c) => c.id);
         dispatchCommand({
           type: 'planAction',
-          actorId: activeTokenId,
+          actorId: activeToken.actorId,
           actionCardId: actionCardId,
           resourceCardIds: resourceIds,
         });
@@ -91,7 +91,7 @@ const App: React.FC = () => {
         // Narrative Action / Improvise
         dispatchCommand({
           type: 'planNarrative',
-          actorId: activeTokenId,
+          actorId: activeToken.actorId,
           cardIds: selectedCards.map((c) => c.id),
           color: strengthColor,
         });
@@ -103,11 +103,6 @@ const App: React.FC = () => {
     // In Server Authoritative mode, actions are Planned then Resolved.
     // If in Resolution phase, manual play is likely disabled or should use PlanAction if supported (e.g. Improvise).
     console.warn('Attempted to play stack in non-planning phase or fallback.');
-  };
-
-  const handlePass = () => {
-    if (!activeTokenId || !activeToken || phase !== 'planning') return;
-    dispatchCommand({ type: 'passIntent', actorId: activeToken.actorId });
   };
 
   return (
@@ -123,35 +118,43 @@ const App: React.FC = () => {
           dispatchCommand({ type: 'defendIntent', actorId: activeToken.actorId });
         }}
         onClearDefense={() => {
-          if (!activeTokenId) return;
-          dispatchCommand({ type: 'endDefenseIntent', actorId: activeTokenId });
+          if (!activeToken) return;
+          dispatchCommand({ type: 'endDefenseIntent', actorId: activeToken.actorId });
         }}
         onReshuffle={() => {
-          if (!activeTokenId) return;
-          dispatchCommand({ type: 'reshuffleIntent', actorId: activeTokenId });
+          if (!activeToken) return;
+          dispatchCommand({ type: 'reshuffleIntent', actorId: activeToken.actorId });
         }}
         onSelectToken={(id) => setActiveToken(id)}
         onAddConsequence={() => {
-          if (!activeTokenId) return;
-          dispatchCommand({ type: 'addConsequenceIntent', actorId: activeTokenId, severity: 1 });
+          if (!activeToken) return;
+          dispatchCommand({
+            type: 'addConsequenceIntent',
+            actorId: activeToken.actorId,
+            severity: 1,
+          });
         }}
         onRemoveConsequence={(cardId) => {
-          if (!activeTokenId) return;
-          dispatchCommand({ type: 'removeConsequenceIntent', actorId: activeTokenId, cardId });
+          if (!activeToken) return;
+          dispatchCommand({
+            type: 'removeConsequenceIntent',
+            actorId: activeToken.actorId,
+            cardId,
+          });
         }}
         onAddStatusCard={(statusType, destination) => {
-          if (!activeTokenId) return;
+          if (!activeToken) return;
           dispatchCommand({
             type: 'addStatusIntent',
-            actorId: activeTokenId,
+            actorId: activeToken.actorId,
             statusType,
             destination,
           });
         }}
         onRemoveStatusCard={(statusType) => {
-          if (!activeTokenId) return;
+          if (!activeToken) return;
           // removeStatusIntent with targetCardId undefined implies remove by type
-          dispatchCommand({ type: 'removeStatusIntent', actorId: activeTokenId, statusType });
+          dispatchCommand({ type: 'removeStatusIntent', actorId: activeToken.actorId, statusType });
         }}
         tokens={tokens}
         activeToken={tokens.find((t) => t.id === activeTokenId)}
@@ -193,22 +196,26 @@ const App: React.FC = () => {
             hand={currentDeck.hand}
             onPlayStack={handlePlayStack}
             onDiscard={(cards) =>
-              activeTokenId &&
+              activeToken &&
               dispatchCommand({
                 type: 'discardCardsIntent',
-                actorId: activeTokenId,
+                actorId: activeToken.actorId,
                 cardIds: cards.map((c) => c.id),
               })
             }
-            onPass={handlePass}
+            onPass={() => {
+              if (!activeToken) return;
+              dispatchCommand({ type: 'passIntent', actorId: activeToken.actorId });
+            }}
             onCancelPlan={() =>
-              activeTokenId && dispatchCommand({ type: 'cancelPlanIntent', actorId: activeTokenId })
+              activeToken &&
+              dispatchCommand({ type: 'cancelPlanIntent', actorId: activeToken.actorId })
             }
             onReturnToDeck={(cards) =>
-              activeTokenId &&
+              activeToken &&
               dispatchCommand({
                 type: 'returnToDeckIntent',
-                actorId: activeTokenId,
+                actorId: activeToken.actorId,
                 cardIds: cards.map((c) => c.id),
               })
             }
