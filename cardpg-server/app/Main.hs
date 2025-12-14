@@ -148,19 +148,15 @@ talk client state = forever $ do
                 let s' = addAction payload s
                 return (s', (s'.clients, s'.gameState, [], []))
 
-            -- Broadcast to ALL (was others)
+            -- Batched Broadcast
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
-            broadcast (BroadcastMessage (client.clientId) [payload]) broadcastState
+            
+            let messages = 
+                  [BroadcastMessage (client.clientId) [payload]] ++ 
+                  (if null extraBroadcasts then [] else [BroadcastMessage (client.clientId) extraBroadcasts]) ++
+                  (if null movesUpdates then [] else [GameStateUpdate movesUpdates (Just (currentGs.phase))])
 
-            -- If there were extra broadcasts (e.g. Revealed Actions)
-            case extraBroadcasts of
-                 [] -> return ()
-                 extras -> broadcast (BroadcastMessage (client.clientId) extras) broadcastState
-
-            -- If there were updates from EndRound, broadcast them to ALL (batched)
-            case movesUpdates of
-                 [] -> return ()
-                 updates -> broadcast (GameStateUpdate updates (Just (currentGs.phase))) broadcastState
+            broadcast (MultiMessage messages) broadcastState
 
             -- Continue loop
             talkLoop client state
@@ -211,15 +207,15 @@ talkLoop client state = do
             -- Broadcast results
             let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
             
-            -- 1. Broadcast Actions (Animations/Logs)
-            case actions of
-                 [] -> return ()
-                 acts -> broadcast (BroadcastMessage (client.clientId) acts) tempState
-                
-            -- 2. Broadcast State Updates
-            if not (null updates) || newPhase /= oldPhase
-                 then broadcast (GameStateUpdate updates (Just newPhase)) tempState
-                 else return ()
+            let messages =
+                  (if null actions then [] else [BroadcastMessage (client.clientId) actions]) ++
+                  (if not (null updates) || newPhase /= oldPhase 
+                      then [GameStateUpdate updates (Just newPhase)]
+                      else [])
+
+            if not (null messages)
+               then broadcast (MultiMessage messages) tempState
+               else return ()
             
             talkLoop client state
 

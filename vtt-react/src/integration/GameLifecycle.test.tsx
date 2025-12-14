@@ -141,8 +141,8 @@ describe('Game Lifecycle Integration', () => {
           throw new Error('No enabled Plan buttons found');
         }
 
-        // Verify plan is locked
-        await screen.findByText(/Plan Locked/i);
+        // Verify plan is locked (look for Revision option)
+        await screen.findByText(/Revise/i);
       } else {
         console.warn('No cards in hand to plan action with');
       }

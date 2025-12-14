@@ -69,6 +69,7 @@ test-suite cardpg-server-test
   main-is:             Main.hs
   other-modules:       GameTest
                      , ScenarioTest
+                     , JsonTest
   hs-source-dirs:      test
   build-depends:       base >= 4.7 && < 5
                      , cardpg-server
@@ -83,4 +84,7 @@ test-suite cardpg-server-test
                      , optics
                      , mtl
                      , yaml
+                     , yaml
                      , filepath
+                     , bytestring
+                     , aeson

@@ -8,41 +8,48 @@ export const useGameSync = () => {
   const { _applyAction } = useGameAction();
 
   useEffect(() => {
-    if (lastMessage) {
-      if (lastMessage.type === 'broadcastMessage') {
-        const actions = lastMessage.payload;
+    function handleMessage(msg: import('../generated/types').ServerMessage) {
+      if (msg.type === 'broadcastMessage') {
+        const actions = msg.payload;
         console.log('Received broadcast actions:', actions);
 
         actions.forEach((action) => {
           _applyAction(action);
         });
-      } else if (lastMessage.type === 'welcome') {
+      } else if (msg.type === 'welcome') {
         // Sync initial actors first so names are available for history
-        if (lastMessage.initialActors) {
-          console.log('Syncing initial actors:', lastMessage.initialActors.length);
-          lastMessage.initialActors.forEach((update) => {
+        if (msg.initialActors) {
+          console.log('Syncing initial actors:', msg.initialActors.length);
+          msg.initialActors.forEach((update) => {
             useGameStore.getState().updateActorState(update);
           });
         }
 
         // Sync phase
-        if (lastMessage.phase) {
-          useGameStore.getState().setPhase(lastMessage.phase);
+        if (msg.phase) {
+          useGameStore.getState().setPhase(msg.phase);
         }
 
-        console.log('Replaying history:', lastMessage.history.length, 'actions');
-        lastMessage.history.forEach((action) => {
+        console.log('Replaying history:', msg.history.length, 'actions');
+        msg.history.forEach((action) => {
           _applyAction(action);
         });
-      } else if (lastMessage.type === 'gameStateUpdate') {
-        console.log('Received State Updates:', lastMessage.updates);
-        lastMessage.updates.forEach((update) => {
+      } else if (msg.type === 'gameStateUpdate') {
+        console.log('Received State Updates:', msg.updates);
+        msg.updates.forEach((update) => {
           useGameStore.getState().updateActorState(update);
         });
-        if (lastMessage.newPhase) {
-          useGameStore.getState().setPhase(lastMessage.newPhase);
+        if (msg.newPhase) {
+          useGameStore.getState().setPhase(msg.newPhase);
         }
+      } else if (msg.type === 'multiMessage') {
+        console.log('Received Batch Message:', msg.messages.length);
+        msg.messages.forEach(handleMessage);
       }
+    }
+
+    if (lastMessage) {
+      handleMessage(lastMessage);
     }
   }, [lastMessage, clientId, _applyAction]);
 };

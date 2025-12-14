@@ -181,6 +181,7 @@ data ServerMessage
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}
+  | MultiMessage {messages :: [ServerMessage]}
   | GameStateUpdate {updates :: [StateUpdate], newPhase :: Maybe Phase}
   deriving (Show, Generic)
 

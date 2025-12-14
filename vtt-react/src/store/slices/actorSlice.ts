@@ -155,6 +155,9 @@ export const createActorSlice: StateCreator<
 
       // Sync Planned Move
       if (serverState.plannedMove) {
+        if (!state.actors[targetId].plannedMove) {
+          console.log('Sync: setting plannedMove for', targetId, serverState.plannedMove);
+        }
         state.actors[targetId].plannedMove = {
           x: serverState.plannedMove[0],
           y: serverState.plannedMove[1],
@@ -202,8 +205,8 @@ export const createActorSlice: StateCreator<
       const planned = core.planned;
 
       if (planned) {
-        // Handle PStandard
         if (planned.type === 'pStandard') {
+          console.log('Sync: setting PStandard for', targetId);
           const stack = planned.data; // ActionStack
           const actionCardId = stack.actionCard;
           const resourceIds = stack.resources;
