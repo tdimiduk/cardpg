@@ -193,54 +193,68 @@ export const createActorSlice: StateCreator<
       state.actors[targetId].deck = newDeckState;
 
       // Sync Planned Actions (Authoritative)
-      // core.planned is ActionStack { actionCard: string, resources: string[] }
-      // Casting to any because of generated type confusion
-      const planned = core.planned as any;
+      const planned = core.planned;
 
       if (planned) {
-        const actionCardId = planned.actionCard;
-        const resourceIds = planned.resources as string[];
+        // Handle PStandard
+        if (planned.type === 'pStandard') {
+          const stack = planned.data; // ActionStack
+          const actionCardId = stack.actionCard;
+          const resourceIds = stack.resources;
 
-        const actionDef = registry[actionCardId];
-        if (actionDef) {
-          const actionCard = { ...actionDef, id: actionCardId };
-          // Re-hydrate strictly using hydrateCards helper
-          const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
+          const actionDef = registry[actionCardId];
+          if (actionDef) {
+            const actionCard = { ...actionDef, id: actionCardId };
+            const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
 
-          // Infer Action logic for UI
-          let color: ResourceType = RESOURCE_TYPES.RED; // Default
-          let modifier = 0;
-          let targetDefense: ResourceType | undefined = undefined;
+            // Infer Action logic for UI
+            let color: ResourceType = RESOURCE_TYPES.RED;
+            let modifier = 0;
+            let targetDefense: ResourceType | undefined = undefined;
 
-          const rules = actionCard.rules || [];
-          const attackRule = rules.find((r) => r.type === 'attack');
-          const generalRule = rules.find((r) => r.type === 'general');
+            const rules = actionCard.rules || [];
+            const attackRule = rules.find((r) => r.type === 'attack');
+            const generalRule = rules.find((r) => r.type === 'general');
 
-          if (attackRule && attackRule.type === 'attack') {
-            color = attackRule.data.power.source;
-            modifier = attackRule.data.power.modifier;
-            targetDefense = attackRule.data.resistedBy;
-          } else if (generalRule && generalRule.type === 'general') {
-            color = generalRule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
+            if (attackRule && attackRule.type === 'attack') {
+              color = attackRule.data.power.source;
+              modifier = attackRule.data.power.modifier;
+              targetDefense = attackRule.data.resistedBy;
+            } else if (generalRule && generalRule.type === 'general') {
+              color = generalRule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
+            }
+
+            state.plannedActions[targetId] = {
+              actorId: targetId,
+              actorName: serverState.name,
+              cards: allCards,
+              strengthColor: color,
+              modifier: modifier,
+              actionName: actionCard.name,
+              targetDefense,
+            };
           }
+        }
+        // Handle PNarrative
+        else if (planned.type === 'pNarrative') {
+          const stack = planned.data; // NarrativeStack
+          const cardIds = stack.cards;
+          const color = stack.color;
+
+          const allCards = hydrateCards(cardIds, registry);
 
           state.plannedActions[targetId] = {
             actorId: targetId,
             actorName: serverState.name,
             cards: allCards,
             strengthColor: color,
-            modifier: modifier,
-            actionName: actionCard.name,
-            targetDefense,
+            modifier: 0,
+            actionName: 'Improvise', // Narrative action name
           };
         }
       } else {
-        // If server says no plan, ensure we don't have one (unless we are locally optimistically planning?
-        // Syncing strictly is safer to avoid desync state sticking around).
+        // If server says no plan, ensure we don't have one
         delete state.plannedActions[targetId];
       }
-      // state.logs.push(createLog(`Updated state for ${currentActor.name}`, 'System'));
     }),
-
-  // No local logic methods needed - actions are dispatched as commands
 });

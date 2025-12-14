@@ -72,53 +72,42 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
   // If actor has already planned, hide hand and show locked state
   if (hasPlanned && phase === 'planning') {
     return (
-      <div className="absolute bottom-0 left-0 right-0 z-40 h-48 flex items-center justify-center bg-black/50 backdrop-blur-sm pointer-events-none">
-        <button
-          onClick={onCancelPlan}
-          className="pointer-events-auto bg-slate-900 border border-indigo-500 p-6 rounded-xl shadow-2xl flex flex-col items-center gap-2 hover:bg-slate-800 transition-all group cursor-pointer relative overflow-hidden min-w-[300px]"
-        >
-          <div className="absolute inset-0 bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors"></div>
-
-          {/* Header with Icon transition */}
-          <div className="flex items-center gap-2 text-indigo-400 mb-1">
-            <div className="relative">
-              <Lock
-                size={20}
-                className="group-hover:opacity-0 transition-opacity absolute top-0 left-0"
-              />
-              <RotateCcw
-                size={20}
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
-              />
-              <div className="w-5 h-5"></div> {/* Spacer */}
+      <div className="absolute bottom-0 left-0 right-0 z-40 h-72 flex flex-col items-center justify-end bg-gradient-to-t from-black via-slate-950/90 to-transparent pointer-events-none pb-6">
+        <div className="pointer-events-auto flex flex-col items-center gap-4 animate-fade-in-up">
+          {/* Status Header & Cancel */}
+          <div className="flex items-center gap-4 bg-slate-900/80 backdrop-blur px-6 py-2 rounded-full border border-indigo-500/30 shadow-2xl">
+            <div className="flex items-center gap-2 text-indigo-300 font-bold uppercase tracking-widest text-xs">
+              <Lock size={14} />
+              <span>Plan: {plannedAction?.actionName || 'Pass'}</span>
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest group-hover:text-indigo-300">
-              Plan Locked
-            </span>
+            <div className="h-4 w-px bg-slate-700"></div>
+            <button
+              onClick={onCancelPlan}
+              className="text-red-400 hover:text-red-300 text-xs font-bold uppercase tracking-wide flex items-center gap-1 transition-colors"
+            >
+              <RotateCcw size={14} /> Revise
+            </button>
           </div>
 
-          {/* Action Name */}
-          <h3 className="text-xl font-bold text-indigo-100">
-            {plannedAction?.actionName || 'Pass'}
-          </h3>
-
-          {/* Card Details */}
+          {/* Cards Display */}
           {plannedAction && plannedAction.cards.length > 0 ? (
-            <div className="text-slate-400 text-sm flex flex-col items-center mt-1">
-              <span className="text-[10px] uppercase text-slate-500">Using Cards</span>
-              <span className="font-mono text-indigo-300 font-semibold text-center px-4">
-                {plannedAction.cards.map((c) => c.name).join(' + ')}
-              </span>
+            <div className="flex -space-x-8 justify-center items-end px-8">
+              {plannedAction.cards.map((card, idx) => (
+                <div
+                  key={card.id}
+                  className="relative transform scale-75 origin-bottom hover:scale-90 transition-transform duration-300 z-10 hover:z-20 cursor-default shadow-2xl"
+                  style={{ zIndex: idx }}
+                >
+                  <CardComponent card={card} selected={false} onClick={() => {}} />
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="text-slate-500 text-xs italic mt-1">No cards committed</div>
+            <div className="text-slate-500 text-sm italic h-32 flex items-center justify-center">
+              (No cards committed)
+            </div>
           )}
-
-          {/* CTA */}
-          <div className="mt-3 text-xs text-slate-500 group-hover:text-red-400 transition-colors font-bold uppercase tracking-wider border-t border-slate-700 pt-2 w-full text-center">
-            Click to Cancel & Revise
-          </div>
-        </button>
+        </div>
       </div>
     );
   }
