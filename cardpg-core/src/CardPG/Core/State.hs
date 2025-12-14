@@ -76,7 +76,8 @@ data PlannedActionMaterialized
   | PMNarrative NarrativeStackMaterialized
   deriving stock (Show, Eq, Generic)
 
-materializePlannedAction :: CardRegistry CoreCard -> PlannedAction -> Maybe PlannedActionMaterialized
+materializePlannedAction ::
+  CardRegistry CoreCard -> PlannedAction -> Maybe PlannedActionMaterialized
 materializePlannedAction registry plan = case plan of
   PStandard (ActionStack acId resIds) -> do
     ac <- Map.lookup acId registry

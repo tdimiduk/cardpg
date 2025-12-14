@@ -55,7 +55,7 @@ You need to meet the `Strength` of the attack against you. You may play **Defend
 
 Now determine your `Defense` and `Resilience` for this attack. They will come from an armor or other card you already have on the table in front of you. Pick the best numbers coming from a card that is applicable to the attack. If you have no relevant cards for `Defense` or `Resilience`, use a value of 1.
 
-Your `Defense` number the amount of `Impact` to impose one consequence on you. If you defend with less than that many cards, you take no consequences, group the cards you flipped to defend into piles of size equal to your `Defense` value. You suffer one consequence for each completed pile.
+Your `Defense` is the amount of `Impact` to impose one consequence on you. If you defend with less than that many cards, you take no consequences. Group the cards you flipped to defend into groups of size equal to your `Defense` value. You suffer one consequence for each completed group.
 Math: Consequences \= round\_down(`Impact` / `Defense`).
 
 The severity of each new consequence you take is determined by how many consequences you are already suffering. Your `Resilience` is the number of consequences you can suffer at each severity level before you step to the next severity level. To find the severity of a new consequence you can arrange your consequence cards in rows equal to your `Resilience` value. The severity is one more than the number of completed rows.

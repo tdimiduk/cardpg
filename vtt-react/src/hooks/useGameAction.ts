@@ -21,15 +21,14 @@ export const useGameAction = () => {
   const endRound = useGameStore((state) => state.endRound);
   const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
   const addLog = useGameStore((state) => state.addLog);
+  const setResolutionPhase = useGameStore((state) => state.setResolutionPhase);
+  const setAttackResolution = useGameStore((state) => state.setAttackResolution);
 
   const _applyAction = useCallback(
     (action: BroadcastAction) => {
       switch (action.type) {
         case 'attackAction': {
-          // Handle visualized attack from server
-          // Maybe show animation?
-          // For now, no storage update needed as GameStateUpdate handles state.
-          // Can trigger 'revealAndResolve' visual equivalent if needed.
+          setAttackResolution(action.actingActor, action.attack);
           break;
         }
         case 'pass':
@@ -95,7 +94,7 @@ export const useGameAction = () => {
           );
           break;
         case 'startResolutionPhase':
-          // Optional: Show phase change specific UI if needed
+          setResolutionPhase();
           break;
         case 'invalidAction':
           addLog(`Invalid Action for ${action.actingActor}: ${action.message}`, 'System');
@@ -114,6 +113,8 @@ export const useGameAction = () => {
       updateTokenPosition,
       cancelPlan,
       addLog,
+      setResolutionPhase,
+      setAttackResolution,
     ],
   );
 

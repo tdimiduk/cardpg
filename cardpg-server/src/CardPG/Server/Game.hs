@@ -33,7 +33,13 @@ import CardPG.Core.State
   , GameEvent (..)
   , materializePlannedAction
   )
-import CardPG.Server.Types (BroadcastAction (..), Command (..), GameState (..), StateUpdate (..))
+import CardPG.Server.Types
+  ( BroadcastAction (..)
+  , Command (..)
+  , GameState (..)
+  , Phase (..)
+  , StateUpdate (..)
+  )
 
 emptyGame :: GameEnv -> StdGen -> GameState
 emptyGame env rng =
@@ -41,6 +47,7 @@ emptyGame env rng =
     { env = env
     , rng = rng
     , actors = Map.empty
+    , phase = Planning
     }
 
 addActor :: ActorId -> ActorState -> GameState -> GameState
@@ -61,9 +68,10 @@ processCommand cmd game =
   case cmd of
     StartResolutionIntent tid ->
       let (newGame, broadcasts) = revealPlannedActions game
+          newGameWithPhase = newGame{phase = Resolution}
           -- We also need to send the 'StartResolution' signal itself
           allBroadcasts = StartResolutionPhase : broadcasts
-       in (newGame, [], allBroadcasts)
+       in (newGameWithPhase, [], allBroadcasts)
     EndRoundIntent _ ->
       let (newGame, updates) = concludeRound game
           -- We need to send 'EndRound' signal?
@@ -73,7 +81,8 @@ processCommand cmd game =
           -- But StateUpdates should handle the movement.
           -- Let's broadcast EndRound as well for clients to clear logs etc.
           allBroadcasts = [EndRound]
-       in (newGame, updates, allBroadcasts)
+          newGameWithPhase = newGame{phase = Planning}
+       in (newGameWithPhase, updates, allBroadcasts)
     _ ->
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)
@@ -115,7 +124,7 @@ processCommand cmd game =
                 -- Registry is on the actor
                 registry = updatedActorState.coreState.registry
                 logicBroadcasts = eventsToBroadcastActions registry targetId events
-                
+
                 -- Augment broadcasts based on Intent
                 extraBroadcasts = case cmd of
                   AddConsequenceIntent _ _ -> [AddConsequence targetId]

@@ -11,6 +11,7 @@ module CardPG.Server.Types
   , Command (..)
   , StateUpdate (..)
   , GameState (..)
+  , Phase (..)
   , newServerState
   ) where
 
@@ -51,8 +52,15 @@ data GameState = GameState
   { env :: GameEnv
   , rng :: StdGen
   , actors :: Map ActorId ActorState
+  , phase :: Phase
   }
   deriving (Show, Generic)
+
+data Phase = Planning | Resolution
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''Phase)
+$(deriveTypeScript cardpgJsonDef ''Phase)
 
 -- | A client connection with a unique ID and a name.
 data Client = Client
@@ -167,12 +175,13 @@ data ServerMessage
       , connectedClients :: [Text]
       , history :: [BroadcastAction]
       , initialActors :: [StateUpdate]
+      , phase :: Phase
       }
   | BroadcastMessage {fromClientId :: UUID, payload :: [BroadcastAction]}
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}
-  | GameStateUpdate {updates :: [StateUpdate]}
+  | GameStateUpdate {updates :: [StateUpdate], newPhase :: Maybe Phase}
   deriving (Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ServerMessage)

@@ -34,7 +34,6 @@ export interface ActorSlice {
   updateActorState: (update: StateUpdate) => void;
 }
 
-
 const hydrateCards = (
   ids: string[],
   registry: Record<string, GenCoreCard | undefined>,

@@ -82,7 +82,7 @@ export interface PlayerDeckState {
   consequences: ConsequenceCard[];
 }
 
-export type GamePhase = 'planning' | 'resolution';
+export type GamePhase = import('./generated/types').Phase;
 
 export interface UIPlannedAction {
   actorId: string;

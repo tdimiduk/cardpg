@@ -136,9 +136,9 @@ describe('Game Lifecycle Integration', () => {
         const enabledButtons = planByttons.filter((b) => !b.hasAttribute('disabled'));
 
         if (enabledButtons.length > 0) {
-           fireEvent.click(enabledButtons[0]);
+          fireEvent.click(enabledButtons[0]);
         } else {
-           throw new Error('No enabled Plan buttons found');
+          throw new Error('No enabled Plan buttons found');
         }
 
         // Verify plan is locked

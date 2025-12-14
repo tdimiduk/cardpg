@@ -35,17 +35,18 @@ import CardPG.Core.State
   , AssetState
   , CoreCardState
   , CorePlayState
+  , NarrativeStack
+  , PlannedAction
   , RealizedAttack
   , SpatialState
   , TableCard
   , TableState
-  , NarrativeStack
-  , PlannedAction
   )
 import CardPG.Server.Types
   ( BroadcastAction
   , ClientMessage
   , Command
+  , Phase
   , ServerMessage
   , StateUpdate
   , Token
@@ -108,6 +109,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy NarrativeStack)
               <> getTypeScriptDeclarations (Proxy :: Proxy PlannedAction)
               <> getTypeScriptDeclarations (Proxy :: Proxy RealizedAttack)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Phase)
           )
 
   let exportedDeclarations =

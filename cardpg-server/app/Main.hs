@@ -18,7 +18,7 @@ import System.Environment (lookupEnv)
 import System.IO (hSetBuffering, stdout, BufferMode(..))
 import Data.Maybe (fromMaybe)
 import qualified Network.WebSockets as WST
-import Data.UUID (UUID, toText)
+import Data.UUID (UUID, toText, nil)
 import qualified Data.UUID.V4 as UUID
 import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
@@ -131,7 +131,7 @@ talk client state = forever $ do
                 return (s', (s'.clients, s'.actionLog, s'.gameState))
 
             let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (currentGs.actors)
-            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) historyLog initialUpdates
+            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) historyLog initialUpdates (currentGs.phase)
             
             -- Notify others
             let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
@@ -160,7 +160,7 @@ talk client state = forever $ do
             -- If there were updates from EndRound, broadcast them to ALL (batched)
             case movesUpdates of
                  [] -> return ()
-                 updates -> broadcast (GameStateUpdate updates) broadcastState
+                 updates -> broadcast (GameStateUpdate updates (Just (currentGs.phase))) broadcastState
 
             -- Continue loop
             talkLoop client state
@@ -200,13 +200,13 @@ talkLoop client state = do
             T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
             
             -- Run action against authoritative state
-            (updates, actions, clientsMap) <- modifyMVar state $ \s -> do
+            (updates, actions, clientsMap, newPhase, oldPhase) <- modifyMVar state $ \s -> do
                 let game = s.gameState
                 let (newGame, updates, actions) = processCommand cmd game
                 
                 -- Update GameHistory
                 let s' = foldl (flip addAction) (s { gameState = newGame }) actions
-                return (s', (updates, actions, s'.clients))
+                return (s', (updates, actions, s'.clients, newGame.phase, game.phase))
 
             -- Broadcast results
             let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
@@ -217,9 +217,9 @@ talkLoop client state = do
                  acts -> broadcast (BroadcastMessage (client.clientId) acts) tempState
                 
             -- 2. Broadcast State Updates
-            case updates of
-                 [] -> return ()
-                 ups -> broadcast (GameStateUpdate ups) tempState
+            if not (null updates) || newPhase /= oldPhase
+                 then broadcast (GameStateUpdate updates (Just newPhase)) tempState
+                 else return ()
             
             talkLoop client state
 

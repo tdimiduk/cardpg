@@ -10,9 +10,6 @@ export const useGameSync = () => {
   useEffect(() => {
     if (lastMessage) {
       if (lastMessage.type === 'broadcastMessage') {
-        // Ignore our own messages (we apply them optimistically)
-        if (lastMessage.fromClientId === clientId) return;
-
         const actions = lastMessage.payload;
         console.log('Received broadcast actions:', actions);
 
@@ -32,11 +29,18 @@ export const useGameSync = () => {
             useGameStore.getState().updateActorState(update);
           });
         }
+        // Sync phase
+        if (lastMessage.phase) {
+          useGameStore.getState().setPhase(lastMessage.phase);
+        }
       } else if (lastMessage.type === 'gameStateUpdate') {
         console.log('Received State Updates:', lastMessage.updates);
         lastMessage.updates.forEach((update) => {
           useGameStore.getState().updateActorState(update);
         });
+        if (lastMessage.newPhase) {
+          useGameStore.getState().setPhase(lastMessage.newPhase);
+        }
       }
     }
   }, [lastMessage, clientId, _applyAction]);

@@ -194,17 +194,22 @@ planNarrative cardIds color = do
       maybeNeIds = nonEmpty cardIds
 
   case maybeNeIds of
-    Nothing -> tell [IllegalAction (PNarrative (NarrativeStack (CardInstanceId nil :| []) color)) (Just "no cards selected")] -- Dummy empty stack for error? Or separate error?
-    -- Creating a dummy NonEmpty is ugly.
-    -- Maybe IllegalAction should just take Maybe PlannedAction?
-    -- Or just don't emit ActionPlanned/IllegalAction with a stack if we can't build one.
-    -- Just tell "IllegalAction" generic?
-    -- IllegalAction takes PlannedAction.
-    -- If we can't build a PlannedAction, we can't emit IllegalAction with it.
-    -- Let's just return early or emit a different error?
-    -- For now effectively ignore or log error?
-    -- Let's assume frontend prevents empty selection.
-    -- If empty, ignore.
+    Nothing ->
+      tell
+        [ IllegalAction
+            (PNarrative (NarrativeStack (CardInstanceId nil :| []) color))
+            (Just "no cards selected") -- Dummy empty stack for error? Or separate error?
+            -- Creating a dummy NonEmpty is ugly.
+            -- Maybe IllegalAction should just take Maybe PlannedAction?
+            -- Or just don't emit ActionPlanned/IllegalAction with a stack if we can't build one.
+            -- Just tell "IllegalAction" generic?
+            -- IllegalAction takes PlannedAction.
+            -- If we can't build a PlannedAction, we can't emit IllegalAction with it.
+            -- Let's just return early or emit a different error?
+            -- For now effectively ignore or log error?
+            -- Let's assume frontend prevents empty selection.
+            -- If empty, ignore.
+        ]
     Just neIds -> do
       let plan = PNarrative (NarrativeStack neIds color)
       if length found == length cardIds
@@ -279,7 +284,7 @@ attackAction matPlan = case matPlan of
           , attackStrength = stackPower stack attackRule.power
           , defenseColor = attackRule.resistedBy
           }
-  PMNarrative (NarrativeStackMaterialized { cards = cs, cardIds = cIds, color = col }) ->
+  PMNarrative (NarrativeStackMaterialized{cards = cs, cardIds = cIds, color = col}) ->
     -- Narrative Action Logic
     let
       -- Helper to get stat based on color
@@ -289,7 +294,7 @@ attackAction matPlan = case matPlan of
       getStat Blue s = s.blue
 
       rawTotal = sum [getStat col c.stats | c <- toList cs]
-    in
+     in
       Right $
         RealizedAttack
           { attackCard = let (h :| _) = cIds in h -- Safe as narrative stack must have cards

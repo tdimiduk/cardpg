@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const actors = useGameStore((state) => state.actors);
   const logs = useGameStore((state) => state.logs);
   const activeActorId = useGameStore((state) => state.activeActorId);
+  const currentResolution = useGameStore((state) => state.currentResolution);
 
   // Actions
   const setActiveActor = useGameStore((state) => state.setActiveActor);
@@ -209,8 +210,7 @@ const App: React.FC = () => {
               dispatchCommand({ type: 'passIntent', actorId: activeActorId });
             }}
             onCancelPlan={() =>
-              activeActorId &&
-              dispatchCommand({ type: 'cancelPlanIntent', actorId: activeActorId })
+              activeActorId && dispatchCommand({ type: 'cancelPlanIntent', actorId: activeActorId })
             }
             onReturnToDeck={(cards) =>
               activeActorId &&
@@ -252,6 +252,29 @@ const App: React.FC = () => {
         }}
         readyCount={readyCount}
         totalCount={tokens.length}
+        currentResolution={
+          currentResolution
+            ? {
+                ...currentResolution,
+                actorName: actors[currentResolution.actorId]?.name || currentResolution.actorId,
+                attackCardName: (() => {
+                  const actor = actors[currentResolution.actorId];
+                  if (!actor) return 'Unknown Card';
+                  const cardId = currentResolution.attack.attackCard;
+                  // Search in deck lists
+                  const allCards = [
+                    ...actor.deck.hand,
+                    ...actor.deck.drawPile,
+                    ...actor.deck.discardPile,
+                    ...actor.deck.equipped,
+                    ...actor.deck.consequences,
+                  ];
+                  const card = allCards.find((c) => c.id === cardId);
+                  return card?.name || 'Unknown Card';
+                })(),
+              }
+            : null
+        }
       />
     </div>
   );

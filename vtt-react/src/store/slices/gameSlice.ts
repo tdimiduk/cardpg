@@ -6,6 +6,7 @@ import { ActorSlice } from './actorSlice';
 export interface GameSlice {
   phase: GamePhase;
   plannedActions: Record<string, UIPlannedAction>;
+  currentResolution: { actorId: string; attack: import('../../types').RealizedAttack } | null;
 
   commitPlan: (
     tokenId: string,
@@ -18,6 +19,9 @@ export interface GameSlice {
   cancelPlan: (tokenId: string) => void;
   passTurn: (tokenId: string) => void;
   revealAndResolve: () => void;
+  setPhase: (phase: GamePhase) => void;
+  setResolutionPhase: () => void;
+  setAttackResolution: (actorId: string, attack: import('../../types').RealizedAttack) => void;
   endRound: () => void;
   playImmediate: (
     tokenId: string,
@@ -37,6 +41,7 @@ export const createGameSlice: StateCreator<
 > = (set) => ({
   phase: 'planning',
   plannedActions: {},
+  currentResolution: null,
 
   commitPlan: (_tokenId, _cards, _strengthColor, _modifier, _actionName, _targetDefense) =>
     set((_state) => {
@@ -56,9 +61,29 @@ export const createGameSlice: StateCreator<
 
   revealAndResolve: () =>
     set((state) => {
+      // Manual trigger backup, usually triggered by server 'startResolutionPhase'
+      state.phase = 'resolution';
+    }),
+
+  setPhase: (phase) =>
+    set((state) => {
+      if (state.phase !== phase) {
+        state.phase = phase;
+        state.logs.push(createLog(`Phase changed to ${phase}.`, 'System'));
+      }
+    }),
+
+  setResolutionPhase: () =>
+    set((state) => {
       state.phase = 'resolution';
       state.logs.push(createLog('Phase changed to Resolution.', 'System'));
-      // Actual resolution happens on server. State updates will follow.
+    }),
+
+  setAttackResolution: (actorId, attack) =>
+    set((state) => {
+      state.currentResolution = { actorId, attack };
+      // Log the attack start if needed, or let the text log handle it.
+      // This state is just for visualization in sidebar.
     }),
 
   endRound: () =>
@@ -69,11 +94,12 @@ export const createGameSlice: StateCreator<
       // Or better wait for server?
       // Safe to switch phase as next round implies Planning.
       state.phase = 'planning';
+      state.currentResolution = null;
       state.logs.push(createLog('Round Ended. Starting new Planning Phase.', 'GM'));
     }),
 
   playImmediate: (_tokenId, _cards, _strengthColor, _modifier, _actionName, _targetDefense) =>
     set((_state) => {
-       // Deprecated: Server Authoritative
+      // Deprecated: Server Authoritative
     }),
 });

@@ -11,6 +11,12 @@ interface SidebarRightProps {
   onEndRound: () => void;
   readyCount?: number;
   totalCount?: number;
+  currentResolution: {
+    actorId: string;
+    attack: import('../../types').RealizedAttack;
+    actorName?: string;
+    attackCardName?: string;
+  } | null;
 }
 
 export const SidebarRight: React.FC<SidebarRightProps> = ({
@@ -21,6 +27,7 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
   onEndRound,
   readyCount,
   totalCount,
+  currentResolution,
 }) => {
   const [chatInput, setChatInput] = useState('');
   const endOfLogsRef = useRef<HTMLDivElement>(null);
@@ -73,12 +80,50 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
             {allReady ? 'Reveal Actions' : `Reveal (${readyCount ?? 0}/${totalCount ?? 0} Ready)`}
           </button>
         ) : (
-          <button
-            onClick={onEndRound}
-            className="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-2 rounded shadow transition-all"
-          >
-            <Rewind size={16} fill="currentColor" /> End Round (Draw 2)
-          </button>
+          <div className="space-y-2">
+            {currentResolution ? (
+              <div className="bg-red-950/30 border border-red-900/50 rounded p-3 animate-fade-in">
+                <div className="text-xs text-red-300 mb-1 flex items-center gap-1">
+                  <Square size={12} className="fill-red-500 text-red-500" />
+                  <strong>Current Attack</strong>
+                </div>
+                <div className="text-white font-bold">
+                  {currentResolution.attackCardName || 'Unknown Attack'}
+                </div>
+                <div className="text-xs text-slate-400">
+                  By: {currentResolution.actorName || currentResolution.actorId}
+                </div>
+                <div className="mt-2 flex items-center gap-2 text-sm bg-black/40 rounded p-1">
+                  <span className="font-bold text-red-400">
+                    Power: {currentResolution.attack.attackStrength}
+                  </span>
+                  <ArrowRight size={12} className="text-slate-500" />
+                  <span className="text-slate-300">VS</span>
+                  <span
+                    className={`font-bold ${
+                      currentResolution.attack.defenseColor === RESOURCE_TYPES.RED
+                        ? 'text-red-400'
+                        : currentResolution.attack.defenseColor === RESOURCE_TYPES.BLUE
+                          ? 'text-blue-400'
+                          : 'text-yellow-400'
+                    }`}
+                  >
+                    {currentResolution.attack.defenseColor.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-xs text-slate-500 py-2 italic">
+                Waiting for resolution...
+              </div>
+            )}
+            <button
+              onClick={onEndRound}
+              className="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-2 rounded shadow transition-all"
+            >
+              <Rewind size={16} fill="currentColor" /> End Round
+            </button>
+          </div>
         )}
       </div>
 

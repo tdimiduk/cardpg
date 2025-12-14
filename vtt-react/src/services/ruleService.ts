@@ -1,6 +1,5 @@
 import { Card, ConsequenceCard } from '../types';
 
-
 export const getAttributeValue = (equipped: Card[], stat: 'def' | 'res'): number => {
   let max = 0;
   let found = false;
