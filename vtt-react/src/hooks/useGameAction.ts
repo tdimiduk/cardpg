@@ -26,6 +26,24 @@ export const useGameAction = () => {
 
   const _applyAction = useCallback(
     (action: BroadcastAction) => {
+      const resolveName = (id: string) => {
+        const state = useGameStore.getState();
+        const actors = state.actors || {}; // Safety check
+        // Check if actor
+        if (actors[id]) return actors[id].name;
+        // Check registries
+        for (const actor of Object.values(actors)) {
+          if (actor.registry && actor.registry[id]) {
+            return actor.registry[id].name;
+          }
+        }
+        return id;
+      };
+
+      const actorId =
+        'actingActor' in action ? (action as { actingActor: string }).actingActor : '';
+      const actorName = actorId ? resolveName(actorId) : 'System';
+
       switch (action.type) {
         case 'attackAction': {
           setAttackResolution(action.actingActor, action.attack);
@@ -45,40 +63,48 @@ export const useGameAction = () => {
           updateTokenPosition(action.token);
           break;
         case 'drawCards':
-          addLog(`${action.actingActor} drew ${action.count} card(s).`, 'System', 'info');
+          addLog(`${actorName} drew ${action.count} card(s).`, 'System', 'info');
           break;
         case 'defend':
-          addLog(`${action.actingActor} is defending.`, 'System', 'info');
+          addLog(`${actorName} is defending.`, 'System', 'info');
           break;
         case 'clearDefense':
-          addLog(`${action.actingActor} cleared defense.`, 'System', 'info');
+          addLog(`${actorName} cleared defense.`, 'System', 'info');
           break;
         case 'reshuffle':
-          addLog(`${action.actingActor} reshuffled their deck.`, 'System', 'info');
+          addLog(`${actorName} reshuffled their deck.`, 'System', 'info');
           break;
         case 'addConsequence':
-          addLog(`${action.actingActor} gained a consequence.`, 'System', 'info');
+          addLog(`${actorName} gained a consequence.`, 'System', 'info');
           break;
         case 'removeConsequence':
-          addLog(`${action.actingActor} removed a consequence.`, 'System', 'info');
+          addLog(
+            `${actorName} removed consequence "${resolveName(action.cardId)}".`,
+            'System',
+            'info',
+          );
           break;
         case 'addStatus':
           addLog(
-            `${action.actingActor} added status "${action.statusType}" to ${action.destination}.`,
+            `${actorName} added status "${action.statusType}" to ${resolveName(
+              action.destination,
+            )}.`,
             'System',
             'info',
           );
           break;
         case 'removeStatus':
           addLog(
-            `${action.actingActor} removed status "${action.statusType}" from ${action.destination}.`,
+            `${actorName} removed status "${action.statusType}" from ${resolveName(
+              action.destination,
+            )}.`,
             'System',
             'info',
           );
           break;
         case 'discardCards':
           addLog(
-            `${action.actingActor} discarded ${action.cardIds.length} card(s).`,
+            `${actorName} discarded ${action.cardIds.length} card(s).`,
             'System',
             'info',
           );
@@ -88,7 +114,7 @@ export const useGameAction = () => {
           break;
         case 'returnToDeck':
           addLog(
-            `${action.actingActor} returned ${action.cardIds.length} card(s) to deck.`,
+            `${actorName} returned ${action.cardIds.length} card(s) to deck.`,
             'System',
             'info',
           );
@@ -97,7 +123,7 @@ export const useGameAction = () => {
           setResolutionPhase();
           break;
         case 'invalidAction':
-          addLog(`Invalid Action for ${action.actingActor}: ${action.message}`, 'System');
+          addLog(`Invalid Action for ${actorName}: ${action.message}`, 'System');
           console.error(`Invalid Action for ${action.actingActor}: ${action.message}`);
           break;
         default:
