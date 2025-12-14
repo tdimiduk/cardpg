@@ -258,6 +258,17 @@ export const createActorSlice: StateCreator<
             actionName: 'Improvise', // Narrative action name
           };
         }
+        // Handle PPass
+        else if (planned.type === 'pPass') {
+          state.plannedActions[targetId] = {
+            actorId: targetId,
+            actorName: serverState.name,
+            cards: [],
+            strengthColor: RESOURCE_TYPES.RED, // Dummy color
+            modifier: 0,
+            actionName: 'Pass',
+          };
+        }
       } else {
         // If server says no plan, ensure we don't have one
         delete state.plannedActions[targetId];

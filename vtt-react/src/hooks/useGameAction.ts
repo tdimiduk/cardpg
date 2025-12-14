@@ -103,11 +103,7 @@ export const useGameAction = () => {
           );
           break;
         case 'discardCards':
-          addLog(
-            `${actorName} discarded ${action.cardIds.length} card(s).`,
-            'System',
-            'info',
-          );
+          addLog(`${actorName} discarded ${action.cardIds.length} card(s).`, 'System', 'info');
           break;
         case 'cancelPlan':
           cancelPlan(action.actingActor);

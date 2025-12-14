@@ -48,6 +48,7 @@ $(deriveJSON cardpgJsonDef ''NarrativeStack)
 data PlannedAction
   = PStandard ActionStack
   | PNarrative NarrativeStack
+  | PPass
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''PlannedAction)
@@ -55,6 +56,7 @@ $(deriveJSON cardpgJsonDef ''PlannedAction)
 plannedActionCards :: PlannedAction -> [CardInstanceId]
 plannedActionCards (PStandard (ActionStack ac res)) = ac : res
 plannedActionCards (PNarrative (NarrativeStack cs _)) = toList cs
+plannedActionCards PPass = []
 
 data ActionStackMaterialized = ActionStackMaterialized
   { actionCard :: CoreCard
@@ -74,6 +76,7 @@ data NarrativeStackMaterialized = NarrativeStackMaterialized
 data PlannedActionMaterialized
   = PMStandard ActionStackMaterialized
   | PMNarrative NarrativeStackMaterialized
+  | PMPass
   deriving stock (Show, Eq, Generic)
 
 materializePlannedAction ::
@@ -86,6 +89,7 @@ materializePlannedAction registry plan = case plan of
   PNarrative (NarrativeStack cIds c) -> do
     cs <- traverse (`Map.lookup` registry) cIds
     return $ PMNarrative $ NarrativeStackMaterialized cs cIds c
+  PPass -> Just PMPass
 
 data RealizedAttack = RealizedAttack
   { attackCard :: CardInstanceId

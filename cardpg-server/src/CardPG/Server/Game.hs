@@ -31,6 +31,7 @@ import CardPG.Core.State
   , CoreCardState (..)
   , GameEnv
   , GameEvent (..)
+  , PlannedActionMaterialized (..)
   , materializePlannedAction
   )
 import CardPG.Server.Types
@@ -191,6 +192,8 @@ eventsToBroadcastActions registry actorId events = concatMap toAction events
     toAction (PlanCanceled _) = [] -- State update handles hand restoration
     toAction (ActionRevealed wireAction) = case materializePlannedAction registry wireAction of
       Nothing -> [InvalidAction actorId "you don't have all these cards"]
-      Just action -> case Logic.attackAction action of
-        Left err -> [InvalidAction actorId err]
-        Right attack -> [AttackAction actorId attack]
+      Just action -> case action of
+        PMPass -> [Pass actorId]
+        _ -> case Logic.attackAction action of
+          Left err -> [InvalidAction actorId err]
+          Right attack -> [AttackAction actorId attack]

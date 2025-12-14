@@ -284,6 +284,7 @@ attackAction matPlan = case matPlan of
           , attackStrength = stackPower stack attackRule.power
           , defenseColor = attackRule.resistedBy
           }
+  PMPass -> Left "pass action"
   PMNarrative (NarrativeStackMaterialized{cards = cs, cardIds = cIds, color = col}) ->
     -- Narrative Action Logic
     let
@@ -396,23 +397,8 @@ addConsequence severityVal = do
 
 passAction :: (RandomGen g) => GameM g ()
 passAction = do
-  -- Create a transient "Pass" card
-  let passCard =
-        CoreCard
-          { name = unsafeNonEmptyText "Pass"
-          , tags = Nothing
-          , stats = Stats 0 0 0
-          , cost = Nothing
-          , rules = Nothing
-          , flavor = Nothing
-          }
-  ids <- createCards passCard 1
-  -- Plan it
-  case ids of
-    [cid] -> do
-      modify $ #coreState % #planned ?~ PStandard (ActionStack cid [])
-      tell [ActionPlanned (PStandard (ActionStack cid []))]
-    _ -> return ()
+  modify $ #coreState % #planned ?~ PPass
+  tell [ActionPlanned PPass]
 
 removeConsequence :: Text -> GameM g ()
 removeConsequence cardIdStr = do
