@@ -150,11 +150,12 @@ talk client state = forever $ do
 
             -- Broadcast to ALL (was others)
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
-            broadcast (BroadcastMessage (client.clientId) payload) broadcastState
+            broadcast (BroadcastMessage (client.clientId) [payload]) broadcastState
 
             -- If there were extra broadcasts (e.g. Revealed Actions)
-            forM_ extraBroadcasts $ \act ->
-                broadcast (BroadcastMessage (client.clientId) act) broadcastState
+            case extraBroadcasts of
+                 [] -> return ()
+                 extras -> broadcast (BroadcastMessage (client.clientId) extras) broadcastState
 
             -- If there were updates from EndRound, broadcast them to ALL (batched)
             case movesUpdates of
@@ -192,7 +193,7 @@ talkLoop client state = do
                  return (s', (s'.clients, s'.gameState, [], []))
 
             let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
-            broadcast (BroadcastMessage (client.clientId) payload) broadcastState
+            broadcast (BroadcastMessage (client.clientId) [payload]) broadcastState
             
             talkLoop client state
         Just (GameCommand cmd) -> do
@@ -211,8 +212,9 @@ talkLoop client state = do
             let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
             
             -- 1. Broadcast Actions (Animations/Logs)
-            forM_ actions $ \act -> 
-                broadcast (BroadcastMessage (client.clientId) act) tempState
+            case actions of
+                 [] -> return ()
+                 acts -> broadcast (BroadcastMessage (client.clientId) acts) tempState
                 
             -- 2. Broadcast State Updates
             case updates of

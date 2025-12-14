@@ -168,7 +168,7 @@ data ServerMessage
       , history :: [BroadcastAction]
       , initialActors :: [StateUpdate]
       }
-  | BroadcastMessage {fromClientId :: UUID, payload :: BroadcastAction}
+  | BroadcastMessage {fromClientId :: UUID, payload :: [BroadcastAction]}
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}

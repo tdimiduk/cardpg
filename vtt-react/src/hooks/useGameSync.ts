@@ -13,10 +13,12 @@ export const useGameSync = () => {
         // Ignore our own messages (we apply them optimistically)
         if (lastMessage.fromClientId === clientId) return;
 
-        const action = lastMessage.payload;
-        console.log('Received broadcast:', action);
+        const actions = lastMessage.payload;
+        console.log('Received broadcast actions:', actions);
 
-        _applyAction(action);
+        actions.forEach((action) => {
+          _applyAction(action);
+        });
       } else if (lastMessage.type === 'welcome') {
         console.log('Replaying history:', lastMessage.history.length, 'actions');
         lastMessage.history.forEach((action) => {

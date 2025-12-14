@@ -64,29 +64,29 @@ test_game = testGroup "Server Game Engine"
       let game1 = addActor actorId actorState game0
       
       -- 1. Draw Command
-      let (game2, res1) = processCommand (DrawIntent actorId) game1
+      let (game2, _updates, actions) = processCommand (DrawIntent actorId) game1
       
-      case res1 of
-        Nothing -> assertBool "Draw command failed" False
-        Just (tid, actions, st) -> do
-          tid @?= actorId
-          length actions @?= 1
-          head actions @?= DrawCards actorId 1
-          (st ^. #coreState % #hand) @?= [card1]
-          (st ^. #coreState % #deck) @?= [card2]
+      length actions @?= 1
+      head actions @?= DrawCards actorId 1
+      
+      let actorSt2 = game2 ^. #actors % at actorId
+      case actorSt2 of
+        Nothing -> assertBool "Actor state lost" False
+        Just st -> do
+           (st ^. #coreState % #hand) @?= [card1]
+           (st ^. #coreState % #deck) @?= [card2]
       
       -- 2. Defend Command
-      let (game3, res2) = processCommand (DefendIntent actorId) game2
+      let (game3, _updates2, actions2) = processCommand (DefendIntent actorId) game2
       
-      case res2 of
-        Nothing -> assertBool "Defend command failed" False
-        Just (tid, actions, st) -> do
-          tid @?= actorId
-          length actions @?= 1
-          -- Note: Defend action doesn't carry card ID in broadcast currently, just notification
-          -- But the state should show it in 'defending' stack
-          (st ^. #coreState % #defending) @?= [card2]
-          (st ^. #coreState % #deck) @?= []
+      length actions2 @?= 1
+      -- Verify Actor State in Game
+      let actorSt3 = game3 ^. #actors % at actorId
+      case actorSt3 of
+        Nothing -> assertBool "Actor state lost" False
+        Just st -> do
+           (st ^. #coreState % #defending) @?= [card2]
+           (st ^. #coreState % #deck) @?= []
 
   , testCase "Gameplay Sequence (Fatigue)" $ do
       let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
@@ -97,27 +97,17 @@ test_game = testGroup "Server Game Engine"
       let actorState = emptyActorState -- Empty deck, empty discard
       let game1 = addActor actorId actorState game0
       
-      -- Draw Command on empty deck
-      let (game2, res) = processCommand (DrawIntent actorId) game1
+      let (game2, _updates, actions) = processCommand (DrawIntent actorId) game1
       
-      case res of
-        Nothing -> assertBool "Draw command failed" False
-        Just (tid, actions, st) -> do
-          tid @?= actorId
-          -- Expect: Reshuffle (due to DeckShuffled) AND DrawCards
-          -- Note: Logic.drawCard recursively calls itself after fatigue.
-          -- Events: [CardsCreated, DeckShuffled, CardDrawn]
-          -- Actions: [Reshuffle, DrawCards]
-          -- Ordering might vary depending on list construction, likely Reshuffle first.
-          
-          let actionTypes = map toConstr actions
-          actionTypes @?= ["Reshuffle", "DrawCards"]
-          
-          -- Verify Hand has 1 card (fatigue)
-          length (st ^. #coreState % #hand) @?= 1
-          
-          -- Verify Deck has remaining cards (2 default - 1 drawn = 1)
-          length (st ^. #coreState % #deck) @?= 1
+      let actionTypes = map toConstr actions
+      actionTypes @?= ["Reshuffle", "DrawCards"]
+      
+      let actorSt2 = game2 ^. #actors % at actorId
+      case actorSt2 of
+        Nothing -> assertBool "Actor state lost" False
+        Just st -> do
+           length (st ^. #coreState % #hand) @?= 1
+           length (st ^. #coreState % #deck) @?= 1
 
   , testCase "Round Conclusion (concludeRound)" $ do
       let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
