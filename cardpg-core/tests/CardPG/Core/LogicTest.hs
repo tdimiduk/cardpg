@@ -7,12 +7,20 @@ import qualified Data.Map.Strict as Map
 import System.Random (mkStdGen)
 import Test.Hspec
 
-import qualified Data.Text as T
-import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT(..), CoreCard (..), ItemCard, ItemCardT (..), NatureCard, TalentCard)
+import CardPG.Core.Card
+  ( ConsequenceCard
+  , ConsequenceCardT (..)
+  , CoreCard (..)
+  , ItemCard
+  , ItemCardT (..)
+  , NatureCard
+  , TalentCard
+  )
 import CardPG.Core.Logic
-import CardPG.Core.Primitives (CardInstanceId (..), TargetId (..), EquipSlot (..))
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
+import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..), TargetId (..))
 import CardPG.Core.State
+import qualified Data.Text as T
 
 -- Helper to create a dummy game logic execution
 runLogic :: ActorState -> GameM StdGen a -> (a, ActorState, [GameEvent])
@@ -131,7 +139,7 @@ spec = do
           GameEnv
             { fatigueCardTemplate = undefined
             , statusCardTemplates = Map.empty
-            , consequenceCardTemplates = Map.fromList [(T.pack (show c.severity), c) | c <- consList]
+            , consequenceCardTemplates = Map.fromList [(T.pack (show c . severity), c) | c <- consList]
             }
 
     let runLogicWithEnv env state action =

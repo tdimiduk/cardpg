@@ -243,15 +243,15 @@ revealPlannedActions = do
   case maybePlan of
     Nothing -> return ()
     Just plan -> do
-       registry <- use (#coreState % #registry)
-       let revealedEffect = case materializePlannedAction registry plan of
-             Nothing -> REInvalid "you don't have all these cards"
-             Just matPlan -> case matPlan of
-                 PMPass -> REPass
-                 _ -> case attackAction matPlan of
-                      Right attack -> REAttack attack
-                      Left err -> REInvalid err
-       tell [ActionRevealed plan revealedEffect]
+      registry <- use (#coreState % #registry)
+      let revealedEffect = case materializePlannedAction registry plan of
+            Nothing -> REInvalid "you don't have all these cards"
+            Just matPlan -> case matPlan of
+              PMPass -> REPass
+              _ -> case attackAction matPlan of
+                Right attack -> REAttack attack
+                Left err -> REInvalid err
+      tell [ActionRevealed plan revealedEffect]
 
 discardPlannedActions :: GameM g ()
 discardPlannedActions = plannedActionTo #discard PlanCanceled
@@ -380,13 +380,13 @@ removeStatus statusType maybeCardId = do
       removedFromDiscard <- findAndRemove #discard
       if removedFromDiscard
         then do
-           tell [StatusRemoved statusType (fromMaybe "discard" maybeCardId)]
-           return ()
+          tell [StatusRemoved statusType (fromMaybe "discard" maybeCardId)]
+          return ()
         else do
           removed <- findAndRemove #deck
           if removed
-             then tell [StatusRemoved statusType (fromMaybe "deck" maybeCardId)]
-             else return ()
+            then tell [StatusRemoved statusType (fromMaybe "deck" maybeCardId)]
+            else return ()
           return ()
 
 calculateResilience :: GameM g Int
@@ -398,14 +398,14 @@ calculateResilience = do
         , isActive state
         , Just card <- [Map.lookup cid (tblSt ^. #registry)]
         ]
-      
+
       getRes :: TableCard -> Int
       getRes (TCItem item) = fromMaybe 0 item.resilience
       getRes (TCNature nature) = fromMaybe 0 nature.resilience
       getRes _ = 0
 
       maxRes = maximum (0 : map getRes activeCards)
-  
+
   return $ max 1 maxRes
   where
     isActive (Equipped _) = True
@@ -424,8 +424,8 @@ addConsequence maybeSeverity = do
 
   env <- ask
   let candidates = filter (\c -> c.severity == finalSeverity) (Map.elems (env ^. #consequenceCardTemplates))
-  
-  -- If no exact match for severity, maybe we should clamp or fallback? 
+
+  -- If no exact match for severity, maybe we should clamp or fallback?
   -- For now, explicit filter as before.
   case candidates of
     [] -> return ()

@@ -70,7 +70,6 @@ processCommand cmd game =
       let (newGame, events) = revealPlannedActions game
           newGameWithPhase = newGame{phase = Resolution}
        in (newGameWithPhase, [], events)
-
     EndRoundIntent _ ->
       let (newGame, updates) = concludeRound game
           newGameWithPhase = newGame{phase = Planning}
@@ -148,7 +147,5 @@ revealPlannedActions game = foldl step (game, []) (Map.keys (game.actors))
        in case maybeEvents of
             Nothing -> (newG, currentEvents)
             Just events ->
-               let newEvents = map (ActorGameEvent actorId) events
+              let newEvents = map (ActorGameEvent actorId) events
                in (newG, currentEvents ++ newEvents)
-
-

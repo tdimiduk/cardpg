@@ -2,8 +2,6 @@ import { useCallback } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { ActorGameEvent, RealizedAttack } from '../generated/types';
 
-
-
 /**
  * Hook to apply game actions to the local store.
  *
@@ -111,8 +109,8 @@ export const useGameAction = () => {
         case 'movePlanned':
         case 'actorMoved':
         case 'actionPlanned':
-           // Ignore
-           break;
+          // Ignore
+          break;
         default:
           console.warn('Unhandled event:', event);
       }

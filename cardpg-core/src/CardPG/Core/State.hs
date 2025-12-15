@@ -166,14 +166,17 @@ data GameEvent
   | ActorMoved (Int, Int)
   | ActionPlanned PlannedAction
   | PlanCanceled PlannedAction
-
   | ActionRevealed PlannedAction RevealedEffect
   | DefenseEnded [CardInstanceId]
   | IllegalAction PlannedAction (Maybe Text)
-  | StatusAdded Text Text -- ^ Type, Destination
-  | StatusRemoved Text Text -- ^ Type, Destination
-  | ConsequenceAdded Int -- ^ Severity
-  | ConsequenceRemoved Text -- ^ Card ID/Name
+  | -- | Type, Destination
+    StatusAdded Text Text
+  | -- | Type, Destination
+    StatusRemoved Text Text
+  | -- | Severity
+    ConsequenceAdded Int
+  | -- | Card ID/Name
+    ConsequenceRemoved Text
   deriving stock (Show, Eq, Generic)
 
 data RevealedEffect

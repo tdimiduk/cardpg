@@ -15,13 +15,12 @@ vi.mock('./hooks/useGameDispatch');
 
 // Mock child components to avoid complex rendering and isolate App logic
 vi.mock('./components/Game/MapBoard', () => ({
-  MapBoard: ({
-    setActiveActorId,
-  }: {
-    setActiveActorId: (id: string) => void;
-  }) => (
+  MapBoard: ({ setActiveActorId }: { setActiveActorId: (id: string) => void }) => (
     <div data-testid="map-board">
-      <button onClick={() => setActiveActorId && setActiveActorId('token-1')} data-testid="select-token-btn">
+      <button
+        onClick={() => setActiveActorId && setActiveActorId('token-1')}
+        data-testid="select-token-btn"
+      >
         Select Token
       </button>
     </div>

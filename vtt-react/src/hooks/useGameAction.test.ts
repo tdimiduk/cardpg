@@ -44,46 +44,58 @@ describe('useGameAction', () => {
   it('should handle actionRevealed (Reveal & Attack)', () => {
     const { result } = renderHook(() => useGameAction());
     const event: ActorGameEvent = {
-        actorId: 'actor-1',
-        event: {
-            type: 'actionRevealed',
-            data: [
-                 { type: 'pPass' } as any, // Dummy plan
-                 { type: 'rEAttack',
-                   data: { attackCard: 'c1', attackStrength: 5, defenseColor: 'Red' } as any
-                 }
-            ]
-        }
+      actorId: 'actor-1',
+      event: {
+        type: 'actionRevealed',
+        data: [
+          { type: 'pPass' } as any, // Dummy plan
+          {
+            type: 'rEAttack',
+            data: { attackCard: 'c1', attackStrength: 5, defenseColor: 'Red' } as any,
+          },
+        ],
+      },
     };
     result.current._applyAction(event);
-    
+
     expect(mockRevealAndResolve).toHaveBeenCalled();
-    expect(mockSetAttackResolution).toHaveBeenCalledWith('actor-1', expect.objectContaining({ attackStrength: 5 }));
+    expect(mockSetAttackResolution).toHaveBeenCalledWith(
+      'actor-1',
+      expect.objectContaining({ attackStrength: 5 }),
+    );
   });
 
   it('should handle planCanceled', () => {
     const { result } = renderHook(() => useGameAction());
-     const event: ActorGameEvent = {
-        actorId: 'actor-1',
-        event: {
-            type: 'planCanceled',
-            data: { type: 'pPass'} as any
-        }
+    const event: ActorGameEvent = {
+      actorId: 'actor-1',
+      event: {
+        type: 'planCanceled',
+        data: { type: 'pPass' } as any,
+      },
     };
     result.current._applyAction(event);
-    expect(mockAddLog).toHaveBeenCalledWith(expect.stringContaining('canceled their plan'), 'System', 'info');
+    expect(mockAddLog).toHaveBeenCalledWith(
+      expect.stringContaining('canceled their plan'),
+      'System',
+      'info',
+    );
   });
 
   it('should handle cardDrawn log', () => {
     const { result } = renderHook(() => useGameAction());
     const event: ActorGameEvent = {
-        actorId: 'actor-1',
-        event: {
-            type: 'cardDrawn',
-            data: 'c1' as any
-        }
+      actorId: 'actor-1',
+      event: {
+        type: 'cardDrawn',
+        data: 'c1' as any,
+      },
     };
     result.current._applyAction(event);
-    expect(mockAddLog).toHaveBeenCalledWith(expect.stringContaining('drew a card'), 'System', 'info');
+    expect(mockAddLog).toHaveBeenCalledWith(
+      expect.stringContaining('drew a card'),
+      'System',
+      'info',
+    );
   });
 });

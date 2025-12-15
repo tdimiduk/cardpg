@@ -18,7 +18,7 @@ describe('Game Store Integration', () => {
     const testActorId = 'actor-1';
     const testTokenId = 'token-1';
     const testCardId = 'card-1';
-    
+
     useGameStore.setState((state) => {
       state.actors[testActorId] = {
         id: testActorId,
@@ -34,15 +34,15 @@ describe('Game Store Integration', () => {
           consequences: [],
         },
         registry: {
-          [testCardId]: { name: 'Slash', type: 'coreCard' } as any
-        }
+          [testCardId]: { name: 'Slash', type: 'coreCard' } as any,
+        },
       };
       state.tokens.push({
         id: testTokenId,
         actorId: testActorId,
-        x: 0, 
+        x: 0,
         y: 0,
-        size: 1
+        size: 1,
       });
       state.activeActorId = testActorId;
     });

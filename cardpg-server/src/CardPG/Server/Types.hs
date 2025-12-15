@@ -6,7 +6,6 @@ module CardPG.Server.Types
   , ServerMessage (..)
   , ActorGameEvent (..)
   , Token (..)
-
   , CardLibrary (..)
   , ServerState (..)
   , Command (..)

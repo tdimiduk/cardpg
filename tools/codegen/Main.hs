@@ -35,14 +35,14 @@ import CardPG.Core.State
   , AssetState
   , CoreCardState
   , CorePlayState
+  , GameEvent
   , NarrativeStack
   , PlannedAction
   , RealizedAttack
+  , RevealedEffect
   , SpatialState
   , TableCard
   , TableState
-  , GameEvent
-  , RevealedEffect
   )
 import CardPG.Server.Types
   ( ActorGameEvent
