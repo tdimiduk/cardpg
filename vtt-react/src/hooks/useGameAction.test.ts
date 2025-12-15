@@ -8,23 +8,16 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 vi.mock('../store/gameStore');
 
 describe('useGameAction', () => {
-  const mockCommitPlan = vi.fn();
-  const mockPlayImmediate = vi.fn();
-  const mockPassTurn = vi.fn();
   const mockRevealAndResolve = vi.fn();
   const mockEndRound = vi.fn();
   const mockUpdateTokenPosition = vi.fn();
   const mockSetAttackResolution = vi.fn();
   const mockAddLog = vi.fn();
-  const mockCancelPlan = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     const mockState = {
-      commitPlan: mockCommitPlan,
-      playImmediate: mockPlayImmediate,
-      passTurn: mockPassTurn,
       revealAndResolve: mockRevealAndResolve,
       endRound: mockEndRound,
       updateTokenPosition: mockUpdateTokenPosition,
@@ -38,8 +31,6 @@ describe('useGameAction', () => {
       removeStatus: vi.fn(),
       setAttackResolution: mockSetAttackResolution,
       addLog: mockAddLog,
-      // ... others
-      cancelPlan: mockCancelPlan,
       tokens: [{ id: 'token-1', actorId: 'actor-1' }],
       actors: { 'actor-1': { id: 'actor-1', name: 'Test Actor' } },
     };
@@ -80,7 +71,7 @@ describe('useGameAction', () => {
         }
     };
     result.current._applyAction(event);
-    expect(mockCancelPlan).toHaveBeenCalledWith('actor-1');
+    expect(mockAddLog).toHaveBeenCalledWith(expect.stringContaining('canceled their plan'), 'System', 'info');
   });
 
   it('should handle cardDrawn log', () => {

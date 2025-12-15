@@ -1,36 +1,17 @@
 import { StateCreator } from 'zustand';
-import { GamePhase, UIPlannedAction, CoreCard, ResourceType, Token, ActorState } from '../../types';
+import { GamePhase, Token, ActorState } from '../../types';
 import { LogSlice, createLog } from './logSlice';
 import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
   phase: GamePhase;
-  plannedActions: Record<string, UIPlannedAction>;
   currentResolution: { actorId: string; attack: import('../../types').RealizedAttack } | null;
 
-  commitPlan: (
-    tokenId: string,
-    cards: CoreCard[],
-    strengthColor: ResourceType,
-    modifier: number,
-    actionName?: string,
-    targetDefense?: ResourceType,
-  ) => void;
-  cancelPlan: (tokenId: string) => void;
-  passTurn: (tokenId: string) => void;
   revealAndResolve: () => void;
   setPhase: (phase: GamePhase) => void;
   setResolutionPhase: () => void;
   setAttackResolution: (actorId: string, attack: import('../../types').RealizedAttack) => void;
   endRound: () => void;
-  playImmediate: (
-    tokenId: string,
-    cards: CoreCard[],
-    strengthColor: ResourceType,
-    modifier: number,
-    actionName?: string,
-    targetDefense?: ResourceType,
-  ) => void;
 }
 
 export const createGameSlice: StateCreator<
@@ -40,24 +21,7 @@ export const createGameSlice: StateCreator<
   GameSlice
 > = (set) => ({
   phase: 'planning',
-  plannedActions: {},
   currentResolution: null,
-
-  commitPlan: (_tokenId, _cards, _strengthColor, _modifier, _actionName, _targetDefense) =>
-    set((_state) => {
-      // Deprecated: Optimistic updates removed in favor of Server Authoritative StateUpdate.
-      // Logic handled by actorSlice.updateActorState
-    }),
-
-  cancelPlan: (_tokenId) =>
-    set((_state) => {
-      // Deprecated: Logic handled by actorSlice.updateActorState
-    }),
-
-  passTurn: (_tokenId) =>
-    set((_state) => {
-      // Deprecated: Logic handled by actorSlice.updateActorState
-    }),
 
   revealAndResolve: () =>
     set((state) => {
@@ -96,10 +60,5 @@ export const createGameSlice: StateCreator<
       state.phase = 'planning';
       state.currentResolution = null;
       state.logs.push(createLog('Round Ended. Starting new Planning Phase.', 'GM'));
-    }),
-
-  playImmediate: (_tokenId, _cards, _strengthColor, _modifier, _actionName, _targetDefense) =>
-    set((_state) => {
-      // Deprecated: Server Authoritative
     }),
 });

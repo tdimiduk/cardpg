@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
-import { Token, UIPlannedAction, ActorState } from '../../types';
-import { INITIAL_TOKENS, RESOURCE_TYPES } from '../../constants';
+import { Token, ActorState } from '../../types';
+import { INITIAL_TOKENS } from '../../constants';
 
 export interface BoardSlice {
   tokens: Token[];
@@ -15,7 +15,6 @@ export interface BoardSlice {
 export const createBoardSlice: StateCreator<
   BoardSlice & {
     phase: string;
-    plannedActions: Record<string, UIPlannedAction>;
     actors: Record<string, ActorState>;
   }, // Partial definition of full store for TS
   [['zustand/immer', never]],
@@ -37,21 +36,7 @@ export const createBoardSlice: StateCreator<
         const idx = state.tokens.findIndex((t) => t.id === token.id);
         if (idx !== -1) state.tokens[idx] = token;
       }
-      // Planning: Update Move Plan
-      else {
-        if (!state.plannedActions[token.id]) {
-          const actor = state.actors[token.actorId];
-          state.plannedActions[token.id] = {
-            actorId: token.id,
-            actorName: actor?.name || 'Unknown',
-            cards: [],
-            strengthColor: RESOURCE_TYPES.RED,
-            modifier: 0,
-            actionName: undefined,
-          };
-        }
-        state.plannedActions[token.id].move = { x: token.x, y: token.y };
-      }
+      // Planning: Move Plan handled by server command 'PlanMove' dispatched from UI
     }),
 
   spawnToken: (actorId, x, y) =>
@@ -73,6 +58,5 @@ export const createBoardSlice: StateCreator<
         state.activeActorId = null;
       }
       state.tokens = state.tokens.filter((t) => t.id !== tokenId);
-      delete state.plannedActions[tokenId];
     }),
 });
