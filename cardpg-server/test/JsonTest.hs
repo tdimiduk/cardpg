@@ -7,12 +7,16 @@ import Test.Tasty.HUnit (testCase, (@?=))
 import qualified Data.ByteString.Lazy.Char8 as B
 import qualified Data.List
 
-import CardPG.Server.Types (ServerMessage(..), BroadcastAction(..))
+import CardPG.Core.Primitives (ActorId(..))
+import CardPG.Core.State (GameEvent(..))
+import CardPG.Server.Types (ServerMessage(..), ActorGameEvent(..))
 
 test_json :: TestTree
 test_json = testGroup "JSON Serialization"
   [ testCase "MultiMessage Serialization" $ do
-      let msg1 = BroadcastMessage (read "00000000-0000-0000-0000-000000000001") [Reveal]
+      let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
+      let evt = ActorGameEvent actorId DeckShuffled
+      let msg1 = BroadcastMessage (read "00000000-0000-0000-0000-000000000001") [evt]
       let msg2 = ErrorMessage "Test Error"
       let batch = MultiMessage [msg1, msg2]
       

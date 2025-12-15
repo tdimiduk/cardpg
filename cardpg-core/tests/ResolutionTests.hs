@@ -61,7 +61,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         { name = "Tester"
         , actorType = "PC"
         , coreState = initialCore
-        , tableState = TableState Map.empty Map.empty
+        , tableState = TableState Map.empty Map.empty [] Map.empty
         , spatial = SpatialState 0 0 1 Nothing
         , plannedMove = Nothing
         }
@@ -72,7 +72,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
 
   -- Verify plan
   case actorAfterPlan.coreState.planned of
-    Just (ActionStack ac res) -> do
+    Just (PStandard (ActionStack ac res)) -> do
       assertEqual "Action card correct" c1Id ac
       assertEqual "Resource card correct" [c2Id] res
     Nothing -> assertFailure "Action should be planned"

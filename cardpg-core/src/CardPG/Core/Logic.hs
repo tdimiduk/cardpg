@@ -33,6 +33,7 @@ import Control.Monad.State (MonadState, State, get, modify, put, state)
 import Control.Monad.Trans.Class (lift)
 import Data.List (partition)
 import Data.Map.Strict qualified as Map
+import Data.Maybe (fromMaybe)
 import Data.Text (Text, unpack)
 import Data.UUID (nil)
 import Optics
@@ -62,9 +63,11 @@ import CardPG.Core.State
   , PlannedAction (..)
   , PlannedActionMaterialized (..)
   , RealizedAttack (..)
+  , RevealedEffect (..)
   , SpatialState (..)
   , TableCard (..)
   , TableState (..)
+  , materializePlannedAction
   , plannedActionCards
   )
 import CardPG.Core.Util (shuffleListM)
@@ -238,7 +241,16 @@ revealPlannedActions = do
   maybePlan <- use (#coreState % #planned)
   case maybePlan of
     Nothing -> return ()
-    Just plan -> tell [ActionRevealed plan]
+    Just plan -> do
+       registry <- use (#coreState % #registry)
+       let revealedEffect = case materializePlannedAction registry plan of
+             Nothing -> REInvalid "you don't have all these cards"
+             Just matPlan -> case matPlan of
+                 PMPass -> REPass
+                 _ -> case attackAction matPlan of
+                      Right attack -> REAttack attack
+                      Left err -> REInvalid err
+       tell [ActionRevealed plan revealedEffect]
 
 discardPlannedActions :: GameM g ()
 discardPlannedActions = plannedActionTo #discard PlanCanceled
@@ -328,6 +340,7 @@ addStatus statusType destination = do
             "deck" -> modify $ #coreState % #deck %~ (cid :)
             _ -> modify $ #coreState % #discard %~ (cid :)
           tell [ActionPlanned (PStandard (ActionStack cid []))]
+          tell [StatusAdded statusType destination]
         _ -> return ()
 
 removeStatus :: Text -> Maybe Text -> GameM g ()
@@ -359,13 +372,20 @@ removeStatus statusType maybeCardId = do
   -- Search order: Hand, Discard, Deck
   removedFromHand <- findAndRemove #hand
   if removedFromHand
-    then return ()
+    then do
+      tell [StatusRemoved statusType (fromMaybe "hand" maybeCardId)]
+      return ()
     else do
       removedFromDiscard <- findAndRemove #discard
       if removedFromDiscard
-        then return ()
+        then do
+           tell [StatusRemoved statusType (fromMaybe "discard" maybeCardId)]
+           return ()
         else do
-          _ <- findAndRemove #deck -- No need to check result, it's the last one
+          removed <- findAndRemove #deck
+          if removed
+             then tell [StatusRemoved statusType (fromMaybe "deck" maybeCardId)]
+             else return ()
           return ()
 
 addConsequence :: (RandomGen g) => Int -> GameM g ()
@@ -393,6 +413,7 @@ addConsequence severityVal = do
       -- We might need a generic event for "AssetCreated" or reused CardsCreated?
       -- CardsCreated takes [CardInstanceId]. It doesn't imply CoreCard necessarily.
       tell [CardsCreated [cid]]
+      tell [ConsequenceAdded severityVal]
       return ()
 
 passAction :: (RandomGen g) => GameM g ()
@@ -406,6 +427,7 @@ removeConsequence cardIdStr = do
   -- Remove from TableState
   modify $ #tableState % #consequences %~ filter (/= cid)
   modify $ #tableState % #consequenceRegistry %~ Map.delete cid
+  tell [ConsequenceRemoved cardIdStr]
 
 discardCards :: [Text] -> GameM g ()
 discardCards cardIdStrs = do

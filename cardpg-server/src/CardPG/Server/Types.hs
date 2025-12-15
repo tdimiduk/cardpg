@@ -4,8 +4,9 @@ module CardPG.Server.Types
   ( Client (..)
   , ClientMessage (..)
   , ServerMessage (..)
+  , ActorGameEvent (..)
   , Token (..)
-  , BroadcastAction (..)
+
   , CardLibrary (..)
   , ServerState (..)
   , Command (..)
@@ -45,7 +46,7 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ActorId, ResourceType)
-import CardPG.Core.State (ActorState, GameEnv, RealizedAttack)
+import CardPG.Core.State (ActorState, GameEnv, GameEvent)
 
 -- | The authoritative state for a game session
 data GameState = GameState
@@ -83,49 +84,13 @@ data Token = Token
 
 $(deriveJSON cardpgJsonDef ''Token)
 
-data BroadcastAction
-  = AttackAction
-      { actingActor :: ActorId
-      , attack :: RealizedAttack
-      }
-  | Pass {actingActor :: ActorId}
-  | Reveal
-  | StartResolutionPhase
-  | EndRound
-  | MoveToken {actingActor :: ActorId, token :: Token}
-  | DrawCards {actingActor :: ActorId, count :: Int}
-  | Defend {actingActor :: ActorId}
-  | ClearDefense {actingActor :: ActorId}
-  | Reshuffle {actingActor :: ActorId}
-  | AddConsequence {actingActor :: ActorId}
-  | RemoveConsequence {actingActor :: ActorId, cardId :: Text}
-  | AddStatus
-      { actingActor :: ActorId
-      , statusType :: Text
-      , destination :: Text
-      }
-  | RemoveStatus
-      { actingActor :: ActorId
-      , statusType :: Text
-      , destination :: Text
-      }
-  | DiscardCards
-      { actingActor :: ActorId
-      , cardIds :: [Text]
-      }
-  | CancelPlan {actingActor :: ActorId}
-  | ReturnToDeck
-      { actingActor :: ActorId
-      , cardIds :: [Text]
-      }
-  | InvalidAction {actingActor :: ActorId, message :: Text}
+data ActorGameEvent = ActorGameEvent
+  { actorId :: ActorId
+  , event :: GameEvent
+  }
   deriving (Show, Eq, Generic)
 
-instance ToJSON BroadcastAction where
-  toJSON = genericToJSON cardpgJsonDef
-
-instance FromJSON BroadcastAction where
-  parseJSON = genericParseJSON cardpgJsonDef
+$(deriveJSON cardpgJsonDef ''ActorGameEvent)
 
 -- | Commands for game actions (Intents)
 data Command
@@ -153,7 +118,6 @@ $(deriveJSON cardpgJsonDef ''Command)
 -- | Messages sent from Client to Server.
 data ClientMessage
   = Join {name :: Text}
-  | Broadcast {payload :: BroadcastAction}
   | GameCommand {command :: Command}
   deriving (Show, Generic)
 
@@ -173,11 +137,10 @@ data ServerMessage
   = Welcome
       { yourClientId :: UUID
       , connectedClients :: [Text]
-      , history :: [BroadcastAction]
       , initialActors :: [StateUpdate]
       , phase :: Phase
       }
-  | BroadcastMessage {fromClientId :: UUID, payload :: [BroadcastAction]}
+  | BroadcastMessage {fromClientId :: UUID, payload :: [ActorGameEvent]}
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}
@@ -204,10 +167,9 @@ instance ToJSON CardLibrary where
 -- | The state of the server, mapping client IDs to clients and storing action history.
 data ServerState = ServerState
   { clients :: Map UUID Client
-  , actionLog :: [BroadcastAction]
   , library :: CardLibrary
   , gameState :: GameState
   }
 
 newServerState :: GameState -> ServerState
-newServerState gs = ServerState Map.empty [] (CardLibrary [] [] []) gs
+newServerState gs = ServerState Map.empty (CardLibrary [] [] []) gs

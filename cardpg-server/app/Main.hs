@@ -34,7 +34,7 @@ import qualified CardPG.Core.Logic as Logic
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Server.Game (GameState(..), runActorAction, processCommand, concludeRound, revealPlannedActions)
 import CardPG.Server.Scenario (loadScenario)
-import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), BroadcastAction(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
+import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), ActorGameEvent(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
 
 
 numClients :: ServerState -> Int
@@ -49,8 +49,7 @@ addClient client state = state { clients = Map.insert (client.clientId) client (
 removeClient :: Client -> ServerState -> ServerState
 removeClient client state = state { clients = Map.delete (client.clientId) (state.clients) }
 
-addAction :: BroadcastAction -> ServerState -> ServerState
-addAction action state = state { actionLog = state.actionLog ++ [action] }
+
 
 broadcast :: ServerMessage -> ServerState -> IO ()
 broadcast msg state = do
@@ -126,38 +125,21 @@ talk client state = forever $ do
             
             -- Send Welcome to the new client
             let clientNames = map (.clientName) $ Map.elems currentClients
-            (currentClients, historyLog, currentGs) <- modifyMVar state $ \s -> do
+            (currentClients, currentGs) <- modifyMVar state $ \s -> do
                 let s' = addClient newClient s
-                return (s', (s'.clients, s'.actionLog, s'.gameState))
+                return (s', (s'.clients, s'.gameState))
 
             let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (currentGs.actors)
-            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) historyLog initialUpdates (currentGs.phase)
+            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) initialUpdates (currentGs.phase)
             
             -- Notify others
-            let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) [] (CardLibrary [] [] []) currentGs
+            let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) (CardLibrary [] [] []) currentGs
             broadcast (ClientJoined name (newClient.clientId)) broadcastState
             
             -- Continue loop with updated client info
             talkLoop newClient state
             
-        Just (Broadcast payload) -> do
-            T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
-
-            -- Update log and broadcast
-            (currentClients, currentGs, movesUpdates, extraBroadcasts) <- modifyMVar state $ \s -> do
-                let s' = addAction payload s
-                return (s', (s'.clients, s'.gameState, [], []))
-
-            -- Batched Broadcast
-            let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
             
-            let messages = 
-                  [BroadcastMessage (client.clientId) [payload]] ++ 
-                  (if null extraBroadcasts then [] else [BroadcastMessage (client.clientId) extraBroadcasts]) ++
-                  (if null movesUpdates then [] else [GameStateUpdate movesUpdates (Just (currentGs.phase))])
-
-            broadcast (MultiMessage messages) broadcastState
-
             -- Continue loop
             talkLoop client state
 
@@ -175,23 +157,7 @@ talkLoop client state = do
             modifyMVar_ state $ \s -> return $ addClient newClient s
             T.putStrLn $ "Client renamed: " <> name
             talkLoop newClient state
-        Just (Broadcast payload) -> do
-            T.putStrLn $ "Received broadcast: " <> T.pack (show payload) <> " from " <> client.clientName
-            
-            -- Update log and broadcast
-            -- Update log and broadcast
-            (currentClients, currentGs, _, _) <- modifyMVar state $ \s -> do
-                 -- Simplify Broadcast handling: Only log, do NOT execute game logic.
-                 -- All game logic should be in GameCommand.
-                 -- We still allow broadcasting messages (like chat) if we had them.
-                 -- For now, just pass through or ignore.
-                 let s' = addAction payload s
-                 return (s', (s'.clients, s'.gameState, [], []))
 
-            let broadcastState = ServerState currentClients [] (CardLibrary [] [] []) currentGs
-            broadcast (BroadcastMessage (client.clientId) [payload]) broadcastState
-            
-            talkLoop client state
         Just (GameCommand cmd) -> do
             T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
             
@@ -200,12 +166,11 @@ talkLoop client state = do
                 let game = s.gameState
                 let (newGame, updates, actions) = processCommand cmd game
                 
-                -- Update GameHistory
-                let s' = foldl (flip addAction) (s { gameState = newGame }) actions
-                return (s', (updates, actions, s'.clients, newGame.phase, game.phase))
+                -- Update GameHistory (REMOVED)
+                return (s { gameState = newGame }, (updates, actions, s.clients, newGame.phase, game.phase))
 
             -- Broadcast results
-            let tempState = ServerState clientsMap [] (CardLibrary [] [] []) (error "GameState unused in broadcast")
+            let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast")
             
             let messages =
                   (if null actions then [] else [BroadcastMessage (client.clientId) actions]) ++

@@ -1,9 +1,8 @@
 import { renderHook } from '@testing-library/react';
 import { useGameAction } from './useGameAction';
 import { useGameStore } from '../store/gameStore';
-import { BroadcastAction } from '../types';
-import { RESOURCE_TYPES } from '../constants';
-import { vi, describe, it, expect, beforeEach, Mock } from 'vitest';
+import { ActorGameEvent, GameEvent, ResourceType } from '../generated/types';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock dependencies
 vi.mock('../store/gameStore');
@@ -15,9 +14,9 @@ describe('useGameAction', () => {
   const mockRevealAndResolve = vi.fn();
   const mockEndRound = vi.fn();
   const mockUpdateTokenPosition = vi.fn();
-  const mockDiscardCards = vi.fn();
+  const mockSetAttackResolution = vi.fn();
+  const mockAddLog = vi.fn();
   const mockCancelPlan = vi.fn();
-  const mockReturnToDeck = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -37,9 +36,10 @@ describe('useGameAction', () => {
       removeConsequence: vi.fn(),
       addStatus: vi.fn(),
       removeStatus: vi.fn(),
-      discardCards: mockDiscardCards,
+      setAttackResolution: mockSetAttackResolution,
+      addLog: mockAddLog,
+      // ... others
       cancelPlan: mockCancelPlan,
-      returnToDeck: mockReturnToDeck,
       tokens: [{ id: 'token-1', actorId: 'actor-1' }],
       actors: { 'actor-1': { id: 'actor-1', name: 'Test Actor' } },
     };
@@ -50,28 +50,49 @@ describe('useGameAction', () => {
     });
   });
 
-  it('should handle REVEAL action', () => {
+  it('should handle actionRevealed (Reveal & Attack)', () => {
     const { result } = renderHook(() => useGameAction());
-    result.current._applyAction({ type: 'reveal' });
+    const event: ActorGameEvent = {
+        actorId: 'actor-1',
+        event: {
+            type: 'actionRevealed',
+            data: [
+                 { type: 'pPass' } as any, // Dummy plan
+                 { type: 'rEAttack',
+                   data: { attackCard: 'c1', attackStrength: 5, defenseColor: 'Red' } as any
+                 }
+            ]
+        }
+    };
+    result.current._applyAction(event);
+    
     expect(mockRevealAndResolve).toHaveBeenCalled();
+    expect(mockSetAttackResolution).toHaveBeenCalledWith('actor-1', expect.objectContaining({ attackStrength: 5 }));
   });
 
-  it('should handle PASS action', () => {
+  it('should handle planCanceled', () => {
     const { result } = renderHook(() => useGameAction());
-    result.current._applyAction({ type: 'pass', actingActor: 'token-1' });
-
-    // Expect some effect (mock store/dispatch called)
-    // For now just ensuring it doesn't crash
-    expect(true).toBe(true);
+     const event: ActorGameEvent = {
+        actorId: 'actor-1',
+        event: {
+            type: 'planCanceled',
+            data: { type: 'pPass'} as any
+        }
+    };
+    result.current._applyAction(event);
+    expect(mockCancelPlan).toHaveBeenCalledWith('actor-1');
   });
 
-  it('should handle DISCARD_CARDS action', () => {
+  it('should handle cardDrawn log', () => {
     const { result } = renderHook(() => useGameAction());
-    result.current._applyAction({
-      type: 'discardCards',
-      actingActor: 'token-1',
-      cardIds: ['c1'],
-    });
-    expect(mockDiscardCards).toHaveBeenCalledWith('token-1', ['c1']);
+    const event: ActorGameEvent = {
+        actorId: 'actor-1',
+        event: {
+            type: 'cardDrawn',
+            data: 'c1' as any
+        }
+    };
+    result.current._applyAction(event);
+    expect(mockAddLog).toHaveBeenCalledWith(expect.stringContaining('drew a card'), 'System', 'info');
   });
 });

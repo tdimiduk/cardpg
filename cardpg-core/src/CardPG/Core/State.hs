@@ -166,10 +166,23 @@ data GameEvent
   | ActorMoved (Int, Int)
   | ActionPlanned PlannedAction
   | PlanCanceled PlannedAction
-  | ActionRevealed PlannedAction
+
+  | ActionRevealed PlannedAction RevealedEffect
   | DefenseEnded [CardInstanceId]
   | IllegalAction PlannedAction (Maybe Text)
+  | StatusAdded Text Text -- ^ Type, Destination
+  | StatusRemoved Text Text -- ^ Type, Destination
+  | ConsequenceAdded Int -- ^ Severity
+  | ConsequenceRemoved Text -- ^ Card ID/Name
   deriving stock (Show, Eq, Generic)
+
+data RevealedEffect
+  = REPass
+  | REAttack RealizedAttack
+  | REInvalid Text
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''RevealedEffect)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)
 

@@ -16,14 +16,12 @@ vi.mock('./hooks/useGameDispatch');
 // Mock child components to avoid complex rendering and isolate App logic
 vi.mock('./components/Game/MapBoard', () => ({
   MapBoard: ({
-    _onUpdateToken,
-    setActiveTokenId,
+    setActiveActorId,
   }: {
-    _onUpdateToken: unknown;
-    setActiveTokenId: (id: string) => void;
+    setActiveActorId: (id: string) => void;
   }) => (
     <div data-testid="map-board">
-      <button onClick={() => setActiveTokenId('token-1')} data-testid="select-token-btn">
+      <button onClick={() => setActiveActorId && setActiveActorId('token-1')} data-testid="select-token-btn">
         Select Token
       </button>
     </div>
@@ -46,7 +44,7 @@ vi.mock('./components/Sidebar/SidebarRight', () => ({
 
 describe('App Component', () => {
   const mockInitializeGame = vi.fn();
-  const mockSetActiveToken = vi.fn();
+  const mockSetActiveActor = vi.fn();
   const mockDispatch = vi.fn();
 
   const mockActors = {
@@ -84,8 +82,8 @@ describe('App Component', () => {
         tokens: mockTokens,
         actors: mockActors,
         logs: [],
-        activeTokenId: null,
-        setActiveToken: mockSetActiveToken,
+        activeActorId: null,
+        setActiveActor: mockSetActiveActor,
         addActor: vi.fn(),
         removeActor: vi.fn(),
         addLog: vi.fn(),
@@ -111,8 +109,8 @@ describe('App Component', () => {
         tokens: mockTokens,
         actors: emptyActors,
         logs: [],
-        activeTokenId: null,
-        setActiveToken: mockSetActiveToken,
+        activeActorId: null,
+        setActiveActor: mockSetActiveActor,
         initializeGame: mockInitializeGame,
       };
       return selector(state);
@@ -133,7 +131,7 @@ describe('App Component', () => {
     const selectBtn = screen.getByTestId('select-token-btn');
     fireEvent.click(selectBtn);
 
-    expect(mockSetActiveToken).toHaveBeenCalledWith('token-1');
+    expect(mockSetActiveActor).toHaveBeenCalledWith('token-1');
   });
 
   it('should render PlayerHand when a token is active', () => {
@@ -145,8 +143,8 @@ describe('App Component', () => {
         tokens: mockTokens,
         actors: mockActors,
         logs: [],
-        activeTokenId: 'token-1', // Active token set
-        setActiveToken: mockSetActiveToken,
+        activeActorId: 'actor-1',
+        setActiveActor: mockSetActiveActor,
         initializeGame: mockInitializeGame,
       };
       return selector(state);

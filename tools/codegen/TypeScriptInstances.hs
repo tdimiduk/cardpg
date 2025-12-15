@@ -59,12 +59,13 @@ import CardPG.Core.State
   , NarrativeStack (..)
   , PlannedAction (..)
   , RealizedAttack (..)
+  , RevealedEffect (..)
   , SpatialState (..)
   , TableCard (..)
   , TableState (..)
   )
 import CardPG.Server.Types
-  ( BroadcastAction (..)
+  ( ActorGameEvent (..)
   , ClientMessage
   , Command (..)
   , ServerMessage
@@ -117,6 +118,7 @@ $(deriveTypeScript cardpgJsonDef ''ActionStack)
 $(deriveTypeScript cardpgJsonDef ''NarrativeStack)
 $(deriveTypeScript cardpgJsonDef ''PlannedAction)
 $(deriveTypeScript cardpgJsonDef ''RealizedAttack)
+$(deriveTypeScript cardpgJsonDef ''RevealedEffect)
 
 -- Helper for creating splices
 -- Using runIO or just simple do block
@@ -293,7 +295,7 @@ $( do
      -- State Types
      i_token <- deriveTypeScript cardpgJsonDef ''Token
      i_command <- deriveTypeScript cardpgJsonDef ''Command
-     i_broadcast <- deriveTypeScript cardpgJsonDef ''BroadcastAction
+     i_actorGameEvent <- deriveTypeScript cardpgJsonDef ''ActorGameEvent
      i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
 
      i_tableCard <- deriveTypeScript cardpgJsonDef ''TableCard
@@ -309,7 +311,7 @@ $( do
      return
        ( i_token
            ++ i_command
-           ++ i_broadcast
+           ++ i_actorGameEvent
            ++ i_clientMsg
            ++ i_serverMsg
            ++ i_tableCard

@@ -41,9 +41,11 @@ import CardPG.Core.State
   , SpatialState
   , TableCard
   , TableState
+  , GameEvent
+  , RevealedEffect
   )
 import CardPG.Server.Types
-  ( BroadcastAction
+  ( ActorGameEvent
   , ClientMessage
   , Command
   , Phase
@@ -99,7 +101,9 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy TableState)
               <> getTypeScriptDeclarations (Proxy :: Proxy TableCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy Token)
-              <> getTypeScriptDeclarations (Proxy :: Proxy BroadcastAction)
+              <> getTypeScriptDeclarations (Proxy :: Proxy ActorGameEvent)
+              <> getTypeScriptDeclarations (Proxy :: Proxy GameEvent)
+              <> getTypeScriptDeclarations (Proxy :: Proxy RevealedEffect)
               <> getTypeScriptDeclarations (Proxy :: Proxy Command)
               <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)

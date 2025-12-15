@@ -18,12 +18,12 @@ import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableS
 import CardPG.Core.Card (CoreCard(..), CoreCardT(..))
 
 import CardPG.Server.Game (GameState(..), emptyGame, addActor, runActorAction, processCommand, concludeRound)
-import CardPG.Server.Types (Command(..), BroadcastAction(..), StateUpdate(..))
+import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
 
 test_game :: TestTree
 test_game = testGroup "Server Game Engine"
   [ testCase "Add Actor and Run Action" $ do
-      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue", statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty }
       let gen = mkStdGen 0
       let game0 = emptyGame env gen
       
@@ -51,7 +51,7 @@ test_game = testGroup "Server Game Engine"
            (st ^. #coreState % #deck) @?= []
 
   , testCase "Gameplay Sequence (Command Processing)" $ do
-      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue", statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty }
       let gen = mkStdGen 1
       let game0 = emptyGame env gen
       
@@ -67,7 +67,11 @@ test_game = testGroup "Server Game Engine"
       let (game2, _updates, actions) = processCommand (DrawIntent actorId) game1
       
       length actions @?= 1
-      head actions @?= DrawCards actorId 1
+      let evt = head actions
+      evt.actorId @?= actorId
+      case evt.event of
+        CardDrawn cid -> cid @?= card1
+        _ -> assertBool "Expected CardDrawn event" False
       
       let actorSt2 = game2 ^. #actors % at actorId
       case actorSt2 of
@@ -80,6 +84,12 @@ test_game = testGroup "Server Game Engine"
       let (game3, _updates2, actions2) = processCommand (DefendIntent actorId) game2
       
       length actions2 @?= 1
+      let evt2 = head actions2
+      evt2.actorId @?= actorId
+      case evt2.event of
+        CardDefended cid -> cid @?= card2 -- The card from deck
+        _ -> assertBool "Expected CardDefended event" False
+
       -- Verify Actor State in Game
       let actorSt3 = game3 ^. #actors % at actorId
       case actorSt3 of
@@ -89,7 +99,7 @@ test_game = testGroup "Server Game Engine"
            (st ^. #coreState % #deck) @?= []
 
   , testCase "Gameplay Sequence (Fatigue)" $ do
-      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue", statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty }
       let gen = mkStdGen 2
       let game0 = emptyGame env gen
       
@@ -99,8 +109,8 @@ test_game = testGroup "Server Game Engine"
       
       let (game2, _updates, actions) = processCommand (DrawIntent actorId) game1
       
-      let actionTypes = map toConstr actions
-      actionTypes @?= ["Reshuffle", "DrawCards"]
+      let actionTypes = map (toConstr . (.event)) actions
+      actionTypes @?= ["CardsCreated", "DeckShuffled", "CardDrawn"]
       
       let actorSt2 = game2 ^. #actors % at actorId
       case actorSt2 of
@@ -110,7 +120,7 @@ test_game = testGroup "Server Game Engine"
            length (st ^. #coreState % #deck) @?= 1
 
   , testCase "Round Conclusion (concludeRound)" $ do
-      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue" }
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue", statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty }
       let gen = mkStdGen 3
       let game0 = emptyGame env gen
       
@@ -148,10 +158,11 @@ test_game = testGroup "Server Game Engine"
 -- Helpers
 
 -- Helper to match constructor names for easier assertion
-toConstr :: BroadcastAction -> String
-toConstr (Reshuffle {}) = "Reshuffle"
-toConstr (DrawCards {}) = "DrawCards"
-toConstr (Defend {}) = "Defend"
+toConstr :: GameEvent -> String
+toConstr (CardsCreated {}) = "CardsCreated"
+toConstr (DeckShuffled {}) = "DeckShuffled"
+toConstr (CardDrawn {}) = "CardDrawn"
+toConstr (CardDefended {}) = "CardDefended"
 toConstr _ = "Other"
 
 mockCard :: Text -> CoreCard
@@ -178,6 +189,8 @@ emptyActorState = ActorState
   , tableState = TableState
       { assets = Map.empty
       , registry = Map.empty
+      , consequences = []
+      , consequenceRegistry = Map.empty
       }
   , name = "Tester"
   , actorType = "PC"

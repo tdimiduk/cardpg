@@ -256,6 +256,14 @@ instance Arbitrary ActionStack where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary NarrativeStack where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary PlannedAction where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary SpatialState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

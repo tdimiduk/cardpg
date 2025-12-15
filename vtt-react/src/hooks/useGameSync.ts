@@ -10,14 +10,14 @@ export const useGameSync = () => {
   useEffect(() => {
     function handleMessage(msg: import('../generated/types').ServerMessage) {
       if (msg.type === 'broadcastMessage') {
-        const actions = msg.payload;
-        console.log('Received broadcast actions:', actions);
+        const events = msg.payload;
+        console.log('Received game events:', events);
 
-        actions.forEach((action) => {
-          _applyAction(action);
+        events.forEach((actorEvent) => {
+          _applyAction(actorEvent);
         });
       } else if (msg.type === 'welcome') {
-        // Sync initial actors first so names are available for history
+        // Sync initial actors first so names are available
         if (msg.initialActors) {
           console.log('Syncing initial actors:', msg.initialActors.length);
           msg.initialActors.forEach((update) => {
@@ -29,11 +29,6 @@ export const useGameSync = () => {
         if (msg.phase) {
           useGameStore.getState().setPhase(msg.phase);
         }
-
-        console.log('Replaying history:', msg.history.length, 'actions');
-        msg.history.forEach((action) => {
-          _applyAction(action);
-        });
       } else if (msg.type === 'gameStateUpdate') {
         console.log('Received State Updates:', msg.updates);
         msg.updates.forEach((update) => {
