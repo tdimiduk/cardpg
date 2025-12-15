@@ -4,7 +4,9 @@ actors:
     file: ../cards/pc/vallhach.yaml
     x: 0
     y: 0
+    initialHandSize: 4
   - name: wolf
     file: ../cards/monsters/wolf.yaml
     x: 1
     y: 1
+    initialHandSize: 4

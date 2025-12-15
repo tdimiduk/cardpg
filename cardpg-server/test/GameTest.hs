@@ -13,9 +13,11 @@ import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=), assertBool)
 
 import CardPG.Core.Logic (drawCard)
-import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..))
-import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..), SpatialState(..))
-import CardPG.Core.Card (CoreCard(..), CoreCardT(..))
+import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..), StackPower(..), ResourceType(..))
+import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..), SpatialState(..), PlannedAction(..), ActionStack(..))
+import CardPG.Core.Card (CoreCard(..), CoreCardT(..), Stats(..))
+import CardPG.Core.RuleDefs (RuleT(..), AttackDefT(..))
+import Data.List.NonEmpty (NonEmpty(..))
 
 import CardPG.Server.Game (GameState(..), emptyGame, addActor, runActorAction, processCommand, concludeRound)
 import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
@@ -126,12 +128,15 @@ test_game = testGroup "Server Game Engine"
       
       let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
       let card1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
-      let deck = [] -- Empty deck
+      let card3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      let card4 = CardInstanceId (read "00000000-0000-0000-0000-000000000004")
+      let deck = [card3, card4] -- Enough for 2 draws
       let defending = [card1] -- Actor has active defense
       
       let actorState = emptyActorState 
             & #coreState % #defending .~ defending
             & #coreState % #discard .~ []
+            & #coreState % #deck .~ deck
             
       let game1 = addActor actorId actorState game0
       
@@ -153,6 +158,49 @@ test_game = testGroup "Server Game Engine"
            -- Card should be in discard
            (st ^. #coreState % #discard) @?= [card1]
 
+
+  , testCase "NPC Auto-Planning" $ do
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue", statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty }
+      let gen = mkStdGen 4
+      let game0 = emptyGame env gen
+      
+      let npcId = ActorId (read "00000000-0000-0000-0000-000000000099")
+      let actionCid = CardInstanceId (read "00000000-0000-0000-0000-000000000010")
+      let resCid = CardInstanceId (read "00000000-0000-0000-0000-000000000011")
+      
+      let actionCard = mockAttackCard "Attack" Red 1 -- Cost 1, Red
+      let resCard = mockResCard "Resource" -- High stats
+      
+      let hand = [actionCid, resCid]
+      let registry = Map.fromList [(actionCid, actionCard), (resCid, resCard)]
+      
+      let npcState = emptyActorState 
+             & #name .~ "Bad Guy"
+             & #actorType .~ "Monster"
+             & #coreState % #hand .~ hand
+             & #coreState % #registry .~ registry
+             
+      let game1 = addActor npcId npcState game0
+      
+      -- Send EndRoundIntent to trigger auto-planning for next round
+      let (game2, _, events) = processCommand (EndRoundIntent npcId) game1
+      
+      -- Expect ActionPlanned event (from auto-planning)
+      let planEvents = [e | e <- events, case e.event of ActionPlanned _ -> True; _ -> False]
+      length planEvents @?= 1
+      
+      -- Verify Plan
+      let actorSt = game2 ^. #actors % at npcId
+      case actorSt of
+        Nothing -> assertBool "NPC state lost" False
+        Just st -> do
+           case st.coreState.planned of
+             Just (PStandard stack) -> do
+               stack.actionCard @?= actionCid
+               length stack.resources @?= 1
+               head stack.resources @?= resCid
+             _ -> assertBool "Expected Standard Plan" False
+
   ]
 
 -- Helpers
@@ -170,7 +218,27 @@ mockCard name' = CoreCard
   { name = undefined -- Safe for this test
   , cost = Nothing
   , tags = Nothing
-  , stats = undefined
+  , stats = Stats 0 0 0
+  , rules = Nothing
+  , flavor = Nothing
+  }
+
+mockAttackCard :: Text -> ResourceType -> Int -> CoreCard
+mockAttackCard name' color cost' = CoreCard
+  { name = undefined
+  , cost = Just cost'
+  , tags = Nothing
+  , stats = Stats 1 1 1
+  , rules = Just $ RuleAttack (AttackDef { power = StackPower color 0 Nothing, resistedBy = color, effect = Nothing }) :| []
+  , flavor = Nothing
+  }
+
+mockResCard :: Text -> CoreCard
+mockResCard name' = CoreCard
+  { name = undefined
+  , cost = Nothing
+  , tags = Nothing
+  , stats = Stats 5 5 5
   , rules = Nothing
   , flavor = Nothing
   }

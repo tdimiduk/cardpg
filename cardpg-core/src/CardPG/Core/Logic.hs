@@ -24,15 +24,17 @@ module CardPG.Core.Logic
   , discardCards
   , returnCardsToDeck
   , passAction
+  , planBestAvailableAction
   ) where
 
 import Control.Monad (replicateM, when)
 import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
 import Control.Monad.State (MonadState, State, get, modify, put, state)
 import Control.Monad.Trans.Class (lift)
-import Data.List (partition)
+import Data.List (partition, sortOn)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
+import Data.Ord (Down (..))
 import Data.Text (Text, unpack)
 import Data.UUID (nil)
 import Optics
@@ -454,6 +456,45 @@ passAction :: GameM g ()
 passAction = do
   modify $ #coreState % #planned ?~ PPass
   tell [ActionPlanned PPass]
+
+planBestAvailableAction :: GameM g ()
+planBestAvailableAction = do
+  handIds <- use (#coreState % #hand)
+  registry <- use (#coreState % #registry)
+
+  let cardsInHand = [(cid, c) | cid <- handIds, Just c <- [Map.lookup cid registry]]
+
+  -- Find candidates: Cards with a cost and a valid attack rule
+  let candidates =
+        [ (cid, cost, attackRule)
+        | (cid, c) <- cardsInHand
+        , Just cost <- [c.cost] -- Must have cost (implies playable action)
+        , Right attackRule <- [getAttackRule c] -- Must be attack (for now)
+        , cost <= length handIds - 1 -- Must have enough OTHER cards
+        ]
+
+  case candidates of
+    [] -> passAction
+    ((actionCid, cost, attackRule) : _) -> do
+      -- Found an action to play
+      -- Determine controlling color
+      let color = attackRule.power.source
+
+      -- Select resources from OTHER cards
+      let otherCards = filter (\(cid, _) -> cid /= actionCid) cardsInHand
+
+      -- Helper to get stat based on color
+      let getValue c = case color of
+            Red -> c.stats.red
+            Yellow -> c.stats.yellow
+            Blue -> c.stats.blue
+
+      -- Sort by value in that color descending
+      let sortedResources = sortOn (\(_, c) -> Down (getValue c)) otherCards
+      let selectedResources = take cost sortedResources
+      let resourceIds = map fst selectedResources
+
+      planAction actionCid resourceIds
 
 removeConsequence :: Text -> GameM g ()
 removeConsequence cardIdStr = do

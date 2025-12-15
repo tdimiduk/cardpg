@@ -7,6 +7,7 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.State (StateT, evalStateT, execStateT, get, put, runStateT)
 import Data.Aeson (FromJSON)
 import Data.List.NonEmpty (toList)
+import Data.Maybe (fromMaybe)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -38,7 +39,7 @@ import CardPG.Core.State
   , TableState (..)
   )
 import CardPG.Core.State qualified as State
-import CardPG.Server.Game (GameState (..), addActor, emptyGame)
+import CardPG.Server.Game (GameState (..), addActor, emptyGame, autoPlanForNPCs)
 
 import CardPG.Core.Util (shuffleListM)
 
@@ -48,6 +49,7 @@ data ScenarioActor = ScenarioActor
   , file :: FilePath
   , x :: Int
   , y :: Int
+  , initialHandSize :: Maybe Int
   }
   deriving (Show, Eq, Generic)
 
@@ -79,7 +81,11 @@ loadScenario path = do
   let initialGame = emptyGame env rng
 
   -- We use StateT GameState to accumulate actors into the game
-  execStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame
+  gameState <- execStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame
+  
+  -- Auto-plan for NPCs at start
+  let (finalGame, _) = autoPlanForNPCs gameState
+  return finalGame
 
 -- | Load a list of actors and add them to the game state
 loadScenarioActors :: FilePath -> [ScenarioActor] -> StateT GameState IO ()
@@ -94,14 +100,14 @@ loadScenarioActors baseDir actorsList = do
     let (tid, newRng) = uniform (gameState.rng) :: (ActorId, StdGen)
     put $ gameState{rng = newRng}
 
-    actorState <- liftIO $ loadActorState actorPath (actorDef.x) (actorDef.y)
+    actorState <- liftIO $ loadActorState actorPath (actorDef.x) (actorDef.y) (actorDef.initialHandSize)
 
     let updatedGame = addActor tid actorState (gameState{rng = newRng})
     put updatedGame
 
 -- | Load a single actor from a YAML file and instantiate it into an ActorState
-loadActorState :: FilePath -> Int -> Int -> IO ActorState
-loadActorState path x y = do
+loadActorState :: FilePath -> Int -> Int -> Maybe Int -> IO ActorState
+loadActorState path x y handSize = do
   -- Parse the static definition (DSL)
   dsl :: ActorDefinitionDSL <- decodeFileThrow path
 
@@ -110,14 +116,17 @@ loadActorState path x y = do
 
   -- Instantiate with fresh UUIDs
   rng <- newStdGen
-  evalStateT (instantiateActor def x y) rng
+  evalStateT (instantiateActor def x y handSize) rng
 
 -- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
-instantiateActor :: ActorDefinition -> Int -> Int -> StateT StdGen IO ActorState
-instantiateActor def x y = do
+instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
+instantiateActor def x y maybeHandSize = do
   -- Process Deck (Core Cards)
   (deckIds, coreRegistry) <- processCards (def.deck)
   shuffledDeckIds <- shuffleListM deckIds
+
+  let handSize = fromMaybe 0 maybeHandSize
+  let (initialHand, remainingDeck) = splitAt handSize shuffledDeckIds
 
   let nameVal = def.name
   let tagsList = maybe [] toList (def.tags)
@@ -128,8 +137,8 @@ instantiateActor def x y = do
 
   let coreSt =
         State.CoreCardState
-          { deck = shuffledDeckIds
-          , hand = []
+          { deck = remainingDeck
+          , hand = initialHand
           , discard = []
           , defending = []
           , inPlay = Map.empty
