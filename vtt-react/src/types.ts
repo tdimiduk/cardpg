@@ -57,12 +57,17 @@ export interface LogEntry {
   timestamp: number;
   sender: 'System' | 'GM' | 'Player' | 'AI';
   content: string;
-  type: 'chat' | 'action' | 'info';
+  type: 'chat' | 'action' | 'info' | 'defense';
   actionResult?: {
     total: number;
     color: import('./generated/types').ResourceType;
     targetColor?: import('./generated/types').ResourceType;
     label: string;
+  };
+  defense?: {
+    actorId: string;
+    ended: boolean;
+    snapshot?: string[]; // Names of cards at the time of ending
   };
 }
 

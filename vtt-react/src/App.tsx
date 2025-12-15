@@ -267,6 +267,9 @@ const App: React.FC = () => {
               }
             : null
         }
+        onEndDefense={(actorId: string) => {
+          dispatchCommand({ type: 'endDefenseIntent', actorId });
+        }}
       />
     </div>
   );

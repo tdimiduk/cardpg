@@ -6,7 +6,6 @@ import { ActorSlice } from './actorSlice';
 export interface GameSlice {
   phase: GamePhase;
   currentResolution: { actorId: string; attack: import('../../types').RealizedAttack } | null;
-
   revealAndResolve: () => void;
   setPhase: (phase: GamePhase) => void;
   setResolutionPhase: () => void;
@@ -59,6 +58,8 @@ export const createGameSlice: StateCreator<
       // Safe to switch phase as next round implies Planning.
       state.phase = 'planning';
       state.currentResolution = null;
+      // Note: We might want to keep defense visible if it persists across turns, but usually it clears.
+      // For now, let's not auto-clear defense here unless explicitly told by server events.
       state.logs.push(createLog('Round Ended. Starting new Planning Phase.', 'GM'));
     }),
 });

@@ -14,6 +14,7 @@ export const useGameAction = () => {
   const endRound = useGameStore((state) => state.endRound);
   const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
   const addLog = useGameStore((state) => state.addLog);
+  const updateLog = useGameStore((state) => state.updateLog);
   const setResolutionPhase = useGameStore((state) => state.setResolutionPhase);
   const setAttackResolution = useGameStore((state) => state.setAttackResolution);
 
@@ -63,12 +64,44 @@ export const useGameAction = () => {
         case 'cardDrawn':
           addLog(`${actorName} drew a card.`, 'System', 'info');
           break;
-        case 'cardDefended':
-          addLog(`${actorName} is defending.`, 'System', 'info');
+        case 'cardDefended': {
+          // Check if there is already an active defense log for this actor
+          const currentLogs = useGameStore.getState().logs;
+          const activeDefense = currentLogs.find(
+            (l) => l.type === 'defense' && l.defense?.actorId === actorId && !l.defense.ended,
+          );
+
+          if (!activeDefense) {
+            addLog(`${actorName} is defending.`, 'System', 'defense', undefined, {
+              actorId,
+              ended: false,
+            });
+          }
           break;
-        case 'defenseEnded':
-          addLog(`${actorName} cleared defense.`, 'System', 'info');
+        }
+        case 'defenseEnded': {
+          const currentLogs = useGameStore.getState().logs;
+          const activeDefense = [...currentLogs]
+            .reverse()
+            .find(
+              (l) => l.type === 'defense' && l.defense?.actorId === actorId && !l.defense.ended,
+            );
+
+          // Snapshot the cards for history
+          const actors = useGameStore.getState().actors;
+          const flippedPile = actors[actorId]?.deck.flippedPile || [];
+          const cardNames = flippedPile.map((c) => c.name);
+
+          if (activeDefense) {
+            updateLog(activeDefense.id, {
+              defense: { ...activeDefense.defense!, ended: true, snapshot: cardNames },
+              content: `${actorName} defense ended.`,
+            });
+          } else {
+            addLog(`${actorName} cleared defense.`, 'System', 'info');
+          }
           break;
+        }
         case 'deckShuffled':
           addLog(`${actorName} reshuffled their deck.`, 'System', 'info');
           break;
@@ -120,6 +153,7 @@ export const useGameAction = () => {
       endRound,
       updateTokenPosition,
       addLog,
+      updateLog,
       setResolutionPhase,
       setAttackResolution,
     ],
