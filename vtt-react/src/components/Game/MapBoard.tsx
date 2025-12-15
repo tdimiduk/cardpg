@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Token, ActorState } from '../../types';
+import { Token, ActorState, GamePhase, UIPlannedAction } from '../../types';
 import { GRID_SIZE } from '../../constants';
 import { TokenEntity } from './TokenEntity';
 
@@ -10,6 +10,8 @@ interface MapBoardProps {
   setActiveActorId: (id: string | null) => void;
   defeatedTokenIds?: string[];
   actors: Record<string, ActorState>;
+  phase: GamePhase;
+  plannedActions: Record<string, UIPlannedAction>;
 }
 
 export const MapBoard: React.FC<MapBoardProps> = ({
@@ -19,6 +21,8 @@ export const MapBoard: React.FC<MapBoardProps> = ({
   setActiveActorId,
   defeatedTokenIds = [],
   actors,
+  phase,
+  plannedActions,
 }) => {
   const boardRef = useRef<HTMLDivElement>(null);
   const [draggingToken, setDraggingToken] = useState<{
@@ -131,6 +135,19 @@ export const MapBoard: React.FC<MapBoardProps> = ({
           const isDragging = draggingToken?.id === token.id;
           const isDefeated = defeatedTokenIds.includes(token.id);
 
+          // Indicator Logic
+          const deck = actor.deck;
+          const plan = plannedActions[token.actorId];
+          const rawHandSize = deck?.hand.length || 0;
+          const plannedCount = plan ? plan.cards.length : 0;
+
+          // If in planning phase, we sum hand + planned to hide information
+          const displayHandSize = phase === 'planning' ? rawHandSize + plannedCount : rawHandSize;
+
+          // We show 'hasPlan' indicator if there is a plan AND we are in planning/resolution
+          // Actually, purely existing plan is enough.
+          const hasPlan = !!plan;
+
           // 1. Render Planned "Ghost" Token if it exists and is different from start
           let GhostEntity = null;
           if (actor.plannedMove) {
@@ -185,6 +202,8 @@ export const MapBoard: React.FC<MapBoardProps> = ({
                   isSelected={activeActorId === token.actorId}
                   onMouseDown={handleMouseDown}
                   isDefeated={isDefeated}
+                  handSize={displayHandSize}
+                  hasPlan={hasPlan}
                 />
               </div>
             </React.Fragment>

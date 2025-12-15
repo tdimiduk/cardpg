@@ -189,6 +189,8 @@ const App: React.FC = () => {
           setActiveActorId={(id) => setActiveActor(id)}
           defeatedTokenIds={defeatedTokenIds}
           actors={actors}
+          phase={phase}
+          plannedActions={plannedActions}
         />
 
         {currentDeck && (

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Token, TokenType, ActorState } from '../../types';
 import { GRID_SIZE } from '../../constants';
-import { User, Skull, Sword, X } from 'lucide-react';
+import { User, Skull, Sword, X, StickyNote, CheckCircle2 } from 'lucide-react';
 
 interface TokenEntityProps {
   token: Token;
@@ -9,6 +9,8 @@ interface TokenEntityProps {
   isSelected: boolean;
   onMouseDown: (e: React.MouseEvent, token: Token) => void;
   isDefeated?: boolean;
+  handSize?: number;
+  hasPlan?: boolean;
 }
 
 export const TokenEntity: React.FC<TokenEntityProps> = ({
@@ -17,6 +19,8 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
   isSelected,
   onMouseDown,
   isDefeated,
+  handSize = 0,
+  hasPlan = false,
 }) => {
   const style: React.CSSProperties = {
     // Position is handled by the parent container in MapBoard
@@ -80,6 +84,24 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
           {actor.name} {isDefeated ? '(Defeated)' : ''}
         </div>
       </div>
+
+      {/* Status Indicators (Top Layer, outside the round overflow) */}
+      {!isDefeated && (
+        <>
+          {/* Planned Action Indicator */}
+          {hasPlan && (
+            <div className="absolute -top-1 -right-1 z-30 bg-green-500 text-white rounded-full p-0.5 border border-slate-900 shadow-sm animate-bounce-short">
+              <CheckCircle2 size={14} />
+            </div>
+          )}
+
+          {/* Hand Size Indicator */}
+          <div className="absolute -bottom-1 -right-1 z-30 flex items-center justify-center bg-slate-800 border border-slate-600 rounded bg-opacity-90 shadow py-0.5 px-1 min-w-[20px]">
+            <StickyNote size={10} className="text-slate-400 mr-0.5" />
+            <span className="text-[10px] font-bold text-white leading-none">{handSize}</span>
+          </div>
+        </>
+      )}
     </div>
   );
 };

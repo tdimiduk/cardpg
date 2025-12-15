@@ -40,6 +40,8 @@ describe('MapBoard', () => {
     setActiveActorId: mockSetActiveToken, // Function signature compatible
     actors: { 'actor-1': mockActor },
     defeatedTokenIds: [],
+    phase: 'planning' as const,
+    plannedActions: {},
   };
 
   it('should not call onUpdateToken when clicking without dragging', () => {
