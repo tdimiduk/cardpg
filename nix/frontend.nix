@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, codegen, cardCompiler }:
+{ pkgs ? import <nixpkgs> {}, codegen, gameData }:
 
 pkgs.buildNpmPackage {
   pname = "cardpg-frontend";
@@ -10,7 +10,8 @@ pkgs.buildNpmPackage {
   
   nativeBuildInputs = [ 
     codegen
-    cardCompiler
+    codegen
+    gameData
   ];
 
   preBuild = ''
@@ -31,16 +32,9 @@ pkgs.buildNpmPackage {
     # Generate Data
     echo "Generating data..."
     
-    # Use card-compiler directly (replicating Shake logic)
-    # Find all yaml files in relevant directories
-    # We use 'find' to get the lists, assuming simple filenames without spaces for simplicity in this build env
-    yaml_files=$(find data/cards/pc data/cards/monsters data/cards/status data/cards/consequences -name "*.yaml")
-    
-    # Run card-compiler export-vtt
-    # We pass the list of files as arguments
-    ${cardCompiler}/bin/card-compiler export-vtt src/data/generated_cards.json $yaml_files
-    
-
+    # Copy from gameData
+    mkdir -p src/data
+    cp ${gameData}/data/generated_cards.json src/data/generated_cards.json
   '';
 
   installPhase = ''

@@ -5,7 +5,7 @@ let
   frontend = import ./nix/frontend.nix { 
     inherit pkgs; 
     codegen = backendPkgs.cardpg-codegen;
-    cardCompiler = backendPkgs.card-compiler;
+    gameData = backendPkgs.game-data;
   };
 in
   pkgs.runCommand "cardpg-release" {} ''

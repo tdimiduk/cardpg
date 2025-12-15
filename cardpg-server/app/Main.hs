@@ -60,10 +60,15 @@ broadcast msg state = do
 main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
-    T.putStrLn "Loading starter scenario..."
-    initialGs <- loadScenario "data/scenarios/starter.yaml"
+    cardsFileEnv <- lookupEnv "CARDPG_CARDS_FILE"
+    let cardsFile = fromMaybe "vtt-react/src/data/generated_cards.json" cardsFileEnv
+
+    scenarioFileEnv <- lookupEnv "CARDPG_SCENARIO_FILE"
+    let scenarioFile = fromMaybe "data/scenarios/starter.yaml" scenarioFileEnv
+
+    T.putStrLn $ "Loading starter scenario from " <> T.pack scenarioFile <> "..."
+    initialGs <- loadScenario scenarioFile
     
-    let cardsFile = "vtt-react/src/data/generated_cards.json"
     T.putStrLn $ "Loading card library from " <> T.pack cardsFile <> "..."
     cardLibraryResult <- eitherDecodeFileStrict cardsFile
     
