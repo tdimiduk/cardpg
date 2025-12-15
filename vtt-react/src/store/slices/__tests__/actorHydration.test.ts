@@ -11,9 +11,8 @@ const createCombinedStore = (set, get, api) => ({
 
 describe('Actor Slice Hydration', () => {
   it('hydrates equipped items correctly from valid server state', () => {
-    // Construct the store locally to test the receive logic
     const useStore = createStore(immer(createCombinedStore));
-    const { updateActorState, actors } = useStore.getState();
+    useStore.getState();
 
     const actorId = 'actor-123';
     const cardId = 'card-uuid-1';
@@ -56,7 +55,7 @@ describe('Actor Slice Hydration', () => {
     // Execute Update
     useStore.getState().updateActorState({
       updateActorId: actorId,
-      updateActorState: serverState as any,
+      updateActorState: serverState as unknown as import('../../../generated/types').ActorState,
     });
 
     // Verify
@@ -70,7 +69,7 @@ describe('Actor Slice Hydration', () => {
 
   it('filters equipped and trait items for display, excluding inCollection', () => {
     const useStore = createStore(immer(createCombinedStore));
-    const { updateActorState } = useStore.getState();
+    useStore.getState();
 
     const actorId = 'actor-456';
     const cardId1 = 'card-uuid-1';
@@ -125,7 +124,7 @@ describe('Actor Slice Hydration', () => {
 
     useStore.getState().updateActorState({
       updateActorId: actorId,
-      updateActorState: serverState as any,
+      updateActorState: serverState as unknown as import('../../../generated/types').ActorState,
     });
 
     const updatedActor = useStore.getState().actors[actorId];

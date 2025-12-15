@@ -23,18 +23,25 @@ describe('Game Store Integration', () => {
       state.actors[testActorId] = {
         id: testActorId,
         name: 'Test Actor',
-        type: 'PC' as any,
+        type: 'PC' as import('../types').TokenType,
         color: '#ff0000',
         deck: {
           drawPile: [],
-          hand: [{ id: testCardId, name: 'Slash', type: 'coreCard', stats: {} } as any],
+          hand: [
+            {
+              id: testCardId,
+              name: 'Slash',
+              type: 'coreCard',
+              stats: { red: 0, yellow: 0, blue: 0 },
+            },
+          ],
           discardPile: [],
           flippedPile: [],
           equipped: [],
           consequences: [],
         },
         registry: {
-          [testCardId]: { name: 'Slash', type: 'coreCard' } as any,
+          [testCardId]: { name: 'Slash', type: 'coreCard' } as import('../types').CoreCard,
         },
       };
       state.tokens.push({

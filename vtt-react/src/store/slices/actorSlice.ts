@@ -180,7 +180,7 @@ export const createActorSlice: StateCreator<
             const wrapper = serverState.tableState.registry[id];
             if (!wrapper) return undefined;
             const data = wrapper.data;
-            return { ...data, id } as any;
+            return { ...data, id } as import('../../types').Card;
           })
           .filter((c): c is import('../../types').Card => !!c),
 
@@ -193,7 +193,7 @@ export const createActorSlice: StateCreator<
               name: 'Unknown Consequence',
               type: 'consequenceCard',
               severity: 1,
-            } as any;
+            } as import('../../types').ConsequenceCard;
           }
           return { ...def, id };
         }),

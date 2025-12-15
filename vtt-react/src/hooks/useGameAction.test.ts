@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react';
 import { useGameAction } from './useGameAction';
 import { useGameStore } from '../store/gameStore';
-import { ActorGameEvent, GameEvent, ResourceType } from '../generated/types';
+import { ActorGameEvent } from '../generated/types';
+import { RESOURCE_TYPES } from '../constants';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock dependencies
@@ -35,8 +36,19 @@ describe('useGameAction', () => {
       actors: { 'actor-1': { id: 'actor-1', name: 'Test Actor' } },
     };
 
-    (useGameStore as any).getState = vi.fn(() => mockState);
-    (useGameStore as any).mockImplementation((selector: any) => {
+    (
+      useGameStore as unknown as {
+        getState: () => unknown;
+      }
+    ).getState = vi.fn(() => mockState);
+
+    (
+      useGameStore as unknown as {
+        mockImplementation: (
+          fn: (selector: (s: typeof mockState) => unknown) => unknown,
+        ) => unknown;
+      }
+    ).mockImplementation((selector: (s: typeof mockState) => unknown) => {
       return selector(mockState);
     });
   });
@@ -48,10 +60,14 @@ describe('useGameAction', () => {
       event: {
         type: 'actionRevealed',
         data: [
-          { type: 'pPass' } as any, // Dummy plan
+          { type: 'pPass' } as import('../generated/types').PlannedAction, // Dummy plan
           {
             type: 'rEAttack',
-            data: { attackCard: 'c1', attackStrength: 5, defenseColor: 'Red' } as any,
+            data: {
+              attackCard: 'c1',
+              attackStrength: 5,
+              defenseColor: RESOURCE_TYPES.RED,
+            } as import('../generated/types').RealizedAttack,
           },
         ],
       },
@@ -71,7 +87,7 @@ describe('useGameAction', () => {
       actorId: 'actor-1',
       event: {
         type: 'planCanceled',
-        data: { type: 'pPass' } as any,
+        data: { type: 'pPass' } as import('../generated/types').PlannedAction,
       },
     };
     result.current._applyAction(event);
@@ -88,7 +104,7 @@ describe('useGameAction', () => {
       actorId: 'actor-1',
       event: {
         type: 'cardDrawn',
-        data: 'c1' as any,
+        data: 'c1',
       },
     };
     result.current._applyAction(event);
