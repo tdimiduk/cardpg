@@ -38,6 +38,6 @@ test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
           original <- BS.readFile path
 
           Control.Monad.when (encoded /= original) $ do
-            let reformattedPath = "../data/cards/status/core.reformatted.yaml"
+            let reformattedPath = "../data/cards/status/core.yaml.reformatted"
             BS.writeFile reformattedPath encoded
             assertFailure $ "YAML output mismatch. Reformatted content written to " ++ reformattedPath

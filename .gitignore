@@ -2,6 +2,7 @@
 /data/cards/raw
 /vtt-react/src/generated/*.ts
 vtt-react/src/data/generated_cards.json
+*.yaml.reformatted
 
 # Temporary while we are still iterating on the parsers
 data/cards/encounters

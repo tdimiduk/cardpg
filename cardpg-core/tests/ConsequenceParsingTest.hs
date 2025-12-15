@@ -40,7 +40,7 @@ test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
       original <- BS.readFile path
 
       when (encoded /= original) $ do
-        let reformattedPath = "../data/cards/consequences/baseline.reformatted.yaml"
+        let reformattedPath = "../data/cards/consequences/baseline.yaml.reformatted"
         BS.writeFile reformattedPath encoded
         assertFailure $
           "YAML output mismatch. Reformatted content written to "

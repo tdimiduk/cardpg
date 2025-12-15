@@ -18,7 +18,7 @@ export const ACTOR_DATA: ActorDefinition[] = rawData.actors.map((actor: any) => 
 
 export const STATUS_DATA: CoreCard[] = rawData.statuses.map((s: any) => ({
   ...s,
-  id: s.id || Math.random().toString(),
+  id: s.name,
 }));
 
 export const getActorTemplates = (type?: 'pc' | 'monster'): ActorDefinition[] => {
