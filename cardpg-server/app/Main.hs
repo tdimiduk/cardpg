@@ -25,7 +25,8 @@ import GHC.Generics (Generic)
 import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
 import qualified Network.WebSockets as WS
 
-import System.Random (newStdGen)
+import System.Random (newStdGen, StdGen)
+import Control.Monad.State (runState)
 
 import CardPG.Core.Card (ActorDefinition, CoreCard, CoreCardT(..), ItemCard, NatureCard, TalentCard, ActorDefinitionDSL, ConsequenceCardT(..))
 import CardPG.Core.Hardcoded (fatigueCard)
@@ -101,13 +102,16 @@ main = do
     let defaultGameId = "default-game"
     maybeLoaded <- loadGame pool defaultGameId
     
-    finalGs <- case maybeLoaded of
+    (finalGs, finalRng) <- case maybeLoaded of
         Just loadedGs -> do
             T.putStrLn "Loaded persisted game state."
-            return loadedGs
+            -- Since we don't save RNG, we must generate a new one on restart.
+            -- This is acceptable for simple restarts, though deterministic replay would require saving it.
+            rng <- newStdGen
+            return (loadedGs, rng)
         Nothing -> do
             T.putStrLn $ "No persisted game found. Loading starter scenario from " <> T.pack scenarioFile <> "..."
-            initialGs <- loadScenario scenarioFile
+            (initialGs, rng) <- loadScenario scenarioFile
             
             -- Hydrate library into env
             let env = initialGs.env
@@ -118,9 +122,9 @@ main = do
             
             -- Persist initial state
             saveGame pool defaultGameId newGs
-            return newGs
+            return (newGs, rng)
 
-    state <- newMVar (newServerState pool finalGs) { library = lib }
+    state <- newMVar (newServerState pool finalGs finalRng) { library = lib }
     
     portStr <- lookupEnv "PORT"
     let port = fromMaybe 8080 (fmap read portStr)
@@ -181,7 +185,18 @@ talk client state = forever $ do
             forM_ messages $ \msg -> sendTextData (newClient.clientConn) (encode msg)
             
             -- Notify others
-            let broadcastState = ServerState (Map.delete clientId currentClients) (CardLibrary [] [] []) currentGs pool
+            -- rng dummy? or use state rng? We don't use rng in broadcast, so can leave it or pass properly.
+            -- Constructing ServerState manually is becoming tedious.
+            -- Let's extract rng from state for broadcast dummy? Or just use proper state?
+            -- broadcast function just needs clients.
+            -- ServerState in broadcast is just used to iterate clients.
+            -- We can just pass the MVar contents directly?
+            -- But broadcast signature takes ServerState?
+            -- Let's just pass `s'` from above?
+            -- But we returned tuple...
+            -- We should refactor broadcast slightly or just pass dummy RNG.
+            storedRng <- readMVar state >>= \s -> return s.rng
+            let broadcastState = ServerState (Map.delete clientId currentClients) (CardLibrary [] [] []) currentGs pool storedRng
             broadcast (ClientJoined name clientId) broadcastState
             
             -- Continue loop with updated client info
@@ -207,17 +222,20 @@ talkLoop client state = do
             
             -- Run action against authoritative state
             -- Run action against authoritative state
-            (newGame, pool, updates, actions, clientsMap, newPhase, oldPhase) <- modifyMVar state $ \s -> do
+            (newGame, pool, updates, actions, clientsMap, newPhase, oldPhase, newRng) <- modifyMVar state $ \s -> do
                 let game = s.gameState
-                let (newGame, updates, actions) = processCommand cmd game
+                let rng = s.rng
                 
-                return (s { gameState = newGame }, (newGame, s.dbPool, updates, actions, s.clients, newGame.phase, game.phase))
+                -- Run monadic action
+                let ((newGame, updates, actions), newRng) = runState (processCommand cmd game) rng
+                
+                return (s { gameState = newGame, rng = newRng }, (newGame, s.dbPool, updates, actions, s.clients, newGame.phase, game.phase, newRng))
 
             -- Persist State
             saveGame pool "default-game" newGame
 
             -- Broadcast results
-            let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast") pool
+            let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast") pool newRng
             
             let messages =
                   (if null actions then [] else [BroadcastMessage (client.clientId) actions]) ++

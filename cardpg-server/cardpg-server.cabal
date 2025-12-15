@@ -52,6 +52,7 @@ library
                      , postgresql-simple
                      , resource-pool
                      , time
+                     , beam-automigrate
 
 executable cardpg-server
   import: project-config
@@ -74,6 +75,7 @@ executable cardpg-server
                      , beam-postgres
                      , resource-pool
                      , time
+                     , mtl
 
 test-suite cardpg-server-test
   import: project-config

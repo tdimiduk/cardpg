@@ -4,3 +4,6 @@ packages:
   tools/codegen/cardpg-codegen.cabal
   tools/card-compiler/card-compiler.cabal
   shake-build/shake-build.cabal
+  ../beam-automigrate/beam-automigrate.cabal
+
+allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector

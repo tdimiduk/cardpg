@@ -4,7 +4,7 @@ module CardPG.Server.Scenario where
 
 import Control.Monad (forM, forM_)
 import Control.Monad.IO.Class (liftIO)
-import Control.Monad.State (StateT, evalStateT, execStateT, get, put, runStateT)
+import Control.Monad.State (State, StateT, evalStateT, execStateT, get, lift, put, runState, runStateT)
 import Data.Aeson (FromJSON)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe)
@@ -66,7 +66,7 @@ instance FromJSON Scenario
 
 -- | Load a scenario from a YAML file.
 -- This initializes the game state, loads all actors, and generates UUIDs.
-loadScenario :: FilePath -> IO GameState
+loadScenario :: FilePath -> IO (GameState, StdGen)
 loadScenario path = do
   scenario :: Scenario <- decodeFileThrow path
   rng <- newStdGen
@@ -78,45 +78,45 @@ loadScenario path = do
           , consequenceCardTemplates = Map.empty
           }
 
-  let initialGame = emptyGame env rng
+  let initialGame = emptyGame env
 
-  -- We use StateT GameState to accumulate actors into the game
-  gameState <- execStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame
+  -- We use StateT GameState (StateT StdGen IO) to accumulate actors into the game
+  ((_, finalGameState), finalRng) <- runStateT (runStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame) rng
   
   -- Auto-plan for NPCs at start
-  let (finalGame, _) = autoPlanForNPCs gameState
-  return finalGame
+  let ((gameWithPlans, _), plannedRng) = runState (autoPlanForNPCs finalGameState) finalRng
+  return (gameWithPlans, plannedRng)
 
 -- | Load a list of actors and add them to the game state
-loadScenarioActors :: FilePath -> [ScenarioActor] -> StateT GameState IO ()
+loadScenarioActors :: FilePath -> [ScenarioActor] -> StateT GameState (StateT StdGen IO) ()
 loadScenarioActors baseDir actorsList = do
   forM_ actorsList $ \actorDef -> do
     let actorPath = baseDir </> actorDef.file
 
-    -- For now, we generate a random TargetId for the actor.
-    -- In the future, we might want to map the ScenarioActor.id to this TargetId explicitly
-    -- or store it in a lookup table if we need to reference them by name.
-    gameState <- get
-    let (tid, newRng) = uniform (gameState.rng) :: (ActorId, StdGen)
-    put $ gameState{rng = newRng}
-
-    actorState <- liftIO $ loadActorState actorPath (actorDef.x) (actorDef.y) (actorDef.initialHandSize)
-
-    let updatedGame = addActor tid actorState (gameState{rng = newRng})
+    -- Generate random ActorId
+    -- We are in StateT GameState (StateT StdGen IO)
+    -- stateUniform is in StateT StdGen IO
+    tid <- lift stateUniform :: StateT GameState (StateT StdGen IO) ActorId
+    
+    -- Load actor definition (IO).
+    -- Instantiation requires RNG state.
+    -- loadActorState now needs to return a state action or we liftIO deeply?
+    
+    -- Let's helper: loadAndInstantiate :: FilePath -> ... -> StateT StdGen IO ActorState
+    actorState <- lift $ loadAndInstantiateActor actorPath actorDef.x actorDef.y actorDef.initialHandSize
+    
+    gst <- get
+    let updatedGame = addActor tid actorState gst
     put updatedGame
 
--- | Load a single actor from a YAML file and instantiate it into an ActorState
-loadActorState :: FilePath -> Int -> Int -> Maybe Int -> IO ActorState
-loadActorState path x y handSize = do
-  -- Parse the static definition (DSL)
-  dsl :: ActorDefinitionDSL <- decodeFileThrow path
-
-  -- Compile to Machine Type
+loadAndInstantiateActor :: FilePath -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
+loadAndInstantiateActor path x y handSize = do
+  dsl :: ActorDefinitionDSL <- liftIO $ decodeFileThrow path
   let def = compileActorDefinition dsl
+  instantiateActor def x y handSize
 
-  -- Instantiate with fresh UUIDs
-  rng <- newStdGen
-  evalStateT (instantiateActor def x y handSize) rng
+-- | Load a single actor from a YAML file and instantiate it into an ActorState
+
 
 -- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
 instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState

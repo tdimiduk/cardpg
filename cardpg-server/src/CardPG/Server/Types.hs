@@ -60,17 +60,12 @@ $(deriveTypeScript cardpgJsonDef ''Phase)
 
 data GameState = GameState
   { env :: GameEnv
-  , rng :: StdGen
   , actors :: Map ActorId ActorState
   , phase :: Phase
   }
   deriving (Show, Generic)
 
-instance ToJSON StdGen where
-  toJSON _ = String "StdGen"
 
-instance FromJSON StdGen where
-  parseJSON _ = return (mkStdGen 42)
 
 $(deriveJSON cardpgJsonDef ''GameState)
 
@@ -183,7 +178,8 @@ data ServerState = ServerState
   , library :: CardLibrary
   , gameState :: GameState
   , dbPool :: Pool Pg.Connection
+  , rng :: StdGen
   }
 
-newServerState :: Pool Pg.Connection -> GameState -> ServerState
-newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool
+newServerState :: Pool Pg.Connection -> GameState -> StdGen -> ServerState
+newServerState pool gs rng = ServerState Map.empty (CardLibrary [] [] []) gs pool rng

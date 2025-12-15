@@ -22,7 +22,7 @@ test_scenario = testGroup "Scenario"
       scenarioFileEnv <- lookupEnv "CARDPG_SCENARIO_FILE"
       let path = fromMaybe "../data/scenarios/starter.yaml" scenarioFileEnv
       
-      game <- loadScenario path
+      (game, _) <- loadScenario path
       let actorCount = Map.size (game.actors)
       actorCount @?= 2
   ]

@@ -9,7 +9,9 @@ import Data.Text (Text)
 import Data.Time (UTCTime, getCurrentTime)
 import Database.Beam
 import Database.Beam.Postgres
-import Database.Beam.Migrate 
+import Database.Beam.Migrate
+import Database.Beam.AutoMigrate qualified as BA
+import Database.Beam.AutoMigrate (AnnotatedDatabaseSettings, defaultAnnotatedDbSettings) 
 import GHC.Generics (Generic)
 import Data.Aeson (ToJSON, FromJSON, Value(..), toJSON, fromJSON, Result(..))
 import Database.Beam.Backend.SQL.SQL92 (IsSql92DataTypeSyntax(..))
@@ -45,13 +47,17 @@ data CardPGDB f = CardPGDB
 cardpgDb :: DatabaseSettings be CardPGDB
 cardpgDb = defaultDbSettings
 
+annotatedDb :: AnnotatedDatabaseSettings Postgres CardPGDB
+annotatedDb = defaultAnnotatedDbSettings cardpgDb
+
 -- | Helper Functions
 
 initDB :: Pool Pg.Connection -> IO ()
+
 initDB pool = do
-    withResource pool $ \conn -> do
-        _ <- Pg.execute_ conn "CREATE TABLE IF NOT EXISTS games (game_id TEXT PRIMARY KEY, game_status TEXT NOT NULL, game_state JSONB NOT NULL, game_updated_at TIMESTAMP WITH TIME ZONE NOT NULL)"
-        return ()
+  withResource pool $ \conn ->
+    Pg.withTransaction conn $
+      BA.tryRunMigrationsWithEditUpdate annotatedDb conn
 
 saveGame :: Pool Pg.Connection -> Text -> GameState -> IO ()
 saveGame pool gId gs = do
