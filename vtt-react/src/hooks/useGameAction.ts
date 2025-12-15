@@ -9,7 +9,7 @@ import { ActorGameEvent, RealizedAttack } from '../generated/types';
  */
 export const useGameAction = () => {
   // Store actions
-  // Store actions
+
   const revealAndResolve = useGameStore((state) => state.revealAndResolve);
   const endRound = useGameStore((state) => state.endRound);
   const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);

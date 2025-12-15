@@ -1,12 +1,24 @@
-import { createActorSlice } from '../actorSlice';
-import { createLogSlice } from '../logSlice';
+import { createActorSlice, ActorSlice } from '../actorSlice';
+import { createLogSlice, LogSlice } from '../logSlice';
 import { createStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 // Combine slices
-const createCombinedStore = (set, get, api) => ({
+import { StateCreator } from 'zustand';
+import { describe, it, expect } from 'vitest';
+
+// Combine slices
+const createCombinedStore: StateCreator<ActorSlice & LogSlice, [['zustand/immer', never]], []> = (
+  set,
+  get,
+  api,
+) => ({
   ...createActorSlice(set, get, api),
-  ...createLogSlice(set, get, api),
+  ...createLogSlice(
+    set as unknown as Parameters<typeof createLogSlice>[0],
+    get as unknown as Parameters<typeof createLogSlice>[1],
+    api as unknown as Parameters<typeof createLogSlice>[2],
+  ),
 });
 
 describe('Actor Slice Hydration', () => {
