@@ -20,11 +20,13 @@ import Data.Aeson
   , Options (..)
   , SumEncoding (..)
   , ToJSON (..)
-  , Value
+  , Value(..)
   , defaultOptions
   , genericParseJSON
   , genericToJSON
+  , withText
   )
+import Text.Read (readMaybe)
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (TypeScript (..), deriveTypeScript)
 import Data.Char (toUpper)
@@ -34,8 +36,10 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
-import Network.WebSockets (Connection)
-import System.Random (StdGen)
+import qualified Network.WebSockets as WS
+import System.Random (StdGen, mkStdGen)
+import Data.Pool (Pool)
+import qualified Database.PostgreSQL.Simple as Pg
 
 import CardPG.Core.Card
   ( ActorDefinition
@@ -48,6 +52,12 @@ import CardPG.Core.Primitives (ActorId, ResourceType)
 import CardPG.Core.State (ActorState, GameEnv, GameEvent)
 
 -- | The authoritative state for a game session
+data Phase = Planning | Resolution
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''Phase)
+$(deriveTypeScript cardpgJsonDef ''Phase)
+
 data GameState = GameState
   { env :: GameEnv
   , rng :: StdGen
@@ -56,17 +66,21 @@ data GameState = GameState
   }
   deriving (Show, Generic)
 
-data Phase = Planning | Resolution
-  deriving (Show, Eq, Generic)
+instance ToJSON StdGen where
+  toJSON _ = String "StdGen"
 
-$(deriveJSON cardpgJsonDef ''Phase)
-$(deriveTypeScript cardpgJsonDef ''Phase)
+instance FromJSON StdGen where
+  parseJSON _ = return (mkStdGen 42)
+
+$(deriveJSON cardpgJsonDef ''GameState)
+
+
 
 -- | A client connection with a unique ID and a name.
 data Client = Client
   { clientId :: UUID
   , clientName :: Text
-  , clientConn :: Connection
+  , clientConn :: WS.Connection
   }
 
 instance TypeScript UUID where
@@ -116,7 +130,7 @@ $(deriveJSON cardpgJsonDef ''Command)
 
 -- | Messages sent from Client to Server.
 data ClientMessage
-  = Join {name :: Text}
+  = Join {name :: Text, id :: Maybe UUID}
   | GameCommand {command :: Command}
   deriving (Show, Generic)
 
@@ -168,7 +182,8 @@ data ServerState = ServerState
   { clients :: Map UUID Client
   , library :: CardLibrary
   , gameState :: GameState
+  , dbPool :: Pool Pg.Connection
   }
 
-newServerState :: GameState -> ServerState
-newServerState = ServerState Map.empty (CardLibrary [] [] [])
+newServerState :: Pool Pg.Connection -> GameState -> ServerState
+newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool

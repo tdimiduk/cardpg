@@ -38,8 +38,16 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
       setIsConnected(true);
-      // Auto-join for now
-      sendMessage({ type: 'join', name: 'Player-' + Math.floor(Math.random() * 1000) });
+      // Check for existing ID
+      const storedId = localStorage.getItem('cardpg_client_id');
+      const name =
+        localStorage.getItem('cardpg_client_name') || 'Player-' + Math.floor(Math.random() * 1000);
+
+      sendMessage({
+        type: 'join',
+        name,
+        id: storedId ?? undefined, // Send ID if we have it
+      });
     };
 
     socket.onclose = () => {
@@ -71,6 +79,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
       switch (message.type) {
         case 'welcome':
           setClientId(message.yourClientId);
+          localStorage.setItem('cardpg_client_id', message.yourClientId);
           setConnectedClients(message.connectedClients);
           break;
         case 'clientJoined':

@@ -196,3 +196,5 @@ data GameEnv = GameEnv
   , consequenceCardTemplates :: Map Text ConsequenceCard
   }
   deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''GameEnv)

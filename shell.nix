@@ -33,6 +33,9 @@ backendPkgs.shellFor {
 
     # Task runner
     just
+    
+    # System Libs
+    postgresql
   ];
 
   # Enables Hoogle for the packages in the shell

@@ -30,6 +30,7 @@ library
     CardPG.Server.Types
     CardPG.Server.Game
     CardPG.Server.Scenario
+    CardPG.Server.DB
   hs-source-dirs:      src
   build-depends:       base >= 4.7 && < 5
                      , websockets
@@ -45,6 +46,12 @@ library
                      , mtl
                      , yaml
                      , filepath
+                     , beam-core
+                     , beam-postgres
+                     , beam-migrate
+                     , postgresql-simple
+                     , resource-pool
+                     , time
 
 executable cardpg-server
   import: project-config
@@ -62,6 +69,11 @@ executable cardpg-server
                      , cardpg-core
                      , bytestring
                      , random
+                     , postgresql-simple
+                     , beam-core
+                     , beam-postgres
+                     , resource-pool
+                     , time
 
 test-suite cardpg-server-test
   import: project-config

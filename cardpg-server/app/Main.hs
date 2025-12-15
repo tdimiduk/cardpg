@@ -14,6 +14,7 @@ import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
+import Data.Text.Encoding (encodeUtf8)
 import System.Environment (lookupEnv)
 import System.IO (hSetBuffering, stdout, BufferMode(..))
 import Data.Maybe (fromMaybe)
@@ -35,6 +36,11 @@ import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Server.Game (GameState(..), runActorAction, processCommand, concludeRound, revealPlannedActions)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), ActorGameEvent(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
+import CardPG.Server.DB (cardpgDb, GameT(..), GameId, Game, initDB, saveGame, loadGame)
+
+import Data.Pool
+import Data.Time (getCurrentTime)
+import Database.PostgreSQL.Simple (close, connectPostgreSQL)
 
 
 numClients :: ServerState -> Int
@@ -57,41 +63,64 @@ broadcast msg state = do
     forM_ (Map.elems (state.clients)) $ \client ->
         sendTextData (client.clientConn) msgBytes
 
+    forM_ (Map.elems (state.clients)) $ \client ->
+        sendTextData (client.clientConn) msgBytes
+
 main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
+    
+    -- DB Connection
+    dbHost <- fromMaybe "localhost" <$> lookupEnv "CARDPG_DB_HOST"
+    dbUser <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_USER"
+    dbPass <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_PASS"
+    dbName <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_NAME"
+    
+    let connStr = "host=" <> dbHost <> " user=" <> dbUser <> " password=" <> dbPass <> " dbname=" <> dbName
+    pool <- createPool (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 1 10 10
+
+    initDB pool
+
     cardsFileEnv <- lookupEnv "CARDPG_CARDS_FILE"
     let cardsFile = fromMaybe "vtt-react/src/data/generated_cards.json" cardsFileEnv
 
     scenarioFileEnv <- lookupEnv "CARDPG_SCENARIO_FILE"
     let scenarioFile = fromMaybe "data/scenarios/starter.yaml" scenarioFileEnv
 
-    T.putStrLn $ "Loading starter scenario from " <> T.pack scenarioFile <> "..."
-    initialGs <- loadScenario scenarioFile
-    
+    -- Load Cards from Disk
     T.putStrLn $ "Loading card library from " <> T.pack cardsFile <> "..."
     cardLibraryResult <- eitherDecodeFileStrict cardsFile
     
-    initialState <- case cardLibraryResult of
+    lib <- case cardLibraryResult of
         Left err -> do
              T.putStrLn $ "WARNING: Failed to load card library: " <> T.pack err
-             return (newServerState initialGs)
-        Right lib -> do
-             T.putStrLn $ "Card Library Loaded: " 
-                <> T.pack (show (length (lib.actors))) <> " actors, " 
-                <> T.pack (show (length (lib.statuses))) <> " statuses, "
-                <> T.pack (show (length (lib.consequences))) <> " consequences."
-             
-             let env = initialGs.env
-             let statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
-             let consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
-             
-             let newEnv = env { statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap }
-             let newGs = initialGs { env = newEnv }
-             
-             return $ (newServerState newGs) { library = lib }
+             return (CardLibrary [] [] [])
+        Right l -> return l
 
-    state <- newMVar initialState
+    -- Try to load default game
+    let defaultGameId = "default-game"
+    maybeLoaded <- loadGame pool defaultGameId
+    
+    finalGs <- case maybeLoaded of
+        Just loadedGs -> do
+            T.putStrLn "Loaded persisted game state."
+            return loadedGs
+        Nothing -> do
+            T.putStrLn $ "No persisted game found. Loading starter scenario from " <> T.pack scenarioFile <> "..."
+            initialGs <- loadScenario scenarioFile
+            
+            -- Hydrate library into env
+            let env = initialGs.env
+            let statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
+            let consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
+            let newEnv = env { statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap }
+            let newGs = initialGs { env = newEnv }
+            
+            -- Persist initial state
+            saveGame pool defaultGameId newGs
+            return newGs
+
+    state <- newMVar (newServerState pool finalGs) { library = lib }
     
     portStr <- lookupEnv "PORT"
     let port = fromMaybe 8080 (fmap read portStr)
@@ -118,35 +147,45 @@ talk client state = forever $ do
         Nothing -> do
             T.putStrLn "Received invalid JSON"
             sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
-        Just (Join name) -> do
-            let newClient = client { clientName = name }
-            
-            -- Update state with new client
-            (currentClients, currentGs) <- modifyMVar state $ \s -> do
-                let s' = addClient newClient s
-                return (s', (s'.clients, s'.gameState))
-            
-            T.putStrLn $ "Client joined: " <> name <> " (" <> T.pack (show $ newClient.clientId) <> ")"
-            
-            -- Send Welcome to the new client
-            let clientNames = map (.clientName) $ Map.elems currentClients
-            (currentClients, currentGs) <- modifyMVar state $ \s -> do
-                let s' = addClient newClient s
-                return (s', (s'.clients, s'.gameState))
+        Just (Join name maybeId) -> do
+            -- Determine Client ID (Recover or Generate)
+            (clientId, isReconnect) <- case maybeId of
+                Just existingId -> do
+                    exists <- readMVar state >>= \s -> return $ Map.member existingId (s.clients)
+                    if exists
+                        then return (existingId, True)
+                        else return (existingId, False) -- User claims ID, but not in memory (maybe restarted? treat as new for now)
+                Nothing -> do
+                    newId <- UUID.nextRandom
+                    return (newId, False)
 
-            let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (currentGs.actors)
-            sendTextData (newClient.clientConn) $ encode $ Welcome (newClient.clientId) (map (.clientName) $ Map.elems currentClients) initialUpdates (currentGs.phase)
+            let newClient = client { clientName = name, clientId = clientId }
+            
+            T.putStrLn $ "Client joining: " <> name <> " (" <> T.pack (show clientId) <> ")" 
+                       <> (if isReconnect then " [RECONNECT]" else "")
+            
+            -- Prepare broadcast
+            -- Prepare broadcast
+            (currentClients, currentGs, messages, pool) <- modifyMVar state $ \s -> do
+                let s' = addClient newClient s -- Overwrites existing entry if reconnecting (updating socket)
+                let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (s'.gameState.actors)
+                
+                let welcomeMsg = Welcome clientId (map (.clientName) $ Map.elems s'.clients) initialUpdates (s'.gameState.phase)
+                
+                -- If it's a new client (or distinct ID), notify others. 
+                -- If reconnect (same ID), effectively just updating the socket, maybe notify "Reconnected"? 
+                -- For now, simplest is just treat Join as Join.
+                return (s', (s'.clients, s'.gameState, [welcomeMsg], s'.dbPool))
+            
+            -- Send Welcome
+            forM_ messages $ \msg -> sendTextData (newClient.clientConn) (encode msg)
             
             -- Notify others
-            let broadcastState = ServerState (Map.delete (newClient.clientId) currentClients) (CardLibrary [] [] []) currentGs
-            broadcast (ClientJoined name (newClient.clientId)) broadcastState
+            let broadcastState = ServerState (Map.delete clientId currentClients) (CardLibrary [] [] []) currentGs pool
+            broadcast (ClientJoined name clientId) broadcastState
             
             -- Continue loop with updated client info
             talkLoop newClient state
-            
-            
-            -- Continue loop
-            talkLoop client state
 
 talkLoop :: Client -> MVar ServerState -> IO ()
 talkLoop client state = do
@@ -156,7 +195,7 @@ talkLoop client state = do
             T.putStrLn "Received invalid JSON"
             sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
             talkLoop client state
-        Just (Join name) -> do
+        Just (Join name _) -> do
              -- Allow renaming?
             let newClient = client { clientName = name }
             modifyMVar_ state $ \s -> return $ addClient newClient s
@@ -167,15 +206,18 @@ talkLoop client state = do
             T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
             
             -- Run action against authoritative state
-            (updates, actions, clientsMap, newPhase, oldPhase) <- modifyMVar state $ \s -> do
+            -- Run action against authoritative state
+            (newGame, pool, updates, actions, clientsMap, newPhase, oldPhase) <- modifyMVar state $ \s -> do
                 let game = s.gameState
                 let (newGame, updates, actions) = processCommand cmd game
                 
-                -- Update GameHistory (REMOVED)
-                return (s { gameState = newGame }, (updates, actions, s.clients, newGame.phase, game.phase))
+                return (s { gameState = newGame }, (newGame, s.dbPool, updates, actions, s.clients, newGame.phase, game.phase))
+
+            -- Persist State
+            saveGame pool "default-game" newGame
 
             -- Broadcast results
-            let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast")
+            let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast") pool
             
             let messages =
                   (if null actions then [] else [BroadcastMessage (client.clientId) actions]) ++
