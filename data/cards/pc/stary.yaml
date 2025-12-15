@@ -255,6 +255,7 @@ id: stary
 items:
 - name: Ryan
   passive: A star dragon
+  tags: [Equipped]
   type: itemCard
 name: Stary
 nature: []

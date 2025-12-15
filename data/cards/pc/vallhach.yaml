@@ -213,14 +213,17 @@ deck:
 id: vallhach
 items:
 - name: Elven Staff
+  tags: [Equipped]
   type: itemCard
 - name: Sun Belt
   traits:
   - Sun
+  tags: [Equipped]
   type: itemCard
 - name: Lightning Earrings
   traits:
   - Lightning
+  tags: [Equipped]
   type: itemCard
 name: Vallhach
 nature:

@@ -17,7 +17,7 @@ import ArbitraryInstances ()
 import ConsequenceParsingTest (test_consequenceParsing)
 import ReadmeExamplesTest (test_readmeExamples)
 import ResolutionTests (test_resolutionCycle)
-import RuleJsonTest (prop_ruleJsonParsing)
+import RuleJsonTest (prop_ruleJsonParsing, prop_tableStateJsonStructure)
 import StateTests (test_stateTests)
 import StatusParsingTest (test_statusParsing)
 
@@ -36,6 +36,7 @@ tests =
     , testProperty "ConsequenceCard Roundtrip" $ prop_jsonRoundtrip @ConsequenceCard
     , testProperty "DSL Roundtrip" prop_dslRoundtrip
     , testProperty "Rule JSON Object Parsing" prop_ruleJsonParsing
+    , testProperty "TableState JSON Structure" prop_tableStateJsonStructure
     , test_statusParsing
     , test_consequenceParsing
     , test_readmeExamples

@@ -147,7 +147,7 @@ instantiateActor def x y = do
   let tableReg = itemRegistry `Map.union` natureRegistry
   let tableAssets =
         Map.fromList $
-          [(id, InCollection) | id <- itemIds]
+          zipWith (\id item -> (id, determineItemState item)) itemIds (def.items)
             ++ [(id, Trait) | id <- natureIds]
 
   let tableSt =
@@ -194,3 +194,9 @@ stateUniform = do
   let (val, newG) = uniform g
   put newG
   return val
+
+determineItemState :: ItemCard -> AssetState
+determineItemState item =
+  case item.tags of
+    Just ts | "Equipped" `elem` toList ts -> Equipped SlotUnspecified
+    _ -> InCollection

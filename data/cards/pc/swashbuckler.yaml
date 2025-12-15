@@ -227,16 +227,19 @@ items:
   - pierce
   - thrown
   - 3 uses
+  tags: [Equipped]
   type: itemCard
 - name: Rapier
   traits:
   - pierce
+  tags: [Equipped]
   type: itemCard
 - burden: 1
   defense: 3
   name: Leather Armor
   traits:
   - armored
+  tags: [Equipped]
   type: itemCard
 name: swashbuckler
 nature:

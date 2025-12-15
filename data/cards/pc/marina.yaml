@@ -264,10 +264,12 @@ items:
 - name: Moon Hat
   traits:
   - Moon
+  tags: [Equipped]
   type: itemCard
 - name: Sizzling Staff
   traits:
   - Staff
+  tags: [Equipped]
   type: itemCard
 name: Marina
 nature:

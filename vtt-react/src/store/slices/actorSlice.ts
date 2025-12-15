@@ -175,7 +175,7 @@ export const createActorSlice: StateCreator<
 
         // Hydrate Equipped
         equipped: Object.entries(serverState.tableState.assets || {})
-          .filter((entry) => entry[1]?.type === 'equipped')
+          .filter((entry) => entry[1]?.type === 'equipped' || entry[1]?.type === 'trait')
           .map(([id, _]) => {
             const wrapper = serverState.tableState.registry[id];
             if (!wrapper) return undefined;

@@ -230,12 +230,14 @@ items:
     deck'
   traits:
   - 4 uses
+  tags: [Equipped]
   type: itemCard
 - name: Great Hammer
   traits:
   - impact
   - pierce
   - large weapon
+  tags: [Equipped]
   type: itemCard
 - burden: 2
   defense: 5
@@ -244,6 +246,7 @@ items:
   - armored
   - heavy
   - deflecting
+  tags: [Equipped]
   type: itemCard
 name: squire
 nature:
