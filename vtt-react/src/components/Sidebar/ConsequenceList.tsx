@@ -1,12 +1,12 @@
-import React from 'react';
-import { AlertTriangle, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { AlertTriangle, X, ChevronDown } from 'lucide-react';
 import { ConsequenceCard } from '../../types';
 import { RuleRenderer } from '../Card/RuleRenderer';
 
 interface ConsequenceListProps {
   consequences: ConsequenceCard[];
   currentSeverity: number;
-  onAddConsequence: () => void;
+  onAddConsequence: (severity?: number) => void;
   onRemoveConsequence: (cardId: string) => void;
 }
 
@@ -16,18 +16,62 @@ export const ConsequenceList: React.FC<ConsequenceListProps> = ({
   onAddConsequence,
   onRemoveConsequence,
 }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Click outside handler
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs text-slate-500 font-bold uppercase flex items-center gap-1">
           <AlertTriangle size={12} /> Consequences
         </span>
-        <button
-          onClick={onAddConsequence}
-          className="text-[10px] bg-slate-800 hover:bg-red-900 text-slate-400 hover:text-red-200 px-2 py-0.5 rounded border border-slate-700 transition-colors"
-        >
-          + Add
-        </button>
+
+        <div className="relative flex items-center" ref={dropdownRef}>
+          <button
+            onClick={() => onAddConsequence(undefined)}
+            className="text-[10px] bg-slate-800 hover:bg-red-900 text-slate-400 hover:text-red-200 px-2 py-0.5 rounded-l border border-slate-700 border-r-0 transition-colors"
+            title="Add Consequence (Auto Severity)"
+          >
+            + Add
+          </button>
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-400 px-1 py-0.5 rounded-r border border-slate-700 transition-colors flex items-center h-full"
+          >
+            <ChevronDown size={10} />
+          </button>
+
+          {showDropdown && (
+            <div className="absolute top-full right-0 mt-1 w-32 bg-slate-800 border border-slate-700 rounded shadow-lg z-50 overflow-hidden">
+              <div className="text-[9px] uppercase tracking-wider text-slate-500 px-2 py-1 bg-slate-900/50">
+                Specific Severity
+              </div>
+              {[1, 2, 3].map((sev) => (
+                <button
+                  key={sev}
+                  onClick={() => {
+                    onAddConsequence(sev);
+                    setShowDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                >
+                  Severity {sev}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mb-3 bg-red-950/20 border border-red-900/30 p-2 rounded text-center">

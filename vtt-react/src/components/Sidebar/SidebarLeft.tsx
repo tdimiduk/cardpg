@@ -23,7 +23,7 @@ interface SidebarLeftProps {
   onClearDefense: () => void;
   onReshuffle: () => void;
   onSelectToken: (tokenId: string) => void;
-  onAddConsequence: () => void;
+  onAddConsequence: (severity?: number) => void;
   onRemoveConsequence: (cardId: string) => void;
   onAddStatusCard: (type: string, destination: 'discard' | 'hand' | 'draw') => void;
   onRemoveStatusCard: (type: string) => void;

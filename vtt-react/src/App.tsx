@@ -128,12 +128,12 @@ const App: React.FC = () => {
           const token = tokens.find((t) => t.id === id);
           if (token) setActiveActor(token.actorId);
         }}
-        onAddConsequence={() => {
+        onAddConsequence={(severity) => {
           if (!activeActorId) return;
           dispatchCommand({
             type: 'addConsequenceIntent',
             actorId: activeActorId,
-            severity: 1,
+            severity: severity,
           });
         }}
         onRemoveConsequence={(cardId) => {
