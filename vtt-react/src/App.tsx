@@ -264,6 +264,7 @@ const App: React.FC = () => {
                   const def = actor.registry[cardId];
                   return def?.name || 'Unknown Card';
                 })(),
+                resourceCardIds: currentResolution.resourceCardIds,
               }
             : null
         }

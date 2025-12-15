@@ -4,6 +4,8 @@ import { RESOURCE_TYPES } from '../../constants';
 import { Send, Bot, Square, Circle, Diamond, ArrowRight, Play, Rewind } from 'lucide-react';
 
 import { useGameStore } from '../../store/gameStore';
+import { StackViewerModal } from './StackViewerModal';
+import { CoreCard } from '../../types';
 
 interface SidebarRightProps {
   logs: LogEntry[];
@@ -18,14 +20,16 @@ interface SidebarRightProps {
     attack: import('../../types').RealizedAttack;
     actorName?: string;
     attackCardName?: string;
+    resourceCardIds?: string[];
   } | null;
   onEndDefense: (actorId: string) => void;
 }
 
-const DefenseLogItem: React.FC<{ log: LogEntry; onEndDefense: () => void }> = ({
-  log,
-  onEndDefense,
-}) => {
+const DefenseLogItem: React.FC<{
+  log: LogEntry;
+  onEndDefense: () => void;
+  onViewStack: (cards: CoreCard[], title: string) => void;
+}> = ({ log, onEndDefense, onViewStack }) => {
   const actorId = log.defense?.actorId;
   const isEnded = log.defense?.ended;
 
@@ -33,6 +37,9 @@ const DefenseLogItem: React.FC<{ log: LogEntry; onEndDefense: () => void }> = ({
   const flippedPile = useGameStore((state) =>
     actorId && !isEnded ? state.actors[actorId]?.deck.flippedPile : undefined,
   );
+  // Registry for resolving snapshotIds
+  const registry = useGameStore((state) => (actorId ? state.actors[actorId]?.registry : {}));
+
   const liveCards = useMemo(
     () => (flippedPile ? flippedPile.map((c) => c.name) : []),
     [flippedPile],
@@ -44,12 +51,33 @@ const DefenseLogItem: React.FC<{ log: LogEntry; onEndDefense: () => void }> = ({
   const displayCards = isEnded ? log.defense?.snapshot || [] : liveCards;
   const impact = displayCards.length;
 
+  const handleViewStack = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    let cardsToView: CoreCard[] = [];
+
+    if (!isEnded && flippedPile) {
+      cardsToView = flippedPile;
+    } else if (isEnded && log.defense?.snapshotIds && registry) {
+      cardsToView = log.defense.snapshotIds
+        .map((id) => {
+          const def = registry[id];
+          return def ? { ...def, id } : undefined;
+        })
+        .filter((c): c is CoreCard => !!c);
+    }
+
+    if (cardsToView.length > 0) {
+      onViewStack(cardsToView, `${actorName}'s Defense Stack`);
+    }
+  };
+
   return (
     <div
-      className={`border rounded p-3 mb-2 animate-fade-in ${
+      onClick={handleViewStack}
+      className={`border rounded p-3 mb-2 animate-fade-in group cursor-pointer transition-all hover:shadow-md ${
         !isEnded
-          ? 'bg-indigo-950/30 border-indigo-900/50'
-          : 'bg-slate-900/50 border-slate-800 opacity-75 grayscale'
+          ? 'bg-indigo-950/30 border-indigo-900/50 hover:bg-indigo-900/40'
+          : 'bg-slate-900/50 border-slate-800 opacity-75 grayscale hover:opacity-100 hover:grayscale-0'
       }`}
     >
       <div className="flex justify-between items-start mb-1">
@@ -67,8 +95,11 @@ const DefenseLogItem: React.FC<{ log: LogEntry; onEndDefense: () => void }> = ({
         </div>
         {!isEnded && (
           <button
-            onClick={onEndDefense}
-            className="text-[10px] bg-indigo-900 hover:bg-indigo-800 text-indigo-200 px-2 py-0.5 rounded border border-indigo-700/50 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEndDefense();
+            }}
+            className="text-[10px] bg-indigo-900 hover:bg-indigo-800 text-indigo-200 px-2 py-0.5 rounded border border-indigo-700/50 transition-colors z-10 relative"
           >
             End
           </button>
@@ -107,6 +138,15 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
 }) => {
   const [chatInput, setChatInput] = useState('');
   const endOfLogsRef = useRef<HTMLDivElement>(null);
+  const [stackViewer, setStackViewer] = useState<{
+    isOpen: boolean;
+    cards: CoreCard[];
+    title: string;
+  }>({ isOpen: false, cards: [], title: '' });
+
+  const handleOpenStack = (cards: CoreCard[], title: string) => {
+    setStackViewer({ isOpen: true, cards, title });
+  };
 
   useEffect(() => {
     endOfLogsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -130,6 +170,12 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
 
   return (
     <div className="w-80 bg-slate-950 border-l border-slate-800 flex flex-col h-full z-20">
+      <StackViewerModal
+        isOpen={stackViewer.isOpen}
+        onClose={() => setStackViewer((prev) => ({ ...prev, isOpen: false }))}
+        cards={stackViewer.cards}
+        title={stackViewer.title}
+      />
       {/* Phase Control Panel */}
       <div className="p-4 bg-slate-900 border-b border-slate-800">
         <div className="flex justify-between items-center mb-2">
@@ -158,7 +204,34 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
         ) : (
           <div className="space-y-2">
             {currentResolution ? (
-              <div className="bg-red-950/30 border border-red-900/50 rounded p-3 animate-fade-in">
+              <div
+                onClick={() => {
+                  const actor = currentResolution.actorId
+                    ? useGameStore.getState().actors[currentResolution.actorId]
+                    : undefined;
+                  const registry = actor?.registry || {};
+
+                  const attackCardDef = registry[currentResolution.attack.attackCard];
+                  const attackCard = attackCardDef
+                    ? { ...attackCardDef, id: currentResolution.attack.attackCard }
+                    : undefined;
+                  const resources = (currentResolution.resourceCardIds || [])
+                    .map((id) => {
+                      const def = registry[id];
+                      return def ? { ...def, id } : undefined;
+                    })
+                    .filter((c): c is CoreCard => !!c);
+
+                  const cards = [];
+                  if (attackCard) cards.push(attackCard);
+                  cards.push(...resources);
+
+                  if (cards.length > 0) {
+                    handleOpenStack(cards, 'Current Attack Stack');
+                  }
+                }}
+                className="bg-red-950/30 border border-red-900/50 rounded p-3 animate-fade-in cursor-pointer hover:bg-red-900/40 hover:shadow-md transition-all"
+              >
                 <div className="text-xs text-red-300 mb-1 flex items-center gap-1">
                   <Square size={12} className="fill-red-500 text-red-500" />
                   <strong>Current Attack</strong>
@@ -212,6 +285,7 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
                 key={log.id}
                 log={log}
                 onEndDefense={() => onEndDefense(log.defense!.actorId)}
+                onViewStack={handleOpenStack}
               />
             );
           }

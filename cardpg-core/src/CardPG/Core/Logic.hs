@@ -230,6 +230,7 @@ plannedActionTo dst gameLog = do
     Nothing -> return ()
     Just plan -> do
       modify $ #coreState % #planned .~ Nothing
+      modify $ #coreState % #revealed .~ Nothing
       modify $ #coreState % dst %~ (plannedActionCards plan ++)
       tell [gameLog plan]
 
@@ -250,7 +251,9 @@ revealPlannedActions = do
               _ -> case attackAction matPlan of
                 Right attack -> REAttack attack
                 Left err -> REInvalid err
+
       tell [ActionRevealed plan revealedEffect]
+      modify $ #coreState % #revealed ?~ revealedEffect
 
 discardPlannedActions :: GameM g ()
 discardPlannedActions = plannedActionTo #discard PlanCanceled

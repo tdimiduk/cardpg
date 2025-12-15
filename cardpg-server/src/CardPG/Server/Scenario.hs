@@ -132,6 +132,7 @@ instantiateActor def x y = do
           , inPlay = Map.empty
           , registry = coreRegistry
           , planned = Nothing
+          , revealed = Nothing
           }
 
   -- Process Table Cards (Items, Nature)

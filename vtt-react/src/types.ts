@@ -50,6 +50,7 @@ export interface ActorState {
   deck: PlayerDeckState;
   plannedMove?: { x: number; y: number };
   registry: Record<string, import('./generated/types').CoreCard>;
+  revealed?: import('./generated/types').RevealedEffect;
 }
 
 export interface LogEntry {
@@ -68,6 +69,7 @@ export interface LogEntry {
     actorId: string;
     ended: boolean;
     snapshot?: string[]; // Names of cards at the time of ending
+    snapshotIds?: string[]; // IDs of cards at the time of ending
   };
 }
 

@@ -145,6 +145,9 @@ export const createActorSlice: StateCreator<
         import('../../generated/types').CoreCard
       >;
 
+      // Sync Revealed Effect
+      state.actors[targetId].revealed = core.revealed;
+
       // Sync Spatial State to Token
       const token = state.tokens.find((t: Token) => t.actorId === targetId);
       if (token && serverState.spatial) {

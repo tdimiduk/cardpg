@@ -5,11 +5,19 @@ import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
   phase: GamePhase;
-  currentResolution: { actorId: string; attack: import('../../types').RealizedAttack } | null;
+  currentResolution: {
+    actorId: string;
+    attack: import('../../types').RealizedAttack;
+    resourceCardIds?: string[];
+  } | null;
   revealAndResolve: () => void;
   setPhase: (phase: GamePhase) => void;
   setResolutionPhase: () => void;
-  setAttackResolution: (actorId: string, attack: import('../../types').RealizedAttack) => void;
+  setAttackResolution: (
+    actorId: string,
+    attack: import('../../types').RealizedAttack,
+    resourceCardIds?: string[],
+  ) => void;
   endRound: () => void;
 }
 
@@ -42,9 +50,9 @@ export const createGameSlice: StateCreator<
       state.logs.push(createLog('Phase changed to Resolution.', 'System'));
     }),
 
-  setAttackResolution: (actorId, attack) =>
+  setAttackResolution: (actorId, attack, resourceCardIds) =>
     set((state) => {
-      state.currentResolution = { actorId, attack };
+      state.currentResolution = { actorId, attack, resourceCardIds };
       // Log the attack start if needed, or let the text log handle it.
       // This state is just for visualization in sidebar.
     }),

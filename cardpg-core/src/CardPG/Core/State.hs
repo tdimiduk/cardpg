@@ -100,6 +100,14 @@ data RealizedAttack = RealizedAttack
 
 $(deriveJSON cardpgJsonDef ''RealizedAttack)
 
+data RevealedEffect
+  = REPass
+  | REAttack RealizedAttack
+  | REInvalid Text
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''RevealedEffect)
+
 data CoreCardState = CoreCardState
   { deck :: [CardInstanceId] -- Top is head
   , hand :: [CardInstanceId] -- User-defined order
@@ -109,6 +117,7 @@ data CoreCardState = CoreCardState
   , inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
   , registry :: CardRegistry CoreCard
   -- ^ The Registry (Source of Truth for Core Cards)
+  , revealed :: Maybe RevealedEffect
   }
   deriving stock (Show, Eq, Generic)
 
@@ -179,13 +188,7 @@ data GameEvent
     ConsequenceRemoved Text
   deriving stock (Show, Eq, Generic)
 
-data RevealedEffect
-  = REPass
-  | REAttack RealizedAttack
-  | REInvalid Text
-  deriving stock (Show, Eq, Generic)
 
-$(deriveJSON cardpgJsonDef ''RevealedEffect)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)
 

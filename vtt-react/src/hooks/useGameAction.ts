@@ -45,7 +45,14 @@ export const useGameAction = () => {
 
           if (effect && effect.type === 'rEAttack') {
             const attack = effect.data as RealizedAttack;
-            setAttackResolution(actorId, attack);
+            const plannedAction = event.data[0];
+            let resourceCardIds: string[] | undefined;
+
+            if (plannedAction.type === 'pStandard') {
+              resourceCardIds = plannedAction.data.resources;
+            }
+
+            setAttackResolution(actorId, attack, resourceCardIds);
           } else if (effect && effect.type === 'rEPass') {
             addLog(`${actorName} passed.`, 'System', 'info');
           } else if (effect && effect.type === 'rEInvalid') {
@@ -94,7 +101,12 @@ export const useGameAction = () => {
 
           if (activeDefense) {
             updateLog(activeDefense.id, {
-              defense: { ...activeDefense.defense!, ended: true, snapshot: cardNames },
+              defense: {
+                ...activeDefense.defense!,
+                ended: true,
+                snapshot: cardNames,
+                snapshotIds: flippedPile.map((c) => c.id),
+              },
               content: `${actorName} defense ended.`,
             });
           } else {

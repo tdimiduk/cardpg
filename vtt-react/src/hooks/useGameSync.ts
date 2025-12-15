@@ -29,6 +29,43 @@ export const useGameSync = () => {
         if (msg.phase) {
           useGameStore.getState().setPhase(msg.phase);
         }
+
+        // Rehydrate transient UI state (Defense Logs, Attacks)
+        const { actors, logs, addLog, setAttackResolution, phase, plannedActions } =
+          useGameStore.getState();
+        Object.entries(actors).forEach(([actorId, actor]) => {
+          // Rehydrate Defense Log
+          if (actor.deck.flippedPile && actor.deck.flippedPile.length > 0) {
+            const alreadyLogged = logs.some(
+              (l) => l.type === 'defense' && l.defense?.actorId === actorId && !l.defense.ended,
+            );
+            if (!alreadyLogged) {
+              addLog(`${actor.name} is defending.`, 'System', 'defense', undefined, {
+                actorId,
+                ended: false,
+              });
+            }
+          }
+
+          // Rehydrate Active Attack (Resolution Phase)
+          if (phase === 'resolution' && actor.revealed) {
+            const revealed = actor.revealed;
+            if (revealed.type === 'rEAttack') {
+              const attack = revealed.data;
+              let resourceCardIds: string[] | undefined;
+
+              const storedPlan = plannedActions[actorId];
+              if (storedPlan) {
+                // Exclude action card from resources
+                resourceCardIds = storedPlan.cards
+                  .filter((c) => c.id !== attack.attackCard)
+                  .map((c) => c.id);
+              }
+
+              setAttackResolution(actorId, attack, resourceCardIds);
+            }
+          }
+        });
       } else if (msg.type === 'gameStateUpdate') {
         console.log('Received State Updates:', msg.updates);
         msg.updates.forEach((update) => {
