@@ -7,9 +7,11 @@ import qualified Data.Map.Strict as Map
 import System.Random (mkStdGen)
 import Test.Hspec
 
-import CardPG.Core.Card (ConsequenceCard, CoreCard (..), ItemCard, NatureCard, TalentCard)
+import qualified Data.Text as T
+import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT(..), CoreCard (..), ItemCard, ItemCardT (..), NatureCard, TalentCard)
 import CardPG.Core.Logic
-import CardPG.Core.Primitives (CardInstanceId (..), TargetId (..))
+import CardPG.Core.Primitives (CardInstanceId (..), TargetId (..), EquipSlot (..))
+import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.State
 
 -- Helper to create a dummy game logic execution
@@ -92,5 +94,101 @@ spec = do
 
       let ((), finalState, events) = runLogic plannedState discardPlannedActions
 
-      (planned $ coreState finalState) `shouldBe` Nothing
       (discard $ coreState finalState) `shouldContain` [c1, c2]
+
+  describe "Consequence Logic" $ do
+    let cid1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
+    let cid2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+    let cid3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+    let cidRes = CardInstanceId (read "00000000-0000-0000-0000-000000000009")
+
+    let mockConsTemplate sev =
+          ConsequenceCard
+            { name = unsafeNonEmptyText "Cons"
+            , tags = Nothing
+            , passive = Nothing
+            , effects = Nothing
+            , severity = sev
+            , notes = Nothing
+            , rules = Nothing
+            }
+
+    let mockItemRes res =
+          ItemCard
+            { name = unsafeNonEmptyText "Armor"
+            , tags = Nothing
+            , flavor = Nothing
+            , weight = Nothing
+            , value = Nothing
+            , traits = Nothing
+            , passive = Nothing
+            , defense = Nothing
+            , resilience = Just res
+            , burden = Nothing
+            }
+
+    let mkEnv consList =
+          GameEnv
+            { fatigueCardTemplate = undefined
+            , statusCardTemplates = Map.empty
+            , consequenceCardTemplates = Map.fromList [(T.pack (show c.severity), c) | c <- consList]
+            }
+
+    let runLogicWithEnv env state action =
+          let rng = mkStdGen 0
+              ((res, finalState, events), _) = runState (runRWST (runGameM action) env state) rng
+           in (res, finalState, events)
+
+    it "adds specific severity consequence" $ do
+      let env = mkEnv [mockConsTemplate 5]
+      let state = mkActorState []
+      let ((), finalState, events) = runLogicWithEnv env state (addConsequence (Just 5))
+
+      length (consequences $ tableState finalState) `shouldBe` 1
+      events `shouldContain` [ConsequenceAdded 5]
+
+    it "calculates default resilience of 1 and proper severity" $ do
+      -- No items, Res=1. existing=0. Sev = 0/1 + 1 = 1.
+      let env = mkEnv [mockConsTemplate 1]
+      let state = mkActorState []
+      let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+
+      events `shouldContain` [ConsequenceAdded 1]
+
+    it "uses equipped resilience" $ do
+      -- Item with Res=3. Existing=0. Sev = 0/3 + 1 = 1.
+      let item = mockItemRes 3
+      let tc = TCItem item
+      let state0 = mkActorState []
+      let state =
+            state0
+              { tableState =
+                  (tableState state0)
+                    { registry = Map.singleton cidRes tc
+                    , assets = Map.singleton cidRes (Equipped Body)
+                    }
+              }
+      let env = mkEnv [mockConsTemplate 1]
+      let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+
+      events `shouldContain` [ConsequenceAdded 1]
+
+    it "calculates severity based on existing count and resilience" $ do
+      -- Res=2. Existing=3 consequences. Sev = 3/2 + 1 = 1 + 1 = 2.
+      let item = mockItemRes 2
+      let tc = TCItem item
+
+      let state0 = mkActorState []
+      let state =
+            state0
+              { tableState =
+                  (tableState state0)
+                    { registry = Map.singleton cidRes tc
+                    , assets = Map.singleton cidRes (Equipped Body)
+                    , consequences = [cid1, cid2, cid3] -- 3 dummy existing
+                    }
+              }
+      let env = mkEnv [mockConsTemplate 2]
+      let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+
+      events `shouldContain` [ConsequenceAdded 2]

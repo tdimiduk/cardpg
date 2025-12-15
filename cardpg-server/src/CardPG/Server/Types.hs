@@ -105,7 +105,7 @@ data Command
   | ReshuffleIntent {actorId :: ActorId}
   | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: Text}
   | RemoveStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe Text}
-  | AddConsequenceIntent {actorId :: ActorId, severity :: Int}
+  | AddConsequenceIntent {actorId :: ActorId, severity :: Maybe Int}
   | RemoveConsequenceIntent {actorId :: ActorId, cardId :: Text}
   | DiscardCardsIntent {actorId :: ActorId, cardIds :: [Text]}
   | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [Text]}

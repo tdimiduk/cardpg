@@ -44,6 +44,7 @@ import CardPG.Core.Card
   , CoreCard
   , CoreCardT (..)
   , ItemCardT (..)
+  , NatureCardT (..)
   , Stats (..)
   )
 import CardPG.Core.NonEmptyText (getRawText, unsafeNonEmptyText)
@@ -388,11 +389,44 @@ removeStatus statusType maybeCardId = do
              else return ()
           return ()
 
-addConsequence :: (RandomGen g) => Int -> GameM g ()
-addConsequence severityVal = do
-  env <- ask
-  let candidates = filter (\c -> c.severity == severityVal) (Map.elems (env ^. #consequenceCardTemplates))
+calculateResilience :: GameM g Int
+calculateResilience = do
+  tblSt <- use #tableState
+  let activeCards =
+        [ card
+        | (cid, state) <- Map.toList (tblSt ^. #assets)
+        , isActive state
+        , Just card <- [Map.lookup cid (tblSt ^. #registry)]
+        ]
+      
+      getRes :: TableCard -> Int
+      getRes (TCItem item) = fromMaybe 0 item.resilience
+      getRes (TCNature nature) = fromMaybe 0 nature.resilience
+      getRes _ = 0
 
+      maxRes = maximum (0 : map getRes activeCards)
+  
+  return $ max 1 maxRes
+  where
+    isActive (Equipped _) = True
+    isActive Trait = True
+    isActive _ = False
+
+addConsequence :: (RandomGen g) => Maybe Int -> GameM g ()
+addConsequence maybeSeverity = do
+  finalSeverity <- case maybeSeverity of
+    Just s -> return s
+    Nothing -> do
+      res <- calculateResilience
+      tblSt <- use #tableState
+      let count = length (tblSt ^. #consequences)
+      return $ (count `div` res) + 1
+
+  env <- ask
+  let candidates = filter (\c -> c.severity == finalSeverity) (Map.elems (env ^. #consequenceCardTemplates))
+  
+  -- If no exact match for severity, maybe we should clamp or fallback? 
+  -- For now, explicit filter as before.
   case candidates of
     [] -> return ()
     _ -> do
@@ -413,7 +447,7 @@ addConsequence severityVal = do
       -- We might need a generic event for "AssetCreated" or reused CardsCreated?
       -- CardsCreated takes [CardInstanceId]. It doesn't imply CoreCard necessarily.
       tell [CardsCreated [cid]]
-      tell [ConsequenceAdded severityVal]
+      tell [ConsequenceAdded finalSeverity]
       return ()
 
 passAction :: (RandomGen g) => GameM g ()
