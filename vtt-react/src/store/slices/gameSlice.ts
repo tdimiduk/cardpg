@@ -5,19 +5,9 @@ import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
   phase: GamePhase;
-  currentResolution: {
-    actorId: string;
-    attack: import('../../types').RealizedAttack;
-    resourceCardIds?: string[];
-  } | null;
   revealAndResolve: () => void;
   setPhase: (phase: GamePhase) => void;
   setResolutionPhase: () => void;
-  setAttackResolution: (
-    actorId: string,
-    attack: import('../../types').RealizedAttack,
-    resourceCardIds?: string[],
-  ) => void;
   endRound: () => void;
 }
 
@@ -28,7 +18,6 @@ export const createGameSlice: StateCreator<
   GameSlice
 > = (set) => ({
   phase: 'planning',
-  currentResolution: null,
 
   revealAndResolve: () =>
     set((state) => {
@@ -50,13 +39,6 @@ export const createGameSlice: StateCreator<
       state.logs.push(createLog('Phase changed to Resolution.', 'System'));
     }),
 
-  setAttackResolution: (actorId, attack, resourceCardIds) =>
-    set((state) => {
-      state.currentResolution = { actorId, attack, resourceCardIds };
-      // Log the attack start if needed, or let the text log handle it.
-      // This state is just for visualization in sidebar.
-    }),
-
   endRound: () =>
     set((state) => {
       // Logic handled by server (movement, clearing plans, etc)
@@ -65,7 +47,6 @@ export const createGameSlice: StateCreator<
       // Or better wait for server?
       // Safe to switch phase as next round implies Planning.
       state.phase = 'planning';
-      state.currentResolution = null;
       // Note: We might want to keep defense visible if it persists across turns, but usually it clears.
       // For now, let's not auto-clear defense here unless explicitly told by server events.
       state.logs.push(createLog('Round Ended. Starting new Planning Phase.', 'GM'));

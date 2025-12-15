@@ -12,8 +12,6 @@ describe('useGameAction', () => {
   const mockRevealAndResolve = vi.fn();
   const mockEndRound = vi.fn();
   const mockUpdateTokenPosition = vi.fn();
-  const mockSetAttackResolution = vi.fn();
-
   const mockAddLog = vi.fn();
   const mockUpdateLog = vi.fn();
 
@@ -32,7 +30,6 @@ describe('useGameAction', () => {
       removeConsequence: vi.fn(),
       addStatus: vi.fn(),
       removeStatus: vi.fn(),
-      setAttackResolution: mockSetAttackResolution,
       addLog: mockAddLog,
       updateLog: mockUpdateLog,
       logs: [],
@@ -44,6 +41,7 @@ describe('useGameAction', () => {
           deck: { flippedPile: [{ name: 'Shield' }] },
         },
       },
+      setResolutionPhase: vi.fn(),
     };
 
     (
@@ -85,9 +83,16 @@ describe('useGameAction', () => {
     result.current._applyAction(event);
 
     expect(mockRevealAndResolve).toHaveBeenCalled();
-    expect(mockSetAttackResolution).toHaveBeenCalledWith(
-      'actor-1',
-      expect.objectContaining({ attackStrength: 5 }),
+    expect(mockAddLog).toHaveBeenCalledWith(
+      expect.stringContaining('attacks!'),
+      'System',
+      'attack',
+      undefined,
+      undefined,
+      expect.objectContaining({
+        actorId: 'actor-1',
+        attack: expect.objectContaining({ attackStrength: 5 }),
+      }),
     );
   });
 

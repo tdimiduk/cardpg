@@ -47,8 +47,7 @@ export const StackViewerModal: React.FC<StackViewerModalProps> = ({
               const scaleClass =
                 cards.length > 8 ? 'scale-60' : cards.length > 4 ? 'scale-75' : 'scale-90';
               // Adjust margin to compensate for scale shrinking space
-              const marginClass =
-                cards.length > 8 ? '-m-8' : cards.length > 4 ? '-m-4' : '-m-2';
+              const marginClass = cards.length > 8 ? '-m-8' : cards.length > 4 ? '-m-4' : '-m-2';
 
               return (
                 <div

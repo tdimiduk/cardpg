@@ -15,15 +15,80 @@ interface SidebarRightProps {
   onEndRound: () => void;
   readyCount?: number;
   totalCount?: number;
-  currentResolution: {
-    actorId: string;
-    attack: import('../../types').RealizedAttack;
-    actorName?: string;
-    attackCardName?: string;
-    resourceCardIds?: string[];
-  } | null;
   onEndDefense: (actorId: string) => void;
 }
+
+const AttackLogItem: React.FC<{
+  log: LogEntry;
+  onViewStack: (cards: CoreCard[], title: string) => void;
+}> = ({ log, onViewStack }) => {
+  const actorId = log.attack?.actorId;
+  const attack = log.attack?.attack;
+  const resourceCardIds = log.attack?.resourceCardIds;
+
+  const actorName = useGameStore((state) =>
+    actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
+  );
+  const registry = useGameStore((state) => (actorId ? state.actors[actorId]?.registry : {}));
+
+  // Resolve cards
+  const attackCardDef = attack ? registry[attack.attackCard] : undefined;
+  const attackCardName = attackCardDef?.name || 'Unknown Attack';
+  const attackCard = attackCardDef ? { ...attackCardDef, id: attack!.attackCard } : undefined;
+
+  const handleViewStack = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const cards: CoreCard[] = [];
+    if (attackCard) cards.push(attackCard);
+
+    if (resourceCardIds) {
+      resourceCardIds.forEach((id) => {
+        const def = registry[id];
+        if (def) cards.push({ ...def, id });
+      });
+    }
+
+    if (cards.length > 0) {
+      onViewStack(cards, `${actorName}'s Attack Stack`);
+    }
+  };
+
+  if (!attack) return null;
+
+  return (
+    <div
+      onClick={handleViewStack}
+      className="bg-red-950/30 border border-red-900/50 rounded p-3 mb-2 animate-fade-in cursor-pointer hover:bg-red-900/40 hover:shadow-md transition-all group"
+    >
+      <div className="flex justify-between items-start mb-1">
+        <div className="text-xs font-bold text-red-300 flex items-center gap-1">
+          <Square size={12} className="fill-red-500 text-red-500" />
+          <span>Attack Action</span>
+        </div>
+      </div>
+
+      <div className="text-white font-bold mb-1">{attackCardName}</div>
+      <div className="text-xs text-slate-400 mb-2">By: {actorName}</div>
+
+      <div className="flex items-center gap-2 text-sm bg-black/40 rounded p-1 mb-1">
+        <span className="font-bold text-red-400">Power: {attack.attackStrength}</span>
+        <ArrowRight size={12} className="text-slate-500" />
+        <span className="text-slate-300">VS</span>
+        <span
+          className={`font-bold ${
+            attack.defenseColor === RESOURCE_TYPES.RED
+              ? 'text-red-400'
+              : attack.defenseColor === RESOURCE_TYPES.BLUE
+                ? 'text-blue-400'
+                : 'text-yellow-400'
+          }`}
+        >
+          {attack.defenseColor.toUpperCase()}
+        </span>
+      </div>
+    </div>
+  );
+};
 
 const DefenseLogItem: React.FC<{
   log: LogEntry;
@@ -133,7 +198,6 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
   onEndRound,
   readyCount,
   totalCount,
-  currentResolution,
   onEndDefense,
 }) => {
   const [chatInput, setChatInput] = useState('');
@@ -203,69 +267,6 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
           </button>
         ) : (
           <div className="space-y-2">
-            {currentResolution ? (
-              <div
-                onClick={() => {
-                  const actor = currentResolution.actorId
-                    ? useGameStore.getState().actors[currentResolution.actorId]
-                    : undefined;
-                  const registry = actor?.registry || {};
-
-                  const attackCardDef = registry[currentResolution.attack.attackCard];
-                  const attackCard = attackCardDef
-                    ? { ...attackCardDef, id: currentResolution.attack.attackCard }
-                    : undefined;
-                  const resources = (currentResolution.resourceCardIds || [])
-                    .map((id) => {
-                      const def = registry[id];
-                      return def ? { ...def, id } : undefined;
-                    })
-                    .filter((c): c is CoreCard => !!c);
-
-                  const cards = [];
-                  if (attackCard) cards.push(attackCard);
-                  cards.push(...resources);
-
-                  if (cards.length > 0) {
-                    handleOpenStack(cards, 'Current Attack Stack');
-                  }
-                }}
-                className="bg-red-950/30 border border-red-900/50 rounded p-3 animate-fade-in cursor-pointer hover:bg-red-900/40 hover:shadow-md transition-all"
-              >
-                <div className="text-xs text-red-300 mb-1 flex items-center gap-1">
-                  <Square size={12} className="fill-red-500 text-red-500" />
-                  <strong>Current Attack</strong>
-                </div>
-                <div className="text-white font-bold">
-                  {currentResolution.attackCardName || 'Unknown Attack'}
-                </div>
-                <div className="text-xs text-slate-400">
-                  By: {currentResolution.actorName || currentResolution.actorId}
-                </div>
-                <div className="mt-2 flex items-center gap-2 text-sm bg-black/40 rounded p-1">
-                  <span className="font-bold text-red-400">
-                    Power: {currentResolution.attack.attackStrength}
-                  </span>
-                  <ArrowRight size={12} className="text-slate-500" />
-                  <span className="text-slate-300">VS</span>
-                  <span
-                    className={`font-bold ${
-                      currentResolution.attack.defenseColor === RESOURCE_TYPES.RED
-                        ? 'text-red-400'
-                        : currentResolution.attack.defenseColor === RESOURCE_TYPES.BLUE
-                          ? 'text-blue-400'
-                          : 'text-yellow-400'
-                    }`}
-                  >
-                    {currentResolution.attack.defenseColor.toUpperCase()}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-xs text-slate-500 py-2 italic">
-                Waiting for resolution...
-              </div>
-            )}
             <button
               onClick={onEndRound}
               className="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-2 rounded shadow transition-all"
@@ -288,6 +289,10 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
                 onViewStack={handleOpenStack}
               />
             );
+          }
+
+          if (log.type === 'attack' && log.attack) {
+            return <AttackLogItem key={log.id} log={log} onViewStack={handleOpenStack} />;
           }
 
           return (

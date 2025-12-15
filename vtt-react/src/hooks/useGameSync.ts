@@ -31,8 +31,7 @@ export const useGameSync = () => {
         }
 
         // Rehydrate transient UI state (Defense Logs, Attacks)
-        const { actors, logs, addLog, setAttackResolution, phase, plannedActions } =
-          useGameStore.getState();
+        const { actors, logs, addLog, phase, plannedActions } = useGameStore.getState();
         Object.entries(actors).forEach(([actorId, actor]) => {
           // Rehydrate Defense Log
           if (actor.deck.flippedPile && actor.deck.flippedPile.length > 0) {
@@ -62,7 +61,22 @@ export const useGameSync = () => {
                   .map((c) => c.id);
               }
 
-              setAttackResolution(actorId, attack, resourceCardIds);
+              // Check if already logged to avoid duplicates on quick reconnects
+              // (though logs are usually wiped on refresh unless persisted, checking 'logs' from store which might be fresh empty or not)
+              const alreadyLogged = logs.some(
+                (l) =>
+                  l.type === 'attack' &&
+                  l.attack?.actorId === actorId &&
+                  l.attack?.attack.attackCard === attack.attackCard,
+              );
+
+              if (!alreadyLogged) {
+                addLog(`${actor.name} attacks!`, 'System', 'attack', undefined, undefined, {
+                  actorId,
+                  attack,
+                  resourceCardIds,
+                });
+              }
             }
           }
         });

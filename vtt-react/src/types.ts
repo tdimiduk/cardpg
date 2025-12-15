@@ -58,7 +58,7 @@ export interface LogEntry {
   timestamp: number;
   sender: 'System' | 'GM' | 'Player' | 'AI';
   content: string;
-  type: 'chat' | 'action' | 'info' | 'defense';
+  type: 'chat' | 'action' | 'info' | 'defense' | 'attack';
   actionResult?: {
     total: number;
     color: import('./generated/types').ResourceType;
@@ -70,6 +70,11 @@ export interface LogEntry {
     ended: boolean;
     snapshot?: string[]; // Names of cards at the time of ending
     snapshotIds?: string[]; // IDs of cards at the time of ending
+  };
+  attack?: {
+    actorId: string;
+    attack: import('./generated/types').RealizedAttack;
+    resourceCardIds?: string[];
   };
 }
 

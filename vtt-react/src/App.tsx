@@ -17,7 +17,6 @@ const App: React.FC = () => {
   const actors = useGameStore((state) => state.actors);
   const logs = useGameStore((state) => state.logs);
   const activeActorId = useGameStore((state) => state.activeActorId);
-  const currentResolution = useGameStore((state) => state.currentResolution);
 
   // Actions
   const setActiveActor = useGameStore((state) => state.setActiveActor);
@@ -252,22 +251,6 @@ const App: React.FC = () => {
         }}
         readyCount={readyCount}
         totalCount={tokens.length}
-        currentResolution={
-          currentResolution
-            ? {
-                ...currentResolution,
-                actorName: actors[currentResolution.actorId]?.name || currentResolution.actorId,
-                attackCardName: (() => {
-                  const actor = actors[currentResolution.actorId];
-                  if (!actor) return 'Unknown Card';
-                  const cardId = currentResolution.attack.attackCard;
-                  const def = actor.registry[cardId];
-                  return def?.name || 'Unknown Card';
-                })(),
-                resourceCardIds: currentResolution.resourceCardIds,
-              }
-            : null
-        }
         onEndDefense={(actorId: string) => {
           dispatchCommand({ type: 'endDefenseIntent', actorId });
         }}

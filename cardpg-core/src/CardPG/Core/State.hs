@@ -188,8 +188,6 @@ data GameEvent
     ConsequenceRemoved Text
   deriving stock (Show, Eq, Generic)
 
-
-
 $(deriveJSON cardpgJsonDef ''GameEvent)
 
 data GameEnv = GameEnv

@@ -16,7 +16,6 @@ export const useGameAction = () => {
   const addLog = useGameStore((state) => state.addLog);
   const updateLog = useGameStore((state) => state.updateLog);
   const setResolutionPhase = useGameStore((state) => state.setResolutionPhase);
-  const setAttackResolution = useGameStore((state) => state.setAttackResolution);
 
   const _applyAction = useCallback(
     (actorEvent: ActorGameEvent) => {
@@ -52,7 +51,11 @@ export const useGameAction = () => {
               resourceCardIds = plannedAction.data.resources;
             }
 
-            setAttackResolution(actorId, attack, resourceCardIds);
+            addLog(`${actorName} attacks!`, 'System', 'attack', undefined, undefined, {
+              actorId,
+              attack,
+              resourceCardIds,
+            });
           } else if (effect && effect.type === 'rEPass') {
             addLog(`${actorName} passed.`, 'System', 'info');
           } else if (effect && effect.type === 'rEInvalid') {
@@ -160,15 +163,7 @@ export const useGameAction = () => {
           console.warn('Unhandled event:', event);
       }
     },
-    [
-      revealAndResolve,
-      endRound,
-      updateTokenPosition,
-      addLog,
-      updateLog,
-      setResolutionPhase,
-      setAttackResolution,
-    ],
+    [revealAndResolve, endRound, updateTokenPosition, addLog, updateLog, setResolutionPhase],
   );
 
   return { _applyAction };
