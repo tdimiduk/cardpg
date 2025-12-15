@@ -68,6 +68,6 @@ main = do
     Haskell.defineHaskellLintRules
     Haskell.defineHaskellFormatRules
     Frontend.defineFrontendRules
-    Frontend.defineFrontendRules
+
     Frontend.defineFrontendTestRules
     Frontend.defineFrontendFormatRules
