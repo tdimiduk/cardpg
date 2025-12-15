@@ -99,7 +99,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
       ((_, actorAfterDefend, _), gen3) = runState (runRWST (runGameM Logic.flipCardToDefense) env actorAfterPlan2) gen2
 
   -- Verify defense
-  assertEqual "Defending stack has c3" [c3Id] (actorAfterDefend.coreState.defending)
+  assertEqual "Defending stack has c3" [c3Id] actorAfterDefend.coreState.defending
 
   -- 3. Resolve Round (End Defense + Discard Planned)
   let resolveAction = do
@@ -109,8 +109,8 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
       ((_, actorFinal, events), _) = runState (runRWST (runGameM resolveAction) env actorAfterDefend) gen3
 
   -- Verify cleanup
-  assertEqual "Defending stack empty" [] (actorFinal.coreState.defending)
-  assertEqual "Planned action empty" Nothing (actorFinal.coreState.planned)
+  assertEqual "Defending stack empty" [] actorFinal.coreState.defending
+  assertEqual "Planned action empty" Nothing actorFinal.coreState.planned
 
   let discard = actorFinal.coreState.discard
   assertBool "c1 (action) in discard" (c1Id `elem` discard)

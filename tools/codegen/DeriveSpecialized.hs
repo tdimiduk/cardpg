@@ -1,5 +1,6 @@
 module DeriveSpecialized (specializeType, makeBridgeInstance, makeProxyInstance, deriveSpecializedInstance) where
 
+import Control.Monad (when)
 import Data.Aeson (Options)
 import Data.Aeson.TypeScript.TH (deriveTypeScript)
 import Data.Map (Map)
@@ -29,11 +30,9 @@ specializeType typeName paramTypes newTypeNameStr = do
       -- Identify the type variables to substitute.
       let binderNames = map getBinderName binders
 
-      if length binderNames < length paramTypes
-        then
-          fail $
-            "specializeType: Too many parameter types provided. Expected at most " ++ show (length binderNames)
-        else return ()
+      when (length binderNames < length paramTypes) $
+        fail $
+          "specializeType: Too many parameter types provided. Expected at most " ++ show (length binderNames)
 
       -- Create substitution map
       let subst = Map.fromList $ zip binderNames paramTypes

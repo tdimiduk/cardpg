@@ -17,6 +17,7 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (toText)
+import Data.Maybe (isJust)
 import System.Random (StdGen)
 
 import CardPG.Core.Card (CoreCard)
@@ -51,15 +52,15 @@ emptyGame env rng =
     }
 
 addActor :: ActorId -> ActorState -> GameState -> GameState
-addActor tid state game = game{actors = Map.insert tid state (game.actors)}
+addActor tid state game = game{actors = Map.insert tid state game.actors}
 
 runActorAction :: ActorId -> GameM StdGen a -> GameState -> (Maybe [GameEvent], GameState)
 runActorAction tid action game =
-  case Map.lookup tid (game.actors) of
+  case Map.lookup tid game.actors of
     Nothing -> (Nothing, game)
     Just actorState ->
-      let ((_, newState, events), newRng) = runState (runRWST (runGameM action) (game.env) actorState) (game.rng)
-          newGame = game{rng = newRng, actors = Map.insert tid newState (game.actors)}
+      let ((_, newState, events), newRng) = runState (runRWST (runGameM action) game.env actorState) game.rng
+          newGame = game{rng = newRng, actors = Map.insert tid newState game.actors}
        in (Just events, newGame)
 
 processCommand ::
@@ -101,14 +102,13 @@ processCommand cmd game =
             DiscardCardsIntent tid cids -> (tid, Logic.discardCards cids)
             ReturnToDeckIntent tid cids -> (tid, Logic.returnCardsToDeck cids)
             PassIntent tid -> (tid, Logic.passAction)
-            _ -> error "Unreachable" -- Handled above
           (maybeEvents, newGame) = runActorAction targetId action game
        in case maybeEvents of
             Nothing -> (game, [], []) -- Actor missing or no action
             Just events ->
               let
                 -- Retrieve updated actor state safely
-                updatedActorState = case Map.lookup targetId (newGame.actors) of
+                updatedActorState = case Map.lookup targetId newGame.actors of
                   Just a -> a
                   Nothing -> error "Actor missing after update"
 
@@ -118,7 +118,7 @@ processCommand cmd game =
                 (newGame, stateUpdates, actorEvents)
 
 concludeRound :: GameState -> (GameState, [StateUpdate])
-concludeRound game = foldl step (game, []) (Map.keys (game.actors))
+concludeRound game = foldl step (game, []) (Map.keys game.actors)
   where
     step (g, updates) actorId =
       -- 1. End Defense (new)
@@ -130,17 +130,17 @@ concludeRound game = foldl step (game, []) (Map.keys (game.actors))
 
           -- Combine logic for updates (if any changed state, we should send update)
           hasUpdates =
-            maybe False (const True) maybeDefenseEvents
-              || maybe False (const True) maybeMoveEvents
-              || maybe False (const True) maybeDiscardEvents
+            isJust maybeDefenseEvents
+              || isJust maybeMoveEvents
+              || isJust maybeDiscardEvents
        in if hasUpdates
-            then case Map.lookup actorId (gAfterDiscard.actors) of
+            then case Map.lookup actorId gAfterDiscard.actors of
               Just actor -> (gAfterDiscard, updates ++ [StateUpdate actorId actor])
               Nothing -> (gAfterDiscard, updates)
             else (gAfterDiscard, updates)
 
 revealPlannedActions :: GameState -> (GameState, [ActorGameEvent])
-revealPlannedActions game = foldl step (game, []) (Map.keys (game.actors))
+revealPlannedActions game = foldl step (game, []) (Map.keys game.actors)
   where
     step (g, currentEvents) actorId =
       let (maybeEvents, newG) = runActorAction actorId Logic.revealPlannedActions g

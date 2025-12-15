@@ -1,5 +1,5 @@
 {-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE LambdaCase #-}
+
 {-# LANGUAGE OverloadedRecordDot #-}
 
 module CardPG.Core.Logic
@@ -27,7 +27,7 @@ module CardPG.Core.Logic
   , passAction
   ) where
 
-import Control.Monad (replicateM)
+import Control.Monad (replicateM, when)
 import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
 import Control.Monad.State (MonadState, State, get, modify, put, state)
 import Control.Monad.Trans.Class (lift)
@@ -47,7 +47,7 @@ import CardPG.Core.Card
   , NatureCardT (..)
   , Stats (..)
   )
-import CardPG.Core.NonEmptyText (getRawText, unsafeNonEmptyText)
+import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..), StackPower (..))
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
@@ -107,7 +107,7 @@ calculateTotalBurden = do
         | (cid, Equipped _) <- Map.toList (tblSt ^. #assets)
         , Just (TCItem item) <- [Map.lookup cid (tblSt ^. #registry)]
         ]
-  let burden = sum [b | item <- equippedItems, let b = maybe 0 id (item ^. #burden)]
+  let burden = sum [b | item <- equippedItems, let b = fromMaybe 0 (item ^. #burden)]
   return burden
 
 createCards :: (RandomGen g) => CoreCard -> Int -> GameM g [CardInstanceId]
@@ -177,7 +177,7 @@ planAction actionCardId resourceIds = do
 
   core <- use (#coreState % #registry)
   let maybeActionCard = Map.lookup actionCardId core
-  let cost = maybe 0 (\c -> maybe 0 id (c.cost)) maybeActionCard
+  let cost = maybe 0 (\c -> fromMaybe 0 c.cost) maybeActionCard
   let correctCost = length resourceIds == cost
 
   -- Validate all cards are in hand AND cost is correct
@@ -231,7 +231,7 @@ plannedActionTo dst gameLog = do
     Nothing -> return ()
     Just plan -> do
       modify $ #coreState % #planned .~ Nothing
-      modify $ #coreState % dst %~ ((plannedActionCards plan) ++)
+      modify $ #coreState % dst %~ (plannedActionCards plan ++)
       tell [gameLog plan]
 
 cancelPlan :: GameM g ()
@@ -288,7 +288,7 @@ stackPower stack power =
 
 attackAction :: PlannedActionMaterialized -> Either Text RealizedAttack
 attackAction matPlan = case matPlan of
-  PMStandard stack -> case getAttackRule (stack.actionCard) of
+  PMStandard stack -> case getAttackRule stack.actionCard of
     Left err -> Left err
     Right attackRule ->
       Right $
@@ -354,8 +354,8 @@ removeStatus statusType maybeCardId = do
           Nothing -> getRawText c.name == statusType
 
   let findAndRemove :: Lens' CoreCardState [CardInstanceId] -> GameM g Bool
-      findAndRemove lens = do
-        currentList <- use (#coreState % lens)
+      findAndRemove location = do
+        currentList <- use (#coreState % location)
         let (before, foundAndAfter) =
               break
                 ( \cid -> case Map.lookup cid registry of
@@ -364,9 +364,9 @@ removeStatus statusType maybeCardId = do
                 )
                 currentList
         case foundAndAfter of
-          (x : xs) -> do
+          (_ : xs) -> do
             -- Found one element 'x'
-            modify $ #coreState % lens .~ (before ++ xs)
+            modify $ #coreState % location .~ (before ++ xs)
             return True
           [] -> return False
 
@@ -384,18 +384,16 @@ removeStatus statusType maybeCardId = do
           return ()
         else do
           removed <- findAndRemove #deck
-          if removed
-            then tell [StatusRemoved statusType (fromMaybe "deck" maybeCardId)]
-            else return ()
-          return ()
+          when removed $
+            tell [StatusRemoved statusType (fromMaybe "deck" maybeCardId)]
 
 calculateResilience :: GameM g Int
 calculateResilience = do
   tblSt <- use #tableState
   let activeCards =
         [ card
-        | (cid, state) <- Map.toList (tblSt ^. #assets)
-        , isActive state
+        | (cid, stateCard) <- Map.toList (tblSt ^. #assets)
+        , isActive stateCard
         , Just card <- [Map.lookup cid (tblSt ^. #registry)]
         ]
 
@@ -450,7 +448,7 @@ addConsequence maybeSeverity = do
       tell [ConsequenceAdded finalSeverity]
       return ()
 
-passAction :: (RandomGen g) => GameM g ()
+passAction :: GameM g ()
 passAction = do
   modify $ #coreState % #planned ?~ PPass
   tell [ActionPlanned PPass]

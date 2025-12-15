@@ -1,7 +1,7 @@
 module Rules.Integration (runIntegrationTests) where
 
 import Control.Exception (bracket)
-import Control.Monad (void)
+import Control.Monad (unless, void)
 import Data.List (isInfixOf)
 import Development.Shake
 import System.Environment (getEnvironment)
@@ -28,7 +28,7 @@ runIntegrationTests = do
   cmd_ (["cabal", "build", "cardpg-server"] :: [String])
 
   -- Run the orchestration in IO
-  liftIO $ runIntegrationTestsIO
+  liftIO runIntegrationTestsIO
 
 runIntegrationTestsIO :: IO ()
 runIntegrationTestsIO = do
@@ -83,9 +83,7 @@ waitForServer hOut = go
         else do
           line <- hGetLine hOut
           putStrLn $ "[SERVER] " ++ line
-          if "Starting CardPG Server on port" `isInfixOf` line
-            then return ()
-            else go
+          unless ("Starting CardPG Server on port" `isInfixOf` line) go
 
 callProcess :: String -> [String] -> IO ()
 callProcess exe args = do

@@ -1,5 +1,5 @@
 {-# LANGUAGE DisambiguateRecordFields #-}
-{-# LANGUAGE NamedFieldPuns #-}
+
 
 module CardPG.Server.Scenario where
 
@@ -119,13 +119,10 @@ instantiateActor def x y = do
 
   let nameVal = def.name
   let tagsList = maybe [] toList (def.tags)
-  let actorTypeVal =
-        if "pc" `elem` tagsList
-          then "PC"
-          else
-            if "monster" `elem` tagsList
-              then "Monster"
-              else "NPC"
+  let actorTypeVal
+        | "pc" `elem` tagsList = "PC"
+        | "monster" `elem` tagsList = "Monster"
+        | otherwise = "NPC"
 
   let coreSt =
         State.CoreCardState
@@ -171,7 +168,7 @@ instantiateActor def x y = do
 -- | Helper to instantiate a list of cards
 processCards :: [card] -> StateT StdGen IO ([CardInstanceId], Map.Map CardInstanceId card)
 processCards cards = do
-  ids <- mapM (\_ -> stateUniform) cards
+  ids <- mapM (const stateUniform) cards
   let registry = Map.fromList $ zip ids cards
   return (ids, registry)
 
@@ -183,7 +180,7 @@ processTableCards ::
   AssetState ->
   StateT StdGen IO ([CardInstanceId], Map.Map CardInstanceId TableCard)
 processTableCards wrapper cards defaultState = do
-  ids <- mapM (\_ -> stateUniform) cards
+  ids <- mapM (const stateUniform) cards
   let registry = Map.fromList $ zip ids (map wrapper cards)
   return (ids, registry)
 

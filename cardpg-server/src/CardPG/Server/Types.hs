@@ -171,4 +171,4 @@ data ServerState = ServerState
   }
 
 newServerState :: GameState -> ServerState
-newServerState gs = ServerState Map.empty (CardLibrary [] [] []) gs
+newServerState = ServerState Map.empty (CardLibrary [] [] [])

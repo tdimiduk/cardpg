@@ -63,11 +63,11 @@ spec = do
       let ((), finalState, events) = runLogic initialState (planAction c1 [c2])
 
       -- Removed from hand
-      (hand $ coreState finalState) `shouldBe` [c3]
+      hand (coreState finalState) `shouldBe` [c3]
 
       -- Added to planned
       let expectedPlan = PlannedAction c1 [c2]
-      (planned $ coreState finalState) `shouldBe` Just expectedPlan
+      planned (coreState finalState) `shouldBe` Just expectedPlan
 
       -- Event emitted
       events `shouldContain` [ActionPlanned expectedPlan]
@@ -86,7 +86,7 @@ spec = do
 
       -- Returned to hand (order might vary depending on implementation, usually prepended)
       length (hand $ coreState finalState) `shouldBe` 3
-      (planned $ coreState finalState) `shouldBe` Nothing
+      planned (coreState finalState) `shouldBe` Nothing
 
       events `shouldContain` [PlanCanceled]
 
@@ -102,7 +102,7 @@ spec = do
 
       let ((), finalState, events) = runLogic plannedState discardPlannedActions
 
-      (discard $ coreState finalState) `shouldContain` [c1, c2]
+      discard (coreState finalState) `shouldContain` [c1, c2]
 
   describe "Consequence Logic" $ do
     let cid1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
