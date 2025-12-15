@@ -4,7 +4,6 @@ import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 import CardPG.Core.RichText
   ( Inline (..)
   , RichString
-  , RichText (..)
   , StackPower (..)
   , TextStyle (..)
   , getInlines

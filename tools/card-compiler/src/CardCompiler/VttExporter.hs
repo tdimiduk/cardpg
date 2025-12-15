@@ -6,15 +6,10 @@ import Control.Monad (foldM)
 import Data.Aeson (ToJSON (..), genericToJSON)
 import Data.Aeson qualified as Aeson
 import Data.ByteString.Lazy qualified as LBS
-import Data.List (mapAccumL)
-
-import Data.Map qualified as Map
-import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Yaml qualified as Yaml
 import GHC.Generics (Generic)
-import Optics ((^.))
 
 import CardPG.Core.Card
   ( ActorDefinition
@@ -23,16 +18,9 @@ import CardPG.Core.Card
   , ConsequenceCardDSL
   , CoreCard
   , CoreCardDSL
-  , ItemCard
-  , ItemCardDSL
-  , NatureCard
-  , NatureCardDSL
-  , Rule
   )
 import CardPG.Core.Conversion (compileActorDefinition, compileConsequenceCard, compileCoreCard)
 import CardPG.Core.Json (cardpgJsonOptions)
-import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.RichText (RichString, RichText, getRichText)
 
 -- | Vtt Export Data
 data VttExport = VttExport

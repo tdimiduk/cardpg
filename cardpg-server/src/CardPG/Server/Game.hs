@@ -14,10 +14,10 @@ import Control.Monad.RWS (runRWST)
 import Control.Monad.State (runState)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
+import Data.Maybe (isJust)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (toText)
-import Data.Maybe (isJust)
 import System.Random (StdGen)
 
 import CardPG.Core.Card (CoreCard)

@@ -1,6 +1,5 @@
 {-# LANGUAGE DisambiguateRecordFields #-}
 
-
 module CardPG.Server.Scenario where
 
 import Control.Monad (forM, forM_)

@@ -2,7 +2,6 @@
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-
 module StateTests where
 
 import Control.Monad.RWS (runRWST)

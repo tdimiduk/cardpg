@@ -29,7 +29,7 @@ takeWhilePNonEmptyStripped name p = do
     Just t -> pure t
     Nothing -> fail "only whitespace"
 
-newtype NonEmptyText = NonEmptyText {rawText :: Text}
+newtype NonEmptyText = NonEmptyText Text
   deriving newtype (Show, Eq, Ord, Semigroup)
 
 getRawText :: NonEmptyText -> Text
