@@ -34,6 +34,8 @@ interface SidebarLeftProps {
   actors: Record<string, ActorState>;
   onAddActor: (name: string, type: TokenType, color: string, templateId?: string) => void;
   onRemoveActor: (actorId: string) => void;
+  phase: import('../../types').GamePhase;
+  plannedActions: Record<string, import('../../types').UIPlannedAction>;
 }
 
 export const SidebarLeft: React.FC<SidebarLeftProps> = ({
@@ -53,6 +55,8 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
   actors,
   onAddActor,
   onRemoveActor,
+  phase,
+  plannedActions,
 }) => {
   const [showDeckModal, setShowDeckModal] = React.useState(false);
   const [showActorSelector, setShowActorSelector] = React.useState(false);
@@ -91,6 +95,8 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
           onSelectToken={onSelectToken}
           onRemoveActor={onRemoveActor}
           onAddActor={handleOpenSelector}
+          phase={phase}
+          plannedActions={plannedActions}
         />
 
         {/* Actor Selector Modal for Empty State */}

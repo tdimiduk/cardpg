@@ -164,6 +164,8 @@ const App: React.FC = () => {
         actors={actors}
         onAddActor={(name, type, color, templateId) => addActor(name, type, color, templateId)}
         onRemoveActor={(actorId) => removeActor(actorId)}
+        phase={phase}
+        plannedActions={plannedActions}
       />
 
       <main className="flex-1 flex flex-col relative overflow-hidden shadow-inner bg-slate-900">
