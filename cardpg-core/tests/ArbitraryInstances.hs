@@ -268,6 +268,14 @@ instance Arbitrary SpatialState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary RealizedAttack where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary RevealedEffect where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary CoreCardState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

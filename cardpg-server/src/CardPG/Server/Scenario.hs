@@ -40,6 +40,8 @@ import CardPG.Core.State
 import CardPG.Core.State qualified as State
 import CardPG.Server.Game (GameState (..), addActor, emptyGame)
 
+import CardPG.Core.Util (shuffleListM)
+
 -- | Definition of an actor within a scenario
 data ScenarioActor = ScenarioActor
   { name :: Text
@@ -115,6 +117,7 @@ instantiateActor :: ActorDefinition -> Int -> Int -> StateT StdGen IO ActorState
 instantiateActor def x y = do
   -- Process Deck (Core Cards)
   (deckIds, coreRegistry) <- processCards (def.deck)
+  shuffledDeckIds <- shuffleListM deckIds
 
   let nameVal = def.name
   let tagsList = maybe [] toList (def.tags)
@@ -125,7 +128,7 @@ instantiateActor def x y = do
 
   let coreSt =
         State.CoreCardState
-          { deck = deckIds
+          { deck = shuffledDeckIds
           , hand = []
           , discard = []
           , defending = []
