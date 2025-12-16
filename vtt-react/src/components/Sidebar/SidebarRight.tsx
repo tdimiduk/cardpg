@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, Phase, ILogAttack, ILogDefense, Card, CoreCard } from '../../types';
+import { LogEntry, Phase, ILogAttack, ILogDefense, Card } from '../../types';
 import { RESOURCE_TYPES } from '../../constants';
 import { Send, Bot, Square, ArrowRight, Play, Rewind } from 'lucide-react';
 

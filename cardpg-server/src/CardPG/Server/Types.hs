@@ -210,4 +210,4 @@ data ServerState = ServerState
   }
 
 newServerState :: Pool Pg.Connection -> GameState -> StdGen -> ServerState
-newServerState pool gs rng = ServerState Map.empty (CardLibrary [] [] []) gs pool rng
+newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool

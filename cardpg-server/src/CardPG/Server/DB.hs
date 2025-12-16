@@ -39,7 +39,7 @@ instance Table GameT where
   primaryKey (Game gId _ _ _) = GameId gId
 
 -- | The Database
-data CardPGDB f = CardPGDB
+newtype CardPGDB f = CardPGDB
   { games :: f (TableEntity GameT)
   }
   deriving (Generic, Database be)
@@ -60,7 +60,7 @@ initDB pool = do
 saveGame :: Pool Pg.Connection -> Text -> GameState -> IO ()
 saveGame pool gId gs = do
   now <- getCurrentTime
-  let game = Game (gId) ("Active") (PgJSONB (toJSON gs)) (now)
+  let game = Game gId "Active" (PgJSONB (toJSON gs)) now
 
   withResource pool $ \conn -> do
     -- Explicit Check for Upsert

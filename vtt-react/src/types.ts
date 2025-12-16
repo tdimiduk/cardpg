@@ -7,12 +7,9 @@ import {
   TalentCard as GenTalentCard,
   EncounterCard as GenEncounterCard,
   ConsequenceCard as GenConsequenceCard,
-  ActorState as ServerActorState,
   ActorDefinition as GenActorDefinition,
   RevealedEffect,
-  PlannedAction,
   ResourceType,
-  EquipSlot,
 } from './generated/types';
 
 import { z } from 'zod';

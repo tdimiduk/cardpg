@@ -471,8 +471,8 @@ planBestAvailableAction = do
         [ (cid, cost, attackRule)
         | (cid, c) <- cardsInHand
         , Just cost <- [c.cost] -- Must have cost (implies playable action)
-        , Right attackRule <- [getAttackRule c] -- Must be attack (for now)
         , cost <= length handIds - 1 -- Must have enough OTHER cards
+        , Right attackRule <- [getAttackRule c] -- Must be attack (for now)
         ]
 
   case candidates of
@@ -537,4 +537,4 @@ isDefeated actor =
       isSev3 cid = case Map.lookup cid registry of
         Just card -> card.severity >= 3
         Nothing -> False
-   in any isSev3 (actor.tableState.consequences)
+   in any isSev3 actor.tableState.consequences
