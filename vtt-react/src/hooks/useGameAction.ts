@@ -15,12 +15,9 @@ export const useGameAction = () => {
   const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
   const addLog = useGameStore((state) => state.addLog);
 
-
   const _applyAction = useCallback(
     (actorEvent: ActorGameEvent) => {
-      const { actorId, event } = actorEvent;
-
-
+      const { event } = actorEvent;
 
       switch (event.type) {
         case 'actionRevealed': {
@@ -31,9 +28,9 @@ export const useGameAction = () => {
             // Animation logic or specialized handling ONLY (logs handled by server)
             revealAndResolve();
           } else if (effect && effect.type === 'rEPass') {
-             revealAndResolve();
+            revealAndResolve();
           } else if (effect && effect.type === 'rEInvalid') {
-             revealAndResolve();
+            revealAndResolve();
           }
 
           revealAndResolve();
@@ -50,8 +47,8 @@ export const useGameAction = () => {
           break;
         }
         case 'defenseEnded': {
-           // Animation trigger
-           break;
+          // Animation trigger
+          break;
         }
         case 'deckShuffled':
           break;

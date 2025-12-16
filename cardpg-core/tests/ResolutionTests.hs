@@ -25,7 +25,12 @@ test_resolutionCycle :: TestTree
 test_resolutionCycle = testCase "Full Resolution Cycle" $ do
   let
     gen = mkStdGen 42
-    env = GameEnv{fatigueCardTemplate = fatigueCard, statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty}
+    env =
+      GameEnv
+        { fatigueCardTemplate = fatigueCard
+        , statusCardTemplates = Map.empty
+        , consequenceCardTemplates = Map.empty
+        }
 
     -- ids
     c1Id = CardInstanceId (read "00000000-0000-0000-0000-000000000001")

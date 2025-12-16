@@ -29,14 +29,12 @@ export const createGameSlice: StateCreator<
     set((state) => {
       if (state.phase !== phase) {
         state.phase = phase;
-
       }
     }),
 
   setResolutionPhase: () =>
     set((state) => {
       state.phase = 'resolution';
-
     }),
 
   endRound: () =>
@@ -49,6 +47,5 @@ export const createGameSlice: StateCreator<
       state.phase = 'planning';
       // Note: We might want to keep defense visible if it persists across turns, but usually it clears.
       // For now, let's not auto-clear defense here unless explicitly told by server events.
-
     }),
 });

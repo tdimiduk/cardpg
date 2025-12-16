@@ -69,11 +69,12 @@ import CardPG.Server.Types
   ( ActorGameEvent (..)
   , ClientMessage
   , Command (..)
+  , LogEntry (..)
+  , LogPayload (..)
+  , Phase (..)
   , ServerMessage
   , StateUpdate (..)
   , Token
-  , LogEntry (..)
-  , Phase (..)
   )
 import DeriveSpecialized
   ( deriveSpecializedInstance
@@ -81,8 +82,6 @@ import DeriveSpecialized
   , makeProxyInstance
   , specializeType
   )
-
-
 
 instance TypeScript DSLRule where
   getTypeScriptType _ = "string"
@@ -104,8 +103,6 @@ instance TypeScript NonEmptyText where
 $(deriveTypeScript cardpgJsonDef ''ResourceType)
 $(deriveTypeScript cardpgJsonDef ''StackPower)
 
-$(deriveTypeScript cardpgJsonDef ''LogEntry)
-
 $(deriveTypeScript cardpgJsonDef ''Difficulty)
 $(deriveTypeScript cardpgJsonDef ''EquipSlot)
 
@@ -126,6 +123,9 @@ $(deriveTypeScript cardpgJsonDef ''NarrativeStack)
 $(deriveTypeScript cardpgJsonDef ''PlannedAction)
 $(deriveTypeScript cardpgJsonDef ''RealizedAttack)
 $(deriveTypeScript cardpgJsonDef ''RevealedEffect)
+
+$(deriveTypeScript cardpgJsonDef ''LogPayload)
+$(deriveTypeScript cardpgJsonDef ''LogEntry)
 
 -- Helper for creating splices
 -- Using runIO or just simple do block

@@ -259,9 +259,9 @@ const App: React.FC = () => {
         }}
         onSendChat={(message: string) => {
           dispatchCommand({
-             type: 'chatIntent', 
-             chatSenderId: activeActorId || undefined, 
-             content: message 
+            type: 'chatIntent',
+            chatSenderId: activeActorId || undefined,
+            content: message,
           });
         }}
       />

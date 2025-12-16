@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, GamePhase } from '../../types';
+import { LogEntry, Phase, ILogAttack, ILogDefense, Card, CoreCard } from '../../types';
 import { RESOURCE_TYPES } from '../../constants';
-import { Send, Bot, Square, Circle, Diamond, ArrowRight, Play, Rewind } from 'lucide-react';
+import { Send, Bot, Square, ArrowRight, Play, Rewind } from 'lucide-react';
 
 import { useGameStore } from '../../store/gameStore';
 import { StackViewerModal } from './StackViewerModal';
-import { CoreCard } from '../../types';
+
+// Helper type for cards in stack view
+type StackCard = Card & { id: string };
 
 interface SidebarRightProps {
   logs: LogEntry[];
-  phase: GamePhase;
+  phase: Phase;
   onRevealActions: () => void;
   onEndRound: () => void;
   readyCount?: number;
@@ -20,11 +22,12 @@ interface SidebarRightProps {
 
 const AttackLogItem: React.FC<{
   log: LogEntry;
-  onViewStack: (cards: CoreCard[], title: string) => void;
-}> = ({ log, onViewStack }) => {
-  const actorId = log.attack?.actorId;
-  const attack = log.attack?.attack;
-  const resourceCardIds = log.attack?.resourceCardIds;
+  payload: ILogAttack;
+  onViewStack: (cards: StackCard[], title: string) => void;
+}> = ({ log, payload, onViewStack }) => {
+  const actorId = log.senderId;
+  const attack = payload.attack;
+  const resourceCardIds = payload.resourceCardIds;
 
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
@@ -38,7 +41,7 @@ const AttackLogItem: React.FC<{
 
   const handleViewStack = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const cards: CoreCard[] = [];
+    const cards: StackCard[] = [];
     if (attackCard) cards.push(attackCard);
 
     if (resourceCardIds) {
@@ -92,43 +95,44 @@ const AttackLogItem: React.FC<{
 
 const DefenseLogItem: React.FC<{
   log: LogEntry;
+  payload: ILogDefense;
   onEndDefense: () => void;
-  onViewStack: (cards: CoreCard[], title: string) => void;
-}> = ({ log, onEndDefense, onViewStack }) => {
-  const actorId = log.defense?.actorId;
-  const isEnded = log.defense?.ended;
+  onViewStack: (cards: StackCard[], title: string) => void;
+}> = ({ payload, onEndDefense, onViewStack }) => {
+  const actorId = payload.defenseActorId;
+  const isEnded = payload.ended;
 
-  // If active, pull live data. If ended, use snapshot.
+  // Registry for resolving snapshotIds and live cards
+  const registry = useGameStore((state) => (actorId ? state.actors[actorId]?.registry : {}));
+
+  // If active, pull live data (hydrated cards from deck.flippedPile).
   const flippedPile = useGameStore((state) =>
     actorId && !isEnded ? state.actors[actorId]?.deck.flippedPile : undefined,
   );
-  // Registry for resolving snapshotIds
-  const registry = useGameStore((state) => (actorId ? state.actors[actorId]?.registry : {}));
 
-  const liveCards = useMemo(
-    () => (flippedPile ? flippedPile.map((c) => c.name) : []),
-    [flippedPile],
-  );
+  // flippedPile is already CoreCard[], so we just filter for safety
+  const stackCards = useMemo(() => {
+    if (!flippedPile) return undefined;
+    return flippedPile.filter((c) => !!c && !!c.id);
+  }, [flippedPile]);
+
+  const liveCards = useMemo(() => (stackCards ? stackCards.map((c) => c.name) : []), [stackCards]);
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
   );
 
-  const displayCards = isEnded ? log.defense?.snapshot || [] : liveCards;
+  const displayCards = isEnded ? payload.snapshot || [] : liveCards;
   const impact = displayCards.length;
 
   const handleViewStack = (e: React.MouseEvent) => {
     e.stopPropagation();
-    let cardsToView: CoreCard[] = [];
+    let cardsToView: StackCard[] = [];
 
-    if (!isEnded && flippedPile) {
-      cardsToView = flippedPile;
-    } else if (isEnded && log.defense?.snapshotIds && registry) {
-      cardsToView = log.defense.snapshotIds
-        .map((id) => {
-          const def = registry[id];
-          return def ? { ...def, id } : undefined;
-        })
-        .filter((c): c is CoreCard => !!c);
+    if (!isEnded && stackCards) {
+      cardsToView = stackCards;
+    } else if (isEnded && payload.snapshot && registry) {
+      // Snapshot is strings (names), we cannot resolve full cards easily without IDs.
+      // So view stack is disabled or limited for ended defense.
     }
 
     if (cardsToView.length > 0) {
@@ -204,11 +208,11 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
   const endOfLogsRef = useRef<HTMLDivElement>(null);
   const [stackViewer, setStackViewer] = useState<{
     isOpen: boolean;
-    cards: CoreCard[];
+    cards: StackCard[];
     title: string;
   }>({ isOpen: false, cards: [], title: '' });
 
-  const handleOpenStack = (cards: CoreCard[], title: string) => {
+  const handleOpenStack = (cards: StackCard[], title: string) => {
     setStackViewer({ isOpen: true, cards, title });
   };
 
@@ -274,20 +278,34 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
       {/* Chat Log */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
         {logs.map((log) => {
-          if (log.type === 'defense' && log.defense) {
+          const payload = log.payload;
+
+          if (payload.type === 'logDefense') {
             return (
               <DefenseLogItem
                 key={log.id}
                 log={log}
-                onEndDefense={() => onEndDefense(log.defense!.actorId)}
+                payload={payload}
+                onEndDefense={() => onEndDefense(payload.defenseActorId)}
                 onViewStack={handleOpenStack}
               />
             );
           }
 
-          if (log.type === 'attack' && log.attack) {
-            return <AttackLogItem key={log.id} log={log} onViewStack={handleOpenStack} />;
+          if (payload.type === 'logAttack') {
+            return (
+              <AttackLogItem
+                key={log.id}
+                log={log}
+                payload={payload}
+                onViewStack={handleOpenStack}
+              />
+            );
           }
+
+          const content = 'content' in payload ? payload.content : '';
+          const isChat = payload.type === 'logChat';
+          const isInfo = payload.type === 'logInfo';
 
           return (
             <div key={log.id} className="flex flex-col gap-1 animate-fade-in">
@@ -313,47 +331,16 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
 
               <div
                 className={`text-sm rounded p-2 ${
-                  log.type === 'action'
+                  !isInfo && !isChat
                     ? 'bg-slate-800 border border-slate-600'
-                    : log.type === 'info'
+                    : isInfo
                       ? 'text-slate-500 italic'
                       : log.sender === 'AI'
                         ? 'bg-indigo-950/30 border border-indigo-900/50 text-indigo-100'
                         : 'text-slate-300 bg-slate-900/50'
                 }`}
               >
-                {log.content}
-                {log.actionResult && (
-                  <div className="mt-2 flex items-center justify-between bg-black/40 p-2 rounded border border-white/10">
-                    <div className="flex items-center gap-2">
-                      {log.actionResult.color === RESOURCE_TYPES.RED && (
-                        <Square className="text-red-500 fill-current" size={16} />
-                      )}
-                      {log.actionResult.color === RESOURCE_TYPES.YELLOW && (
-                        <Circle className="text-yellow-500 fill-current" size={16} />
-                      )}
-                      {log.actionResult.color === RESOURCE_TYPES.BLUE && (
-                        <Diamond className="text-blue-500 fill-current" size={16} />
-                      )}
-                      <span className="font-bold text-lg text-white">{log.actionResult.total}</span>
-                    </div>
-                    {log.actionResult.targetColor && (
-                      <div className="flex items-center gap-1 text-slate-400 text-xs">
-                        <ArrowRight size={12} />
-                        <span>VS</span>
-                        {log.actionResult.targetColor === RESOURCE_TYPES.RED && (
-                          <Square className="text-red-800 fill-red-900" size={12} />
-                        )}
-                        {log.actionResult.targetColor === RESOURCE_TYPES.YELLOW && (
-                          <Circle className="text-yellow-800 fill-yellow-900" size={12} />
-                        )}
-                        {log.actionResult.targetColor === RESOURCE_TYPES.BLUE && (
-                          <Diamond className="text-blue-800 fill-blue-900" size={12} />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
+                {content}
               </div>
             </div>
           );

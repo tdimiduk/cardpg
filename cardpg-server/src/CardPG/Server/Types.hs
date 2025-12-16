@@ -12,6 +12,7 @@ module CardPG.Server.Types
   , StateUpdate (..)
   , GameState (..)
   , LogEntry (..)
+  , LogPayload (..)
   , Phase (..)
   , newServerState
   ) where
@@ -21,26 +22,26 @@ import Data.Aeson
   , Options (..)
   , SumEncoding (..)
   , ToJSON (..)
-  , Value(..)
+  , Value (..)
   , defaultOptions
   , genericParseJSON
   , genericToJSON
   , withText
   )
-import Text.Read (readMaybe)
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (TypeScript (..), deriveTypeScript)
 import Data.Char (toUpper)
 import Data.Map (Map)
 import Data.Map qualified as Map
+import Data.Pool (Pool)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (UUID)
+import Database.PostgreSQL.Simple qualified as Pg
 import GHC.Generics (Generic)
-import qualified Network.WebSockets as WS
+import Network.WebSockets qualified as WS
 import System.Random (StdGen, mkStdGen)
-import Data.Pool (Pool)
-import qualified Database.PostgreSQL.Simple as Pg
+import Text.Read (readMaybe)
 
 import CardPG.Core.Card
   ( ActorDefinition
@@ -50,7 +51,7 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ActorId, ResourceType)
-import CardPG.Core.State (ActorState, GameEnv, GameEvent)
+import CardPG.Core.State (ActorState, GameEnv, GameEvent, RealizedAttack)
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution
@@ -58,14 +59,28 @@ data Phase = Planning | Resolution
 
 $(deriveJSON cardpgJsonDef ''Phase)
 
+data LogPayload
+  = LogInfo {content :: Text}
+  | LogChat {content :: Text}
+  | LogAttack
+      { attack :: RealizedAttack
+      , resourceCardIds :: Maybe [Text]
+      }
+  | LogDefense
+      { defenseActorId :: ActorId
+      , ended :: Bool
+      , snapshot :: Maybe [Text]
+      }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''LogPayload)
+
 data LogEntry = LogEntry
   { id :: Text
   , timestamp :: Int
   , sender :: Text
   , senderId :: Maybe ActorId
-  , content :: Text
-  , type_ :: Text
-  , metadata :: Maybe Value
+  , payload :: LogPayload
   }
   deriving (Show, Eq, Generic)
 
@@ -79,11 +94,7 @@ data GameState = GameState
   }
   deriving (Show, Generic)
 
-
-
 $(deriveJSON cardpgJsonDef ''GameState)
-
-
 
 -- | A client connection with a unique ID and a name.
 data Client = Client
@@ -200,4 +211,3 @@ data ServerState = ServerState
 
 newServerState :: Pool Pg.Connection -> GameState -> StdGen -> ServerState
 newServerState pool gs rng = ServerState Map.empty (CardLibrary [] [] []) gs pool rng
-

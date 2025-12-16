@@ -170,7 +170,7 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
   );
 };
 
-const TableCardView: React.FC<{ card: TableCard }> = ({ card }) => {
+const TableCardView: React.FC<{ card: Card }> = ({ card }) => {
   return (
     <div className="w-full h-full p-2 flex flex-col">
       <div className="h-24 bg-slate-300 mb-2 rounded border border-slate-400 overflow-hidden relative shrink-0">
@@ -181,14 +181,14 @@ const TableCardView: React.FC<{ card: TableCard }> = ({ card }) => {
       </div>
 
       <div className="flex-1 bg-amber-50 rounded p-2 border border-amber-200 shadow-inner overflow-hidden flex flex-col gap-2">
-        {card.flavor && (
+        {'flavor' in card && card.flavor && (
           <p className="text-xs font-serif text-slate-800 italic text-center border-b border-amber-200 pb-2">
             <RichTextRenderer content={card.flavor} />
           </p>
         )}
 
         <div className="flex justify-around text-[10px] font-bold text-slate-700">
-          {card.defense !== undefined && (
+          {'defense' in card && card.defense !== undefined && (
             <div className="flex items-center gap-1">
               <Shield size={12} /> Def: {card.defense}
             </div>
@@ -201,13 +201,13 @@ const TableCardView: React.FC<{ card: TableCard }> = ({ card }) => {
           )}
         </div>
 
-        {card.traits && card.traits.length > 0 && (
+        {'traits' in card && card.traits && card.traits.length > 0 && (
           <div className="text-[10px]">
             <span className="font-bold">Traits:</span> {card.traits.join(', ')}
           </div>
         )}
 
-        {card.passive && (
+        {'passive' in card && card.passive && (
           <div className="text-[10px] italic bg-white/50 p-1 rounded">{card.passive}</div>
         )}
       </div>

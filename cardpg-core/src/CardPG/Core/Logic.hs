@@ -24,10 +24,12 @@ module CardPG.Core.Logic
   , discardCards
   , returnCardsToDeck
   , passAction
+  , isDefeated
   , planBestAvailableAction
   ) where
 
 import Control.Monad (replicateM, when)
+
 import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
 import Control.Monad.State (MonadState, State, get, modify, put, state)
 import Control.Monad.Trans.Class (lift)
@@ -528,3 +530,11 @@ returnCardsToDeck cardIdStrs = do
   newDeck <- GameM . lift $ shuffleListM (toReturn ++ currentDeck)
   modify $ #coreState % #deck .~ newDeck
   tell [DeckShuffled]
+
+isDefeated :: ActorState -> Bool
+isDefeated actor =
+  let registry = actor.tableState.consequenceRegistry
+      isSev3 cid = case Map.lookup cid registry of
+        Just card -> card.severity >= 3
+        Nothing -> False
+   in any isSev3 (actor.tableState.consequences)

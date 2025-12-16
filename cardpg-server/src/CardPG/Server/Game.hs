@@ -13,7 +13,8 @@ module CardPG.Server.Game
 
 import Control.Monad (foldM)
 import Control.Monad.RWS (runRWST)
-import Control.Monad.State (State, runState, get, put)
+import Control.Monad.State (State, get, put, runState)
+import Data.Aeson (Value (..), object, (.=))
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (isJust, isNothing)
@@ -21,12 +22,11 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (toText)
 import System.Random (StdGen)
-import Data.Aeson (Value(..), object, (.=))
 
 import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT (..), CoreCard, CoreCardT (..))
-import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Logic (GameM, runGameM)
 import CardPG.Core.Logic qualified as Logic
+import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Primitives (ActorId (..), CardInstanceId (..), ResourceType (..))
 import CardPG.Core.State
   ( ActionStack (..)
@@ -37,18 +37,20 @@ import CardPG.Core.State
   , GameEvent (..)
   , PlannedAction (..)
   , PlannedActionMaterialized (..)
-  , RevealedEffect (..)
   , RealizedAttack (..)
+  , RevealedEffect (..)
   , TableState (..)
   , materializePlannedAction
   )
+import CardPG.Server.Presenter (eventToLogs, mkChatLog)
 import CardPG.Server.Types
   ( ActorGameEvent (..)
   , Command (..)
   , GameState (..)
+  , LogEntry (..)
+  , LogPayload (..)
   , Phase (..)
   , StateUpdate (..)
-  , LogEntry (..)
   )
 
 emptyGame :: GameEnv -> GameState
@@ -63,7 +65,8 @@ emptyGame env =
 addActor :: ActorId -> ActorState -> GameState -> GameState
 addActor tid state game = game{actors = Map.insert tid state game.actors}
 
-runActorAction :: ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)
+runActorAction ::
+  ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)
 runActorAction tid action game =
   case Map.lookup tid game.actors of
     Nothing -> return (Nothing, game)
@@ -84,7 +87,6 @@ processCommand cmd ts game =
       let newLogs = concatMap (\(ActorGameEvent aid evt) -> eventToLogs ts aid evt newGameWithPhase) events
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, [], events, newLogs)
-
     EndRoundIntent _ -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
@@ -92,26 +94,16 @@ processCommand cmd ts game =
       let newLogs = concatMap (\(ActorGameEvent aid evt) -> eventToLogs ts aid evt newGame) roundEvents
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, updates, planEvents ++ roundEvents, newLogs)
-
     ChatIntent maybeAid content -> do
-       let senderName = case maybeAid of
-             Just aid -> case Map.lookup aid game.actors of
-               Just a -> a.name
-               Nothing -> "Unknown"
-             Nothing -> "GM"
-       let logEntry = LogEntry 
-             { id = T.pack $ show ts <> "-chat-" <> show (length game.history)
-             , timestamp = ts
-             , sender = senderName
-             , senderId = maybeAid
-             , content = content
-             , type_ = "chat"
-             , metadata = Nothing
-             }
-       let newLogs = [logEntry]
-       let finalGame = game{history = game.history ++ newLogs}
-       return (finalGame, [], [], newLogs)
-
+      let senderName = case maybeAid of
+            Just aid -> case Map.lookup aid game.actors of
+              Just a -> a.name
+              Nothing -> "Unknown"
+            Nothing -> "GM"
+      let logEntry = mkChatLog ts (length game.history) maybeAid senderName content
+      let newLogs = [logEntry]
+      let finalGame = game{history = game.history ++ newLogs}
+      return (finalGame, [], [], newLogs)
     _ -> do
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)
@@ -155,7 +147,7 @@ processCommand cmd ts game =
             stateUpdates = [StateUpdate targetId updatedActorState]
             newLogs = concatMap (\evt -> eventToLogs ts targetId evt newGame) events
             finalGame = newGame{history = game.history ++ newLogs}
-          
+
           return (finalGame, stateUpdates, actorEvents, newLogs)
 
 concludeRound :: GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent])
@@ -177,8 +169,9 @@ concludeRound game = foldM step (game, [], []) (Map.keys game.actors)
       -- 4. Draw Cards (new)
       (maybeDrawEvents, gAfterDraw) <-
         case Map.lookup actorId gAfterDiscard.actors of
-          Just actor | not (checkDefeated actor) ->
-             runActorAction actorId (Logic.drawCard >> Logic.drawCard) gAfterDiscard
+          Just actor
+            | not (Logic.isDefeated actor) ->
+                runActorAction actorId (Logic.drawCard >> Logic.drawCard) gAfterDiscard
           _ -> return (Nothing, gAfterDiscard)
       let drwEvents = maybe [] (map (ActorGameEvent actorId)) maybeDrawEvents
 
@@ -188,7 +181,7 @@ concludeRound game = foldM step (game, [], []) (Map.keys game.actors)
               || isJust maybeMoveEvents
               || isJust maybeDiscardEvents
               || isJust maybeDrawEvents
-      
+
       let allEvents = events ++ defEvents ++ movEvents ++ disEvents ++ drwEvents
 
       if hasUpdates
@@ -196,15 +189,6 @@ concludeRound game = foldM step (game, [], []) (Map.keys game.actors)
           Just actor -> return (gAfterDraw, updates ++ [StateUpdate actorId actor], allEvents)
           Nothing -> return (gAfterDraw, updates, allEvents)
         else return (gAfterDraw, updates, allEvents)
-
-    checkDefeated :: ActorState -> Bool
-    checkDefeated actor =
-      let registry = actor.tableState.consequenceRegistry
-          isSev3 cid = case Map.lookup cid registry of
-            Just card -> card.severity >= 3
-            Nothing -> False
-       in any isSev3 (actor.tableState.consequences)
-
 
 revealPlannedActions :: GameState -> State StdGen (GameState, [ActorGameEvent])
 revealPlannedActions game = foldM step (game, []) (Map.keys game.actors)
@@ -233,52 +217,3 @@ autoPlanForNPCs game = foldM step (game, []) (Map.keys game.actors)
                   let newEvents = map (ActorGameEvent actorId) events
                   return (newG, currentEvents ++ newEvents)
             else return (g, currentEvents)
-
-eventToLogs :: Int -> ActorId -> GameEvent -> GameState -> [LogEntry]
-eventToLogs ts actorId event game =
-  let actorName = case Map.lookup actorId game.actors of
-        Just a -> a.name
-        Nothing -> "Unknown" 
-      mkId suffix = T.pack $ show ts <> "-" <> T.unpack (toText (let ActorId uid = actorId in uid)) <> "-" <> suffix
-      mkLog suffix content type_ meta = 
-        LogEntry 
-          { id = mkId suffix
-          , timestamp = ts
-          , sender = "System"
-          , senderId = Just actorId 
-          , content = content
-          , type_ = type_
-          , metadata = meta
-          }
-  in case event of
-       ActionRevealed plan effect -> case effect of
-         REAttack attack -> 
-           let resourceCardIds = case plan of
-                 PStandard stack -> Just stack.resources
-                 _ -> Nothing
-               meta = object 
-                 [ "actorId" .= actorId
-                 , "attack" .= attack
-                 , "resourceCardIds" .= resourceCardIds
-                 ]
-           in [mkLog "attack" (actorName <> " attacks!") "attack" (Just meta)]
-         REPass -> [mkLog "pass" (actorName <> " passed.") "info" Nothing]
-         REInvalid msg -> [mkLog "invalid" ("Invalid Action for " <> actorName <> ": " <> msg) "info" Nothing]
-         _ -> []
-       IllegalAction _ (Just reason) -> [mkLog "illegal" ("Illegal Action for " <> actorName <> ": " <> reason) "info" Nothing]
-       CardDrawn _ -> [mkLog "draw" (actorName <> " drew a card.") "info" Nothing]
-       CardDefended _ -> 
-         [mkLog "defend" (actorName <> " is defending.") "defense" (Just $ object ["actorId" .= actorId, "ended" .= False])]
-       DefenseEnded stack ->
-         let actor = Map.lookup actorId game.actors
-             names = case actor of
-               Just a -> [getRawText n | cid <- stack, Just (CoreCard {name = n}) <- [Map.lookup cid a.coreState.registry]]
-               Nothing -> []
-         in [mkLog "end-defend" (actorName <> " defense ended.") "defense" (Just $ object ["actorId" .= actorId, "ended" .= True, "snapshot" .= names])]
-       DeckShuffled -> [mkLog "shuffle" (actorName <> " reshuffled their deck.") "info" Nothing]
-       ConsequenceAdded _ -> [mkLog "cons-add" (actorName <> " gained a consequence.") "info" Nothing]
-       ConsequenceRemoved _ -> [mkLog "cons-rem" (actorName <> " removed consequence.") "info" Nothing]
-       StatusAdded st dest -> [mkLog "stat-add" (actorName <> " added status " <> st <> " to " <> dest) "info" Nothing]
-       StatusRemoved st dest -> [mkLog "stat-rem" (actorName <> " removed status " <> st <> " from " <> dest) "info" Nothing]
-       PlanCanceled _ -> [mkLog "cancel" (actorName <> " canceled their plan.") "info" Nothing]
-       _ -> []

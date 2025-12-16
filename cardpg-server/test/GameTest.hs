@@ -46,7 +46,7 @@ test_game = testGroup "Server Game Engine"
         
       -- Verify State Update
       let actorSt' = game2 ^. #actors % at actorId
-      case actorSt' of
+      case (actorSt' :: Maybe ActorState) of
         Nothing -> assertBool "Actor state lost" False
         Just st -> do
            (st ^. #coreState % #hand) @?= deck
@@ -66,7 +66,7 @@ test_game = testGroup "Server Game Engine"
       let game1 = addActor actorId actorState game0
       
       -- 1. Draw Command
-      let ((game2, _updates, actions), gen2) = runState (processCommand (DrawIntent actorId) game1) gen
+      let ((game2, _updates, actions, _logs), gen2) = runState (processCommand (DrawIntent actorId) 1000 game1) gen
       
       length actions @?= 1
       let evt = head actions
@@ -83,7 +83,7 @@ test_game = testGroup "Server Game Engine"
            (st ^. #coreState % #deck) @?= [card2]
       
       -- 2. Defend Command
-      let ((game3, _updates2, actions2), _) = runState (processCommand (DefendIntent actorId) game2) gen2
+      let ((game3, _updates2, actions2, _logs2), _) = runState (processCommand (DefendIntent actorId) 2000 game2) gen2
       
       length actions2 @?= 1
       let evt2 = head actions2
@@ -109,7 +109,7 @@ test_game = testGroup "Server Game Engine"
       let actorState = emptyActorState -- Empty deck, empty discard
       let game1 = addActor actorId actorState game0
       
-      let ((game2, _updates, actions), _) = runState (processCommand (DrawIntent actorId) game1) gen
+      let ((game2, _updates, actions, _logs), _) = runState (processCommand (DrawIntent actorId) 1000 game1) gen
       
       let actionTypes = map (toConstr . (.event)) actions
       actionTypes @?= ["CardsCreated", "DeckShuffled", "CardDrawn"]
@@ -141,7 +141,7 @@ test_game = testGroup "Server Game Engine"
       let game1 = addActor actorId actorState game0
       
       -- Run concludeRound
-      let ((game2, updates), _) = runState (concludeRound game1) gen
+      let ((game2, updates, _events), _) = runState (concludeRound game1) gen
       
       -- Verify Updates
       length updates @?= 1
@@ -183,7 +183,7 @@ test_game = testGroup "Server Game Engine"
       let game1 = addActor npcId npcState game0
       
       -- Send EndRoundIntent to trigger auto-planning for next round
-      let ((game2, _, events), _) = runState (processCommand (EndRoundIntent npcId) game1) gen
+      let ((game2, _, events, _logs), _) = runState (processCommand (EndRoundIntent npcId) 3000 game1) gen
       
       -- Expect ActionPlanned event (from auto-planning)
       let planEvents = [e | e <- events, case e.event of ActionPlanned _ -> True; _ -> False]

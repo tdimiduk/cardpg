@@ -83,8 +83,6 @@ export const createActorSlice: StateCreator<
         y: 0,
         size: 1,
       });
-
-
     }),
 
   removeActor: (actorId: string) =>
@@ -92,7 +90,6 @@ export const createActorSlice: StateCreator<
       if (!state.actors[actorId]) return;
       state.tokens = state.tokens.filter((t) => t.actorId !== actorId);
       delete state.actors[actorId];
-
     }),
 
   updateActorState: (update: StateUpdate) =>
@@ -132,18 +129,23 @@ export const createActorSlice: StateCreator<
           y: 0,
           size: 1,
         });
-
-
       }
 
       const core = serverState.coreState;
       const registry = core.registry;
 
       // Sync Registry
-      state.actors[targetId].registry = registry as Record<
-        string,
-        import('../../generated/types').CoreCard
-      >;
+      // Sync Registry
+      // We must manually map the registry to inject IDs, as the generated types don't include it in the object
+      const mappedRegistry: Record<string, import('../../types').Card> = {};
+      if (registry) {
+        Object.entries(registry).forEach(([key, card]) => {
+          if (card) {
+            mappedRegistry[key] = { ...card, id: key } as import('../../types').CoreCard;
+          }
+        });
+      }
+      state.actors[targetId].registry = mappedRegistry;
 
       // Sync Revealed Effect
       state.actors[targetId].revealed = core.revealed;

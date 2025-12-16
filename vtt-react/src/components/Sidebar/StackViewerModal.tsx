@@ -1,12 +1,12 @@
 import React from 'react';
 import { Layers, X } from 'lucide-react';
-import { CoreCard } from '../../types';
+import { Card } from '../../types';
 import { CardComponent } from '../Card/Card';
 
 interface StackViewerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cards: CoreCard[];
+  cards: (Card & { id: string })[];
   title: string;
 }
 

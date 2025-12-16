@@ -48,11 +48,12 @@ import CardPG.Server.Types
   ( ActorGameEvent
   , ClientMessage
   , Command
+  , LogEntry
+  , LogPayload
   , Phase
   , ServerMessage
   , StateUpdate
   , Token
-  , LogEntry
   )
 
 main :: IO ()
@@ -115,6 +116,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy PlannedAction)
               <> getTypeScriptDeclarations (Proxy :: Proxy RealizedAttack)
               <> getTypeScriptDeclarations (Proxy :: Proxy Phase)
+              <> getTypeScriptDeclarations (Proxy :: Proxy LogPayload)
               <> getTypeScriptDeclarations (Proxy :: Proxy LogEntry)
           )
 

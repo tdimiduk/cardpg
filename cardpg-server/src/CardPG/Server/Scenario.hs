@@ -4,11 +4,21 @@ module CardPG.Server.Scenario where
 
 import Control.Monad (forM, forM_)
 import Control.Monad.IO.Class (liftIO)
-import Control.Monad.State (State, StateT, evalStateT, execStateT, get, lift, put, runState, runStateT)
+import Control.Monad.State
+  ( State
+  , StateT
+  , evalStateT
+  , execStateT
+  , get
+  , lift
+  , put
+  , runState
+  , runStateT
+  )
 import Data.Aeson (FromJSON)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (fromMaybe)
 import Data.Map.Strict qualified as Map
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Yaml (decodeFileThrow)
@@ -39,7 +49,7 @@ import CardPG.Core.State
   , TableState (..)
   )
 import CardPG.Core.State qualified as State
-import CardPG.Server.Game (GameState (..), addActor, emptyGame, autoPlanForNPCs)
+import CardPG.Server.Game (GameState (..), addActor, autoPlanForNPCs, emptyGame)
 
 import CardPG.Core.Util (shuffleListM)
 
@@ -81,8 +91,9 @@ loadScenario path = do
   let initialGame = emptyGame env
 
   -- We use StateT GameState (StateT StdGen IO) to accumulate actors into the game
-  ((_, finalGameState), finalRng) <- runStateT (runStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame) rng
-  
+  ((_, finalGameState), finalRng) <-
+    runStateT (runStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame) rng
+
   -- Auto-plan for NPCs at start
   let ((gameWithPlans, _), plannedRng) = runState (autoPlanForNPCs finalGameState) finalRng
   return (gameWithPlans, plannedRng)
@@ -97,14 +108,15 @@ loadScenarioActors baseDir actorsList = do
     -- We are in StateT GameState (StateT StdGen IO)
     -- stateUniform is in StateT StdGen IO
     tid <- lift stateUniform :: StateT GameState (StateT StdGen IO) ActorId
-    
+
     -- Load actor definition (IO).
     -- Instantiation requires RNG state.
     -- loadActorState now needs to return a state action or we liftIO deeply?
-    
+
     -- Let's helper: loadAndInstantiate :: FilePath -> ... -> StateT StdGen IO ActorState
-    actorState <- lift $ loadAndInstantiateActor actorPath actorDef.x actorDef.y actorDef.initialHandSize
-    
+    actorState <-
+      lift $ loadAndInstantiateActor actorPath actorDef.x actorDef.y actorDef.initialHandSize
+
     gst <- get
     let updatedGame = addActor tid actorState gst
     put updatedGame
@@ -116,7 +128,6 @@ loadAndInstantiateActor path x y handSize = do
   instantiateActor def x y handSize
 
 -- | Load a single actor from a YAML file and instantiate it into an ActorState
-
 
 -- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
 instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState

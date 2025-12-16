@@ -15,30 +15,29 @@ export const createLogSlice: StateCreator<LogSlice, [['zustand/immer', never]], 
   logs: [],
   setLogs: (logs) =>
     set((state) => {
-        // Map metadata to flat properties if needed, or types ensures compatibility
-        // Assuming LogEntry from types.ts is strictly compatible with Server LogEntry JSON
-        state.logs = logs.map(l => ({
-            ...l,
-            // Map metadata to top-level fields for UI compatibility if needed
-            ...(((l as any).metadata) || {})
-        }));
+      state.logs = logs;
     }),
   receiveLog: (log) =>
     set((state) => {
-      state.logs.push({
-          ...log,
-          ...(((log as any).metadata) || {})
-      });
+      state.logs.push(log);
     }),
   addLog: (message, sender = 'System', type = 'info') =>
     set((state) => {
-        // Legacy local logs (e.g. connection errors)
-        state.logs.push({
-            id: Math.random().toString(36),
-            timestamp: Date.now(),
-            sender: sender as any,
-            content: message,
-            type: type as any,
-        });
+      // Legacy local logs
+      // Map legacy types to new payload types
+      let payload: import('../../types').LogPayload;
+      if (type === 'chat') {
+        payload = { type: 'logChat', content: message };
+      } else {
+        // Default to info
+        payload = { type: 'logInfo', content: message };
+      }
+
+      state.logs.push({
+        id: Math.random().toString(36),
+        timestamp: Date.now(),
+        sender: sender,
+        payload: payload,
+      });
     }),
 });

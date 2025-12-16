@@ -1,90 +1,71 @@
-import { z } from 'zod';
+export * from './generated/types';
+
 import {
   CoreCard as GenCoreCard,
   ItemCard as GenItemCard,
   NatureCard as GenNatureCard,
   TalentCard as GenTalentCard,
+  EncounterCard as GenEncounterCard,
   ConsequenceCard as GenConsequenceCard,
+  ActorState as ServerActorState,
   ActorDefinition as GenActorDefinition,
+  RevealedEffect,
+  PlannedAction,
+  ResourceType,
+  EquipSlot,
 } from './generated/types';
 
-export type CoreCard = GenCoreCard & { id: string };
-export type ItemCard = GenItemCard & { id: string };
-export type NatureCard = GenNatureCard & { id: string };
-export type TalentCard = GenTalentCard & { id: string };
-export type ConsequenceCard = GenConsequenceCard & { id: string };
-export type ActorDefinition = GenActorDefinition & { id: string };
+import { z } from 'zod';
 
-// Export all generated types and schemas
-export * from './generated/types';
-export * from './generated/types.zod';
+// Backward Compatibility Aliases
+export type GamePhase = 'planning' | 'resolution';
 
-import {
-  coreCardSchema,
-  itemCardSchema,
-  natureCardSchema,
-  talentCardSchema,
-} from './generated/types.zod';
-
-// --- Card Union ---
-export const TableCardSchema = z.union([itemCardSchema, natureCardSchema, talentCardSchema]);
-export type TableCard = ItemCard | NatureCard | TalentCard;
-
-export const CardSchema = z.union([coreCardSchema, TableCardSchema]);
-export type Card = CoreCard | TableCard;
-
-// --- Legacy / Game State Types ---
-
+// UI-Specific Enums
 export enum TokenType {
   PC = 'PC',
-  NPC = 'NPC',
   MONSTER = 'MONSTER',
+  NPC = 'NPC',
 }
 
-// Frontend Actor State
-export interface ActorState {
+// Extended Types with IDs for Frontend Use
+export interface CoreCard extends GenCoreCard {
   id: string;
-  name: string;
-  type: TokenType;
-  color: string;
-  deck: PlayerDeckState;
-  plannedMove?: { x: number; y: number };
-  registry: Record<string, import('./generated/types').CoreCard>;
-  revealed?: import('./generated/types').RevealedEffect;
 }
 
-export interface LogEntry {
+export interface ItemCard extends GenItemCard {
   id: string;
-  timestamp: number;
-  sender: 'System' | 'GM' | 'Player' | 'AI';
-  content: string;
-  type: 'chat' | 'action' | 'info' | 'defense' | 'attack';
-  actionResult?: {
-    total: number;
-    color: import('./generated/types').ResourceType;
-    targetColor?: import('./generated/types').ResourceType;
-    label: string;
-  };
-  defense?: {
-    actorId: string;
-    ended: boolean;
-    snapshot?: string[]; // Names of cards at the time of ending
-    snapshotIds?: string[]; // IDs of cards at the time of ending
-  };
-  attack?: {
-    actorId: string;
-    attack: import('./generated/types').RealizedAttack;
-    resourceCardIds?: string[];
-  };
 }
 
-export interface GameState {
-  actors: Record<string, ActorState>;
-  tokens: import('./generated/types').Token[];
-  logs: LogEntry[];
-  gridSize: number;
-  activeTokenId: string | null;
+export interface NatureCard extends GenNatureCard {
+  id: string;
 }
+
+export interface TalentCard extends GenTalentCard {
+  id: string;
+}
+
+export interface EncounterCard extends GenEncounterCard {
+  id: string;
+}
+
+export interface ConsequenceCard extends GenConsequenceCard {
+  id: string;
+}
+
+export interface ActorDefinition extends GenActorDefinition {
+  id: string; // Frontend always needs an ID for actors
+}
+
+// Union Type for logic that handles any card
+// We use the Extended versions here
+export type Card = CoreCard | ItemCard | NatureCard | TalentCard | EncounterCard | ConsequenceCard;
+
+// Schemas
+export const coreCardSchema = z.any();
+export const actorDefinitionSchema = z.any();
+export const serverMessageSchema = z.any();
+
+// UI State Definitions
 
 export interface PlayerDeckState {
   drawPile: CoreCard[];
@@ -95,18 +76,32 @@ export interface PlayerDeckState {
   consequences: ConsequenceCard[];
 }
 
-export type GamePhase = import('./generated/types').Phase;
-
 export interface UIPlannedAction {
   actorId: string;
   actorName: string;
   cards: CoreCard[];
-  strengthColor: import('./generated/types').ResourceType;
+  strengthColor: ResourceType;
   modifier: number;
-  targetDefense?: import('./generated/types').ResourceType;
-  actionName?: string;
-  move?: {
-    x: number;
-    y: number;
-  };
+  actionName: string;
+  targetDefense?: ResourceType;
+}
+
+// Frontend ViewModel ActorState (overrides backend ActorState name collision)
+export interface ActorState {
+  id: string; // Token/Actor ID
+  name: string;
+  type: TokenType;
+  color: string;
+
+  // Flattened/Hydrated Deck State for UI
+  deck: PlayerDeckState;
+
+  // Spatial
+  plannedMove?: { x: number; y: number };
+
+  // Registry of expanded cards
+  registry: Record<string, CoreCard | Card>;
+
+  // Game State
+  revealed?: RevealedEffect;
 }
