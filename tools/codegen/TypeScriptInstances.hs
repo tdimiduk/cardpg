@@ -5,7 +5,7 @@
 module TypeScriptInstances where
 
 -- Force rebuild
-import Data.Aeson (Options (..))
+import Data.Aeson (Options (..), Value)
 import Data.Aeson.TypeScript.TH
 import Data.List.NonEmpty (NonEmpty)
 import Data.Proxy (Proxy (..))
@@ -39,6 +39,7 @@ import CardPG.Core.Primitives
   , TargetId
   )
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
+
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
   , ChannelDef
@@ -71,6 +72,8 @@ import CardPG.Server.Types
   , ServerMessage
   , StateUpdate (..)
   , Token
+  , LogEntry (..)
+  , Phase (..)
   )
 import DeriveSpecialized
   ( deriveSpecializedInstance
@@ -79,15 +82,10 @@ import DeriveSpecialized
   , specializeType
   )
 
+
+
 instance TypeScript DSLRule where
   getTypeScriptType _ = "string"
-
--- Basic Types
-$(deriveTypeScript cardpgJsonDef ''ResourceType)
-$(deriveTypeScript cardpgJsonDef ''StackPower)
-
-$(deriveTypeScript cardpgJsonDef ''Difficulty)
-$(deriveTypeScript cardpgJsonDef ''EquipSlot)
 
 instance TypeScript CardInstanceId where
   getTypeScriptType _ = "string"
@@ -101,6 +99,15 @@ instance TypeScript ActorId where
 -- NonEmptyText
 instance TypeScript NonEmptyText where
   getTypeScriptType _ = "string"
+
+-- Basic Types
+$(deriveTypeScript cardpgJsonDef ''ResourceType)
+$(deriveTypeScript cardpgJsonDef ''StackPower)
+
+$(deriveTypeScript cardpgJsonDef ''LogEntry)
+
+$(deriveTypeScript cardpgJsonDef ''Difficulty)
+$(deriveTypeScript cardpgJsonDef ''EquipSlot)
 
 -- RichText
 $(deriveTypeScript cardpgJsonDef ''TextStyle)
@@ -123,6 +130,8 @@ $(deriveTypeScript cardpgJsonDef ''RevealedEffect)
 -- Helper for creating splices
 -- Using runIO or just simple do block
 -- We separate Data Generation (Specialize) from Instance Generation
+
+$(deriveTypeScript cardpgJsonDef ''Phase)
 
 -- 1. Data Generation Scope
 $( do

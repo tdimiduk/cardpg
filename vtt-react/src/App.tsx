@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const setActiveActor = useGameStore((state) => state.setActiveActor);
   const addActor = useGameStore((state) => state.addActor);
   const removeActor = useGameStore((state) => state.removeActor);
-  const addLog = useGameStore((state) => state.addLog);
+
   const initializeGame = useGameStore((state) => state.initializeGame);
 
   // Initialize Game on Mount
@@ -232,7 +232,6 @@ const App: React.FC = () => {
 
       <SidebarRight
         logs={logs}
-        onAddLog={(log) => addLog(log.content, log.sender, log.type)}
         phase={phase}
         onRevealActions={() => {
           // Assuming activeActorId is the "Actor" triggering this, or any valid ID.
@@ -257,6 +256,13 @@ const App: React.FC = () => {
         totalCount={tokens.length}
         onEndDefense={(actorId: string) => {
           dispatchCommand({ type: 'endDefenseIntent', actorId });
+        }}
+        onSendChat={(message: string) => {
+          dispatchCommand({
+             type: 'chatIntent', 
+             chatSenderId: activeActorId || undefined, 
+             content: message 
+          });
         }}
       />
     </div>

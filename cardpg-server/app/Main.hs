@@ -41,6 +41,7 @@ import CardPG.Server.DB (cardpgDb, GameT(..), GameId, Game, initDB, saveGame, lo
 
 import Data.Pool
 import Data.Time (getCurrentTime)
+import Data.Time.Clock.POSIX (getPOSIXTime)
 import Database.PostgreSQL.Simple (close, connectPostgreSQL)
 
 
@@ -174,7 +175,7 @@ talk client state = forever $ do
                 let s' = addClient newClient s -- Overwrites existing entry if reconnecting (updating socket)
                 let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (s'.gameState.actors)
                 
-                let welcomeMsg = Welcome clientId (map (.clientName) $ Map.elems s'.clients) initialUpdates (s'.gameState.phase)
+                let welcomeMsg = Welcome clientId (map (.clientName) $ Map.elems s'.clients) initialUpdates (s'.gameState.phase) (s'.gameState.history)
                 
                 -- If it's a new client (or distinct ID), notify others. 
                 -- If reconnect (same ID), effectively just updating the socket, maybe notify "Reconnected"? 
@@ -221,15 +222,17 @@ talkLoop client state = do
             T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
             
             -- Run action against authoritative state
-            -- Run action against authoritative state
-            (newGame, pool, updates, actions, clientsMap, newPhase, oldPhase, newRng) <- modifyMVar state $ \s -> do
+            t <- getPOSIXTime
+            let ts = round (t * 1000) :: Int
+            
+            (newGame, pool, updates, actions, logs, clientsMap, newPhase, oldPhase, newRng) <- modifyMVar state $ \s -> do
                 let game = s.gameState
                 let rng = s.rng
                 
                 -- Run monadic action
-                let ((newGame, updates, actions), newRng) = runState (processCommand cmd game) rng
+                let ((newGame, updates, actions, logs), newRng) = runState (processCommand cmd ts game) rng
                 
-                return (s { gameState = newGame, rng = newRng }, (newGame, s.dbPool, updates, actions, s.clients, newGame.phase, game.phase, newRng))
+                return (s { gameState = newGame, rng = newRng }, (newGame, s.dbPool, updates, actions, logs, s.clients, newGame.phase, game.phase, newRng))
 
             -- Persist State
             saveGame pool "default-game" newGame
@@ -241,7 +244,8 @@ talkLoop client state = do
                   (if null actions then [] else [BroadcastMessage (client.clientId) actions]) ++
                   (if not (null updates) || newPhase /= oldPhase 
                       then [GameStateUpdate updates (Just newPhase)]
-                      else [])
+                      else []) ++
+                  (if null logs then [] else [NewLogs logs])
 
             if not (null messages)
                then broadcast (MultiMessage messages) tempState

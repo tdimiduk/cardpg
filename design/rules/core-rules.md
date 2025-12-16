@@ -1,5 +1,6 @@
 # Cards As your Character
 
+In other games you would have a character sheet with stats and a bag of dice. In caRdPG, 
 Your character is defined by a 24 card deck that is your resource for everything you do. Every significant action costs cards; running out of cards incurs Fatigue. When you advance you upgrade cards from your deck or gain new ones. Consequences from actions add bad status cards to your deck.
 
 ### The Three `Color`s

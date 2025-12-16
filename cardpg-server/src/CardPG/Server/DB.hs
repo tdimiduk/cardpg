@@ -66,24 +66,24 @@ saveGame pool gId gs = do
     
     withResource pool $ \conn -> do
         -- Explicit Check for Upsert
-        existing <- runBeamPostgresDebug putStrLn conn $ runSelectReturningOne $ select $
+        existing <- runBeamPostgres conn $ runSelectReturningOne $ select $
             filter_ (\g -> gameId g ==. val_ gId) (all_ (games cardpgDb))
         
         case existing of
             Just _ -> do
-                runBeamPostgresDebug putStrLn conn $ runUpdate $ update (games cardpgDb)
+                runBeamPostgres conn $ runUpdate $ update (games cardpgDb)
                     (\g -> mconcat 
                         [ gameState g <-. val_ (PgJSONB (toJSON gs))
                         , gameUpdatedAt g <-. val_ now 
                         ])
                     (\g -> gameId g ==. val_ gId)
             Nothing -> do
-                runBeamPostgresDebug putStrLn conn $ runInsert $ insert (games cardpgDb) (insertValues [game])
+                runBeamPostgres conn $ runInsert $ insert (games cardpgDb) (insertValues [game])
 
 loadGame :: Pool Pg.Connection -> Text -> IO (Maybe GameState)
 loadGame pool gId = do
     withResource pool $ \conn -> do
-        res <- runBeamPostgresDebug putStrLn conn $ runSelectReturningOne $ select $
+        res <- runBeamPostgres conn $ runSelectReturningOne $ select $
             filter_ (\g -> gameId g ==. val_ gId) (all_ (games cardpgDb))
         case res of
             Nothing -> return Nothing

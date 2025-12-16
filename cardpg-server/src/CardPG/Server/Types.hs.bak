@@ -11,7 +11,6 @@ module CardPG.Server.Types
   , Command (..)
   , StateUpdate (..)
   , GameState (..)
-  , LogEntry (..)
   , Phase (..)
   , newServerState
   ) where
@@ -57,19 +56,7 @@ data Phase = Planning | Resolution
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Phase)
-
-data LogEntry = LogEntry
-  { id :: Text
-  , timestamp :: Int
-  , sender :: Text
-  , senderId :: Maybe ActorId
-  , content :: Text
-  , type_ :: Text
-  , metadata :: Maybe Value
-  }
-  deriving (Show, Eq, Generic)
-
-$(deriveJSON cardpgJsonDef ''LogEntry)
+$(deriveTypeScript cardpgJsonDef ''Phase)
 
 data GameState = GameState
   { env :: GameEnv
@@ -133,7 +120,7 @@ data Command
   | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [Text]}
   | EndRoundIntent {actorId :: ActorId}
   | PassIntent {actorId :: ActorId}
-  | ChatIntent {chatSenderId :: Maybe ActorId, content :: Text}
+  | ChatIntent {actorId :: Maybe ActorId, content :: Text}
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)
@@ -201,3 +188,16 @@ data ServerState = ServerState
 newServerState :: Pool Pg.Connection -> GameState -> StdGen -> ServerState
 newServerState pool gs rng = ServerState Map.empty (CardLibrary [] [] []) gs pool rng
 
+data LogEntry = LogEntry
+  { id :: Text
+  , timestamp :: Int
+  , sender :: Text
+  , senderId :: Maybe ActorId
+  , content :: Text
+  , type_ :: Text
+  , metadata :: Maybe Value
+  }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''LogEntry)
+$(deriveTypeScript cardpgJsonDef ''LogEntry)

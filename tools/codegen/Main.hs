@@ -52,6 +52,7 @@ import CardPG.Server.Types
   , ServerMessage
   , StateUpdate
   , Token
+  , LogEntry
   )
 
 main :: IO ()
@@ -114,6 +115,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy PlannedAction)
               <> getTypeScriptDeclarations (Proxy :: Proxy RealizedAttack)
               <> getTypeScriptDeclarations (Proxy :: Proxy Phase)
+              <> getTypeScriptDeclarations (Proxy :: Proxy LogEntry)
           )
 
   let exportedDeclarations =

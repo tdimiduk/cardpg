@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { GamePhase, Token, ActorState } from '../../types';
-import { LogSlice, createLog } from './logSlice';
+import { LogSlice } from './logSlice';
 import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
@@ -29,14 +29,14 @@ export const createGameSlice: StateCreator<
     set((state) => {
       if (state.phase !== phase) {
         state.phase = phase;
-        state.logs.push(createLog(`Phase changed to ${phase}.`, 'System'));
+
       }
     }),
 
   setResolutionPhase: () =>
     set((state) => {
       state.phase = 'resolution';
-      state.logs.push(createLog('Phase changed to Resolution.', 'System'));
+
     }),
 
   endRound: () =>
@@ -49,6 +49,6 @@ export const createGameSlice: StateCreator<
       state.phase = 'planning';
       // Note: We might want to keep defense visible if it persists across turns, but usually it clears.
       // For now, let's not auto-clear defense here unless explicitly told by server events.
-      state.logs.push(createLog('Round Ended. Starting new Planning Phase.', 'GM'));
+
     }),
 });

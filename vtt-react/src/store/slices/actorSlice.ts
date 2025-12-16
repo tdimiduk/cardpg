@@ -13,7 +13,7 @@ import { ActorState as ServerActorState, CoreCard as GenCoreCard } from '../../g
 
 import { ACTOR_COLORS } from '../../theme';
 import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
-import { LogSlice, createLog } from './logSlice';
+import { LogSlice } from './logSlice';
 import { createActor } from '../../services/actorFactory';
 
 export interface ActorSlice {
@@ -84,7 +84,7 @@ export const createActorSlice: StateCreator<
         size: 1,
       });
 
-      state.logs.push(createLog(`Added actor: ${name}`, 'GM'));
+
     }),
 
   removeActor: (actorId: string) =>
@@ -92,7 +92,7 @@ export const createActorSlice: StateCreator<
       if (!state.actors[actorId]) return;
       state.tokens = state.tokens.filter((t) => t.actorId !== actorId);
       delete state.actors[actorId];
-      state.logs.push(createLog(`Removed actor ${actorId}`, 'GM'));
+
     }),
 
   updateActorState: (update: StateUpdate) =>
@@ -133,7 +133,7 @@ export const createActorSlice: StateCreator<
           size: 1,
         });
 
-        state.logs.push(createLog(`Synced new actor: ${serverState.name}`, 'System'));
+
       }
 
       const core = serverState.coreState;

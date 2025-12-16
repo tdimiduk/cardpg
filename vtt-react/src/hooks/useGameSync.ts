@@ -30,56 +30,11 @@ export const useGameSync = () => {
           useGameStore.getState().setPhase(msg.phase);
         }
 
-        // Rehydrate transient UI state (Defense Logs, Attacks)
-        const { actors, logs, addLog, phase, plannedActions } = useGameStore.getState();
-        Object.entries(actors).forEach(([actorId, actor]) => {
-          // Rehydrate Defense Log
-          if (actor.deck.flippedPile && actor.deck.flippedPile.length > 0) {
-            const alreadyLogged = logs.some(
-              (l) => l.type === 'defense' && l.defense?.actorId === actorId && !l.defense.ended,
-            );
-            if (!alreadyLogged) {
-              addLog(`${actor.name} is defending.`, 'System', 'defense', undefined, {
-                actorId,
-                ended: false,
-              });
-            }
-          }
+        // Sync History (Logs)
+        if ((msg as any).history) {
+           useGameStore.getState().setLogs((msg as any).history);
+        }
 
-          // Rehydrate Active Attack (Resolution Phase)
-          if (phase === 'resolution' && actor.revealed) {
-            const revealed = actor.revealed;
-            if (revealed.type === 'rEAttack') {
-              const attack = revealed.data;
-              let resourceCardIds: string[] | undefined;
-
-              const storedPlan = plannedActions[actorId];
-              if (storedPlan) {
-                // Exclude action card from resources
-                resourceCardIds = storedPlan.cards
-                  .filter((c) => c.id !== attack.attackCard)
-                  .map((c) => c.id);
-              }
-
-              // Check if already logged to avoid duplicates on quick reconnects
-              // (though logs are usually wiped on refresh unless persisted, checking 'logs' from store which might be fresh empty or not)
-              const alreadyLogged = logs.some(
-                (l) =>
-                  l.type === 'attack' &&
-                  l.attack?.actorId === actorId &&
-                  l.attack?.attack.attackCard === attack.attackCard,
-              );
-
-              if (!alreadyLogged) {
-                addLog(`${actor.name} attacks!`, 'System', 'attack', undefined, undefined, {
-                  actorId,
-                  attack,
-                  resourceCardIds,
-                });
-              }
-            }
-          }
-        });
       } else if (msg.type === 'gameStateUpdate') {
         console.log('Received State Updates:', msg.updates);
         msg.updates.forEach((update) => {
@@ -88,6 +43,12 @@ export const useGameSync = () => {
         if (msg.newPhase) {
           useGameStore.getState().setPhase(msg.newPhase);
         }
+      } else if (msg.type === 'newLogs') {
+         // Handle batch of new logs
+         const newLogs = (msg as any).logs;
+         if (newLogs && Array.isArray(newLogs)) {
+             newLogs.forEach(l => useGameStore.getState().receiveLog(l));
+         }
       } else if (msg.type === 'multiMessage') {
         console.log('Received Batch Message:', msg.messages.length);
         msg.messages.forEach(handleMessage);

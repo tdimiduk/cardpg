@@ -3,48 +3,42 @@ import { LogEntry } from '../../types';
 
 export interface LogSlice {
   logs: LogEntry[];
-  addLog: (
-    message: string,
-    sender?: LogEntry['sender'],
-    type?: LogEntry['type'],
-    actionResult?: LogEntry['actionResult'],
-    defense?: LogEntry['defense'],
-    attack?: LogEntry['attack'],
-  ) => void;
-  updateLog: (id: string, updates: Partial<LogEntry>) => void;
+  setLogs: (logs: LogEntry[]) => void;
+  receiveLog: (log: LogEntry) => void;
+  // Keep addLog for transitioning, but it will just create a local log which we might want to deprecate or use for errors
+  addLog: (message: string, sender?: string, type?: string) => void;
 }
-
-export const createLog = (
-  content: string,
-  sender: LogEntry['sender'] = 'System',
-  type: LogEntry['type'] = 'info',
-  actionResult?: LogEntry['actionResult'],
-  defense?: LogEntry['defense'],
-  attack?: LogEntry['attack'],
-): LogEntry => ({
-  id: Math.random().toString(36),
-  timestamp: Date.now(),
-  sender,
-  content,
-  type,
-  actionResult,
-  defense,
-  attack,
-});
 
 export const createLogSlice: StateCreator<LogSlice, [['zustand/immer', never]], [], LogSlice> = (
   set,
 ) => ({
-  logs: [createLog('Welcome to caRdPG. Begin Planning Phase.')],
-  addLog: (message, sender, type, actionResult, defense, attack) =>
+  logs: [],
+  setLogs: (logs) =>
     set((state) => {
-      state.logs.push(createLog(message, sender, type, actionResult, defense, attack));
+        // Map metadata to flat properties if needed, or types ensures compatibility
+        // Assuming LogEntry from types.ts is strictly compatible with Server LogEntry JSON
+        state.logs = logs.map(l => ({
+            ...l,
+            // Map metadata to top-level fields for UI compatibility if needed
+            ...(((l as any).metadata) || {})
+        }));
     }),
-  updateLog: (id, updates) =>
+  receiveLog: (log) =>
     set((state) => {
-      const logIndex = state.logs.findIndex((l) => l.id === id);
-      if (logIndex !== -1) {
-        state.logs[logIndex] = { ...state.logs[logIndex], ...updates };
-      }
+      state.logs.push({
+          ...log,
+          ...(((log as any).metadata) || {})
+      });
+    }),
+  addLog: (message, sender = 'System', type = 'info') =>
+    set((state) => {
+        // Legacy local logs (e.g. connection errors)
+        state.logs.push({
+            id: Math.random().toString(36),
+            timestamp: Date.now(),
+            sender: sender as any,
+            content: message,
+            type: type as any,
+        });
     }),
 });

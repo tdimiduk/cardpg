@@ -9,13 +9,13 @@ import { CoreCard } from '../../types';
 
 interface SidebarRightProps {
   logs: LogEntry[];
-  onAddLog: (log: LogEntry) => void;
   phase: GamePhase;
   onRevealActions: () => void;
   onEndRound: () => void;
   readyCount?: number;
   totalCount?: number;
   onEndDefense: (actorId: string) => void;
+  onSendChat: (message: string) => void;
 }
 
 const AttackLogItem: React.FC<{
@@ -192,13 +192,13 @@ const DefenseLogItem: React.FC<{
 
 export const SidebarRight: React.FC<SidebarRightProps> = ({
   logs,
-  onAddLog,
   phase,
   onRevealActions,
   onEndRound,
   readyCount,
   totalCount,
   onEndDefense,
+  onSendChat,
 }) => {
   const [chatInput, setChatInput] = useState('');
   const endOfLogsRef = useRef<HTMLDivElement>(null);
@@ -220,13 +220,7 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
     e?.preventDefault();
     if (!chatInput.trim()) return;
 
-    onAddLog({
-      id: Date.now().toString(),
-      timestamp: Date.now(),
-      sender: 'GM',
-      content: chatInput,
-      type: 'chat',
-    });
+    onSendChat(chatInput);
     setChatInput('');
   };
 
