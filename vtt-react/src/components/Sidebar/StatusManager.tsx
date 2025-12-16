@@ -1,9 +1,10 @@
 import React from 'react';
 import { Activity, Minus, Hand, ArrowUp, Archive, AlertOctagon } from 'lucide-react';
 import { STATUS_DATA } from '../../services/deckFactory';
+import { CardLocation } from '../../types';
 
 interface StatusManagerProps {
-  onAddStatusCard: (type: string, destination: 'discard' | 'hand' | 'draw') => void;
+  onAddStatusCard: (type: string, destination: CardLocation) => void;
   onRemoveStatusCard: (type: string) => void;
 }
 
@@ -43,7 +44,7 @@ export const StatusManager: React.FC<StatusManagerProps> = ({
               <Hand size={10} />
             </button>
             <button
-              onClick={() => onAddStatusCard(card.id || '', 'draw')}
+              onClick={() => onAddStatusCard(card.id || '', 'deck')}
               className="w-6 h-6 flex items-center justify-center rounded bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700"
               title={`Add ${card.name} to Top of Deck`}
             >

@@ -77,7 +77,7 @@ eventToLogs ts actorId event game =
         DeckShuffled -> [mkLog "shuffle" (LogInfo $ actorName <> " reshuffled their deck.")]
         ConsequenceAdded _ -> [mkLog "cons-add" (LogInfo $ actorName <> " gained a consequence.")]
         ConsequenceRemoved _ -> [mkLog "cons-rem" (LogInfo $ actorName <> " removed consequence.")]
-        StatusAdded st dest -> [mkLog "stat-add" (LogInfo $ actorName <> " added status " <> st <> " to " <> dest)]
+        StatusAdded st dest -> [mkLog "stat-add" (LogInfo $ actorName <> " added status " <> st <> " to " <> T.pack (show dest))]
         StatusRemoved st dest -> [mkLog "stat-rem" (LogInfo $ actorName <> " removed status " <> st <> " from " <> dest)]
         PlanCanceled _ -> [mkLog "cancel" (LogInfo $ actorName <> " canceled their plan.")]
         ActorMoved _ -> [mkLog "move" (LogInfo $ actorName <> " moved.")]

@@ -7,6 +7,7 @@ module CardPG.Core.Primitives
   , ResourceType (..)
   , StackPower (..)
   , Difficulty (..)
+  , CardLocation (..)
   ) where
 
 import Data.Aeson (FromJSONKey, ToJSONKey)
@@ -16,7 +17,7 @@ import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import System.Random.Stateful (Uniform (..), uniformM)
 
-import CardPG.Core.Json (cardpgJsonDef)
+import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 
 -- | Unique Identity for any card instance
 newtype CardInstanceId = CardInstanceId UUID
@@ -79,3 +80,8 @@ data Difficulty = Difficulty
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''Difficulty)
+
+data CardLocation = LocationHand | LocationDiscard | LocationDeck
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON (cardpgJsonOptions "Location") ''CardLocation)

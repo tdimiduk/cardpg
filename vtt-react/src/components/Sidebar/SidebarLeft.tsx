@@ -1,5 +1,12 @@
 import React from 'react';
-import { Token, TokenType, PlayerDeckState, ActorState, ActorDefinition } from '../../types';
+import {
+  Token,
+  TokenType,
+  PlayerDeckState,
+  ActorState,
+  ActorDefinition,
+  CardLocation,
+} from '../../types';
 import { getActorTemplates } from '../../services/deckFactory';
 import { useActorStats } from '../../hooks/useActorStats';
 import { ACTOR_COLORS } from '../../theme';
@@ -25,7 +32,7 @@ interface SidebarLeftProps {
   onSelectToken: (tokenId: string) => void;
   onAddConsequence: (severity?: number) => void;
   onRemoveConsequence: (cardId: string) => void;
-  onAddStatusCard: (type: string, destination: 'discard' | 'hand' | 'draw') => void;
+  onAddStatusCard: (type: string, destination: CardLocation) => void;
   onRemoveStatusCard: (type: string) => void;
   tokens: Token[];
   activeToken?: Token;

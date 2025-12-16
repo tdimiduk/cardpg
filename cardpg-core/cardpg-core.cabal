@@ -70,6 +70,7 @@ test-suite cardpg-core-test
     ConsequenceParsingTest
     ReadmeExamplesTest
     ResolutionTests
+    CardPG.Core.LogicTest
   hs-source-dirs: tests
   ghc-options:
     -Wall -Wredundant-constraints -Wincomplete-uni-patterns

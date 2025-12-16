@@ -12,6 +12,7 @@ import Test.Tasty.QuickCheck
 import CardPG.Core.Card
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
+import CardPG.Core.LogicTest (test_logic)
 
 import ArbitraryInstances ()
 import ConsequenceParsingTest (test_consequenceParsing)
@@ -42,6 +43,7 @@ tests =
     , test_readmeExamples
     , test_stateTests
     , test_resolutionCycle
+    , test_logic
     ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

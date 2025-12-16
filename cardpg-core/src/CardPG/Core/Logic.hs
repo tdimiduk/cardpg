@@ -52,7 +52,7 @@ import CardPG.Core.Card
   , Stats (..)
   )
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..), StackPower (..))
+import CardPG.Core.Primitives (CardInstanceId (..), CardLocation (..), ResourceType (..), StackPower (..))
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
@@ -332,7 +332,7 @@ reshuffleDeck = do
   modify $ #coreState % #deck .~ newDeck
   tell [DeckShuffled]
 
-addStatus :: (RandomGen g) => Text -> Text -> GameM g ()
+addStatus :: (RandomGen g) => Text -> CardLocation -> GameM g ()
 addStatus statusType destination = do
   env <- ask
   let maybeTemplate = Map.lookup statusType (env ^. #statusCardTemplates)
@@ -343,10 +343,9 @@ addStatus statusType destination = do
       case ids of
         [cid] -> do
           case destination of
-            "hand" -> modify $ #coreState % #hand %~ (cid :)
-            "discard" -> modify $ #coreState % #discard %~ (cid :)
-            "deck" -> modify $ #coreState % #deck %~ (cid :)
-            _ -> modify $ #coreState % #discard %~ (cid :)
+            LocationHand -> modify $ #coreState % #hand %~ (cid :)
+            LocationDiscard -> modify $ #coreState % #discard %~ (cid :)
+            LocationDeck -> modify $ #coreState % #deck %~ (cid :)
           tell [ActionPlanned (PStandard (ActionStack cid []))]
           tell [StatusAdded statusType destination]
         _ -> return ()

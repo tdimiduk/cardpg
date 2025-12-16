@@ -9,7 +9,7 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Card (ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..), ResourceType, TargetId (..))
+import CardPG.Core.Primitives (CardInstanceId (..), CardLocation, EquipSlot (..), ResourceType, TargetId (..))
 
 data TableCard
   = TCItem ItemCard
@@ -179,7 +179,7 @@ data GameEvent
   | DefenseEnded [CardInstanceId]
   | IllegalAction PlannedAction (Maybe Text)
   | -- | Type, Destination
-    StatusAdded Text Text
+    StatusAdded Text CardLocation
   | -- | Type, Destination
     StatusRemoved Text Text
   | -- | Severity

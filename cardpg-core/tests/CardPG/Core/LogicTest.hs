@@ -1,24 +1,27 @@
 module CardPG.Core.LogicTest where
 
 import Control.Monad.RWS (runRWST)
-import Control.Monad.State (evalState)
+import Control.Monad.State (evalState, runState)
 import Data.List (sort)
 import qualified Data.Map.Strict as Map
-import System.Random (mkStdGen)
-import Test.Hspec
+import System.Random (mkStdGen, StdGen)
+import Test.Tasty (TestTree, testGroup)
+import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 
 import CardPG.Core.Card
   ( ConsequenceCard
   , ConsequenceCardT (..)
-  , CoreCard (..)
+  , CoreCardT (..)
+  , CoreCard
   , ItemCard
   , ItemCardT (..)
   , NatureCard
   , TalentCard
+  , Stats (..)
   )
 import CardPG.Core.Logic
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..), TargetId (..))
+import CardPG.Core.Primitives (CardInstanceId (..), CardLocation (..), EquipSlot (..), TargetId (..))
 import CardPG.Core.State
 import qualified Data.Text as T
 
@@ -44,159 +47,200 @@ mkActorState handCards =
           , planned = Nothing
           , defending = []
           , inPlay = Map.empty
-          , registry = Map.empty
+          , registry = Map.fromList
+              [ (cid, CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing) | cid <- handCards, cid == CardInstanceId (read "00000000-0000-0000-0000-000000000001") ] 
+              `Map.union` Map.fromList [ (cid, CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing) | cid <- handCards, cid /= CardInstanceId (read "00000000-0000-0000-0000-000000000001") ]
           }
-    , tableState = TableState Map.empty Map.empty
+    , tableState = TableState Map.empty Map.empty [] Map.empty
     , spatial = SpatialState 0 0 1 Nothing
     , plannedMove = Nothing
     }
 
-spec :: Spec
-spec = do
-  describe "Planned Actions Logic" $ do
-    let c1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
-    let c2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
-    let c3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+mockConsTemplate :: Int -> ConsequenceCard
+mockConsTemplate sev =
+  ConsequenceCard
+    { name = unsafeNonEmptyText "Cons"
+    , tags = Nothing
+    , passive = Nothing
+    , effects = Nothing
+    , severity = sev
+    , notes = Nothing
+    , rules = Nothing
+    }
 
-    it "plans an action successfully" $ do
-      let initialState = mkActorState [c1, c2, c3]
-      let ((), finalState, events) = runLogic initialState (planAction c1 [c2])
+mockItemRes :: Int -> ItemCard
+mockItemRes res =
+  ItemCard
+    { name = unsafeNonEmptyText "Armor"
+    , tags = Nothing
+    , flavor = Nothing
+    , weight = Nothing
+    , value = Nothing
+    , traits = Nothing
+    , passive = Nothing
+    , defense = Nothing
+    , resilience = Just res
+    , burden = Nothing
+    }
 
-      -- Removed from hand
-      hand (coreState finalState) `shouldBe` [c3]
+mkEnv :: [ConsequenceCard] -> GameEnv
+mkEnv consList =
+  GameEnv
+    { fatigueCardTemplate = undefined
+    , statusCardTemplates = Map.empty
+    , consequenceCardTemplates = Map.fromList [(T.pack (show c.severity), c) | c <- consList]
+    }
 
-      -- Added to planned
-      let expectedPlan = PlannedAction c1 [c2]
-      planned (coreState finalState) `shouldBe` Just expectedPlan
+runLogicWithEnv :: GameEnv -> ActorState -> GameM StdGen a -> (a, ActorState, [GameEvent])
+runLogicWithEnv env state action =
+  let rng = mkStdGen 0
+      ((res, finalState, events), _) = runState (runRWST (runGameM action) env state) rng
+   in (res, finalState, events)
 
-      -- Event emitted
-      events `shouldContain` [ActionPlanned expectedPlan]
+test_logic :: TestTree
+test_logic =
+  testGroup "Logic Tests"
+    [ test_plannedActions
+    , test_consequenceLogic
+    , test_statusLogic
+    ]
 
-    it "cancels a planned action" $ do
-      let initialState = mkActorState [c3]
-      let plannedState =
-            initialState
-              { coreState =
-                  (coreState initialState)
-                    { planned = Just (PlannedAction c1 [c2])
-                    }
-              }
+test_plannedActions :: TestTree
+test_plannedActions =
+  let c1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
+      c2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      c3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      planActionC1C2 = PStandard (ActionStack c1 [c2])
+   in testGroup "Planned Actions Logic"
 
-      let ((), finalState, events) = runLogic plannedState cancelPlan
+    [ testCase "plans an action successfully" $ do
+        let initialState = mkActorState [c1, c2, c3]
+        let ((), finalState, events) = runLogic initialState (planAction c1 [c2])
 
-      -- Returned to hand (order might vary depending on implementation, usually prepended)
-      length (hand $ coreState finalState) `shouldBe` 3
-      planned (coreState finalState) `shouldBe` Nothing
+        -- Removed from hand
+        finalState.coreState.hand @?= [c3]
 
-      events `shouldContain` [PlanCanceled]
+        -- Added to planned
+        let expectedPlan = planActionC1C2
+        finalState.coreState.planned @?= Just expectedPlan
 
-    it "discards planned actions" $ do
-      let initialState = mkActorState [c3]
-      let plannedState =
-            initialState
-              { coreState =
-                  (coreState initialState)
-                    { planned = Just (PlannedAction c1 [c2])
-                    }
-              }
+        -- Event emitted
+        assertBool "ActionPlanned event missing" (ActionPlanned expectedPlan `elem` events)
 
-      let ((), finalState, events) = runLogic plannedState discardPlannedActions
+    , testCase "cancels a planned action" $ do
+        let initialState = mkActorState [c3]
+        let plannedState =
+              initialState
+                { coreState =
+                    initialState.coreState
+                      { planned = Just planActionC1C2
+                      }
+                }
 
-      discard (coreState finalState) `shouldContain` [c1, c2]
+        let ((), finalState, events) = runLogic plannedState cancelPlan
 
-  describe "Consequence Logic" $ do
-    let cid1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
-    let cid2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
-    let cid3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
-    let cidRes = CardInstanceId (read "00000000-0000-0000-0000-000000000009")
+        -- Returned to hand (order might vary depending on implementation, usually prepended)
+        length finalState.coreState.hand @?= 3
+        finalState.coreState.planned @?= Nothing
 
-    let mockConsTemplate sev =
-          ConsequenceCard
-            { name = unsafeNonEmptyText "Cons"
-            , tags = Nothing
-            , passive = Nothing
-            , effects = Nothing
-            , severity = sev
-            , notes = Nothing
-            , rules = Nothing
-            }
+        -- We know the plan that was canceled is PStandard (ActionStack c1 [c2])
+        -- because that's what we put in plannedState
+        let expectedCanceledPlan = PStandard (ActionStack c1 [c2])
+        assertBool "PlanCanceled missing" (PlanCanceled expectedCanceledPlan `elem` events)
 
-    let mockItemRes res =
-          ItemCard
-            { name = unsafeNonEmptyText "Armor"
-            , tags = Nothing
-            , flavor = Nothing
-            , weight = Nothing
-            , value = Nothing
-            , traits = Nothing
-            , passive = Nothing
-            , defense = Nothing
-            , resilience = Just res
-            , burden = Nothing
-            }
+    , testCase "discards planned actions" $ do
+        let initialState = mkActorState [c3]
+        let plannedState =
+              initialState
+                { coreState =
+                    initialState.coreState
+                      { planned = Just planActionC1C2
+                      }
+                }
 
-    let mkEnv consList =
-          GameEnv
-            { fatigueCardTemplate = undefined
-            , statusCardTemplates = Map.empty
-            , consequenceCardTemplates = Map.fromList [(T.pack (show c . severity), c) | c <- consList]
-            }
+        let ((), finalState, events) = runLogic plannedState discardPlannedActions
 
-    let runLogicWithEnv env state action =
-          let rng = mkStdGen 0
-              ((res, finalState, events), _) = runState (runRWST (runGameM action) env state) rng
-           in (res, finalState, events)
+        let d = finalState.coreState.discard
+        assertBool "Expect c1 in discard" (c1 `elem` d)
+        assertBool "Expect c2 in discard" (c2 `elem` d)
+    ]
 
-    it "adds specific severity consequence" $ do
-      let env = mkEnv [mockConsTemplate 5]
-      let state = mkActorState []
-      let ((), finalState, events) = runLogicWithEnv env state (addConsequence (Just 5))
+test_consequenceLogic :: TestTree
+test_consequenceLogic =
+  let cid1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
+      cid2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      cid3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      cidRes = CardInstanceId (read "00000000-0000-0000-0000-000000000009")
+   in testGroup "Consequence Logic"
 
-      length (consequences $ tableState finalState) `shouldBe` 1
-      events `shouldContain` [ConsequenceAdded 5]
+    [ testCase "adds specific severity consequence" $ do
+        let env = mkEnv [mockConsTemplate 5]
+        let state = mkActorState []
+        let ((), finalState, events) = runLogicWithEnv env state (addConsequence (Just 5))
 
-    it "calculates default resilience of 1 and proper severity" $ do
-      -- No items, Res=1. existing=0. Sev = 0/1 + 1 = 1.
-      let env = mkEnv [mockConsTemplate 1]
-      let state = mkActorState []
-      let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+        length finalState.tableState.consequences @?= 1
+        assertBool "ConsequenceAdded 5 missing" (ConsequenceAdded 5 `elem` events)
 
-      events `shouldContain` [ConsequenceAdded 1]
+    , testCase "calculates default resilience of 1 and proper severity" $ do
+        -- No items, Res=1. existing=0. Sev = 0/1 + 1 = 1.
+        let env = mkEnv [mockConsTemplate 1]
+        let state = mkActorState []
+        let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-    it "uses equipped resilience" $ do
-      -- Item with Res=3. Existing=0. Sev = 0/3 + 1 = 1.
-      let item = mockItemRes 3
-      let tc = TCItem item
-      let state0 = mkActorState []
-      let state =
-            state0
-              { tableState =
-                  (tableState state0)
-                    { registry = Map.singleton cidRes tc
-                    , assets = Map.singleton cidRes (Equipped Body)
-                    }
-              }
-      let env = mkEnv [mockConsTemplate 1]
-      let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+        assertBool "ConsequenceAdded 1 missing" (ConsequenceAdded 1 `elem` events)
 
-      events `shouldContain` [ConsequenceAdded 1]
+    , testCase "uses equipped resilience" $ do
+        -- Item with Res=3. Existing=0. Sev = 0/3 + 1 = 1.
+        let item = mockItemRes 3
+        let tc = TCItem item
+        let state0 = mkActorState []
+        let state =
+              state0
+                { tableState =
+                    state0.tableState
+                      { registry = Map.singleton cidRes tc
+                      , assets = Map.singleton cidRes (Equipped SlotBody)
+                      }
+                }
+        let env = mkEnv [mockConsTemplate 1]
+        let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-    it "calculates severity based on existing count and resilience" $ do
-      -- Res=2. Existing=3 consequences. Sev = 3/2 + 1 = 1 + 1 = 2.
-      let item = mockItemRes 2
-      let tc = TCItem item
+        assertBool "ConsequenceAdded 1 missing" (ConsequenceAdded 1 `elem` events)
 
-      let state0 = mkActorState []
-      let state =
-            state0
-              { tableState =
-                  (tableState state0)
-                    { registry = Map.singleton cidRes tc
-                    , assets = Map.singleton cidRes (Equipped Body)
-                    , consequences = [cid1, cid2, cid3] -- 3 dummy existing
-                    }
-              }
-      let env = mkEnv [mockConsTemplate 2]
-      let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+    , testCase "calculates severity based on existing count and resilience" $ do
+        -- Res=2. Existing=3 consequences. Sev = 3/2 + 1 = 1 + 1 = 2.
+        let item = mockItemRes 2
+        let tc = TCItem item
 
-      events `shouldContain` [ConsequenceAdded 2]
+        let state0 = mkActorState []
+        let state =
+              state0
+                { tableState =
+                    state0.tableState
+                      { registry = Map.singleton cidRes tc
+                      , assets = Map.singleton cidRes (Equipped SlotBody)
+                      , consequences = [cid1, cid2, cid3] -- 3 dummy existing
+                      }
+                }
+        let env = mkEnv [mockConsTemplate 2]
+        let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
+
+        assertBool "ConsequenceAdded 2 missing" (ConsequenceAdded 2 `elem` events)
+    ]
+
+test_statusLogic :: TestTree
+test_statusLogic = testGroup "Status Logic"
+    [ testCase "adds status to hand" $ do
+        let statusName = "Stunned"
+        let env =
+              GameEnv
+                { fatigueCardTemplate = undefined
+                , statusCardTemplates = Map.singleton statusName (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing)
+                , consequenceCardTemplates = Map.empty
+                }
+        let state = mkActorState []
+        let ((), finalState, events) = runLogicWithEnv env state (addStatus statusName LocationHand)
+
+        length finalState.coreState.hand @?= 1
+        assertBool "StatusAdded missing" (StatusAdded statusName LocationHand `elem` events)
+    ]

@@ -50,7 +50,7 @@ import CardPG.Core.Card
   , ItemCard
   )
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (ActorId, CardInstanceId, ResourceType)
+import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
 import CardPG.Core.State (ActorState, GameEnv, GameEvent, RealizedAttack)
 
 -- | The authoritative state for a game session
@@ -136,7 +136,7 @@ data Command
   | StartResolutionIntent {actorId :: ActorId}
   | EndDefenseIntent {actorId :: ActorId}
   | ReshuffleIntent {actorId :: ActorId}
-  | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: Text}
+  | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: CardLocation}
   | RemoveStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe CardInstanceId}
   | AddConsequenceIntent {actorId :: ActorId, severity :: Maybe Int}
   | RemoveConsequenceIntent {actorId :: ActorId, cardId :: CardInstanceId}

@@ -37,6 +37,7 @@ import CardPG.Core.Primitives
   , ResourceType (..)
   , StackPower
   , TargetId
+  , CardLocation (..)
   )
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 
@@ -102,6 +103,8 @@ instance TypeScript NonEmptyText where
 -- Basic Types
 $(deriveTypeScript cardpgJsonDef ''ResourceType)
 $(deriveTypeScript cardpgJsonDef ''StackPower)
+
+$(deriveTypeScript (cardpgJsonOptions "Location") ''CardLocation)
 
 $(deriveTypeScript cardpgJsonDef ''Difficulty)
 $(deriveTypeScript cardpgJsonDef ''EquipSlot)

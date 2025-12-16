@@ -26,7 +26,7 @@ import TypeScriptInstances
 
 import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (ActorId, Difficulty, EquipSlot, ResourceType, StackPower)
+import CardPG.Core.Primitives (ActorId, CardLocation, Difficulty, EquipSlot, ResourceType, StackPower)
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.State
@@ -67,6 +67,7 @@ main = do
         formatTSDeclarations
           ( getTypeScriptDeclarations (Proxy :: Proxy ResourceType)
               <> getTypeScriptDeclarations (Proxy :: Proxy StackPower)
+              <> getTypeScriptDeclarations (Proxy :: Proxy CardLocation)
               <> getTypeScriptDeclarations (Proxy :: Proxy Difficulty)
               <> getTypeScriptDeclarations (Proxy :: Proxy ActorId)
               <> getTypeScriptDeclarations (Proxy :: Proxy NonEmptyText)
