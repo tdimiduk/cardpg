@@ -38,6 +38,7 @@ import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Ord (Down (..))
 import Data.Text (Text, unpack)
+import Data.Text qualified as T
 import Data.UUID (nil)
 import Optics
 import System.Random (RandomGen, uniform, uniformR)
@@ -350,13 +351,13 @@ addStatus statusType destination = do
           tell [StatusAdded statusType destination]
         _ -> return ()
 
-removeStatus :: Text -> Maybe Text -> GameM g ()
+removeStatus :: Text -> Maybe CardInstanceId -> GameM g ()
 removeStatus statusType maybeCardId = do
   registry <- use (#coreState % #registry)
 
   let matchFunc cid c =
         case maybeCardId of
-          Just specificId -> unpack specificId == show cid
+          Just specificId -> specificId == cid
           Nothing -> getRawText c.name == statusType
 
   let findAndRemove :: Lens' CoreCardState [CardInstanceId] -> GameM g Bool
@@ -380,18 +381,18 @@ removeStatus statusType maybeCardId = do
   removedFromHand <- findAndRemove #hand
   if removedFromHand
     then do
-      tell [StatusRemoved statusType (fromMaybe "hand" maybeCardId)]
+      tell [StatusRemoved statusType (maybe "hand" (\c -> T.pack (show c)) maybeCardId)]
       return ()
     else do
       removedFromDiscard <- findAndRemove #discard
       if removedFromDiscard
         then do
-          tell [StatusRemoved statusType (fromMaybe "discard" maybeCardId)]
+          tell [StatusRemoved statusType (maybe "discard" (\c -> T.pack (show c)) maybeCardId)]
           return ()
         else do
           removed <- findAndRemove #deck
           when removed $
-            tell [StatusRemoved statusType (fromMaybe "deck" maybeCardId)]
+            tell [StatusRemoved statusType (maybe "deck" (\c -> T.pack (show c)) maybeCardId)]
 
 calculateResilience :: GameM g Int
 calculateResilience = do
@@ -498,17 +499,17 @@ planBestAvailableAction = do
 
       planAction actionCid resourceIds
 
-removeConsequence :: Text -> GameM g ()
-removeConsequence cardIdStr = do
-  let cid = CardInstanceId (read (unpack cardIdStr))
+removeConsequence :: CardInstanceId -> GameM g ()
+removeConsequence cid = do
+
   -- Remove from TableState
   modify $ #tableState % #consequences %~ filter (/= cid)
   modify $ #tableState % #consequenceRegistry %~ Map.delete cid
-  tell [ConsequenceRemoved cardIdStr]
+  tell [ConsequenceRemoved (T.pack $ show cid)]
 
-discardCards :: [Text] -> GameM g ()
-discardCards cardIdStrs = do
-  let cids = map (CardInstanceId . read . unpack) cardIdStrs
+discardCards :: [CardInstanceId] -> GameM g ()
+discardCards cids = do
+
   currentHand <- use (#coreState % #hand)
   let (toDiscard, keep) = partition (`elem` cids) currentHand
   modify $ #coreState % #hand .~ keep
@@ -516,9 +517,9 @@ discardCards cardIdStrs = do
 
 -- Generic 'CardsMoved' event? Or just state update.
 
-returnCardsToDeck :: (RandomGen g) => [Text] -> GameM g ()
-returnCardsToDeck cardIdStrs = do
-  let cids = map (CardInstanceId . read . unpack) cardIdStrs
+returnCardsToDeck :: (RandomGen g) => [CardInstanceId] -> GameM g ()
+returnCardsToDeck cids = do
+
   currentHand <- use (#coreState % #hand)
   let (toReturn, keep) = partition (`elem` cids) currentHand
   modify $ #coreState % #hand .~ keep

@@ -50,7 +50,7 @@ import CardPG.Core.Card
   , ItemCard
   )
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (ActorId, ResourceType)
+import CardPG.Core.Primitives (ActorId, CardInstanceId, ResourceType)
 import CardPG.Core.State (ActorState, GameEnv, GameEvent, RealizedAttack)
 
 -- | The authoritative state for a game session
@@ -130,18 +130,18 @@ data Command
   = DrawIntent {actorId :: ActorId}
   | DefendIntent {actorId :: ActorId}
   | PlanMove {actorId :: ActorId, x :: Int, y :: Int}
-  | PlanAction {actorId :: ActorId, actionCardId :: Text, resourceCardIds :: [Text]}
-  | PlanNarrative {actorId :: ActorId, cardIds :: [Text], color :: ResourceType}
+  | PlanAction {actorId :: ActorId, actionCardId :: CardInstanceId, resourceCardIds :: [CardInstanceId]}
+  | PlanNarrative {actorId :: ActorId, cardIds :: [CardInstanceId], color :: ResourceType}
   | CancelPlanIntent {actorId :: ActorId}
   | StartResolutionIntent {actorId :: ActorId}
   | EndDefenseIntent {actorId :: ActorId}
   | ReshuffleIntent {actorId :: ActorId}
   | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: Text}
-  | RemoveStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe Text}
+  | RemoveStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe CardInstanceId}
   | AddConsequenceIntent {actorId :: ActorId, severity :: Maybe Int}
-  | RemoveConsequenceIntent {actorId :: ActorId, cardId :: Text}
-  | DiscardCardsIntent {actorId :: ActorId, cardIds :: [Text]}
-  | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [Text]}
+  | RemoveConsequenceIntent {actorId :: ActorId, cardId :: CardInstanceId}
+  | DiscardCardsIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
+  | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
   | EndRoundIntent {actorId :: ActorId}
   | PassIntent {actorId :: ActorId}
   | ChatIntent {chatSenderId :: Maybe ActorId, content :: Text}

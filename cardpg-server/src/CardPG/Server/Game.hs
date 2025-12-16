@@ -113,13 +113,13 @@ processCommand cmd ts game =
             PlanAction tid actionId resourceIds ->
               ( tid
               , Logic.planAction
-                  (CardInstanceId . read $ T.unpack actionId)
-                  (map (CardInstanceId . read . T.unpack) resourceIds)
+                  actionId
+                  resourceIds
               )
             PlanNarrative tid cardIds color ->
               ( tid
               , Logic.planNarrative
-                  (map (CardInstanceId . read . T.unpack) cardIds)
+                  cardIds
                   color
               )
             CancelPlanIntent tid -> (tid, Logic.cancelPlan)

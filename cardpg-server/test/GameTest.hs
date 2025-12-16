@@ -11,6 +11,8 @@ import Optics
 import System.Random (mkStdGen)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=), assertBool)
+import Data.Maybe (fromJust)
+import Text.Read (readMaybe)
 
 import CardPG.Core.Logic (drawCard)
 import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..), StackPower(..), ResourceType(..))
@@ -200,6 +202,44 @@ test_game = testGroup "Server Game Engine"
                length stack.resources @?= 1
                head stack.resources @?= resCid
              _ -> assertBool "Expected Standard Plan" False
+
+
+  , testCase "Explicit Plan Action Command" $ do
+      let env = GameEnv { fatigueCardTemplate = mockCard "fatigue", statusCardTemplates = Map.empty, consequenceCardTemplates = Map.empty }
+      let gen = mkStdGen 5
+      let game0 = emptyGame env
+      
+      let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
+      let actionCid = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      let resCid = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      
+      let actionCard = mockAttackCard "Attack" Red 1
+      let resCard = mockResCard "Resource"
+      
+      let hand = [actionCid, resCid]
+      let registry = Map.fromList [(actionCid, actionCard), (resCid, resCard)]
+      
+      let actorState = emptyActorState 
+             & #coreState % #hand .~ hand
+             & #coreState % #registry .~ registry
+             
+      let game1 = addActor actorId actorState game0
+      
+      -- Send PlanAction Intent with Strings wrapping UUIDs
+      let cmd = PlanAction 
+                  { actorId = actorId
+                  , actionCardId = actionCid
+                  , resourceCardIds = [resCid]
+                  }
+                  
+      let ((game2, _, actions, _), _) = runState (processCommand cmd 4000 game1) gen
+      
+      length actions @?= 1
+      case head actions of
+        ActorGameEvent _ (ActionPlanned (PStandard stack)) -> do
+           stack.actionCard @?= actionCid
+           stack.resources @?= [resCid]
+        _ -> assertBool "Expected ActionPlanned event" False
 
   ]
 
