@@ -214,11 +214,11 @@ const SidebarLeftContainer: React.FC = () => {
             cardWrapper.type === 'tCNature' ||
             cardWrapper.type === 'tCTalent'
           ) {
-            return cardWrapper.data;
+            return { ...cardWrapper.data, id };
           }
           return undefined;
         })
-        .filter((c): c is EquipmentCard => !!c);
+        .filter((c): c is EquipmentCard & { id: string } => !!c);
 
       return {
         drawPile: resolveCore(activeActor.coreState.deck),
