@@ -224,7 +224,7 @@ data ServerState = ServerState
   }
 
 newServerState :: Pool Pg.Connection -> GameState -> StdGen -> Config -> ServerState
-newServerState pool gs rng cfg = ServerState Map.empty (CardLibrary [] [] []) gs pool rng cfg
+newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool
 
 -- | Helpers for managing server state
 numClients :: ServerState -> Int

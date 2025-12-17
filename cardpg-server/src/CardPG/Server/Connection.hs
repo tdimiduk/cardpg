@@ -49,12 +49,12 @@ disconnect client state = do
   s <- modifyMVar state $ \s -> do
     let s' = removeClient client s
     return (s', s')
-  broadcast (ClientLeft (client.clientId)) s
+  broadcast (ClientLeft (client.clientId)) (s.clients)
 
-broadcast :: ServerMessage -> ServerState -> IO ()
-broadcast msg state = do
+broadcast :: ServerMessage -> Map.Map UUID.UUID Client -> IO ()
+broadcast msg clients = do
   let msgBytes = encode msg
-  forM_ (Map.elems (state.clients)) $ \client ->
+  forM_ (Map.elems clients) $ \client ->
     sendTextData (client.clientConn) msgBytes
 
 talk :: Client -> MVar ServerState -> IO ()
@@ -105,16 +105,7 @@ talk client state = forever $ do
       forM_ messages $ \msg -> sendTextData (newClient.clientConn) (encode msg)
 
       -- Notify others
-      storedRng <- readMVar state >>= \s -> return s.rng
-      let broadcastState =
-            ServerState
-              (Map.delete clientId currentClients)
-              (CardLibrary [] [] [])
-              currentGs
-              pool
-              storedRng
-              (error "Config unused in broadcast")
-      broadcast (ClientJoined name clientId) broadcastState
+      broadcast (ClientJoined name clientId) currentClients
 
       -- Continue loop with updated client info
       talkLoop newClient state
@@ -141,7 +132,7 @@ talkLoop client state = do
       T.putStrLn $ "Client renamed: " <> name
       talkLoop newClient state
     Just (GameCommand cmd) -> handleGameCommand client state cmd
-    Just (Admin (ResetGame)) -> do
+    Just (Admin ResetGame) -> do
       T.putStrLn $ "Admin: Resetting Game requested by " <> client.clientName
       (newGs, pool, clientsMap) <- modifyMVar state $ \s -> do
         (gs, rng) <- initGame (s.dbPool) (s.config) (s.library) True
@@ -188,20 +179,11 @@ handleGameCommand client state cmd = do
   saveGame pool "default-game" newGame
 
   -- Broadcast results
-  let tempState =
-        ServerState
-          clientsMap
-          (CardLibrary [] [] [])
-          (error "GameState unused in broadcast")
-          pool
-          newRng
-          (error "Config unused in broadcast")
-
   let messages =
         [BroadcastMessage (client.clientId) actions | not (null actions)]
           ++ [GameStateUpdate updates (Just newPhase) | not (null updates) && newPhase /= oldPhase]
           ++ [NewLogs logs | not (null logs)]
 
-  unless (null messages) $ broadcast (MultiMessage messages) tempState
+  unless (null messages) $ broadcast (MultiMessage messages) clientsMap
 
   talkLoop client state
