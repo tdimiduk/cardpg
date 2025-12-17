@@ -97,7 +97,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
             <div className="flex -space-x-8 justify-center items-end px-8">
               {plannedAction.cards.map((card, idx) => (
                 <div
-                  key={card.id}
+                  key={`${card.id}-${idx}`}
                   className="relative transform scale-75 origin-bottom hover:scale-90 transition-transform duration-300 z-10 hover:z-20 cursor-default shadow-2xl"
                   style={{ zIndex: idx }}
                 >
@@ -154,7 +154,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
             {/* Specific Action Buttons */}
             {actionCards.length > 0 ? (
               <>
-                {actionCards.map((card) => {
+                {actionCards.map((card, idx) => {
                   const cost = card.cost!;
                   const requiredTotal = cost + 1;
 
@@ -167,7 +167,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
 
                   return (
                     <button
-                      key={card.id}
+                      key={`${card.id}-${idx}`}
                       onClick={() => isValid && handleSpecificAction(card)}
                       disabled={!isValid}
                       className={`
@@ -302,9 +302,9 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
       {/* Cards Container */}
       <div className="w-full overflow-x-auto px-8 pb-4 pt-10 flex justify-center items-end pointer-events-auto min-h-[240px] custom-scrollbar">
         <div className="flex -space-x-12 hover:-space-x-4 transition-all duration-300 items-end px-12">
-          {hand.map((card) => (
+          {hand.map((card, idx) => (
             <div
-              key={card.id}
+              key={`${card.id}-${idx}`}
               className="relative transform transition-transform hover:z-30 hover:-translate-y-8"
             >
               <CardComponent
