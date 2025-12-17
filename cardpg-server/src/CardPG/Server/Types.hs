@@ -4,6 +4,7 @@ module CardPG.Server.Types
   ( Client (..)
   , ClientMessage (..)
   , ServerMessage (..)
+  , AdminCommand (..)
   , ActorGameEvent (..)
   , Token (..)
   , CardLibrary (..)
@@ -53,9 +54,10 @@ import CardPG.Core.Card
   , CoreCard (..)
   , ItemCard
   )
-import CardPG.Core.Json (cardpgJsonDef)
+import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
 import CardPG.Core.State (ActorState, GameEnv, GameEvent, RealizedAttack)
+import CardPG.Server.Config (Config)
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution
@@ -153,10 +155,17 @@ data Command
 
 $(deriveJSON cardpgJsonDef ''Command)
 
+data AdminCommand
+  = ResetGame
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON (cardpgTaggedOptions "") ''AdminCommand)
+
 -- | Messages sent from Client to Server.
 data ClientMessage
   = Join {name :: Text, id :: Maybe UUID}
   | GameCommand {command :: Command}
+  | Admin {adminCommand :: AdminCommand}
   deriving (Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ClientMessage)
@@ -211,10 +220,11 @@ data ServerState = ServerState
   , gameState :: GameState
   , dbPool :: Pool Pg.Connection
   , rng :: StdGen
+  , config :: Config
   }
 
-newServerState :: Pool Pg.Connection -> GameState -> StdGen -> ServerState
-newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool
+newServerState :: Pool Pg.Connection -> GameState -> StdGen -> Config -> ServerState
+newServerState pool gs rng cfg = ServerState Map.empty (CardLibrary [] [] []) gs pool rng cfg
 
 -- | Helpers for managing server state
 numClients :: ServerState -> Int

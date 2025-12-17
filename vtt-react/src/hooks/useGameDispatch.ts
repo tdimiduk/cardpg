@@ -1,5 +1,5 @@
 import { useWebSocket } from '../contexts/WebSocketContext';
-import { Command } from '../types';
+import { Command, AdminCommand } from '../generated/types';
 
 export const useGameDispatch = () => {
   const { sendMessage } = useWebSocket();
@@ -9,5 +9,9 @@ export const useGameDispatch = () => {
     sendMessage({ type: 'gameCommand', command });
   };
 
-  return { dispatchCommand };
+  const dispatchAdmin = (adminCommand: AdminCommand) => {
+    sendMessage({ type: 'admin', adminCommand } as any);
+  };
+
+  return { dispatchCommand, dispatchAdmin };
 };

@@ -53,6 +53,7 @@ import CardPG.Core.State
   )
 import CardPG.Server.Types
   ( ActorGameEvent
+  , AdminCommand
   , ClientMessage
   , Command
   , LogEntry
@@ -115,6 +116,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy GameEvent)
               <> getTypeScriptDeclarations (Proxy :: Proxy RevealedEffect)
               <> getTypeScriptDeclarations (Proxy :: Proxy Command)
+              <> getTypeScriptDeclarations (Proxy :: Proxy AdminCommand)
               <> getTypeScriptDeclarations (Proxy :: Proxy ClientMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy ServerMessage)
               <> getTypeScriptDeclarations (Proxy :: Proxy StateUpdate)

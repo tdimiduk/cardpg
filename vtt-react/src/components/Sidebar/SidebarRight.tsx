@@ -19,6 +19,7 @@ export interface SidebarRightProps {
   totalCount?: number;
   onEndDefense: (actorId: string) => void;
   onSendChat: (message: string) => void;
+  onResetGame: () => void;
 }
 
 const AttackLogItem: React.FC<{
@@ -204,6 +205,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
   totalCount,
   onEndDefense,
   onSendChat,
+  onResetGame,
 }) => {
   const [chatInput, setChatInput] = useState('');
   const endOfLogsRef = useRef<HTMLDivElement>(null);
@@ -367,6 +369,20 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
           </button>
         </div>
       </form>
+
+      {/* Admin Controls */}
+      <div className="p-2 border-t border-slate-800 bg-slate-950/50">
+        <button
+          onClick={() => {
+            if (confirm('Are you sure you want to reset the game? This cannot be undone.')) {
+              onResetGame();
+            }
+          }}
+          className="w-full text-xs text-red-500/70 hover:text-red-400 hover:bg-red-950/30 py-1.5 rounded transition-all flex items-center justify-center gap-2"
+        >
+          <span>⚠ Reset Game (Admin)</span>
+        </button>
+      </div>
     </div>
   );
 };
@@ -380,7 +396,7 @@ const SidebarRightContainer: React.FC = () => {
   const tokens = useGameStore((state) => state.tokens);
   const plannedActions = useGameStore((state) => state.plannedActions);
 
-  const { dispatchCommand } = useGameDispatch();
+  const { dispatchCommand, dispatchAdmin } = useGameDispatch();
 
   // Derived
   const isActionPlanned = (action?: { cards: unknown[]; actionName?: string }) =>
@@ -420,6 +436,10 @@ const SidebarRightContainer: React.FC = () => {
     });
   };
 
+  const handleResetGame = () => {
+    dispatchAdmin('resetGame');
+  };
+
   return (
     <SidebarRightView
       logs={logs}
@@ -430,6 +450,7 @@ const SidebarRightContainer: React.FC = () => {
       totalCount={totalCount}
       onEndDefense={handleEndDefense}
       onSendChat={handleSendChat}
+      onResetGame={handleResetGame}
     />
   );
 };

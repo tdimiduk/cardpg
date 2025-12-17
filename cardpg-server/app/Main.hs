@@ -24,6 +24,7 @@ import CardPG.Server.Connection (application)
 import CardPG.Server.Config (Config(..), DBConfig(..), loadConfig)
 import CardPG.Server.DB (initDB, loadGame, saveGame)
 import CardPG.Server.Scenario (loadScenario)
+import CardPG.Server.Session (initGame)
 import CardPG.Server.Types (CardLibrary(..), ServerState(..), newServerState, GameState(..))
 
 
@@ -45,33 +46,10 @@ main = do
              return (CardLibrary [] [] [])
         Right l -> return l
 
-    -- Try to load default game
-    let defaultGameId = "default-game"
-    maybeLoaded <- loadGame pool defaultGameId
-    
-    (finalGs, finalRng) <- case maybeLoaded of
-        Just loadedGs -> do
-            T.putStrLn "Loaded persisted game state."
-            -- Since we don't save RNG, we must generate a new one on restart.
-            -- This is acceptable for simple restarts, though deterministic replay would require saving it.
-            rng <- newStdGen
-            return (loadedGs, rng)
-        Nothing -> do
-            T.putStrLn $ "No persisted game found. Loading starter scenario from " <> T.pack config.scenarioFile <> "..."
-            (initialGs, rng) <- loadScenario config.scenarioFile
-            
-            -- Hydrate library into env
-            let env = initialGs.env
-            let statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
-            let consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
-            let newEnv = env { statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap }
-            let newGs = initialGs { env = newEnv }
-            
-            -- Persist initial state
-            saveGame pool defaultGameId newGs
-            return (newGs, rng)
+    -- Initialize Game Session
+    (gameGs, gameRng) <- initGame pool config lib False
 
-    state <- newMVar (newServerState pool finalGs finalRng) { library = lib }
+    state <- newMVar (newServerState pool gameGs gameRng config) { library = lib }
 
     T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show config.serverPort) <> "..."
     WS.runServer "127.0.0.1" config.serverPort $ application state

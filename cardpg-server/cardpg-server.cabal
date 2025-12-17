@@ -36,6 +36,7 @@ library
     CardPG.Server.Presenter
     CardPG.Server.Connection
     CardPG.Server.Config
+    CardPG.Server.Session
   hs-source-dirs:      src
   build-depends:       base >= 4.7 && < 5
                      , websockets

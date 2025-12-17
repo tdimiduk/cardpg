@@ -2,7 +2,7 @@ module CardPG.Server.Connection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
 import Control.Exception (finally)
-import Control.Monad (forM_, forever, when, unless)
+import Control.Monad (forM_, forever, unless, when)
 import Control.Monad.State (runState)
 import Data.Aeson (decode, encode)
 import Data.Map qualified as Map
@@ -15,8 +15,10 @@ import Network.WebSockets (ServerApp, acceptRequest, receiveData, sendTextData, 
 
 import CardPG.Server.DB (saveGame)
 import CardPG.Server.Dispatch (processCommand)
+import CardPG.Server.Session (initGame)
 import CardPG.Server.Types
-  ( CardLibrary (..)
+  ( AdminCommand (..)
+  , CardLibrary (..)
   , Client (..)
   , ClientMessage (..)
   , Command (..)
@@ -104,7 +106,14 @@ talk client state = forever $ do
 
       -- Notify others
       storedRng <- readMVar state >>= \s -> return s.rng
-      let broadcastState = ServerState (Map.delete clientId currentClients) (CardLibrary [] [] []) currentGs pool storedRng
+      let broadcastState =
+            ServerState
+              (Map.delete clientId currentClients)
+              (CardLibrary [] [] [])
+              currentGs
+              pool
+              storedRng
+              (error "Config unused in broadcast")
       broadcast (ClientJoined name clientId) broadcastState
 
       -- Continue loop with updated client info
@@ -112,6 +121,9 @@ talk client state = forever $ do
     Just (GameCommand cmd) -> do
       -- Clients must Join before sending commands.
       T.putStrLn "Received command before Join"
+      sendTextData (client.clientConn) (encode $ ErrorMessage "Please Join first")
+    Just (Admin _) -> do
+      T.putStrLn "Received admin command before Join"
       sendTextData (client.clientConn) (encode $ ErrorMessage "Please Join first")
 
 talkLoop :: Client -> MVar ServerState -> IO ()
@@ -129,6 +141,28 @@ talkLoop client state = do
       T.putStrLn $ "Client renamed: " <> name
       talkLoop newClient state
     Just (GameCommand cmd) -> handleGameCommand client state cmd
+    Just (Admin (ResetGame)) -> do
+      T.putStrLn $ "Admin: Resetting Game requested by " <> client.clientName
+      (newGs, pool, clientsMap) <- modifyMVar state $ \s -> do
+        (gs, rng) <- initGame (s.dbPool) (s.config) (s.library) True
+        let s' = s{gameState = gs, rng = rng}
+        return (s', (gs, s.dbPool, s.clients))
+
+      -- Send custom Welcome to all clients
+      let initialUpdates = map (uncurry StateUpdate) $ Map.toList (newGs.actors)
+      let connectedNames = map (.clientName) $ Map.elems clientsMap
+
+      forM_ (Map.elems clientsMap) $ \c -> do
+        let welcomeMsg =
+              Welcome
+                (c.clientId)
+                connectedNames
+                initialUpdates
+                (newGs.phase)
+                (newGs.history)
+        sendTextData (c.clientConn) (encode welcomeMsg)
+
+      talkLoop client state
 
 handleGameCommand :: Client -> MVar ServerState -> Command -> IO ()
 handleGameCommand client state cmd = do
@@ -154,7 +188,14 @@ handleGameCommand client state cmd = do
   saveGame pool "default-game" newGame
 
   -- Broadcast results
-  let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast") pool newRng
+  let tempState =
+        ServerState
+          clientsMap
+          (CardLibrary [] [] [])
+          (error "GameState unused in broadcast")
+          pool
+          newRng
+          (error "Config unused in broadcast")
 
   let messages =
         [BroadcastMessage (client.clientId) actions | not (null actions)]

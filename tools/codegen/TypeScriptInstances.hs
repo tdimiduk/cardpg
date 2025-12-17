@@ -68,6 +68,7 @@ import CardPG.Core.State
   )
 import CardPG.Server.Types
   ( ActorGameEvent (..)
+  , AdminCommand (..)
   , ClientMessage
   , Command (..)
   , LogEntry (..)
@@ -319,6 +320,7 @@ $( do
      i_gameEvent <- deriveTypeScript cardpgJsonDef ''GameEvent
      i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
      i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
+     i_admin <- deriveTypeScript (cardpgTaggedOptions "") ''AdminCommand
 
      return
        ( i_token
@@ -334,5 +336,6 @@ $( do
            ++ i_actorState
            ++ i_gameEvent
            ++ i_stateUpdate
+           ++ i_admin
        )
  )
