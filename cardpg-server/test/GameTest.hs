@@ -14,7 +14,7 @@ import Test.Tasty.HUnit (testCase, (@?=), assertBool)
 import Data.Maybe (fromJust)
 import Text.Read (readMaybe)
 
-import CardPG.Core.Logic (drawCard)
+import CardPG.Core.Logic.Deck (drawCard)
 import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..), StackPower(..), ResourceType(..))
 import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..), SpatialState(..), PlannedAction(..), ActionStack(..))
 import CardPG.Core.Card (CoreCard(..), CoreCardT(..), Stats(..))

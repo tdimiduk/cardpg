@@ -43,8 +43,8 @@ library
                , transformers
   exposed-modules:
     CardPG.Core.State
-    CardPG.Core.Logic
     CardPG.Core.Logic.Monad
+    
     CardPG.Core.Logic.Deck
     CardPG.Core.Logic.Planning
     CardPG.Core.Logic.Combat

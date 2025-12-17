@@ -15,8 +15,11 @@ import Data.Maybe (isJust, isNothing)
 import Optics ((%~), (&))
 import System.Random (StdGen)
 
-import CardPG.Core.Logic (GameM, runGameM)
-import CardPG.Core.Logic qualified as Logic
+import CardPG.Core.Logic.Monad (GameM, runGameM)
+import CardPG.Core.Logic.Bot qualified as Logic
+import CardPG.Core.Logic.Deck qualified as Logic
+import CardPG.Core.Logic.Planning qualified as Logic
+import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId)
 import CardPG.Core.State (ActorState (..), CoreCardState (..), GameEvent)
 import CardPG.Server.Types (ActorGameEvent (..), GameState (..), StateUpdate (..))

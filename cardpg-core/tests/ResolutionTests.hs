@@ -14,8 +14,9 @@ import Test.Tasty.HUnit
 import CardPG.Core.Card (CoreCard, CoreCardT (..), ItemCard, ItemCardT (..), Stats (..))
 import CardPG.Core.Card qualified as Card
 import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.Logic (GameM, runGameM)
-import CardPG.Core.Logic qualified as Logic
+import CardPG.Core.Logic.Deck qualified as Logic
+import CardPG.Core.Logic.Planning qualified as Logic
+import CardPG.Core.Logic.Monad (GameM, runGameM)
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives (ActorId (..), CardInstanceId (..), ResourceType (..))
 import CardPG.Core.State

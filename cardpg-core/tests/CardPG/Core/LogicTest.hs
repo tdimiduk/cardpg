@@ -19,7 +19,10 @@ import CardPG.Core.Card
   , Stats (..)
   , TalentCard
   )
-import CardPG.Core.Logic
+import CardPG.Core.Logic.Deck qualified as Deck
+import CardPG.Core.Logic.Planning
+import CardPG.Core.Logic.Status
+import CardPG.Core.Logic.Monad (GameM (..), runGameM)
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives
   ( CardInstanceId (..)

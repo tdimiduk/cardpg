@@ -7,7 +7,9 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import System.Random (StdGen)
 
-import CardPG.Core.Logic qualified as Logic
+import CardPG.Core.Logic.Deck qualified as Logic
+import CardPG.Core.Logic.Planning qualified as Logic
+import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
 import CardPG.Core.State (ActorState (..))
 import CardPG.Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
