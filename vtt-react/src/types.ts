@@ -101,4 +101,10 @@ export interface ActorState {
 
   // Game State
   revealed?: RevealedEffect;
+
+  // Spatial (Server Authority)
+  x: number;
+  y: number;
+  size: number;
+  mapId?: string;
 }

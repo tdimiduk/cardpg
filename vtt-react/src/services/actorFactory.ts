@@ -38,5 +38,8 @@ export const createActor = (
     color: color || (type === TokenType.MONSTER ? ACTOR_COLORS.MONSTER : ACTOR_COLORS.PC),
     deck: initialDeckState,
     registry: {},
+    x: 0,
+    y: 0,
+    size: 1,
   };
 };

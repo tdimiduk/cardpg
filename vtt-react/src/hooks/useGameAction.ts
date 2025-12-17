@@ -11,9 +11,9 @@ export const useGameAction = () => {
   // Store actions
 
   const revealAndResolve = useGameStore((state) => state.revealAndResolve);
-  const endRound = useGameStore((state) => state.endRound);
-  const updateTokenPosition = useGameStore((state) => state.updateTokenPosition);
+
   const addLog = useGameStore((state) => state.addLog);
+  const setPlannedMove = useGameStore((state) => state.setPlannedMove);
 
   const _applyAction = useCallback(
     (actorEvent: ActorGameEvent) => {
@@ -63,7 +63,13 @@ export const useGameAction = () => {
         case 'planCanceled':
           break;
         case 'cardsCreated':
+          break;
         case 'movePlanned':
+          if (event.data) {
+            const [x, y] = event.data;
+            setPlannedMove(actorEvent.actorId, x, y);
+          }
+          break;
         case 'actorMoved':
         case 'actionPlanned':
           // Ignore
@@ -72,7 +78,7 @@ export const useGameAction = () => {
           console.warn('Unhandled event:', event);
       }
     },
-    [revealAndResolve, endRound, updateTokenPosition, addLog],
+    [revealAndResolve, addLog, setPlannedMove],
   );
 
   return { _applyAction };

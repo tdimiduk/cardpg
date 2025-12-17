@@ -1,4 +1,4 @@
-import { ActorState as ServerActorState, CoreCard as GenCoreCard } from '../generated/types';
+import { ActorState as ServerActorState } from '../generated/types';
 import {
   ActorState,
   PlayerDeckState,
@@ -14,12 +14,12 @@ import { RESOURCE_TYPES } from '../constants';
 
 export const hydrateCards = (
   ids: string[],
-  registry: Record<string, GenCoreCard | undefined>,
+  registry: Record<string, Card | undefined>,
 ): CoreCard[] => {
   return ids.map((id) => {
     const def = registry[id];
-    if (!def) {
-      console.warn('Missing card definition for ID:', id);
+    if (!def || def.type !== 'coreCard') {
+      if (!def) console.warn('Missing card definition for ID:', id);
       return {
         id,
         type: 'coreCard',
@@ -28,7 +28,8 @@ export const hydrateCards = (
         flavor: [{ type: 'textRun', content: 'Missing Definition' }],
       } as CoreCard;
     }
-    return { ...def, id };
+    // We know it is CoreCard here
+    return { ...def, id } as CoreCard;
   });
 };
 
@@ -46,7 +47,9 @@ export const hydrateActor = (
 
   // Sync Registry
   // We must manually map the registry to inject IDs, as the generated types don't include it in the object
-  const mappedRegistry: Record<string, Card> = {};
+  // Merge existing registry to ensure we don't lose definitions if server sends partial updates.
+  const mappedRegistry: Record<string, Card> = existingActor ? { ...existingActor.registry } : {};
+
   if (registry) {
     Object.entries(registry).forEach(([key, card]) => {
       if (card) {
@@ -56,11 +59,19 @@ export const hydrateActor = (
   }
 
   // Hydrate Deck State
+  console.log(
+    '[Hydration] Hydrating Actor:',
+    id,
+    'Hand IDs:',
+    core.hand,
+    'Registry Keys:',
+    Object.keys(mappedRegistry),
+  );
   const newDeckState: PlayerDeckState = {
-    drawPile: hydrateCards(core.deck, registry),
-    hand: hydrateCards(core.hand, registry),
-    discardPile: hydrateCards(core.discard, registry),
-    flippedPile: hydrateCards(core.defending, registry),
+    drawPile: hydrateCards(core.deck, mappedRegistry),
+    hand: hydrateCards(core.hand, mappedRegistry),
+    discardPile: hydrateCards(core.discard, mappedRegistry),
+    flippedPile: hydrateCards(core.defending, mappedRegistry),
 
     // Hydrate Equipped
     equipped: Object.entries(serverState.tableState.assets || {})
@@ -107,13 +118,18 @@ export const hydrateActor = (
     registry: mappedRegistry,
     revealed: core.revealed,
     plannedMove,
+    // Spatial
+    x: serverState.spatial.posX,
+    y: serverState.spatial.posY,
+    size: serverState.spatial.size,
+    mapId: serverState.spatial.mapId,
   };
 };
 
 export const hydratePlannedAction = (
   serverState: ServerActorState,
   id: string,
-  registry: Record<string, GenCoreCard | undefined>,
+  registry: Record<string, Card | undefined>,
 ): UIPlannedAction | undefined => {
   const planned = serverState.coreState.planned;
 
@@ -125,8 +141,8 @@ export const hydratePlannedAction = (
     const resourceIds = stack.resources;
 
     const actionDef = registry[actionCardId];
-    if (actionDef) {
-      const actionCard = { ...actionDef, id: actionCardId };
+    if (actionDef && actionDef.type === 'coreCard') {
+      const actionCard = { ...actionDef, id: actionCardId } as CoreCard;
       const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
 
       // Infer Action logic for UI

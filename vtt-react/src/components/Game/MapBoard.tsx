@@ -1,11 +1,11 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Token, ActorState, GamePhase, UIPlannedAction } from '../../types';
+import { ActorState, GamePhase, UIPlannedAction } from '../../types';
 import { GRID_SIZE } from '../../constants';
 import { TokenEntity } from './TokenEntity';
 
 interface MapBoardProps {
-  tokens: Token[];
-  onUpdateToken: (token: Token) => void;
+  // tokens prop removed
+  onUpdateToken: (actorId: string, x: number, y: number) => void;
   activeActorId: string | null;
   setActiveActorId: (id: string | null) => void;
   defeatedTokenIds?: string[];
@@ -15,7 +15,6 @@ interface MapBoardProps {
 }
 
 export const MapBoard: React.FC<MapBoardProps> = ({
-  tokens,
   onUpdateToken,
   activeActorId,
   setActiveActorId,
@@ -25,62 +24,62 @@ export const MapBoard: React.FC<MapBoardProps> = ({
   plannedActions,
 }) => {
   const boardRef = useRef<HTMLDivElement>(null);
-  const [draggingToken, setDraggingToken] = useState<{
+  const [draggingActorId, setDraggingActorId] = useState<{
     id: string;
     startX: number;
     startY: number;
-    initialTokenX: number;
-    initialTokenY: number;
+    initialX: number;
+    initialY: number;
   } | null>(null);
   const [dragPreview, setDragPreview] = useState<{ x: number; y: number } | null>(null);
 
-  const handleMouseDown = (e: React.MouseEvent, token: Token) => {
-    // ... (keep existing logic)
-    e.stopPropagation();
-    setActiveActorId(token.actorId);
+  const actorList = Object.values(actors);
 
-    setDraggingToken({
-      id: token.id,
+  const handleMouseDown = (e: React.MouseEvent, actorId: string, x: number, y: number) => {
+    e.stopPropagation();
+    setActiveActorId(actorId);
+
+    setDraggingActorId({
+      id: actorId,
       startX: e.clientX,
       startY: e.clientY,
-      initialTokenX: token.x,
-      initialTokenY: token.y,
+      initialX: x,
+      initialY: y,
     });
-    setDragPreview({ x: token.x * GRID_SIZE, y: token.y * GRID_SIZE });
+    setDragPreview({ x: x * GRID_SIZE, y: y * GRID_SIZE });
   };
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      // ... (keep existing logic)
-      if (!draggingToken || !boardRef.current) return;
-      const deltaX = e.clientX - draggingToken.startX;
-      const deltaY = e.clientY - draggingToken.startY;
+      if (!draggingActorId || !boardRef.current) return;
+      const deltaX = e.clientX - draggingActorId.startX;
+      const deltaY = e.clientY - draggingActorId.startY;
       setDragPreview({
-        x: draggingToken.initialTokenX * GRID_SIZE + deltaX,
-        y: draggingToken.initialTokenY * GRID_SIZE + deltaY,
+        x: draggingActorId.initialX * GRID_SIZE + deltaX,
+        y: draggingActorId.initialY * GRID_SIZE + deltaY,
       });
     },
-    [draggingToken],
+    [draggingActorId],
   );
 
   const handleMouseUp = useCallback(() => {
-    // ... (keep existing logic)
-    if (draggingToken && dragPreview) {
+    if (draggingActorId && dragPreview) {
       const newGridX = Math.round(dragPreview.x / GRID_SIZE);
       const newGridY = Math.round(dragPreview.y / GRID_SIZE);
-      const token = tokens.find((t) => t.id === draggingToken.id);
-      if (token) {
+
+      const actor = actors[draggingActorId.id];
+      if (actor) {
         const finalX = Math.max(0, newGridX);
         const finalY = Math.max(0, newGridY);
         // Only update if position changed
-        if (finalX !== token.x || finalY !== token.y) {
-          onUpdateToken({ ...token, x: finalX, y: finalY });
+        if (finalX !== actor.x || finalY !== actor.y) {
+          onUpdateToken(actor.id, finalX, finalY);
         }
       }
     }
-    setDraggingToken(null);
+    setDraggingActorId(null);
     setDragPreview(null);
-  }, [draggingToken, dragPreview, tokens, onUpdateToken]);
+  }, [draggingActorId, dragPreview, actors, onUpdateToken]);
 
   return (
     <div
@@ -97,18 +96,17 @@ export const MapBoard: React.FC<MapBoardProps> = ({
       >
         {/* SVG Layer for Planned Paths */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible">
-          {tokens.map((token) => {
-            const actor = actors[token.actorId];
-            if (!actor || !actor.plannedMove) return null;
+          {actorList.map((actor) => {
+            if (!actor.plannedMove) return null;
 
             const { x: targetX, y: targetY } = actor.plannedMove;
-            if (targetX !== token.x || targetY !== token.y) {
-              const startX = token.x * GRID_SIZE + GRID_SIZE / 2;
-              const startY = token.y * GRID_SIZE + GRID_SIZE / 2;
+            if (targetX !== actor.x || targetY !== actor.y) {
+              const startX = actor.x * GRID_SIZE + GRID_SIZE / 2;
+              const startY = actor.y * GRID_SIZE + GRID_SIZE / 2;
               const endX = targetX * GRID_SIZE + GRID_SIZE / 2;
               const endY = targetY * GRID_SIZE + GRID_SIZE / 2;
               return (
-                <g key={`path-${token.id}`}>
+                <g key={`path-${actor.id}`}>
                   <line
                     x1={startX}
                     y1={startY}
@@ -128,31 +126,35 @@ export const MapBoard: React.FC<MapBoardProps> = ({
         </svg>
 
         {/* Tokens & Ghosts */}
-        {tokens.map((token) => {
-          const actor = actors[token.actorId];
-          if (!actor) return null;
+        {actorList.map((actor) => {
+          const isDragging = draggingActorId?.id === actor.id;
+          const isDefeated = defeatedTokenIds.includes(`token-${actor.id}`); // Assuming ID convention for now or we should check if defeated uses ActorID
 
-          const isDragging = draggingToken?.id === token.id;
-          const isDefeated = defeatedTokenIds.includes(token.id);
+          // Construct temporary token object for TokenEntity compatibility
+          const token = {
+            id: `token-${actor.id}`,
+            actorId: actor.id,
+            x: actor.x,
+            y: actor.y,
+            size: actor.size,
+          };
 
           // Indicator Logic
           const deck = actor.deck;
-          const plan = plannedActions[token.actorId];
+          const plan = plannedActions[actor.id];
           const rawHandSize = deck?.hand.length || 0;
           const plannedCount = plan ? plan.cards.length : 0;
 
-          // If in planning phase, we sum hand + planned to hide information
           const displayHandSize = phase === 'planning' ? rawHandSize + plannedCount : rawHandSize;
-
-          // We show 'hasPlan' indicator if there is a plan AND we are in planning/resolution
-          // Actually, purely existing plan is enough.
           const hasPlan = !!plan;
 
           // 1. Render Planned "Ghost" Token if it exists and is different from start
           let GhostEntity = null;
           if (actor.plannedMove) {
             const { x: planX, y: planY } = actor.plannedMove;
-            if (planX !== token.x || planY !== token.y) {
+            if (planX !== actor.x || planY !== actor.y) {
+              // Ghost token object
+              const ghostToken = { ...token, x: planX, y: planY };
               GhostEntity = (
                 <div
                   style={{
@@ -161,13 +163,12 @@ export const MapBoard: React.FC<MapBoardProps> = ({
                     top: planY * GRID_SIZE,
                     zIndex: 40,
                   }}
-                  // Removed className="pointer-events-none"
                 >
                   <TokenEntity
-                    token={token}
+                    token={ghostToken}
                     actor={actor}
                     isSelected={false}
-                    onMouseDown={handleMouseDown} // Changed from no-op
+                    onMouseDown={(e, t) => handleMouseDown(e, t.actorId, t.x, t.y)}
                     isGhost={true}
                   />
                 </div>
@@ -176,15 +177,15 @@ export const MapBoard: React.FC<MapBoardProps> = ({
           }
 
           // 2. Render Real Token
-          let renderX = token.x * GRID_SIZE;
-          let renderY = token.y * GRID_SIZE;
+          let renderX = actor.x * GRID_SIZE;
+          let renderY = actor.y * GRID_SIZE;
           if (isDragging && dragPreview) {
             renderX = dragPreview.x;
             renderY = dragPreview.y;
           }
 
           return (
-            <React.Fragment key={token.id}>
+            <React.Fragment key={actor.id}>
               {GhostEntity}
               <div
                 style={{
@@ -192,15 +193,15 @@ export const MapBoard: React.FC<MapBoardProps> = ({
                   left: renderX,
                   top: renderY,
                   transition: isDragging ? 'none' : 'all 0.2s ease-out',
-                  zIndex: activeActorId === token.actorId ? 50 : 10,
+                  zIndex: activeActorId === actor.id ? 50 : 10,
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <TokenEntity
                   token={token}
                   actor={actor}
-                  isSelected={activeActorId === token.actorId}
-                  onMouseDown={handleMouseDown}
+                  isSelected={activeActorId === actor.id}
+                  onMouseDown={(e, t) => handleMouseDown(e, t.actorId, t.x, t.y)}
                   isDefeated={isDefeated}
                   handSize={displayHandSize}
                   hasPlan={hasPlan}

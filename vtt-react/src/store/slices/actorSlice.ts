@@ -1,15 +1,13 @@
 import { StateCreator } from 'zustand';
-import { ActorState, UIPlannedAction, StateUpdate, Token } from '../../types';
+import { ActorState, UIPlannedAction, StateUpdate } from '../../types';
 import { ActorState as ServerActorState } from '../../generated/types';
 
 import { INITIAL_ACTORS } from '../../constants';
 import { LogSlice } from './logSlice';
-import { createActor } from '../../services/actorFactory';
 import { hydrateActor, hydratePlannedAction } from '../../utils/hydration';
 
 export interface ActorSlice {
   actors: Record<string, ActorState>;
-  tokens: Token[];
   plannedActions: Record<string, UIPlannedAction>;
 
   initializeGame: () => void;
@@ -23,6 +21,8 @@ export interface ActorSlice {
 
   // Server Sync
   updateActorState: (update: StateUpdate) => void;
+  // Server Sync Helpers
+  setPlannedMove: (actorId: string, x: number, y: number) => void;
 }
 
 export const createActorSlice: StateCreator<
@@ -32,36 +32,23 @@ export const createActorSlice: StateCreator<
   ActorSlice
 > = (set) => ({
   actors: INITIAL_ACTORS,
-  tokens: [],
   plannedActions: {},
 
   initializeGame: () =>
     set((state) => {
       // Clear all data to prepare for server sync
       state.actors = {};
-      state.tokens = [];
       state.plannedActions = {};
     }),
 
-  addActor: (name, actorType, color, templateId) =>
-    set((state) => {
-      const newActor = createActor(name, actorType, color, templateId);
-      state.actors[newActor.id] = newActor;
-
-      state.tokens.push({
-        id: `token-${newActor.id}`,
-        actorId: newActor.id,
-        x: 0,
-        y: 0,
-        size: 1,
-      });
+  addActor: (_name, _actorType, _color, _templateId) =>
+    set((_state) => {
+      console.warn('addActor is deprecated/disabled. Expecting server to spawn actors.');
     }),
 
-  removeActor: (actorId: string) =>
-    set((state) => {
-      if (!state.actors[actorId]) return;
-      state.tokens = state.tokens.filter((t) => t.actorId !== actorId);
-      delete state.actors[actorId];
+  removeActor: (_actorId: string) =>
+    set((_state) => {
+      console.warn('removeActor is deprecated. Expecting server to remove actors.');
     }),
 
   updateActorState: (update: StateUpdate) =>
@@ -73,38 +60,25 @@ export const createActorSlice: StateCreator<
 
       if (!state.actors[targetId]) {
         console.log('Received update for new actor:', targetId);
-        // Create token for new actor
-        state.tokens.push({
-          id: `token-${targetId}`,
-          actorId: targetId,
-          x: 0,
-          y: 0,
-          size: 1,
-        });
       }
 
       // Hydrate Actor State
       const hydratedActor = hydrateActor(serverState, targetId, state.actors[targetId]);
       state.actors[targetId] = hydratedActor;
 
-      // Sync Spatial State to Token (Needs to be separate because Token is separate from Actor in frontend model currently)
-      const token = state.tokens.find((t: Token) => t.actorId === targetId);
-      if (token && serverState.spatial) {
-        token.x = serverState.spatial.posX;
-        token.y = serverState.spatial.posY;
-        token.size = serverState.spatial.size ?? 1;
-      }
-
       // Hydrate Planned Actions
-      const plannedAction = hydratePlannedAction(
-        serverState,
-        targetId,
-        serverState.coreState.registry,
-      );
+      const plannedAction = hydratePlannedAction(serverState, targetId, hydratedActor.registry);
       if (plannedAction) {
         state.plannedActions[targetId] = plannedAction;
       } else {
         delete state.plannedActions[targetId];
+      }
+    }),
+
+  setPlannedMove: (actorId, x, y) =>
+    set((state) => {
+      if (state.actors[actorId]) {
+        state.actors[actorId].plannedMove = { x, y };
       }
     }),
 });

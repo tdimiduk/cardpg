@@ -6,7 +6,7 @@ interface WebSocketContextType {
   clientId: string | null;
   connectedClients: string[];
   sendMessage: (msg: ClientMessage) => void;
-  lastMessage: ServerMessage | null;
+  subscribe: (callback: (msg: ServerMessage) => void) => () => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -18,7 +18,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
   const [isConnected, setIsConnected] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
   const [connectedClients, setConnectedClients] = useState<string[]>([]);
-  const [lastMessage, setLastMessage] = useState<ServerMessage | null>(null);
+
+  // Listeners
+  const listenersRef = useRef<Set<(msg: ServerMessage) => void>>(new Set());
+
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -50,9 +53,17 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
       });
     };
 
-    socket.onclose = () => {
-      console.log('Disconnected from WebSocket server');
+    socket.onclose = (event) => {
+      console.log('Disconnected from WebSocket server:', {
+        code: event.code,
+        reason: event.reason,
+        wasClean: event.wasClean,
+      });
       setIsConnected(false);
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket Error:', error);
     };
 
     socket.onmessage = (event) => {
@@ -75,7 +86,17 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
 
     if (result.success) {
       const message = result.data;
-      setLastMessage(message);
+
+      // Notify Listeners
+      listenersRef.current.forEach((callback) => {
+        try {
+          callback(message);
+        } catch (e) {
+          console.error('Error in WebSocket listener:', e);
+        }
+      });
+
+      // Internal State Updates
       switch (message.type) {
         case 'welcome':
           setClientId(message.yourClientId);
@@ -98,13 +119,26 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       // We configured Haskell to use TaggedObject, so we can send the object directly
       // as it already has the 'tag' property.
+      console.log('[WebSocket] Sending:', msg);
       ws.current.send(JSON.stringify(msg));
+    } else {
+      console.warn('[WebSocket] Cannot send message, socket not open:', {
+        readyState: ws.current?.readyState,
+        msg,
+      });
     }
+  };
+
+  const subscribe = (callback: (msg: ServerMessage) => void) => {
+    listenersRef.current.add(callback);
+    return () => {
+      listenersRef.current.delete(callback);
+    };
   };
 
   return (
     <WebSocketContext.Provider
-      value={{ isConnected, clientId, connectedClients, sendMessage, lastMessage }}
+      value={{ isConnected, clientId, connectedClients, sendMessage, subscribe }}
     >
       {children}
     </WebSocketContext.Provider>

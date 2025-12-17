@@ -6,6 +6,7 @@ export const useGameDispatch = () => {
   // const { _applyAction } = useGameAction(); // Optimistic updates removed for now
 
   const dispatchCommand = (command: Command) => {
+    console.log('[Dispatch] Dispatching command:', command);
     sendMessage({ type: 'gameCommand', command });
   };
 

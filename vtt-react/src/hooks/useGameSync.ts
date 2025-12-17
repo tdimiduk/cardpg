@@ -4,10 +4,11 @@ import { useGameAction } from './useGameAction';
 import { useGameStore } from '../store/gameStore';
 
 export const useGameSync = () => {
-  const { lastMessage, clientId } = useWebSocket();
+  const { subscribe, clientId } = useWebSocket();
   const { _applyAction } = useGameAction();
 
   useEffect(() => {
+    // Handler for messages
     function handleMessage(msg: import('../generated/types').ServerMessage) {
       if (msg.type === 'broadcastMessage') {
         const events = msg.payload;
@@ -57,8 +58,12 @@ export const useGameSync = () => {
       }
     }
 
-    if (lastMessage) {
-      handleMessage(lastMessage);
-    }
-  }, [lastMessage, clientId, _applyAction]);
+    // Subscribe
+    const unsubscribe = subscribe(handleMessage);
+
+    // Cleanup on unmount or if dependencies change (unlikely for subscribe)
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe, clientId, _applyAction]);
 };

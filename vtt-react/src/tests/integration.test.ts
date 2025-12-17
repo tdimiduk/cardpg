@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../store/gameStore';
-import { INITIAL_ACTORS, INITIAL_TOKENS } from '../constants';
+import { INITIAL_ACTORS } from '../constants';
 
 describe('Game Store Integration', () => {
   beforeEach(() => {
     useGameStore.setState({
       actors: INITIAL_ACTORS,
-      tokens: INITIAL_TOKENS,
       logs: [],
       phase: 'planning',
       activeActorId: Object.keys(INITIAL_ACTORS)[0] || null,
@@ -16,7 +15,6 @@ describe('Game Store Integration', () => {
   it('should handle planning and resolution flow', () => {
     // Setup - Simulate Server State Update
     const testActorId = 'actor-1';
-    const testTokenId = 'token-1';
     const testCardId = 'card-1';
 
     useGameStore.setState((state) => {
@@ -43,14 +41,10 @@ describe('Game Store Integration', () => {
         registry: {
           [testCardId]: { name: 'Slash', type: 'coreCard' } as import('../types').CoreCard,
         },
-      };
-      state.tokens.push({
-        id: testTokenId,
-        actorId: testActorId,
         x: 0,
         y: 0,
         size: 1,
-      });
+      };
       state.activeActorId = testActorId;
     });
 
@@ -61,7 +55,7 @@ describe('Game Store Integration', () => {
     expect(useGameStore.getState().phase).toBe('resolution');
 
     // End Round
-    store.endRound();
+    store.setPhase('planning');
     expect(useGameStore.getState().phase).toBe('planning');
   });
 });

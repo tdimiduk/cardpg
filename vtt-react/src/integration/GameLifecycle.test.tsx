@@ -59,20 +59,17 @@ describe('Game Lifecycle Integration', () => {
 
       const state = useGameStore.getState();
       const activeActorId = state.activeActorId;
-      // Find token that belongs to this actor (integration assumption: only one token per actor usually, or at least one exists)
-      const activeToken = state.tokens.find((t) => t.actorId === activeActorId);
 
-      if (activeToken) {
+      if (activeActorId && state.actors[activeActorId]) {
+        const actor = state.actors[activeActorId];
         // Record expected position (current + 1 grid unit)
-        expectedPositions[activeToken.id] = {
-          x: activeToken.x + 1,
-          y: activeToken.y + 1,
+        expectedPositions[actor.id] = {
+          x: actor.x + 1,
+          y: actor.y + 1,
         };
-        console.log(
-          `Active Actor: ${state.actors[activeToken.actorId].name}, Token: ${activeToken.id} @ ${activeToken.x},${activeToken.y}`,
-        );
+        console.log(`Active Actor: ${actor.name} @ ${actor.x},${actor.y}`);
       } else {
-        throw new Error('No active token found for active actor');
+        throw new Error('No active actor found');
       }
 
       // Wait for Sidebar to update
@@ -102,22 +99,10 @@ describe('Game Lifecycle Integration', () => {
       await waitFor(
         () => {
           const updatedState = useGameStore.getState();
-          const actor = updatedState.actors[activeToken!.actorId];
+          const actor = updatedState.actors[activeActorId!];
           expect(actor.plannedMove).toBeDefined();
-          expect(actor.plannedMove?.x).toBe(activeToken!.x + 1);
-          expect(actor.plannedMove?.y).toBe(activeToken!.y + 1);
-        },
-        { timeout: 2000 },
-      );
-
-      // Plan Move
-      await waitFor(
-        () => {
-          const updatedState = useGameStore.getState();
-          const actor = updatedState.actors[activeToken!.actorId];
-          expect(actor.plannedMove).toBeDefined();
-          expect(actor.plannedMove?.x).toBe(activeToken!.x + 1);
-          expect(actor.plannedMove?.y).toBe(activeToken!.y + 1);
+          expect(actor.plannedMove?.x).toBe(expectedPositions[activeActorId!].x);
+          expect(actor.plannedMove?.y).toBe(expectedPositions[activeActorId!].y);
         },
         { timeout: 2000 },
       );
@@ -202,13 +187,13 @@ describe('Game Lifecycle Integration', () => {
     await waitFor(
       () => {
         const currentState = useGameStore.getState();
-        Object.entries(expectedPositions).forEach(([tokenId, expected]) => {
-          const token = currentState.tokens.find((t) => t.id === tokenId);
-          expect(token).toBeDefined();
-          if (token) {
-            // console.log(`Verifying token ${tokenId}: Expected (${expected.x}, ${expected.y}), Got (${token.x}, ${token.y})`);
-            expect(token.x).toBe(expected.x);
-            expect(token.y).toBe(expected.y);
+        Object.entries(expectedPositions).forEach(([actorId, expected]) => {
+          const actor = currentState.actors[actorId];
+          expect(actor).toBeDefined();
+          if (actor) {
+            // console.log(`Verifying actor ${actorId}: Expected (${expected.x}, ${expected.y}), Got (${actor.x}, ${actor.y})`);
+            expect(actor.x).toBe(expected.x);
+            expect(actor.y).toBe(expected.y);
           }
         });
       },

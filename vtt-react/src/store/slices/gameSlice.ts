@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { GamePhase, Token, ActorState } from '../../types';
+import { GamePhase, ActorState } from '../../types';
 import { LogSlice } from './logSlice';
 import { ActorSlice } from './actorSlice';
 
@@ -8,11 +8,10 @@ export interface GameSlice {
   revealAndResolve: () => void;
   setPhase: (phase: GamePhase) => void;
   setResolutionPhase: () => void;
-  endRound: () => void;
 }
 
 export const createGameSlice: StateCreator<
-  GameSlice & LogSlice & ActorSlice & { tokens: Token[]; actors: Record<string, ActorState> },
+  GameSlice & LogSlice & ActorSlice & { actors: Record<string, ActorState> },
   [['zustand/immer', never]],
   [],
   GameSlice
@@ -35,17 +34,5 @@ export const createGameSlice: StateCreator<
   setResolutionPhase: () =>
     set((state) => {
       state.phase = 'resolution';
-    }),
-
-  endRound: () =>
-    set((state) => {
-      // Logic handled by server (movement, clearing plans, etc)
-      // We process StateUpdates to reflect changes.
-      // We optimistically switch phase here to update UI immediately?
-      // Or better wait for server?
-      // Safe to switch phase as next round implies Planning.
-      state.phase = 'planning';
-      // Note: We might want to keep defense visible if it persists across turns, but usually it clears.
-      // For now, let's not auto-clear defense here unless explicitly told by server events.
     }),
 });

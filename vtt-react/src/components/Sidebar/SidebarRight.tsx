@@ -393,7 +393,7 @@ const SidebarRightContainer: React.FC = () => {
   const logs = useGameStore((state) => state.logs);
   const phase = useGameStore((state) => state.phase);
   const activeActorId = useGameStore((state) => state.activeActorId);
-  const tokens = useGameStore((state) => state.tokens);
+  const actors = useGameStore((state) => state.actors);
   const plannedActions = useGameStore((state) => state.plannedActions);
 
   const { dispatchCommand, dispatchAdmin } = useGameDispatch();
@@ -402,16 +402,16 @@ const SidebarRightContainer: React.FC = () => {
   const isActionPlanned = (action?: { cards: unknown[]; actionName?: string }) =>
     !!action && (action.cards.length > 0 || action.actionName === 'Pass');
   const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
-  const totalCount = tokens.length;
+  const totalCount = Object.keys(actors).length;
 
   // Handlers
   const handleRevealActions = () => {
     if (activeActorId) {
       dispatchCommand({ type: 'startResolutionIntent', actorId: activeActorId });
     } else {
-      // Fallback: pick first token? or just fail gracefully?
-      const first = tokens[0];
-      if (first) dispatchCommand({ type: 'startResolutionIntent', actorId: first.actorId });
+      // Fallback: pick first actor
+      const firstId = Object.keys(actors)[0];
+      if (firstId) dispatchCommand({ type: 'startResolutionIntent', actorId: firstId });
     }
   };
 
@@ -419,8 +419,8 @@ const SidebarRightContainer: React.FC = () => {
     if (activeActorId) {
       dispatchCommand({ type: 'endRoundIntent', actorId: activeActorId });
     } else {
-      const first = tokens[0];
-      if (first) dispatchCommand({ type: 'endRoundIntent', actorId: first.actorId });
+      const firstId = Object.keys(actors)[0];
+      if (firstId) dispatchCommand({ type: 'endRoundIntent', actorId: firstId });
     }
   };
 

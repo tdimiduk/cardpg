@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useHandSelection } from '../../hooks/useHandSelection';
 import { CoreCard, ResourceType, GamePhase, UIPlannedAction } from '../../types';
 import { CardComponent } from '../Card/Card';
@@ -327,18 +327,13 @@ const PlayerHandContainer: React.FC = () => {
   const actors = useGameStore((state) => state.actors);
   const phase = useGameStore((state) => state.phase);
   const plannedActions = useGameStore((state) => state.plannedActions);
-  const tokens = useGameStore((state) => state.tokens);
 
   const { dispatchCommand } = useGameDispatch();
 
   // Derived
-  const activeToken = useMemo(
-    () => (activeActorId ? tokens.find((t) => t.actorId === activeActorId) : undefined),
-    [activeActorId, tokens],
-  );
   const activeActor = activeActorId ? actors[activeActorId] : undefined;
   const currentDeck = activeActor?.deck;
-  const activeAction = activeActorId && activeToken ? plannedActions[activeActorId] : undefined;
+  const activeAction = activeActorId ? plannedActions[activeActorId] : undefined;
   const userHasPlannedAction =
     !!activeAction && (activeAction.cards.length > 0 || activeAction.actionName === 'Pass');
 

@@ -14,7 +14,6 @@ const App: React.FC = () => {
   // --- Store Hooks Needed for Layout/Initialization ---
   const phase = useGameStore((state) => state.phase);
   const plannedActions = useGameStore((state) => state.plannedActions);
-  const tokens = useGameStore((state) => state.tokens);
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
 
@@ -38,7 +37,7 @@ const App: React.FC = () => {
   // Calculate defeated for visualization (Passed to MapBoard which is not yet containerized)
   const defeatedTokenIds = Object.values(actors)
     .filter((actor) => actor.deck.consequences.some((c) => c.name === 'Taken Out'))
-    .flatMap((actor) => tokens.filter((t) => t.actorId === actor.id).map((t) => t.id));
+    .map((actor) => `token-${actor.id}`);
 
   // --- WebSocket Integration ---
   useWebSocket();
@@ -62,11 +61,9 @@ const App: React.FC = () => {
         </div>
 
         <MapBoard
-          tokens={tokens}
-          onUpdateToken={(token) => {
-            if (token.actorId) {
-              dispatchCommand({ type: 'planMove', actorId: token.actorId, x: token.x, y: token.y });
-            }
+          onUpdateToken={(actorId, x, y) => {
+            console.log('[App] onUpdateToken called:', { actorId, x, y });
+            dispatchCommand({ type: 'planMove', actorId, x, y });
           }}
           activeActorId={activeActorId}
           setActiveActorId={(id) => setActiveActor(id)}

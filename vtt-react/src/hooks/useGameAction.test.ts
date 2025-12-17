@@ -10,7 +10,7 @@ vi.mock('../store/gameStore');
 
 describe('useGameAction', () => {
   const mockRevealAndResolve = vi.fn();
-  const mockEndRound = vi.fn();
+
   const mockUpdateTokenPosition = vi.fn();
   const mockAddLog = vi.fn();
   const mockUpdateLog = vi.fn();
@@ -20,7 +20,7 @@ describe('useGameAction', () => {
 
     const mockState = {
       revealAndResolve: mockRevealAndResolve,
-      endRound: mockEndRound,
+
       updateTokenPosition: mockUpdateTokenPosition,
       drawCards: vi.fn(),
       defend: vi.fn(),
