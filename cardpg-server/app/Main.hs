@@ -7,13 +7,13 @@ import Control.Concurrent (newMVar)
 import Data.Aeson (eitherDecodeFileStrict)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
-import Data.Pool (createPool)
+import Data.Pool (newPool, defaultPoolConfig)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Data.Text.Encoding (encodeUtf8)
 import Database.PostgreSQL.Simple (close, connectPostgreSQL)
 import Network.WebSockets qualified as WS
-import System.Environment (lookupEnv)
+
 import System.IO (hSetBuffering, stdout, BufferMode(..))
 import System.Random (newStdGen)
 
@@ -21,34 +21,28 @@ import CardPG.Core.Card (CoreCardT(..), CoreCard, ConsequenceCardT(..), Conseque
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.State (GameEnv(..))
 import CardPG.Server.Connection (application)
+import CardPG.Server.Config (Config(..), DBConfig(..), loadConfig)
 import CardPG.Server.DB (initDB, loadGame, saveGame)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Types (CardLibrary(..), ServerState(..), newServerState, GameState(..))
 
+
+
 main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
+    config <- loadConfig
     
     -- DB Connection
-    dbHost <- fromMaybe "localhost" <$> lookupEnv "CARDPG_DB_HOST"
-    dbUser <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_USER"
-    dbPass <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_PASS"
-    dbName <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_NAME"
-    
-    let connStr = "host=" <> dbHost <> " user=" <> dbUser <> " password=" <> dbPass <> " dbname=" <> dbName
-    pool <- createPool (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 1 10 10
+    let db = config.dbConfig
+    let connStr = "host=" <> db.dbHost <> " user=" <> db.dbUser <> " password=" <> db.dbPass <> " dbname=" <> db.dbName
+    pool <- newPool $ defaultPoolConfig (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 10 10
 
     initDB pool
 
-    cardsFileEnv <- lookupEnv "CARDPG_CARDS_FILE"
-    let cardsFile = fromMaybe "vtt-react/src/data/generated_cards.json" cardsFileEnv
-
-    scenarioFileEnv <- lookupEnv "CARDPG_SCENARIO_FILE"
-    let scenarioFile = fromMaybe "data/scenarios/starter.yaml" scenarioFileEnv
-
     -- Load Cards from Disk
-    T.putStrLn $ "Loading card library from " <> T.pack cardsFile <> "..."
-    cardLibraryResult <- eitherDecodeFileStrict cardsFile
+    T.putStrLn $ "Loading card library from " <> T.pack config.cardsFile <> "..."
+    cardLibraryResult <- eitherDecodeFileStrict config.cardsFile
     
     lib <- case cardLibraryResult of
         Left err -> do
@@ -68,8 +62,8 @@ main = do
             rng <- newStdGen
             return (loadedGs, rng)
         Nothing -> do
-            T.putStrLn $ "No persisted game found. Loading starter scenario from " <> T.pack scenarioFile <> "..."
-            (initialGs, rng) <- loadScenario scenarioFile
+            T.putStrLn $ "No persisted game found. Loading starter scenario from " <> T.pack config.scenarioFile <> "..."
+            (initialGs, rng) <- loadScenario config.scenarioFile
             
             -- Hydrate library into env
             let env = initialGs.env
@@ -83,9 +77,6 @@ main = do
             return (newGs, rng)
 
     state <- newMVar (newServerState pool finalGs finalRng) { library = lib }
-    
-    portStr <- lookupEnv "PORT"
-    let port = fromMaybe 8080 (fmap read portStr)
 
-    T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show port) <> "..."
-    WS.runServer "127.0.0.1" port $ application state
+    T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show config.serverPort) <> "..."
+    WS.runServer "127.0.0.1" config.serverPort $ application state
