@@ -278,13 +278,13 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
 
       {/* Chat Log */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-        {logs.map((log) => {
+        {logs.map((log, index) => {
           const payload = log.payload;
 
           if (payload.type === 'logDefense') {
             return (
               <DefenseLogItem
-                key={log.id}
+                key={`${log.id}-${index}`}
                 log={log}
                 payload={payload}
                 onEndDefense={() => onEndDefense(payload.defenseActorId)}
@@ -296,7 +296,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
           if (payload.type === 'logAttack') {
             return (
               <AttackLogItem
-                key={log.id}
+                key={`${log.id}-${index}`}
                 log={log}
                 payload={payload}
                 onViewStack={handleOpenStack}
@@ -309,7 +309,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
           const isInfo = payload.type === 'logInfo';
 
           return (
-            <div key={log.id} className="flex flex-col gap-1 animate-fade-in">
+            <div key={`${log.id}-${index}`} className="flex flex-col gap-1 animate-fade-in">
               <div className="flex items-center gap-2">
                 <span
                   className={`text-xs font-bold ${

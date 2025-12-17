@@ -45,6 +45,7 @@ export const useGameSync = () => {
       } else if (msg.type === 'newLogs') {
         // Handle batch of new logs
         if (msg.logs && Array.isArray(msg.logs)) {
+          console.log('Received New Logs:', msg.logs.length, msg.logs);
           msg.logs.forEach((l) => useGameStore.getState().receiveLog(l));
         }
       } else if (msg.type === 'multiMessage') {

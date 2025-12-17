@@ -67,9 +67,6 @@ broadcast msg state = do
     forM_ (Map.elems (state.clients)) $ \client ->
         sendTextData (client.clientConn) msgBytes
 
-    forM_ (Map.elems (state.clients)) $ \client ->
-        sendTextData (client.clientConn) msgBytes
-
 main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
