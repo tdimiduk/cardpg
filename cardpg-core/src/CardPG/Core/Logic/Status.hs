@@ -6,7 +6,6 @@ module CardPG.Core.Logic.Status
   , isDefeated
   ) where
 
-import Control.Monad (when)
 import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (get, modify, put)
 import Control.Monad.Trans.Class (lift)
@@ -16,7 +15,7 @@ import Data.Text qualified as T
 import Optics
 import System.Random (RandomGen, uniform, uniformR)
 
-import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT (..), CoreCardT (..))
+import CardPG.Core.Card (ConsequenceCardT (..), CoreCardT (..))
 import CardPG.Core.Logic.Combat (calculateResilience)
 import CardPG.Core.Logic.Deck (createCards)
 import CardPG.Core.Logic.Monad (GameM (..))
@@ -123,7 +122,7 @@ addConsequence maybeSeverity = do
       -- Create a new ID
       let (cid, g'') = uniform g'
       GameM . lift $ put g''
-      
+
       -- Add to TableState registry and list
       modify $ #tableState % #consequenceRegistry %~ Map.insert cid template
       modify $ #tableState % #consequences %~ (cid :)

@@ -90,6 +90,7 @@ test-suite cardpg-server-test
   other-modules:       GameTest
                      , ScenarioTest
                      , JsonTest
+                     , InMemoryTest
   hs-source-dirs:      test
   build-depends:       base >= 4.7 && < 5
                      , cardpg-server

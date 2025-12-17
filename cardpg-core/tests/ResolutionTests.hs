@@ -11,16 +11,14 @@ import System.Random (StdGen, mkStdGen)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..), ItemCard, ItemCardT (..), Stats (..))
-import CardPG.Core.Card qualified as Card
+import CardPG.Core.Card (CoreCardT (..))
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck qualified as Logic
-import CardPG.Core.Logic.Planning qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)
-import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
-import CardPG.Core.Primitives (ActorId (..), CardInstanceId (..), ResourceType (..))
+import CardPG.Core.Logic.Planning qualified as Logic
+import CardPG.Core.Primitives (CardInstanceId (..))
 import CardPG.Core.State
-import Optics ((%), (&), (.~), (?~), (^.))
+import Optics ((%), (&), (.~))
 
 test_resolutionCycle :: TestTree
 test_resolutionCycle = testCase "Full Resolution Cycle" $ do
@@ -82,13 +80,12 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
     Just (PStandard (ActionStack ac res)) -> do
       assertEqual "Action card correct" c1Id ac
       assertEqual "Resource card correct" [c2Id] res
+    Just _ -> assertFailure "unexpected action planned"
     Nothing -> assertFailure "Action should be planned"
 
   -- 2. Defend with c3
-  let defendAction = Logic.flipCardToDefense :: GameM System.Random.StdGen ()
-  -- Wait, flipCardToDefense pulls from DECK.
-  -- My initial state has hand [c1, c2, c3], deck [].
-  -- Let's put c3 in DECK for this test.
+  let _defendAction = Logic.flipCardToDefense :: GameM System.Random.StdGen ()
+  -- TODO: check something about this defend action
 
   let actorWithDeck =
         initialActor
@@ -113,7 +110,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         Logic.endDefense
         Logic.discardPlannedActions
 
-      ((_, actorFinal, events), _) = runState (runRWST (runGameM resolveAction) env actorAfterDefend) gen3
+      ((_, actorFinal, _), _) = runState (runRWST (runGameM resolveAction) env actorAfterDefend) gen3
 
   -- Verify cleanup
   assertEqual "Defending stack empty" [] actorFinal.coreState.defending

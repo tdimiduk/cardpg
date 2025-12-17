@@ -22,7 +22,7 @@ import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.State (GameEnv(..))
 import CardPG.Server.Connection (application)
 import CardPG.Server.Config (Config(..), DBConfig(..), loadConfig)
-import CardPG.Server.DB (initDB, loadGame, saveGame)
+import CardPG.Server.DB (initDB, initInMemoryDB, loadGame, saveGame)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Session (initGame)
 import CardPG.Server.Types (CardLibrary(..), ServerState(..), newServerState, GameState(..))
@@ -34,7 +34,13 @@ main = do
     hSetBuffering stdout NoBuffering
     config <- loadConfig
     
-    pool <- initDB config.dbConfig
+    backend <- if config.useInMemoryDB
+      then do
+        T.putStrLn "Starting in IN-MEMORY mode (ephemeral)..."
+        initInMemoryDB
+      else do
+        T.putStrLn "Starting in POSTGRES mode..."
+        initDB config.dbConfig
 
     -- Load Cards from Disk
     T.putStrLn $ "Loading card library from " <> T.pack config.cardsFile <> "..."
@@ -47,9 +53,9 @@ main = do
         Right l -> return l
 
     -- Initialize Game Session
-    (gameGs, gameRng) <- initGame pool config lib False
+    (gameGs, gameRng) <- initGame backend config lib False
 
-    state <- newMVar (newServerState pool gameGs gameRng config) { library = lib }
+    state <- newMVar (newServerState backend gameGs gameRng config) { library = lib }
 
     T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show config.serverPort) <> "..."
     WS.runServer "127.0.0.1" config.serverPort $ application state

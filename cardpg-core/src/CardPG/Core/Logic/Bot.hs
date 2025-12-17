@@ -10,13 +10,13 @@ import Data.Map.Strict qualified as Map
 import Data.Ord (Down (..))
 import Optics
 
+import CardPG.Core.Card (CoreCardT (..), Stats (..))
 import CardPG.Core.Logic.Combat (getAttackRule)
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Logic.Planning (passAction, planAction)
 import CardPG.Core.Primitives (ResourceType (..), StackPower (..))
-import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
-import CardPG.Core.State (ActorState (..), CoreCardState (..), TableState (..))
-import CardPG.Core.Card (CoreCardT(..), Stats(..))
+import CardPG.Core.RuleDefs (AttackDefT (..))
+import CardPG.Core.State (ActorState (..), CoreCardState (..))
 
 planBestAvailableAction :: GameM g ()
 planBestAvailableAction = do

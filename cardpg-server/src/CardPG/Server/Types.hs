@@ -20,6 +20,7 @@ module CardPG.Server.Types
   , clientExists
   , addClient
   , removeClient
+  , StorageBackend (..)
   ) where
 
 import Data.Aeson
@@ -36,6 +37,7 @@ import Data.Aeson
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (TypeScript (..), deriveTypeScript)
 import Data.Char (toUpper)
+import Data.IORef (IORef)
 import Data.Map (Map)
 import Data.Map qualified as Map
 import Data.Pool (Pool)
@@ -218,13 +220,17 @@ data ServerState = ServerState
   { clients :: Map UUID Client
   , library :: CardLibrary
   , gameState :: GameState
-  , dbPool :: Pool Pg.Connection
+  , dbPool :: StorageBackend
   , rng :: StdGen
   , config :: Config
   }
 
-newServerState :: Pool Pg.Connection -> GameState -> StdGen -> Config -> ServerState
-newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool
+data StorageBackend
+  = PostgresBackend (Pool Pg.Connection)
+  | InMemoryBackend (IORef (Map Text GameState))
+
+newServerState :: StorageBackend -> GameState -> StdGen -> Config -> ServerState
+newServerState backend gs = ServerState Map.empty (CardLibrary [] [] []) gs backend
 
 -- | Helpers for managing server state
 numClients :: ServerState -> Int

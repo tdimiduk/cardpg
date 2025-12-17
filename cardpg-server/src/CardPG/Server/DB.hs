@@ -6,6 +6,8 @@ module CardPG.Server.DB where
 
 import CardPG.Server.Config (DBConfig (..))
 import Data.Aeson (FromJSON, Result (..), ToJSON, Value (..), fromJSON, toJSON)
+import Data.IORef (IORef, modifyIORef', newIORef, readIORef)
+import Data.Map qualified as Map
 import Data.Pool (Pool, defaultPoolConfig, newPool, withResource)
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -20,7 +22,7 @@ import Database.Beam.Postgres
 import Database.PostgreSQL.Simple qualified as Pg
 import GHC.Generics (Generic)
 
-import CardPG.Server.Types (GameState)
+import CardPG.Server.Types (GameState, StorageBackend (..))
 
 -- | The Game Table
 data GameT f = Game
@@ -53,7 +55,7 @@ annotatedDb :: AnnotatedDatabaseSettings Postgres CardPGDB
 annotatedDb = defaultAnnotatedDbSettings cardpgDb
 
 -- | Helper Functions
-initDB :: DBConfig -> IO (Pool Connection)
+initDB :: DBConfig -> IO StorageBackend
 initDB cfg = do
   let connStr =
         "host="
@@ -68,10 +70,15 @@ initDB cfg = do
   withResource pool $ \conn ->
     Pg.withTransaction conn $
       BA.tryRunMigrationsWithEditUpdate annotatedDb conn
-  pure pool
+  pure $ PostgresBackend pool
 
-saveGame :: Pool Pg.Connection -> Text -> GameState -> IO ()
-saveGame pool gId gs = do
+initInMemoryDB :: IO StorageBackend
+initInMemoryDB = InMemoryBackend <$> newIORef Map.empty
+
+saveGame :: StorageBackend -> Text -> GameState -> IO ()
+saveGame (InMemoryBackend ref) gId gs = do
+  modifyIORef' ref (Map.insert gId gs)
+saveGame (PostgresBackend pool) gId gs = do
   now <- getCurrentTime
   let game = Game gId "Active" (PgJSONB (toJSON gs)) now
 
@@ -99,8 +106,11 @@ saveGame pool gId gs = do
       Nothing -> do
         runBeamPostgres conn $ runInsert $ insert (games cardpgDb) (insertValues [game])
 
-loadGame :: Pool Pg.Connection -> Text -> IO (Maybe GameState)
-loadGame pool gId = do
+loadGame :: StorageBackend -> Text -> IO (Maybe GameState)
+loadGame (InMemoryBackend ref) gId = do
+  m <- readIORef ref
+  return $ Map.lookup gId m
+loadGame (PostgresBackend pool) gId = do
   withResource pool $ \conn -> do
     res <-
       runBeamPostgres conn $

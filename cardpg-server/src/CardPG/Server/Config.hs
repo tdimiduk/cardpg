@@ -18,6 +18,7 @@ data Config = Config
   , serverPort :: Int
   , cardsFile :: FilePath
   , scenarioFile :: FilePath
+  , useInMemoryDB :: Bool
   }
   deriving (Show, Eq)
 
@@ -42,10 +43,17 @@ loadConfig = do
   cFile <- fromMaybe "vtt-react/src/data/generated_cards.json" <$> lookupEnv "CARDPG_CARDS_FILE"
   sFile <- fromMaybe "data/scenarios/starter.yaml" <$> lookupEnv "CARDPG_SCENARIO_FILE"
 
+  -- Feature Flags
+  inMem <- lookupEnv "CARDPG_USE_IN_MEMORY_DB"
+  let useInMem = case inMem of
+        Just "true" -> True
+        _ -> False
+
   pure
     Config
       { dbConfig = dbConfig
       , serverPort = port
       , cardsFile = cFile
       , scenarioFile = sFile
+      , useInMemoryDB = useInMem
       }

@@ -20,9 +20,9 @@ import CardPG.Core.Card
   , TalentCard
   )
 import CardPG.Core.Logic.Deck qualified as Deck
+import CardPG.Core.Logic.Monad (GameM (..), runGameM)
 import CardPG.Core.Logic.Planning
 import CardPG.Core.Logic.Status
-import CardPG.Core.Logic.Monad (GameM (..), runGameM)
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives
   ( CardInstanceId (..)
@@ -272,7 +272,7 @@ test_statusLogic =
                 , consequenceCardTemplates = Map.empty
                 }
         let state0 = mkActorState []
-        
+
         -- 1. Add Status
         let ((), state1, _) = runLogicWithEnv env state0 (addStatus statusName LocationHand)
         let registrySizeAfterAdd = Map.size state1.coreState.registry
@@ -287,4 +287,3 @@ test_statusLogic =
         registrySizeAfterRemove @?= (registrySizeAfterAdd - 1)
         length state2.coreState.hand @?= 0
     ]
-

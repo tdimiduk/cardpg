@@ -15,9 +15,9 @@ import Data.Maybe (isJust, isNothing)
 import Optics ((%~), (&))
 import System.Random (StdGen)
 
-import CardPG.Core.Logic.Monad (GameM, runGameM)
 import CardPG.Core.Logic.Bot qualified as Logic
 import CardPG.Core.Logic.Deck qualified as Logic
+import CardPG.Core.Logic.Monad (GameM, runGameM)
 import CardPG.Core.Logic.Planning qualified as Logic
 import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId)

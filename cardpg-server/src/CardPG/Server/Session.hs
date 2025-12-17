@@ -18,18 +18,18 @@ import CardPG.Core.State (GameEnv (..))
 import CardPG.Server.Config (Config (..))
 import CardPG.Server.DB (loadGame, saveGame)
 import CardPG.Server.Scenario (loadScenario)
-import CardPG.Server.Types (CardLibrary (..), GameState (..))
+import CardPG.Server.Types (CardLibrary (..), GameState (..), StorageBackend)
 
 -- | Initialize a game session, either by loading from DB or creating a new one from scenario.
 -- If `forceReset` is True, it will ignore DB state and load from scenario.
-initGame :: Pool Pg.Connection -> Config -> CardLibrary -> Bool -> IO (GameState, StdGen)
-initGame pool config lib forceReset = do
+initGame :: StorageBackend -> Config -> CardLibrary -> Bool -> IO (GameState, StdGen)
+initGame backend config lib forceReset = do
   let defaultGameId = "default-game"
 
   maybeLoaded <-
     if forceReset
       then return Nothing
-      else loadGame pool defaultGameId
+      else loadGame backend defaultGameId
 
   case maybeLoaded of
     Just loadedGs -> do
@@ -48,5 +48,5 @@ initGame pool config lib forceReset = do
       let newGs = initialGs{env = newEnv}
 
       -- Persist key initial state
-      saveGame pool defaultGameId newGs
+      saveGame backend defaultGameId newGs
       return (newGs, rng)
