@@ -75,7 +75,6 @@ processCommand cmd ts game =
             DiscardCardsIntent tid cids -> (tid, Logic.discardCards cids)
             ReturnToDeckIntent tid cids -> (tid, Logic.returnCardsToDeck cids)
             PassIntent tid -> (tid, Logic.passAction)
-            _ -> error "Impossible: unhandled command pattern in actor action block"
 
       (maybeEvents, newGame) <- runActorAction targetId action game
       case maybeEvents of

@@ -44,6 +44,12 @@ library
   exposed-modules:
     CardPG.Core.State
     CardPG.Core.Logic
+    CardPG.Core.Logic.Monad
+    CardPG.Core.Logic.Deck
+    CardPG.Core.Logic.Planning
+    CardPG.Core.Logic.Combat
+    CardPG.Core.Logic.Status
+    CardPG.Core.Logic.Bot
     CardPG.Core.Hardcoded
     CardPG.Core.Card
     CardPG.Core.Primitives
