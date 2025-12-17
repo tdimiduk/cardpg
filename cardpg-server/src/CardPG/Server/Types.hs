@@ -15,6 +15,10 @@ module CardPG.Server.Types
   , LogPayload (..)
   , Phase (..)
   , newServerState
+  , numClients
+  , clientExists
+  , addClient
+  , removeClient
   ) where
 
 import Data.Aeson
@@ -211,3 +215,16 @@ data ServerState = ServerState
 
 newServerState :: Pool Pg.Connection -> GameState -> StdGen -> ServerState
 newServerState pool gs = ServerState Map.empty (CardLibrary [] [] []) gs pool
+
+-- | Helpers for managing server state
+numClients :: ServerState -> Int
+numClients = Map.size . (.clients)
+
+clientExists :: Client -> ServerState -> Bool
+clientExists client state = Map.member (client.clientId) (state.clients)
+
+addClient :: Client -> ServerState -> ServerState
+addClient client state = state{clients = Map.insert (client.clientId) client (state.clients)}
+
+removeClient :: Client -> ServerState -> ServerState
+removeClient client state = state{clients = Map.delete (client.clientId) (state.clients)}

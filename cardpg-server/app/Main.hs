@@ -1,71 +1,29 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module Main where
 
-import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
-import Control.Exception (finally)
-import Control.Monad (forM_, forever)
-import Data.Aeson (FromJSON(..), ToJSON(..), Value, encode, decode, genericToJSON, genericParseJSON, defaultOptions, Options(..), SumEncoding(..), eitherDecodeFileStrict)
-import qualified Data.ByteString.Lazy as B
-import Data.Map (Map)
-import qualified Data.Map as Map
-import Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Text.IO as T
+import Control.Concurrent (newMVar)
+import Data.Aeson (eitherDecodeFileStrict)
+import Data.Map qualified as Map
+import Data.Maybe (fromMaybe)
+import Data.Pool (createPool)
+import Data.Text qualified as T
+import Data.Text.IO qualified as T
 import Data.Text.Encoding (encodeUtf8)
+import Database.PostgreSQL.Simple (close, connectPostgreSQL)
+import Network.WebSockets qualified as WS
 import System.Environment (lookupEnv)
 import System.IO (hSetBuffering, stdout, BufferMode(..))
-import Data.Maybe (fromMaybe)
-import qualified Network.WebSockets as WST
-import Data.UUID (UUID, toText, nil)
-import qualified Data.UUID.V4 as UUID
-import GHC.Generics (Generic)
-import Network.WebSockets (Connection, ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
-import qualified Network.WebSockets as WS
+import System.Random (newStdGen)
 
-import System.Random (newStdGen, StdGen)
-import Control.Monad.State (runState)
-
-import CardPG.Core.Card (ActorDefinition, CoreCard, CoreCardT(..), ItemCard, NatureCard, TalentCard, ActorDefinitionDSL, ConsequenceCardT(..))
-import CardPG.Core.Hardcoded (fatigueCard)
-import CardPG.Core.State (GameEnv(..), GameEvent(..), ActorState)
-import CardPG.Core.Primitives (TargetId(..))
-import qualified CardPG.Core.Logic as Logic
+import CardPG.Core.Card (CoreCardT(..), CoreCard, ConsequenceCardT(..), ConsequenceCard)
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Server.Game (GameState(..))
-import CardPG.Server.Engine (runActorAction, concludeRound, revealPlannedActions)
-import CardPG.Server.Dispatch (processCommand)
+import CardPG.Core.State (GameEnv(..))
+import CardPG.Server.Connection (application)
+import CardPG.Server.DB (initDB, loadGame, saveGame)
 import CardPG.Server.Scenario (loadScenario)
-import CardPG.Server.Types (Client(..), ClientMessage(..), ServerMessage(..), ActorGameEvent(..), ServerState(..), newServerState, CardLibrary(..), Command(..), StateUpdate(..))
-import CardPG.Server.DB (cardpgDb, GameT(..), GameId, Game, initDB, saveGame, loadGame)
-
-import Data.Pool
-import Data.Time (getCurrentTime)
-import Data.Time.Clock.POSIX (getPOSIXTime)
-import Database.PostgreSQL.Simple (close, connectPostgreSQL)
-
-
-numClients :: ServerState -> Int
-numClients = Map.size . (.clients)
-
-clientExists :: Client -> ServerState -> Bool
-clientExists client state = Map.member (client.clientId) (state.clients)
-
-addClient :: Client -> ServerState -> ServerState
-addClient client state = state { clients = Map.insert (client.clientId) client (state.clients) }
-
-removeClient :: Client -> ServerState -> ServerState
-removeClient client state = state { clients = Map.delete (client.clientId) (state.clients) }
-
-
-
-broadcast :: ServerMessage -> ServerState -> IO ()
-broadcast msg state = do
-    let msgBytes = encode msg
-    forM_ (Map.elems (state.clients)) $ \client ->
-        sendTextData (client.clientConn) msgBytes
+import CardPG.Server.Types (CardLibrary(..), ServerState(..), newServerState, GameState(..))
 
 main :: IO ()
 main = do
@@ -131,131 +89,3 @@ main = do
 
     T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show port) <> "..."
     WS.runServer "127.0.0.1" port $ application state
-
-application :: MVar ServerState -> ServerApp
-application state pending = do
-    conn <- acceptRequest pending
-    -- Keep connection alive with pings every 30 seconds
-    withPingThread conn 30 (return ()) $ do
-        -- Generate a temporary ID until they join properly
-        uuid <- UUID.nextRandom
-        let initialClient = Client uuid "Anonymous" conn
-        
-        flip finally (disconnect initialClient state) $ do
-            talk initialClient state
-
-talk :: Client -> MVar ServerState -> IO ()
-talk client state = forever $ do
-    msgBytes <- receiveData (client.clientConn)
-    case decode msgBytes of
-        Nothing -> do
-            T.putStrLn "Received invalid JSON"
-            sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
-        Just (Join name maybeId) -> do
-            -- Determine Client ID (Recover or Generate)
-            (clientId, isReconnect) <- case maybeId of
-                Just existingId -> do
-                    exists <- readMVar state >>= \s -> return $ Map.member existingId (s.clients)
-                    if exists
-                        then return (existingId, True)
-                        else return (existingId, False) -- User claims ID, but not in memory (maybe restarted? treat as new for now)
-                Nothing -> do
-                    newId <- UUID.nextRandom
-                    return (newId, False)
-
-            let newClient = client { clientName = name, clientId = clientId }
-            
-            T.putStrLn $ "Client joining: " <> name <> " (" <> T.pack (show clientId) <> ")" 
-                       <> (if isReconnect then " [RECONNECT]" else "")
-            
-            -- Prepare broadcast
-            -- Prepare broadcast
-            (currentClients, currentGs, messages, pool) <- modifyMVar state $ \s -> do
-                let s' = addClient newClient s -- Overwrites existing entry if reconnecting (updating socket)
-                let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (s'.gameState.actors)
-                
-                let welcomeMsg = Welcome clientId (map (.clientName) $ Map.elems s'.clients) initialUpdates (s'.gameState.phase) (s'.gameState.history)
-                
-                -- If it's a new client (or distinct ID), notify others. 
-                -- If reconnect (same ID), effectively just updating the socket, maybe notify "Reconnected"? 
-                -- For now, simplest is just treat Join as Join.
-                return (s', (s'.clients, s'.gameState, [welcomeMsg], s'.dbPool))
-            
-            -- Send Welcome
-            forM_ messages $ \msg -> sendTextData (newClient.clientConn) (encode msg)
-            
-            -- Notify others
-            -- rng dummy? or use state rng? We don't use rng in broadcast, so can leave it or pass properly.
-            -- Constructing ServerState manually is becoming tedious.
-            -- Let's extract rng from state for broadcast dummy? Or just use proper state?
-            -- broadcast function just needs clients.
-            -- ServerState in broadcast is just used to iterate clients.
-            -- We can just pass the MVar contents directly?
-            -- But broadcast signature takes ServerState?
-            -- Let's just pass `s'` from above?
-            -- But we returned tuple...
-            -- We should refactor broadcast slightly or just pass dummy RNG.
-            storedRng <- readMVar state >>= \s -> return s.rng
-            let broadcastState = ServerState (Map.delete clientId currentClients) (CardLibrary [] [] []) currentGs pool storedRng
-            broadcast (ClientJoined name clientId) broadcastState
-            
-            -- Continue loop with updated client info
-            talkLoop newClient state
-
-talkLoop :: Client -> MVar ServerState -> IO ()
-talkLoop client state = do
-    msgBytes <- receiveData (client.clientConn)
-    case decode msgBytes of
-        Nothing -> do
-            T.putStrLn "Received invalid JSON"
-            sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
-            talkLoop client state
-        Just (Join name _) -> do
-             -- Allow renaming?
-            let newClient = client { clientName = name }
-            modifyMVar_ state $ \s -> return $ addClient newClient s
-            T.putStrLn $ "Client renamed: " <> name
-            talkLoop newClient state
-
-        Just (GameCommand cmd) -> do
-            T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
-            
-            -- Run action against authoritative state
-            t <- getPOSIXTime
-            let ts = round (t * 1000) :: Int
-            
-            (newGame, pool, updates, actions, logs, clientsMap, newPhase, oldPhase, newRng) <- modifyMVar state $ \s -> do
-                let game = s.gameState
-                let rng = s.rng
-                
-                -- Run monadic action
-                let ((newGame, updates, actions, logs), newRng) = runState (processCommand cmd ts game) rng
-                
-                return (s { gameState = newGame, rng = newRng }, (newGame, s.dbPool, updates, actions, logs, s.clients, newGame.phase, game.phase, newRng))
-
-            -- Persist State
-            saveGame pool "default-game" newGame
-
-            -- Broadcast results
-            let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast") pool newRng
-            
-            let messages =
-                  (if null actions then [] else [BroadcastMessage (client.clientId) actions]) ++
-                  (if not (null updates) || newPhase /= oldPhase 
-                      then [GameStateUpdate updates (Just newPhase)]
-                      else []) ++
-                  (if null logs then [] else [NewLogs logs])
-
-            if not (null messages)
-               then broadcast (MultiMessage messages) tempState
-               else return ()
-            
-            talkLoop client state
-
-disconnect :: Client -> MVar ServerState -> IO ()
-disconnect client state = do
-    T.putStrLn $ "Client disconnected: " <> client.clientName
-    s <- modifyMVar state $ \s -> do
-        let s' = removeClient client s
-        return (s', s')
-    broadcast (ClientLeft (client.clientId)) s
