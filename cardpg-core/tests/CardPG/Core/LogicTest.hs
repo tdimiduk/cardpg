@@ -260,4 +260,31 @@ test_statusLogic =
 
         length finalState.coreState.hand @?= 1
         assertBool "StatusAdded missing" (StatusAdded statusName LocationHand `elem` events)
+    , testCase "removes status from registry (regression test)" $ do
+        let statusName = "Stunned"
+        let env =
+              GameEnv
+                { fatigueCardTemplate = undefined
+                , statusCardTemplates =
+                    Map.singleton
+                      statusName
+                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing)
+                , consequenceCardTemplates = Map.empty
+                }
+        let state0 = mkActorState []
+        
+        -- 1. Add Status
+        let ((), state1, _) = runLogicWithEnv env state0 (addStatus statusName LocationHand)
+        let registrySizeAfterAdd = Map.size state1.coreState.registry
+        let handCardId = head state1.coreState.hand
+
+        -- 2. Remove Status
+        let ((), state2, _) = runLogicWithEnv env state1 (removeStatus statusName (Just handCardId))
+        let registrySizeAfterRemove = Map.size state2.coreState.registry
+
+        -- 3. Verify
+        -- The registry size should decrease by 1
+        registrySizeAfterRemove @?= (registrySizeAfterAdd - 1)
+        length state2.coreState.hand @?= 0
     ]
+

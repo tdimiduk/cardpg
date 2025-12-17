@@ -62,7 +62,7 @@ removeStatus statusType maybeCardId = do
           Just specificId -> specificId == cid
           Nothing -> getRawText c.name == statusType
 
-  let findAndRemove :: Lens' CoreCardState [CardInstanceId] -> GameM g Bool
+  let findAndRemove :: Lens' CoreCardState [CardInstanceId] -> GameM g (Maybe CardInstanceId)
       findAndRemove location = do
         currentList <- use (#coreState % location)
         let (before, foundAndAfter) =
@@ -73,28 +73,31 @@ removeStatus statusType maybeCardId = do
                 )
                 currentList
         case foundAndAfter of
-          (_ : xs) -> do
+          (foundId : xs) -> do
             -- Found one element 'x'
             modify $ #coreState % location .~ (before ++ xs)
-            return True
-          [] -> return False
+            return (Just foundId)
+          [] -> return Nothing
 
   -- Search order: Hand, Discard, Deck
-  removedFromHand <- findAndRemove #hand
-  if removedFromHand
-    then do
-      tell [StatusRemoved statusType (maybe "hand" (T.pack . show) maybeCardId)]
-      return ()
-    else do
-      removedFromDiscard <- findAndRemove #discard
-      if removedFromDiscard
-        then do
-          tell [StatusRemoved statusType (maybe "discard" (T.pack . show) maybeCardId)]
-          return ()
-        else do
-          removed <- findAndRemove #deck
-          when removed $
-            tell [StatusRemoved statusType (maybe "deck" (T.pack . show) maybeCardId)]
+  removedHand <- findAndRemove #hand
+  case removedHand of
+    Just cid -> do
+      modify $ #coreState % #registry %~ Map.delete cid
+      tell [StatusRemoved statusType "hand"]
+    Nothing -> do
+      removedDiscard <- findAndRemove #discard
+      case removedDiscard of
+        Just cid -> do
+          modify $ #coreState % #registry %~ Map.delete cid
+          tell [StatusRemoved statusType "discard"]
+        Nothing -> do
+          removedDeck <- findAndRemove #deck
+          case removedDeck of
+            Just cid -> do
+              modify $ #coreState % #registry %~ Map.delete cid
+              tell [StatusRemoved statusType "deck"]
+            Nothing -> return ()
 
 addConsequence :: (RandomGen g) => Maybe Int -> GameM g ()
 addConsequence maybeSeverity = do
