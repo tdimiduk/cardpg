@@ -12,6 +12,6 @@ in
     mkdir -p $out/backend/bin
     mkdir -p $out/frontend
 
-    cp ${backendPkgs.cardpg-server}/bin/cardpg-server $out/backend/bin/
+    cp ${pkgs.haskell.lib.justStaticExecutables backendPkgs.cardpg-server}/bin/cardpg-server $out/backend/bin/
     cp -r ${frontend}/* $out/frontend/
   ''
