@@ -36,7 +36,7 @@ import Data.List (partition, sortOn)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Ord (Down (..))
-import Data.Text (Text, unpack)
+import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (nil)
 import Optics
@@ -384,18 +384,18 @@ removeStatus statusType maybeCardId = do
   removedFromHand <- findAndRemove #hand
   if removedFromHand
     then do
-      tell [StatusRemoved statusType (maybe "hand" (\c -> T.pack (show c)) maybeCardId)]
+      tell [StatusRemoved statusType (maybe "hand" (T.pack . show) maybeCardId)]
       return ()
     else do
       removedFromDiscard <- findAndRemove #discard
       if removedFromDiscard
         then do
-          tell [StatusRemoved statusType (maybe "discard" (\c -> T.pack (show c)) maybeCardId)]
+          tell [StatusRemoved statusType (maybe "discard" (T.pack . show) maybeCardId)]
           return ()
         else do
           removed <- findAndRemove #deck
           when removed $
-            tell [StatusRemoved statusType (maybe "deck" (\c -> T.pack (show c)) maybeCardId)]
+            tell [StatusRemoved statusType (maybe "deck" (T.pack . show) maybeCardId)]
 
 calculateResilience :: GameM g Int
 calculateResilience = do
