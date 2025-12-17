@@ -32,12 +32,12 @@ import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives
   ( ActorId
   , CardInstanceId
+  , CardLocation (..)
   , Difficulty
   , EquipSlot (..)
   , ResourceType (..)
   , StackPower
   , TargetId
-  , CardLocation (..)
   )
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 

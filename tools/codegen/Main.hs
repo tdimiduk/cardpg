@@ -26,7 +26,14 @@ import TypeScriptInstances
 
 import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (ActorId, CardLocation, Difficulty, EquipSlot, ResourceType, StackPower)
+import CardPG.Core.Primitives
+  ( ActorId
+  , CardLocation
+  , Difficulty
+  , EquipSlot
+  , ResourceType
+  , StackPower
+  )
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.State

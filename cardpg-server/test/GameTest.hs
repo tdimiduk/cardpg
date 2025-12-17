@@ -21,7 +21,9 @@ import CardPG.Core.Card (CoreCard(..), CoreCardT(..), Stats(..))
 import CardPG.Core.RuleDefs (RuleT(..), AttackDefT(..))
 import Data.List.NonEmpty (NonEmpty(..))
 
-import CardPG.Server.Game (GameState(..), emptyGame, addActor, runActorAction, processCommand, concludeRound)
+import CardPG.Server.Game (GameState(..), emptyGame, addActor)
+import CardPG.Server.Engine (runActorAction, concludeRound)
+import CardPG.Server.Dispatch (processCommand)
 import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
 
 test_game :: TestTree

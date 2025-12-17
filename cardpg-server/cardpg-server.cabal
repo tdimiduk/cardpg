@@ -29,6 +29,8 @@ library
   exposed-modules:
     CardPG.Server.Types
     CardPG.Server.Game
+    CardPG.Server.Engine
+    CardPG.Server.Dispatch
     CardPG.Server.Scenario
     CardPG.Server.DB
     CardPG.Server.Presenter

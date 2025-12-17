@@ -29,7 +29,6 @@ module CardPG.Core.Logic
   ) where
 
 import Control.Monad (replicateM, when)
-
 import Control.Monad.RWS (MonadReader, MonadWriter, RWST, ask, tell)
 import Control.Monad.State (MonadState, State, get, modify, put, state)
 import Control.Monad.Trans.Class (lift)
@@ -52,7 +51,12 @@ import CardPG.Core.Card
   , Stats (..)
   )
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives (CardInstanceId (..), CardLocation (..), ResourceType (..), StackPower (..))
+import CardPG.Core.Primitives
+  ( CardInstanceId (..)
+  , CardLocation (..)
+  , ResourceType (..)
+  , StackPower (..)
+  )
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
@@ -500,7 +504,6 @@ planBestAvailableAction = do
 
 removeConsequence :: CardInstanceId -> GameM g ()
 removeConsequence cid = do
-
   -- Remove from TableState
   modify $ #tableState % #consequences %~ filter (/= cid)
   modify $ #tableState % #consequenceRegistry %~ Map.delete cid
@@ -508,7 +511,6 @@ removeConsequence cid = do
 
 discardCards :: [CardInstanceId] -> GameM g ()
 discardCards cids = do
-
   currentHand <- use (#coreState % #hand)
   let (toDiscard, keep) = partition (`elem` cids) currentHand
   modify $ #coreState % #hand .~ keep
@@ -518,7 +520,6 @@ discardCards cids = do
 
 returnCardsToDeck :: (RandomGen g) => [CardInstanceId] -> GameM g ()
 returnCardsToDeck cids = do
-
   currentHand <- use (#coreState % #hand)
   let (toReturn, keep) = partition (`elem` cids) currentHand
   modify $ #coreState % #hand .~ keep

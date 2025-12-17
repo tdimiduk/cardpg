@@ -9,7 +9,13 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Card (ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (CardInstanceId (..), CardLocation, EquipSlot (..), ResourceType, TargetId (..))
+import CardPG.Core.Primitives
+  ( CardInstanceId (..)
+  , CardLocation
+  , EquipSlot (..)
+  , ResourceType
+  , TargetId (..)
+  )
 
 data TableCard
   = TCItem ItemCard

@@ -49,7 +49,8 @@ import CardPG.Core.State
   , TableState (..)
   )
 import CardPG.Core.State qualified as State
-import CardPG.Server.Game (GameState (..), addActor, autoPlanForNPCs, emptyGame)
+import CardPG.Server.Engine (autoPlanForNPCs)
+import CardPG.Server.Game (GameState (..), addActor, emptyGame)
 
 import CardPG.Core.Util (shuffleListM)
 
