@@ -258,7 +258,7 @@ const SidebarLeftContainer: React.FC = () => {
   const handleRemoveConsequence = (cardId: string) => {
     if (!activeActorId) return;
     dispatchCommand({
-      type: 'removeConsequenceIntent',
+      type: 'destroyConsequenceIntent',
       actorId: activeActorId,
       cardId,
     });
@@ -276,7 +276,7 @@ const SidebarLeftContainer: React.FC = () => {
 
   const handleRemoveStatusCard = (type: string) => {
     if (!activeActorId) return;
-    dispatchCommand({ type: 'removeStatusIntent', actorId: activeActorId, statusType: type });
+    dispatchCommand({ type: 'destroyStatusIntent', actorId: activeActorId, statusType: type });
   };
 
   return (

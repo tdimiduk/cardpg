@@ -1,11 +1,8 @@
-{-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE OverloadedRecordDot #-}
-
 module CardPG.Core.Logic.Status
   ( addStatus
-  , removeStatus
+  , destroyStatus
   , addConsequence
-  , removeConsequence
+  , destroyConsequence
   , isDefeated
   ) where
 
@@ -53,8 +50,8 @@ addStatus statusType destination = do
           tell [StatusAdded statusType destination]
         _ -> return ()
 
-removeStatus :: Text -> Maybe CardInstanceId -> GameM g ()
-removeStatus statusType maybeCardId = do
+destroyStatus :: Text -> Maybe CardInstanceId -> GameM g ()
+destroyStatus statusType maybeCardId = do
   registry <- use (#coreState % #registry)
 
   let matchFunc cid c =
@@ -126,7 +123,7 @@ addConsequence maybeSeverity = do
       -- Create a new ID
       let (cid, g'') = uniform g'
       GameM . lift $ put g''
-
+      
       -- Add to TableState registry and list
       modify $ #tableState % #consequenceRegistry %~ Map.insert cid template
       modify $ #tableState % #consequences %~ (cid :)
@@ -137,8 +134,8 @@ addConsequence maybeSeverity = do
       tell [ConsequenceAdded finalSeverity]
       return ()
 
-removeConsequence :: CardInstanceId -> GameM g ()
-removeConsequence cid = do
+destroyConsequence :: CardInstanceId -> GameM g ()
+destroyConsequence cid = do
   -- Remove from TableState
   modify $ #tableState % #consequences %~ filter (/= cid)
   modify $ #tableState % #consequenceRegistry %~ Map.delete cid

@@ -143,9 +143,9 @@ data Command
   | EndDefenseIntent {actorId :: ActorId}
   | ReshuffleIntent {actorId :: ActorId}
   | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: CardLocation}
-  | RemoveStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe CardInstanceId}
+  | DestroyStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe CardInstanceId}
   | AddConsequenceIntent {actorId :: ActorId, severity :: Maybe Int}
-  | RemoveConsequenceIntent {actorId :: ActorId, cardId :: CardInstanceId}
+  | DestroyConsequenceIntent {actorId :: ActorId, cardId :: CardInstanceId}
   | DiscardCardsIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
   | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
   | EndRoundIntent {actorId :: ActorId}

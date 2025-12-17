@@ -279,7 +279,7 @@ test_statusLogic =
         let handCardId = head state1.coreState.hand
 
         -- 2. Remove Status
-        let ((), state2, _) = runLogicWithEnv env state1 (removeStatus statusName (Just handCardId))
+        let ((), state2, _) = runLogicWithEnv env state1 (destroyStatus statusName (Just handCardId))
         let registrySizeAfterRemove = Map.size state2.coreState.registry
 
         -- 3. Verify
