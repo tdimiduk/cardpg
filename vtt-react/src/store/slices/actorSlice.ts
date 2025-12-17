@@ -36,10 +36,11 @@ export const createActorSlice: StateCreator<
   plannedActions: {},
 
   initializeGame: () =>
-    set((_state) => {
-      // No-op for now, waiting for server?
-      // Or keep local for standalone dev
-      console.log('Initialize Game called - expecting server state.');
+    set((state) => {
+      // Clear all data to prepare for server sync
+      state.actors = {};
+      state.tokens = [];
+      state.plannedActions = {};
     }),
 
   addActor: (name, actorType, color, templateId) =>

@@ -17,6 +17,9 @@ export const useGameSync = () => {
           _applyAction(actorEvent);
         });
       } else if (msg.type === 'welcome') {
+        // Reset client state to avoid duplicate actors from previous session
+        useGameStore.getState().initializeGame();
+
         // Sync initial actors first so names are available
         if (msg.initialActors) {
           console.log('Syncing initial actors:', msg.initialActors.length);
