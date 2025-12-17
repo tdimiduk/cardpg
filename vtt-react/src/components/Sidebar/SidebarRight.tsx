@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { LogEntry, Phase, ILogAttack, ILogDefense, Card } from '../../types';
 import { RESOURCE_TYPES } from '../../constants';
 import { Send, Bot, Square, ArrowRight, Play, Rewind } from 'lucide-react';
-
 import { useGameStore } from '../../store/gameStore';
+import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { StackViewerModal } from './StackViewerModal';
 
 // Helper type for cards in stack view
 type StackCard = Card & { id: string };
 
-interface SidebarRightProps {
+// --- View ---
+export interface SidebarRightProps {
   logs: LogEntry[];
   phase: Phase;
   onRevealActions: () => void;
@@ -194,7 +195,7 @@ const DefenseLogItem: React.FC<{
   );
 };
 
-export const SidebarRight: React.FC<SidebarRightProps> = ({
+export const SidebarRightView: React.FC<SidebarRightProps> = ({
   logs,
   phase,
   onRevealActions,
@@ -369,3 +370,68 @@ export const SidebarRight: React.FC<SidebarRightProps> = ({
     </div>
   );
 };
+
+// --- Container ---
+
+const SidebarRightContainer: React.FC = () => {
+  const logs = useGameStore((state) => state.logs);
+  const phase = useGameStore((state) => state.phase);
+  const activeActorId = useGameStore((state) => state.activeActorId);
+  const tokens = useGameStore((state) => state.tokens);
+  const plannedActions = useGameStore((state) => state.plannedActions);
+
+  const { dispatchCommand } = useGameDispatch();
+
+  // Derived
+  const isActionPlanned = (action?: { cards: unknown[]; actionName?: string }) =>
+    !!action && (action.cards.length > 0 || action.actionName === 'Pass');
+  const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
+  const totalCount = tokens.length;
+
+  // Handlers
+  const handleRevealActions = () => {
+    if (activeActorId) {
+      dispatchCommand({ type: 'startResolutionIntent', actorId: activeActorId });
+    } else {
+      // Fallback: pick first token? or just fail gracefully?
+      const first = tokens[0];
+      if (first) dispatchCommand({ type: 'startResolutionIntent', actorId: first.actorId });
+    }
+  };
+
+  const handleEndRound = () => {
+    if (activeActorId) {
+      dispatchCommand({ type: 'endRoundIntent', actorId: activeActorId });
+    } else {
+      const first = tokens[0];
+      if (first) dispatchCommand({ type: 'endRoundIntent', actorId: first.actorId });
+    }
+  };
+
+  const handleEndDefense = (actorId: string) => {
+    dispatchCommand({ type: 'endDefenseIntent', actorId });
+  };
+
+  const handleSendChat = (message: string) => {
+    dispatchCommand({
+      type: 'chatIntent',
+      chatSenderId: activeActorId || undefined,
+      content: message,
+    });
+  };
+
+  return (
+    <SidebarRightView
+      logs={logs}
+      phase={phase}
+      onRevealActions={handleRevealActions}
+      onEndRound={handleEndRound}
+      readyCount={readyCount}
+      totalCount={totalCount}
+      onEndDefense={handleEndDefense}
+      onSendChat={handleSendChat}
+    />
+  );
+};
+
+export default SidebarRightContainer;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useHandSelection } from '../../hooks/useHandSelection';
 import { CoreCard, ResourceType, GamePhase, UIPlannedAction } from '../../types';
 import { CardComponent } from '../Card/Card';
@@ -15,8 +15,11 @@ import {
   ArrowUp,
 } from 'lucide-react';
 import { RESOURCE_TYPES } from '../../constants';
+import { useGameStore } from '../../store/gameStore';
+import { useGameDispatch } from '../../hooks/useGameDispatch';
 
-interface PlayerHandProps {
+// --- View ---
+export interface PlayerHandProps {
   hand: CoreCard[];
   onPlayStack: (
     selectedCards: CoreCard[],
@@ -47,7 +50,7 @@ const ColorIcon = ({ color }: { color: ResourceType }) => {
   }
 };
 
-export const PlayerHand: React.FC<PlayerHandProps> = ({
+export const PlayerHandView: React.FC<PlayerHandProps> = ({
   hand,
   onPlayStack,
   onDiscard,
@@ -316,3 +319,104 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
     </div>
   );
 };
+
+// --- Container ---
+
+const PlayerHandContainer: React.FC = () => {
+  const activeActorId = useGameStore((state) => state.activeActorId);
+  const actors = useGameStore((state) => state.actors);
+  const phase = useGameStore((state) => state.phase);
+  const plannedActions = useGameStore((state) => state.plannedActions);
+  const tokens = useGameStore((state) => state.tokens);
+
+  const { dispatchCommand } = useGameDispatch();
+
+  // Derived
+  const activeToken = useMemo(
+    () => (activeActorId ? tokens.find((t) => t.actorId === activeActorId) : undefined),
+    [activeActorId, tokens],
+  );
+  const activeActor = activeActorId ? actors[activeActorId] : undefined;
+  const currentDeck = activeActor?.deck;
+  const activeAction = activeActorId && activeToken ? plannedActions[activeActorId] : undefined;
+  const userHasPlannedAction =
+    !!activeAction && (activeAction.cards.length > 0 || activeAction.actionName === 'Pass');
+
+  // If no active actor or no deck, we render nothing
+  if (!activeActorId || !currentDeck) return null;
+
+  // Handlers
+  const handlePlayStack = (
+    selectedCards: CoreCard[],
+    strengthColor: ResourceType,
+    modifier: number,
+    targetDefense?: ResourceType,
+    actionName?: string,
+    actionCardId?: string,
+  ) => {
+    if (phase === 'planning') {
+      if (selectedCards.length === 0) return;
+
+      if (actionCardId) {
+        const resourceIds = selectedCards.filter((c) => c.id !== actionCardId).map((c) => c.id);
+        dispatchCommand({
+          type: 'planAction',
+          actorId: activeActorId,
+          actionCardId: actionCardId,
+          resourceCardIds: resourceIds,
+        });
+      } else {
+        // Narrative Action / Improvise
+        dispatchCommand({
+          type: 'planNarrative',
+          actorId: activeActorId,
+          cardIds: selectedCards.map((c) => c.id),
+          color: strengthColor,
+        });
+      }
+      return;
+    }
+
+    console.warn('Attempted to play stack in non-planning phase or fallback.');
+  };
+
+  const handleDiscard = (cards: CoreCard[]) => {
+    dispatchCommand({
+      type: 'discardCardsIntent',
+      actorId: activeActorId,
+      cardIds: cards.map((c) => c.id),
+    });
+  };
+
+  const handlePass = () => {
+    dispatchCommand({ type: 'passIntent', actorId: activeActorId });
+  };
+
+  const handleCancelPlan = () => {
+    dispatchCommand({ type: 'cancelPlanIntent', actorId: activeActorId });
+  };
+
+  const handleReturnToDeck = (cards: CoreCard[]) => {
+    dispatchCommand({
+      type: 'returnToDeckIntent',
+      actorId: activeActorId,
+      cardIds: cards.map((c) => c.id),
+    });
+  };
+
+  return (
+    <PlayerHandView
+      hand={currentDeck.hand}
+      onPlayStack={handlePlayStack}
+      onDiscard={handleDiscard}
+      onPass={handlePass}
+      onCancelPlan={handleCancelPlan}
+      onReturnToDeck={handleReturnToDeck}
+      phase={phase}
+      hasPlanned={userHasPlannedAction}
+      plannedAction={activeAction}
+    />
+  );
+};
+
+export default PlayerHandContainer;

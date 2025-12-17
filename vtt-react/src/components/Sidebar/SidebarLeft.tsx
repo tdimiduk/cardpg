@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Token,
   TokenType,
@@ -6,10 +6,14 @@ import {
   ActorState,
   ActorDefinition,
   CardLocation,
+  GamePhase,
+  UIPlannedAction,
 } from '../../types';
 import { getActorTemplates } from '../../services/deckFactory';
 import { useActorStats } from '../../hooks/useActorStats';
 import { ACTOR_COLORS } from '../../theme';
+import { useGameStore } from '../../store/gameStore';
+import { useGameDispatch } from '../../hooks/useGameDispatch';
 
 // Import new sub-components
 import { SidebarHeader } from './SidebarHeader';
@@ -23,7 +27,9 @@ import { EquippedList } from './EquippedList';
 import { ActorSelectorModal } from './ActorSelectorModal';
 import { DeckViewerModal } from './DeckViewerModal';
 
-interface SidebarLeftProps {
+// --- View ---
+
+export interface SidebarLeftProps {
   deckState: PlayerDeckState | null | undefined;
   onDraw: (count: number) => void;
   onDefend: () => void;
@@ -41,11 +47,11 @@ interface SidebarLeftProps {
   actors: Record<string, ActorState>;
   onAddActor: (name: string, type: TokenType, color: string, templateId?: string) => void;
   onRemoveActor: (actorId: string) => void;
-  phase: import('../../types').GamePhase;
-  plannedActions: Record<string, import('../../types').UIPlannedAction>;
+  phase: GamePhase;
+  plannedActions: Record<string, UIPlannedAction>;
 }
 
-export const SidebarLeft: React.FC<SidebarLeftProps> = ({
+export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   deckState,
   onDraw,
   onDefend,
@@ -187,3 +193,115 @@ export const SidebarLeft: React.FC<SidebarLeftProps> = ({
     </div>
   );
 };
+
+// --- Container ---
+
+const SidebarLeftContainer: React.FC = () => {
+  const actors = useGameStore((state) => state.actors);
+  const activeActorId = useGameStore((state) => state.activeActorId);
+  const tokens = useGameStore((state) => state.tokens);
+  const phase = useGameStore((state) => state.phase);
+  const plannedActions = useGameStore((state) => state.plannedActions);
+  const setActiveActor = useGameStore((state) => state.setActiveActor);
+  const addActor = useGameStore((state) => state.addActor);
+  const removeActor = useGameStore((state) => state.removeActor);
+
+  const { dispatchCommand } = useGameDispatch();
+
+  // Derived State
+  const activeToken = useMemo(
+    () => (activeActorId ? tokens.find((t) => t.actorId === activeActorId) : undefined),
+    [activeActorId, tokens],
+  );
+  const activeActor = activeActorId ? actors[activeActorId] : undefined;
+  const deckState = activeActor?.deck;
+
+  const activeAction = activeActorId && activeToken ? plannedActions[activeActorId] : undefined;
+  const hasPlannedAction =
+    !!activeAction && (activeAction.cards.length > 0 || activeAction.actionName === 'Pass');
+
+  // Handlers
+  const handleDraw = (count: number) => {
+    if (!activeActorId) return;
+    dispatchCommand({ type: 'drawIntent', actorId: activeActorId }); // Note: count ignored in current intent
+  };
+
+  const handleDefend = () => {
+    if (!activeActorId) return;
+    dispatchCommand({ type: 'defendIntent', actorId: activeActorId });
+  };
+
+  const handleClearDefense = () => {
+    if (!activeActorId) return;
+    dispatchCommand({ type: 'endDefenseIntent', actorId: activeActorId });
+  };
+
+  const handleReshuffle = () => {
+    if (!activeActorId) return;
+    dispatchCommand({ type: 'reshuffleIntent', actorId: activeActorId });
+  };
+
+  const handleSelectToken = (id: string) => {
+    const token = tokens.find((t) => t.id === id);
+    if (token) setActiveActor(token.actorId);
+  };
+
+  const handleAddConsequence = (severity?: number) => {
+    if (!activeActorId) return;
+    dispatchCommand({
+      type: 'addConsequenceIntent',
+      actorId: activeActorId,
+      severity: severity,
+    });
+  };
+
+  const handleRemoveConsequence = (cardId: string) => {
+    if (!activeActorId) return;
+    dispatchCommand({
+      type: 'removeConsequenceIntent',
+      actorId: activeActorId,
+      cardId,
+    });
+  };
+
+  const handleAddStatusCard = (type: string, destination: CardLocation) => {
+    if (!activeActorId) return;
+    dispatchCommand({
+      type: 'addStatusIntent',
+      actorId: activeActorId,
+      statusType: type,
+      destination,
+    });
+  };
+
+  const handleRemoveStatusCard = (type: string) => {
+    if (!activeActorId) return;
+    dispatchCommand({ type: 'removeStatusIntent', actorId: activeActorId, statusType: type });
+  };
+
+  return (
+    <SidebarLeftView
+      deckState={deckState}
+      onDraw={handleDraw}
+      onDefend={handleDefend}
+      onClearDefense={handleClearDefense}
+      onReshuffle={handleReshuffle}
+      onSelectToken={handleSelectToken}
+      onAddConsequence={handleAddConsequence}
+      onRemoveConsequence={handleRemoveConsequence}
+      onAddStatusCard={handleAddStatusCard}
+      onRemoveStatusCard={handleRemoveStatusCard}
+      tokens={tokens}
+      activeToken={activeToken}
+      activeActorId={activeActorId || ''}
+      hasPlannedAction={hasPlannedAction}
+      actors={actors}
+      onAddActor={addActor}
+      onRemoveActor={removeActor}
+      phase={phase}
+      plannedActions={plannedActions}
+    />
+  );
+};
+
+export default SidebarLeftContainer;

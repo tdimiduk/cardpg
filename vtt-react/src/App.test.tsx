@@ -5,7 +5,6 @@ import { useGameStore } from './store/gameStore';
 import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
-import { CoreCard } from './types';
 
 // Mock dependencies
 vi.mock('./store/gameStore');
@@ -28,17 +27,16 @@ vi.mock('./components/Game/MapBoard', () => ({
 }));
 
 vi.mock('./components/Player/PlayerHand', () => ({
-  PlayerHand: ({ hand }: { hand: CoreCard[] }) => (
-    <div data-testid="player-hand">Hand Size: {hand.length}</div>
-  ),
+  // PlayerHand is now a container, so we mock it as one (no props)
+  default: () => <div data-testid="player-hand">Mock Hand</div>,
 }));
 
 vi.mock('./components/Sidebar/SidebarLeft', () => ({
-  SidebarLeft: () => <div data-testid="sidebar-left" />,
+  default: () => <div data-testid="sidebar-left" />,
 }));
 
 vi.mock('./components/Sidebar/SidebarRight', () => ({
-  SidebarRight: () => <div data-testid="sidebar-right" />,
+  default: () => <div data-testid="sidebar-right" />,
 }));
 
 describe('App Component', () => {
@@ -133,30 +131,11 @@ describe('App Component', () => {
     expect(mockSetActiveActor).toHaveBeenCalledWith('token-1');
   });
 
-  it('should render PlayerHand when a token is active', () => {
-    // Mock state with active token
-    (useGameStore as unknown as Mock).mockImplementation((selector) => {
-      const state = {
-        phase: 'planning',
-        plannedActions: {},
-        tokens: mockTokens,
-        actors: mockActors,
-        logs: [],
-        activeActorId: 'actor-1',
-        setActiveActor: mockSetActiveActor,
-        initializeGame: mockInitializeGame,
-      };
-      return selector(state);
-    });
-
+  it('should render main components', () => {
     render(<App />);
-
+    expect(screen.getByTestId('sidebar-left')).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar-right')).toBeInTheDocument();
     expect(screen.getByTestId('player-hand')).toBeInTheDocument();
-    expect(screen.getByText('Hand Size: 1')).toBeInTheDocument();
-  });
-
-  it('should NOT render PlayerHand when no token is active', () => {
-    render(<App />);
-    expect(screen.queryByTestId('player-hand')).not.toBeInTheDocument();
+    expect(screen.getByTestId('map-board')).toBeInTheDocument();
   });
 });

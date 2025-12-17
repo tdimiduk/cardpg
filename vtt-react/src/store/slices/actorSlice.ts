@@ -95,7 +95,11 @@ export const createActorSlice: StateCreator<
       }
 
       // Hydrate Planned Actions
-      const plannedAction = hydratePlannedAction(serverState, targetId, hydratedActor.registry);
+      const plannedAction = hydratePlannedAction(
+        serverState,
+        targetId,
+        serverState.coreState.registry,
+      );
       if (plannedAction) {
         state.plannedActions[targetId] = plannedAction;
       } else {
