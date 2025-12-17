@@ -181,7 +181,9 @@ handleGameCommand client state cmd = do
   -- Broadcast results
   let messages =
         [BroadcastMessage (client.clientId) actions | not (null actions)]
-          ++ [GameStateUpdate updates (if newPhase /= oldPhase then Just newPhase else Nothing) | not (null updates) || newPhase /= oldPhase]
+          ++ [ GameStateUpdate updates (if newPhase /= oldPhase then Just newPhase else Nothing)
+             | not (null updates) || newPhase /= oldPhase
+             ]
           ++ [NewLogs logs | not (null logs)]
 
   unless (null messages) $ broadcast (MultiMessage messages) clientsMap
