@@ -11,6 +11,7 @@ interface TokenEntityProps {
   isDefeated?: boolean;
   handSize?: number;
   hasPlan?: boolean;
+  isGhost?: boolean;
 }
 
 export const TokenEntity: React.FC<TokenEntityProps> = ({
@@ -21,12 +22,13 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
   isDefeated,
   handSize = 0,
   hasPlan = false,
+  isGhost = false,
 }) => {
   const style: React.CSSProperties = {
     // Position is handled by the parent container in MapBoard
     width: token.size * GRID_SIZE,
     height: token.size * GRID_SIZE,
-    cursor: 'grab', // Always interactive per request
+    cursor: isGhost ? 'default' : 'grab', // Always interactive per request
   };
 
   const Icon = useMemo(() => {
@@ -42,19 +44,26 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
     }
   }, [actor.type]);
 
+  const containerClasses = [
+    'group flex items-center justify-center relative',
+    isDefeated ? 'grayscale opacity-70' : '',
+    isGhost ? 'grayscale opacity-50' : '', // Removed pointer-events-none
+  ].join(' ');
+
   return (
     <div
       style={style}
-      onMouseDown={(e) => onMouseDown(e, token)}
-      className={`group flex items-center justify-center relative ${isDefeated ? 'grayscale opacity-70' : ''}`}
-      data-testid="token-entity"
+      onMouseDown={(e) => onMouseDown(e, token)} // Removed !isGhost check
+      className={containerClasses}
+      data-testid={isGhost ? 'token-ghost' : 'token-entity'}
+      // aria-hidden={isGhost} // Removed to allow interaction semantics (or keep? It's interactive now, so shouldn't be hidden)
     >
       {/* Selection/Active Indicator Ring */}
-      {isSelected && !isDefeated && (
+      {isSelected && !isDefeated && !isGhost && (
         <div className="absolute -inset-1 rounded-full border-2 border-yellow-400 border-dashed animate-spin-slow pointer-events-none z-0"></div>
       )}
       {/* Defeated Selection Ring (Red/static) */}
-      {isSelected && isDefeated && (
+      {isSelected && isDefeated && !isGhost && (
         <div className="absolute -inset-1 rounded-full border-2 border-red-900 border-dashed pointer-events-none z-0"></div>
       )}
 
@@ -64,7 +73,7 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
             ${
               isDefeated
                 ? 'bg-slate-900 border-slate-700'
-                : isSelected
+                : isSelected && !isGhost
                   ? 'bg-slate-800 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)] scale-105'
                   : 'bg-slate-800 border-white/20 hover:border-white/50'
             }
@@ -80,13 +89,15 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
         )}
 
         {/* Name Tag */}
-        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-          {actor.name} {isDefeated ? '(Defeated)' : ''}
-        </div>
+        {!isGhost && (
+          <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+            {actor.name} {isDefeated ? '(Defeated)' : ''}
+          </div>
+        )}
       </div>
 
       {/* Status Indicators (Top Layer, outside the round overflow) */}
-      {!isDefeated && (
+      {!isDefeated && !isGhost && (
         <>
           {/* Planned Action Indicator */}
           {hasPlan && (

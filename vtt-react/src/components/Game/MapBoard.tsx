@@ -160,15 +160,15 @@ export const MapBoard: React.FC<MapBoardProps> = ({
                     left: planX * GRID_SIZE,
                     top: planY * GRID_SIZE,
                     zIndex: 40,
-                    opacity: 0.5,
                   }}
-                  className="pointer-events-none grayscale"
+                  // Removed className="pointer-events-none"
                 >
                   <TokenEntity
                     token={token}
                     actor={actor}
                     isSelected={false}
-                    onMouseDown={() => {}}
+                    onMouseDown={handleMouseDown} // Changed from no-op
+                    isGhost={true}
                   />
                 </div>
               );

@@ -123,6 +123,17 @@ describe('Game Lifecycle Integration', () => {
       );
 
       // Plan Action
+      // Check if already planned (persistent state or AI)
+      const reviseBtn = screen.queryByText(/Revise/i);
+      if (reviseBtn) {
+        console.log('Found existing plan, clicking Revise...');
+        fireEvent.click(reviseBtn);
+        // Wait for unlock
+        await waitFor(() => {
+          expect(screen.queryByText(/Revise/i)).not.toBeInTheDocument();
+        });
+      }
+
       // Select first card in hand
       const cards = await screen.findAllByTestId('card');
       if (cards.length > 0) {
