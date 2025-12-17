@@ -50,7 +50,7 @@ runIntegrationTestsIO = do
 
   -- Capture current environment to merge
   currEnv <- System.Environment.getEnvironment
-  let testEnv = ("PORT", port) : currEnv
+  let testEnv = ("PORT", port) : ("CARDPG_USE_IN_MEMORY_DB", "true") : currEnv
   let serverProcWithEnv = serverProc{env = Just testEnv}
 
   bracket
