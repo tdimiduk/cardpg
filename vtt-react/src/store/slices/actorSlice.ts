@@ -1,20 +1,11 @@
 import { StateCreator } from 'zustand';
-import {
-  ActorState,
-  PlayerDeckState,
-  TokenType,
-  CoreCard,
-  UIPlannedAction,
-  StateUpdate,
-  Token,
-  ResourceType,
-} from '../../types';
-import { ActorState as ServerActorState, CoreCard as GenCoreCard } from '../../generated/types';
+import { ActorState, UIPlannedAction, StateUpdate, Token } from '../../types';
+import { ActorState as ServerActorState } from '../../generated/types';
 
-import { ACTOR_COLORS } from '../../theme';
-import { INITIAL_ACTORS, RESOURCE_TYPES } from '../../constants';
+import { INITIAL_ACTORS } from '../../constants';
 import { LogSlice } from './logSlice';
 import { createActor } from '../../services/actorFactory';
+import { hydrateActor, hydratePlannedAction } from '../../utils/hydration';
 
 export interface ActorSlice {
   actors: Record<string, ActorState>;
@@ -33,26 +24,6 @@ export interface ActorSlice {
   // Server Sync
   updateActorState: (update: StateUpdate) => void;
 }
-
-const hydrateCards = (
-  ids: string[],
-  registry: Record<string, GenCoreCard | undefined>,
-): CoreCard[] => {
-  return ids.map((id) => {
-    const def = registry[id];
-    if (!def) {
-      console.warn('Missing card definition for ID:', id);
-      return {
-        id,
-        type: 'coreCard',
-        name: 'Unknown',
-        stats: { red: 0, yellow: 0, blue: 0 },
-        flavor: [{ type: 'textRun', content: 'Missing Definition' }],
-      } as CoreCard;
-    }
-    return { ...def, id };
-  });
-};
 
 export const createActorSlice: StateCreator<
   ActorSlice & LogSlice, // removed explicit tokens requirement as it's part of ActorSlice now
@@ -96,32 +67,12 @@ export const createActorSlice: StateCreator<
     set((state) => {
       const targetId = update.updateActorId; // UUID
       const serverState = update.updateActorState as unknown as ServerActorState;
-      // Cast needed if types mismatch structurally due to imports
+      // Cast is now safe because we are about to pass it to a function that expects ServerActorState
+      // In the future we should update StateUpdate type to use ServerActorState directly if possible
 
       if (!state.actors[targetId]) {
         console.log('Received update for new actor:', targetId);
-
-        // Create a placeholder/new actor
-        // We'll trust the server state mainly, but we need to init the object structure
-        const actorType = serverState.actorType === 'PC' ? TokenType.PC : TokenType.MONSTER;
-
-        state.actors[targetId] = {
-          id: targetId,
-          name: serverState.name,
-          type: actorType,
-          color: actorType === TokenType.PC ? ACTOR_COLORS.PC : ACTOR_COLORS.MONSTER,
-          deck: {
-            drawPile: [],
-            hand: [],
-            discardPile: [],
-            flippedPile: [],
-            equipped: [],
-            consequences: [],
-          },
-          registry: {},
-        };
-
-        // Recursively call addActor-like logic or just push token
+        // Create token for new actor
         state.tokens.push({
           id: `token-${targetId}`,
           actorId: targetId,
@@ -131,26 +82,11 @@ export const createActorSlice: StateCreator<
         });
       }
 
-      const core = serverState.coreState;
-      const registry = core.registry;
+      // Hydrate Actor State
+      const hydratedActor = hydrateActor(serverState, targetId, state.actors[targetId]);
+      state.actors[targetId] = hydratedActor;
 
-      // Sync Registry
-      // Sync Registry
-      // We must manually map the registry to inject IDs, as the generated types don't include it in the object
-      const mappedRegistry: Record<string, import('../../types').Card> = {};
-      if (registry) {
-        Object.entries(registry).forEach(([key, card]) => {
-          if (card) {
-            mappedRegistry[key] = { ...card, id: key } as import('../../types').CoreCard;
-          }
-        });
-      }
-      state.actors[targetId].registry = mappedRegistry;
-
-      // Sync Revealed Effect
-      state.actors[targetId].revealed = core.revealed;
-
-      // Sync Spatial State to Token
+      // Sync Spatial State to Token (Needs to be separate because Token is separate from Actor in frontend model currently)
       const token = state.tokens.find((t: Token) => t.actorId === targetId);
       if (token && serverState.spatial) {
         token.x = serverState.spatial.posX;
@@ -158,127 +94,11 @@ export const createActorSlice: StateCreator<
         token.size = serverState.spatial.size ?? 1;
       }
 
-      // Sync Planned Move
-      if (serverState.plannedMove) {
-        if (!state.actors[targetId].plannedMove) {
-          console.log('Sync: setting plannedMove for', targetId, serverState.plannedMove);
-        }
-        state.actors[targetId].plannedMove = {
-          x: serverState.plannedMove[0],
-          y: serverState.plannedMove[1],
-        };
+      // Hydrate Planned Actions
+      const plannedAction = hydratePlannedAction(serverState, targetId, hydratedActor.registry);
+      if (plannedAction) {
+        state.plannedActions[targetId] = plannedAction;
       } else {
-        state.actors[targetId].plannedMove = undefined;
-      }
-
-      // Hydrate Deck State
-      const newDeckState: PlayerDeckState = {
-        drawPile: hydrateCards(core.deck, registry),
-        hand: hydrateCards(core.hand, registry),
-        discardPile: hydrateCards(core.discard, registry),
-        flippedPile: hydrateCards(core.defending, registry),
-
-        // Hydrate Equipped
-        equipped: Object.entries(serverState.tableState.assets || {})
-          .filter((entry) => entry[1]?.type === 'equipped' || entry[1]?.type === 'trait')
-          .map(([id, _]) => {
-            const wrapper = serverState.tableState.registry[id];
-            if (!wrapper) return undefined;
-            const data = wrapper.data;
-            return { ...data, id } as import('../../types').Card;
-          })
-          .filter((c): c is import('../../types').Card => !!c),
-
-        // Hydrate Consequences
-        consequences: (serverState.tableState.consequences || []).map((id) => {
-          const def = serverState.tableState.consequenceRegistry[id];
-          if (!def) {
-            return {
-              id,
-              name: 'Unknown Consequence',
-              type: 'consequenceCard',
-              severity: 1,
-            } as import('../../types').ConsequenceCard;
-          }
-          return { ...def, id };
-        }),
-      };
-
-      state.actors[targetId].deck = newDeckState;
-
-      // Sync Planned Actions (Authoritative)
-      const planned = core.planned;
-
-      if (planned) {
-        if (planned.type === 'pStandard') {
-          console.log('Sync: setting PStandard for', targetId);
-          const stack = planned.data; // ActionStack
-          const actionCardId = stack.actionCard;
-          const resourceIds = stack.resources;
-
-          const actionDef = registry[actionCardId];
-          if (actionDef) {
-            const actionCard = { ...actionDef, id: actionCardId };
-            const allCards = hydrateCards([actionCardId, ...resourceIds], registry);
-
-            // Infer Action logic for UI
-            let color: ResourceType = RESOURCE_TYPES.RED;
-            let modifier = 0;
-            let targetDefense: ResourceType | undefined = undefined;
-
-            const rules = actionCard.rules || [];
-            const attackRule = rules.find((r) => r.type === 'attack');
-            const generalRule = rules.find((r) => r.type === 'general');
-
-            if (attackRule && attackRule.type === 'attack') {
-              color = attackRule.data.power.source;
-              modifier = attackRule.data.power.modifier;
-              targetDefense = attackRule.data.resistedBy;
-            } else if (generalRule && generalRule.type === 'general') {
-              color = generalRule.data.difficulty?.attribute || RESOURCE_TYPES.RED;
-            }
-
-            state.plannedActions[targetId] = {
-              actorId: targetId,
-              actorName: serverState.name,
-              cards: allCards,
-              strengthColor: color,
-              modifier: modifier,
-              actionName: actionCard.name,
-              targetDefense,
-            };
-          }
-        }
-        // Handle PNarrative
-        else if (planned.type === 'pNarrative') {
-          const stack = planned.data; // NarrativeStack
-          const cardIds = stack.cards;
-          const color = stack.color;
-
-          const allCards = hydrateCards(cardIds, registry);
-
-          state.plannedActions[targetId] = {
-            actorId: targetId,
-            actorName: serverState.name,
-            cards: allCards,
-            strengthColor: color,
-            modifier: 0,
-            actionName: 'Improvise', // Narrative action name
-          };
-        }
-        // Handle PPass
-        else if (planned.type === 'pPass') {
-          state.plannedActions[targetId] = {
-            actorId: targetId,
-            actorName: serverState.name,
-            cards: [],
-            strengthColor: RESOURCE_TYPES.RED, // Dummy color
-            modifier: 0,
-            actionName: 'Pass',
-          };
-        }
-      } else {
-        // If server says no plan, ensure we don't have one
         delete state.plannedActions[targetId];
       }
     }),
