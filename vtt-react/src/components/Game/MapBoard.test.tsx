@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MapBoard } from './MapBoard';
-import { ActorState, TokenType } from '../../types';
+import { ActorState } from '../../generated/types';
 
 describe('MapBoard', () => {
   const mockUpdateToken = vi.fn();

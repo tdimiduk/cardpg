@@ -1,13 +1,14 @@
 import React from 'react';
 import { Skull, User, X, Plus } from 'lucide-react';
-import { TokenType, ActorDefinition } from '../../types';
+import { ActorDefinition } from '../../generated/types';
+import { WithId } from '../../store/selectors';
 
 interface ActorSelectorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectTemplate: (template: ActorDefinition) => void;
-  selectorType: TokenType;
-  availableTemplates: ActorDefinition[];
+  onSelectTemplate: (template: WithId<ActorDefinition>) => void;
+  selectorType: string;
+  availableTemplates: WithId<ActorDefinition>[];
 }
 
 export const ActorSelectorModal: React.FC<ActorSelectorModalProps> = ({
@@ -30,12 +31,12 @@ export const ActorSelectorModal: React.FC<ActorSelectorModalProps> = ({
       >
         <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-950">
           <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            {selectorType === TokenType.MONSTER ? (
+            {selectorType === 'monster' ? (
               <Skull className="text-emerald-500" />
             ) : (
               <User className="text-indigo-500" />
             )}
-            Select {selectorType === TokenType.MONSTER ? 'Monster' : 'Hero'}
+            Select {selectorType === 'monster' ? 'Monster' : 'Hero'}
           </h2>
           <button
             onClick={onClose}
@@ -53,9 +54,9 @@ export const ActorSelectorModal: React.FC<ActorSelectorModalProps> = ({
                 className="flex items-center gap-4 p-3 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-indigo-500 transition-all text-left group"
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${selectorType === TokenType.MONSTER ? 'bg-emerald-900/20 border-emerald-700 text-emerald-400' : 'bg-indigo-900/20 border-indigo-700 text-indigo-400'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${selectorType === 'monster' ? 'bg-emerald-900/20 border-emerald-700 text-emerald-400' : 'bg-indigo-900/20 border-indigo-700 text-indigo-400'}`}
                 >
-                  {selectorType === TokenType.MONSTER ? <Skull size={20} /> : <User size={20} />}
+                  {selectorType === 'monster' ? <Skull size={20} /> : <User size={20} />}
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-slate-200 group-hover:text-white text-lg">

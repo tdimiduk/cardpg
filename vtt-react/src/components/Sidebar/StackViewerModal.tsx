@@ -1,7 +1,6 @@
 import React from 'react';
 import { Layers, X } from 'lucide-react';
-import { Card } from '../../types';
-import { CardComponent } from '../Card/Card';
+import { CardComponent, Card } from '../Card/Card';
 
 interface StackViewerModalProps {
   isOpen: boolean;

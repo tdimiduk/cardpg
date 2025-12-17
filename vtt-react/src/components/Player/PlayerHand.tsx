@@ -1,39 +1,45 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import { useGameStore } from '../../store/gameStore';
+import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { useHandSelection } from '../../hooks/useHandSelection';
-import { CoreCard, ResourceType, GamePhase, UIPlannedAction } from '../../types';
 import { CardComponent } from '../Card/Card';
 import {
+  X,
+  SkipForward,
   Square,
   Circle,
   Diamond,
-  X,
-  Zap,
-  Layers,
   Lock,
-  SkipForward,
   RotateCcw,
+  Layers,
   ArrowUp,
+  Zap,
 } from 'lucide-react';
-import { RESOURCE_TYPES } from '../../constants';
-import { useGameStore } from '../../store/gameStore';
-import { useGameDispatch } from '../../hooks/useGameDispatch';
+import {
+  selectHand,
+  selectDefending,
+  selectPlannedAction,
+  UIPlannedAction,
+  ClientCoreCard,
+} from '../../store/selectors';
+import { ActorState, CoreCard, Phase, ResourceType } from '../../generated/types';
 
 // --- View ---
 export interface PlayerHandProps {
-  hand: CoreCard[];
+  hand: ClientCoreCard[];
   onPlayStack: (
-    selectedCards: CoreCard[],
+    selectedCards: ClientCoreCard[],
     strengthColor: ResourceType,
     modifier: number,
     targetDefense?: ResourceType,
     actionName?: string,
     actionCardId?: string,
   ) => void;
-  onDiscard: (selectedCards: CoreCard[]) => void;
+  onDiscard: (selectedCards: ClientCoreCard[]) => void;
   onPass: () => void;
   onCancelPlan: () => void;
-  onReturnToDeck: (selectedCards: CoreCard[]) => void;
-  phase: GamePhase;
+  onReturnToDeck: (selectedCards: ClientCoreCard[]) => void;
+  phase: Phase;
   hasPlanned: boolean;
   plannedAction?: UIPlannedAction;
 }
@@ -41,11 +47,11 @@ export interface PlayerHandProps {
 // Helper Component for Action Button Icons
 const ColorIcon = ({ color }: { color: ResourceType }) => {
   switch (color) {
-    case RESOURCE_TYPES.RED:
+    case 'red':
       return <Square size={14} className="inline fill-current" />;
-    case RESOURCE_TYPES.YELLOW:
+    case 'yellow':
       return <Circle size={14} className="inline fill-current" />;
-    case RESOURCE_TYPES.BLUE:
+    case 'blue':
       return <Diamond size={14} className="inline fill-current" />;
   }
 };
@@ -72,8 +78,25 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
     getActionRule,
   } = useHandSelection({ hand, onPlayStack });
 
+  // Helper to get cards for display safely
+  const displayCards = !plannedAction
+    ? []
+    : plannedAction.type === 'narrative'
+      ? plannedAction.cards
+      : plannedAction.type === 'standard'
+        ? [plannedAction.actionCard, ...plannedAction.resources]
+        : [];
+
+  const planName = !plannedAction
+    ? ''
+    : plannedAction.type === 'standard'
+      ? plannedAction.actionCard.name
+      : plannedAction.type === 'narrative'
+        ? 'Improvise'
+        : 'Pass';
+
   // If actor has already planned, hide hand and show locked state
-  if (hasPlanned && phase === 'planning') {
+  if (hasPlanned && plannedAction) {
     return (
       <div className="absolute bottom-0 left-0 right-0 z-40 h-72 flex flex-col items-center justify-end bg-gradient-to-t from-black via-slate-950/90 to-transparent pointer-events-none pb-6">
         <div className="pointer-events-auto flex flex-col items-center gap-4 animate-fade-in-up">
@@ -81,7 +104,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
           <div className="flex items-center gap-4 bg-slate-900/80 backdrop-blur px-6 py-2 rounded-full border border-indigo-500/30 shadow-2xl">
             <div className="flex items-center gap-2 text-indigo-300 font-bold uppercase tracking-widest text-xs">
               <Lock size={14} />
-              <span>Plan: {plannedAction?.actionName || 'Pass'}</span>
+              <span>Plan: {planName}</span>
             </div>
             <div className="h-4 w-px bg-slate-700"></div>
             <button
@@ -93,9 +116,9 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
           </div>
 
           {/* Cards Display */}
-          {plannedAction && plannedAction.cards.length > 0 ? (
+          {displayCards.length > 0 ? (
             <div className="flex -space-x-8 justify-center items-end px-8">
-              {plannedAction.cards.map((card, idx) => (
+              {displayCards.map((card, idx) => (
                 <div
                   key={`${card.id}-${idx}`}
                   className="relative transform scale-75 origin-bottom hover:scale-90 transition-transform duration-300 z-10 hover:z-20 cursor-default shadow-2xl"
@@ -193,9 +216,9 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
                             <>
                               <span
                                 className={
-                                  rule.data.power.source === RESOURCE_TYPES.RED
+                                  rule.data.power.source === 'red'
                                     ? 'text-red-400'
-                                    : rule.data.power.source === RESOURCE_TYPES.YELLOW
+                                    : rule.data.power.source === 'yellow'
                                       ? 'text-yellow-400'
                                       : 'text-blue-400'
                                 }
@@ -207,9 +230,9 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
                                   <span className="text-slate-400 text-[9px]">VS</span>
                                   <span
                                     className={
-                                      rule.data.resistedBy === RESOURCE_TYPES.RED
+                                      rule.data.resistedBy === 'red'
                                         ? 'text-red-400'
-                                        : rule.data.resistedBy === RESOURCE_TYPES.YELLOW
+                                        : rule.data.resistedBy === 'yellow'
                                           ? 'text-yellow-400'
                                           : 'text-blue-400'
                                     }
@@ -228,9 +251,9 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
                             <>
                               <span
                                 className={
-                                  rule.data.difficulty.attribute === RESOURCE_TYPES.RED
+                                  rule.data.difficulty.attribute === 'red'
                                     ? 'text-red-400'
-                                    : rule.data.difficulty.attribute === RESOURCE_TYPES.YELLOW
+                                    : rule.data.difficulty.attribute === 'yellow'
                                       ? 'text-yellow-400'
                                       : 'text-blue-400'
                                 }
@@ -261,21 +284,21 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
             {/* Improvise options */}
             <div className="flex gap-2">
               <button
-                onClick={() => handleImprovise(RESOURCE_TYPES.RED)}
+                onClick={() => handleImprovise('red')}
                 className="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/80 text-red-200 px-3 py-2 rounded font-bold text-xs border border-red-900/50 transition-colors"
               >
                 <Square size={14} fill="currentColor" />{' '}
                 {phase === 'planning' ? 'Plan Force' : 'Force'}
               </button>
               <button
-                onClick={() => handleImprovise(RESOURCE_TYPES.YELLOW)}
+                onClick={() => handleImprovise('yellow')}
                 className="flex items-center gap-2 bg-yellow-950/40 hover:bg-yellow-900/80 text-yellow-200 px-3 py-2 rounded font-bold text-xs border border-yellow-900/50 transition-colors"
               >
                 <Circle size={14} fill="currentColor" />{' '}
                 {phase === 'planning' ? 'Plan Speed' : 'Speed'}
               </button>
               <button
-                onClick={() => handleImprovise(RESOURCE_TYPES.BLUE)}
+                onClick={() => handleImprovise('blue')}
                 className="flex items-center gap-2 bg-blue-950/40 hover:bg-blue-900/80 text-blue-200 px-3 py-2 rounded font-bold text-xs border border-blue-900/50 transition-colors"
               >
                 <Diamond size={14} fill="currentColor" />{' '}
@@ -322,33 +345,49 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
 
 // --- Container ---
 
-const PlayerHandContainer: React.FC = () => {
-  const activeActorId = useGameStore((state) => state.activeActorId);
-  const actors = useGameStore((state) => state.actors);
-  const phase = useGameStore((state) => state.phase);
-  const plannedActions = useGameStore((state) => state.plannedActions);
-
+const PlayerHand: React.FC<{ actorId: string }> = ({ actorId }) => {
   const { dispatchCommand } = useGameDispatch();
 
-  // Derived
-  const activeActor = activeActorId ? actors[activeActorId] : undefined;
-  const currentDeck = activeActor?.deck;
-  const activeAction = activeActorId ? plannedActions[activeActorId] : undefined;
-  const userHasPlannedAction =
-    !!activeAction && (activeAction.cards.length > 0 || activeAction.actionName === 'Pass');
+  // Select stable raw data from store - these references don't change unless store updates
+  const actor = useGameStore((state) => state.actors[actorId]);
+  const activeActorId = useGameStore((state) => state.activeActorId);
+  const phase = useGameStore((state) => state.phase);
 
-  // If no active actor or no deck, we render nothing
-  if (!activeActorId || !currentDeck) return null;
+  // Derive hydrated cards in useMemo - only recomputes when actor changes
+  const hand = useMemo((): ClientCoreCard[] => {
+    if (!actor) return [];
+    return selectHand({ actors: { [actorId]: actor } }, actorId);
+  }, [actor, actorId]);
+
+  const defending = useMemo((): ClientCoreCard[] => {
+    if (!actor) return [];
+    return selectDefending({ actors: { [actorId]: actor } }, actorId);
+  }, [actor, actorId]);
+
+  const plannedAction = useMemo((): UIPlannedAction | undefined => {
+    if (!actor) return undefined;
+    return selectPlannedAction({ actors: { [actorId]: actor } }, actorId);
+  }, [actor, actorId]);
+
+  // Local state for dragging / selection
+  const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
+
+  // Determine mode
+  const isMyTurn = activeActorId === actorId;
+  const isPlanning = phase === 'planning';
+  const isResolution = phase === 'resolution';
 
   // Handlers
   const handlePlayStack = (
-    selectedCards: CoreCard[],
+    selectedCards: ClientCoreCard[],
     strengthColor: ResourceType,
     modifier: number,
     targetDefense?: ResourceType,
     actionName?: string,
     actionCardId?: string,
   ) => {
+    if (!activeActorId) return;
+
     if (phase === 'planning') {
       if (selectedCards.length === 0) return;
 
@@ -375,7 +414,8 @@ const PlayerHandContainer: React.FC = () => {
     console.warn('Attempted to play stack in non-planning phase or fallback.');
   };
 
-  const handleDiscard = (cards: CoreCard[]) => {
+  const handleDiscard = (cards: ClientCoreCard[]) => {
+    if (!activeActorId) return;
     dispatchCommand({
       type: 'discardCardsIntent',
       actorId: activeActorId,
@@ -384,14 +424,17 @@ const PlayerHandContainer: React.FC = () => {
   };
 
   const handlePass = () => {
+    if (!activeActorId) return;
     dispatchCommand({ type: 'passIntent', actorId: activeActorId });
   };
 
   const handleCancelPlan = () => {
+    if (!activeActorId) return;
     dispatchCommand({ type: 'cancelPlanIntent', actorId: activeActorId });
   };
 
-  const handleReturnToDeck = (cards: CoreCard[]) => {
+  const handleReturnToDeck = (cards: ClientCoreCard[]) => {
+    if (!activeActorId) return;
     dispatchCommand({
       type: 'returnToDeckIntent',
       actorId: activeActorId,
@@ -401,17 +444,17 @@ const PlayerHandContainer: React.FC = () => {
 
   return (
     <PlayerHandView
-      hand={currentDeck.hand}
+      hand={hand}
       onPlayStack={handlePlayStack}
       onDiscard={handleDiscard}
       onPass={handlePass}
       onCancelPlan={handleCancelPlan}
       onReturnToDeck={handleReturnToDeck}
       phase={phase}
-      hasPlanned={userHasPlannedAction}
-      plannedAction={activeAction}
+      hasPlanned={!!plannedAction}
+      plannedAction={plannedAction}
     />
   );
 };
 
-export default PlayerHandContainer;
+export default PlayerHand;

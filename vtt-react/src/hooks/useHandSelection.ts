@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { CoreCard, ResourceType, Rule } from '../types';
+import { ResourceType, Rule } from '../generated/types';
+import { ClientCoreCard } from '../store/selectors';
 import { RESOURCE_TYPES } from '../constants';
 
 export interface UseHandSelectionProps {
-  hand: CoreCard[];
+  hand: ClientCoreCard[];
   onPlayStack: (
-    selectedCards: CoreCard[],
+    selectedCards: ClientCoreCard[],
     strengthColor: ResourceType,
     modifier: number,
     targetDefense?: ResourceType,
@@ -40,7 +41,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
 
   // Filter for cards that are strictly Actions (have a cost and a rule)
   // We look for the first Attack or General rule to define the action.
-  const getActionRule = (card: CoreCard): Rule | undefined => {
+  const getActionRule = (card: ClientCoreCard): Rule | undefined => {
     return card.rules?.find((r) => r.type === 'attack' || r.type === 'general');
   };
 
@@ -55,7 +56,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
     clearSelection();
   };
 
-  const handleSpecificAction = (card: CoreCard) => {
+  const handleSpecificAction = (card: ClientCoreCard) => {
     const rule = getActionRule(card);
     if (!rule) return;
 

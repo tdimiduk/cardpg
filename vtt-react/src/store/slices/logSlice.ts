@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { LogEntry } from '../../types';
+import { LogEntry, LogPayload } from '../../generated/types';
 
 export interface LogSlice {
   logs: LogEntry[];
@@ -25,7 +25,7 @@ export const createLogSlice: StateCreator<LogSlice, [['zustand/immer', never]], 
     set((state) => {
       // Legacy local logs
       // Map legacy types to new payload types
-      let payload: import('../../types').LogPayload;
+      let payload: LogPayload;
       if (type === 'chat') {
         payload = { type: 'logChat', content: message };
       } else {

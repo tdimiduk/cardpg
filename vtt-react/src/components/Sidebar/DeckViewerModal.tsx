@@ -1,12 +1,12 @@
 import React from 'react';
 import { Layers, X } from 'lucide-react';
-import { CoreCard } from '../../types';
+import { CoreCard } from '../../generated/types';
 import { CardComponent } from '../Card/Card';
 
 interface DeckViewerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cards: CoreCard[];
+  cards: (CoreCard & { id: string })[];
 }
 
 export const DeckViewerModal: React.FC<DeckViewerModalProps> = ({ isOpen, onClose, cards }) => {

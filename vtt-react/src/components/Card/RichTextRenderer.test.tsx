@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { RESOURCE_TYPES } from '../../constants';
 import { RichTextRenderer } from './RichTextRenderer';
-import { Inline } from '../../types';
+import { Inline } from '../../generated/types';
 
 describe('RichTextRenderer', () => {
   it('renders simple text', () => {
