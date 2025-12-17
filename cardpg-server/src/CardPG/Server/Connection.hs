@@ -1,11 +1,8 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-
 module CardPG.Server.Connection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
 import Control.Exception (finally)
-import Control.Monad (forM_, forever)
+import Control.Monad (forM_, forever, when, unless)
 import Control.Monad.State (runState)
 import Data.Aeson (decode, encode)
 import Data.Map qualified as Map
@@ -90,7 +87,7 @@ talk client state = forever $ do
       -- Prepare broadcast
       (currentClients, currentGs, messages, pool) <- modifyMVar state $ \s -> do
         let s' = addClient newClient s -- Overwrites existing entry if reconnecting (updating socket)
-        let initialUpdates = map (\(tid, ast) -> StateUpdate tid ast) $ Map.toList (s'.gameState.actors)
+        let initialUpdates = map (uncurry StateUpdate) $ Map.toList (s'.gameState.actors)
 
         let welcomeMsg =
               Welcome
@@ -160,15 +157,10 @@ handleGameCommand client state cmd = do
   let tempState = ServerState clientsMap (CardLibrary [] [] []) (error "GameState unused in broadcast") pool newRng
 
   let messages =
-        (if null actions then [] else [BroadcastMessage (client.clientId) actions])
-          ++ ( if not (null updates) || newPhase /= oldPhase
-                 then [GameStateUpdate updates (Just newPhase)]
-                 else []
-             )
-          ++ (if null logs then [] else [NewLogs logs])
+        [BroadcastMessage (client.clientId) actions | not (null actions)]
+          ++ [GameStateUpdate updates (Just newPhase) | not (null updates) && newPhase /= oldPhase]
+          ++ [NewLogs logs | not (null logs)]
 
-  if not (null messages)
-    then broadcast (MultiMessage messages) tempState
-    else return ()
+  unless (null messages) $ broadcast (MultiMessage messages) tempState
 
   talkLoop client state

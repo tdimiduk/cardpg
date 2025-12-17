@@ -1,13 +1,14 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE FieldSelectors #-}
-{-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE TypeFamilies #-}
 
 module CardPG.Server.DB where
 
+import CardPG.Server.Config (DBConfig (..))
 import Data.Aeson (FromJSON, Result (..), ToJSON, Value (..), fromJSON, toJSON)
-import Data.Pool (Pool, withResource)
+import Data.Pool (Pool, defaultPoolConfig, newPool, withResource)
 import Data.Text (Text)
+import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
 import Data.Time (UTCTime, getCurrentTime)
 import Database.Beam
@@ -42,7 +43,8 @@ instance Table GameT where
 newtype CardPGDB f = CardPGDB
   { games :: f (TableEntity GameT)
   }
-  deriving (Generic, Database be)
+  deriving stock (Generic)
+  deriving anyclass (Database be)
 
 cardpgDb :: DatabaseSettings be CardPGDB
 cardpgDb = defaultDbSettings
@@ -51,11 +53,22 @@ annotatedDb :: AnnotatedDatabaseSettings Postgres CardPGDB
 annotatedDb = defaultAnnotatedDbSettings cardpgDb
 
 -- | Helper Functions
-initDB :: Pool Pg.Connection -> IO ()
-initDB pool = do
+initDB :: DBConfig -> IO (Pool Connection)
+initDB cfg = do
+  let connStr =
+        "host="
+          <> cfg.dbHost
+          <> " user="
+          <> cfg.dbUser
+          <> " password="
+          <> cfg.dbPass
+          <> " dbname="
+          <> cfg.dbName
+  pool <- newPool $ defaultPoolConfig (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 10 10
   withResource pool $ \conn ->
     Pg.withTransaction conn $
       BA.tryRunMigrationsWithEditUpdate annotatedDb conn
+  pure pool
 
 saveGame :: Pool Pg.Connection -> Text -> GameState -> IO ()
 saveGame pool gId gs = do

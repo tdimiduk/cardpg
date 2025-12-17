@@ -33,12 +33,7 @@ main = do
     hSetBuffering stdout NoBuffering
     config <- loadConfig
     
-    -- DB Connection
-    let db = config.dbConfig
-    let connStr = "host=" <> db.dbHost <> " user=" <> db.dbUser <> " password=" <> db.dbPass <> " dbname=" <> db.dbName
-    pool <- newPool $ defaultPoolConfig (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 10 10
-
-    initDB pool
+    pool <- initDB config.dbConfig
 
     -- Load Cards from Disk
     T.putStrLn $ "Loading card library from " <> T.pack config.cardsFile <> "..."

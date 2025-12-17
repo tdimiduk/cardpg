@@ -36,7 +36,7 @@ loadConfig = do
 
   -- Server Config
   portStr <- lookupEnv "PORT"
-  let port = fromMaybe 8080 (read <$> portStr)
+  let port = maybe 8080 read portStr
 
   -- File Config
   cFile <- fromMaybe "vtt-react/src/data/generated_cards.json" <$> lookupEnv "CARDPG_CARDS_FILE"
