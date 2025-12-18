@@ -161,7 +161,7 @@ const SidebarLeftContainer: React.FC = () => {
 
   const setActiveActor = useGameStore((state) => state.setActiveActor);
 
-  const removeActor = (id: string) => console.log('Remove actor not implemented');
+  const removeActor = (_id: string) => console.log('Remove actor not implemented');
 
   const { dispatchCommand } = useGameDispatch();
 

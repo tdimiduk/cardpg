@@ -1,16 +1,12 @@
 import {
   ActorState,
   CoreCard,
-  CoreCardState,
   ItemCard,
   NatureCard,
   TalentCard,
   EncounterCard,
   ConsequenceCard,
-  CardLocation,
   ResourceType,
-  AssetState,
-  TableCard,
 } from '../../generated/types';
 
 // --- Type Helpers ---

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MapBoard } from './MapBoard';
 import { ActorState } from '../../generated/types';
 
@@ -8,35 +8,46 @@ describe('MapBoard', () => {
   const mockUpdateToken = vi.fn();
   const mockSetActiveToken = vi.fn();
 
+  // Mock actor using the current ActorState wire type from codegen
   const mockActor: ActorState = {
-    id: 'actor-1',
     name: 'Test Actor',
-    color: '#ff0000',
-    type: TokenType.PC,
-    deck: {
+    actorType: 'pc',
+    coreState: {
+      deck: [],
       hand: [],
-      drawPile: [],
-      discardPile: [],
-      flippedPile: [],
-      equipped: [],
-      consequences: [],
+      discard: [],
+      defending: [],
+      inPlay: {},
+      registry: {},
     },
-    plannedMove: undefined,
-    registry: {},
-    x: 2,
-    y: 2,
-    size: 1,
+    tableState: {
+      assets: {},
+      registry: {},
+      consequences: [],
+      consequenceRegistry: {},
+    },
+    spatial: {
+      posX: 2,
+      posY: 2,
+      size: 1,
+    },
+    defense: 0,
+    resilience: 0,
   };
 
   const defaultProps = {
     onUpdateToken: mockUpdateToken,
     activeActorId: null,
-    setActiveActorId: mockSetActiveToken, // Function signature compatible
+    setActiveActorId: mockSetActiveToken,
     actors: { 'actor-1': mockActor },
     defeatedTokenIds: [],
     phase: 'planning' as const,
     plannedActions: {},
   };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('should not call onUpdateToken when clicking without dragging', () => {
     const { container } = render(<MapBoard {...defaultProps} />);

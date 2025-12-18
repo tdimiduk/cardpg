@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { useHandSelection } from '../../hooks/useHandSelection';
@@ -17,12 +17,11 @@ import {
 } from 'lucide-react';
 import {
   selectHand,
-  selectDefending,
   selectPlannedAction,
   UIPlannedAction,
   ClientCoreCard,
 } from '../../store/selectors';
-import { ActorState, CoreCard, Phase, ResourceType } from '../../generated/types';
+import { Phase, ResourceType } from '../../generated/types';
 
 // --- View ---
 export interface PlayerHandProps {
@@ -397,23 +396,10 @@ const PlayerHand: React.FC<{ actorId: string }> = ({ actorId }) => {
     return selectHand({ actors: { [actorId]: actor } }, actorId);
   }, [actor, actorId]);
 
-  const defending = useMemo((): ClientCoreCard[] => {
-    if (!actor) return [];
-    return selectDefending({ actors: { [actorId]: actor } }, actorId);
-  }, [actor, actorId]);
-
   const plannedAction = useMemo((): UIPlannedAction | undefined => {
     if (!actor) return undefined;
     return selectPlannedAction({ actors: { [actorId]: actor } }, actorId);
   }, [actor, actorId]);
-
-  // Local state for dragging / selection
-  const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
-
-  // Determine mode
-  const isMyTurn = activeActorId === actorId;
-  const isPlanning = phase === 'planning';
-  const isResolution = phase === 'resolution';
 
   // Handlers
   const handlePlayStack = (
