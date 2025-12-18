@@ -143,8 +143,17 @@ export const MapBoard: React.FC<MapBoardProps> = ({
 
           // Indicator Logic
           const handSize = actor.coreState.hand.length;
-          // Plan stub
-          const plannedCount = 0;
+          // Calculate planned card count based on planned action type
+          const planned = actor.coreState.planned;
+          let plannedCount = 0;
+          if (planned) {
+            if (planned.type === 'pStandard') {
+              plannedCount = 1 + planned.data.resources.length; // 1 action card + resources
+            } else if (planned.type === 'pNarrative') {
+              plannedCount = planned.data.cards.length;
+            }
+            // pPass has no cards
+          }
 
           const displayHandSize = phase === 'planning' ? handSize + plannedCount : handSize;
           const hasPlan = !!actor.plannedMove;
