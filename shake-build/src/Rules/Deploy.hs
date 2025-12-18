@@ -70,6 +70,14 @@ deploy forceRebuild = do
         (EchoStderr True)
         (["ssh", rootAt, "ln", "-sfn", package, targetLink] :: [String])
 
+      -- Register GC root
+      -- /nix/var/nix/gcroots/cardpg-live -> /sites/cardpg.tgd.me
+      let gcRoot = "/nix/var/nix/gcroots/cardpg-live"
+      cmd_
+        (EchoStdout True)
+        (EchoStderr True)
+        (["ssh", rootAt, "ln", "-sfn", targetLink, gcRoot] :: [String])
+
       if shouldRebuild
         then do
           putInfo "Service changed or rebuild forced. Rebuilding NixOS..."
