@@ -42,7 +42,6 @@ describe('MapBoard', () => {
     actors: { 'actor-1': mockActor },
     defeatedTokenIds: [],
     phase: 'planning' as const,
-    plannedActions: {},
   };
 
   beforeEach(() => {

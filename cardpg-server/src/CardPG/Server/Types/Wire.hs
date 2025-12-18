@@ -14,18 +14,18 @@ module CardPG.Server.Types.Wire
   , toActorState
   ) where
 
+import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
-import Data.Aeson.TH (deriveJSON)
 
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Logic.Combat (computeDefense, computeResilience)
-import CardPG.Core.State qualified as Core
 import CardPG.Core.State
   ( CoreCardState
   , SpatialState
   , TableState
   )
+import CardPG.Core.State qualified as Core
 
 -- | Wire format for ActorState with computed stats baked in.
 -- Internal Core.ActorState stays clean; this adds presentation-layer fields.
@@ -36,8 +36,8 @@ data ActorState = ActorState
   , tableState :: TableState
   , spatial :: SpatialState
   , plannedMove :: Maybe (Int, Int)
-  -- Computed fields (derived from tableState):
-  , defense :: Int
+  , -- Computed fields (derived from tableState):
+    defense :: Int
   , resilience :: Int
   }
   deriving (Show, Eq, Generic)
@@ -46,8 +46,9 @@ $(deriveJSON cardpgJsonDef ''ActorState)
 
 -- | Enrich Core.ActorState for wire transmission
 toActorState :: Core.ActorState -> ActorState
-toActorState Core.ActorState{..} = ActorState
-  { defense = computeDefense tableState
-  , resilience = computeResilience tableState
-  , ..
-  }
+toActorState Core.ActorState{..} =
+  ActorState
+    { defense = computeDefense tableState
+    , resilience = computeResilience tableState
+    , ..
+    }

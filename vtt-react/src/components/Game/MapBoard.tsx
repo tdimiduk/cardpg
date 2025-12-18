@@ -10,7 +10,6 @@ interface MapBoardProps {
   defeatedTokenIds?: string[];
   actors: Record<string, ActorState>;
   phase: Phase;
-  plannedActions: any; // Stub
 }
 
 export const MapBoard: React.FC<MapBoardProps> = ({
@@ -20,7 +19,6 @@ export const MapBoard: React.FC<MapBoardProps> = ({
   defeatedTokenIds = [],
   actors,
   phase,
-  plannedActions,
 }) => {
   const boardRef = useRef<HTMLDivElement>(null);
   const [draggingActorId, setDraggingActorId] = useState<{
@@ -105,7 +103,7 @@ export const MapBoard: React.FC<MapBoardProps> = ({
               const endX = targetX * GRID_SIZE + GRID_SIZE / 2;
               const endY = targetY * GRID_SIZE + GRID_SIZE / 2;
 
-              const color = (actor as any).color || '#ccc';
+              const color = (actor as unknown as { color?: string }).color || '#ccc';
 
               return (
                 <g key={`path-${actorId}`}>
@@ -192,8 +190,6 @@ export const MapBoard: React.FC<MapBoardProps> = ({
             renderX = dragPreview.x;
             renderY = dragPreview.y;
           }
-
-          const color = (actor as any).color || '#334155';
 
           return (
             <React.Fragment key={actorId}>

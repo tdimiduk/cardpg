@@ -55,7 +55,6 @@ const App: React.FC = () => {
           defeatedTokenIds={defeatedTokenIds}
           actors={actors}
           phase={phase}
-          plannedActions={{}}
         />
 
         {activeActorId && <PlayerHand actorId={activeActorId} />}

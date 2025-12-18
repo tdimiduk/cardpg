@@ -90,7 +90,8 @@ talk client state = forever $ do
       -- Prepare broadcast
       (currentClients, currentGs, messages, pool) <- modifyMVar state $ \s -> do
         let s' = addClient newClient s -- Overwrites existing entry if reconnecting (updating socket)
-        let initialUpdates = map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (s'.gameState.actors)
+        let initialUpdates =
+              map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (s'.gameState.actors)
 
         let welcomeMsg =
               Welcome

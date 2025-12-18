@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../store/gameStore';
 import { INITIAL_ACTORS } from '../constants';
+import type { ActorState, CoreCard } from '../generated/types';
 
 describe('Game Store Integration', () => {
   beforeEach(() => {
@@ -17,34 +18,36 @@ describe('Game Store Integration', () => {
     const testActorId = 'actor-1';
     const testCardId = 'card-1';
 
+    const testCard: CoreCard = {
+      type: 'coreCard',
+      name: 'Slash',
+      stats: { red: 0, yellow: 0, blue: 0 },
+    };
+
+    const testActor: ActorState = {
+      name: 'Test Actor',
+      actorType: 'PC',
+      coreState: {
+        deck: [],
+        hand: [testCardId],
+        discard: [],
+        defending: [],
+        inPlay: {},
+        registry: { [testCardId]: testCard },
+      },
+      tableState: {
+        assets: {},
+        registry: {},
+        consequences: [],
+        consequenceRegistry: {},
+      },
+      spatial: { posX: 0, posY: 0, size: 1 },
+      defense: 1,
+      resilience: 1,
+    };
+
     useGameStore.setState((state) => {
-      state.actors[testActorId] = {
-        id: testActorId,
-        name: 'Test Actor',
-        type: 'PC' as import('../types').TokenType,
-        color: '#ff0000',
-        deck: {
-          drawPile: [],
-          hand: [
-            {
-              id: testCardId,
-              name: 'Slash',
-              type: 'coreCard',
-              stats: { red: 0, yellow: 0, blue: 0 },
-            },
-          ],
-          discardPile: [],
-          flippedPile: [],
-          equipped: [],
-          consequences: [],
-        },
-        registry: {
-          [testCardId]: { name: 'Slash', type: 'coreCard' } as import('../types').CoreCard,
-        },
-        x: 0,
-        y: 0,
-        size: 1,
-      };
+      state.actors[testActorId] = testActor;
       state.activeActorId = testActorId;
     });
 

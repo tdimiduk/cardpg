@@ -3,7 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { ActorState, CardLocation, Phase, CoreCard, ConsequenceCard } from '../../generated/types';
 import { useActorStats } from '../../hooks/useActorStats';
-import { EquipmentCard } from '../../services/ruleService';
+import { EquipmentCardWithId } from './EquippedList';
 
 // Import new sub-components
 import { SidebarHeader } from './SidebarHeader';
@@ -27,7 +27,7 @@ export interface SidebarLeftProps {
   discardPileCount: number;
   flippedPile: IdentifiedCoreCard[];
   consequences: IdentifiedConsequenceCard[];
-  equipped: EquipmentCard[];
+  equipped: EquipmentCardWithId[];
   defense: number;
   resilience: number;
 
@@ -44,7 +44,7 @@ export interface SidebarLeftProps {
   actors: Record<string, ActorState>;
   onRemoveActor: (actorId: string) => void;
   phase: Phase;
-  plannedActions: any; // Legacy
+  plannedActions: Record<string, unknown>; // Legacy stub
 }
 
 export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
@@ -145,7 +145,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
           onRemoveConsequence={onRemoveConsequence}
         />
 
-        <EquippedList equipped={equipped as any} />
+        <EquippedList equipped={equipped} />
       </div>
     </div>
   );
@@ -222,7 +222,7 @@ const SidebarLeftContainer: React.FC = () => {
           }
           return undefined;
         })
-        .filter((c): c is EquipmentCard & { id: string } => !!c);
+        .filter((c): c is EquipmentCardWithId => !!c);
 
       return {
         drawPile: resolveCore(activeActor.coreState.deck),
