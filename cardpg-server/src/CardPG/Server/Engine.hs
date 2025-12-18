@@ -23,6 +23,7 @@ import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId)
 import CardPG.Core.State (ActorState (..), CoreCardState (..), GameEvent)
 import CardPG.Server.Types (ActorGameEvent (..), GameState (..), StateUpdate (..))
+import CardPG.Server.Types.Wire qualified as Wire
 
 runActorAction ::
   ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)
@@ -72,7 +73,7 @@ concludeRound game = foldM step (game, [], []) (Map.keys game.actors)
 
       if hasUpdates
         then case Map.lookup actorId gAfterDraw.actors of
-          Just actor -> return (gAfterDraw, updates ++ [StateUpdate actorId actor], allEvents)
+          Just actor -> return (gAfterDraw, updates ++ [StateUpdate actorId (Wire.toActorState actor)], allEvents)
           Nothing -> return (gAfterDraw, updates, allEvents)
         else return (gAfterDraw, updates, allEvents)
 

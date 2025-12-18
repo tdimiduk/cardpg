@@ -28,6 +28,8 @@ export interface SidebarLeftProps {
   flippedPile: IdentifiedCoreCard[];
   consequences: IdentifiedConsequenceCard[];
   equipped: EquipmentCard[];
+  defense: number;
+  resilience: number;
 
   onDraw: (count: number) => void;
   onDefend: () => void;
@@ -52,6 +54,8 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   flippedPile,
   consequences,
   equipped,
+  defense,
+  resilience,
   onDraw,
   onDefend,
   onClearDefense,
@@ -69,7 +73,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 }) => {
   const [showDeckModal, setShowDeckModal] = useState(false);
 
-  const stats = useActorStats(flippedPile, equipped, consequences);
+  const stats = useActorStats(flippedPile, defense, resilience, consequences);
 
   // Empty State / Character Selector
   if (!activeActorId) {
@@ -298,6 +302,8 @@ const SidebarLeftContainer: React.FC = () => {
       flippedPile={flippedPile}
       consequences={consequences}
       equipped={equipped}
+      defense={activeActor?.defense ?? 1}
+      resilience={activeActor?.resilience ?? 1}
       onDraw={handleDraw}
       onDefend={handleDefend}
       onClearDefense={handleClearDefense}

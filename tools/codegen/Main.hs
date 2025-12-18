@@ -38,7 +38,6 @@ import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.State
   ( ActionStack
-  , ActorState
   , AssetState
   , CoreCardState
   , CorePlayState
@@ -63,6 +62,7 @@ import CardPG.Server.Types
   , StateUpdate
   , Token
   )
+import CardPG.Server.Types.Wire qualified as Wire
 
 main :: IO ()
 main = do
@@ -104,7 +104,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy EncounterCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ActorDefinition)
-              <> getTypeScriptDeclarations (Proxy :: Proxy ActorState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Wire.ActorState)
               <> getTypeScriptDeclarations (Proxy :: Proxy AssetState)
               <> getTypeScriptDeclarations (Proxy :: Proxy CoreCardState)
               <> getTypeScriptDeclarations (Proxy :: Proxy CorePlayState)

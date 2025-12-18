@@ -28,6 +28,7 @@ library
   import: project-config
   exposed-modules:
     CardPG.Server.Types
+    CardPG.Server.Types.Wire
     CardPG.Server.Game
     CardPG.Server.Engine
     CardPG.Server.Dispatch

@@ -22,6 +22,7 @@ import CardPG.Server.Types
   , Phase (..)
   , StateUpdate (..)
   )
+import CardPG.Server.Types.Wire qualified as Wire
 
 processCommand ::
   Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
@@ -89,7 +90,7 @@ processCommand cmd ts game =
               Nothing -> error "Actor missing after update"
 
             actorEvents = map (ActorGameEvent targetId) events
-            stateUpdates = [StateUpdate targetId updatedActorState]
+            stateUpdates = [StateUpdate targetId (Wire.toActorState updatedActorState)]
             newLogs = concatMap (\evt -> eventToLogs ts targetId evt newGame) events
             finalGame = newGame{history = game.history ++ newLogs}
 

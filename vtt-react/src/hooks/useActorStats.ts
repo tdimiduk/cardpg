@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { CoreCard, ConsequenceCard } from '../generated/types';
-import { EquipmentCard, getAttributeValue, calculateSeverity } from '../services/ruleService';
+import { calculateSeverity } from '../services/ruleService';
 
 export interface ActorStats {
   defenseTotal: {
@@ -17,7 +17,8 @@ export interface ActorStats {
 
 export const useActorStats = (
   flippedPile: CoreCard[] | undefined,
-  equipped: EquipmentCard[] | undefined,
+  defenseStat: number,
+  resilienceStat: number,
   consequences: ConsequenceCard[] | undefined,
 ): ActorStats | null => {
   return useMemo(() => {
@@ -28,9 +29,6 @@ export const useActorStats = (
       yellow: flippedPile.reduce((sum, c) => sum + (c.stats.yellow ?? 0), 0),
       blue: flippedPile.reduce((sum, c) => sum + (c.stats.blue ?? 0), 0),
     };
-
-    const defenseStat = equipped ? getAttributeValue(equipped, 'def') : 1;
-    const resilienceStat = equipped ? getAttributeValue(equipped, 'res') : 1;
 
     const impact = flippedPile.length;
     const calculatedConsequences = Math.floor(impact / defenseStat);
@@ -44,5 +42,5 @@ export const useActorStats = (
       calculatedConsequences,
       currentSeverity,
     };
-  }, [flippedPile, equipped, consequences]);
+  }, [flippedPile, defenseStat, resilienceStat, consequences]);
 };

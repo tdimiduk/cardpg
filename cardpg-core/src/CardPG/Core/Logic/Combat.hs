@@ -6,6 +6,9 @@ module CardPG.Core.Logic.Combat
   , getAttackRule
   , stackPower
   , calculateResilience
+  , computeDefense
+  , computeResilience
+  , getActiveTableCards
   ) where
 
 import Data.Either (Either (..))
@@ -21,6 +24,7 @@ import CardPG.Core.Card
   , ItemCardT (..)
   , NatureCardT (..)
   , Stats (..)
+  , TalentCardT (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Primitives (ResourceType (..), StackPower (..))
@@ -88,25 +92,43 @@ attackAction matPlan = case matPlan of
           , defenseColor = col -- Defense matches Action Color
           }
 
-calculateResilience :: GameM g Int
-calculateResilience = do
-  tblSt <- use #tableState
-  let activeCards =
-        [ card
-        | (cid, stateCard) <- Map.toList (tblSt ^. #assets)
-        , isActive stateCard
-        , Just card <- [Map.lookup cid (tblSt ^. #registry)]
-        ]
-
-      getRes :: TableCard -> Int
-      getRes (TCItem item) = fromMaybe 0 item.resilience
-      getRes (TCNature nature) = fromMaybe 0 nature.resilience
-      getRes _ = 0
-
-      maxRes = maximum (0 : map getRes activeCards)
-
-  return $ max 1 maxRes
+-- | Helper: get table cards in active states (Equipped, Trait)
+getActiveTableCards :: TableState -> [TableCard]
+getActiveTableCards tblSt =
+  [ card
+  | (cid, assetState) <- Map.toList (tblSt ^. #assets)
+  , isActive assetState
+  , Just card <- [Map.lookup cid (tblSt ^. #registry)]
+  ]
   where
     isActive (Equipped _) = True
     isActive Trait = True
     isActive _ = False
+
+-- | Pure function to compute defense from table state
+computeDefense :: TableState -> Int
+computeDefense tblSt =
+  let activeCards = getActiveTableCards tblSt
+      getDef (TCItem item) = fromMaybe 0 item.defense
+      getDef (TCNature nature) = fromMaybe 0 nature.defense
+      getDef (TCTalent talent) = fromMaybe 0 talent.defense
+      getDef _ = 0
+      maxDef = maximum (0 : map getDef activeCards)
+   in max 1 maxDef
+
+-- | Pure function to compute resilience from table state
+computeResilience :: TableState -> Int
+computeResilience tblSt =
+  let activeCards = getActiveTableCards tblSt
+      getRes (TCItem item) = fromMaybe 0 item.resilience
+      getRes (TCNature nature) = fromMaybe 0 nature.resilience
+      getRes _ = 0
+      maxRes = maximum (0 : map getRes activeCards)
+   in max 1 maxRes
+
+-- | Monadic version for use in GameM context (backwards compatibility)
+calculateResilience :: GameM g Int
+calculateResilience = do
+  tblSt <- use #tableState
+  return $ computeResilience tblSt
+
