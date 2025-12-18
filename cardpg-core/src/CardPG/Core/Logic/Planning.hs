@@ -13,14 +13,12 @@ module CardPG.Core.Logic.Planning
   , passAction
   ) where
 
-import Control.Monad (when)
 import Control.Monad.RWS (tell)
 import Control.Monad.State (modify)
 import Data.List (partition)
 import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
-import Data.Text (Text)
 import Data.UUID (nil)
 import Optics
 
@@ -38,7 +36,6 @@ import CardPG.Core.State
   , PlannedActionMaterialized (..)
   , RevealedEffect (..)
   , SpatialState (..)
-  , TableState (..)
   , materializePlannedAction
   , plannedActionCards
   )
