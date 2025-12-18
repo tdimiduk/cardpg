@@ -95,8 +95,9 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
         ? 'Improvise'
         : 'Pass';
 
-  // If actor has already planned, hide hand and show locked state
-  if (hasPlanned && plannedAction) {
+  // During PLANNING phase: If actor has already planned, hide hand and show locked state
+  // During RESOLUTION phase: Show hand normally, but add an indicator for pending action
+  if (hasPlanned && plannedAction && phase === 'planning') {
     return (
       <div className="absolute bottom-0 left-0 right-0 z-40 h-72 flex flex-col items-center justify-end bg-gradient-to-t from-black via-slate-950/90 to-transparent pointer-events-none pb-6">
         <div className="pointer-events-auto flex flex-col items-center gap-4 animate-fade-in-up">
@@ -138,8 +139,45 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
     );
   }
 
+  // Pending Action Indicator for resolution phase
+  const PendingActionIndicator = () => {
+    if (phase !== 'resolution' || !hasPlanned || !plannedAction) return null;
+
+    return (
+      <div
+        className="mx-auto mb-2 pointer-events-auto group cursor-pointer"
+        onMouseEnter={() => {
+          // Dispatch custom event to highlight action in sidebar
+          window.dispatchEvent(
+            new CustomEvent('highlight-pending-action', { detail: { highlight: true } }),
+          );
+        }}
+        onMouseLeave={() => {
+          window.dispatchEvent(
+            new CustomEvent('highlight-pending-action', { detail: { highlight: false } }),
+          );
+        }}
+        onClick={() => {
+          // Scroll to and flash the action log in sidebar
+          window.dispatchEvent(new CustomEvent('focus-pending-action'));
+        }}
+      >
+        <div className="flex items-center gap-3 bg-amber-900/60 backdrop-blur px-4 py-2 rounded-full border border-amber-500/40 shadow-lg group-hover:bg-amber-800/70 group-hover:border-amber-400/60 transition-all">
+          <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+          <span className="text-amber-200 font-bold uppercase tracking-wider text-xs">
+            Pending: {planName}
+          </span>
+          <Zap size={14} className="text-amber-400" />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="absolute bottom-0 left-0 right-0 z-40 pointer-events-none flex flex-col justify-end">
+      {/* Pending Action Indicator - shows during resolution phase */}
+      <PendingActionIndicator />
+
       {/* Action Bar */}
       {selectedCards.length > 0 ? (
         <div className="mx-auto mb-4 pointer-events-auto bg-slate-900/95 text-white p-3 rounded-xl shadow-2xl border border-slate-700 backdrop-blur animate-fade-in-up flex flex-col items-center gap-3 max-w-4xl">
