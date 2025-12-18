@@ -11,7 +11,6 @@ module CardPG.Core.Logic.Combat
   , getActiveTableCards
   ) where
 
-import Data.Either (Either (..))
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
@@ -34,7 +33,6 @@ import CardPG.Core.State
   ( ActionStackMaterialized (..)
   , ActorState (..)
   , AssetState (..)
-  , CoreCardState (..)
   , NarrativeStackMaterialized (..)
   , PlannedActionMaterialized (..)
   , RealizedAttack (..)
@@ -131,4 +129,3 @@ calculateResilience :: GameM g Int
 calculateResilience = do
   tblSt <- use #tableState
   return $ computeResilience tblSt
-
