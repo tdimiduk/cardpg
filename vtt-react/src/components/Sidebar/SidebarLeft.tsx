@@ -1,8 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
-import { ActorState, CardLocation, Phase, CoreCard, ConsequenceCard } from '../../generated/types';
-import { useActorStats } from '../../hooks/useActorStats';
+import {
+  ActorState,
+  CardLocation,
+  Phase,
+  CoreCard,
+  ConsequenceCard,
+  DefenseDetails,
+} from '../../generated/types';
 import { EquipmentCardWithId } from './EquippedList';
 
 // Import new sub-components
@@ -30,6 +36,7 @@ export interface SidebarLeftProps {
   equipped: EquipmentCardWithId[];
   defense: number;
   resilience: number;
+  defenseDetails: DefenseDetails;
 
   onDraw: (count: number) => void;
   onDefend: () => void;
@@ -56,6 +63,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   equipped,
   defense,
   resilience,
+  defenseDetails,
   onDraw,
   onDefend,
   onClearDefense,
@@ -73,8 +81,6 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 }) => {
   const [showDeckModal, setShowDeckModal] = useState(false);
 
-  const stats = useActorStats(flippedPile, defense, resilience, consequences);
-
   // Empty State / Character Selector
   if (!activeActorId) {
     return (
@@ -90,17 +96,6 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
       </div>
     );
   }
-
-  if (!stats) return null;
-
-  const {
-    defenseTotal,
-    defenseStat,
-    resilienceStat,
-    impact,
-    calculatedConsequences,
-    currentSeverity,
-  } = stats;
 
   return (
     <div className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col h-full z-20 shadow-xl relative">
@@ -128,11 +123,9 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
         <StatusManager onAddStatusCard={onAddStatusCard} onRemoveStatusCard={onRemoveStatusCard} />
 
         <DefenseStats
-          defenseTotal={defenseTotal}
-          defenseStat={defenseStat}
-          resilienceStat={resilienceStat}
-          impact={impact}
-          calculatedConsequences={calculatedConsequences}
+          details={defenseDetails}
+          defenseStat={defense}
+          resilienceStat={resilience}
           onDefend={onDefend}
           onClearDefense={onClearDefense}
           hasFlippedCards={flippedPile.length > 0}
@@ -140,7 +133,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 
         <ConsequenceList
           consequences={consequences}
-          currentSeverity={currentSeverity}
+          currentSeverity={defenseDetails.nextSeverity}
           onAddConsequence={onAddConsequence}
           onRemoveConsequence={onRemoveConsequence}
         />
@@ -167,6 +160,16 @@ const SidebarLeftContainer: React.FC = () => {
 
   // Derived State
   const activeActor = activeActorId ? actors[activeActorId] : undefined;
+
+  // Default defense details if not available
+  const defaultDefenseDetails: DefenseDetails = {
+    red: 0,
+    yellow: 0,
+    blue: 0,
+    impact: 0,
+    consequencesFromDefense: 0,
+    nextSeverity: 1, // Default next severity usually 1
+  };
 
   // Resolve IDs to Card Objects
   const { drawPile, flippedPile, consequences, equipped, drawPileCount, discardPileCount } =
@@ -304,6 +307,7 @@ const SidebarLeftContainer: React.FC = () => {
       equipped={equipped}
       defense={activeActor?.defense ?? 1}
       resilience={activeActor?.resilience ?? 1}
+      defenseDetails={activeActor?.defenseDetails ?? defaultDefenseDetails}
       onDraw={handleDraw}
       onDefend={handleDefend}
       onClearDefense={handleClearDefense}

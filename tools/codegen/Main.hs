@@ -105,6 +105,7 @@ main = do
               <> getTypeScriptDeclarations (Proxy :: Proxy ConsequenceCard)
               <> getTypeScriptDeclarations (Proxy :: Proxy ActorDefinition)
               <> getTypeScriptDeclarations (Proxy :: Proxy Wire.ActorState)
+              <> getTypeScriptDeclarations (Proxy :: Proxy Wire.DefenseDetails)
               <> getTypeScriptDeclarations (Proxy :: Proxy AssetState)
               <> getTypeScriptDeclarations (Proxy :: Proxy CoreCardState)
               <> getTypeScriptDeclarations (Proxy :: Proxy CorePlayState)

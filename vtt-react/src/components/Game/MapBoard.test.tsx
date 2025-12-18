@@ -27,12 +27,20 @@ describe('MapBoard', () => {
       consequenceRegistry: {},
     },
     spatial: {
-      posX: 2,
-      posY: 2,
+      posX: 0,
+      posY: 0,
       size: 1,
     },
-    defense: 0,
-    resilience: 0,
+    defense: 1,
+    resilience: 1,
+    defenseDetails: {
+      red: 0,
+      yellow: 0,
+      blue: 0,
+      impact: 0,
+      consequencesFromDefense: 0,
+      nextSeverity: 1,
+    },
   };
 
   const defaultProps = {

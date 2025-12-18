@@ -78,6 +78,7 @@ import CardPG.Server.Types
   , StateUpdate (..)
   , Token
   )
+import CardPG.Server.Types.Wire (DefenseDetails)
 import CardPG.Server.Types.Wire qualified as Wire
 import DeriveSpecialized
   ( deriveSpecializedInstance
@@ -318,6 +319,7 @@ $( do
      i_tableState <- deriveTypeScript cardpgJsonDef ''TableState
      i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
      i_actorState <- deriveTypeScript cardpgJsonDef ''ActorState
+     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''DefenseDetails
      i_actorStateWire <- deriveTypeScript cardpgJsonDef ''Wire.ActorState
      i_gameEvent <- deriveTypeScript cardpgJsonDef ''GameEvent
      i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
@@ -336,6 +338,7 @@ $( do
            ++ i_tableState
            ++ i_assetState
            ++ i_actorState
+           ++ i_defenseDetails
            ++ i_actorStateWire
            ++ i_gameEvent
            ++ i_stateUpdate

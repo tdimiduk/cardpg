@@ -1,23 +1,20 @@
 import React from 'react';
 import { Shield, Square, Circle, Diamond } from 'lucide-react';
+import { DefenseDetails } from '../../generated/types';
 
 interface DefenseStatsProps {
-  defenseTotal: { red: number; yellow: number; blue: number };
+  details: DefenseDetails;
   defenseStat: number;
   resilienceStat: number;
-  impact: number;
-  calculatedConsequences: number;
   onDefend: () => void;
   onClearDefense: () => void;
   hasFlippedCards: boolean;
 }
 
 export const DefenseStats: React.FC<DefenseStatsProps> = ({
-  defenseTotal,
+  details,
   defenseStat,
   resilienceStat,
-  impact,
-  calculatedConsequences,
   onDefend,
   onClearDefense,
   hasFlippedCards,
@@ -42,15 +39,15 @@ export const DefenseStats: React.FC<DefenseStatsProps> = ({
       <div className="grid grid-cols-3 gap-2 text-center mb-3">
         <div className="bg-red-950/30 p-1 rounded border border-red-900/50">
           <Square size={12} className="mx-auto mb-1 text-red-500" />
-          <span className="text-sm font-bold text-red-200">{defenseTotal.red}</span>
+          <span className="text-sm font-bold text-red-200">{details.red}</span>
         </div>
         <div className="bg-yellow-950/30 p-1 rounded border border-yellow-900/50">
           <Circle size={12} className="mx-auto mb-1 text-yellow-500" />
-          <span className="text-sm font-bold text-yellow-200">{defenseTotal.yellow}</span>
+          <span className="text-sm font-bold text-yellow-200">{details.yellow}</span>
         </div>
         <div className="bg-blue-950/30 p-1 rounded border border-blue-900/50">
           <Diamond size={12} className="mx-auto mb-1 text-blue-500" />
-          <span className="text-sm font-bold text-blue-200">{defenseTotal.blue}</span>
+          <span className="text-sm font-bold text-blue-200">{details.blue}</span>
         </div>
       </div>
 
@@ -75,12 +72,12 @@ export const DefenseStats: React.FC<DefenseStatsProps> = ({
         <div className="bg-slate-800 p-2 rounded space-y-1">
           <div className="flex justify-between text-slate-300">
             <span>Impact (Cards Flipped):</span>
-            <span className="font-bold">{impact}</span>
+            <span className="font-bold">{details.impact}</span>
           </div>
           <div className="flex justify-between text-orange-300 border-t border-slate-700 pt-1 mt-1">
             <span>Consequences:</span>
             <span className="font-bold">
-              {calculatedConsequences > 0 ? calculatedConsequences : '-'}
+              {details.consequencesFromDefense > 0 ? details.consequencesFromDefense : '-'}
             </span>
           </div>
         </div>
