@@ -1,8 +1,10 @@
 import React from 'react';
-import { Card, CoreCard } from '../../types';
+import { CoreCard, ItemCard, NatureCard, TalentCard, ConsequenceCard } from '../../generated/types';
 import { Square, Circle, Diamond, Shield, Heart } from 'lucide-react';
 import { InlineIcon } from './InlineIcon';
 import { RichTextRenderer } from './RichTextRenderer';
+
+export type Card = CoreCard | ItemCard | NatureCard | TalentCard | ConsequenceCard;
 
 interface CardProps {
   card: Card;

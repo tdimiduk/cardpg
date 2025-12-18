@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { ActorState } from './types';
+import React from 'react';
 import { MapBoard } from './components/Game/MapBoard';
 // Importing default exports which are now Containers
 import SidebarLeft from './components/Sidebar/SidebarLeft';
@@ -13,31 +12,17 @@ import { useGameDispatch } from './hooks/useGameDispatch';
 const App: React.FC = () => {
   // --- Store Hooks Needed for Layout/Initialization ---
   const phase = useGameStore((state) => state.phase);
-  const plannedActions = useGameStore((state) => state.plannedActions);
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
 
   // Actions
   const setActiveActor = useGameStore((state) => state.setActiveActor);
-  const initializeGame = useGameStore((state) => state.initializeGame);
-
-  // Initialize Game on Mount
-  useEffect(() => {
-    // Check if decks are empty (need initialization)
-    const needsInit = Object.values(actors).some(
-      (a: ActorState) => a.deck.hand.length === 0 && a.deck.drawPile.length === 0,
-    );
-
-    if (needsInit) {
-      initializeGame();
-    }
-  }, []);
 
   // --- Helpers ---
-  // Calculate defeated for visualization (Passed to MapBoard which is not yet containerized)
-  const defeatedTokenIds = Object.values(actors)
-    .filter((actor) => actor.deck.consequences.some((c) => c.name === 'Taken Out'))
-    .map((actor) => `token-${actor.id}`);
+  // Calculate defeated for visualization - check tableState.consequences for "Taken Out"
+  const defeatedTokenIds = Object.entries(actors)
+    .filter(([_, actor]) => actor.tableState.consequences.includes('Taken Out'))
+    .map(([id]) => `token-${id}`);
 
   // --- WebSocket Integration ---
   useWebSocket();
@@ -70,10 +55,9 @@ const App: React.FC = () => {
           defeatedTokenIds={defeatedTokenIds}
           actors={actors}
           phase={phase}
-          plannedActions={plannedActions}
         />
 
-        <PlayerHand />
+        {activeActorId && <PlayerHand actorId={activeActorId} />}
       </main>
 
       <SidebarRight />

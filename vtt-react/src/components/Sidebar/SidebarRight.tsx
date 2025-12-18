@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, Phase, ILogAttack, ILogDefense, Card } from '../../types';
-import { RESOURCE_TYPES } from '../../constants';
+import { LogEntry, Phase, LogPayload, CoreCard } from '../../generated/types';
+// TODO: Replace lucide icons if needed, or keep them
 import { Send, Bot, Square, ArrowRight, Play, Rewind } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { StackViewerModal } from './StackViewerModal';
+import { WithId, selectReadiness } from '../../store/selectors';
+import { Card } from '../Card/Card';
 
-// Helper type for cards in stack view
-type StackCard = Card & { id: string };
+// Helper type for cards in stack view - use the same Card type as CardComponent
+type StackCard = WithId<Card>;
 
 // --- View ---
 export interface SidebarRightProps {
@@ -24,7 +26,7 @@ export interface SidebarRightProps {
 
 const AttackLogItem: React.FC<{
   log: LogEntry;
-  payload: ILogAttack;
+  payload: Extract<LogPayload, { type: 'logAttack' }>;
   onViewStack: (cards: StackCard[], title: string) => void;
 }> = ({ log, payload, onViewStack }) => {
   const actorId = log.senderId;
@@ -34,19 +36,23 @@ const AttackLogItem: React.FC<{
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
   );
-  const registry = useGameStore((state) => (actorId ? state.actors[actorId]?.registry : {}));
+  // Registry is in coreState now
+  const registry = useGameStore((state) =>
+    actorId ? state.actors[actorId]?.coreState.registry : {},
+  );
 
   // Resolve cards
-  const attackCardDef = attack ? registry[attack.attackCard] : undefined;
+  const attackCardDef = attack && registry ? registry[attack.attackCard] : undefined;
   const attackCardName = attackCardDef?.name || 'Unknown Attack';
-  const attackCard = attackCardDef ? { ...attackCardDef, id: attack!.attackCard } : undefined;
+  const attackCard: StackCard | undefined =
+    attackCardDef && attack ? { ...attackCardDef, id: attack.attackCard } : undefined;
 
   const handleViewStack = (e: React.MouseEvent) => {
     e.stopPropagation();
     const cards: StackCard[] = [];
     if (attackCard) cards.push(attackCard);
 
-    if (resourceCardIds) {
+    if (resourceCardIds && registry) {
       resourceCardIds.forEach((id) => {
         const def = registry[id];
         if (def) cards.push({ ...def, id });
@@ -81,9 +87,9 @@ const AttackLogItem: React.FC<{
         <span className="text-slate-300">VS</span>
         <span
           className={`font-bold ${
-            attack.defenseColor === RESOURCE_TYPES.RED
+            attack.defenseColor === 'red'
               ? 'text-red-400'
-              : attack.defenseColor === RESOURCE_TYPES.BLUE
+              : attack.defenseColor === 'blue'
                 ? 'text-blue-400'
                 : 'text-yellow-400'
           }`}
@@ -97,7 +103,7 @@ const AttackLogItem: React.FC<{
 
 const DefenseLogItem: React.FC<{
   log: LogEntry;
-  payload: ILogDefense;
+  payload: Extract<LogPayload, { type: 'logDefense' }>;
   onEndDefense: () => void;
   onViewStack: (cards: StackCard[], title: string) => void;
 }> = ({ payload, onEndDefense, onViewStack }) => {
@@ -105,18 +111,27 @@ const DefenseLogItem: React.FC<{
   const isEnded = payload.ended;
 
   // Registry for resolving snapshotIds and live cards
-  const registry = useGameStore((state) => (actorId ? state.actors[actorId]?.registry : {}));
-
-  // If active, pull live data (hydrated cards from deck.flippedPile).
-  const flippedPile = useGameStore((state) =>
-    actorId && !isEnded ? state.actors[actorId]?.deck.flippedPile : undefined,
+  const registry = useGameStore((state) =>
+    actorId ? state.actors[actorId]?.coreState.registry : {},
   );
 
-  // flippedPile is already CoreCard[], so we just filter for safety
+  // If active, pull live data (hydrated cards from deck.flippedPile).
+  // In generated types, deck is part of coreState.
+  const flippedPile = useGameStore(
+    (state) => (actorId && !isEnded ? state.actors[actorId]?.coreState.defending : undefined), // defending is the new name for flippedPile in server state? NO, check generated types.
+    // generated types: ActorState -> coreState -> defending: CardInstanceId[]
+  );
+
+  // flippedPile is string[] (IDs). Need to hydrate.
   const stackCards = useMemo(() => {
-    if (!flippedPile) return undefined;
-    return flippedPile.filter((c) => !!c && !!c.id);
-  }, [flippedPile]);
+    if (!flippedPile || !registry) return undefined;
+    return flippedPile
+      .map((id) => {
+        const card = registry[id];
+        return card ? { ...card, id } : undefined;
+      })
+      .filter((c): c is CoreCard & { id: string } => !!c);
+  }, [flippedPile, registry]);
 
   const liveCards = useMemo(() => (stackCards ? stackCards.map((c) => c.name) : []), [stackCards]);
   const actorName = useGameStore((state) =>
@@ -394,14 +409,10 @@ const SidebarRightContainer: React.FC = () => {
   const phase = useGameStore((state) => state.phase);
   const activeActorId = useGameStore((state) => state.activeActorId);
   const actors = useGameStore((state) => state.actors);
-  const plannedActions = useGameStore((state) => state.plannedActions);
 
   const { dispatchCommand, dispatchAdmin } = useGameDispatch();
 
-  // Derived
-  const isActionPlanned = (action?: { cards: unknown[]; actionName?: string }) =>
-    !!action && (action.cards.length > 0 || action.actionName === 'Pass');
-  const readyCount = Object.values(plannedActions).filter(isActionPlanned).length;
+  const readyCount = useGameStore(selectReadiness);
   const totalCount = Object.keys(actors).length;
 
   // Handlers

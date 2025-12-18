@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AlertTriangle, X, ChevronDown } from 'lucide-react';
-import { ConsequenceCard } from '../../types';
+import { ConsequenceCard } from '../../generated/types';
 import { RuleRenderer } from '../Card/RuleRenderer';
 
 interface ConsequenceListProps {
-  consequences: ConsequenceCard[];
+  consequences: (ConsequenceCard & { id: string })[];
   currentSeverity: number;
   onAddConsequence: (severity?: number) => void;
   onRemoveConsequence: (cardId: string) => void;

@@ -1,17 +1,15 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { ActorState, GamePhase, UIPlannedAction } from '../../types';
+import { ActorState, Phase } from '../../generated/types';
 import { GRID_SIZE } from '../../constants';
-import { TokenEntity } from './TokenEntity';
+import { TokenEntity, TokenSpatial } from './TokenEntity';
 
 interface MapBoardProps {
-  // tokens prop removed
   onUpdateToken: (actorId: string, x: number, y: number) => void;
   activeActorId: string | null;
   setActiveActorId: (id: string | null) => void;
   defeatedTokenIds?: string[];
   actors: Record<string, ActorState>;
-  phase: GamePhase;
-  plannedActions: Record<string, UIPlannedAction>;
+  phase: Phase;
 }
 
 export const MapBoard: React.FC<MapBoardProps> = ({
@@ -21,7 +19,6 @@ export const MapBoard: React.FC<MapBoardProps> = ({
   defeatedTokenIds = [],
   actors,
   phase,
-  plannedActions,
 }) => {
   const boardRef = useRef<HTMLDivElement>(null);
   const [draggingActorId, setDraggingActorId] = useState<{
@@ -32,8 +29,6 @@ export const MapBoard: React.FC<MapBoardProps> = ({
     initialY: number;
   } | null>(null);
   const [dragPreview, setDragPreview] = useState<{ x: number; y: number } | null>(null);
-
-  const actorList = Object.values(actors);
 
   const handleMouseDown = (e: React.MouseEvent, actorId: string, x: number, y: number) => {
     e.stopPropagation();
@@ -68,12 +63,13 @@ export const MapBoard: React.FC<MapBoardProps> = ({
       const newGridY = Math.round(dragPreview.y / GRID_SIZE);
 
       const actor = actors[draggingActorId.id];
-      if (actor) {
+
+      if (actor && actor.spatial) {
         const finalX = Math.max(0, newGridX);
         const finalY = Math.max(0, newGridY);
         // Only update if position changed
-        if (finalX !== actor.x || finalY !== actor.y) {
-          onUpdateToken(actor.id, finalX, finalY);
+        if (finalX !== actor.spatial.posX || finalY !== actor.spatial.posY) {
+          onUpdateToken(draggingActorId.id, finalX, finalY);
         }
       }
     }
@@ -96,28 +92,32 @@ export const MapBoard: React.FC<MapBoardProps> = ({
       >
         {/* SVG Layer for Planned Paths */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible">
-          {actorList.map((actor) => {
+          {Object.entries(actors).map(([actorId, actor]) => {
             if (!actor.plannedMove) return null;
 
-            const { x: targetX, y: targetY } = actor.plannedMove;
-            if (targetX !== actor.x || targetY !== actor.y) {
-              const startX = actor.x * GRID_SIZE + GRID_SIZE / 2;
-              const startY = actor.y * GRID_SIZE + GRID_SIZE / 2;
+            const [targetX, targetY] = actor.plannedMove;
+
+            if (targetX !== actor.spatial.posX || targetY !== actor.spatial.posY) {
+              const startX = actor.spatial.posX * GRID_SIZE + GRID_SIZE / 2;
+              const startY = actor.spatial.posY * GRID_SIZE + GRID_SIZE / 2;
               const endX = targetX * GRID_SIZE + GRID_SIZE / 2;
               const endY = targetY * GRID_SIZE + GRID_SIZE / 2;
+
+              const color = (actor as unknown as { color?: string }).color || '#ccc';
+
               return (
-                <g key={`path-${actor.id}`}>
+                <g key={`path-${actorId}`}>
                   <line
                     x1={startX}
                     y1={startY}
                     x2={endX}
                     y2={endY}
-                    stroke={actor.color}
+                    stroke={color}
                     strokeWidth="2"
                     strokeDasharray="5,5"
                     opacity="0.6"
                   />
-                  <circle cx={endX} cy={endY} r="3" fill={actor.color} />
+                  <circle cx={endX} cy={endY} r="3" fill={color} />
                 </g>
               );
             }
@@ -126,34 +126,41 @@ export const MapBoard: React.FC<MapBoardProps> = ({
         </svg>
 
         {/* Tokens & Ghosts */}
-        {actorList.map((actor) => {
-          const isDragging = draggingActorId?.id === actor.id;
-          const isDefeated = defeatedTokenIds.includes(`token-${actor.id}`); // Assuming ID convention for now or we should check if defeated uses ActorID
+        {Object.entries(actors).map(([actorId, actor]) => {
+          const isDragging = draggingActorId?.id === actorId;
+          const isDefeated = defeatedTokenIds.includes(`token-${actorId}`);
 
-          // Construct temporary token object for TokenEntity compatibility
-          const token = {
-            id: `token-${actor.id}`,
-            actorId: actor.id,
-            x: actor.x,
-            y: actor.y,
-            size: actor.size,
+          // Construct TokenSpatial
+          const token: TokenSpatial = {
+            id: `token-${actorId}`,
+            actorId: actorId,
+            x: actor.spatial.posX,
+            y: actor.spatial.posY,
+            size: actor.spatial.size,
           };
 
           // Indicator Logic
-          const deck = actor.deck;
-          const plan = plannedActions[actor.id];
-          const rawHandSize = deck?.hand.length || 0;
-          const plannedCount = plan ? plan.cards.length : 0;
+          const handSize = actor.coreState.hand.length;
+          // Calculate planned card count based on planned action type
+          const planned = actor.coreState.planned;
+          let plannedCount = 0;
+          if (planned) {
+            if (planned.type === 'pStandard') {
+              plannedCount = 1 + planned.data.resources.length; // 1 action card + resources
+            } else if (planned.type === 'pNarrative') {
+              plannedCount = planned.data.cards.length;
+            }
+            // pPass has no cards
+          }
 
-          const displayHandSize = phase === 'planning' ? rawHandSize + plannedCount : rawHandSize;
-          const hasPlan = !!plan;
+          const displayHandSize = phase === 'planning' ? handSize + plannedCount : handSize;
+          const hasPlan = !!actor.plannedMove;
 
-          // 1. Render Planned "Ghost" Token if it exists and is different from start
+          // 1. Render Planned "Ghost" Token
           let GhostEntity = null;
           if (actor.plannedMove) {
-            const { x: planX, y: planY } = actor.plannedMove;
-            if (planX !== actor.x || planY !== actor.y) {
-              // Ghost token object
+            const [planX, planY] = actor.plannedMove;
+            if (planX !== actor.spatial.posX || planY !== actor.spatial.posY) {
               const ghostToken = { ...token, x: planX, y: planY };
               GhostEntity = (
                 <div
@@ -177,15 +184,15 @@ export const MapBoard: React.FC<MapBoardProps> = ({
           }
 
           // 2. Render Real Token
-          let renderX = actor.x * GRID_SIZE;
-          let renderY = actor.y * GRID_SIZE;
+          let renderX = actor.spatial.posX * GRID_SIZE;
+          let renderY = actor.spatial.posY * GRID_SIZE;
           if (isDragging && dragPreview) {
             renderX = dragPreview.x;
             renderY = dragPreview.y;
           }
 
           return (
-            <React.Fragment key={actor.id}>
+            <React.Fragment key={actorId}>
               {GhostEntity}
               <div
                 style={{
@@ -193,14 +200,14 @@ export const MapBoard: React.FC<MapBoardProps> = ({
                   left: renderX,
                   top: renderY,
                   transition: isDragging ? 'none' : 'all 0.2s ease-out',
-                  zIndex: activeActorId === actor.id ? 50 : 10,
+                  zIndex: activeActorId === actorId ? 50 : 10,
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <TokenEntity
                   token={token}
                   actor={actor}
-                  isSelected={activeActorId === actor.id}
+                  isSelected={activeActorId === actorId}
                   onMouseDown={(e, t) => handleMouseDown(e, t.actorId, t.x, t.y)}
                   isDefeated={isDefeated}
                   handSize={displayHandSize}

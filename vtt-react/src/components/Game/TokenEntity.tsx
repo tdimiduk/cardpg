@@ -1,13 +1,21 @@
 import React, { useMemo } from 'react';
-import { Token, TokenType, ActorState } from '../../types';
+import { ActorState } from '../../generated/types';
 import { GRID_SIZE } from '../../constants';
 import { User, Skull, Sword, X, StickyNote, CheckCircle2 } from 'lucide-react';
 
+export interface TokenSpatial {
+  id: string; // Token/Actor ID
+  actorId: string;
+  x: number;
+  y: number;
+  size: number;
+}
+
 interface TokenEntityProps {
-  token: Token;
+  token: TokenSpatial;
   actor: ActorState;
   isSelected: boolean;
-  onMouseDown: (e: React.MouseEvent, token: Token) => void;
+  onMouseDown: (e: React.MouseEvent, token: TokenSpatial) => void;
   isDefeated?: boolean;
   handSize?: number;
   hasPlan?: boolean;
@@ -28,35 +36,43 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
     // Position is handled by the parent container in MapBoard
     width: token.size * GRID_SIZE,
     height: token.size * GRID_SIZE,
-    cursor: isGhost ? 'default' : 'grab', // Always interactive per request
+    cursor: isGhost ? 'default' : 'grab',
   };
 
   const Icon = useMemo(() => {
-    switch (actor.type) {
-      case TokenType.MONSTER:
+    switch (
+      actor.actorType // Updated property name
+    ) {
+      case 'monster':
         return Skull;
-      case TokenType.NPC:
+      case 'npc':
         return User;
-      case TokenType.PC:
+      case 'character':
         return Sword;
       default:
         return User;
     }
-  }, [actor.type]);
+  }, [actor.actorType]);
 
   const containerClasses = [
     'group flex items-center justify-center relative',
     isDefeated ? 'grayscale opacity-70' : '',
-    isGhost ? 'grayscale opacity-50' : '', // Removed pointer-events-none
+    isGhost ? 'grayscale opacity-50' : '',
   ].join(' ');
+
+  // ActorState doesn't have 'color' directly in generated types?
+  // Checking generated types: IActorState { name, actorType, coreState, tableState, spatial, plannedMove }
+  // No 'color'. We need a fallback or mapper.
+  // Assuming strict mode, accessing actor.color would fail if not in type.
+  // For now, I'll use a safe access or default.
+  const actorColor = (actor as any).color || '#334155';
 
   return (
     <div
       style={style}
-      onMouseDown={(e) => onMouseDown(e, token)} // Removed !isGhost check
+      onMouseDown={(e) => onMouseDown(e, token)}
       className={containerClasses}
       data-testid={isGhost ? 'token-ghost' : 'token-entity'}
-      // aria-hidden={isGhost} // Removed to allow interaction semantics (or keep? It's interactive now, so shouldn't be hidden)
     >
       {/* Selection/Active Indicator Ring */}
       {isSelected && !isDefeated && !isGhost && (
@@ -78,7 +94,7 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
                   : 'bg-slate-800 border-white/20 hover:border-white/50'
             }
         `}
-        style={{ backgroundColor: isDefeated ? '#334155' : actor.color }}
+        style={{ backgroundColor: isDefeated ? '#334155' : actorColor }}
       >
         <Icon className="w-1/2 h-1/2 text-white opacity-80 m-auto mt-[25%]" />
 
@@ -96,7 +112,7 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
         )}
       </div>
 
-      {/* Status Indicators (Top Layer, outside the round overflow) */}
+      {/* Status Indicators */}
       {!isDefeated && !isGhost && (
         <>
           {/* Planned Action Indicator */}

@@ -1,8 +1,9 @@
-import React from 'react';
-import { PlayerDeckState, ActorState, CardLocation, GamePhase, UIPlannedAction } from '../../types';
-import { useActorStats } from '../../hooks/useActorStats';
+import React, { useMemo, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
+import { ActorState, CardLocation, Phase, CoreCard, ConsequenceCard } from '../../generated/types';
+import { useActorStats } from '../../hooks/useActorStats';
+import { EquipmentCardWithId } from './EquippedList';
 
 // Import new sub-components
 import { SidebarHeader } from './SidebarHeader';
@@ -17,35 +18,49 @@ import { DeckViewerModal } from './DeckViewerModal';
 
 // --- View ---
 
+export type IdentifiedCoreCard = CoreCard & { id: string };
+export type IdentifiedConsequenceCard = ConsequenceCard & { id: string };
+
 export interface SidebarLeftProps {
-  deckState: PlayerDeckState | null | undefined;
+  drawPile: IdentifiedCoreCard[];
+  drawPileCount: number;
+  discardPileCount: number;
+  flippedPile: IdentifiedCoreCard[];
+  consequences: IdentifiedConsequenceCard[];
+  equipped: EquipmentCardWithId[];
+  defense: number;
+  resilience: number;
+
   onDraw: (count: number) => void;
   onDefend: () => void;
   onClearDefense: () => void;
   onReshuffle: () => void;
-  onSelectToken: (actorId: string) => void;
+  onSelectActor: (actorId: string) => void;
   onAddConsequence: (severity?: number) => void;
   onRemoveConsequence: (cardId: string) => void;
   onAddStatusCard: (type: string, destination: CardLocation) => void;
   onRemoveStatusCard: (type: string) => void;
-  // tokens removed
-  // activeToken removed (use activeActor check)
   activeActorId: string;
-  hasPlannedAction?: boolean;
   actors: Record<string, ActorState>;
-  // onAddActor removed
   onRemoveActor: (actorId: string) => void;
-  phase: GamePhase;
-  plannedActions: Record<string, UIPlannedAction>;
+  phase: Phase;
+  plannedActions: Record<string, unknown>; // Legacy stub
 }
 
 export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
-  deckState,
+  drawPile,
+  drawPileCount,
+  discardPileCount,
+  flippedPile,
+  consequences,
+  equipped,
+  defense,
+  resilience,
   onDraw,
   onDefend,
   onClearDefense,
   onReshuffle,
-  onSelectToken,
+  onSelectActor,
   onAddConsequence,
   onRemoveConsequence,
   onAddStatusCard,
@@ -56,18 +71,18 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   phase,
   plannedActions,
 }) => {
-  const [showDeckModal, setShowDeckModal] = React.useState(false);
+  const [showDeckModal, setShowDeckModal] = useState(false);
 
-  const stats = useActorStats(deckState);
+  const stats = useActorStats(flippedPile, defense, resilience, consequences);
 
   // Empty State / Character Selector
-  if (!activeActorId || !deckState) {
+  if (!activeActorId) {
     return (
       <div className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col h-full z-20 shadow-xl">
         <SidebarHeader />
         <ActorList
           actors={actors}
-          onSelectToken={onSelectToken}
+          onSelectActor={onSelectActor}
           onRemoveActor={onRemoveActor}
           phase={phase}
           plannedActions={plannedActions}
@@ -92,7 +107,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
       <DeckViewerModal
         isOpen={showDeckModal}
         onClose={() => setShowDeckModal(false)}
-        cards={deckState.drawPile}
+        cards={drawPile}
       />
 
       <SidebarHeader />
@@ -103,7 +118,8 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 
       <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1">
         <DeckStats
-          deckState={deckState}
+          drawPileCount={drawPileCount}
+          discardPileCount={discardPileCount}
           onDraw={onDraw}
           onReshuffle={onReshuffle}
           onViewDeck={() => setShowDeckModal(true)}
@@ -119,17 +135,17 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
           calculatedConsequences={calculatedConsequences}
           onDefend={onDefend}
           onClearDefense={onClearDefense}
-          hasFlippedCards={deckState.flippedPile.length > 0}
+          hasFlippedCards={flippedPile.length > 0}
         />
 
         <ConsequenceList
-          consequences={deckState.consequences}
+          consequences={consequences}
           currentSeverity={currentSeverity}
           onAddConsequence={onAddConsequence}
           onRemoveConsequence={onRemoveConsequence}
         />
 
-        <EquippedList equipped={deckState.equipped} />
+        <EquippedList equipped={equipped} />
       </div>
     </div>
   );
@@ -141,19 +157,82 @@ const SidebarLeftContainer: React.FC = () => {
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
   const phase = useGameStore((state) => state.phase);
-  const plannedActions = useGameStore((state) => state.plannedActions);
+  const plannedActions = {}; // Stub
+
   const setActiveActor = useGameStore((state) => state.setActiveActor);
-  const removeActor = useGameStore((state) => state.removeActor);
+
+  const removeActor = (_id: string) => console.log('Remove actor not implemented');
 
   const { dispatchCommand } = useGameDispatch();
 
   // Derived State
   const activeActor = activeActorId ? actors[activeActorId] : undefined;
-  const deckState = activeActor?.deck;
 
-  const activeAction = activeActorId ? plannedActions[activeActorId] : undefined;
-  const hasPlannedAction =
-    !!activeAction && (activeAction.cards.length > 0 || activeAction.actionName === 'Pass');
+  // Resolve IDs to Card Objects
+  const { drawPile, flippedPile, consequences, equipped, drawPileCount, discardPileCount } =
+    useMemo(() => {
+      if (!activeActor) {
+        return {
+          drawPile: [],
+          flippedPile: [],
+          consequences: [],
+          equipped: [],
+          drawPileCount: 0,
+          discardPileCount: 0,
+        };
+      }
+
+      const resolveCore = (ids: string[]) =>
+        ids
+          .map((id) => {
+            const card = activeActor.coreState.registry[id];
+            // Manually adding ID as it's missing from record value
+            return card ? { ...card, id } : undefined;
+          })
+          .filter((c): c is IdentifiedCoreCard => !!c);
+
+      const resolveConsequences = (ids: string[]) =>
+        ids
+          .map((id) => {
+            const card = activeActor.tableState.consequenceRegistry[id];
+            return card ? { ...card, id } : undefined;
+          })
+          .filter((c): c is IdentifiedConsequenceCard => !!c);
+
+      // Resolving equipped items
+      // Filter assets for type: "equipped"
+      const equippedAssets = Object.entries(activeActor.tableState.assets)
+        .filter(([_, asset]) => asset && asset.type === 'equipped')
+        .map(([id, _]) => id);
+
+      // Look up table cards
+      const equippedCards = equippedAssets
+        .map((id) => {
+          const cardWrapper = activeActor.tableState.registry[id];
+          // TableCard is union of wrappers with 'data' property
+          if (!cardWrapper) return undefined;
+
+          // Handling discrimination based on TableCard union
+          if (
+            cardWrapper.type === 'tCItem' ||
+            cardWrapper.type === 'tCNature' ||
+            cardWrapper.type === 'tCTalent'
+          ) {
+            return { ...cardWrapper.data, id };
+          }
+          return undefined;
+        })
+        .filter((c): c is EquipmentCardWithId => !!c);
+
+      return {
+        drawPile: resolveCore(activeActor.coreState.deck),
+        flippedPile: resolveCore(activeActor.coreState.defending),
+        consequences: resolveConsequences(activeActor.tableState.consequences),
+        equipped: equippedCards,
+        drawPileCount: activeActor.coreState.deck.length,
+        discardPileCount: activeActor.coreState.discard.length,
+      };
+    }, [activeActor]);
 
   // Handlers
   const handleDraw = (_count: number) => {
@@ -217,18 +296,24 @@ const SidebarLeftContainer: React.FC = () => {
 
   return (
     <SidebarLeftView
-      deckState={deckState}
+      drawPile={drawPile}
+      drawPileCount={drawPileCount}
+      discardPileCount={discardPileCount}
+      flippedPile={flippedPile}
+      consequences={consequences}
+      equipped={equipped}
+      defense={activeActor?.defense ?? 1}
+      resilience={activeActor?.resilience ?? 1}
       onDraw={handleDraw}
       onDefend={handleDefend}
       onClearDefense={handleClearDefense}
       onReshuffle={handleReshuffle}
-      onSelectToken={handleSelectToken}
+      onSelectActor={handleSelectToken}
       onAddConsequence={handleAddConsequence}
       onRemoveConsequence={handleRemoveConsequence}
       onAddStatusCard={handleAddStatusCard}
       onRemoveStatusCard={handleRemoveStatusCard}
       activeActorId={activeActorId || ''}
-      hasPlannedAction={hasPlannedAction}
       actors={actors}
       onRemoveActor={removeActor}
       phase={phase}

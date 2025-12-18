@@ -1,9 +1,12 @@
 import React from 'react';
 import { Briefcase } from 'lucide-react';
-import { Card } from '../../types';
+import { ItemCard, NatureCard, TalentCard } from '../../generated/types';
+
+// Union of cards that can be equipped, intersected with ID
+export type EquipmentCardWithId = (ItemCard | NatureCard | TalentCard) & { id: string };
 
 interface EquippedListProps {
-  equipped: Card[];
+  equipped: EquipmentCardWithId[];
 }
 
 export const EquippedList: React.FC<EquippedListProps> = ({ equipped }) => {
@@ -14,8 +17,12 @@ export const EquippedList: React.FC<EquippedListProps> = ({ equipped }) => {
       </span>
       <div className="space-y-1">
         {equipped.map((c) => {
-          const def = c.type === 'itemCard' || c.type === 'natureCard' ? c.defense : undefined;
-          const res = c.type === 'itemCard' || c.type === 'natureCard' ? c.resilience : undefined;
+          // Check for defense/resilience safely
+          let def: number | undefined;
+          let res: number | undefined;
+
+          if ('defense' in c) def = c.defense;
+          if ('resilience' in c) res = c.resilience;
 
           return (
             <div

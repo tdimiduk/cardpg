@@ -1,12 +1,12 @@
 import { StateCreator } from 'zustand';
-import { GamePhase, ActorState } from '../../types';
+import { Phase, ActorState } from '../../generated/types';
 import { LogSlice } from './logSlice';
 import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
-  phase: GamePhase;
+  phase: Phase;
   revealAndResolve: () => void;
-  setPhase: (phase: GamePhase) => void;
+  setPhase: (phase: Phase) => void;
   setResolutionPhase: () => void;
 }
 

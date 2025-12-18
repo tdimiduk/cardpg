@@ -2,13 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CardComponent } from './Card';
-import { CoreCard, ItemCard } from '../../types';
+import { CoreCard, ItemCard } from '../../generated/types';
 import { RESOURCE_TYPES } from '../../constants';
 
 describe('CardComponent', () => {
   const mockCoreCard: CoreCard = {
     type: 'coreCard',
-    id: 'c1',
     name: 'Strike',
     stats: { red: 2, yellow: 0, blue: 0 },
     cost: 1,
@@ -27,7 +26,6 @@ describe('CardComponent', () => {
 
   const mockItemCard: ItemCard = {
     type: 'itemCard',
-    id: 'i1',
     name: 'Sword',
     traits: ['Sharp'],
     weight: 1,

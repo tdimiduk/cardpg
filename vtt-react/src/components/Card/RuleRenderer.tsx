@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rule } from '../../types';
+import { Rule } from '../../generated/types';
 import { RichTextRenderer } from './RichTextRenderer';
 import { InlineIcon } from './InlineIcon';
 

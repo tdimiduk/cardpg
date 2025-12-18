@@ -1,4 +1,4 @@
-import { ActorState } from './types';
+import { ActorState } from './generated/types';
 
 export const GRID_SIZE = 64; // pixels per square
 

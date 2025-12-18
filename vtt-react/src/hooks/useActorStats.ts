@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { PlayerDeckState } from '../types';
-import { getAttributeValue, calculateSeverity } from '../services/ruleService';
+import { CoreCard, ConsequenceCard } from '../generated/types';
+import { calculateSeverity } from '../services/ruleService';
 
 export interface ActorStats {
   defenseTotal: {
@@ -15,22 +15,24 @@ export interface ActorStats {
   currentSeverity: number;
 }
 
-export const useActorStats = (deckState: PlayerDeckState | null | undefined): ActorStats | null => {
+export const useActorStats = (
+  flippedPile: CoreCard[] | undefined,
+  defenseStat: number,
+  resilienceStat: number,
+  consequences: ConsequenceCard[] | undefined,
+): ActorStats | null => {
   return useMemo(() => {
-    if (!deckState) return null;
+    if (!flippedPile) return null; // Minimal check
 
     const defenseTotal = {
-      red: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.red ?? 0), 0),
-      yellow: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.yellow ?? 0), 0),
-      blue: deckState.flippedPile.reduce((sum, c) => sum + (c.stats.blue ?? 0), 0),
+      red: flippedPile.reduce((sum, c) => sum + (c.stats.red ?? 0), 0),
+      yellow: flippedPile.reduce((sum, c) => sum + (c.stats.yellow ?? 0), 0),
+      blue: flippedPile.reduce((sum, c) => sum + (c.stats.blue ?? 0), 0),
     };
 
-    const defenseStat = getAttributeValue(deckState.equipped, 'def');
-    const resilienceStat = getAttributeValue(deckState.equipped, 'res');
-
-    const impact = deckState.flippedPile.length;
+    const impact = flippedPile.length;
     const calculatedConsequences = Math.floor(impact / defenseStat);
-    const currentSeverity = calculateSeverity(deckState.consequences, resilienceStat);
+    const currentSeverity = consequences ? calculateSeverity(consequences, resilienceStat) : 0;
 
     return {
       defenseTotal,
@@ -40,5 +42,5 @@ export const useActorStats = (deckState: PlayerDeckState | null | undefined): Ac
       calculatedConsequences,
       currentSeverity,
     };
-  }, [deckState]);
+  }, [flippedPile, defenseStat, resilienceStat, consequences]);
 };

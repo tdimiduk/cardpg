@@ -60,6 +60,7 @@ import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
 import CardPG.Core.State (ActorState, GameEnv, GameEvent, RealizedAttack)
 import CardPG.Server.Config (Config)
+import CardPG.Server.Types.Wire qualified as Wire
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution
@@ -175,7 +176,7 @@ $(deriveJSON cardpgJsonDef ''ClientMessage)
 -- | Updates to the authoritative state
 data StateUpdate = StateUpdate
   { updateActorId :: ActorId
-  , updateActorState :: ActorState
+  , updateActorState :: Wire.ActorState
   }
   deriving (Show, Eq, Generic)
 

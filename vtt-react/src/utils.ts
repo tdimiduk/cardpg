@@ -1,4 +1,4 @@
-import { Inline, ResourceType } from './types';
+import { ResourceType, Inline } from './generated/types';
 
 export const T = (content: string): Inline => ({ type: 'textRun', content });
 export const I = (color: ResourceType): Inline => ({
