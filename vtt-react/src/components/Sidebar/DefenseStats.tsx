@@ -39,15 +39,15 @@ export const DefenseStats: React.FC<DefenseStatsProps> = ({
       <div className="grid grid-cols-3 gap-2 text-center mb-3">
         <div className="bg-red-950/30 p-1 rounded border border-red-900/50">
           <Square size={12} className="mx-auto mb-1 text-red-500" />
-          <span className="text-sm font-bold text-red-200">{details.red}</span>
+          <span className="text-sm font-bold text-red-200">{details.values.red}</span>
         </div>
         <div className="bg-yellow-950/30 p-1 rounded border border-yellow-900/50">
           <Circle size={12} className="mx-auto mb-1 text-yellow-500" />
-          <span className="text-sm font-bold text-yellow-200">{details.yellow}</span>
+          <span className="text-sm font-bold text-yellow-200">{details.values.yellow}</span>
         </div>
         <div className="bg-blue-950/30 p-1 rounded border border-blue-900/50">
           <Diamond size={12} className="mx-auto mb-1 text-blue-500" />
-          <span className="text-sm font-bold text-blue-200">{details.blue}</span>
+          <span className="text-sm font-bold text-blue-200">{details.values.blue}</span>
         </div>
       </div>
 

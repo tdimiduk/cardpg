@@ -1,7 +1,7 @@
 module CardPG.Core.Card
   ( module CardPG.Core.RuleDefs
   , Stats (..)
-  , SpecialDefend (..)
+  , SpecialDefend
   , CoreCardT (..)
   , CoreCard
   , CoreCardDSL
@@ -44,7 +44,7 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId, ResourceType (..))
+import CardPG.Core.Primitives (CardInstanceId, ResourceType (..), Stats (..))
 import CardPG.Core.RichText
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
@@ -68,24 +68,12 @@ instance (FromJSON id, FromJSON a) => FromJSON (Identified id a) where
 
 type CardInstance a = Identified CardInstanceId a
 
-data Stats = Stats {red :: Int, yellow :: Int, blue :: Int}
-  deriving stock (Eq, Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''Stats)
-
-data SpecialDefend = SpecialDefend
-  { red :: ResourceType
-  , yellow :: ResourceType
-  , blue :: ResourceType
-  }
-  deriving stock (Eq, Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''SpecialDefend)
+type SpecialDefend = Stats ResourceType
 
 data CoreCardT rule rt = CoreCard
   { name :: NonEmptyText
   , tags :: Maybe (NonEmpty Text)
-  , stats :: Stats
+  , stats :: Stats Int
   , cost :: Maybe Int
   -- ^ Play Cost (Cards to discard to initiate stack).
   --   | Nothing = Status/Resource (cannot be played).

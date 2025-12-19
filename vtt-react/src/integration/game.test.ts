@@ -45,9 +45,11 @@ describe('Game Store Integration', () => {
       defense: 1,
       resilience: 1,
       defenseDetails: {
-        red: 0,
-        yellow: 0,
-        blue: 0,
+        values: {
+          red: 0,
+          yellow: 0,
+          blue: 0,
+        },
         impact: 0,
         consequencesFromDefense: 0,
         nextSeverity: 1,

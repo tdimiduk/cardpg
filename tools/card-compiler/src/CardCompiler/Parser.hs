@@ -23,7 +23,7 @@ import CardPG.Core.Card
   , NatureCard
   , NatureCardDSL
   , NatureCardT (..)
-  , SpecialDefend (..)
+  , SpecialDefend
   , Stats (..)
   )
 import CardPG.Core.Conversion (compileCoreCard, compileItemCard, compileNatureCard)
@@ -216,7 +216,7 @@ parseSpecialDefend r y b =
       blueDef = parseDefenseColor b Blue
    in if redDef == Red && yellowDef == Yellow && blueDef == Blue
         then Nothing
-        else Just $ SpecialDefend redDef yellowDef blueDef
+        else Just $ Stats redDef yellowDef blueDef
 
 parseDefenseColor :: Maybe Value -> ResourceType -> ResourceType
 parseDefenseColor (Just (String s)) _

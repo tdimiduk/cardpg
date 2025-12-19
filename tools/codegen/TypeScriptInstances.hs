@@ -22,8 +22,6 @@ import CardPG.Core.Card
   , GeneralActionDef
   , ItemCardT (..)
   , NatureCardT (..)
-  , SpecialDefend
-  , Stats
   , TalentCardT (..)
   )
 import CardPG.Core.Card qualified as CC
@@ -41,6 +39,7 @@ import CardPG.Core.Primitives
   )
 import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 
+import CardPG.Core.Primitives qualified as P
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
   , ChannelDef
@@ -120,8 +119,6 @@ $(deriveTypeScript (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichString)
 $(deriveTypeScript cardpgJsonDef ''Block)
 
 -- Stats
-$(deriveTypeScript cardpgJsonDef ''Stats)
-$(deriveTypeScript cardpgJsonDef ''SpecialDefend)
 
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
 $(deriveTypeScript cardpgJsonDef ''ActionStack)
@@ -169,6 +166,9 @@ $( do
      d_consequence <-
        specializeType ''ConsequenceCardT [ConT ''CC.Rule] "ConsequenceCard"
 
+     d_stats <- specializeType ''P.Stats [ConT ''Int] "Stats"
+     d_specDef <- specializeType ''P.Stats [ConT ''P.ResourceType] "SpecialDefend"
+
      return
        ( d_attack
            ++ d_general
@@ -185,6 +185,8 @@ $( do
            ++ d_talent
            ++ d_encounter
            ++ d_consequence
+           ++ d_stats
+           ++ d_specDef
        )
  )
 
@@ -209,6 +211,10 @@ $( do
 
      -- Def Helpers
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
+
+     i_stats <- deriveSpecializedInstance cardpgJsonDef ''Stats ''P.Stats [ConT ''Int]
+     i_specDef <-
+       deriveSpecializedInstance cardpgJsonDef ''SpecialDefend ''P.Stats [ConT ''P.ResourceType]
 
      -- Helpers (GenAction, EncMech)
      i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
@@ -302,6 +308,8 @@ $( do
            ++ p_talent3
            ++ p_encounter3
            ++ p_consequence2
+           ++ i_stats
+           ++ i_specDef
        )
  )
 

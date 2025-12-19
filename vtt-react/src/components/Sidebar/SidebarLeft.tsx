@@ -163,9 +163,11 @@ const SidebarLeftContainer: React.FC = () => {
 
   // Default defense details if not available
   const defaultDefenseDetails: DefenseDetails = {
-    red: 0,
-    yellow: 0,
-    blue: 0,
+    values: {
+      red: 0,
+      yellow: 0,
+      blue: 0,
+    },
     impact: 0,
     consequencesFromDefense: 0,
     nextSeverity: 1, // Default next severity usually 1

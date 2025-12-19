@@ -128,10 +128,6 @@ instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
     TaskDef name check time cost <$> arbitrary
   shrink = genericShrink
 
-instance Arbitrary SpecialDefend where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-
 instance Arbitrary DSLBase where
   arbitrary =
     oneof
@@ -172,7 +168,7 @@ arbitrarySafeRichString = do
       , "Passive:"
       ]
 
-instance Arbitrary Stats where
+instance (Arbitrary a) => Arbitrary (Stats a) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 

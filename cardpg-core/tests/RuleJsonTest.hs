@@ -11,7 +11,7 @@ import Test.Tasty.QuickCheck
 
 import CardPG.Core.Card (ItemCardT (..))
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..), ResourceType (..))
+import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..))
 import CardPG.Core.RichText (unsafeSimpleString)
 import CardPG.Core.RuleDefs (DSLBase, GeneralDefT (..), RuleT (..))
 import CardPG.Core.RuleInstances ()

@@ -8,9 +8,11 @@ module CardPG.Core.Primitives
   , StackPower (..)
   , Difficulty (..)
   , CardLocation (..)
+  , Stats (..)
+  , getStat
   ) where
 
-import Data.Aeson (FromJSONKey, ToJSONKey)
+import Data.Aeson (FromJSON (..), FromJSONKey, ToJSON (..), ToJSONKey, genericParseJSON, genericToJSON)
 import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import Data.UUID (UUID)
@@ -63,6 +65,24 @@ data ResourceType = Red | Yellow | Blue
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ResourceType)
+
+data Stats a = Stats
+  { red :: a
+  , yellow :: a
+  , blue :: a
+  }
+  deriving stock (Eq, Show, Generic, Functor, Foldable, Traversable)
+
+instance (ToJSON a) => ToJSON (Stats a) where
+  toJSON = genericToJSON cardpgJsonDef
+
+instance (FromJSON a) => FromJSON (Stats a) where
+  parseJSON = genericParseJSON cardpgJsonDef
+
+getStat :: ResourceType -> Stats a -> a
+getStat Red = (.red)
+getStat Yellow = (.yellow)
+getStat Blue = (.blue)
 
 data StackPower = StackPower
   { source :: ResourceType

@@ -66,6 +66,7 @@ mkActorState handCards =
                   | cid <- handCards
                   , cid /= CardInstanceId (read "00000000-0000-0000-0000-000000000001")
                   ]
+          , revealed = Nothing
           }
     , tableState = TableState Map.empty Map.empty [] Map.empty
     , spatial = SpatialState 0 0 1 Nothing
@@ -173,7 +174,7 @@ test_plannedActions =
                           }
                     }
 
-            let ((), finalState, events) = runLogic plannedState discardPlannedActions
+            let ((), finalState, _) = runLogic plannedState discardPlannedActions
 
             let d = finalState.coreState.discard
             assertBool "Expect c1 in discard" (c1 `elem` d)

@@ -29,9 +29,7 @@ import CardPG.Core.State qualified as Core
 
 -- | Detailed breakdown of defense calculation.
 data DefenseDetails = DefenseDetails
-  { red :: Int
-  , yellow :: Int
-  , blue :: Int
+  { values :: Stats Int
   , impact :: Int
   , consequencesFromDefense :: Int
   , nextSeverity :: Int
@@ -88,9 +86,12 @@ toActorState Core.ActorState{..} =
 
     details =
       DefenseDetails
-        { red = defRed
-        , yellow = defYellow
-        , blue = defBlue
+        { values =
+            Stats
+              { red = defRed
+              , yellow = defYellow
+              , blue = defBlue
+              }
         , impact = impactVal
         , consequencesFromDefense = consequencesVal
         , nextSeverity = nextSeverityVal

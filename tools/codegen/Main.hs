@@ -6,12 +6,12 @@ module Main where
 import Data.Aeson.TypeScript.TH
 import Data.List (intercalate)
 import Data.Proxy
+import Data.Set (Set)
+import Data.Set qualified as Set
 import Data.Text (pack, replace, unpack)
+import Data.Typeable (TypeRep, typeRep)
 import System.Environment (getArgs)
 import System.IO (writeFile)
-import Data.Typeable (TypeRep, typeRep)
-import Data.Set (Set)
-import qualified Data.Set as Set
 import TypeScriptInstances
   ( ActorDefinition
   , AttackDef
@@ -71,22 +71,22 @@ import CardPG.Server.Types
 import CardPG.Server.Types.Wire qualified as Wire
 
 collectDeclarations :: [TSType] -> [TSDeclaration]
-collectDeclarations roots = 
+collectDeclarations roots =
   let (decls, _) = visit roots Set.empty
-  in decls
+   in decls
 
 visit :: [TSType] -> Set TypeRep -> ([TSDeclaration], Set TypeRep)
 visit [] visited = ([], visited)
-visit ((TSType p):xs) visited =
-  let rep = typeRep p in
-  if Set.member rep visited
-    then visit xs visited
-    else
-      let decls = getTypeScriptDeclarations p
-          parents = getParentTypes p
-          visited' = Set.insert rep visited
-          (restDecls, finalVisited) = visit (parents ++ xs) visited'
-      in (decls ++ restDecls, finalVisited)
+visit ((TSType p) : xs) visited =
+  let rep = typeRep p
+   in if Set.member rep visited
+        then visit xs visited
+        else
+          let decls = getTypeScriptDeclarations p
+              parents = getParentTypes p
+              visited' = Set.insert rep visited
+              (restDecls, finalVisited) = visit (parents ++ xs) visited'
+           in (decls ++ restDecls, finalVisited)
 
 main :: IO ()
 main = do
@@ -96,11 +96,14 @@ main = do
         [] -> "types.ts"
 
   let declarations =
-        formatTSDeclarations $ collectDeclarations
-          [ TSType (Proxy :: Proxy AdminCommand)
-          , TSType (Proxy :: Proxy ClientMessage)
-          , TSType (Proxy :: Proxy ServerMessage)
-          ]
+        formatTSDeclarations $
+          collectDeclarations
+            [ TSType (Proxy :: Proxy AdminCommand)
+            , TSType (Proxy :: Proxy ClientMessage)
+            , TSType (Proxy :: Proxy ServerMessage)
+            , TSType (Proxy :: Proxy ActorDefinition)
+            , TSType (Proxy :: Proxy EncounterCard)
+            ]
 
   let exportedDeclarations =
         unpack $

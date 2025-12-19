@@ -26,7 +26,7 @@ import CardPG.Core.Card
   , TalentCardT (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
-import CardPG.Core.Primitives (ResourceType (..), StackPower (..))
+import CardPG.Core.Primitives (ResourceType (..), StackPower (..), getStat)
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
@@ -52,10 +52,7 @@ stackPower :: ActionStackMaterialized -> StackPower -> Int
 stackPower stack power =
   let
     allCards = stack.actionCard : stack.resources
-    relevantStat c = case power.source of
-      Red -> c.stats.red
-      Yellow -> c.stats.yellow
-      Blue -> c.stats.blue
+    relevantStat c = getStat power.source c.stats
     rawTotal = sum (map relevantStat allCards)
    in
     rawTotal + power.modifier
@@ -76,11 +73,6 @@ attackAction matPlan = case matPlan of
     -- Narrative Action Logic
     let
       -- Helper to get stat based on color
-      getStat :: ResourceType -> Stats -> Int
-      getStat Red s = s.red
-      getStat Yellow s = s.yellow
-      getStat Blue s = s.blue
-
       rawTotal = sum [getStat col c.stats | c <- toList cs]
      in
       Right $
