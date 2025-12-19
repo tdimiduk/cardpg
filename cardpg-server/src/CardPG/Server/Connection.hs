@@ -1,17 +1,28 @@
 module CardPG.Server.Connection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
-import Control.Exception (finally)
+import Control.Exception (finally, try)
 import Control.Monad (forM_, forever, unless, when)
 import Control.Monad.State (runState)
 import Data.Aeson (decode, encode)
 import Data.Map qualified as Map
+import Data.Maybe (fromMaybe)
 import Data.Text qualified as T
+import Data.Text.Encoding qualified as T
 import Data.Text.IO qualified as T
 import Data.Time.Clock.POSIX (getPOSIXTime)
 import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
-import Network.WebSockets (ServerApp, acceptRequest, receiveData, sendTextData, withPingThread)
+import Network.WebSockets
+  ( ConnectionException
+  , ServerApp
+  , acceptRequest
+  , pendingRequest
+  , receiveData
+  , requestPath
+  , sendTextData
+  , withPingThread
+  )
 
 import CardPG.Server.DB (saveGame)
 import CardPG.Server.Dispatch (processCommand)
@@ -22,6 +33,7 @@ import CardPG.Server.Types
   , Client (..)
   , ClientMessage (..)
   , Command (..)
+  , ConnectedSocket (..)
   , GameState (..)
   , ServerMessage (..)
   , ServerState (..)
@@ -35,105 +47,137 @@ import CardPG.Server.Types.Wire qualified as Wire
 application :: MVar ServerState -> ServerApp
 application state pending = do
   conn <- acceptRequest pending
-  -- Keep connection alive with pings every 30 seconds
+
+  -- Parse query string for clientId
+  let path = requestPath (pendingRequest pending)
+  let queryText = T.decodeUtf8 path
+  -- Basic parsing: split by '?', then '&', look for "clientId="
+  let maybeQuery = if T.isInfixOf "?" queryText then Just (T.tail $ snd $ T.breakOn "?" queryText) else Nothing
+
+  -- Determine Client ID
+  -- Determine Client ID
+  (finalClientId, newName) <- case maybeQuery of
+    Nothing -> do
+      uuid <- UUID.nextRandom
+      return (uuid, "Anonymous")
+    Just q -> do
+      let params = map (T.breakOn "=") $ T.splitOn "&" q
+
+      -- Helper to get param value
+      let getParam k =
+            case lookup k params of
+              Just val | not (T.null val) -> Just (T.drop 1 val) -- drop '='
+              _ -> Nothing
+
+      let maybeName = getParam "name"
+      let maybeCidStr = getParam "clientId"
+
+      case maybeCidStr of
+        Just uuidStr -> do
+          case UUID.fromText uuidStr of
+            Just cid -> do
+              -- Verify if exists
+              exists <- readMVar state >>= \s -> return $ clientExists cid s
+              let defaultName = if exists then "Reconnect" else "Anonymous"
+              return (cid, fromMaybe defaultName maybeName)
+            Nothing -> do
+              u <- UUID.nextRandom
+              return (u, fromMaybe "Anonymous" maybeName)
+        Nothing -> do
+          u <- UUID.nextRandom
+          return (u, fromMaybe "Anonymous" maybeName)
+
+  -- Generate valid Socket ID
+  socketId <- UUID.nextRandom
+  let connectedSocket = ConnectedSocket socketId conn
+
+  -- Add to State
+  (client, isNew) <- modifyMVar state $ \s -> do
+    let (c, isNew) = case Map.lookup finalClientId (s.clients) of
+          Just existing ->
+            -- Append connection
+            (existing{clientConns = existing.clientConns ++ [connectedSocket]}, False)
+          Nothing ->
+            -- New Client
+            (Client finalClientId newName [connectedSocket], True)
+
+    let s' = addClient c s
+    return (s', (c, isNew))
+
+  -- Send Welcome Immediately
+  (msgs, initialUpdate, currentClients) <-
+    readMVar state >>= \s -> do
+      let updates =
+            map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (s.gameState.actors)
+      let welcomeMsg =
+            Welcome
+              finalClientId
+              (map (.clientName) $ Map.elems s.clients)
+              updates
+              (s.gameState.phase)
+              (s.gameState.history)
+      return ([welcomeMsg], updates, s.clients)
+
+  forM_ msgs $ \msg -> sendTextData conn (encode msg)
+
+  if isNew
+    then broadcast (ClientJoined (client.clientName) finalClientId) currentClients
+    else
+      T.putStrLn $
+        "Client reconnected: " <> (client.clientName) <> " (" <> T.pack (show finalClientId) <> ")"
+
+  -- Keep connection alive
   withPingThread conn 30 (return ()) $ do
-    -- Generate a temporary ID until they join properly
-    uuid <- UUID.nextRandom
-    let initialClient = Client uuid "Anonymous" conn
+    flip finally (disconnect finalClientId socketId state) $ do
+      talk client connectedSocket state
 
-    flip finally (disconnect initialClient state) $ do
-      talk initialClient state
-
-disconnect :: Client -> MVar ServerState -> IO ()
-disconnect client state = do
-  T.putStrLn $ "Client disconnected: " <> client.clientName
+disconnect :: UUID.UUID -> UUID.UUID -> MVar ServerState -> IO ()
+disconnect clientId socketId state = do
   s <- modifyMVar state $ \s -> do
-    let s' = removeClient client s
+    let s' = removeClient clientId socketId s
     return (s', s')
-  broadcast (ClientLeft (client.clientId)) (s.clients)
+
+  -- Check if client completely removed
+  let stillExists = Map.member clientId (s.clients)
+  unless stillExists $ do
+    T.putStrLn $ "Client fully disconnected: " <> T.pack (show clientId)
+    broadcast (ClientLeft clientId) (s.clients)
 
 broadcast :: ServerMessage -> Map.Map UUID.UUID Client -> IO ()
 broadcast msg clients = do
   let msgBytes = encode msg
   forM_ (Map.elems clients) $ \client ->
-    sendTextData (client.clientConn) msgBytes
+    forM_ (client.clientConns) $ \socket -> do
+      result <- try (sendTextData (socket.socketConn) msgBytes) :: IO (Either ConnectionException ())
+      case result of
+        Left _ -> return () -- Ignore errors, cleanup happens in 'finally' of the connection thread
+        Right _ -> return ()
 
-talk :: Client -> MVar ServerState -> IO ()
-talk client state = forever $ do
-  msgBytes <- receiveData (client.clientConn)
+talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
+talk client socket state = forever $ do
+  msgBytes <- receiveData (socket.socketConn)
   case decode msgBytes of
     Nothing -> do
       T.putStrLn "Received invalid JSON"
-      sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
-    Just (Join name maybeId) -> do
-      -- Determine Client ID (Recover or Generate)
-      (clientId, isReconnect) <- case maybeId of
-        Just existingId -> do
-          exists <- readMVar state >>= \s -> return $ Map.member existingId (s.clients)
-          if exists
-            then return (existingId, True)
-            else return (existingId, False) -- User claims ID, but not in memory (maybe restarted? treat as new for now)
-        Nothing -> do
-          newId <- UUID.nextRandom
-          return (newId, False)
-
-      let newClient = client{clientName = name, clientId = clientId}
-
-      T.putStrLn $
-        "Client joining: "
-          <> name
-          <> " ("
-          <> T.pack (show clientId)
-          <> ")"
-          <> (if isReconnect then " [RECONNECT]" else "")
-
-      -- Prepare broadcast
-      (currentClients, currentGs, messages, pool) <- modifyMVar state $ \s -> do
-        let s' = addClient newClient s -- Overwrites existing entry if reconnecting (updating socket)
-        let initialUpdates =
-              map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (s'.gameState.actors)
-
-        let welcomeMsg =
-              Welcome
-                clientId
-                (map (.clientName) $ Map.elems s'.clients)
-                initialUpdates
-                (s'.gameState.phase)
-                (s'.gameState.history)
-
-        return (s', (s'.clients, s'.gameState, [welcomeMsg], s'.dbPool))
-
-      -- Send Welcome
-      forM_ messages $ \msg -> sendTextData (newClient.clientConn) (encode msg)
-
-      -- Notify others
-      broadcast (ClientJoined name clientId) currentClients
-
-      -- Continue loop with updated client info
-      talkLoop newClient state
-    Just (GameCommand cmd) -> do
-      -- Clients must Join before sending commands.
-      T.putStrLn "Received command before Join"
-      sendTextData (client.clientConn) (encode $ ErrorMessage "Please Join first")
-    Just (Admin _) -> do
-      T.putStrLn "Received admin command before Join"
-      sendTextData (client.clientConn) (encode $ ErrorMessage "Please Join first")
-
-talkLoop :: Client -> MVar ServerState -> IO ()
-talkLoop client state = do
-  msgBytes <- receiveData (client.clientConn)
-  case decode msgBytes of
-    Nothing -> do
-      T.putStrLn "Received invalid JSON"
-      sendTextData (client.clientConn) (encode $ ErrorMessage "Invalid JSON")
-      talkLoop client state
+      sendTextData (socket.socketConn) (encode $ ErrorMessage "Invalid JSON")
     Just (Join name _) -> do
-      -- Allow renaming?
-      let newClient = client{clientName = name}
-      modifyMVar_ state $ \s -> return $ addClient newClient s
-      T.putStrLn $ "Client renamed: " <> name
-      talkLoop newClient state
-    Just (GameCommand cmd) -> handleGameCommand client state cmd
+      -- Handle Renaming (Ignore ID part)
+      -- First check if name actually changed to avoid log noise
+      currentClient <- readMVar state >>= \s -> return $ Map.lookup (client.clientId) (s.clients)
+
+      let shouldUpdate = case currentClient of
+            Just c -> c.clientName /= name
+            Nothing -> True
+
+      when shouldUpdate $ do
+          modifyMVar_ state $ \s -> do
+            case Map.lookup (client.clientId) (s.clients) of
+              Just existing -> return $ addClient (existing{clientName = name}) s
+              Nothing -> return s
+          T.putStrLn $ "Client renamed: " <> name
+          -- We could broadcast update, but current broadcast is just ClientJoined/Left.
+          -- Maybe add ClientUpdated? For now just log.
+    Just (GameCommand cmd) -> handleGameCommand (client.clientId) (client.clientName) state cmd
     Just (Admin ResetGame) -> do
       T.putStrLn $ "Admin: Resetting Game requested by " <> client.clientName
       (newGs, pool, clientsMap) <- modifyMVar state $ \s -> do
@@ -145,21 +189,16 @@ talkLoop client state = do
       let initialUpdates = map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (newGs.actors)
       let connectedNames = map (.clientName) $ Map.elems clientsMap
 
-      forM_ (Map.elems clientsMap) $ \c -> do
-        let welcomeMsg =
-              Welcome
-                (c.clientId)
-                connectedNames
-                initialUpdates
-                (newGs.phase)
-                (newGs.history)
-        sendTextData (c.clientConn) (encode welcomeMsg)
+      -- Broadcast Welcome manually to all sockets
+      let welcomeMsg c = Welcome (c.clientId) connectedNames initialUpdates (newGs.phase) (newGs.history)
 
-      talkLoop client state
+      forM_ (Map.elems clientsMap) $ \c ->
+        forM_ (c.clientConns) $ \sock ->
+          sendTextData (sock.socketConn) (encode $ welcomeMsg c)
 
-handleGameCommand :: Client -> MVar ServerState -> Command -> IO ()
-handleGameCommand client state cmd = do
-  T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> client.clientName
+handleGameCommand :: UUID.UUID -> T.Text -> MVar ServerState -> Command -> IO ()
+handleGameCommand clientId clientName state cmd = do
+  T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> clientName
 
   -- Run action against authoritative state
   t <- getPOSIXTime
@@ -188,5 +227,3 @@ handleGameCommand client state cmd = do
           ++ [NewLogs logs | not (null logs)]
 
   unless (null messages) $ broadcast (MultiMessage messages) clientsMap
-
-  talkLoop client state

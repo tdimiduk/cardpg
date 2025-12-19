@@ -12,7 +12,14 @@ module CardPG.Core.Primitives
   , getStat
   ) where
 
-import Data.Aeson (FromJSON (..), FromJSONKey, ToJSON (..), ToJSONKey, genericParseJSON, genericToJSON)
+import Data.Aeson
+  ( FromJSON (..)
+  , FromJSONKey
+  , ToJSON (..)
+  , ToJSONKey
+  , genericParseJSON
+  , genericToJSON
+  )
 import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
 import Data.UUID (UUID)

@@ -15,6 +15,7 @@ module CardPG.Server.Types
   , LogEntry (..)
   , LogPayload (..)
   , Phase (..)
+  , ConnectedSocket (..)
   , newServerState
   , numClients
   , clientExists
@@ -105,11 +106,20 @@ data GameState = GameState
 
 $(deriveJSON cardpgJsonDef ''GameState)
 
+-- | A wrapper for a WebSocket connection with a unique ID for management
+data ConnectedSocket = ConnectedSocket
+  { socketId :: UUID
+  , socketConn :: WS.Connection
+  }
+
+instance Show ConnectedSocket where
+  show (ConnectedSocket sid _) = "ConnectedSocket(" <> show sid <> ")"
+
 -- | A client connection with a unique ID and a name.
 data Client = Client
   { clientId :: UUID
   , clientName :: Text
-  , clientConn :: WS.Connection
+  , clientConns :: [ConnectedSocket]
   }
 
 instance TypeScript UUID where
@@ -237,11 +247,30 @@ newServerState backend gs = ServerState Map.empty (CardLibrary [] [] []) gs back
 numClients :: ServerState -> Int
 numClients = Map.size . (.clients)
 
-clientExists :: Client -> ServerState -> Bool
-clientExists client state = Map.member (client.clientId) (state.clients)
+clientExists :: UUID -> ServerState -> Bool
+clientExists cid state = Map.member cid (state.clients)
 
+-- | Adds a client or merges a new connection into an existing client
 addClient :: Client -> ServerState -> ServerState
-addClient client state = state{clients = Map.insert (client.clientId) client (state.clients)}
+addClient client state =
+  let clientMap = state.clients
+   in case Map.lookup (client.clientId) clientMap of
+        Nothing -> state{clients = Map.insert (client.clientId) client clientMap}
+        Just existing ->
+          let merged =
+                existing{clientName = client.clientName, clientConns = existing.clientConns ++ client.clientConns}
+           in state{clients = Map.insert (client.clientId) merged clientMap}
 
-removeClient :: Client -> ServerState -> ServerState
-removeClient client state = state{clients = Map.delete (client.clientId) (state.clients)}
+-- | Removes a specific connection. If client has no more connections, removes the client.
+removeClient :: UUID -> UUID -> ServerState -> ServerState
+removeClient clientId socketId state =
+  let clientMap = state.clients
+   in case Map.lookup clientId clientMap of
+        Nothing -> state
+        Just existing ->
+          let keptConns = filter (\s -> s.socketId /= socketId) (existing.clientConns)
+           in if null keptConns
+                then state{clients = Map.delete clientId clientMap}
+                else
+                  let updated = existing{clientConns = keptConns}
+                   in state{clients = Map.insert clientId updated clientMap}

@@ -28,12 +28,25 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
   useEffect(() => {
     // Connect to local server
     // Determine WebSocket URL based on current location
-    // Connect to local server relative to current host (handled by Vite proxy in dev)
     let wsUrl = url;
     if (!wsUrl) {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = window.location.host;
       wsUrl = `${protocol}//${host}/api`;
+    }
+
+    // Attach Client ID and Name if known
+    const storedId = localStorage.getItem('cardpg_client_id');
+    const storedName = localStorage.getItem('cardpg_client_name');
+
+    // Build query params
+    const params = new URLSearchParams();
+    if (storedId) params.append('clientId', storedId);
+    if (storedName) params.append('name', storedName);
+
+    const queryString = params.toString();
+    if (queryString) {
+      wsUrl += `?${queryString}`;
     }
 
     const socket = new WebSocket(wsUrl);
@@ -42,15 +55,18 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
       setIsConnected(true);
-      // Check for existing ID
-      const storedId = localStorage.getItem('cardpg_client_id');
-      const name =
-        localStorage.getItem('cardpg_client_name') || 'Player-' + Math.floor(Math.random() * 1000);
+      // We still send Join to set the name, but ID is handled by handshake now.
+      let name = localStorage.getItem('cardpg_client_name');
+      if (!name) {
+        name = 'Player-' + Math.floor(Math.random() * 1000);
+        localStorage.setItem('cardpg_client_name', name);
+      }
 
       sendMessage({
         type: 'join',
         name,
-        id: storedId ?? undefined, // Send ID if we have it
+        // ID is now handled by connection query param
+        id: undefined,
       });
     };
 

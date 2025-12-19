@@ -93,6 +93,19 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
           phase={phase}
           plannedActions={plannedActions}
         />
+        <div className="p-4 border-t border-slate-800 mt-auto">
+          <button
+            onClick={() => {
+              if (window.confirm('Reset Identity? This will create a new user ID.')) {
+                localStorage.removeItem('cardpg_client_id');
+                window.location.reload();
+              }
+            }}
+            className="text-xs text-slate-500 hover:text-slate-300 w-full text-center"
+          >
+            Debug: Reset Identity
+          </button>
+        </div>
       </div>
     );
   }
