@@ -33,13 +33,11 @@ import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 import CardPG.Core.RichText (Inline (..), RichString, StackPower (..), TextStyle (..), mkRichString)
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)
-  , ChannelDefT (..)
   , DSLBase
   , GeneralDefT (..)
+  , OngoingDefT (..)
   , PassiveDef (..)
-  , PrimeDefT (..)
   , RuleT (..)
-  , StanceDefT (..)
   , TaskDefT (..)
   , TriggerDefT (..)
   )
@@ -55,15 +53,25 @@ ruleParser :: Parser DSLBase
 ruleParser =
   choice
     [ try (attackParser <* eof)
-    , try (stanceParser <* eof)
-    , try (channelParser <* eof)
-    , try (primeParser <* eof)
+    , try (ongoingParser <* eof)
     , try (passiveParser <* eof)
     , try (taskParser <* eof)
     , try (triggerParser <* eof)
     , try (generalParser <* eof)
     , narrativeParser <* eof
     ]
+
+-- Helpers (General)
+-- The parser p must not consume ')'
+betweenParens :: Parser a -> Parser a
+betweenParens p = do
+  _ <- char '('
+  r <- p
+  _ <- char ')'
+  pure r
+
+effectArrow :: Parser Text
+effectArrow = string "->"
 
 -- Attack
 attackParser :: Parser DSLBase
@@ -79,47 +87,15 @@ attackParser = do
   extra <- optional richTextParser
   pure $ RuleAttack $ AttackDef power resistedBy extra
 
--- Stance
-stanceParser :: Parser DSLBase
-stanceParser = do
-  _ <- string' "stance"
+-- Ongoing (Stance, Channel, Prime)
+-- Ongoing (Life) -> Effect
+ongoingParser :: Parser DSLBase
+ongoingParser = do
+  _ <- string' "Ongoing"
   _ <- space
-  _ <- char '('
-  duration <- takeWhilePNonEmpty Nothing (/= ')')
-  _ <- char ')'
+  life <- betweenParens (richTextParserWith [')'])
   _ <- separatorParser
-  RuleStance . StanceDef duration <$> richTextParser
-
--- The parser p must not consume ')'
-betweenParens :: Parser a -> Parser a
-betweenParens p = do
-  _ <- char '('
-  r <- p
-  _ <- char ')'
-  pure r
-
-effectArrow :: Parser Text
-effectArrow = string "->"
-
--- Channel
-channelParser :: Parser DSLBase
-channelParser = do
-  _ <- string' "channel"
-  _ <- space
-  duration <- betweenParens $ takeWhilePNonEmpty Nothing (/= ')')
-  _ <- separatorParser
-  RuleChannel . ChannelDef duration <$> richTextParser
-
--- Prime
-primeParser :: Parser DSLBase
-primeParser = do
-  _ <- string' "prime"
-  _ <- space
-  trigger <- betweenParens $ takeWhilePNonEmpty Nothing (/= ')')
-  _ <- hspace
-  _ <- char ':'
-  _ <- hspace
-  RulePrime . PrimeDef trigger <$> ruleParser -- Recursive parse for the reaction
+  RuleOngoing . OngoingDef life <$> richTextParser
 
 -- Passive
 passiveParser :: Parser DSLBase

@@ -42,11 +42,9 @@ import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.Primitives qualified as P
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
-  , ChannelDef
   , GeneralDef
-  , PrimeDef
+  , OngoingDef
   , Rule
-  , StanceDef
   , TaskDef
   , TriggerDef
   )
@@ -142,9 +140,7 @@ $( do
      d_general <- specializeType ''GeneralDefT [ConT ''RichText] "GeneralDef"
      d_task <- specializeType ''TaskDefT [ConT ''RichText] "TaskDef"
      d_trigger <- specializeType ''TriggerDefT [ConT ''RichText] "TriggerDef"
-     d_stance <- specializeType ''StanceDefT [ConT ''RichText] "StanceDef"
-     d_channel <- specializeType ''ChannelDefT [ConT ''RichText] "ChannelDef"
-     d_prime <- specializeType ''PrimeDefT [ConT ''RichText] "PrimeDef"
+     d_ongoing <- specializeType ''OngoingDefT [ConT ''RichText] "OngoingDef"
      d_rule <- specializeType ''RuleT [ConT ''RichText] "Rule"
 
      d_core <-
@@ -174,9 +170,7 @@ $( do
            ++ d_general
            ++ d_task
            ++ d_trigger
-           ++ d_stance
-           ++ d_channel
-           ++ d_prime
+           ++ d_ongoing
            ++ d_rule
            ++ d_core
            ++ d_actor
@@ -201,10 +195,7 @@ $( do
      i_task <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TaskDef ''TaskDefT [inline]
      i_trigger <-
        deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TriggerDef ''TriggerDefT [inline]
-     i_stance <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''StanceDef ''StanceDefT [inline]
-     i_channel <-
-       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''ChannelDef ''ChannelDefT [inline]
-     i_prime <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''PrimeDef ''PrimeDefT [inline]
+     i_ongoing <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''OngoingDef ''OngoingDefT [inline]
 
      -- Rule (Machine)
      i_rule <- deriveSpecializedInstance (cardpgJsonOptions "RuleRule") ''Rule ''RuleT [inline]
@@ -287,9 +278,7 @@ $( do
            ++ i_general
            ++ i_task
            ++ i_trigger
-           ++ i_stance
-           ++ i_channel
-           ++ i_prime
+           ++ i_ongoing
            ++ i_rule
            ++ i_passive
            ++ i_genAction

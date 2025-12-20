@@ -92,28 +92,9 @@ instance (Arbitrary rt) => Arbitrary (GeneralDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (StanceDefT rt) where
+instance (Arbitrary rt) => Arbitrary (OngoingDefT rt) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
-
-instance (Arbitrary rt) => Arbitrary (ChannelDefT rt) where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-
-instance Arbitrary (PrimeDefT RichString) where
-  arbitrary = do
-    trig <- arbitrary
-    -- Break recursion by using a simple rule
-    let simpleReaction = RuleNarrative (fromMaybe (unsafeSimpleString "Reaction") (simpleString "Reaction"))
-    return $ PrimeDef trig simpleReaction
-  shrink _ = []
-
-instance Arbitrary (PrimeDefT RichText) where
-  arbitrary = do
-    trig <- arbitrary
-    let simpleReaction = RuleNarrative (getRichText (unsafeSimpleString "Reaction"))
-    return $ PrimeDef trig simpleReaction
-  shrink _ = []
 
 instance (Arbitrary rt) => Arbitrary (TriggerDefT rt) where
   arbitrary = genericArbitrary uniform
@@ -135,10 +116,7 @@ instance Arbitrary DSLBase where
       , RuleGeneral <$> arbitrary
       , RuleTask <$> arbitrary
       , RuleTrigger <$> arbitrary
-      , RuleStance <$> arbitrary
-      , RuleChannel <$> arbitrary
-      , RulePrime <$> arbitrary
-      , RulePassive <$> arbitrary
+      , RuleOngoing <$> arbitrary
       , RuleNarrative <$> arbitrarySafeRichString
       ]
   shrink = genericShrink
@@ -162,9 +140,7 @@ arbitrarySafeRichString = do
       , "General:"
       , "Task:"
       , "When"
-      , "Stance"
-      , "Channel"
-      , "Prime"
+      , "Ongoing"
       , "Passive:"
       ]
 

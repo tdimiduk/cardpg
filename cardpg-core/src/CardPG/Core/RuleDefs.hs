@@ -11,12 +11,8 @@ module CardPG.Core.RuleDefs
   , TaskDef
   , TriggerDefT (..)
   , TriggerDef
-  , StanceDefT (..)
-  , StanceDef
-  , ChannelDefT (..)
-  , ChannelDef
-  , PrimeDefT (..)
-  , PrimeDef
+  , OngoingDefT (..)
+  , OngoingDef
   , RuleT (..)
   , Rule
   , DSLBase
@@ -60,24 +56,13 @@ data GeneralDefT rt = GeneralDef
   }
   deriving (Show, Eq, Generic, Functor)
 
--- | Persistent Effects: Stance
-data StanceDefT rt = StanceDef
-  { duration :: NonEmptyText
+-- | Persistent Effects: Ongoing (Stance, Channel, Prime)
+-- | Addresses: "Stance (1 min): +1 Strength", "Until triggered: ..."
+data OngoingDefT rt = OngoingDef
+  { life :: rt
+  -- ^ Duration or Condition: "1 min", "Until triggered", "While holding a shield"
   , effect :: rt
-  }
-  deriving (Show, Eq, Generic, Functor)
-
--- | Persistent Effects: Channel
-data ChannelDefT rt = ChannelDef
-  { duration :: NonEmptyText
-  , effect :: rt
-  }
-  deriving (Show, Eq, Generic, Functor)
-
--- | Persistent Effects: Prime
-data PrimeDefT rt = PrimeDef
-  { trigger :: NonEmptyText
-  , reaction :: RuleT rt
+  -- ^ The mechanical or narrative effect
   }
   deriving (Show, Eq, Generic, Functor)
 
@@ -110,9 +95,7 @@ data RuleT rt
   | RuleGeneral (GeneralDefT rt)
   | RuleTask (TaskDefT rt)
   | RuleTrigger (TriggerDefT rt)
-  | RuleStance (StanceDefT rt)
-  | RuleChannel (ChannelDefT rt)
-  | RulePrime (PrimeDefT rt)
+  | RuleOngoing (OngoingDefT rt)
   | RuleNarrative rt
   | RulePassive PassiveDef
   deriving stock (Eq, Show, Generic, Functor)
@@ -124,9 +107,7 @@ type AttackDef = AttackDefT RichText
 type GeneralDef = GeneralDefT RichText
 type TaskDef = TaskDefT RichText
 type TriggerDef = TriggerDefT RichText
-type StanceDef = StanceDefT RichText
-type ChannelDef = ChannelDefT RichText
-type PrimeDef = PrimeDefT RichText
+type OngoingDef = OngoingDefT RichText
 
 -- | DSL Base (Human Readable)
 type DSLBase = RuleT RichString
@@ -149,9 +130,7 @@ $( do
            , ''GeneralDefT
            , ''TaskDefT
            , ''TriggerDefT
-           , ''StanceDefT
-           , ''ChannelDefT
-           , ''PrimeDefT
+            , ''OngoingDefT
            ]
      rule <- deriveJSON (cardpgJsonOptions "Rule") ''RuleT
      return (defs ++ rule)

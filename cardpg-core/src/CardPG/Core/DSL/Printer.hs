@@ -11,13 +11,11 @@ import CardPG.Core.RichText
   )
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)
-  , ChannelDefT (..)
   , DSLBase
   , GeneralDefT (..)
+  , OngoingDefT (..)
   , PassiveDef (..)
-  , PrimeDefT (..)
   , RuleT (..)
-  , StanceDefT (..)
   , TaskDefT (..)
   , TriggerDefT (..)
   )
@@ -54,12 +52,8 @@ prettyRule (RuleGeneral GeneralDef{..}) =
     <> effectArrow
     <> " "
     <> richToString effect
-prettyRule (RuleStance StanceDef{..}) =
-  "Stance " <> inParens (getRawText duration) <> prettyExtra (Just effect)
-prettyRule (RuleChannel ChannelDef{..}) =
-  "Channel " <> inParens (getRawText duration) <> prettyExtra (Just effect)
-prettyRule (RulePrime PrimeDef{..}) =
-  "Prime " <> inParens (getRawText trigger) <> ": " <> prettyRule reaction
+prettyRule (RuleOngoing OngoingDef{..}) =
+  "Ongoing " <> inParens (richToString life) <> prettyExtra (Just effect)
 prettyRule (RulePassive PassiveDef{..}) =
   "Passive: " <> prettyPower bonus <> prettyCondition condition
 prettyRule (RuleTask TaskDef{..}) =

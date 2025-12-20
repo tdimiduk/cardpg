@@ -29,7 +29,7 @@ $(deriveJSON cardpgJsonDef ''TableCard)
 type CardRegistry c = Map CardInstanceId c
 
 data CorePlayState
-  = Stance -- Persistent effect on self
+  = Ongoing -- Persistent effect on self
   | AttachedTo TargetId -- Buff/Debuff on Target (Actor/Token UUID)
   deriving stock (Show, Eq, Generic)
 

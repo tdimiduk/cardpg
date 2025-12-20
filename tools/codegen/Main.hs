@@ -15,16 +15,14 @@ import System.IO (writeFile)
 import TypeScriptInstances
   ( ActorDefinition
   , AttackDef
-  , ChannelDef
   , ConsequenceCard
   , CoreCard
   , EncounterCard
   , GeneralDef
   , ItemCard
   , NatureCard
-  , PrimeDef
+  , OngoingDef
   , Rule
-  , StanceDef
   , TalentCard
   , TaskDef
   , TriggerDef
