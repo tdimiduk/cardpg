@@ -30,6 +30,7 @@ export type IdentifiedConsequenceCard = ConsequenceCard & { id: string };
 export interface SidebarLeftProps {
   drawPile: IdentifiedCoreCard[];
   drawPileCount: number;
+  discardPile: IdentifiedCoreCard[];
   discardPileCount: number;
   flippedPile: IdentifiedCoreCard[];
   consequences: IdentifiedConsequenceCard[];
@@ -57,6 +58,7 @@ export interface SidebarLeftProps {
 export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   drawPile,
   drawPileCount,
+  discardPile,
   discardPileCount,
   flippedPile,
   consequences,
@@ -80,6 +82,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   plannedActions,
 }) => {
   const [showDeckModal, setShowDeckModal] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
 
   // Empty State / Character Selector
   if (!activeActorId) {
@@ -117,6 +120,11 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
         onClose={() => setShowDeckModal(false)}
         cards={drawPile}
       />
+      <DeckViewerModal
+        isOpen={showDiscardModal}
+        onClose={() => setShowDiscardModal(false)}
+        cards={discardPile}
+      />
 
       <SidebarHeader />
 
@@ -131,6 +139,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
           onDraw={onDraw}
           onReshuffle={onReshuffle}
           onViewDeck={() => setShowDeckModal(true)}
+          onViewDiscard={() => setShowDiscardModal(true)}
         />
 
         <StatusManager onAddStatusCard={onAddStatusCard} onRemoveStatusCard={onRemoveStatusCard} />
@@ -187,70 +196,79 @@ const SidebarLeftContainer: React.FC = () => {
   };
 
   // Resolve IDs to Card Objects
-  const { drawPile, flippedPile, consequences, equipped, drawPileCount, discardPileCount } =
-    useMemo(() => {
-      if (!activeActor) {
-        return {
-          drawPile: [],
-          flippedPile: [],
-          consequences: [],
-          equipped: [],
-          drawPileCount: 0,
-          discardPileCount: 0,
-        };
-      }
-
-      const resolveCore = (ids: string[]) =>
-        ids
-          .map((id) => {
-            const card = activeActor.coreState.registry[id];
-            // Manually adding ID as it's missing from record value
-            return card ? { ...card, id } : undefined;
-          })
-          .filter((c): c is IdentifiedCoreCard => !!c);
-
-      const resolveConsequences = (ids: string[]) =>
-        ids
-          .map((id) => {
-            const card = activeActor.tableState.consequenceRegistry[id];
-            return card ? { ...card, id } : undefined;
-          })
-          .filter((c): c is IdentifiedConsequenceCard => !!c);
-
-      // Resolving equipped items
-      // Filter assets for type: "equipped"
-      const equippedAssets = Object.entries(activeActor.tableState.assets)
-        .filter(([_, asset]) => asset && asset.type === 'equipped')
-        .map(([id, _]) => id);
-
-      // Look up table cards
-      const equippedCards = equippedAssets
-        .map((id) => {
-          const cardWrapper = activeActor.tableState.registry[id];
-          // TableCard is union of wrappers with 'data' property
-          if (!cardWrapper) return undefined;
-
-          // Handling discrimination based on TableCard union
-          if (
-            cardWrapper.type === 'tCItem' ||
-            cardWrapper.type === 'tCNature' ||
-            cardWrapper.type === 'tCTalent'
-          ) {
-            return { ...cardWrapper.data, id };
-          }
-          return undefined;
-        })
-        .filter((c): c is EquipmentCardWithId => !!c);
-
+  const {
+    drawPile,
+    discardPile,
+    flippedPile,
+    consequences,
+    equipped,
+    drawPileCount,
+    discardPileCount,
+  } = useMemo(() => {
+    if (!activeActor) {
       return {
-        drawPile: resolveCore(activeActor.coreState.deck),
-        flippedPile: resolveCore(activeActor.coreState.defending),
-        consequences: resolveConsequences(activeActor.tableState.consequences),
-        equipped: equippedCards,
-        drawPileCount: activeActor.coreState.deck.length,
-        discardPileCount: activeActor.coreState.discard.length,
+        drawPile: [],
+        discardPile: [],
+        flippedPile: [],
+        consequences: [],
+        equipped: [],
+        drawPileCount: 0,
+        discardPileCount: 0,
       };
-    }, [activeActor]);
+    }
+
+    const resolveCore = (ids: string[]) =>
+      ids
+        .map((id) => {
+          const card = activeActor.coreState.registry[id];
+          // Manually adding ID as it's missing from record value
+          return card ? { ...card, id } : undefined;
+        })
+        .filter((c): c is IdentifiedCoreCard => !!c);
+
+    const resolveConsequences = (ids: string[]) =>
+      ids
+        .map((id) => {
+          const card = activeActor.tableState.consequenceRegistry[id];
+          return card ? { ...card, id } : undefined;
+        })
+        .filter((c): c is IdentifiedConsequenceCard => !!c);
+
+    // Resolving equipped items
+    // Filter assets for type: "equipped"
+    const equippedAssets = Object.entries(activeActor.tableState.assets)
+      .filter(([_, asset]) => asset && asset.type === 'equipped')
+      .map(([id, _]) => id);
+
+    // Look up table cards
+    const equippedCards = equippedAssets
+      .map((id) => {
+        const cardWrapper = activeActor.tableState.registry[id];
+        // TableCard is union of wrappers with 'data' property
+        if (!cardWrapper) return undefined;
+
+        // Handling discrimination based on TableCard union
+        if (
+          cardWrapper.type === 'tCItem' ||
+          cardWrapper.type === 'tCNature' ||
+          cardWrapper.type === 'tCTalent'
+        ) {
+          return { ...cardWrapper.data, id };
+        }
+        return undefined;
+      })
+      .filter((c): c is EquipmentCardWithId => !!c);
+
+    return {
+      drawPile: resolveCore(activeActor.coreState.deck),
+      discardPile: resolveCore(activeActor.coreState.discard),
+      flippedPile: resolveCore(activeActor.coreState.defending),
+      consequences: resolveConsequences(activeActor.tableState.consequences),
+      equipped: equippedCards,
+      drawPileCount: activeActor.coreState.deck.length,
+      discardPileCount: activeActor.coreState.discard.length,
+    };
+  }, [activeActor]);
 
   // Handlers
   const handleDraw = (_count: number) => {
@@ -316,6 +334,7 @@ const SidebarLeftContainer: React.FC = () => {
     <SidebarLeftView
       drawPile={drawPile}
       drawPileCount={drawPileCount}
+      discardPile={discardPile}
       discardPileCount={discardPileCount}
       flippedPile={flippedPile}
       consequences={consequences}

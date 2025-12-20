@@ -7,6 +7,7 @@ interface DeckStatsProps {
   onDraw: (count: number) => void;
   onReshuffle: () => void;
   onViewDeck: () => void;
+  onViewDiscard: () => void;
 }
 
 export const DeckStats: React.FC<DeckStatsProps> = ({
@@ -15,6 +16,7 @@ export const DeckStats: React.FC<DeckStatsProps> = ({
   onDraw,
   onReshuffle,
   onViewDeck,
+  onViewDiscard,
 }) => {
   return (
     <div className="p-4 border-b border-slate-800">
@@ -49,10 +51,17 @@ export const DeckStats: React.FC<DeckStatsProps> = ({
             <Layers size={12} />
           </button>
         </div>
-        <div className="bg-slate-900 p-2 rounded border border-slate-800 flex flex-col items-center">
+        <div className="bg-slate-900 p-2 rounded border border-slate-800 flex flex-col items-center relative group">
           <span className="text-xs text-slate-500">Discard</span>
           <span className="text-xl font-bold text-slate-200">{discardPileCount}</span>
           <span className="text-[8px] text-slate-600 mt-1 h-5"></span>
+          <button
+            onClick={onViewDiscard}
+            className="absolute top-1 right-1 p-1 text-slate-600 hover:text-indigo-400 transition-opacity"
+            title="View Discard"
+          >
+            <Layers size={12} />
+          </button>
         </div>
       </div>
     </div>

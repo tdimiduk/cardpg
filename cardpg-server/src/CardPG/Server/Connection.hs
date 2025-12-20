@@ -170,13 +170,13 @@ talk client socket state = forever $ do
             Nothing -> True
 
       when shouldUpdate $ do
-          modifyMVar_ state $ \s -> do
-            case Map.lookup (client.clientId) (s.clients) of
-              Just existing -> return $ addClient (existing{clientName = name}) s
-              Nothing -> return s
-          T.putStrLn $ "Client renamed: " <> name
-          -- We could broadcast update, but current broadcast is just ClientJoined/Left.
-          -- Maybe add ClientUpdated? For now just log.
+        modifyMVar_ state $ \s -> do
+          case Map.lookup (client.clientId) (s.clients) of
+            Just existing -> return $ addClient (existing{clientName = name}) s
+            Nothing -> return s
+        T.putStrLn $ "Client renamed: " <> name
+    -- We could broadcast update, but current broadcast is just ClientJoined/Left.
+    -- Maybe add ClientUpdated? For now just log.
     Just (GameCommand cmd) -> handleGameCommand (client.clientId) (client.clientName) state cmd
     Just (Admin ResetGame) -> do
       T.putStrLn $ "Admin: Resetting Game requested by " <> client.clientName

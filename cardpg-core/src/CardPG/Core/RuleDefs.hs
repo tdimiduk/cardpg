@@ -130,7 +130,7 @@ $( do
            , ''GeneralDefT
            , ''TaskDefT
            , ''TriggerDefT
-            , ''OngoingDefT
+           , ''OngoingDefT
            ]
      rule <- deriveJSON (cardpgJsonOptions "Rule") ''RuleT
      return (defs ++ rule)
