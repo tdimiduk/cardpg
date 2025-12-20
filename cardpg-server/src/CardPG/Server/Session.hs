@@ -31,21 +31,23 @@ initGame backend config lib forceReset = do
       then return Nothing
       else loadGame backend defaultGameId
 
+  let hydrate gs =
+        let env = gs.env
+            statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
+            consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
+            newEnv = env{statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap}
+         in gs{env = newEnv}
+
   case maybeLoaded of
     Just loadedGs -> do
       T.putStrLn "Loaded persisted game state."
       rng <- newStdGen
-      return (loadedGs, rng)
+      return (hydrate loadedGs, rng)
     Nothing -> do
       T.putStrLn $ "Loading starter scenario from " <> T.pack config.scenarioFile <> "..."
       (initialGs, rng) <- loadScenario config.scenarioFile
 
-      -- Hydrate library into env
-      let env = initialGs.env
-      let statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
-      let consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
-      let newEnv = env{statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap}
-      let newGs = initialGs{env = newEnv}
+      let newGs = hydrate initialGs
 
       -- Persist key initial state
       saveGame backend defaultGameId newGs

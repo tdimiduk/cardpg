@@ -8,8 +8,8 @@ interface StatusManagerProps {
 }
 
 const AVAILABLE_STATUSES = [
-  { id: 'fatigue', name: 'Fatigue', type: 'fatigue' },
-  { id: 'wounded', name: 'Wounded', type: 'wounded' },
+  { id: 'Fatigue', name: 'Fatigue', type: 'Fatigue' },
+  { id: 'Injury', name: 'Injury', type: 'Injury' },
 ];
 
 export const StatusManager: React.FC<StatusManagerProps> = ({
@@ -25,7 +25,7 @@ export const StatusManager: React.FC<StatusManagerProps> = ({
       {AVAILABLE_STATUSES.map((status) => (
         <div key={status.id} className="flex items-center justify-between mb-2 last:mb-0">
           <span className="text-xs text-slate-300 flex items-center gap-1">
-            {status.type === 'fatigue' ? (
+            {status.type === 'Fatigue' ? (
               <Activity size={12} className="text-red-400" />
             ) : (
               <AlertOctagon size={12} className="text-orange-400" />
