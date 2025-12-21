@@ -59,7 +59,7 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
-import CardPG.Core.State (ActorState, GameEnv, GameEvent, RealizedAttack)
+import CardPG.Core.State (ActorState, GameEnv, GameEvent, PlannedAction, RealizedAttack)
 import CardPG.Server.Config (Config)
 import CardPG.Server.Types.Wire qualified as Wire
 
@@ -74,7 +74,7 @@ data LogPayload
   | LogChat {content :: Text}
   | LogAttack
       { attack :: RealizedAttack
-      , resourceCardIds :: Maybe [Text]
+      , plannedAction :: PlannedAction
       }
   | LogDefense
       { defenseActorId :: ActorId

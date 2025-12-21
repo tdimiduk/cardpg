@@ -35,7 +35,7 @@ const AttackLogItem: React.FC<{
   // ... (AttackLogItem implementation remains mostly same, just updating context around it if needed)
   const actorId = log.senderId;
   const attack = payload.attack;
-  const resourceCardIds = payload.resourceCardIds;
+  const plannedAction = payload.plannedAction; // Replaces resourceCardIds
 
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
@@ -54,14 +54,27 @@ const AttackLogItem: React.FC<{
     const cards: StackCard[] = [];
     if (attackCard) cards.push(attackCard);
 
-    if (resourceCardIds && registry) {
-      resourceCardIds.forEach((id) => {
+    if (plannedAction && registry) {
+      // Determine resource IDs based on action type
+      let resourceIds: string[] = [];
+      if (plannedAction.type === 'pStandard') {
+        resourceIds = plannedAction.data.resources;
+      } else if (plannedAction.type === 'pNarrative') {
+        // For narrative, we might want to show all cards, or just resources if applicable.
+        // NarrativeStack has `cards` which are all the cards played.
+        resourceIds = plannedAction.data.cards;
+      }
+
+      resourceIds.forEach((id) => {
+        // Avoid duplicating the attack card if it's already in the list (though usually attack card is separate in logic, but good to be safe if IDs overlap)
+         if (id === attack.attackCard) return;
+
         const def = registry[id];
         if (def) cards.push({ ...def, id });
       });
     }
     return cards;
-  }, [attackCard, resourceCardIds, registry]);
+  }, [attackCard, plannedAction, registry, attack]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -59,29 +59,42 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
         {/* Content - Scrollable */}
         <div className="overflow-y-auto p-4 space-y-6 flex-1 custom-scrollbar">
           {/* Attack Stack Section */}
-          <div>
-            <div className="text-xs font-bold text-slate-500 uppercase mb-2">Incoming Attack</div>
+          <div className="flex-1 min-h-0 bg-slate-900/50 rounded border border-slate-800/50 flex flex-col overflow-hidden">
+            <div className="flex items-stretch justify-center p-2 gap-2 min-h-[220px]">
+              {/* Left: Controlling Action */}
+              <div className="flex flex-col items-center justify-center">
+                <div className="transform transition-transform hover:scale-110 hover:z-10">
+                  {attackStack.length > 0 ? (
+                    <CardComponent card={attackStack[0]} />
+                  ) : (
+                    <div className="text-slate-600 text-sm italic">No active attack.</div>
+                  )}
+                </div>
+              </div>
 
-            {/* Dynamic Scaled View using StackViewerModal logic */}
-            <div className="bg-slate-900/50 p-4 rounded min-h-[220px] flex items-center justify-center border border-slate-800/50">
-              <div className="flex flex-wrap gap-2 justify-center">
-                {attackStack.map((card, idx) => {
-                  const count = attackStack.length;
-                  const scaleClass = count > 8 ? 'scale-60' : count > 4 ? 'scale-75' : 'scale-90';
-                  const marginClass = count > 8 ? '-m-8' : count > 4 ? '-m-4' : '-m-2';
+              {/* Vertical Divider */}
+              <div className="w-px bg-slate-700/50 my-1" />
 
-                  return (
-                    <div
-                      key={`${card.id}-${idx}`}
-                      className={`flex-shrink-0 ${scaleClass} ${marginClass} origin-top transform transition-transform hover:z-10 hover:scale-100 hover:m-0`}
-                    >
-                      <CardComponent card={card} />
+              {/* Right: Resources */}
+              <div className="flex-1 flex items-center justify-start overflow-x-auto custom-scrollbar p-1">
+                <div className="flex items-center gap-2 pl-2">
+                  {attackStack.length > 1 ? (
+                    attackStack.slice(1).map((card, idx) => (
+                      <div
+                        key={`${card.id}-${idx}-res`}
+                        className="flex-shrink-0 transform transition-transform hover:scale-110 hover:z-10 origin-center"
+                      >
+                        <div className="scale-90">
+                          <CardComponent card={card} />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-slate-700 text-sm italic pl-2">
+                      No additional resources.
                     </div>
-                  );
-                })}
-                {attackStack.length === 0 && (
-                  <div className="text-slate-600 text-sm italic">No cards in attack stack.</div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>
