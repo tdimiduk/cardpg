@@ -6,10 +6,9 @@ pkgs.buildNpmPackage {
 
   src = ../vtt-react;
 
-  npmDepsHash = "sha256-rbFS+T8tmcjhXkXwy3YuRg9AxLHFzRA/hwxEh3ZpcYg="; 
+  npmDepsHash = "sha256-4ngCSqVZZYHpWKG9S1WmeIE+oB2uECVuqQYb0eYvDNc="; 
   
   nativeBuildInputs = [ 
-    codegen
     codegen
     gameData
   ];
@@ -21,6 +20,12 @@ pkgs.buildNpmPackage {
     cp -r ${../data} data
     cp -r ${../design} design
     chmod -R u+w tools data design
+
+    # Patch App.tsx to point to the correct design directory location in the build environment
+    # In dev: ../../../design (repo root sibling)
+    # In nix build: ../design (build root sibling)
+    substituteInPlace src/App.tsx \
+      --replace-fail "../../../design" "../design"
 
     # Generate Types
     echo "Generating types..."
