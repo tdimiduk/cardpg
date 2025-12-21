@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Plus } from 'lucide-react';
+import { Shield, Plus, ChevronDown } from 'lucide-react';
 import { DefenseDetails, ResourceType } from '../../generated/types';
 
 interface DefenseStatsProps {
@@ -23,7 +23,7 @@ export const DefenseStats: React.FC<DefenseStatsProps> = ({
   attackColor = 'red',
   onAddConsequence,
 }) => {
-  const [severity, setSeverity] = useState(details.nextSeverity || 1);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const getColorClass = (color?: ResourceType) => {
     switch (color) {
@@ -108,43 +108,57 @@ export const DefenseStats: React.FC<DefenseStatsProps> = ({
             <span className="text-orange-500">⚠</span> Add Consequence
           </div>
 
-          <div className="flex flex-col gap-2">
-            {/* Primary Action: Auto-Severity from Server */}
+          {/* Split Button: Auto & Manual */}
+          <div className="relative flex items-center">
             <button
-              onClick={() => onAddConsequence(details.nextSeverity)}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded border border-slate-700 flex items-center justify-center gap-2 transition-colors"
+              onClick={() => onAddConsequence(undefined)}
+              className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-l border border-slate-700 border-r-0 flex items-center justify-center gap-2 transition-colors"
+              title={`Add Consequence (Sev ${details.nextSeverity || '?'})`}
             >
               <Plus size={14} />
-              Add Consequence (Lev {details.nextSeverity})
+              Add Consequence (Sev {details.nextSeverity})
             </button>
 
-            {/* Secondary: Manual Severity */}
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-px bg-slate-800"></div>
-              <span className="text-[10px] text-slate-600 font-bold uppercase">OR</span>
-              <div className="flex-1 h-px bg-slate-800"></div>
-            </div>
-
-            <div className="flex gap-2">
-              <select
-                value={severity}
-                onChange={(e) => setSeverity(Number(e.target.value))}
-                className="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded px-2 py-1 flex-1 focus:outline-none focus:border-indigo-500"
-              >
-                {[1, 2, 3, 4, 5].map((lvl) => (
-                  <option key={lvl} value={lvl}>
-                    Level {lvl}
-                  </option>
-                ))}
-              </select>
+            <div className="relative">
               <button
-                onClick={() => onAddConsequence(severity)}
-                className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded border border-slate-700"
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-2 rounded-r border border-slate-700 transition-colors flex items-center justify-center h-full"
               >
-                Add
+                <ChevronDown size={14} />
               </button>
+
+              {showDropdown && (
+                <div className="absolute top-full right-0 mt-1 w-32 bg-slate-800 border border-slate-700 rounded shadow-lg z-50 overflow-hidden">
+                  <div className="text-[9px] uppercase tracking-wider text-slate-500 px-2 py-1 bg-slate-900/50">
+                    Specific Severity
+                  </div>
+                  {[1, 2, 3].map((sev) => (
+                    <button
+                      key={sev}
+                      onClick={() => {
+                        onAddConsequence(sev);
+                        setShowDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                    >
+                      Severity {sev}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Click outside to close dropdown handled by just using local state for now, 
+                could improve with a hook or proper overlay if needed, 
+                but for a small sidebar modal this is usually fine or user clicks toggle again. 
+                Added a simple overlay for better UX. */}
+          {showDropdown && (
+            <div
+              className="fixed inset-0 z-40 bg-transparent"
+              onClick={() => setShowDropdown(false)}
+            />
+          )}
         </div>
       </div>
     </div>
