@@ -17,7 +17,6 @@ import { ActorList } from './ActorList';
 import { ActiveActorHeader } from './ActiveActorHeader';
 import { DeckStats } from './DeckStats';
 import { StatusManager } from './StatusManager';
-import { DefenseStats } from './DefenseStats';
 import { ConsequenceList } from './ConsequenceList';
 import { EquippedList } from './EquippedList';
 import { DeckViewerModal } from './DeckViewerModal';
@@ -48,6 +47,7 @@ export interface SidebarLeftProps {
   onRemoveConsequence: (cardId: string) => void;
   onAddStatusCard: (type: string, destination: CardLocation) => void;
   onRemoveStatusCard: (type: string) => void;
+  onResumeDefense: () => void;
   activeActorId: string;
   actors: Record<string, ActorState>;
   onRemoveActor: (actorId: string) => void;
@@ -75,6 +75,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   onRemoveConsequence,
   onAddStatusCard,
   onRemoveStatusCard,
+  onResumeDefense,
   activeActorId,
   actors,
   onRemoveActor,
@@ -144,14 +145,25 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 
         <StatusManager onAddStatusCard={onAddStatusCard} onRemoveStatusCard={onRemoveStatusCard} />
 
-        <DefenseStats
-          details={defenseDetails}
-          defenseStat={defense}
-          resilienceStat={resilience}
-          onDefend={onDefend}
-          onClearDefense={onClearDefense}
-          hasFlippedCards={flippedPile.length > 0}
-        />
+        {/* Compact Stats & Active Defense */}
+        <div className="px-4 py-2 border-b border-slate-800 bg-slate-900/10 flex flex-col gap-2">
+          <div className="flex justify-between items-center text-sm font-bold opacity-90">
+            <span className="text-blue-300 flex items-center gap-1">🛡 Defense: {defense}</span>
+            <span className="text-red-300 flex items-center gap-1">
+              💖 Resilience: {resilience}
+            </span>
+          </div>
+
+          {flippedPile.length > 0 && (
+            <button
+              onClick={onResumeDefense}
+              className="w-full text-xs bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 border border-indigo-700/50 rounded py-1 px-2 animate-pulse font-bold transition-all shadow-sm flex items-center justify-center gap-2"
+            >
+              <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping" />
+              Resume Active Defense
+            </button>
+          )}
+        </div>
 
         <ConsequenceList
           consequences={consequences}
@@ -168,7 +180,13 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 
 // --- Container ---
 
-const SidebarLeftContainer: React.FC = () => {
+// --- Container ---
+
+interface SidebarLeftContainerProps {
+  onResumeDefense: () => void;
+}
+
+const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDefense }) => {
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
   const phase = useGameStore((state) => state.phase);
@@ -351,6 +369,7 @@ const SidebarLeftContainer: React.FC = () => {
       onRemoveConsequence={handleRemoveConsequence}
       onAddStatusCard={handleAddStatusCard}
       onRemoveStatusCard={handleRemoveStatusCard}
+      onResumeDefense={onResumeDefense}
       activeActorId={activeActorId || ''}
       actors={actors}
       onRemoveActor={removeActor}

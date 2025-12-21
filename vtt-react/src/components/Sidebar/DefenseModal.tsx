@@ -1,0 +1,152 @@
+import React from 'react';
+import { X } from 'lucide-react';
+import { DefenseDetails, ResourceType } from '../../generated/types';
+import { DefenseStats } from './DefenseStats';
+import { Card as CardType, CardComponent } from '../Card/Card';
+
+export type DefenseModalCard = CardType & { id: string };
+
+interface DefenseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+
+  // Attack Context
+  attackStack: DefenseModalCard[];
+  attackTarget: number;
+  attackColor: ResourceType;
+
+  // Defense Context
+  defenseDetails: DefenseDetails;
+  currentDefense: number;
+  currentResilience: number;
+  consequences: (CardType & { id: string })[];
+
+  // Actions
+  onDefend: () => void;
+  onAddConsequence: (severity?: number) => void;
+  onClearDefense: () => void;
+}
+
+export const DefenseModal: React.FC<DefenseModalProps> = ({
+  isOpen,
+  onClose,
+  attackStack,
+  attackTarget,
+  attackColor,
+  defenseDetails,
+  currentDefense,
+  currentResilience,
+  consequences,
+  onDefend,
+  onAddConsequence,
+  onClearDefense,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-slate-950 border border-slate-700 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900">
+          <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+            Defense & Impact
+          </h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Content - Scrollable */}
+        <div className="overflow-y-auto p-4 space-y-6 flex-1 custom-scrollbar">
+          {/* Attack Stack Section */}
+          <div>
+            <div className="text-xs font-bold text-slate-500 uppercase mb-2">Incoming Attack</div>
+
+            {/* Dynamic Scaled View using StackViewerModal logic */}
+            <div className="bg-slate-900/50 p-4 rounded min-h-[220px] flex items-center justify-center border border-slate-800/50">
+              <div className="flex flex-wrap gap-2 justify-center">
+                {attackStack.map((card, idx) => {
+                  const count = attackStack.length;
+                  const scaleClass = count > 8 ? 'scale-60' : count > 4 ? 'scale-75' : 'scale-90';
+                  const marginClass = count > 8 ? '-m-8' : count > 4 ? '-m-4' : '-m-2';
+
+                  return (
+                    <div
+                      key={`${card.id}-${idx}`}
+                      className={`flex-shrink-0 ${scaleClass} ${marginClass} origin-top transform transition-transform hover:z-10 hover:scale-100 hover:m-0`}
+                    >
+                      <CardComponent card={card} />
+                    </div>
+                  );
+                })}
+                {attackStack.length === 0 && (
+                  <div className="text-slate-600 text-sm italic">No cards in attack stack.</div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Defense Controls */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Col: Stats & Actions */}
+            <div>
+              <div className="text-xs font-bold text-slate-500 uppercase mb-2">Response</div>
+              <DefenseStats
+                details={defenseDetails}
+                defenseStat={currentDefense}
+                resilienceStat={currentResilience}
+                onDefend={onDefend}
+                onAddConsequence={onAddConsequence}
+                targetStrength={attackTarget}
+                attackColor={attackColor}
+              />
+            </div>
+
+            {/* Right Col: Consequence Grid */}
+            <div>
+              <div className="text-xs font-bold text-slate-500 uppercase mb-2">
+                Active Consequences
+              </div>
+              <div className="bg-slate-900/50 p-3 rounded min-h-[150px] border border-slate-800/50">
+                {consequences.length === 0 ? (
+                  <div className="text-slate-600 text-xs italic p-2 text-center">
+                    No active consequences.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {consequences.map((card) => (
+                      <div key={card.id} className="relative group">
+                        <div className="transform scale-75 origin-top-left">
+                          <CardComponent card={card} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-4 border-t border-slate-800 bg-slate-900/50 flex justify-end gap-2">
+          <button
+            onClick={() => {
+              onClearDefense();
+              onClose();
+            }}
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-600 font-bold text-sm transition-colors"
+          >
+            End Defense
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-bold text-sm shadow-lg shadow-indigo-900/20 transition-colors"
+          >
+            Done (Keep Defending)
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { MapBoard } from './components/Game/MapBoard';
 // Importing default exports which are now Containers
 import SidebarLeft from './components/Sidebar/SidebarLeft';
@@ -8,12 +9,25 @@ import { useGameStore } from './store/gameStore';
 import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
+import { DefenseModal, DefenseModalCard } from './components/Sidebar/DefenseModal';
+import { RealizedAttack, DefenseDetails } from './generated/types';
 
-const App: React.FC = () => {
+// Rules Components
+import RulesLayout from './layouts/RulesLayout';
+import RulesPage from './components/Rules/RulesPage';
+// @ts-expect-error - Vite imports markdown as string
+import coreRulesContent from '../../../design/rules/core-rules.md?raw';
+// @ts-expect-error - Vite imports markdown as string
+import keywordGlossaryContent from '../../../design/rules/keyword-glossary.md?raw';
+// @ts-expect-error - Vite imports markdown as string
+import colorsOfActionContent from '../../../design/rules/colors-of-action.md?raw';
+
+const GameBoard: React.FC = () => {
   // --- Store Hooks Needed for Layout/Initialization ---
   const phase = useGameStore((state) => state.phase);
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
+  const activeActor = activeActorId ? actors[activeActorId] : undefined;
 
   // Actions
   const setActiveActor = useGameStore((state) => state.setActiveActor);
@@ -29,9 +43,67 @@ const App: React.FC = () => {
   useGameSync();
   const { dispatchCommand } = useGameDispatch();
 
+  // --- Defense Modal State ---
+  const [defenseModal, setDefenseModal] = useState<{
+    isOpen: boolean;
+    attack: RealizedAttack | null;
+    stack: DefenseModalCard[];
+  }>({ isOpen: false, attack: null, stack: [] });
+
+  const handleOpenDefense = (attack: RealizedAttack, stack: DefenseModalCard[]) => {
+    setDefenseModal({ isOpen: true, attack, stack });
+  };
+
+  const handleCloseDefense = () => {
+    setDefenseModal((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const handleResumeDefense = () => {
+    // Re-open if we have context.
+    setDefenseModal((prev) => ({ ...prev, isOpen: true }));
+  };
+
+  // --- Defense Handlers (Duplicates of Sidebar Logic for Modal) ---
+  const handleDefend = () => {
+    if (!activeActorId) return;
+    dispatchCommand({ type: 'defendIntent', actorId: activeActorId });
+  };
+
+  const handleAddConsequence = (severity?: number) => {
+    if (!activeActorId) return;
+    dispatchCommand({
+      type: 'addConsequenceIntent',
+      actorId: activeActorId,
+      severity,
+    });
+  };
+
+  const handleEndDefense = (actorId: string) => {
+    dispatchCommand({ type: 'endDefenseIntent', actorId });
+    // Also close modal
+    handleCloseDefense();
+  };
+
+  const defaultDefenseDetails: DefenseDetails = {
+    values: { red: 0, yellow: 0, blue: 0 },
+    impact: 0,
+    consequencesFromDefense: 0,
+    nextSeverity: 1,
+  };
+
+  // Resolve Consequences
+  const consequenceIds = activeActor?.tableState.consequences || [];
+  const consequenceRegistry = activeActor?.tableState.consequenceRegistry || {};
+  const activeConsequences = consequenceIds
+    .map((id) => {
+      const card = consequenceRegistry[id];
+      return card ? { ...card, id } : undefined;
+    })
+    .filter((c) => !!c) as DefenseModalCard[];
+
   return (
     <div className="flex h-screen w-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">
-      <SidebarLeft />
+      <SidebarLeft onResumeDefense={handleResumeDefense} />
 
       <main className="flex-1 flex flex-col relative overflow-hidden shadow-inner bg-slate-900">
         <div className="absolute top-4 left-4 z-10 pointer-events-none">
@@ -60,8 +132,42 @@ const App: React.FC = () => {
         {activeActorId && <PlayerHand actorId={activeActorId} />}
       </main>
 
-      <SidebarRight />
+      <SidebarRight onOpenDefense={handleOpenDefense} />
+
+      <DefenseModal
+        isOpen={defenseModal.isOpen}
+        onClose={handleCloseDefense}
+        attackStack={defenseModal.stack}
+        attackTarget={defenseModal.attack?.attackStrength || 0}
+        attackColor={defenseModal.attack?.defenseColor || 'red'}
+        defenseDetails={activeActor?.defenseDetails || defaultDefenseDetails}
+        currentDefense={activeActor?.defense || 0}
+        currentResilience={activeActor?.resilience || 0}
+        consequences={activeConsequences}
+        onDefend={handleDefend}
+        onAddConsequence={handleAddConsequence}
+        onClearDefense={() => {
+          if (activeActorId) handleEndDefense(activeActorId);
+        }}
+      />
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<GameBoard />} />
+      <Route path="/rules" element={<RulesLayout />}>
+        <Route index element={<RulesPage content={coreRulesContent} />} />
+      </Route>
+      <Route path="/glossary" element={<RulesLayout />}>
+        <Route index element={<RulesPage content={keywordGlossaryContent} />} />
+      </Route>
+      <Route path="/colors" element={<RulesLayout />}>
+        <Route index element={<RulesPage content={colorsOfActionContent} />} />
+      </Route>
+    </Routes>
   );
 };
 

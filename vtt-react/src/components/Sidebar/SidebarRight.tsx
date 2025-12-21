@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, Phase, LogPayload, CoreCard } from '../../generated/types';
+import { LogEntry, Phase, LogPayload, CoreCard, RealizedAttack } from '../../generated/types';
 // TODO: Replace lucide icons if needed, or keep them
 import { Send, Bot, Square, ArrowRight, Play, Rewind } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { StackViewerModal } from './StackViewerModal';
+import { DefenseModalCard } from './DefenseModal';
 import { WithId, selectReadiness } from '../../store/selectors';
 import { Card } from '../Card/Card';
 
 // Helper type for cards in stack view - use the same Card type as CardComponent
 type StackCard = WithId<Card>;
 
+// --- View ---
 // --- View ---
 export interface SidebarRightProps {
   logs: LogEntry[];
@@ -22,13 +24,15 @@ export interface SidebarRightProps {
   onEndDefense: (actorId: string) => void;
   onSendChat: (message: string) => void;
   onResetGame: () => void;
+  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
 }
 
 const AttackLogItem: React.FC<{
   log: LogEntry;
   payload: Extract<LogPayload, { type: 'logAttack' }>;
-  onViewStack: (cards: StackCard[], title: string) => void;
-}> = ({ log, payload, onViewStack }) => {
+  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
+}> = ({ log, payload, onOpenDefense }) => {
+  // ... (AttackLogItem implementation remains mostly same, just updating context around it if needed)
   const actorId = log.senderId;
   const attack = payload.attack;
   const resourceCardIds = payload.resourceCardIds;
@@ -43,12 +47,10 @@ const AttackLogItem: React.FC<{
 
   // Resolve cards
   const attackCardDef = attack && registry ? registry[attack.attackCard] : undefined;
-  const attackCardName = attackCardDef?.name || 'Unknown Attack';
   const attackCard: StackCard | undefined =
     attackCardDef && attack ? { ...attackCardDef, id: attack.attackCard } : undefined;
 
-  const handleViewStack = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const stackCards = useMemo(() => {
     const cards: StackCard[] = [];
     if (attackCard) cards.push(attackCard);
 
@@ -58,9 +60,13 @@ const AttackLogItem: React.FC<{
         if (def) cards.push({ ...def, id });
       });
     }
+    return cards;
+  }, [attackCard, resourceCardIds, registry]);
 
-    if (cards.length > 0) {
-      onViewStack(cards, `${actorName}'s Attack Stack`);
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (attack) {
+      onOpenDefense(attack, stackCards);
     }
   };
 
@@ -68,7 +74,7 @@ const AttackLogItem: React.FC<{
 
   return (
     <div
-      onClick={handleViewStack}
+      onClick={handleClick}
       className="bg-red-950/30 border border-red-900/50 rounded p-3 mb-2 animate-fade-in cursor-pointer hover:bg-red-900/40 hover:shadow-md transition-all group"
     >
       <div className="flex justify-between items-start mb-1">
@@ -78,7 +84,22 @@ const AttackLogItem: React.FC<{
         </div>
       </div>
 
-      <div className="text-white font-bold mb-1">{attackCardName}</div>
+      <div className="space-y-1 mb-2">
+        {stackCards.map((card, idx) => (
+          <div
+            key={card.id || idx}
+            className="text-white font-bold text-sm bg-black/20 rounded px-2 py-1 flex items-center gap-2"
+          >
+            <span>{card.name}</span>
+            {idx === 0 && (
+              <span className="text-[10px] text-red-300 uppercase bg-red-950/50 px-1 rounded">
+                Core
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+
       <div className="text-xs text-slate-400 mb-2">By: {actorName}</div>
 
       <div className="flex items-center gap-2 text-sm bg-black/40 rounded p-1 mb-1">
@@ -100,6 +121,11 @@ const AttackLogItem: React.FC<{
     </div>
   );
 };
+// ... (DefenseLogItem is separate, not included in this replacement chunk unless I need to start earlier)
+
+// Skipping DefenseLogItem in replacement to keep it small, targeting SidebarRightProps and after DefenseLogItem.
+// The snippet above included AttackLogItem which is bulky.
+// Let's try to target just generic props and the wrapper.
 
 const DefenseLogItem: React.FC<{
   log: LogEntry;
@@ -221,6 +247,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
   onEndDefense,
   onSendChat,
   onResetGame,
+  onOpenDefense,
 }) => {
   const [chatInput, setChatInput] = useState('');
   const endOfLogsRef = useRef<HTMLDivElement>(null);
@@ -256,6 +283,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
         cards={stackViewer.cards}
         title={stackViewer.title}
       />
+
       {/* Phase Control Panel */}
       <div className="p-4 bg-slate-900 border-b border-slate-800">
         <div className="flex justify-between items-center mb-2">
@@ -316,7 +344,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
                 key={`${log.id}-${index}`}
                 log={log}
                 payload={payload}
-                onViewStack={handleOpenStack}
+                onOpenDefense={onOpenDefense}
               />
             );
           }
@@ -404,7 +432,11 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
 
 // --- Container ---
 
-const SidebarRightContainer: React.FC = () => {
+interface SidebarRightContainerProps {
+  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
+}
+
+const SidebarRightContainer: React.FC<SidebarRightContainerProps> = ({ onOpenDefense }) => {
   const logs = useGameStore((state) => state.logs);
   const phase = useGameStore((state) => state.phase);
   const activeActorId = useGameStore((state) => state.activeActorId);
@@ -462,6 +494,7 @@ const SidebarRightContainer: React.FC = () => {
       onEndDefense={handleEndDefense}
       onSendChat={handleSendChat}
       onResetGame={handleResetGame}
+      onOpenDefense={onOpenDefense}
     />
   );
 };
