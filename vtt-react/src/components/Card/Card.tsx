@@ -11,6 +11,7 @@ interface CardProps {
   selected?: boolean;
   onClick?: () => void;
   scale?: number;
+  className?: string;
 }
 
 const BaseCard: React.FC<{
@@ -19,15 +20,17 @@ const BaseCard: React.FC<{
   selected?: boolean;
   onClick?: () => void;
   scale?: number;
-}> = ({ card, children, selected, onClick, scale = 1 }) => {
+  className?: string; // Add className support
+}> = ({ card, children, selected, onClick, scale = 1, className = '' }) => {
   return (
     <div
       data-testid="card"
       onClick={onClick}
       className={`
         relative bg-slate-200 text-slate-900 rounded-lg shadow-xl overflow-hidden select-none
-        transition-all duration-200 border-2 cursor-pointer z-0
+        transition-all duration-200 border-2 cursor-pointer z-0 flex
         ${selected ? 'border-yellow-500 -translate-y-4 z-10 ring-2 ring-yellow-300' : 'border-slate-400 hover:-translate-y-2'}
+        ${className}
       `}
       style={{
         width: `${160 * scale}px`,
@@ -43,7 +46,7 @@ const BaseCard: React.FC<{
         </div>
       )}
 
-      <div className="flex h-full">{children}</div>
+      {children}
     </div>
   );
 };

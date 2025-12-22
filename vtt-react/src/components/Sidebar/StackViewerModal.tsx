@@ -41,21 +41,9 @@ export const StackViewerModal: React.FC<StackViewerModalProps> = ({
           <div className="flex flex-wrap gap-2 justify-center">
             {cards.map((card, idx) => {
               // Dynamic scale: If few cards, decent size. If many, shrink to fit.
-              // Assuming normal card is ~200-300px wide.
-              // Logic: Default 0.9. If > 4 cards, 0.75. If > 8 cards, 0.6.
-              const scaleClass =
-                cards.length > 8 ? 'scale-60' : cards.length > 4 ? 'scale-75' : 'scale-90';
-              // Adjust margin to compensate for scale shrinking space
-              const marginClass = cards.length > 8 ? '-m-8' : cards.length > 4 ? '-m-4' : '-m-2';
+              const scaleValue = cards.length > 8 ? 0.6 : cards.length > 4 ? 0.75 : 0.9;
 
-              return (
-                <div
-                  key={`${card.id}-${idx}`}
-                  className={`${scaleClass} ${marginClass} origin-top transition-all duration-300`}
-                >
-                  <CardComponent card={card} />
-                </div>
-              );
+              return <CardComponent key={`${card.id}-${idx}`} card={card} scale={scaleValue} />;
             })}
           </div>
         </div>

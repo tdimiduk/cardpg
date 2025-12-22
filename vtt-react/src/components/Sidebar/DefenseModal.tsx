@@ -59,42 +59,38 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
         {/* Content - Scrollable */}
         <div className="overflow-y-auto p-4 space-y-6 flex-1 custom-scrollbar">
           {/* Attack Stack Section */}
-          <div className="flex-1 min-h-0 bg-slate-900/50 rounded border border-slate-800/50 flex flex-col overflow-hidden">
-            <div className="flex items-stretch justify-center p-2 min-h-[220px]">
-              {/* Left: Controlling Action */}
-              <div className="flex flex-col items-center justify-center">
-                <div className="transform transition-transform hover:scale-110 hover:z-10">
-                  {attackStack.length > 0 ? (
-                    <CardComponent card={attackStack[0]} />
-                  ) : (
-                    <div className="text-slate-600 text-sm italic">No active attack.</div>
-                  )}
-                </div>
-              </div>
+          {/* Attack Stack Section */}
+          <div className="flex-1 min-h-0 bg-slate-900/50 rounded border border-slate-800/50 overflow-hidden flex items-stretch justify-center p-2 min-h-[220px]">
+            {/* Left: Controlling Action */}
+            <div className="flex flex-col items-center justify-center">
+              {attackStack.length > 0 ? (
+                <CardComponent
+                  card={attackStack[0]}
+                  className="transform hover:scale-110 hover:z-10"
+                />
+              ) : (
+                <div className="text-slate-600 text-sm italic">No active attack.</div>
+              )}
+            </div>
 
-              {/* Vertical Divider */}
-              <div className="w-[2px] bg-slate-700/50 my-1 mx-2" />
+            {/* Vertical Divider */}
+            <div className="w-[2px] bg-slate-700/50 my-1 mx-2" />
 
-              {/* Right: Resources */}
-              <div className="flex-1 flex items-center justify-start overflow-x-auto custom-scrollbar p-1">
-                <div className="flex items-center">
-                  {attackStack.length > 1 ? (
-                    attackStack.slice(1).map((card, idx) => (
-                      <div
-                        key={`${card.id}-${idx}-res`}
-                        className="flex-shrink-0 transform transition-transform hover:scale-110 hover:z-10 origin-center"
-                      >
-                        <div className="scale-90">
-                          <CardComponent card={card} />
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-slate-700 text-sm italic pl-2">
-                      No additional resources.
-                    </div>
-                  )}
-                </div>
+            {/* Right: Resources */}
+            <div className="flex-1 flex items-center justify-start overflow-x-auto custom-scrollbar p-1">
+              <div className="flex items-center">
+                {attackStack.length > 1 ? (
+                  attackStack.slice(1).map((card, idx) => (
+                    <CardComponent
+                      key={`${card.id}-${idx}-res`}
+                      card={card}
+                      scale={0.9}
+                      className="flex-shrink-0 transform hover:scale-110 hover:z-10 origin-center mx-1"
+                    />
+                  ))
+                ) : (
+                  <div className="text-slate-700 text-sm italic pl-2">No additional resources.</div>
+                )}
               </div>
             </div>
           </div>
