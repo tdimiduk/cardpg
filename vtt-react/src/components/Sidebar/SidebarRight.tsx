@@ -67,7 +67,7 @@ const AttackLogItem: React.FC<{
 
       resourceIds.forEach((id) => {
         // Avoid duplicating the attack card if it's already in the list (though usually attack card is separate in logic, but good to be safe if IDs overlap)
-         if (id === attack.attackCard) return;
+        if (id === attack.attackCard) return;
 
         const def = registry[id];
         if (def) cards.push({ ...def, id });

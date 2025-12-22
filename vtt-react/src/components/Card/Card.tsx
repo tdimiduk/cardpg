@@ -55,34 +55,26 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
   return (
     <>
       {/* Left Sidebar: Stats */}
-      <div className="w-1/4 h-full bg-slate-100 border-r border-slate-300 flex flex-col items-center pt-2 gap-2 shrink-0">
-        <div className="flex flex-col items-center group">
-          <div className="relative flex items-center justify-center">
-            <Square size={24} className="text-red-600 fill-white" strokeWidth={2.5} />
-            <span className="absolute text-xs font-bold text-red-900">{card.stats.red}</span>
-          </div>
+      <div className="w-1/4 h-full bg-slate-100 border-r border-slate-300 flex flex-col items-center pt-2 gap-3 shrink-0">
+        <div className="relative flex items-center justify-center group">
+          <Square size={24} className="text-red-600 fill-white" strokeWidth={2.5} />
+          <span className="absolute text-xs font-bold text-red-900">{card.stats.red}</span>
         </div>
-        <div className="flex flex-col items-center group">
-          <div className="relative flex items-center justify-center">
-            <Circle size={24} className="text-yellow-500 fill-white" strokeWidth={2.5} />
-            <span className="absolute text-xs font-bold text-yellow-900">{card.stats.yellow}</span>
-          </div>
+        <div className="relative flex items-center justify-center group">
+          <Circle size={24} className="text-yellow-500 fill-white" strokeWidth={2.5} />
+          <span className="absolute text-xs font-bold text-yellow-900">{card.stats.yellow}</span>
         </div>
-        <div className="flex flex-col items-center group">
-          <div className="relative flex items-center justify-center">
-            <Diamond size={24} className="text-blue-600 fill-white" strokeWidth={2.5} />
-            <span className="absolute text-xs font-bold text-blue-900">{card.stats.blue}</span>
-          </div>
+        <div className="relative flex items-center justify-center group">
+          <Diamond size={24} className="text-blue-600 fill-white" strokeWidth={2.5} />
+          <span className="absolute text-xs font-bold text-blue-900">{card.stats.blue}</span>
         </div>
       </div>
 
       {/* Right Content */}
       <div className={`flex-1 p-2 flex flex-col ${card.cost !== undefined ? 'pt-6' : 'pt-2'}`}>
-        <div className="h-20 bg-slate-300 mb-2 rounded border border-slate-400 overflow-hidden relative shrink-0">
-          <div className="w-full h-full opacity-20 bg-gradient-to-br from-slate-400 to-slate-600"></div>
-          <div className="absolute inset-0 flex items-center justify-center text-center p-1">
-            <span className="text-xs font-serif font-bold leading-tight">{card.name}</span>
-          </div>
+        <div className="h-20 bg-slate-300 mb-2 rounded border border-slate-400 overflow-hidden relative shrink-0 flex items-center justify-center text-center p-1">
+          <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-slate-400 to-slate-600 z-0"></div>
+          <span className="text-xs font-serif font-bold leading-tight z-10">{card.name}</span>
         </div>
 
         <div className="flex-1 bg-white rounded p-1.5 border border-slate-200 shadow-inner overflow-hidden flex flex-col gap-1">
@@ -94,7 +86,7 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
               className="text-[9px] leading-tight border-t border-slate-100 pt-1 first:border-t-0 first:pt-0"
             >
               {rule.type === 'attack' && (
-                <div>
+                <>
                   <div className="flex items-center gap-1">
                     <span className="font-bold uppercase">Attack</span>{' '}
                     <InlineIcon color={rule.data.power.source} />
@@ -107,10 +99,10 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
                       <RichTextRenderer content={rule.data.effect} />
                     </div>
                   )}
-                </div>
+                </>
               )}
               {rule.type === 'general' && (
-                <div className="leading-tight">
+                <>
                   <span className="font-bold uppercase">Action: {rule.data.name}</span>
                   {(rule.data.cost || rule.data.difficulty) && (
                     <span className="font-bold text-slate-700">
@@ -130,10 +122,10 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
                   <span className="font-serif italic">
                     <RichTextRenderer content={rule.data.effect} />
                   </span>
-                </div>
+                </>
               )}
               {rule.type === 'task' && (
-                <div className="leading-tight">
+                <>
                   <span className="font-bold uppercase">Task: {rule.data.name}</span>
                   {(rule.data.check || rule.data.time || rule.data.cost) && (
                     <span className="font-bold text-slate-700">
@@ -159,7 +151,7 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
                   <span className="font-serif italic">
                     <RichTextRenderer content={rule.data.effect} />
                   </span>
-                </div>
+                </>
               )}
               {rule.type === 'narrative' && (
                 <div className="font-serif italic">
@@ -178,11 +170,9 @@ const CoreCardView: React.FC<{ card: CoreCard }> = ({ card }) => {
 const TableCardView: React.FC<{ card: Card }> = ({ card }) => {
   return (
     <div className="w-full h-full p-2 flex flex-col">
-      <div className="h-24 bg-slate-300 mb-2 rounded border border-slate-400 overflow-hidden relative shrink-0">
-        <div className="w-full h-full opacity-20 bg-gradient-to-br from-amber-700 to-slate-600"></div>
-        <div className="absolute inset-0 flex items-center justify-center text-center p-1">
-          <span className="text-sm font-serif font-bold leading-tight">{card.name}</span>
-        </div>
+      <div className="h-24 bg-slate-300 mb-2 rounded border border-slate-400 overflow-hidden relative shrink-0 flex items-center justify-center text-center p-1">
+        <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-amber-700 to-slate-600 z-0"></div>
+        <span className="text-sm font-serif font-bold leading-tight z-10">{card.name}</span>
       </div>
 
       <div className="flex-1 bg-amber-50 rounded p-2 border border-amber-200 shadow-inner overflow-hidden flex flex-col gap-2">

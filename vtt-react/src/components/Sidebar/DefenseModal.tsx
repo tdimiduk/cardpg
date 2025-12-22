@@ -78,9 +78,10 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
 
             {/* Right: Resources */}
             <div className="flex-1 flex items-center justify-start overflow-x-auto custom-scrollbar p-1">
-              <div className="flex items-center">
-                {attackStack.length > 1 ? (
-                  attackStack.slice(1).map((card, idx) => (
+              {attackStack.length > 1 ? (
+                attackStack
+                  .slice(1)
+                  .map((card, idx) => (
                     <CardComponent
                       key={`${card.id}-${idx}-res`}
                       card={card}
@@ -88,10 +89,9 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
                       className="flex-shrink-0 transform hover:scale-110 hover:z-10 origin-center mx-1"
                     />
                   ))
-                ) : (
-                  <div className="text-slate-700 text-sm italic pl-2">No additional resources.</div>
-                )}
-              </div>
+              ) : (
+                <div className="text-slate-700 text-sm italic pl-2">No additional resources.</div>
+              )}
             </div>
           </div>
 
