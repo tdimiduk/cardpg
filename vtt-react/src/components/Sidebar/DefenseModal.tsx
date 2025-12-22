@@ -60,7 +60,7 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
         <div className="overflow-y-auto p-4 space-y-6 flex-1 custom-scrollbar">
           {/* Attack Stack Section */}
           <div className="flex-1 min-h-0 bg-slate-900/50 rounded border border-slate-800/50 flex flex-col overflow-hidden">
-            <div className="flex items-stretch justify-center p-2 gap-2 min-h-[220px]">
+            <div className="flex items-stretch justify-center p-2 min-h-[220px]">
               {/* Left: Controlling Action */}
               <div className="flex flex-col items-center justify-center">
                 <div className="transform transition-transform hover:scale-110 hover:z-10">
@@ -73,11 +73,11 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
               </div>
 
               {/* Vertical Divider */}
-              <div className="w-px bg-slate-700/50 my-1" />
+              <div className="w-[2px] bg-slate-700/50 my-1 mx-2" />
 
               {/* Right: Resources */}
               <div className="flex-1 flex items-center justify-start overflow-x-auto custom-scrollbar p-1">
-                <div className="flex items-center gap-2 pl-2">
+                <div className="flex items-center">
                   {attackStack.length > 1 ? (
                     attackStack.slice(1).map((card, idx) => (
                       <div
