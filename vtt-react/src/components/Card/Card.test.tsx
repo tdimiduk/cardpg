@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CardComponent } from './Card';
-import { CoreCard, ItemCard } from '../../generated/types';
+import { CoreCard, ITCItem } from '../../generated/types';
 import { RESOURCE_TYPES } from '../../constants';
 
 describe('CardComponent', () => {
@@ -24,15 +24,19 @@ describe('CardComponent', () => {
     flavor: [{ type: 'textRun', content: 'A simple strike.', style: 'italic' }],
   };
 
-  const mockItemCard: ItemCard = {
-    type: 'itemCard',
-    name: 'Sword',
-    traits: ['Sharp'],
-    weight: 1,
-    value: 10,
-    defense: 1,
-    resilience: 0,
-    flavor: [{ type: 'textRun', content: 'A sharp sword.', style: 'italic' }],
+  // Mock TableCard (Wrapper)
+  const mockItemCard: ITCItem = {
+    type: 'tCItem',
+    data: {
+      type: 'itemCard',
+      name: 'Sword',
+      traits: ['Sharp'],
+      weight: 1,
+      value: 10,
+      defense: 1,
+      resilience: 0,
+      flavor: [{ type: 'textRun', content: 'A sharp sword.', style: 'italic' }],
+    },
   };
 
   it('renders CoreCard details', () => {
@@ -48,6 +52,7 @@ describe('CardComponent', () => {
   });
 
   it('renders ItemCard details', () => {
+    // We pass the wrapper here
     render(<CardComponent card={mockItemCard} />);
     expect(screen.getByText('Sword')).toBeInTheDocument();
     expect(screen.getByText('A sharp sword.')).toBeInTheDocument();

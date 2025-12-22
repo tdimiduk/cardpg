@@ -18,9 +18,7 @@ export const ActiveActorHeader: React.FC<ActiveActorHeaderProps> = ({ actor }) =
         )}
       </div>
       <div className="flex-1 overflow-hidden">
-        <div className="font-bold text-slate-100 truncate" style={{ color: (actor as any).color }}>
-          {actor.name}
-        </div>
+        <div className="font-bold text-slate-100 truncate">{actor.name}</div>
         <div className="text-xs text-slate-500 uppercase flex items-center gap-2">
           {actor.actorType}
         </div>

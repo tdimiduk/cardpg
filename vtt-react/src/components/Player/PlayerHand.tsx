@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { useHandSelection } from '../../hooks/useHandSelection';
-import { CardComponent } from '../Card/Card';
+import { CoreCardComponent } from '../Card/Card';
 import {
   X,
   SkipForward,
@@ -124,7 +124,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
                   className="relative transform scale-75 origin-bottom hover:scale-90 transition-transform duration-300 z-10 hover:z-20 cursor-default shadow-2xl"
                   style={{ zIndex: idx }}
                 >
-                  <CardComponent card={card} selected={false} onClick={() => {}} />
+                  <CoreCardComponent card={card} selected={false} onClick={() => {}} />
                 </div>
               ))}
             </div>
@@ -367,7 +367,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
               key={`${card.id}-${idx}`}
               className="relative transform transition-transform hover:z-30 hover:-translate-y-8"
             >
-              <CardComponent
+              <CoreCardComponent
                 card={card}
                 selected={selectedIds.has(card.id)}
                 onClick={() => toggleSelection(card.id)}

@@ -65,7 +65,8 @@ export const TokenEntity: React.FC<TokenEntityProps> = ({
   // No 'color'. We need a fallback or mapper.
   // Assuming strict mode, accessing actor.color would fail if not in type.
   // For now, I'll use a safe access or default.
-  const actorColor = (actor as any).color || '#334155';
+  // For now, I'll use a safe access or default.
+  const actorColor = '#334155';
 
   return (
     <div

@@ -39,8 +39,6 @@ export interface SidebarLeftProps {
   defenseDetails: DefenseDetails;
 
   onDraw: (count: number) => void;
-  onDefend: () => void;
-  onClearDefense: () => void;
   onReshuffle: () => void;
   onSelectActor: (actorId: string) => void;
   onAddConsequence: (severity?: number) => void;
@@ -67,8 +65,6 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   resilience,
   defenseDetails,
   onDraw,
-  onDefend,
-  onClearDefense,
   onReshuffle,
   onSelectActor,
   onAddConsequence,
@@ -294,16 +290,6 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
     dispatchCommand({ type: 'drawIntent', actorId: activeActorId }); // Note: count ignored in current intent
   };
 
-  const handleDefend = () => {
-    if (!activeActorId) return;
-    dispatchCommand({ type: 'defendIntent', actorId: activeActorId });
-  };
-
-  const handleClearDefense = () => {
-    if (!activeActorId) return;
-    dispatchCommand({ type: 'endDefenseIntent', actorId: activeActorId });
-  };
-
   const handleReshuffle = () => {
     if (!activeActorId) return;
     dispatchCommand({ type: 'reshuffleIntent', actorId: activeActorId });
@@ -361,8 +347,6 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
       resilience={activeActor?.resilience ?? 1}
       defenseDetails={activeActor?.defenseDetails ?? defaultDefenseDetails}
       onDraw={handleDraw}
-      onDefend={handleDefend}
-      onClearDefense={handleClearDefense}
       onReshuffle={handleReshuffle}
       onSelectActor={handleSelectToken}
       onAddConsequence={handleAddConsequence}

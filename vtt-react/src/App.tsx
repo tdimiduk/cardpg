@@ -10,7 +10,7 @@ import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
 import { DefenseModal, DefenseModalCard } from './components/Sidebar/DefenseModal';
-import { RealizedAttack, DefenseDetails } from './generated/types';
+import { RealizedAttack, DefenseDetails, ConsequenceCard } from './generated/types';
 
 // Rules Components
 import RulesLayout from './layouts/RulesLayout';
@@ -99,7 +99,7 @@ const GameBoard: React.FC = () => {
       const card = consequenceRegistry[id];
       return card ? { ...card, id } : undefined;
     })
-    .filter((c) => !!c) as DefenseModalCard[];
+    .filter((c) => !!c) as (ConsequenceCard & { id: string })[];
 
   return (
     <div className="flex h-screen w-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">

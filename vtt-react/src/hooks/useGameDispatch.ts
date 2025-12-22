@@ -10,7 +10,7 @@ export const useGameDispatch = () => {
   };
 
   const dispatchAdmin = (adminCommand: AdminCommand) => {
-    sendMessage({ type: 'admin', adminCommand } as any);
+    sendMessage({ type: 'admin', adminCommand });
   };
 
   return { dispatchCommand, dispatchAdmin };
