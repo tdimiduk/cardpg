@@ -17,7 +17,6 @@ import CardPG.Core.Primitives
   , TargetId (..)
   )
 
-
 data TableCard
   = TCItem ItemCard
   | TCNature NatureCard
@@ -99,7 +98,7 @@ materializePlannedAction registry plan = case plan of
   PPass -> Just PMPass
 
 data ChallengeSource
-  = CSAdHoc { name :: Text, description :: Maybe Text }
+  = CSAdHoc {name :: Text, description :: Maybe Text}
   | CSCard CardInstanceId
   deriving stock (Show, Eq, Generic)
 

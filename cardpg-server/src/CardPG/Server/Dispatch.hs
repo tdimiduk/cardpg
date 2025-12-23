@@ -11,10 +11,14 @@ import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Planning qualified as Logic
 import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType (..))
-import CardPG.Core.State (ActorState (..), ActiveChallenge (..), ChallengeSource (..), PlannedAction(PPass))
+import CardPG.Core.State
+  ( ActiveChallenge (..)
+  , ActorState (..)
+  , ChallengeSource (..)
+  , PlannedAction (PPass)
+  )
+import CardPG.Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import CardPG.Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
-import CardPG.Server.ChatParser (parseChatCommand, ChatCommand(..), ChallengeDetails(..))
-import Data.Text qualified as T
 import CardPG.Server.Presenter (eventToLogs, mkChatLog)
 import CardPG.Server.Types
   ( ActorGameEvent (..)
@@ -26,6 +30,7 @@ import CardPG.Server.Types
   , StateUpdate (..)
   )
 import CardPG.Server.Types.Wire qualified as Wire
+import Data.Text qualified as T
 
 processCommand ::
   Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
@@ -48,33 +53,35 @@ processCommand cmd ts game =
       case parseChatCommand content of
         CmdChallenge (ChallengeDetails color val name desc) -> do
           -- Ad-hoc challenge Logic
-          let challenge = ActiveChallenge
-                { source = CSAdHoc name desc
-                , challengeStrength = val
-                , challengeColor = color
-                }
-          let logPayload = LogChallenge
-                { challenge = challenge
-                , plannedAction = CardPG.Core.State.PPass 
-                }
-          
+          let challenge =
+                ActiveChallenge
+                  { source = CSAdHoc name desc
+                  , challengeStrength = val
+                  , challengeColor = color
+                  }
+          let logPayload =
+                LogChallenge
+                  { challenge = challenge
+                  , plannedAction = CardPG.Core.State.PPass
+                  }
+
           let senderName = case maybeAid of
                 Just aid -> case Map.lookup aid game.actors of
                   Just a -> a.name
                   Nothing -> "Unknown"
                 Nothing -> "GM"
-          
-          let logEntry = LogEntry
-                { id = T.pack $ show ts <> "-adhoc-" <> show (length game.history)
-                , timestamp = ts
-                , sender = senderName
-                , senderId = maybeAid
-                , payload = logPayload
-                }
-          
-          let newGame = game { phase = Resolution, history = game.history ++ [logEntry] }
-          return (newGame, [], [], [logEntry])
 
+          let logEntry =
+                LogEntry
+                  { id = T.pack $ show ts <> "-adhoc-" <> show (length game.history)
+                  , timestamp = ts
+                  , sender = senderName
+                  , senderId = maybeAid
+                  , payload = logPayload
+                  }
+
+          let newGame = game{phase = Resolution, history = game.history ++ [logEntry]}
+          return (newGame, [], [], [logEntry])
         CmdText _ -> do
           -- Normal Chat
           let senderName = case maybeAid of
@@ -86,7 +93,6 @@ processCommand cmd ts game =
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, [], [], newLogs)
-        
         _ -> do
           -- Fallback/Other commands
           let senderName = case maybeAid of
@@ -98,7 +104,6 @@ processCommand cmd ts game =
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, [], [], newLogs)
-
     _ -> do
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)

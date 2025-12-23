@@ -42,14 +42,14 @@ import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
 import CardPG.Core.RuleDefs (PassiveDef)
 import CardPG.Core.State
   ( ActionStack
+  , ActiveChallenge
   , AssetState
+  , ChallengeSource
   , CoreCardState
   , CorePlayState
   , GameEvent
   , NarrativeStack
   , PlannedAction
-  , ActiveChallenge
-  , ChallengeSource
   , RevealedEffect
   , SpatialState
   , TableCard
