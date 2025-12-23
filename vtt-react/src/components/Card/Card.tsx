@@ -41,7 +41,7 @@ const BaseCard: React.FC<{
       className={`
         relative bg-slate-200 text-slate-900 rounded-lg shadow-xl overflow-hidden select-none
         transition-all duration-200 border-2 cursor-pointer z-0 flex
-        ${selected ? 'border-yellow-500 -translate-y-4 z-10 ring-2 ring-yellow-300' : 'border-slate-400 hover:-translate-y-2'}
+        ${selected ? 'border-yellow-500 z-10 ring-2 ring-yellow-300' : 'border-slate-400 hover:-translate-y-2'}
         ${className}
       `}
       style={{

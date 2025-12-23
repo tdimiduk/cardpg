@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import {
-  LogEntry,
-  Phase,
-  LogPayload,
-  CoreCard,
-  ActiveChallenge,
-  ChallengeSource,
-} from '../../generated/types';
+import { LogEntry, Phase, LogPayload, CoreCard, ActiveChallenge } from '../../generated/types';
 // TODO: Replace lucide icons if needed, or keep them
 import { Send, Bot, Square, ArrowRight, Play, Rewind, Shield } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
