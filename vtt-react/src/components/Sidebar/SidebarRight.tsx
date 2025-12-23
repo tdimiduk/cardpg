@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, Phase, LogPayload, CoreCard, ActiveChallenge, ChallengeSource } from '../../generated/types';
+import {
+  LogEntry,
+  Phase,
+  LogPayload,
+  CoreCard,
+  ActiveChallenge,
+  ChallengeSource,
+} from '../../generated/types';
 // TODO: Replace lucide icons if needed, or keep them
 import { Send, Bot, Square, ArrowRight, Play, Rewind, Shield } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
@@ -43,7 +50,7 @@ const ChallengeLogItem: React.FC<{
   // Resolve cards
   // Check source type
   let attackCard: StackCard | undefined;
-  
+
   if (challenge.source.type === 'cSCard') {
     const cardId = challenge.source.data;
     const def = registry ? registry[cardId] : undefined;
@@ -125,7 +132,7 @@ const ChallengeLogItem: React.FC<{
             )}
             {/* Show 'Ad-Hoc' badge if source is adhoc and this is the first card */}
             {idx === 0 && challenge.source.type === 'cSAdHoc' && (
-               <span className="text-[10px] text-yellow-300 uppercase bg-yellow-950/50 px-1 rounded">
+              <span className="text-[10px] text-yellow-300 uppercase bg-yellow-950/50 px-1 rounded">
                 GM
               </span>
             )}
@@ -265,15 +272,6 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
             </button>
           )}
         </div>
-
-        <div className="flex gap-2 mt-2">
-          <button
-            onClick={onResetGame}
-            className="text-[10px] text-red-900/50 hover:text-red-500 underline"
-          >
-            Reset Game
-          </button>
-        </div>
       </div>
 
       {/* Logs Scroll Area */}
@@ -307,6 +305,13 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
           <Send size={14} />
         </button>
       </form>
+      <button
+        type="button"
+        onClick={onResetGame}
+        className="shrink-0 p-2 text-[10px] text-red-900/30 hover:text-red-500 transition-colors text-center border-t border-slate-800"
+      >
+        Reset Game
+      </button>
     </div>
   );
 };
