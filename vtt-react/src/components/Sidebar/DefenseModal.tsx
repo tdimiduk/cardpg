@@ -1,34 +1,40 @@
-import React from 'react';
-import { X, Shield, Skull, AlertCircle } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
+import { X, Shield, Skull, Zap, ChevronRight, Layers } from 'lucide-react';
 import { DefenseDetails, ConsequenceCard, CoreCard } from '../../generated/types';
-
-// Updated imports for strict view usage with Wrappers
 import { CoreCardComponent, ConsequenceCardComponent } from '../Card/Card';
 
-// We define a specialized type for cards used in this modal
+// Updated imports for strict view usage with Wrappers
+// Note: We'll use simple div wrappers for some "chips" but standard components for full cards
+
 export type DefenseModalCard = (ConsequenceCard & { id: string }) | (CoreCard & { id: string });
 
-interface DefenseModalProps {
+interface DefenseWidgetProps {
   isOpen: boolean;
   onClose: () => void;
-  attackStack: DefenseModalCard[]; // Attack stack is strictly CoreCards
+  // Challenge Context
+  attackStack: DefenseModalCard[]; // Incoming Attack (Action + Resources)
   attackTarget: number;
   attackColor: 'red' | 'yellow' | 'blue';
+  // Actor State
+  defenseStack?: (CoreCard & { id: string })[]; // New: Cards currently flipped for defense
   defenseDetails: DefenseDetails;
   currentDefense: number;
   currentResilience: number;
-  consequences: (ConsequenceCard & { id: string })[]; // Explicitly Consequence Cards
+  consequences: (ConsequenceCard & { id: string })[];
+  // Actions
   onDefend: () => void;
   onAddConsequence: (severity?: number) => void;
   onClearDefense: () => void;
+  hasSelectedActor: boolean;
 }
 
-export const DefenseModal: React.FC<DefenseModalProps> = ({
+export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   isOpen,
   onClose,
   attackStack,
   attackTarget,
   attackColor,
+  defenseStack = [],
   defenseDetails,
   currentDefense,
   currentResilience,
@@ -36,142 +42,214 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
   onDefend,
   onAddConsequence,
   onClearDefense,
+  hasSelectedActor,
 }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll defense stack when new cards arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = 0;
+    }
+  }, [defenseStack.length]);
+
   if (!isOpen) return null;
 
+  // Identify the most recently added consequence
+  // Assuming the last one in the list is the newest
+  const recentConsequence = consequences.length > 0 ? consequences[consequences.length - 1] : null;
+  const olderConsequences = consequences.length > 0 ? consequences.slice(0, -1) : [];
+
+  // Identify Controlling Card (First card in attack stack usually, or explicit source)
+  const controllingCard = attackStack.length > 0 ? attackStack[0] : null;
+  const attackResources = attackStack.length > 1 ? attackStack.slice(1) : [];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden relative">
-        {/* Header */}
-        <div className="bg-slate-800 p-4 flex items-center justify-between border-b border-slate-700 shrink-0">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Shield className="text-blue-400" />
-            Defense & Impact
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-white transition-colors"
-          >
-            <X size={24} />
+    <div className="fixed bottom-4 right-80 z-40 mb-4 mr-4 w-[26rem] flex flex-col gap-2 pointer-events-none">
+      {/* 
+        Container is pointer-events-none so we don't block clicks around it if we add transparency 
+        But children need pointer-events-auto
+      */}
+
+      {/* MAIN WIDGET */}
+      <div className="bg-slate-900 border border-slate-700 shadow-2xl rounded-xl overflow-hidden pointer-events-auto flex flex-col">
+        {/* HEADER */}
+        <div className="bg-slate-800 px-3 py-2 flex items-center justify-between border-b border-slate-700">
+          <div className="flex items-center gap-2">
+            <Shield className="text-blue-400 w-4 h-4" />
+            <span className="text-sm font-bold text-slate-200">Defense Resolution</span>
+          </div>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <X size={16} />
           </button>
         </div>
 
-        {/* content grid */}
-        <div className="flex-1 grid grid-cols-12 overflow-hidden">
-          {/* LEFT: Incoming Attack (Stack) */}
-          <div className="col-span-8 bg-black/20 p-6 overflow-y-auto flex flex-col items-center">
-            {/* Attack Summary Banner */}
-            <div
-              className={`
-              w-full max-w-2xl mb-8 p-4 rounded-lg border flex items-center justify-between
-              ${attackColor === 'red' ? 'bg-red-900/20 border-red-500/50 text-red-100' : ''}
-              ${attackColor === 'yellow' ? 'bg-yellow-900/20 border-yellow-500/50 text-yellow-100' : ''}
-              ${attackColor === 'blue' ? 'bg-blue-900/20 border-blue-500/50 text-blue-100' : ''}
-            `}
-            >
-              <div className="flex flex-col">
-                <span className="text-xs uppercase font-bold opacity-70">Incoming Force</span>
-                <span className="text-3xl font-black">{attackTarget}</span>
-              </div>
-              <div className="flex flex-col items-end text-right">
-                <span className="text-xs uppercase font-bold opacity-70">Target Attribute</span>
-                <span className="text-xl font-bold capitalize">{attackColor}</span>
-              </div>
-            </div>
+        {/* CHALLENGE BANNER */}
+        <div className="relative bg-black/40 p-3 border-b border-slate-800">
+          {/* Color Accent Line */}
+          <div
+            className={`absolute left-0 top-0 bottom-0 w-1 
+             ${attackColor === 'red' ? 'bg-red-500' : ''}
+             ${attackColor === 'yellow' ? 'bg-yellow-500' : ''}
+             ${attackColor === 'blue' ? 'bg-blue-500' : ''}
+           `}
+          />
 
-            {/* The Stack Display */}
-            <div className="flex flex-col items-center gap-4 w-full max-w-3xl">
-              {/* Stack Cards Grid */}
-              <div className="flex flex-wrap justify-center gap-4">
-                {attackStack.map((card, idx) =>
-                  // Using CoreCardComponent which wraps BaseCard
-                  'stats' in card ? (
-                    <CoreCardComponent
-                      key={`${card.id}-${idx}`}
-                      card={card as CoreCard}
-                      // Interactive Props from BaseCard are optional but typically false here
-                      selected={false}
-                    />
-                  ) : (
-                    // Fallback just in case, though stack should be core
-                    <div key={idx} className="bg-red-500 text-white p-2">
-                      Invalid Card: Not Core
-                    </div>
-                  ),
-                )}
-                {attackStack.length === 0 && (
-                  <div className="text-slate-500 italic p-8 border-2 border-dashed border-slate-700 rounded-lg">
-                    Waiting for attack cards...
-                  </div>
-                )}
+          <div className="flex items-start gap-3 pl-2">
+            {/* Thumbnail of Controlling Action */}
+            {/* Full Controlling Card (Scale Down slightly) */}
+            {controllingCard && 'stats' in controllingCard ? (
+              <div className="shrink-0 transform scale-75 origin-top-left -mb-10">
+                <CoreCardComponent card={controllingCard as CoreCard} selected={false} />
               </div>
+            ) : (
+              <div className="w-12 h-16 bg-slate-800 flex items-center justify-center rounded border border-dashed border-slate-600 text-xs text-slate-500">
+                ?
+              </div>
+            )}
+
+            {/* VS Math */}
+            <div className="flex-1 flex flex-col justify-start h-32 py-1">
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">
+                  Incoming Attack
+                </span>
+                <div className="flex items-baseline gap-1">
+                  <span
+                    className={`text-3xl font-black 
+                      ${attackColor === 'red' ? 'text-red-400' : ''}
+                      ${attackColor === 'yellow' ? 'text-yellow-400' : ''}
+                      ${attackColor === 'blue' ? 'text-blue-400' : ''}
+                    `}
+                  >
+                    {attackTarget}
+                  </span>
+                  <span className="text-sm font-bold text-slate-500 capitalize">{attackColor}</span>
+                </div>
+              </div>
+
+              {/* Resources Indicator */}
+              {attackResources.length > 0 && (
+                <div className="mt-2 flex items-center gap-1 text-xs text-slate-400 bg-slate-800/50 px-2 py-1 rounded w-fit">
+                  <Layers size={14} />
+                  <span>+{attackResources.length} cards support</span>
+                </div>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* RIGHT: Defense & Resolution */}
-          <div className="col-span-4 bg-slate-800/50 border-l border-slate-700 p-6 flex flex-col overflow-hidden">
-            {/* Defense Stats */}
-            <div className="mb-6 bg-slate-900 rounded p-4 border border-slate-700 shadow-inner">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="flex flex-col">
-                  <span className="text-xs text-slate-400">Current Defense</span>
-                  <span className="text-2xl font-bold text-blue-400">{currentDefense}</span>
+        {/* CONTENT AREA: Depends on Actor Selection */}
+        {hasSelectedActor ? (
+          <>
+            {/* DEFENSE AREA */}
+            <div className="p-3 bg-slate-800/30 flex flex-col gap-3">
+              {/* Stats Row */}
+              {/* Defense Totals Breakdown */}
+              <div className="flex flex-col gap-2 bg-slate-900/50 p-2 rounded border border-slate-800">
+                {/* Totals Row */}
+                <div className="flex justify-between items-center text-xs text-slate-400 pb-2 border-b border-slate-700/50">
+                  <div className="flex gap-3">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-red-500" />
+                      <span className={attackColor === 'red' ? 'text-red-100 font-bold' : ''}>
+                        {defenseDetails.values.red}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                      <span className={attackColor === 'yellow' ? 'text-yellow-100 font-bold' : ''}>
+                        {defenseDetails.values.yellow}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className={attackColor === 'blue' ? 'text-blue-100 font-bold' : ''}>
+                        {defenseDetails.values.blue}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="font-mono opacity-50">Totals</div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-xs text-slate-400">Resilience</span>
-                  <span className="text-2xl font-bold text-red-400">{currentResilience}</span>
+
+                {/* Net Row */}
+                <div className="flex justify-between items-center pt-1">
+                  <div className="flex gap-4">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Defense</span>
+                      <span className="text-xl font-bold text-blue-400">{currentDefense}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block uppercase">Resil.</span>
+                      <span className="text-xl font-bold text-red-500/80">{currentResilience}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] text-slate-500 block uppercase">Net Impact</span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xl font-black ${defenseDetails.impact > 0 ? 'text-red-500' : 'text-green-500'}`}
+                      >
+                        {defenseDetails.impact}
+                      </span>
+                      {defenseDetails.consequencesFromDefense > 0 && (
+                        <span className="text-[10px] bg-red-900/50 text-red-200 px-1 rounded border border-red-800 animate-pulse">
+                          +{defenseDetails.consequencesFromDefense} Conseq
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Impact Calculation */}
-              <div className="border-t border-slate-700 pt-4 mt-2">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-slate-300">Net Impact</span>
-                  <span
-                    className={`text-2xl font-black ${defenseDetails.impact > 0 ? 'text-red-500' : 'text-green-500'}`}
-                  >
-                    {defenseDetails.impact}
-                  </span>
-                </div>
-
-                {defenseDetails.consequencesFromDefense > 0 && (
-                  <div className="text-xs text-yellow-400 flex items-center gap-1 mt-1">
-                    <AlertCircle size={12} />
-                    Takes {defenseDetails.consequencesFromDefense} Consequence(s)
+              {/* Flipped Cards Strip */}
+              <div
+                ref={scrollRef}
+                className="flex gap-2 overflow-x-auto custom-scrollbar pb-2 min-h-[4rem] items-center"
+              >
+                {defenseStack.length === 0 ? (
+                  <div className="w-full text-center text-xs text-slate-600 italic py-2">
+                    Use your deck to defend...
                   </div>
+                ) : (
+                  defenseStack.map((card, i) => (
+                    <div
+                      key={`${card.id}-${i}`}
+                      className="shrink-0 w-24 transform scale-90 origin-left hover:scale-100 transition-transform z-0 hover:z-10"
+                    >
+                      <CoreCardComponent card={card} selected={false} />
+                    </div>
+                  ))
                 )}
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3 mb-6 shrink-0">
+            {/* ACTION BAR */}
+            <div className="p-3 bg-slate-800 border-t border-slate-700 grid grid-cols-2 gap-2">
               <button
                 onClick={onDefend}
-                className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded shadow-lg flex items-center justify-center gap-2 transition-all"
+                className="bg-blue-600 hover:bg-blue-500 text-white font-md py-2 px-3 rounded shadow flex items-center justify-center gap-2 transition-colors"
               >
-                <Shield size={18} />
-                Defend
+                <Zap size={16} fill="currentColor" />
+                <span>Flip Card</span>
               </button>
+
               <div className="flex gap-1">
                 <button
-                  onClick={() => onAddConsequence()} // Default server severity
-                  className="flex-1 bg-red-900/80 hover:bg-red-800 text-red-100 font-bold py-2 px-2 rounded-l border border-red-700 flex flex-col items-center justify-center transition-all"
-                  title="Add Consequence (Auto Severity)"
+                  onClick={() => onAddConsequence()}
+                  className="flex-1 bg-red-900/60 hover:bg-red-800 text-red-100 text-xs font-bold py-1 px-2 rounded-l border border-red-800 flex flex-col items-center justify-center"
+                  title={`Add Consequence (Sev ${defenseDetails.nextSeverity})`}
                 >
-                  <div className="flex items-center gap-1">
-                    <Skull size={16} />
-                    <span className="text-xs">Add</span>
-                  </div>
-                  <span className="text-[10px] opacity-75">Sev {defenseDetails.nextSeverity}</span>
+                  <span>Take Conseq</span>
+                  <span className="text-[9px] opacity-60">Sev {defenseDetails.nextSeverity}</span>
                 </button>
-                {/* Manual Severity Override Buttons */}
                 <div className="flex flex-col w-6">
                   {[3, 2, 1].map((sev) => (
                     <button
                       key={sev}
                       onClick={() => onAddConsequence(sev)}
-                      className="flex-1 bg-slate-700 hover:bg-red-700 text-[8px] border-b border-black/20 last:border-0 text-white flex items-center justify-center"
-                      title={`Force Severity ${sev}`}
+                      className="flex-1 bg-slate-700 hover:bg-red-700 text-[8px] text-white flex items-center justify-center border-b border-black/20 last:border-0 first:rounded-tr last:rounded-br"
                     >
                       {sev}
                     </button>
@@ -180,35 +258,68 @@ export const DefenseModal: React.FC<DefenseModalProps> = ({
               </div>
             </div>
 
-            <button
-              onClick={onClearDefense}
-              className="w-full mb-6 bg-slate-700 hover:bg-slate-600 text-slate-300 py-2 rounded text-sm transition-colors"
-            >
-              End Defense / Clear Stack
-            </button>
+            {/* Footer Actions */}
+            <div className="px-3 pb-3 bg-slate-800 flex justify-between">
+              <button
+                onClick={onClearDefense}
+                className="text-xs text-slate-500 hover:text-slate-300 underline decoration-slate-600"
+              >
+                Clear / End
+              </button>
+            </div>
+          </>
+        ) : (
+          /* NO ACTOR SELECTED STATE */
+          <div className="p-8 flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 min-h-[12rem]">
+            <p className="text-sm text-center mb-2 italic">Who is defending?</p>
+            <p className="text-xs text-center opacity-70 max-w-[16rem]">
+              Select a token on the board to resolve defense against this attack.
+            </p>
+          </div>
+        )}
+      </div>
 
-            {/* Active Consequences List */}
-            <div className="flex-1 overflow-hidden flex flex-col">
-              <h3 className="text-sm font-bold text-slate-400 mb-2 flex items-center gap-2 uppercase tracking-wider">
-                <Skull size={14} /> Active Consequences
-              </h3>
-              <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
-                {consequences.map((card) => (
-                  <div key={card.id} className="relative group">
-                    {/* Explicitly use ConsequenceCardComponent */}
-                    <ConsequenceCardComponent card={card} selected={false} />
+      {/* CONSEQUENCE NOTIFICATION AREA (Only show if actor selected and present) */}
+      {hasSelectedActor && consequences.length > 0 && (
+        <div className="bg-slate-900/90 border border-slate-700 rounded-lg p-3 shadow-xl pointer-events-auto backdrop-blur-sm animate-in slide-in-from-bottom-2">
+          <div className="flex items-center gap-2 mb-2 text-xs font-bold text-slate-400 uppercase">
+            <Skull size={12} />
+            <span>Consequences</span>
+          </div>
+
+          <div className="space-y-2">
+            {/* Recent Consequence (Highlighted) */}
+            {recentConsequence && (
+              <div className="relative group">
+                <div className="text-[10px] text-red-400 font-bold mb-1 flex items-center gap-1">
+                  <ChevronRight size={10} /> Most Recent
+                </div>
+                {/* We render a full card component but maybe simplified or scaled? 
+                        ConsequenceCardComponent is standard size. Let's just use it.
+                    */}
+                <ConsequenceCardComponent card={recentConsequence} selected={false} />
+              </div>
+            )}
+
+            {/* Older Consequences (Chips) */}
+            {olderConsequences.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-slate-700/50">
+                {olderConsequences.map((c) => (
+                  <div key={c.id} className="group relative">
+                    <div className="bg-red-950/40 border border-red-900/60 text-red-200 text-xs px-2 py-1 rounded cursor-help hover:bg-red-900/80 transition-colors">
+                      {c.name}
+                    </div>
+                    {/* Hover Popup */}
+                    <div className="absolute bottom-full mb-2 left-0 w-64 hidden group-hover:block z-50">
+                      <ConsequenceCardComponent card={c} selected={false} />
+                    </div>
                   </div>
                 ))}
-                {consequences.length === 0 && (
-                  <div className="text-center py-8 text-slate-600 text-xs italic">
-                    No active consequences
-                  </div>
-                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
