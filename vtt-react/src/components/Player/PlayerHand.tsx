@@ -3,6 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { useHandSelection } from '../../hooks/useHandSelection';
 import { CoreCardComponent } from '../Card/Card';
+import { CardStack } from '../Card/CardStack';
 import { SkipForward, Lock, RotateCcw, Layers, Zap, Check, Ban } from 'lucide-react';
 import {
   selectHand,
@@ -114,23 +115,17 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
               </div>
 
               {/* Resources (Tiny Pile) */}
-              <div className="flex -space-x-12 hover:-space-x-4 transition-all">
-                {stagedResourceCards.map((res, i) => (
-                  <div
-                    key={res.id}
-                    className="origin-bottom relative cursor-pointer hover:-translate-y-2 transition-transform"
-                    onClick={() => toggleResource(res.id)}
-                    style={{ zIndex: i }}
-                  >
-                    <CoreCardComponent card={res} />
-                  </div>
-                ))}
-                {/* Placeholder if empty */}
-                {stagedResourceCards.length === 0 && (
-                  <div className="w-[100px] h-[140px] border-2 border-dashed border-slate-700 rounded-lg bg-slate-800/50 flex items-center justify-center">
-                    <Layers size={24} className="text-slate-600" />
-                  </div>
-                )}
+              <div className="flex">
+                <CardStack
+                  cards={stagedResourceCards}
+                  mode="stack"
+                  onCardClick={(c) => toggleResource(c.id)}
+                  emptyMessage={
+                    <div className="w-[100px] h-[140px] border-2 border-dashed border-slate-700 rounded-lg bg-slate-800/50 flex items-center justify-center">
+                      <Layers size={24} className="text-slate-600" />
+                    </div>
+                  }
+                />
               </div>
             </div>
 
@@ -168,7 +163,6 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
               .filter((card) => !stagedResourceIds.has(card.id) && card.id !== stagedActionCard?.id)
               .map((card, idx) => {
                 // In Staging Mode, everything remaining is a resource candidate
-                const isResourceCandidate = true;
 
                 return (
                   <div

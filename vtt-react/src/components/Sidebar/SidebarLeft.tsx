@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
+import { useResolvedCards } from '../../hooks/useCardResolution';
 import { ActorState, CardLocation, Phase, CoreCard, ConsequenceCard } from '../../generated/types';
 
 // Import new sub-components
@@ -182,31 +183,16 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
   // Derived State
   const activeActor = activeActorId ? actors[activeActorId] : undefined;
 
-  // Resolve IDs to Card Objects (Simplified - only what is needed for modals/logic, not for children display)
-  const { drawPile, discardPile, flippedPile } = useMemo(() => {
-    if (!activeActor) {
-      return {
-        drawPile: [],
-        discardPile: [],
-        flippedPile: [],
-      };
-    }
-
-    const resolveCore = (ids: string[]) =>
-      ids
-        .map((id) => {
-          const card = activeActor.coreState.registry[id];
-          // Manually adding ID as it's missing from record value
-          return card ? { ...card, id } : undefined;
-        })
-        .filter((c): c is IdentifiedCoreCard => !!c);
-
-    return {
-      drawPile: resolveCore(activeActor.coreState.deck),
-      discardPile: resolveCore(activeActor.coreState.discard),
-      flippedPile: resolveCore(activeActor.coreState.defending),
-    };
-  }, [activeActor]);
+  // Resolve IDs to Card Objects
+  const drawPile = useResolvedCards(activeActor?.coreState.deck, activeActor?.coreState.registry);
+  const discardPile = useResolvedCards(
+    activeActor?.coreState.discard,
+    activeActor?.coreState.registry,
+  );
+  const flippedPile = useResolvedCards(
+    activeActor?.coreState.defending,
+    activeActor?.coreState.registry,
+  );
 
   // Handlers
   const handleDraw = (_count: number) => {

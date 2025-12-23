@@ -1,6 +1,7 @@
 import React from 'react';
+import { CardStack } from '../Card/CardStack';
 import { Layers, X } from 'lucide-react';
-import { CardComponent, Card } from '../Card/Card';
+import { Card } from '../Card/Card';
 
 interface StackViewerModalProps {
   isOpen: boolean;
@@ -38,14 +39,11 @@ export const StackViewerModal: React.FC<StackViewerModalProps> = ({
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-4 bg-slate-900/50 min-w-[320px] min-h-[200px] flex items-center justify-center">
-          <div className="flex flex-wrap gap-2 justify-center">
-            {cards.map((card, idx) => {
-              // Dynamic scale: If few cards, decent size. If many, shrink to fit.
-              const scaleValue = cards.length > 8 ? 0.6 : cards.length > 4 ? 0.75 : 0.9;
-
-              return <CardComponent key={`${card.id}-${idx}`} card={card} scale={scaleValue} />;
-            })}
-          </div>
+          <CardStack
+            cards={cards}
+            mode="grid"
+            scale={cards.length > 8 ? 0.6 : cards.length > 4 ? 0.75 : 0.9}
+          />
         </div>
       </div>
     </div>

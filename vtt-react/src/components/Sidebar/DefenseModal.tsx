@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from 'react';
 import { X, Shield, Skull, Zap, ChevronRight, Layers } from 'lucide-react';
 import { DefenseDetails, ConsequenceCard, CoreCard, ActorState } from '../../generated/types';
 import { CoreCardComponent, ConsequenceCardComponent } from '../Card/Card';
+import { useResolvedCards } from '../../hooks/useCardResolution';
+import { CardStack } from '../Card/CardStack';
 
 // Updated imports for strict view usage with Wrappers
 // Note: We'll use simple div wrappers for some "chips" but standard components for full cards
@@ -45,24 +47,16 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   };
 
   // Resolve Consequences
-  const consequenceIds = activeActor?.tableState.consequences || [];
-  const consequenceRegistry = activeActor?.tableState.consequenceRegistry || {};
-  const consequences = consequenceIds
-    .map((id) => {
-      const card = consequenceRegistry[id];
-      return card ? { ...card, id } : undefined;
-    })
-    .filter((c) => !!c) as (ConsequenceCard & { id: string })[];
+  const consequences = useResolvedCards(
+    activeActor?.tableState.consequences,
+    activeActor?.tableState.consequenceRegistry,
+  );
 
   // Resolve Defense Stack
-  const defenseIds = activeActor?.coreState.defending || [];
-  const defenseRegistry = activeActor?.coreState.registry || {};
-  const defenseStack = defenseIds
-    .map((id) => {
-      const card = defenseRegistry[id];
-      return card ? { ...card, id } : undefined;
-    })
-    .filter((c) => !!c) as (CoreCard & { id: string })[];
+  const defenseStack = useResolvedCards(
+    activeActor?.coreState.defending,
+    activeActor?.coreState.registry,
+  );
 
   const defenseDetails = activeActor?.defenseDetails || defaultDefenseDetails;
   const currentDefense = activeActor?.defense || 0;
@@ -226,24 +220,18 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
               </div>
 
               {/* Flipped Cards Strip */}
-              <div
-                ref={scrollRef}
-                className="flex gap-2 overflow-x-auto custom-scrollbar pb-2 min-h-[4rem] items-center"
-              >
-                {defenseStack.length === 0 ? (
-                  <div className="w-full text-center text-xs text-slate-600 italic py-2">
-                    Use your deck to defend...
-                  </div>
-                ) : (
-                  defenseStack.map((card, i) => (
-                    <div
-                      key={`${card.id}-${i}`}
-                      className="shrink-0 w-24 transform scale-90 origin-left hover:scale-100 transition-transform z-0 hover:z-10"
-                    >
-                      <CoreCardComponent card={card} selected={false} />
+              <div ref={scrollRef} className="w-full">
+                <CardStack
+                  cards={defenseStack}
+                  mode="row"
+                  scale={0.9}
+                  className="pb-2 min-h-[4rem] items-center"
+                  emptyMessage={
+                    <div className="w-full text-center text-xs text-slate-600 italic py-2">
+                      Use your deck to defend...
                     </div>
-                  ))
-                )}
+                  }
+                />
               </div>
             </div>
 

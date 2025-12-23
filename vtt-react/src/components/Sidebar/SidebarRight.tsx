@@ -6,6 +6,7 @@ import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { DefenseModalCard } from './DefenseModal';
 import { WithId } from '../../store/selectors';
+import { useResolvedCards } from '../../hooks/useCardResolution';
 
 // Helper type for cards in stack view - Log attack stacks are strictly CoreCards
 type StackCard = WithId<CoreCard>;
@@ -42,53 +43,52 @@ const ChallengeLogItem: React.FC<{
 
   // Resolve cards
   // Check source type
-  let attackCard: StackCard | undefined;
 
-  if (challenge.source.type === 'cSCard') {
-    const cardId = challenge.source.data;
-    const def = registry ? registry[cardId] : undefined;
-    if (def) {
-      attackCard = { ...def, id: cardId };
+  // Determine IDs first
+  const resolvedIds = useMemo(() => {
+    const ids: string[] = [];
+    if (challenge.source.type === 'cSCard') {
+      ids.push(challenge.source.data);
     }
-  } else if (challenge.source.type === 'cSAdHoc') {
-    // Synthesize virtual card
-    const adhoc = challenge.source;
-    attackCard = {
-      id: `adhoc-${log.id}`,
-      type: 'coreCard',
-      name: adhoc.name,
-      stats: {
-        red: challenge.challengeColor === 'red' ? challenge.challengeStrength : 0,
-        yellow: challenge.challengeColor === 'yellow' ? challenge.challengeStrength : 0,
-        blue: challenge.challengeColor === 'blue' ? challenge.challengeStrength : 0,
-      },
-      flavor: adhoc.description ? [{ type: 'textRun', content: adhoc.description }] : undefined,
-    };
-  }
+    if (plannedAction) {
+      if (plannedAction.type === 'pStandard') {
+        ids.push(...plannedAction.data.resources);
+      } else if (plannedAction.type === 'pNarrative') {
+        ids.push(...plannedAction.data.cards);
+      }
+    }
+    // Deduplicate
+    return Array.from(new Set(ids));
+  }, [challenge, plannedAction]);
+
+  const resolvedCards = useResolvedCards(resolvedIds, registry);
 
   const stackCards = useMemo(() => {
     const cards: StackCard[] = [];
-    if (attackCard) cards.push(attackCard);
 
-    if (plannedAction && registry) {
-      // Determine resource IDs based on action type
-      let resourceIds: string[] = [];
-      if (plannedAction.type === 'pStandard') {
-        resourceIds = plannedAction.data.resources;
-      } else if (plannedAction.type === 'pNarrative') {
-        resourceIds = plannedAction.data.cards;
-      }
-
-      resourceIds.forEach((id) => {
-        // Avoid duplicating if same ID (only relevant for card source)
-        if (challenge.source.type === 'cSCard' && id === challenge.source.data) return;
-
-        const def = registry[id];
-        if (def) cards.push({ ...def, id });
+    // Ad-Hoc Source handling
+    if (challenge.source.type === 'cSAdHoc') {
+      const adhoc = challenge.source;
+      cards.push({
+        id: `adhoc-${log.id}`,
+        type: 'coreCard',
+        name: adhoc.name,
+        stats: {
+          red: challenge.challengeColor === 'red' ? challenge.challengeStrength : 0,
+          yellow: challenge.challengeColor === 'yellow' ? challenge.challengeStrength : 0,
+          blue: challenge.challengeColor === 'blue' ? challenge.challengeStrength : 0,
+        },
+        flavor: adhoc.description ? [{ type: 'textRun', content: adhoc.description }] : undefined,
       });
     }
+
+    // Add resolved registry cards
+    // Sort/Order? Ideally preserve order if possible, but Set lookup breaks order.
+    // For now just appending them.
+    cards.push(...resolvedCards);
+
     return cards;
-  }, [attackCard, plannedAction, registry, challenge]);
+  }, [resolvedCards, log.id, challenge]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
