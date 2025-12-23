@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { X, Shield, Skull, Zap, ChevronRight, Layers } from 'lucide-react';
-import { DefenseDetails, ConsequenceCard, CoreCard } from '../../generated/types';
+import { DefenseDetails, ConsequenceCard, CoreCard, ActorState } from '../../generated/types';
 import { CoreCardComponent, ConsequenceCardComponent } from '../Card/Card';
 
 // Updated imports for strict view usage with Wrappers
@@ -11,21 +11,16 @@ export type DefenseModalCard = (ConsequenceCard & { id: string }) | (CoreCard & 
 interface DefenseWidgetProps {
   isOpen: boolean;
   onClose: () => void;
-  // Challenge Context
+  // Challenge Context (Global)
   attackStack: DefenseModalCard[]; // Incoming Attack (Action + Resources)
   attackTarget: number;
   attackColor: 'red' | 'yellow' | 'blue';
-  // Actor State
-  defenseStack?: (CoreCard & { id: string })[]; // New: Cards currently flipped for defense
-  defenseDetails: DefenseDetails;
-  currentDefense: number;
-  currentResilience: number;
-  consequences: (ConsequenceCard & { id: string })[];
+  // Actor State (Optional - if missing, we ask user to select)
+  activeActor?: ActorState;
   // Actions
   onDefend: () => void;
   onAddConsequence: (severity?: number) => void;
   onClearDefense: () => void;
-  hasSelectedActor: boolean;
 }
 
 export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
@@ -34,17 +29,44 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   attackStack,
   attackTarget,
   attackColor,
-  defenseStack = [],
-  defenseDetails,
-  currentDefense,
-  currentResilience,
-  consequences,
+  activeActor,
   onDefend,
   onAddConsequence,
   onClearDefense,
-  hasSelectedActor,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // --- Resolve Actor Data if Present ---
+  const defaultDefenseDetails: DefenseDetails = {
+    values: { red: 0, yellow: 0, blue: 0 },
+    impact: 0,
+    consequencesFromDefense: 0,
+    nextSeverity: 1,
+  };
+
+  // Resolve Consequences
+  const consequenceIds = activeActor?.tableState.consequences || [];
+  const consequenceRegistry = activeActor?.tableState.consequenceRegistry || {};
+  const consequences = consequenceIds
+    .map((id) => {
+      const card = consequenceRegistry[id];
+      return card ? { ...card, id } : undefined;
+    })
+    .filter((c) => !!c) as (ConsequenceCard & { id: string })[];
+
+  // Resolve Defense Stack
+  const defenseIds = activeActor?.coreState.defending || [];
+  const defenseRegistry = activeActor?.coreState.registry || {};
+  const defenseStack = defenseIds
+    .map((id) => {
+      const card = defenseRegistry[id];
+      return card ? { ...card, id } : undefined;
+    })
+    .filter((c) => !!c) as (CoreCard & { id: string })[];
+
+  const defenseDetails = activeActor?.defenseDetails || defaultDefenseDetails;
+  const currentDefense = activeActor?.defense || 0;
+  const currentResilience = activeActor?.resilience || 0;
 
   // Auto-scroll defense stack when new cards arrive
   useEffect(() => {
@@ -139,8 +161,8 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
           </div>
         </div>
 
-        {/* CONTENT AREA: Depends on Actor Selection */}
-        {hasSelectedActor ? (
+        {/* CONTENT AREA: Depends on Actor Presence */}
+        {activeActor ? (
           <>
             {/* DEFENSE AREA */}
             <div className="p-3 bg-slate-800/30 flex flex-col gap-3">
@@ -280,7 +302,7 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
       </div>
 
       {/* CONSEQUENCE NOTIFICATION AREA (Only show if actor selected and present) */}
-      {hasSelectedActor && consequences.length > 0 && (
+      {activeActor && consequences.length > 0 && (
         <div className="bg-slate-900/90 border border-slate-700 rounded-lg p-3 shadow-xl pointer-events-auto backdrop-blur-sm animate-in slide-in-from-bottom-2">
           <div className="flex items-center gap-2 mb-2 text-xs font-bold text-slate-400 uppercase">
             <Skull size={12} />

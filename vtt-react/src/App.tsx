@@ -10,7 +10,7 @@ import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
 import { DefenseWidget, DefenseModalCard } from './components/Sidebar/DefenseModal';
-import { ActiveChallenge, DefenseDetails, ConsequenceCard, CoreCard } from './generated/types';
+import { ActiveChallenge } from './generated/types';
 
 // Rules Components
 import RulesLayout from './layouts/RulesLayout';
@@ -113,33 +113,6 @@ const GameBoard: React.FC = () => {
     handleCloseDefense();
   };
 
-  const defaultDefenseDetails: DefenseDetails = {
-    values: { red: 0, yellow: 0, blue: 0 },
-    impact: 0,
-    consequencesFromDefense: 0,
-    nextSeverity: 1,
-  };
-
-  // Resolve Consequences
-  const consequenceIds = activeActor?.tableState.consequences || [];
-  const consequenceRegistry = activeActor?.tableState.consequenceRegistry || {};
-  const activeConsequences = consequenceIds
-    .map((id) => {
-      const card = consequenceRegistry[id];
-      return card ? { ...card, id } : undefined;
-    })
-    .filter((c) => !!c) as (ConsequenceCard & { id: string })[];
-
-  // Resolve Defense Stack (Cards flipped/played for defense)
-  // defenseIds is already hoisted above
-  const defenseRegistry = activeActor?.coreState.registry || {};
-  const defenseStack = defenseIds
-    .map((id) => {
-      const card = defenseRegistry[id];
-      return card ? { ...card, id } : undefined;
-    })
-    .filter((c) => !!c) as (CoreCard & { id: string })[];
-
   return (
     <div className="flex h-screen w-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">
       <SidebarLeft onResumeDefense={handleResumeDefense} />
@@ -179,17 +152,12 @@ const GameBoard: React.FC = () => {
         attackStack={defenseModal.stack}
         attackTarget={defenseModal.attack?.challengeStrength || 0}
         attackColor={defenseModal.attack?.challengeColor || 'red'}
-        defenseStack={defenseStack}
-        defenseDetails={activeActor?.defenseDetails || defaultDefenseDetails}
-        currentDefense={activeActor?.defense || 0}
-        currentResilience={activeActor?.resilience || 0}
-        consequences={activeConsequences}
+        activeActor={activeActor}
         onDefend={handleDefend}
         onAddConsequence={handleAddConsequence}
         onClearDefense={() => {
           if (activeActorId) handleEndDefense(activeActorId);
         }}
-        hasSelectedActor={!!activeActorId}
       />
     </div>
   );
