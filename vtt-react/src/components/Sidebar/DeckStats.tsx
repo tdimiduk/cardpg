@@ -1,9 +1,10 @@
 import React from 'react';
 import { RefreshCw, Layers } from 'lucide-react';
 
+import { ActorState } from '../../generated/types';
+
 interface DeckStatsProps {
-  drawPileCount: number;
-  discardPileCount: number;
+  actor?: ActorState;
   onDraw: (count: number) => void;
   onReshuffle: () => void;
   onViewDeck: () => void;
@@ -11,13 +12,15 @@ interface DeckStatsProps {
 }
 
 export const DeckStats: React.FC<DeckStatsProps> = ({
-  drawPileCount,
-  discardPileCount,
+  actor,
   onDraw,
   onReshuffle,
   onViewDeck,
   onViewDiscard,
 }) => {
+  const drawPileCount = actor?.coreState.deck.length || 0;
+  const discardPileCount = actor?.coreState.discard.length || 0;
+
   return (
     <div className="p-4 border-b border-slate-800">
       <div className="flex items-center justify-between mb-3">

@@ -1,15 +1,43 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Briefcase } from 'lucide-react';
-import { ItemCard, NatureCard, TalentCard } from '../../generated/types';
+import { ItemCard, NatureCard, TalentCard, ActorState } from '../../generated/types';
 
 // Union of cards that can be equipped, intersected with ID
 export type EquipmentCardWithId = (ItemCard | NatureCard | TalentCard) & { id: string };
 
 interface EquippedListProps {
-  equipped: EquipmentCardWithId[];
+  activeActor?: ActorState;
 }
 
-export const EquippedList: React.FC<EquippedListProps> = ({ equipped }) => {
+export const EquippedList: React.FC<EquippedListProps> = ({ activeActor }) => {
+  const equipped = useMemo(() => {
+    if (!activeActor) return [];
+
+    // Filter assets for type: "equipped"
+    const equippedAssets = Object.entries(activeActor.tableState.assets)
+      .filter(([_, asset]) => asset && asset.type === 'equipped')
+      .map(([id, _]) => id);
+
+    // Look up table cards
+    return equippedAssets
+      .map((id) => {
+        const cardWrapper = activeActor.tableState.registry[id];
+        // TableCard is union of wrappers with 'data' property
+        if (!cardWrapper) return undefined;
+
+        // Handling discrimination based on TableCard union
+        if (
+          cardWrapper.type === 'tCItem' ||
+          cardWrapper.type === 'tCNature' ||
+          cardWrapper.type === 'tCTalent'
+        ) {
+          return { ...cardWrapper.data, id };
+        }
+        return undefined;
+      })
+      .filter((c): c is EquipmentCardWithId => !!c);
+  }, [activeActor]);
+
   return (
     <div className="p-4 border-t border-slate-800">
       <span className="text-xs text-slate-500 font-bold uppercase mb-2 block flex items-center gap-1">

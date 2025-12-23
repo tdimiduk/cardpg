@@ -1,17 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
-import {
-  ActorState,
-  CardLocation,
-  Phase,
-  CoreCard,
-  ConsequenceCard,
-  DefenseDetails,
-} from '../../generated/types';
-import { EquipmentCardWithId } from './EquippedList';
+import { ActorState, CardLocation, Phase, CoreCard, ConsequenceCard } from '../../generated/types';
 
 // Import new sub-components
+
 import { SidebarHeader } from './SidebarHeader';
 import { ActorList } from './ActorList';
 import { ActiveActorHeader } from './ActiveActorHeader';
@@ -27,16 +20,13 @@ export type IdentifiedCoreCard = CoreCard & { id: string };
 export type IdentifiedConsequenceCard = ConsequenceCard & { id: string };
 
 export interface SidebarLeftProps {
+  activeActor?: ActorState;
+
+  // Keep piles for Modals, since modals take simple arrays and we don't want to refactor them right now
   drawPile: IdentifiedCoreCard[];
-  drawPileCount: number;
   discardPile: IdentifiedCoreCard[];
-  discardPileCount: number;
-  flippedPile: IdentifiedCoreCard[];
-  consequences: IdentifiedConsequenceCard[];
-  equipped: EquipmentCardWithId[];
-  defense: number;
-  resilience: number;
-  defenseDetails: DefenseDetails;
+
+  flippedPile: IdentifiedCoreCard[]; // Used for "Resume Defense" check
 
   onDraw: (count: number) => void;
   onReshuffle: () => void;
@@ -54,16 +44,10 @@ export interface SidebarLeftProps {
 }
 
 export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
+  activeActor,
   drawPile,
-  drawPileCount,
   discardPile,
-  discardPileCount,
   flippedPile,
-  consequences,
-  equipped,
-  defense,
-  resilience,
-  defenseDetails,
   onDraw,
   onReshuffle,
   onSelectActor,
@@ -110,6 +94,9 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
     );
   }
 
+  const defense = activeActor?.defense ?? 1;
+  const resilience = activeActor?.resilience ?? 1;
+
   return (
     <div className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col h-full z-20 shadow-xl relative">
       <DeckViewerModal
@@ -131,8 +118,7 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
 
       <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1">
         <DeckStats
-          drawPileCount={drawPileCount}
-          discardPileCount={discardPileCount}
+          actor={activeActor}
           onDraw={onDraw}
           onReshuffle={onReshuffle}
           onViewDeck={() => setShowDeckModal(true)}
@@ -162,13 +148,12 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
         </div>
 
         <ConsequenceList
-          consequences={consequences}
-          currentSeverity={defenseDetails.nextSeverity}
+          activeActor={activeActor}
           onAddConsequence={onAddConsequence}
           onRemoveConsequence={onRemoveConsequence}
         />
 
-        <EquippedList equipped={equipped} />
+        <EquippedList activeActor={activeActor} />
       </div>
     </div>
   );
@@ -197,37 +182,13 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
   // Derived State
   const activeActor = activeActorId ? actors[activeActorId] : undefined;
 
-  // Default defense details if not available
-  const defaultDefenseDetails: DefenseDetails = {
-    values: {
-      red: 0,
-      yellow: 0,
-      blue: 0,
-    },
-    impact: 0,
-    consequencesFromDefense: 0,
-    nextSeverity: 1, // Default next severity usually 1
-  };
-
-  // Resolve IDs to Card Objects
-  const {
-    drawPile,
-    discardPile,
-    flippedPile,
-    consequences,
-    equipped,
-    drawPileCount,
-    discardPileCount,
-  } = useMemo(() => {
+  // Resolve IDs to Card Objects (Simplified - only what is needed for modals/logic, not for children display)
+  const { drawPile, discardPile, flippedPile } = useMemo(() => {
     if (!activeActor) {
       return {
         drawPile: [],
         discardPile: [],
         flippedPile: [],
-        consequences: [],
-        equipped: [],
-        drawPileCount: 0,
-        discardPileCount: 0,
       };
     }
 
@@ -240,47 +201,10 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
         })
         .filter((c): c is IdentifiedCoreCard => !!c);
 
-    const resolveConsequences = (ids: string[]) =>
-      ids
-        .map((id) => {
-          const card = activeActor.tableState.consequenceRegistry[id];
-          return card ? { ...card, id } : undefined;
-        })
-        .filter((c): c is IdentifiedConsequenceCard => !!c);
-
-    // Resolving equipped items
-    // Filter assets for type: "equipped"
-    const equippedAssets = Object.entries(activeActor.tableState.assets)
-      .filter(([_, asset]) => asset && asset.type === 'equipped')
-      .map(([id, _]) => id);
-
-    // Look up table cards
-    const equippedCards = equippedAssets
-      .map((id) => {
-        const cardWrapper = activeActor.tableState.registry[id];
-        // TableCard is union of wrappers with 'data' property
-        if (!cardWrapper) return undefined;
-
-        // Handling discrimination based on TableCard union
-        if (
-          cardWrapper.type === 'tCItem' ||
-          cardWrapper.type === 'tCNature' ||
-          cardWrapper.type === 'tCTalent'
-        ) {
-          return { ...cardWrapper.data, id };
-        }
-        return undefined;
-      })
-      .filter((c): c is EquipmentCardWithId => !!c);
-
     return {
       drawPile: resolveCore(activeActor.coreState.deck),
       discardPile: resolveCore(activeActor.coreState.discard),
       flippedPile: resolveCore(activeActor.coreState.defending),
-      consequences: resolveConsequences(activeActor.tableState.consequences),
-      equipped: equippedCards,
-      drawPileCount: activeActor.coreState.deck.length,
-      discardPileCount: activeActor.coreState.discard.length,
     };
   }, [activeActor]);
 
@@ -336,16 +260,10 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
 
   return (
     <SidebarLeftView
+      activeActor={activeActor}
       drawPile={drawPile}
-      drawPileCount={drawPileCount}
       discardPile={discardPile}
-      discardPileCount={discardPileCount}
       flippedPile={flippedPile}
-      consequences={consequences}
-      equipped={equipped}
-      defense={activeActor?.defense ?? 1}
-      resilience={activeActor?.resilience ?? 1}
-      defenseDetails={activeActor?.defenseDetails ?? defaultDefenseDetails}
       onDraw={handleDraw}
       onReshuffle={handleReshuffle}
       onSelectActor={handleSelectToken}

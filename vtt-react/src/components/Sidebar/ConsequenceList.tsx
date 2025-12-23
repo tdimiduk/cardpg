@@ -1,23 +1,36 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { AlertTriangle, X, ChevronDown } from 'lucide-react';
-import { ConsequenceCard } from '../../generated/types';
+import { ActorState, ConsequenceCard } from '../../generated/types';
 import { RuleRenderer } from '../Card/RuleRenderer';
 
 interface ConsequenceListProps {
-  consequences: (ConsequenceCard & { id: string })[];
-  currentSeverity: number;
+  activeActor?: ActorState;
   onAddConsequence: (severity?: number) => void;
   onRemoveConsequence: (cardId: string) => void;
 }
 
 export const ConsequenceList: React.FC<ConsequenceListProps> = ({
-  consequences,
-  currentSeverity,
+  activeActor,
   onAddConsequence,
   onRemoveConsequence,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Resolve Consequences
+  const consequences = useMemo(() => {
+    if (!activeActor) return [];
+    const ids = activeActor.tableState.consequences;
+    const registry = activeActor.tableState.consequenceRegistry;
+    return ids
+      .map((id) => {
+        const card = registry[id];
+        return card ? { ...card, id } : undefined;
+      })
+      .filter((c): c is ConsequenceCard & { id: string } => !!c);
+  }, [activeActor]);
+
+  const currentSeverity = activeActor?.defenseDetails.nextSeverity || 1;
 
   // Click outside handler
   useEffect(() => {
