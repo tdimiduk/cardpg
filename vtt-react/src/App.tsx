@@ -10,7 +10,7 @@ import { useWebSocket } from './contexts/WebSocketContext';
 import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
 import { DefenseModal, DefenseModalCard } from './components/Sidebar/DefenseModal';
-import { RealizedAttack, DefenseDetails, ConsequenceCard } from './generated/types';
+import { ActiveChallenge, DefenseDetails, ConsequenceCard } from './generated/types';
 
 // Rules Components
 import RulesLayout from './layouts/RulesLayout';
@@ -46,11 +46,11 @@ const GameBoard: React.FC = () => {
   // --- Defense Modal State ---
   const [defenseModal, setDefenseModal] = useState<{
     isOpen: boolean;
-    attack: RealizedAttack | null;
+    attack: ActiveChallenge | null;
     stack: DefenseModalCard[];
   }>({ isOpen: false, attack: null, stack: [] });
 
-  const handleOpenDefense = (attack: RealizedAttack, stack: DefenseModalCard[]) => {
+  const handleOpenDefense = (attack: ActiveChallenge, stack: DefenseModalCard[]) => {
     setDefenseModal({ isOpen: true, attack, stack });
   };
 
@@ -138,8 +138,8 @@ const GameBoard: React.FC = () => {
         isOpen={defenseModal.isOpen}
         onClose={handleCloseDefense}
         attackStack={defenseModal.stack}
-        attackTarget={defenseModal.attack?.attackStrength || 0}
-        attackColor={defenseModal.attack?.defenseColor || 'red'}
+        attackTarget={defenseModal.attack?.challengeStrength || 0}
+        attackColor={defenseModal.attack?.challengeColor || 'red'}
         defenseDetails={activeActor?.defenseDetails || defaultDefenseDetails}
         currentDefense={activeActor?.defense || 0}
         currentResilience={activeActor?.resilience || 0}

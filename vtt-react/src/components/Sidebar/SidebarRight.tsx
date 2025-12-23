@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, Phase, LogPayload, CoreCard, RealizedAttack } from '../../generated/types';
+import { LogEntry, Phase, LogPayload, CoreCard, ActiveChallenge, ChallengeSource } from '../../generated/types';
 // TODO: Replace lucide icons if needed, or keep them
 import { Send, Bot, Square, ArrowRight, Play, Rewind, Shield } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
@@ -20,31 +20,51 @@ export interface SidebarRightProps {
   totalCount?: number;
   onSendChat: (message: string) => void;
   onResetGame: () => void;
-  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
+  onOpenDefense: (attack: ActiveChallenge, stack: DefenseModalCard[]) => void;
 }
 
-const AttackLogItem: React.FC<{
+const ChallengeLogItem: React.FC<{
   log: LogEntry;
-  payload: Extract<LogPayload, { type: 'logAttack' }>;
-  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
+  payload: Extract<LogPayload, { type: 'logChallenge' }>;
+  onOpenDefense: (attack: ActiveChallenge, stack: DefenseModalCard[]) => void;
 }> = ({ log, payload, onOpenDefense }) => {
-  // ... (AttackLogItem implementation remains mostly same, just updating context around it if needed)
   const actorId = log.senderId;
-  const attack = payload.attack;
-  const plannedAction = payload.plannedAction; // Replaces resourceCardIds
+  const challenge = payload.challenge;
+  const plannedAction = payload.plannedAction;
 
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
   );
   // Registry is in coreState now
   const registry = useGameStore((state) =>
-    actorId ? state.actors[actorId]?.coreState.registry : {},
+    actorId ? state.actors[actorId]?.coreState.registry : undefined,
   );
 
   // Resolve cards
-  const attackCardDef = attack && registry ? registry[attack.attackCard] : undefined;
-  const attackCard: StackCard | undefined =
-    attackCardDef && attack ? { ...attackCardDef, id: attack.attackCard } : undefined;
+  // Check source type
+  let attackCard: StackCard | undefined;
+  
+  if (challenge.source.type === 'cSCard') {
+    const cardId = challenge.source.data;
+    const def = registry ? registry[cardId] : undefined;
+    if (def) {
+      attackCard = { ...def, id: cardId };
+    }
+  } else if (challenge.source.type === 'cSAdHoc') {
+    // Synthesize virtual card
+    const adhoc = challenge.source;
+    attackCard = {
+      id: `adhoc-${log.id}`,
+      type: 'coreCard',
+      name: adhoc.name,
+      stats: {
+        red: challenge.challengeColor === 'red' ? challenge.challengeStrength : 0,
+        yellow: challenge.challengeColor === 'yellow' ? challenge.challengeStrength : 0,
+        blue: challenge.challengeColor === 'blue' ? challenge.challengeStrength : 0,
+      },
+      flavor: adhoc.description ? [{ type: 'textRun', content: adhoc.description }] : undefined,
+    };
+  }
 
   const stackCards = useMemo(() => {
     const cards: StackCard[] = [];
@@ -56,30 +76,28 @@ const AttackLogItem: React.FC<{
       if (plannedAction.type === 'pStandard') {
         resourceIds = plannedAction.data.resources;
       } else if (plannedAction.type === 'pNarrative') {
-        // For narrative, we might want to show all cards, or just resources if applicable.
-        // NarrativeStack has `cards` which are all the cards played.
         resourceIds = plannedAction.data.cards;
       }
 
       resourceIds.forEach((id) => {
-        // Avoid duplicating the attack card if it's already in the list (though usually attack card is separate in logic, but good to be safe if IDs overlap)
-        if (id === attack.attackCard) return;
+        // Avoid duplicating if same ID (only relevant for card source)
+        if (challenge.source.type === 'cSCard' && id === challenge.source.data) return;
 
         const def = registry[id];
         if (def) cards.push({ ...def, id });
       });
     }
     return cards;
-  }, [attackCard, plannedAction, registry, attack]);
+  }, [attackCard, plannedAction, registry, challenge]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (attack) {
-      onOpenDefense(attack, stackCards);
+    if (challenge) {
+      onOpenDefense(challenge, stackCards);
     }
   };
 
-  if (!attack) return null;
+  if (!challenge) return null;
 
   return (
     <div
@@ -89,7 +107,7 @@ const AttackLogItem: React.FC<{
       <div className="flex justify-between items-start mb-1">
         <div className="text-xs font-bold text-red-300 flex items-center gap-1">
           <Square size={12} className="fill-red-500 text-red-500" />
-          <span>Attack Action</span>
+          <span>Challenge Action</span>
         </div>
       </div>
 
@@ -105,6 +123,12 @@ const AttackLogItem: React.FC<{
                 Core
               </span>
             )}
+            {/* Show 'Ad-Hoc' badge if source is adhoc and this is the first card */}
+            {idx === 0 && challenge.source.type === 'cSAdHoc' && (
+               <span className="text-[10px] text-yellow-300 uppercase bg-yellow-950/50 px-1 rounded">
+                GM
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -112,9 +136,9 @@ const AttackLogItem: React.FC<{
       <div className="text-xs text-slate-400 mb-2">By: {actorName}</div>
 
       <div className="flex items-center gap-2 text-sm bg-black/40 rounded p-1 mb-1">
-        <span className="font-bold text-red-400">Power: {attack.attackStrength}</span>
+        <span className="font-bold text-red-400">Power: {challenge.challengeStrength}</span>
         <ArrowRight size={12} className="text-slate-500" />
-        <span className="capitalize text-slate-300">{attack.defenseColor}</span>
+        <span className="capitalize text-slate-300">{challenge.challengeColor}</span>
       </div>
 
       <div className="text-[10px] text-slate-500 text-right opacity-0 group-hover:opacity-100 transition-opacity">
@@ -126,13 +150,13 @@ const AttackLogItem: React.FC<{
 
 const LogItem: React.FC<{
   log: LogEntry;
-  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
+  onOpenDefense: (attack: ActiveChallenge, stack: DefenseModalCard[]) => void;
 }> = ({ log, onOpenDefense }) => {
   // Use CardViewById for inline cards if we want to do that in chat?
   // For now just basic types
 
-  if (log.payload.type === 'logAttack') {
-    return <AttackLogItem log={log} payload={log.payload} onOpenDefense={onOpenDefense} />;
+  if (log.payload.type === 'logChallenge') {
+    return <ChallengeLogItem log={log} payload={log.payload} onOpenDefense={onOpenDefense} />;
   }
 
   if (log.payload.type === 'logDefense') {
@@ -290,7 +314,7 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
 // --- Container ---
 
 const SidebarRight: React.FC<{
-  onOpenDefense: (attack: RealizedAttack, stack: DefenseModalCard[]) => void;
+  onOpenDefense: (attack: ActiveChallenge, stack: DefenseModalCard[]) => void;
 }> = ({ onOpenDefense }) => {
   const logs = useGameStore((state) => state.logs);
   const phase = useGameStore((state) => state.phase);

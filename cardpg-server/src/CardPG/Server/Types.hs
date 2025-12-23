@@ -59,7 +59,7 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
-import CardPG.Core.State (ActorState, GameEnv, GameEvent, PlannedAction, RealizedAttack)
+import CardPG.Core.State (ActorState, GameEnv, GameEvent, PlannedAction, ActiveChallenge)
 import CardPG.Server.Config (Config)
 import CardPG.Server.Types.Wire qualified as Wire
 
@@ -72,8 +72,8 @@ $(deriveJSON cardpgJsonDef ''Phase)
 data LogPayload
   = LogInfo {content :: Text}
   | LogChat {content :: Text}
-  | LogAttack
-      { attack :: RealizedAttack
+  | LogChallenge
+      { challenge :: ActiveChallenge
       , plannedAction :: PlannedAction
       }
   | LogDefense

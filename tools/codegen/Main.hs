@@ -48,7 +48,8 @@ import CardPG.Core.State
   , GameEvent
   , NarrativeStack
   , PlannedAction
-  , RealizedAttack
+  , ActiveChallenge
+  , ChallengeSource
   , RevealedEffect
   , SpatialState
   , TableCard

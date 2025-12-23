@@ -35,7 +35,8 @@ import CardPG.Core.State
   , AssetState (..)
   , NarrativeStackMaterialized (..)
   , PlannedActionMaterialized (..)
-  , RealizedAttack (..)
+  , ActiveChallenge (..)
+  , ChallengeSource (..)
   , TableCard (..)
   , TableState (..)
   )
@@ -57,16 +58,16 @@ stackPower stack power =
    in
     rawTotal + power.modifier
 
-attackAction :: PlannedActionMaterialized -> Either Text RealizedAttack
+attackAction :: PlannedActionMaterialized -> Either Text ActiveChallenge
 attackAction matPlan = case matPlan of
   PMStandard stack -> case getAttackRule stack.actionCard of
     Left err -> Left err
     Right attackRule ->
       Right $
-        RealizedAttack
-          { attackCard = stack.actionCardId
-          , attackStrength = stackPower stack attackRule.power
-          , defenseColor = attackRule.resistedBy
+        ActiveChallenge
+          { source = CSCard stack.actionCardId
+          , challengeStrength = stackPower stack attackRule.power
+          , challengeColor = attackRule.resistedBy
           }
   PMPass -> Left "pass action"
   PMNarrative (NarrativeStackMaterialized{cards = cs, cardIds = cIds, color = col}) ->
@@ -76,10 +77,10 @@ attackAction matPlan = case matPlan of
       rawTotal = sum [getStat col c.stats | c <- toList cs]
      in
       Right $
-        RealizedAttack
-          { attackCard = let (h :| _) = cIds in h -- Safe as narrative stack must have cards
-          , attackStrength = rawTotal -- Modifier 0 for now
-          , defenseColor = col -- Defense matches Action Color
+        ActiveChallenge
+          { source = CSCard (let (h :| _) = cIds in h) -- Safe as narrative stack must have cards
+          , challengeStrength = rawTotal -- Modifier 0 for now
+          , challengeColor = col -- Defense matches Action Color
           }
 
 -- | Helper: get table cards in active states (Equipped, Trait)

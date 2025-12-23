@@ -17,6 +17,7 @@ import CardPG.Core.Primitives
   , TargetId (..)
   )
 
+
 data TableCard
   = TCItem ItemCard
   | TCNature NatureCard
@@ -97,18 +98,25 @@ materializePlannedAction registry plan = case plan of
     return $ PMNarrative $ NarrativeStackMaterialized cs cIds c
   PPass -> Just PMPass
 
-data RealizedAttack = RealizedAttack
-  { attackCard :: CardInstanceId
-  , attackStrength :: Int
-  , defenseColor :: ResourceType
+data ChallengeSource
+  = CSAdHoc { name :: Text, description :: Maybe Text }
+  | CSCard CardInstanceId
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ChallengeSource)
+
+data ActiveChallenge = ActiveChallenge
+  { source :: ChallengeSource
+  , challengeStrength :: Int
+  , challengeColor :: ResourceType
   }
   deriving stock (Show, Eq, Generic)
 
-$(deriveJSON cardpgJsonDef ''RealizedAttack)
+$(deriveJSON cardpgJsonDef ''ActiveChallenge)
 
 data RevealedEffect
   = REPass
-  | REAttack RealizedAttack
+  | REChallenge ActiveChallenge
   | REInvalid Text
   deriving stock (Show, Eq, Generic)
 

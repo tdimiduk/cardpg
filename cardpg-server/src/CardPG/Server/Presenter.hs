@@ -56,8 +56,8 @@ eventToLogs ts actorId event game =
           }
    in case event of
         ActionRevealed plan effect -> case effect of
-          REAttack attack ->
-            [mkLog "attack" (LogAttack attack plan)]
+          REChallenge challenge ->
+            [mkLog "challenge" (LogChallenge challenge plan)]
           REPass -> [mkLog "pass" (LogInfo $ actorName <> " passed.")]
           REInvalid msg -> [mkLog "invalid" (LogInfo $ "Invalid Action for " <> actorName <> ": " <> msg)]
         IllegalAction _ (Just reason) -> [mkLog "illegal" (LogInfo $ "Illegal Action for " <> actorName <> ": " <> reason)]

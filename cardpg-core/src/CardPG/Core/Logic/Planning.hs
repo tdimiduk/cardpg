@@ -128,7 +128,7 @@ revealPlannedActions = do
             Just matPlan -> case matPlan of
               PMPass -> REPass
               _ -> case attackAction matPlan of
-                Right attack -> REAttack attack
+                Right challenge -> REChallenge challenge
                 Left err -> REInvalid err
 
       tell [ActionRevealed plan revealedEffect]
