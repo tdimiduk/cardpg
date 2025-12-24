@@ -55,7 +55,6 @@ application state pending = do
   let maybeQuery = if T.isInfixOf "?" queryText then Just (T.tail $ snd $ T.breakOn "?" queryText) else Nothing
 
   -- Determine Client ID
-  -- Determine Client ID
   (finalClientId, newName) <- case maybeQuery of
     Nothing -> do
       uuid <- UUID.nextRandom

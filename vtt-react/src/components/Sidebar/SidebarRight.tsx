@@ -37,7 +37,6 @@ const ChallengeLogItem: React.FC<{
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
   );
   // Resolve source card if applicable
-  // Resolve source card if applicable
   const sourceCardId = challenge.source.type === 'cSCard' ? challenge.source.data : '';
 
   // Inline Lookup (replacement for useActorCoreCard)
@@ -162,8 +161,7 @@ const LogItem: React.FC<{
   log: LogEntry;
   onOpenDefense: (attack: ActiveChallenge, stack: DefenseModalCard[]) => void;
 }> = ({ log, onOpenDefense }) => {
-  // Use CardViewById for inline cards if we want to do that in chat?
-  // For now just basic types
+  // TODO: Use CardViewById for inline cards if we want to do that in chat?
 
   if (log.payload.type === 'logChallenge') {
     return <ChallengeLogItem log={log} payload={log.payload} onOpenDefense={onOpenDefense} />;
@@ -335,9 +333,7 @@ const SidebarRight: React.FC<{
   const readyCount = Object.values(actors).filter((a) => a.coreState.planned).length;
 
   const handleReveal = () => {
-    // In a real game, this might effectively be triggered by server or "StartResolution" intent
-    // There isn't a direct "Reveal" intent in current types, usually phase changes automatically or via admin
-    // We'll use StartResolutionIntent
+    // Trigger resolution phase via specific intent.
     const activeId = useGameStore.getState().activeActorId; // Or system
     if (activeId) dispatchCommand({ type: 'startResolutionIntent', actorId: activeId });
   };

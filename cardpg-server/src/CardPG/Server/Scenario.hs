@@ -130,8 +130,6 @@ loadAndInstantiateActor path x y handSize = do
   let def = compileActorDefinition dsl
   instantiateActor def x y handSize
 
--- | Load a single actor from a YAML file and instantiate it into an ActorState
-
 -- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
 instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
 instantiateActor def x y maybeHandSize = do

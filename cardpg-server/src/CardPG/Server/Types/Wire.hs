@@ -79,7 +79,7 @@ toConsInst (Identified i c) = ConsequenceCardInstance i c
 
 -- | Wire ActionStack/PlannedAction
 -- Needed because ActionStack contains CardInstance which we want to be CoreCardInstance
--- | Wire ActionStack/PlannedAction
+
 data ActionStack = ActionStack
   { actionCard :: CoreCardInstance
   , resources :: [CoreCardInstance]
@@ -110,7 +110,7 @@ toPlannedAction (Core.PNarrative (Core.NarrativeStack cs col)) =
 toPlannedAction Core.PPass = PPass
 
 -- | Wire States
--- | Wire States
+
 data CoreCardState = CoreCardState
   { deck :: [CoreCardInstance]
   , hand :: [CoreCardInstance]
@@ -132,7 +132,7 @@ data TableState = TableState
 $(deriveJSON cardpgJsonDef ''TableState)
 
 -- | Wire GameEvent
--- | Wire GameEvent
+
 data GameEvent
   = CardsCreated [CoreCardInstance]
   | DeckShuffled
@@ -191,7 +191,7 @@ $(deriveJSON cardpgJsonDef ''ActorState)
 -- | Enrich Core.ActorState for wire transmission
 toActorState :: Core.ActorState -> ActorState
 
--- | Enrich Core.ActorState for wire transmission
+
 toActorState Core.ActorState{..} =
   let
     -- Wire Conversions

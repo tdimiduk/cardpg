@@ -55,22 +55,13 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
   // Validation
   const currentCost = stagedActionCard?.cost ?? 0;
   const currentCount = stagedResourceCards.length;
-  // Rule: You need exactly cost cards as resources (total cards = cost + 1 action card)
-  // Wait, legacy logic was: "requiredTotal = cost + 1" (total cards involved)
-  // So resources needed = cost.
-  // diff = requiredTotal - currentCount (where currentCount was total cards).
-  // New logic:
-  // resources needed = cost.
-  // resources have = currentCount.
+  // Validation: Resources needed must equal the action cost.
   const isReady = !!stagedActionCard && currentCount === currentCost;
   const missingCount = currentCost - currentCount;
 
   // Actions
   const stageAction = useCallback((cardId: string) => {
-    // If we already have resources selected but no action, keep them?
-    // Design decision: Clear resources when switching actions to avoid confusion?
-    // Or keep them if possible?
-    // Let's keep them, but filter out the new action card if it was a resource.
+    // Clear resources when switching actions, unless the new action card was previously a resource.
     setStagedResourceIds((prev) => {
       const next = new Set(prev);
       if (next.has(cardId)) next.delete(cardId);
@@ -81,10 +72,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
 
   const unstageAction = useCallback(() => {
     setStagedActionId(null);
-    // Keep resources? Or clear all? "Cmd+Z" feeling implies stepping back.
-    // Let's keep resources as "selected resources" generally doesn't make sense without an action?
-    // Actually, if we unstage action, we just go back to "nothing staged".
-    // Resources without an action are just... cards in hand.
+    // Unstaging action clears resources as well.
     setStagedResourceIds(new Set());
   }, []);
 
@@ -98,12 +86,7 @@ export const useHandSelection = ({ hand, onPlayStack }: UseHandSelectionProps) =
         if (next.has(cardId)) {
           next.delete(cardId);
         } else {
-          // Prevent adding more than cost?
-          // User might want to overpay or change selection.
-          // Let's allow adding, but UI will show if it's too many.
-          // Wait, logic says strictly equal?
-          // "isValid = diff === 0". Previous code didn't strictly forbid > cost but button disabled if diff != 0.
-          // Let's allow selecting freely, let isReady determine if commit is allowed.
+          // Allow toggle. Validation happens at commit time.
           next.add(cardId);
         }
         return next;

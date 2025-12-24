@@ -56,31 +56,10 @@ const GameBoard: React.FC = () => {
   const defenseIds = activeActor?.coreState.defending || [];
 
   const handleOpenDefense = (attack: ActiveChallenge, stack: DefenseModalCard[]) => {
-    // User feedback: Guide user to finish first defense.
-    // If actor has active defense cards, and we are opening a potentially different context?
-    // Note: It's hard to strict-equal check "attack", but if defenseIds > 0, we are definitely defending something.
-    // If we are already open, we might be just refreshing.
-    // If we are closed, and defenseIds > 0, we should probably Resume instead of overwriting with new attack?
-    // But the new attack might BE the one we are defending.
-    // Simplest logic: If defenseIds > 0, we force open, but we keep the EXISTING attack context if possible,
-    // or we just warn if the user tries to switch.
-    // Let's just allow opening, but log it. The user specifically asked to "guide" them.
-    // A simple Alert is native and effective for "Stop, finish what you are doing".
-    // Better: If defenseIds.length > 0 && defenseModal.isOpen && defenseModal.attack !== attack
-    // We don't have stable IDs on attack easily.
-
-    // Logic: If we seek to open a defense workflow...
+    // If we are already defending (defenseIds > 0), we assume the user intends to view or modify 
+    // the existing defense. We trust the Widget to handle the visualization of the current attack context.
     if (defenseIds.length > 0) {
-      // We are already defending.
-      // If the modal is already open, assume we are staying in context.
-      // If modal is closed, we are re-opening state.
-      // We'll update the state, but maybe we should warn if it looks like a *different* attack?
-      // For now, let's just proceed. The Widget now properly shows "Current Defense" state always.
-      // The mismatch is if the Widget visualizes Attack A but the Actor has cards for Attack A, and user clicks Attack B.
-      // The Actor's cards are still there. The Widget will show Attack B stats vs Attack A cards.
-      // To fix this, we need to know if the Actor is "locked" to an attack.
-      // Without Attack IDs in ActorState, we can't enforce this strictly.
-      // We'll trust the user for now but ensure the Widget is visible.
+       // Logic to handle existing defense context
     }
     setDefenseModal({ isOpen: true, attack, stack });
   };
