@@ -24,6 +24,7 @@ module CardPG.Server.Types.Wire
   ) where
 
 import Data.Aeson.TH (deriveJSON)
+import Data.Bifunctor qualified
 import Data.List.NonEmpty (toList)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
@@ -201,13 +202,13 @@ toActorState Core.ActorState{..} =
         , discard = map toCoreInst coreState.discard
         , planned = fmap toPlannedAction coreState.planned
         , defending = map toCoreInst coreState.defending
-        , inPlay = Map.map (\(c, s) -> (toCoreInst c, s)) coreState.inPlay
+        , inPlay = Map.map (Data.Bifunctor.first toCoreInst) coreState.inPlay
         , revealed = coreState.revealed
         }
 
     wireTableState =
       TableState
-        { assets = Map.map (\(c, s) -> (toTableInst c, s)) tableState.assets
+        { assets = Map.map (Data.Bifunctor.first toTableInst) tableState.assets
         , consequences = map toConsInst tableState.consequences
         }
 

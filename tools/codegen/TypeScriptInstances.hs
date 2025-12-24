@@ -338,8 +338,7 @@ $( do
 
 -- 4. TableCardInstance Instance (Must see TableCard instance and TableCardInstance data)
 $( do
-     i_tableInstT <- deriveTypeScript cardpgJsonDef ''Wire.TableCardInstance
-     return i_tableInstT
+     deriveTypeScript cardpgJsonDef ''Wire.TableCardInstance
  )
 
 -- 5. Dependent State (Must see TableCardInstance proxy)

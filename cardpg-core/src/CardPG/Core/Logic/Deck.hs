@@ -1,3 +1,5 @@
+{- HLINT ignore "Redundant id" -}
+
 module CardPG.Core.Logic.Deck
   ( drawCard
   , flipCardToDefense

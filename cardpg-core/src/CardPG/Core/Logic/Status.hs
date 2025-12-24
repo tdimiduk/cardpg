@@ -1,3 +1,5 @@
+{- HLINT ignore "Redundant id" -}
+
 module CardPG.Core.Logic.Status
   ( addStatus
   , destroyStatus
