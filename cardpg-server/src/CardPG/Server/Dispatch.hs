@@ -62,7 +62,7 @@ processCommand cmd ts game =
           let logPayload =
                 LogChallenge
                   { challenge = challenge
-                  , plannedAction = CardPG.Core.State.PPass
+                  , plannedAction = Wire.PPass
                   }
 
           let senderName = case maybeAid of
@@ -141,9 +141,9 @@ processCommand cmd ts game =
               Just a -> a
               Nothing -> error "Actor missing after update"
 
-            actorEvents = map (ActorGameEvent targetId) events
+            actorEvents = map (ActorGameEvent targetId . Wire.toGameEvent) events
             stateUpdates = [StateUpdate targetId (Wire.toActorState updatedActorState)]
-            newLogs = concatMap (\evt -> eventToLogs ts targetId evt newGame) events
+            newLogs = concatMap (\evt -> eventToLogs ts targetId (Wire.toGameEvent evt) newGame) events
             finalGame = newGame{history = game.history ++ newLogs}
 
           return (finalGame, stateUpdates, actorEvents, newLogs)

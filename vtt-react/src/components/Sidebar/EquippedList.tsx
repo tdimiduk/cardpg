@@ -13,25 +13,19 @@ export const EquippedList: React.FC<EquippedListProps> = ({ activeActor }) => {
   const equipped = useMemo(() => {
     if (!activeActor) return [];
 
-    // Filter assets for type: "equipped"
-    const equippedAssets = Object.entries(activeActor.tableState.assets)
-      .filter(([_, asset]) => asset && asset.type === 'equipped')
-      .map(([id, _]) => id);
+    // Filter assets for type: "equipped" and map direct to content
+    return Object.entries(activeActor.tableState.assets)
+      .filter(([_, val]) => val && val[1].type === 'equipped')
+      .map(([id, val]) => {
+        const instance = val![0];
+        const wrapper = instance.content;
 
-    // Look up table cards
-    return equippedAssets
-      .map((id) => {
-        const cardWrapper = activeActor.tableState.registry[id];
-        // TableCard is union of wrappers with 'data' property
-        if (!cardWrapper) return undefined;
-
-        // Handling discrimination based on TableCard union
         if (
-          cardWrapper.type === 'tCItem' ||
-          cardWrapper.type === 'tCNature' ||
-          cardWrapper.type === 'tCTalent'
+          wrapper.type === 'tCItem' ||
+          wrapper.type === 'tCNature' ||
+          wrapper.type === 'tCTalent'
         ) {
-          return { ...cardWrapper.data, id };
+          return { ...wrapper.data, id };
         }
         return undefined;
       })

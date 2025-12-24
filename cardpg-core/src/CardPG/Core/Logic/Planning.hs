@@ -15,14 +15,14 @@ module CardPG.Core.Logic.Planning
 
 import Control.Monad.RWS (tell)
 import Control.Monad.State (modify)
-import Data.List (partition)
+import Data.List (find, partition)
 import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
-import Data.Map.Strict qualified as Map
+
 import Data.Maybe (fromMaybe)
 import Data.UUID (nil)
 import Optics
 
-import CardPG.Core.Card (CoreCardT (..))
+import CardPG.Core.Card (CardInstance, CoreCard, CoreCardT (..), Identified (..))
 import CardPG.Core.Logic.Combat (attackAction)
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..))
@@ -33,10 +33,8 @@ import CardPG.Core.State
   , GameEvent (..)
   , NarrativeStack (..)
   , PlannedAction (..)
-  , PlannedActionMaterialized (..)
   , RevealedEffect (..)
   , SpatialState (..)
-  , materializePlannedAction
   , plannedActionCards
   )
 
@@ -60,40 +58,46 @@ planAction :: CardInstanceId -> [CardInstanceId] -> GameM g ()
 planAction actionCardId resourceIds = do
   currentHand <- use (#coreState % #hand)
   let allIds = actionCardId : resourceIds
-      (found, remaining) = partition (`elem` allIds) currentHand
-      plan = PStandard (ActionStack actionCardId resourceIds)
+      (found, remaining) = partition (\c -> c.id `elem` allIds) currentHand
 
-  core <- use (#coreState % #registry)
-  let maybeActionCard = Map.lookup actionCardId core
-  let cost = maybe 0 (\c -> fromMaybe 0 c.cost) maybeActionCard
-  let correctCost = length resourceIds == cost
+      maybeActionCard = find (\c -> c.id == actionCardId) found
+      resourceCards = filter (\c -> c.id `elem` resourceIds) found
 
-  -- Validate all cards are in hand AND cost is correct
-  if length found == length allIds
-    then
-      if correctCost
-        then do
-          modify $ #coreState % #hand .~ remaining
-          modify $ #coreState % #planned ?~ plan
-          tell [ActionPlanned plan]
-        else tell [IllegalAction plan (Just "incorrect resource cost")]
-    else tell [IllegalAction plan (Just "cards not in hand")]
+  case maybeActionCard of
+    Nothing ->
+      tell
+        [IllegalAction (PStandard (ActionStack (error "placeholder") [])) (Just "action card not in hand")] -- Hacky placeholder, but ID is missing so...
+    Just ac -> do
+      let plan = PStandard (ActionStack ac resourceCards)
+          cost = maybe 0 (\c -> fromMaybe 0 c.cost) (Just ac.content)
+          correctCost = length resourceCards == cost
+
+      -- Validate all cards are in hand AND cost is correct
+      if length found == length allIds
+        then
+          if correctCost
+            then do
+              modify $ #coreState % #hand .~ remaining
+              modify $ #coreState % #planned ?~ plan
+              tell [ActionPlanned plan]
+            else tell [IllegalAction plan (Just "incorrect resource cost")]
+        else tell [IllegalAction plan (Just "cards not in hand")]
 
 planNarrative :: [CardInstanceId] -> ResourceType -> GameM g ()
 planNarrative cardIds color = do
   currentHand <- use (#coreState % #hand)
-  let (found, remaining) = partition (`elem` cardIds) currentHand
-      maybeNeIds = nonEmpty cardIds
+  let (found, remaining) = partition (\c -> c.id `elem` cardIds) currentHand
+      maybeNeCards = nonEmpty found
 
-  case maybeNeIds of
+  case maybeNeCards of
     Nothing ->
       tell
         [ IllegalAction
-            (PNarrative (NarrativeStack (CardInstanceId nil :| []) color))
+            (PNarrative (NarrativeStack (Identified (CardInstanceId nil) (error "placeholder") :| []) color))
             (Just "no cards selected")
         ]
-    Just neIds -> do
-      let plan = PNarrative (NarrativeStack neIds color)
+    Just neCards -> do
+      let plan = PNarrative (NarrativeStack neCards color)
       if length found == length cardIds
         then do
           modify $ #coreState % #hand .~ remaining
@@ -102,7 +106,7 @@ planNarrative cardIds color = do
         else tell [IllegalAction plan (Just "cards not in hand")]
 
 plannedActionTo ::
-  Lens' CoreCardState [CardInstanceId] -> (PlannedAction -> GameEvent) -> GameM g ()
+  Lens' CoreCardState [CardInstance CoreCard] -> (PlannedAction -> GameEvent) -> GameM g ()
 plannedActionTo dst gameLog = do
   maybePlan <- use (#coreState % #planned)
   case maybePlan of
@@ -122,14 +126,11 @@ revealPlannedActions = do
   case maybePlan of
     Nothing -> return ()
     Just plan -> do
-      registry <- use (#coreState % #registry)
-      let revealedEffect = case materializePlannedAction registry plan of
-            Nothing -> REInvalid "you don't have all these cards"
-            Just matPlan -> case matPlan of
-              PMPass -> REPass
-              _ -> case attackAction matPlan of
-                Right challenge -> REChallenge challenge
-                Left err -> REInvalid err
+      let revealedEffect = case plan of
+            PPass -> REPass
+            _ -> case attackAction plan of
+              Right challenge -> REChallenge challenge
+              Left err -> REInvalid err
 
       tell [ActionRevealed plan revealedEffect]
       modify $ #coreState % #revealed ?~ revealedEffect

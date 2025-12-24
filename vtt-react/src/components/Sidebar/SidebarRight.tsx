@@ -5,8 +5,8 @@ import { Send, Bot, Square, ArrowRight, Play, Rewind, Shield } from 'lucide-reac
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { DefenseModalCard } from './DefenseModal';
-import { WithId } from '../../store/selectors';
-import { useResolvedCards } from '../../hooks/useCardResolution';
+import { WithId, flattenInstance } from '../../store/selectors';
+import { CoreCardInstance } from '../../generated/types';
 
 // Helper type for cards in stack view - Log attack stacks are strictly CoreCards
 type StackCard = WithId<CoreCard>;
@@ -36,32 +36,35 @@ const ChallengeLogItem: React.FC<{
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
   );
-  // Registry is in coreState now
-  const registry = useGameStore((state) =>
-    actorId ? state.actors[actorId]?.coreState.registry : undefined,
-  );
+  // Resolve source card if applicable
+  // Resolve source card if applicable
+  const sourceCardId = challenge.source.type === 'cSCard' ? challenge.source.data : '';
 
-  // Resolve cards
-  // Check source type
+  // Inline Lookup (replacement for useActorCoreCard)
+  const resolvedSourceCard = useGameStore((state) => {
+    if (!actorId || !sourceCardId) return undefined;
+    const actor = state.actors[actorId];
+    if (!actor) return undefined;
+    const { coreState } = actor;
 
-  // Determine IDs first
-  const resolvedIds = useMemo(() => {
-    const ids: string[] = [];
-    if (challenge.source.type === 'cSCard') {
-      ids.push(challenge.source.data);
+    const findInList = (list: CoreCardInstance[], id: string) =>
+      list.find((c) => c.id === id)?.content;
+
+    // Check Map first
+    if (coreState.inPlay && coreState.inPlay[sourceCardId]) {
+      return coreState.inPlay[sourceCardId]![0].content;
     }
-    if (plannedAction) {
-      if (plannedAction.type === 'pStandard') {
-        ids.push(...plannedAction.data.resources);
-      } else if (plannedAction.type === 'pNarrative') {
-        ids.push(...plannedAction.data.cards);
-      }
-    }
-    // Deduplicate
-    return Array.from(new Set(ids));
-  }, [challenge, plannedAction]);
 
-  const resolvedCards = useResolvedCards(resolvedIds, registry);
+    // Check Lists
+    return (
+      findInList(coreState.hand, sourceCardId) ||
+      findInList(coreState.deck, sourceCardId) ||
+      findInList(coreState.discard, sourceCardId) ||
+      findInList(coreState.defending, sourceCardId)
+    );
+  });
+
+  const sourceCard = resolvedSourceCard ? { ...resolvedSourceCard, id: sourceCardId } : undefined;
 
   const stackCards = useMemo(() => {
     const cards: StackCard[] = [];
@@ -80,15 +83,22 @@ const ChallengeLogItem: React.FC<{
         },
         flavor: adhoc.description ? [{ type: 'textRun', content: adhoc.description }] : undefined,
       });
+    } else if (sourceCard) {
+      cards.push(sourceCard);
     }
 
-    // Add resolved registry cards
-    // Sort/Order? Ideally preserve order if possible, but Set lookup breaks order.
-    // For now just appending them.
-    cards.push(...resolvedCards);
+    // Planned Action Cards (Directly from Wire payload)
+    if (plannedAction) {
+      if (plannedAction.type === 'pStandard') {
+        cards.push(flattenInstance(plannedAction.data.actionCard));
+        cards.push(...plannedAction.data.resources.map(flattenInstance));
+      } else if (plannedAction.type === 'pNarrative') {
+        cards.push(...plannedAction.data.cards.map(flattenInstance));
+      }
+    }
 
     return cards;
-  }, [resolvedCards, log.id, challenge]);
+  }, [log.id, challenge, plannedAction, sourceCard]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();

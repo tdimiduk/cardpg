@@ -15,7 +15,13 @@ import Data.Text qualified as T
 import Optics
 import System.Random (RandomGen, uniform, uniformR)
 
-import CardPG.Core.Card (ConsequenceCardT (..), CoreCardT (..))
+import CardPG.Core.Card
+  ( CardInstance
+  , ConsequenceCardT (..)
+  , CoreCard
+  , CoreCardT (..)
+  , Identified (..)
+  )
 import CardPG.Core.Logic.Combat (calculateResilience)
 import CardPG.Core.Logic.Deck (createCards)
 import CardPG.Core.Logic.Monad (GameM (..))
@@ -38,60 +44,50 @@ addStatus statusType destination = do
   case maybeTemplate of
     Nothing -> return () -- Invalid status type?
     Just template -> do
-      ids <- createCards template 1
-      case ids of
-        [cid] -> do
+      cards <- createCards template 1
+      case cards of
+        [card] -> do
           case destination of
-            LocationHand -> modify $ #coreState % #hand %~ (cid :)
-            LocationDiscard -> modify $ #coreState % #discard %~ (cid :)
-            LocationDeck -> modify $ #coreState % #deck %~ (cid :)
-          tell [ActionPlanned (PStandard (ActionStack cid []))]
+            LocationHand -> modify $ #coreState % #hand %~ (card :)
+            LocationDiscard -> modify $ #coreState % #discard %~ (card :)
+            LocationDeck -> modify $ #coreState % #deck %~ (card :)
+          tell [ActionPlanned (PStandard (ActionStack card []))]
           tell [StatusAdded statusType destination]
         _ -> return ()
 
 destroyStatus :: Text -> Maybe CardInstanceId -> GameM g ()
 destroyStatus statusType maybeCardId = do
-  registry <- use (#coreState % #registry)
-
-  let matchFunc cid c =
+  let matchFunc c =
         case maybeCardId of
-          Just specificId -> specificId == cid
-          Nothing -> getRawText c.name == statusType
+          Just specificId -> specificId == c.id
+          Nothing -> getRawText c.content.name == statusType
 
-  let findAndRemove :: Lens' CoreCardState [CardInstanceId] -> GameM g (Maybe CardInstanceId)
+  let findAndRemove ::
+        Lens' CoreCardState [CardInstance CoreCard] -> GameM g (Maybe (CardInstance CoreCard))
       findAndRemove location = do
         currentList <- use (#coreState % location)
-        let (before, foundAndAfter) =
-              break
-                ( \cid -> case Map.lookup cid registry of
-                    Just c -> matchFunc cid c
-                    Nothing -> False
-                )
-                currentList
+        let (before, foundAndAfter) = break matchFunc currentList
         case foundAndAfter of
-          (foundId : xs) -> do
+          (foundCard : xs) -> do
             -- Found one element 'x'
             modify $ #coreState % location .~ (before ++ xs)
-            return (Just foundId)
+            return (Just foundCard)
           [] -> return Nothing
 
   -- Search order: Hand, Discard, Deck
   removedHand <- findAndRemove #hand
   case removedHand of
-    Just cid -> do
-      modify $ #coreState % #registry %~ Map.delete cid
+    Just _ -> do
       tell [StatusRemoved statusType "hand"]
     Nothing -> do
       removedDiscard <- findAndRemove #discard
       case removedDiscard of
-        Just cid -> do
-          modify $ #coreState % #registry %~ Map.delete cid
+        Just _ -> do
           tell [StatusRemoved statusType "discard"]
         Nothing -> do
           removedDeck <- findAndRemove #deck
           case removedDeck of
-            Just cid -> do
-              modify $ #coreState % #registry %~ Map.delete cid
+            Just _ -> do
               tell [StatusRemoved statusType "deck"]
             Nothing -> return ()
 
@@ -123,27 +119,21 @@ addConsequence maybeSeverity = do
       let (cid, g'') = uniform g'
       GameM . lift $ put g''
 
-      -- Add to TableState registry and list
-      modify $ #tableState % #consequenceRegistry %~ Map.insert cid template
-      modify $ #tableState % #consequences %~ (cid :)
+      let newConsequence = Identified cid template
 
-      -- We might need a generic event for "AssetCreated" or reused CardsCreated?
-      -- CardsCreated takes [CardInstanceId]. It doesn't imply CoreCard necessarily.
-      tell [CardsCreated [cid]]
-      tell [ConsequenceAdded finalSeverity]
+      -- Add to TableState list (no registry)
+      modify $ #tableState % #consequences %~ (newConsequence :)
+
+      tell [ConsequenceAdded newConsequence]
       return ()
 
 destroyConsequence :: CardInstanceId -> GameM g ()
 destroyConsequence cid = do
   -- Remove from TableState
-  modify $ #tableState % #consequences %~ filter (/= cid)
-  modify $ #tableState % #consequenceRegistry %~ Map.delete cid
+  modify $ #tableState % #consequences %~ filter (\c -> c.id /= cid)
   tell [ConsequenceRemoved (T.pack $ show cid)]
 
 isDefeated :: ActorState -> Bool
 isDefeated actor =
-  let registry = actor.tableState.consequenceRegistry
-      isSev3 cid = case Map.lookup cid registry of
-        Just card -> card.severity >= 3
-        Nothing -> False
+  let isSev3 c = c.content.severity >= 3
    in any isSev3 actor.tableState.consequences

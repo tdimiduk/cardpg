@@ -18,13 +18,10 @@ describe('MapBoard', () => {
       discard: [],
       defending: [],
       inPlay: {},
-      registry: {},
     },
     tableState: {
       assets: {},
-      registry: {},
       consequences: [],
-      consequenceRegistry: {},
     },
     spatial: {
       posX: 0,

@@ -74,7 +74,7 @@ data LogPayload
   | LogChat {content :: Text}
   | LogChallenge
       { challenge :: ActiveChallenge
-      , plannedAction :: PlannedAction
+      , plannedAction :: Wire.PlannedAction
       }
   | LogDefense
       { defenseActorId :: ActorId
@@ -138,7 +138,7 @@ $(deriveJSON cardpgJsonDef ''Token)
 
 data ActorGameEvent = ActorGameEvent
   { actorId :: ActorId
-  , event :: GameEvent
+  , event :: Wire.GameEvent
   }
   deriving (Show, Eq, Generic)
 

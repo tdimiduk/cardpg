@@ -7,6 +7,7 @@ import {
   EncounterCard,
   ConsequenceCard,
   ResourceType,
+  CoreCardInstance,
 } from '../../generated/types';
 
 // --- Type Helpers ---
@@ -57,23 +58,8 @@ export const selectActor = (
 
 // -- Card Hydration Helpers --
 
-const hydrateCoreCards = (
-  ids: string[],
-  registry: Record<string, CoreCard | undefined>,
-): ClientCoreCard[] => {
-  return ids.map((id) => {
-    const card = registry[id];
-    if (!card) {
-      // Fallback for missing cards (shouldn't happen with correct server sync)
-      return {
-        id,
-        type: 'coreCard',
-        name: 'Unknown Card',
-        stats: { red: 0, yellow: 0, blue: 0 },
-      } as ClientCoreCard;
-    }
-    return { ...card, id };
-  });
+export const flattenInstance = (inst: CoreCardInstance): ClientCoreCard => {
+  return { ...inst.content, id: inst.id };
 };
 
 /**
@@ -87,9 +73,8 @@ export const selectHand = (
   if (!actor) return [];
   const core = actor.coreState;
 
-  // The registry in CoreCardState is Record<string, CoreCard>
-  // However generated types might imply optional lookup, so we handle undefined.
-  return hydrateCoreCards(core.hand, core.registry || {});
+  // The hand is directly available as instances in the new Wire Wire model
+  return core.hand.map(flattenInstance);
 };
 
 /**
@@ -101,7 +86,8 @@ export const selectDeck = (
 ): ClientCoreCard[] => {
   const actor = state.actors[actorId];
   if (!actor) return [];
-  return hydrateCoreCards(actor.coreState.deck, actor.coreState.registry || {});
+  if (!actor) return [];
+  return actor.coreState.deck.map(flattenInstance);
 };
 
 /**
@@ -113,7 +99,8 @@ export const selectDiscard = (
 ): ClientCoreCard[] => {
   const actor = state.actors[actorId];
   if (!actor) return [];
-  return hydrateCoreCards(actor.coreState.discard, actor.coreState.registry || {});
+  if (!actor) return [];
+  return actor.coreState.discard.map(flattenInstance);
 };
 
 /**
@@ -125,7 +112,8 @@ export const selectDefending = (
 ): ClientCoreCard[] => {
   const actor = state.actors[actorId];
   if (!actor) return [];
-  return hydrateCoreCards(actor.coreState.defending, actor.coreState.registry || {});
+  if (!actor) return [];
+  return actor.coreState.defending.map(flattenInstance);
 };
 
 // -- Planned Action Selectors --
@@ -153,27 +141,12 @@ export const selectPlannedAction = (
   if (!actor || !actor.coreState.planned) return undefined;
 
   const planned = actor.coreState.planned;
-  const registry = actor.coreState.registry || {};
-
-  // Helper to hydrate a single ID safe-ishly
-  const getCard = (id: string): ClientCoreCard => {
-    const card = registry[id];
-    if (!card) {
-      return {
-        id,
-        type: 'coreCard',
-        name: 'Unknown Card',
-        stats: { red: 0, yellow: 0, blue: 0 },
-      } as ClientCoreCard;
-    }
-    return { ...card, id };
-  };
 
   if (planned.type === 'pStandard') {
     return {
       type: 'standard',
-      actionCard: getCard(planned.data.actionCard),
-      resources: planned.data.resources.map(getCard),
+      actionCard: flattenInstance(planned.data.actionCard),
+      resources: planned.data.resources.map(flattenInstance),
     };
   }
 
@@ -181,7 +154,7 @@ export const selectPlannedAction = (
     return {
       type: 'narrative',
       color: planned.data.color,
-      cards: planned.data.cards.map(getCard),
+      cards: planned.data.cards.map(flattenInstance),
     };
   }
 

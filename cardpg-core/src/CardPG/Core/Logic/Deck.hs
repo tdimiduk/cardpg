@@ -18,7 +18,7 @@ import Data.Maybe (fromMaybe)
 import Optics
 import System.Random (RandomGen, uniform)
 
-import CardPG.Core.Card (CoreCard, ItemCardT (..))
+import CardPG.Core.Card (CardInstance, CoreCard, Identified (..), ItemCardT (..))
 import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
 import CardPG.Core.Primitives (CardInstanceId)
 import CardPG.Core.State
@@ -32,20 +32,19 @@ import CardPG.Core.State
   )
 import CardPG.Core.Util (shuffleListM)
 
-createCards :: (RandomGen g) => CoreCard -> Int -> GameM g [CardInstanceId]
+createCards :: (RandomGen g) => CoreCard -> Int -> GameM g [CardInstance CoreCard]
 createCards template n = do
   newIds <- replicateM n $ liftRandom uniform
-  modify $ #coreState % #registry %~ (`Map.union` Map.fromList [(cid, template) | cid <- newIds])
-  tell [CardsCreated newIds]
-  return newIds
+  let newCards = [Identified cid template | cid <- newIds]
+  tell [CardsCreated newCards]
+  return newCards
 
 calculateTotalBurden :: GameM g Int
 calculateTotalBurden = do
   tblSt <- use #tableState
   let equippedItems =
         [ item
-        | (cid, Equipped _) <- Map.toList (tblSt ^. #assets)
-        , Just (TCItem item) <- [Map.lookup cid (tblSt ^. #registry)]
+        | (_, (Identified _ (TCItem item), Equipped _)) <- Map.toList (tblSt ^. #assets)
         ]
   let burden = sum [b | item <- equippedItems, let b = fromMaybe 0 (item ^. #burden)]
   return burden
@@ -55,19 +54,19 @@ performFatigueCycle = do
   env <- ask
   burden <- calculateTotalBurden
 
-  newFatigueIds <- createCards (env ^. #fatigueCardTemplate) (2 + burden)
+  newFatigueCards <- createCards (env ^. #fatigueCardTemplate) (2 + burden)
 
   currentDiscard <- use (#coreState % #discard)
   modify $ #coreState % #discard .~ []
 
-  newDeck <- GameM . lift $ shuffleListM (newFatigueIds ++ currentDiscard)
+  newDeck <- GameM . lift $ shuffleListM (newFatigueCards ++ currentDiscard)
 
   modify $ #coreState % #deck .~ newDeck
   tell [DeckShuffled]
 
 deckCardTo ::
   (RandomGen g) =>
-  Lens' CoreCardState [CardInstanceId] -> (CardInstanceId -> GameEvent) -> GameM g ()
+  Lens' CoreCardState [CardInstance CoreCard] -> (CardInstance CoreCard -> GameEvent) -> GameM g ()
 deckCardTo dst gameLog = do
   currentDeck <- use (#coreState % #deck)
   case currentDeck of
@@ -97,14 +96,14 @@ reshuffleDeck = do
 discardCards :: [CardInstanceId] -> GameM g ()
 discardCards cids = do
   currentHand <- use (#coreState % #hand)
-  let (toDiscard, keep) = partition (`elem` cids) currentHand
+  let (toDiscard, keep) = partition (\c -> c.id `elem` cids) currentHand
   modify $ #coreState % #hand .~ keep
   modify $ #coreState % #discard %~ (toDiscard ++)
 
 returnCardsToDeck :: (RandomGen g) => [CardInstanceId] -> GameM g ()
 returnCardsToDeck cids = do
   currentHand <- use (#coreState % #hand)
-  let (toReturn, keep) = partition (`elem` cids) currentHand
+  let (toReturn, keep) = partition (\c -> c.id `elem` cids) currentHand
   modify $ #coreState % #hand .~ keep
 
   currentDeck <- use (#coreState % #deck)

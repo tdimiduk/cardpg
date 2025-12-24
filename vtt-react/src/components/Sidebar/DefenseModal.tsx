@@ -2,13 +2,13 @@ import React, { useRef, useEffect } from 'react';
 import { X, Shield, Skull, Zap, ChevronRight, Layers } from 'lucide-react';
 import { DefenseDetails, ConsequenceCard, CoreCard, ActorState } from '../../generated/types';
 import { CoreCardComponent, ConsequenceCardComponent } from '../Card/Card';
-import { useResolvedCards } from '../../hooks/useCardResolution';
 import { CardStack } from '../Card/CardStack';
+import { flattenInstance, ClientCard } from '../../store/selectors';
 
 // Updated imports for strict view usage with Wrappers
 // Note: We'll use simple div wrappers for some "chips" but standard components for full cards
 
-export type DefenseModalCard = (ConsequenceCard & { id: string }) | (CoreCard & { id: string });
+export type DefenseModalCard = ClientCard;
 
 interface DefenseWidgetProps {
   isOpen: boolean;
@@ -47,16 +47,11 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   };
 
   // Resolve Consequences
-  const consequences = useResolvedCards(
-    activeActor?.tableState.consequences,
-    activeActor?.tableState.consequenceRegistry,
-  );
+  const consequences =
+    activeActor?.tableState.consequences.map((c) => ({ ...c.content, id: c.id })) || [];
 
   // Resolve Defense Stack
-  const defenseStack = useResolvedCards(
-    activeActor?.coreState.defending,
-    activeActor?.coreState.registry,
-  );
+  const defenseStack = activeActor?.coreState.defending.map(flattenInstance) || [];
 
   const defenseDetails = activeActor?.defenseDetails || defaultDefenseDetails;
   const currentDefense = activeActor?.defense || 0;

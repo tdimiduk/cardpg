@@ -7,7 +7,7 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
-import CardPG.Core.Card (ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
+import CardPG.Core.Card (CardInstance, ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives
   ( CardInstanceId (..)
@@ -26,8 +26,6 @@ data TableCard
 
 $(deriveJSON cardpgJsonDef ''TableCard)
 
-type CardRegistry c = Map CardInstanceId c
-
 data CorePlayState
   = Ongoing -- Persistent effect on self
   | AttachedTo TargetId -- Buff/Debuff on Target (Actor/Token UUID)
@@ -36,15 +34,15 @@ data CorePlayState
 $(deriveJSON cardpgJsonDef ''CorePlayState)
 
 data ActionStack = ActionStack
-  { actionCard :: CardInstanceId
-  , resources :: [CardInstanceId]
+  { actionCard :: CardInstance CoreCard
+  , resources :: [CardInstance CoreCard]
   }
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''ActionStack)
 
 data NarrativeStack = NarrativeStack
-  { cards :: NonEmpty CardInstanceId
+  { cards :: NonEmpty (CardInstance CoreCard)
   , color :: ResourceType
   }
   deriving stock (Show, Eq, Generic)
@@ -59,43 +57,10 @@ data PlannedAction
 
 $(deriveJSON cardpgJsonDef ''PlannedAction)
 
-plannedActionCards :: PlannedAction -> [CardInstanceId]
+plannedActionCards :: PlannedAction -> [CardInstance CoreCard]
 plannedActionCards (PStandard (ActionStack ac res)) = ac : res
 plannedActionCards (PNarrative (NarrativeStack cs _)) = toList cs
 plannedActionCards PPass = []
-
-data ActionStackMaterialized = ActionStackMaterialized
-  { actionCard :: CoreCard
-  , actionCardId :: CardInstanceId
-  , resources :: [CoreCard]
-  , resourcesIds :: [CardInstanceId]
-  }
-  deriving stock (Show, Eq, Generic)
-
-data NarrativeStackMaterialized = NarrativeStackMaterialized
-  { cards :: NonEmpty CoreCard
-  , cardIds :: NonEmpty CardInstanceId
-  , color :: ResourceType
-  }
-  deriving stock (Show, Eq, Generic)
-
-data PlannedActionMaterialized
-  = PMStandard ActionStackMaterialized
-  | PMNarrative NarrativeStackMaterialized
-  | PMPass
-  deriving stock (Show, Eq, Generic)
-
-materializePlannedAction ::
-  CardRegistry CoreCard -> PlannedAction -> Maybe PlannedActionMaterialized
-materializePlannedAction registry plan = case plan of
-  PStandard (ActionStack acId resIds) -> do
-    ac <- Map.lookup acId registry
-    res <- traverse (`Map.lookup` registry) resIds
-    return $ PMStandard $ ActionStackMaterialized ac acId res resIds
-  PNarrative (NarrativeStack cIds c) -> do
-    cs <- traverse (`Map.lookup` registry) cIds
-    return $ PMNarrative $ NarrativeStackMaterialized cs cIds c
-  PPass -> Just PMPass
 
 data ChallengeSource
   = CSAdHoc {name :: Text, description :: Maybe Text}
@@ -122,14 +87,12 @@ data RevealedEffect
 $(deriveJSON cardpgJsonDef ''RevealedEffect)
 
 data CoreCardState = CoreCardState
-  { deck :: [CardInstanceId] -- Top is head
-  , hand :: [CardInstanceId] -- User-defined order
-  , discard :: [CardInstanceId] -- Top is head (most recently played)
+  { deck :: [CardInstance CoreCard] -- Top is head
+  , hand :: [CardInstance CoreCard] -- User-defined order
+  , discard :: [CardInstance CoreCard] -- Top is head (most recently played)
   , planned :: Maybe PlannedAction
-  , defending :: [CardInstanceId] -- Currently committed to a defense
-  , inPlay :: Map CardInstanceId CorePlayState -- Buffs, Stances, Attached effects
-  , registry :: CardRegistry CoreCard
-  -- ^ The Registry (Source of Truth for Core Cards)
+  , defending :: [CardInstance CoreCard] -- Currently committed to a defense
+  , inPlay :: Map CardInstanceId (CardInstance CoreCard, CorePlayState) -- Buffs, Stances, Attached effects
   , revealed :: Maybe RevealedEffect
   }
   deriving stock (Show, Eq, Generic)
@@ -137,10 +100,8 @@ data CoreCardState = CoreCardState
 $(deriveJSON cardpgJsonDef ''CoreCardState)
 
 data TableState = TableState
-  { assets :: Map CardInstanceId AssetState
-  , registry :: CardRegistry TableCard
-  , consequences :: [CardInstanceId]
-  , consequenceRegistry :: CardRegistry ConsequenceCard
+  { assets :: Map CardInstanceId (CardInstance TableCard, AssetState)
+  , consequences :: [CardInstance ConsequenceCard]
   }
   deriving stock (Show, Eq, Generic)
 
@@ -180,23 +141,23 @@ data ActorState = ActorState
 $(deriveJSON cardpgJsonDef ''ActorState)
 
 data GameEvent
-  = CardsCreated [CardInstanceId]
+  = CardsCreated [CardInstance CoreCard]
   | DeckShuffled
-  | CardDrawn CardInstanceId
-  | CardDefended CardInstanceId
+  | CardDrawn (CardInstance CoreCard)
+  | CardDefended (CardInstance CoreCard)
   | MovePlanned (Int, Int)
   | ActorMoved (Int, Int)
   | ActionPlanned PlannedAction
   | PlanCanceled PlannedAction
   | ActionRevealed PlannedAction RevealedEffect
-  | DefenseEnded [CardInstanceId]
+  | DefenseEnded [CardInstance CoreCard]
   | IllegalAction PlannedAction (Maybe Text)
   | -- | Type, Destination
     StatusAdded Text CardLocation
   | -- | Type, Destination
     StatusRemoved Text Text
   | -- | Severity
-    ConsequenceAdded Int
+    ConsequenceAdded (CardInstance ConsequenceCard)
   | -- | Card ID/Name
     ConsequenceRemoved Text
   deriving stock (Show, Eq, Generic)

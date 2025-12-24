@@ -8,7 +8,6 @@ import {
 import { Square, Circle, Diamond, Shield, Heart, Skull, AlertCircle } from 'lucide-react';
 import { InlineIcon } from './InlineIcon';
 import { RichTextRenderer } from './RichTextRenderer';
-import { useActorCard, useActorCoreCard, useActorTableCard } from '../../hooks/useActorCard';
 
 // Updated types to reflect wrapper usage
 export type AnyCard = CoreCard | TableCard | ConsequenceCard;
@@ -346,48 +345,3 @@ export const CardView: React.FC<CardProps> = (props) => {
 export const CardComponent = CardView;
 
 // --- Lookup Components ---
-
-export const CoreCardViewById: React.FC<{
-  actorId: string;
-  cardId: string;
-  className?: string;
-  scale?: number;
-  onClick?: () => void;
-  selected?: boolean;
-}> = ({ actorId, cardId, ...props }) => {
-  const card = useActorCoreCard(actorId, cardId);
-
-  if (!card) return null;
-
-  return <CoreCardComponent card={card} {...props} />;
-};
-
-export const TableCardViewById: React.FC<{
-  actorId: string;
-  cardId: string;
-  className?: string;
-  scale?: number;
-  onClick?: () => void;
-  selected?: boolean;
-}> = ({ actorId, cardId, ...props }) => {
-  const card = useActorTableCard(actorId, cardId);
-
-  if (!card) return null;
-
-  return <TableCardComponent card={card} {...props} />;
-};
-
-export const CardViewById: React.FC<{
-  actorId: string;
-  cardId: string;
-  className?: string;
-  scale?: number;
-  onClick?: () => void;
-  selected?: boolean;
-}> = ({ actorId, cardId, ...props }) => {
-  const card = useActorCard(actorId, cardId);
-
-  if (!card) return null;
-
-  return <CardView card={card} {...props} />;
-};

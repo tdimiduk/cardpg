@@ -35,7 +35,9 @@ const GameBoard: React.FC = () => {
   // --- Helpers ---
   // Calculate defeated for visualization - check tableState.consequences for "Taken Out"
   const defeatedTokenIds = Object.entries(actors)
-    .filter(([_, actor]) => actor.tableState.consequences.includes('Taken Out'))
+    .filter(([_, actor]) =>
+      actor.tableState.consequences.some((c) => c.content.name === 'Taken Out'),
+    )
     .map(([id]) => `token-${id}`);
 
   // --- WebSocket Integration ---

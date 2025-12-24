@@ -29,17 +29,14 @@ describe('Game Store Integration', () => {
       actorType: 'PC',
       coreState: {
         deck: [],
-        hand: [testCardId],
+        hand: [{ id: testCardId, content: testCard }],
         discard: [],
         defending: [],
         inPlay: {},
-        registry: { [testCardId]: testCard },
       },
       tableState: {
         assets: {},
-        registry: {},
         consequences: [],
-        consequenceRegistry: {},
       },
       spatial: { posX: 0, posY: 0, size: 1 },
       defense: 1,

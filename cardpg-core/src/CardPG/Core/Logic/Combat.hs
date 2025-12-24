@@ -20,6 +20,7 @@ import Optics
 import CardPG.Core.Card
   ( CoreCard
   , CoreCardT (..)
+  , Identified (..)
   , ItemCardT (..)
   , NatureCardT (..)
   , Stats (..)
@@ -30,13 +31,13 @@ import CardPG.Core.Primitives (ResourceType (..), StackPower (..), getStat)
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
-  ( ActionStackMaterialized (..)
+  ( ActionStack (..)
   , ActiveChallenge (..)
   , ActorState (..)
   , AssetState (..)
   , ChallengeSource (..)
-  , NarrativeStackMaterialized (..)
-  , PlannedActionMaterialized (..)
+  , NarrativeStack (..)
+  , PlannedAction (..)
   , TableCard (..)
   , TableState (..)
   )
@@ -49,36 +50,36 @@ getAttackRule card = case card.rules of
     [r] -> Right r
     _ -> Left "cards with multiple attack rules are not implemented yet"
 
-stackPower :: ActionStackMaterialized -> StackPower -> Int
+stackPower :: ActionStack -> StackPower -> Int
 stackPower stack power =
   let
     allCards = stack.actionCard : stack.resources
-    relevantStat c = getStat power.source c.stats
+    relevantStat c = getStat power.source c.content.stats
     rawTotal = sum (map relevantStat allCards)
    in
     rawTotal + power.modifier
 
-attackAction :: PlannedActionMaterialized -> Either Text ActiveChallenge
+attackAction :: PlannedAction -> Either Text ActiveChallenge
 attackAction matPlan = case matPlan of
-  PMStandard stack -> case getAttackRule stack.actionCard of
+  PStandard stack -> case getAttackRule stack.actionCard.content of
     Left err -> Left err
     Right attackRule ->
       Right $
         ActiveChallenge
-          { source = CSCard stack.actionCardId
+          { source = CSCard stack.actionCard.id
           , challengeStrength = stackPower stack attackRule.power
           , challengeColor = attackRule.resistedBy
           }
-  PMPass -> Left "pass action"
-  PMNarrative (NarrativeStackMaterialized{cards = cs, cardIds = cIds, color = col}) ->
+  PPass -> Left "pass action"
+  PNarrative (NarrativeStack{cards = cs, color = col}) ->
     -- Narrative Action Logic
     let
       -- Helper to get stat based on color
-      rawTotal = sum [getStat col c.stats | c <- toList cs]
+      rawTotal = sum [getStat col c.content.stats | c <- toList cs]
      in
       Right $
         ActiveChallenge
-          { source = CSCard (let (h :| _) = cIds in h) -- Safe as narrative stack must have cards
+          { source = CSCard (let (h :| _) = cs in h.id) -- Safe as narrative stack must have cards
           , challengeStrength = rawTotal -- Modifier 0 for now
           , challengeColor = col -- Defense matches Action Color
           }
@@ -86,10 +87,9 @@ attackAction matPlan = case matPlan of
 -- | Helper: get table cards in active states (Equipped, Trait)
 getActiveTableCards :: TableState -> [TableCard]
 getActiveTableCards tblSt =
-  [ card
-  | (cid, assetState) <- Map.toList (tblSt ^. #assets)
+  [ card.content
+  | (_, (card, assetState)) <- Map.toList (tblSt ^. #assets)
   , isActive assetState
-  , Just card <- [Map.lookup cid (tblSt ^. #registry)]
   ]
   where
     isActive (Equipped _) = True

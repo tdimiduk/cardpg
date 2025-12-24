@@ -20,6 +20,7 @@ import CardPG.Core.Card
   , EncounterCardT (..)
   , EncounterMechanics
   , GeneralActionDef
+  , Identified (..)
   , ItemCardT (..)
   , NatureCardT (..)
   , TalentCardT (..)
@@ -49,20 +50,14 @@ import CardPG.Core.RuleDefs hiding
   , TriggerDef
   )
 import CardPG.Core.State
-  ( ActionStack (..)
-  , ActiveChallenge (..)
-  , ActorState (..)
+  ( ActiveChallenge (..)
   , AssetState (..)
   , ChallengeSource (..)
-  , CoreCardState (..)
   , CorePlayState (..)
-  , GameEvent (..)
   , NarrativeStack (..)
-  , PlannedAction (..)
   , RevealedEffect (..)
   , SpatialState (..)
   , TableCard (..)
-  , TableState (..)
   )
 import CardPG.Server.Types
   ( ActorGameEvent (..)
@@ -76,7 +71,6 @@ import CardPG.Server.Types
   , StateUpdate (..)
   , Token
   )
-import CardPG.Server.Types.Wire (DefenseDetails)
 import CardPG.Server.Types.Wire qualified as Wire
 import DeriveSpecialized
   ( deriveSpecializedInstance
@@ -120,15 +114,6 @@ $(deriveTypeScript cardpgJsonDef ''Block)
 -- Stats
 
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
-$(deriveTypeScript cardpgJsonDef ''ActionStack)
-$(deriveTypeScript cardpgJsonDef ''NarrativeStack)
-$(deriveTypeScript cardpgJsonDef ''PlannedAction)
-$(deriveTypeScript cardpgJsonDef ''ChallengeSource)
-$(deriveTypeScript cardpgJsonDef ''ActiveChallenge)
-$(deriveTypeScript cardpgJsonDef ''RevealedEffect)
-
-$(deriveTypeScript cardpgJsonDef ''LogPayload)
-$(deriveTypeScript cardpgJsonDef ''LogEntry)
 
 -- Helper for creating splices
 -- Using runIO or just simple do block
@@ -276,6 +261,9 @@ $( do
      p_consequence2 <-
        makeProxyInstance [t|ConsequenceCardT DSLRule|] ''ConsequenceCard "ConsequenceCard"
 
+     i_coreInstT <- deriveTypeScript cardpgJsonDef ''Wire.CoreCardInstance
+     i_consInstT <- deriveTypeScript cardpgJsonDef ''Wire.ConsequenceCardInstance
+
      return
        ( i_attack
            ++ i_general
@@ -300,6 +288,8 @@ $( do
            ++ p_talent3
            ++ p_encounter3
            ++ p_consequence2
+           ++ i_coreInstT
+           ++ i_consInstT
            ++ i_stats
            ++ i_specDef
        )
@@ -309,39 +299,68 @@ $( do
 $( do
      -- State Types
      i_token <- deriveTypeScript cardpgJsonDef ''Token
+     i_admin <- deriveTypeScript (cardpgTaggedOptions "") ''AdminCommand
      i_command <- deriveTypeScript cardpgJsonDef ''Command
      i_actorGameEvent <- deriveTypeScript cardpgJsonDef ''ActorGameEvent
      i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
 
+     i_actionStack <- deriveTypeScript cardpgJsonDef ''Wire.ActionStack
+     i_narrativeStack <- deriveTypeScript cardpgJsonDef ''Wire.NarrativeStack
+     i_plannedAction <- deriveTypeScript cardpgJsonDef ''Wire.PlannedAction
+     i_challengeSource <- deriveTypeScript cardpgJsonDef ''ChallengeSource
+     i_activeChallenge <- deriveTypeScript cardpgJsonDef ''ActiveChallenge
+     i_revealedEffect <- deriveTypeScript cardpgJsonDef ''RevealedEffect
+
+     i_logPayload <- deriveTypeScript cardpgJsonDef ''LogPayload
+     i_logEntry <- deriveTypeScript cardpgJsonDef ''LogEntry
+
      i_tableCard <- deriveTypeScript cardpgJsonDef ''TableCard
-     i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
-     i_coreState <- deriveTypeScript cardpgJsonDef ''CoreCardState
-     i_tableState <- deriveTypeScript cardpgJsonDef ''TableState
-     i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
-     i_actorState <- deriveTypeScript cardpgJsonDef ''ActorState
-     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''DefenseDetails
-     i_actorStateWire <- deriveTypeScript cardpgJsonDef ''Wire.ActorState
-     i_gameEvent <- deriveTypeScript cardpgJsonDef ''GameEvent
-     i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
-     i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
-     i_admin <- deriveTypeScript (cardpgTaggedOptions "") ''AdminCommand
+     i_gameEvent <- deriveTypeScript cardpgJsonDef ''Wire.GameEvent
 
      return
        ( i_token
+           ++ i_admin
            ++ i_command
            ++ i_actorGameEvent
            ++ i_clientMsg
-           ++ i_serverMsg
+           ++ i_actionStack
+           ++ i_narrativeStack
+           ++ i_plannedAction
+           ++ i_challengeSource
+           ++ i_activeChallenge
+           ++ i_revealedEffect
+           ++ i_logPayload
+           ++ i_logEntry
            ++ i_tableCard
-           ++ i_corePlay
+           ++ i_gameEvent
+       )
+ )
+
+-- 4. TableCardInstance Instance (Must see TableCard instance and TableCardInstance data)
+$( do
+     i_tableInstT <- deriveTypeScript cardpgJsonDef ''Wire.TableCardInstance
+     return i_tableInstT
+ )
+
+-- 5. Dependent State (Must see TableCardInstance proxy)
+$( do
+     i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
+     i_coreState <- deriveTypeScript cardpgJsonDef ''Wire.CoreCardState
+     i_tableState <- deriveTypeScript cardpgJsonDef ''Wire.TableState
+     i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
+     i_actorState <- deriveTypeScript cardpgJsonDef ''Wire.ActorState
+     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''Wire.DefenseDetails
+     i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
+     i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
+
+     return
+       ( i_corePlay
            ++ i_coreState
            ++ i_tableState
            ++ i_assetState
            ++ i_actorState
            ++ i_defenseDetails
-           ++ i_actorStateWire
-           ++ i_gameEvent
            ++ i_stateUpdate
-           ++ i_admin
+           ++ i_serverMsg
        )
  )

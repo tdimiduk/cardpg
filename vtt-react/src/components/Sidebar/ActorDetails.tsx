@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { ActionStack, CoreCard } from '../../generated/types';
+import { flattenInstance } from '../../store/selectors';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
-import { useResolvedCards } from '../../hooks/useCardResolution';
 import { ActorState, CardLocation } from '../../generated/types';
 
 import { ActiveActorHeader } from './ActiveActorHeader';
@@ -26,9 +27,10 @@ export const ActorDetails: React.FC<ActorDetailsProps> = ({ actor, onResumeDefen
   const resilience = actor.resilience ?? 1;
 
   // Resolve IDs to Card Objects
-  const drawPile = useResolvedCards(actor.coreState.deck, actor.coreState.registry);
-  const discardPile = useResolvedCards(actor.coreState.discard, actor.coreState.registry);
-  const flippedPile = useResolvedCards(actor.coreState.defending, actor.coreState.registry);
+  // Resolve piles directly (since they are now instances)
+  const drawPile = actor.coreState.deck.map(flattenInstance);
+  const discardPile = actor.coreState.discard.map(flattenInstance);
+  const flippedPile = actor.coreState.defending.map(flattenInstance);
 
   // Handlers
   const handleDraw = (_count: number) => {

@@ -10,7 +10,7 @@ import Data.Map.Strict qualified as Map
 import Data.Ord (Down (..))
 import Optics
 
-import CardPG.Core.Card (CoreCardT (..), Stats (..))
+import CardPG.Core.Card (CoreCardT (..), Identified (..), Stats (..))
 import CardPG.Core.Logic.Combat (getAttackRule)
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Logic.Planning (passAction, planAction)
@@ -20,17 +20,16 @@ import CardPG.Core.State (ActorState (..), CoreCardState (..))
 
 planBestAvailableAction :: GameM g ()
 planBestAvailableAction = do
-  handIds <- use (#coreState % #hand)
-  registry <- use (#coreState % #registry)
+  hand <- use (#coreState % #hand)
 
-  let cardsInHand = [(cid, c) | cid <- handIds, Just c <- [Map.lookup cid registry]]
+  let cardsInHand = [(c.id, c.content) | c <- hand]
 
   -- Find candidates: Cards with a cost and a valid attack rule
   let candidates =
         [ (cid, cost, attackRule)
         | (cid, c) <- cardsInHand
         , Just cost <- [c.cost] -- Must have cost (implies playable action)
-        , cost <= length handIds - 1 -- Must have enough OTHER cards
+        , cost <= length hand - 1 -- Must have enough OTHER cards
         , Right attackRule <- [getAttackRule c] -- Must be attack (for now)
         ]
 

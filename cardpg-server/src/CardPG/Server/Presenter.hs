@@ -11,15 +11,12 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (toText)
 
-import CardPG.Core.Card (CoreCardT (..))
+import CardPG.Core.Card (CoreCardT (..), Identified (..))
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives (ActorId (..), CardInstanceId)
+import CardPG.Core.Primitives (ActorId (..))
 import CardPG.Core.State
-  ( ActionStack (..)
-  , ActorState (..)
+  ( ActorState (..)
   , CoreCardState (..)
-  , GameEvent (..)
-  , PlannedAction (..)
   , RevealedEffect (..)
   )
 import CardPG.Server.Types
@@ -27,6 +24,12 @@ import CardPG.Server.Types
   , LogEntry (..)
   , LogPayload (..)
   )
+import CardPG.Server.Types.Wire
+  ( ActionStack (..)
+  , GameEvent (..)
+  , PlannedAction (..)
+  )
+import CardPG.Server.Types.Wire qualified as Wire
 
 mkChatLog :: Int -> Int -> Maybe ActorId -> Text -> Text -> LogEntry
 mkChatLog ts seqNum senderId senderName content =
@@ -65,11 +68,7 @@ eventToLogs ts actorId event game =
         CardDefended _ ->
           [mkLog "defend" (LogDefense actorId False Nothing)]
         DefenseEnded stack ->
-          let actor = Map.lookup actorId game.actors
-              names = case actor of
-                Just a ->
-                  [getRawText n | cid <- stack, Just (CoreCard{name = n}) <- [Map.lookup cid a.coreState.registry]]
-                Nothing -> []
+          let names = [getRawText c.content.name | c <- stack]
            in [mkLog "end-defend" (LogDefense actorId True (Just names))]
         DeckShuffled -> [mkLog "shuffle" (LogInfo $ actorName <> " reshuffled their deck.")]
         ConsequenceAdded _ -> [mkLog "cons-add" (LogInfo $ actorName <> " gained a consequence.")]

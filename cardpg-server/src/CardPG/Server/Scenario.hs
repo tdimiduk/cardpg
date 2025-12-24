@@ -32,6 +32,7 @@ import CardPG.Core.Card
   ( ActorDefinition
   , ActorDefinitionDSL
   , CoreCard
+  , Identified (..)
   , ItemCard
   , NatureCard
   , TalentCard
@@ -134,11 +135,11 @@ loadAndInstantiateActor path x y handSize = do
 instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
 instantiateActor def x y maybeHandSize = do
   -- Process Deck (Core Cards)
-  (deckIds, coreRegistry) <- processCards (def.deck)
-  shuffledDeckIds <- shuffleListM deckIds
+  deckCards <- processCards (def.deck)
+  shuffledDeck <- shuffleListM deckCards
 
   let handSize = fromMaybe 0 maybeHandSize
-  let (initialHand, remainingDeck) = splitAt handSize shuffledDeckIds
+  let (initialHand, remainingDeck) = splitAt handSize shuffledDeck
 
   let nameVal = def.name
   let tagsList = maybe [] toList (def.tags)
@@ -154,29 +155,30 @@ instantiateActor def x y maybeHandSize = do
           , discard = []
           , defending = []
           , inPlay = Map.empty
-          , registry = coreRegistry
           , planned = Nothing
           , revealed = Nothing
           }
 
   -- Process Table Cards (Items, Nature)
-  -- Note: We map different card types to TableCard
-  (itemIds, itemRegistry) <- processTableCards TCItem (def.items) InCollection
-  (natureIds, natureRegistry) <- processTableCards TCNature (def.nature) Trait
+  itemInstances <- processCards (def.items)
+  natureInstances <- processCards (def.nature)
   -- TODO: Add talents logic when available in ActorDefinition if needed
 
-  let tableReg = itemRegistry `Map.union` natureRegistry
-  let tableAssets =
-        Map.fromList $
-          zipWith (\id item -> (id, determineItemState item)) itemIds (def.items)
-            ++ [(id, Trait) | id <- natureIds]
+  let itemAssets =
+        [ (c.id, (Identified c.id (TCItem c.content), determineItemState c.content))
+        | c <- itemInstances
+        ]
+  let natureAssets =
+        [ (c.id, (Identified c.id (TCNature c.content), Trait))
+        | c <- natureInstances
+        ]
+
+  let tableAssets = Map.fromList (itemAssets ++ natureAssets)
 
   let tableSt =
         State.TableState
           { assets = tableAssets
-          , registry = tableReg
           , consequences = []
-          , consequenceRegistry = Map.empty
           }
 
   return $
@@ -190,23 +192,10 @@ instantiateActor def x y maybeHandSize = do
       }
 
 -- | Helper to instantiate a list of cards
-processCards :: [card] -> StateT StdGen IO ([CardInstanceId], Map.Map CardInstanceId card)
+processCards :: [card] -> StateT StdGen IO [Identified CardInstanceId card]
 processCards cards = do
   ids <- mapM (const stateUniform) cards
-  let registry = Map.fromList $ zip ids cards
-  return (ids, registry)
-
--- | Helper specifically for TableCards which need wrapping and AssetState mapping
--- actually processCards is generic enough for the registry, but we need to wrap the card.
-processTableCards ::
-  (card -> TableCard) ->
-  [card] ->
-  AssetState ->
-  StateT StdGen IO ([CardInstanceId], Map.Map CardInstanceId TableCard)
-processTableCards wrapper cards defaultState = do
-  ids <- mapM (const stateUniform) cards
-  let registry = Map.fromList $ zip ids (map wrapper cards)
-  return (ids, registry)
+  return [Identified cid c | (cid, c) <- zip ids cards]
 
 -- | Helper to get a uniform value from the stateful generator
 stateUniform :: (Uniform a) => StateT StdGen IO a
