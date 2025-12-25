@@ -13,17 +13,6 @@ import Data.Text (Text)
 import GHC.Generics (Generic)
 import Language.Haskell.TH (Type (AppT, ConT, ListT), mkName)
 
-import CardPG.Core.Card
-  ( ConsequenceCardT (..)
-  , CoreCardT (..)
-  , EncounterCardT (..)
-  , EncounterMechanics
-  , GeneralActionDef
-  , Identified (..)
-  , ItemCardT (..)
-  , NatureCardT (..)
-  , TalentCardT (..)
-  )
 import CardPG.Core.Card qualified as CC
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
@@ -73,8 +62,6 @@ import CardPG.Server.Types
 import CardPG.Server.Types.Frontend qualified as Frontend
 import DeriveSpecialized
   ( deriveSpecializedInstance
-  , makeBridgeInstance
-  , makeProxyInstance
   , specializeType
   )
 
@@ -116,7 +103,9 @@ $(deriveTypeScript cardpgJsonDef ''SpatialState)
 
 $(deriveTypeScript cardpgJsonDef ''Phase)
 
--- 1. Data Generation Scope
+-- 1. Specialized Types for Rules and Stats
+-- These create concrete Haskell types from parameterized ones for TypeScript generation.
+-- Card types (CoreCard, ItemCard, etc.) are handled by Frontend.* types instead.
 $( do
      d_attack <- specializeType ''AttackDefT [ConT ''RichText] "AttackDef"
      d_general <- specializeType ''GeneralDefT [ConT ''RichText] "GeneralDef"
@@ -124,21 +113,6 @@ $( do
      d_trigger <- specializeType ''TriggerDefT [ConT ''RichText] "TriggerDef"
      d_ongoing <- specializeType ''OngoingDefT [ConT ''RichText] "OngoingDef"
      d_rule <- specializeType ''RuleT [ConT ''RichText] "Rule"
-
-     d_core <-
-       specializeType
-         ''CoreCardT
-         [ConT ''CC.Rule, ConT ''RichText]
-         "CoreCard"
-
-     d_item <- specializeType ''ItemCardT [ConT ''RichText] "ItemCard"
-     d_nature <- specializeType ''NatureCardT [ConT ''RichText] "NatureCard"
-     d_talent <- specializeType ''TalentCardT [ConT ''RichText] "TalentCard"
-     d_encounter <-
-       specializeType ''EncounterCardT [ConT ''RichText] "EncounterCard"
-     d_consequence <-
-       specializeType ''ConsequenceCardT [ConT ''CC.Rule] "ConsequenceCard"
-
      d_stats <- specializeType ''P.Stats [ConT ''Int] "Stats"
      d_specDef <- specializeType ''P.Stats [ConT ''P.ResourceType] "SpecialDefend"
 
@@ -149,22 +123,16 @@ $( do
            ++ d_trigger
            ++ d_ongoing
            ++ d_rule
-           ++ d_core
-           ++ d_item
-           ++ d_nature
-           ++ d_talent
-           ++ d_encounter
-           ++ d_consequence
            ++ d_stats
            ++ d_specDef
        )
  )
 
--- 1.5 Base Card Instances
+-- 2. TypeScript Instances
 $( do
      let inline = ConT ''RichText
 
-     -- Rules & Bridges
+     -- Rule Variants (needed for Rule union type)
      i_attack <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''AttackDef ''AttackDefT [inline]
      i_general <-
        deriveSpecializedInstance (cardpgJsonOptions "Rule") ''GeneralDef ''GeneralDefT [inline]
@@ -173,22 +141,15 @@ $( do
        deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TriggerDef ''TriggerDefT [inline]
      i_ongoing <-
        deriveSpecializedInstance (cardpgJsonOptions "Rule") ''OngoingDef ''OngoingDefT [inline]
-
-     -- Rule (Machine)
      i_rule <- deriveSpecializedInstance (cardpgJsonOptions "RuleRule") ''Rule ''RuleT [inline]
-
-     -- Def Helpers
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
 
+     -- Stats
      i_stats <- deriveSpecializedInstance cardpgJsonDef ''Stats ''P.Stats [ConT ''Int]
      i_specDef <-
        deriveSpecializedInstance cardpgJsonDef ''SpecialDefend ''P.Stats [ConT ''P.ResourceType]
 
-     -- Helpers (GenAction, EncMech)
-     i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
-     i_encMech <- deriveTypeScript cardpgJsonDef ''EncounterMechanics
-
-     -- Frontend Types (Direct Derivation)
+     -- Frontend Card Types
      i_core <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCard
      i_item <- deriveTypeScript cardpgJsonDef ''Frontend.ItemCard
      i_nature <- deriveTypeScript cardpgJsonDef ''Frontend.NatureCard
@@ -203,15 +164,13 @@ $( do
            ++ i_ongoing
            ++ i_rule
            ++ i_passive
-           ++ i_genAction
-           ++ i_encMech
+           ++ i_stats
+           ++ i_specDef
            ++ i_core
            ++ i_item
            ++ i_nature
            ++ i_talent
            ++ i_consequence
-           ++ i_stats
-           ++ i_specDef
        )
  )
 
@@ -257,13 +216,7 @@ $( do
        )
  )
 
--- 4. TableCardInstance Instance Refactored -> Removed as TableCard is now explicit in 3.
-
--- $( do
---      deriveTypeScript cardpgJsonDef ''Frontend.TableCardInstance
---  )
-
--- 5. Dependent State (Must see TableCardInstance proxy)
+-- 4. Dependent State
 $( do
      i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
      i_coreState <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCardState

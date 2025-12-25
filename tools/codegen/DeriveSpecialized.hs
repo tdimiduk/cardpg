@@ -1,4 +1,4 @@
-module DeriveSpecialized (specializeType, makeBridgeInstance, makeProxyInstance, deriveSpecializedInstance) where
+module DeriveSpecialized (specializeType, deriveSpecializedInstance) where
 
 import Control.Monad (when)
 import Data.Aeson (Options)
@@ -119,81 +119,4 @@ substType subst t = case t of
   ConT n -> return (ConT n)
   _ -> return t
 
--- | Creates a "Bridge Instance" that bridges a parameterized type (e.g. AttackDefT RichText)
--- to a concrete specialized type (e.g. AttackDef).
--- This allows the generator to "see through" the parameterized type usage in other types (like Rule)
--- and link it to the definition of the specialized type.
---
--- Usage:
 
--- $(makeBridgeInstance ''AttackDefT (ConT ''RichText) "AttackDef")
-
-makeBridgeInstance :: Name -> Type -> String -> Q [Dec]
-makeBridgeInstance paramTypeName paramType targetTypeNameStr = do
-  let targetTypeName = mkName targetTypeNameStr
-  let instanceHead = AppT (ConT (mkName "TypeScript")) (AppT (ConT paramTypeName) paramType)
-
-  -- Method: getTypeScriptType _ = targetTypeNameStr
-  let getTypeScriptTypeDec =
-        FunD
-          (mkName "getTypeScriptType")
-          [Clause [WildP] (NormalB (LitE (StringL targetTypeNameStr))) []]
-
-  -- Method: getParentTypes _ = [TSType (Proxy :: Proxy TargetType)]
-  -- [| [TSType (Proxy :: Proxy TargetType)] |]
-  let proxyExp = SigE (ConE (mkName "Proxy")) (AppT (ConT (mkName "Proxy")) (ConT targetTypeName))
-  let tsTypeExp = AppE (ConE (mkName "TSType")) proxyExp
-  let listExp = ListE [tsTypeExp]
-  let getParentTypesDec =
-        FunD
-          (mkName "getParentTypes")
-          [Clause [WildP] (NormalB listExp) []]
-
-  return [InstanceD Nothing [] instanceHead [getTypeScriptTypeDec, getParentTypesDec]]
-
--- | Creates a "Proxy Instance" that points a Type to a Parent Type via Proxy.
---
--- Usage:
-
--- $(makeProxyInstance [t| ItemCardT Text [Inline] |] ''ItemCard "ItemCard")
---
--- Generates:
--- instance TypeScript (ItemCardT Text [Inline]) where
---   getTypeScriptType _ = "ItemCard"
---   getTypeScriptDeclarations _ = []
---   getParentTypes _ = [TSType (Proxy :: Proxy ItemCard)]
-
-makeProxyInstance :: TypeQ -> Name -> String -> Q [Dec]
-makeProxyInstance instanceTypeQ targetTypeName nameStr = do
-  instanceType <- instanceTypeQ
-  let targetType = ConT targetTypeName
-  let instanceHead = AppT (ConT (mkName "TypeScript")) instanceType
-
-  -- getTypeScriptType _ = nameStr
-  let getTypeScriptTypeDec =
-        FunD
-          (mkName "getTypeScriptType")
-          [Clause [WildP] (NormalB (LitE (StringL nameStr))) []]
-
-  -- getTypeScriptDeclarations _ = []
-  let getTypeScriptDeclarationsDec =
-        FunD
-          (mkName "getTypeScriptDeclarations")
-          [Clause [WildP] (NormalB (ListE [])) []]
-
-  -- getParentTypes _ = [TSType (Proxy :: Proxy TargetType)]
-  let proxyExp = SigE (ConE (mkName "Proxy")) (AppT (ConT (mkName "Proxy")) targetType)
-  let tsTypeExp = AppE (ConE (mkName "TSType")) proxyExp
-  let listExp = ListE [tsTypeExp]
-  let getParentTypesDec =
-        FunD
-          (mkName "getParentTypes")
-          [Clause [WildP] (NormalB listExp) []]
-
-  return
-    [ InstanceD
-        Nothing
-        []
-        instanceHead
-        [getTypeScriptTypeDec, getTypeScriptDeclarationsDec, getParentTypesDec]
-    ]

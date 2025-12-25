@@ -4,7 +4,6 @@
 module Main where
 
 import Data.Aeson.TypeScript.TH
-import Data.List (intercalate)
 import Data.Proxy
 import Data.Set (Set)
 import Data.Set qualified as Set
@@ -12,59 +11,12 @@ import Data.Text (pack, replace, unpack)
 import Data.Typeable (TypeRep, typeRep)
 import System.Environment (getArgs)
 import System.IO (writeFile)
-import TypeScriptInstances
-  ( AttackDef
-  , ConsequenceCard
-  , CoreCard
-  , GeneralDef
-  , ItemCard
-  , NatureCard
-  , OngoingDef
-  , Rule
-  , TalentCard
-  , TaskDef
-  , TriggerDef
-  )
 
-import CardPG.Core.Card (EncounterMechanics, GeneralActionDef, SpecialDefend, Stats)
-import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives
-  ( ActorId
-  , CardLocation
-  , Difficulty
-  , EquipSlot
-  , ResourceType
-  , StackPower
-  )
-import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
-import CardPG.Core.RuleDefs (PassiveDef)
-import CardPG.Core.State
-  ( ActionStack
-  , ActiveChallenge
-  , AssetState
-  , ChallengeSource
-  , CoreCardState
-  , CorePlayState
-  , GameEvent
-  , NarrativeStack
-  , PlannedAction
-  , RevealedEffect
-  , SpatialState
-  , TableCard
-  , TableState
-  )
-import CardPG.Server.Types
-  ( ActorGameEvent
-  , AdminCommand
-  , ClientMessage
-  , Command
-  , LogEntry
-  , LogPayload
-  , Phase
-  , ServerMessage
-  , StateUpdate
-  , Token
-  )
+-- Import the TypeScriptInstances module to bring all instances into scope.
+-- The instances are discovered transitively from the root types below.
+import TypeScriptInstances ()
+
+import CardPG.Server.Types (AdminCommand, ClientMessage, ServerMessage)
 
 collectDeclarations :: [TSType] -> [TSDeclaration]
 collectDeclarations roots =
