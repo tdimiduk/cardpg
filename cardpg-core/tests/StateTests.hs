@@ -12,7 +12,7 @@ import Test.Tasty
 import Test.Tasty.QuickCheck hiding (discard)
 
 import ArbitraryInstances ()
-import CardPG.Core.Card (ItemCard, ItemCardT (..))
+import CardPG.Core.Card (ItemCard, ItemCardT (..), Identified (..))
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck (performFatigueCycle)
 import CardPG.Core.Logic.Monad (runGameM)
@@ -59,8 +59,8 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
 
     tableSt =
       TableState
-        { assets = Map.singleton itemId (Equipped SlotMainHand)
-        , registry = Map.singleton itemId (TCItem dummyItem)
+        { assets = Map.singleton itemId (Identified itemId (TCItem dummyItem), Equipped SlotMainHand)
+        , consequences = []
         }
 
     actorSt =

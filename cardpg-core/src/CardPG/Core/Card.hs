@@ -35,6 +35,7 @@ import Data.Aeson
   , Value (Object)
   , genericParseJSON
   , genericToJSON
+  , withObject
   , (.:)
   )
 import Data.Aeson.TH (deriveJSON)
@@ -59,12 +60,10 @@ instance (ToJSON id, ToJSON a) => ToJSON (Identified id a) where
   toJSON = genericToJSON cardpgJsonDef
 
 instance (FromJSON id, FromJSON a) => FromJSON (Identified id a) where
-  parseJSON v = case v of
-    Object o -> do
-      i <- o .: "id"
-      c <- parseJSON v
-      return $ Identified i c
-    _ -> genericParseJSON cardpgJsonDef v -- Fallback (unlikely to work for generic but maybe for nested)
+  parseJSON = withObject "Identified" $ \o -> do
+    i <- o .: "id"
+    c <- o .: "content"
+    return $ Identified i c
 
 type CardInstance a = Identified CardInstanceId a
 

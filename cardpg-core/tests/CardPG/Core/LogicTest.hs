@@ -18,6 +18,8 @@ import CardPG.Core.Card
   , NatureCard
   , Stats (..)
   , TalentCard
+  , Identified (..)
+  , CardInstance
   )
 import CardPG.Core.Logic.Deck qualified as Deck
 import CardPG.Core.Logic.Monad (GameM (..), runGameM)
@@ -42,7 +44,7 @@ runLogic initialState action =
    in (res, finalState, events)
 
 -- Helper to create a dummy actor state
-mkActorState :: [CardInstanceId] -> ActorState
+mkActorState :: [CardInstance CoreCard] -> ActorState
 mkActorState handCards =
   ActorState
     { name = "TestActor"
@@ -55,26 +57,15 @@ mkActorState handCards =
           , planned = Nothing
           , defending = []
           , inPlay = Map.empty
-          , registry =
-              Map.fromList
-                [ (cid, CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing)
-                | cid <- handCards
-                , cid == CardInstanceId (read "00000000-0000-0000-0000-000000000001")
-                ]
-                `Map.union` Map.fromList
-                  [ (cid, CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing)
-                  | cid <- handCards
-                  , cid /= CardInstanceId (read "00000000-0000-0000-0000-000000000001")
-                  ]
           , revealed = Nothing
           }
-    , tableState = TableState Map.empty Map.empty [] Map.empty
+    , tableState = TableState Map.empty []
     , spatial = SpatialState 0 0 1 Nothing
     , plannedMove = Nothing
     }
 
-mockConsTemplate :: Int -> ConsequenceCard
-mockConsTemplate sev =
+mkConsTemplate :: Int -> ConsequenceCard
+mkConsTemplate sev =
   ConsequenceCard
     { name = unsafeNonEmptyText "Cons"
     , tags = Nothing
@@ -85,8 +76,8 @@ mockConsTemplate sev =
     , rules = Nothing
     }
 
-mockItemRes :: Int -> ItemCard
-mockItemRes res =
+mkItemRes :: Int -> ItemCard
+mkItemRes res =
   ItemCard
     { name = unsafeNonEmptyText "Armor"
     , tags = Nothing
@@ -128,15 +119,23 @@ test_plannedActions =
   let c1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
       c2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       c3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
-      planActionC1C2 = PStandard (ActionStack c1 [c2])
+      
+      dummyCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing
+      dummyActionCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing
+      
+      card1 = Identified c1 dummyActionCard
+      card2 = Identified c2 dummyCard
+      card3 = Identified c3 dummyCard
+      
+      planActionC1C2 = PStandard (ActionStack card1 [card2])
    in testGroup
         "Planned Actions Logic"
         [ testCase "plans an action successfully" $ do
-            let initialState = mkActorState [c1, c2, c3]
+            let initialState = mkActorState [card1, card2, card3]
             let ((), finalState, events) = runLogic initialState (planAction c1 [c2])
 
             -- Removed from hand
-            finalState.coreState.hand @?= [c3]
+            finalState.coreState.hand @?= [card3]
 
             -- Added to planned
             let expectedPlan = planActionC1C2
@@ -145,7 +144,7 @@ test_plannedActions =
             -- Event emitted
             assertBool "ActionPlanned event missing" (ActionPlanned expectedPlan `elem` events)
         , testCase "cancels a planned action" $ do
-            let initialState = mkActorState [c3]
+            let initialState = mkActorState [card3]
             let plannedState =
                   initialState
                     { coreState =
@@ -162,10 +161,10 @@ test_plannedActions =
 
             -- We know the plan that was canceled is PStandard (ActionStack c1 [c2])
             -- because that's what we put in plannedState
-            let expectedCanceledPlan = PStandard (ActionStack c1 [c2])
+            let expectedCanceledPlan = PStandard (ActionStack card1 [card2])
             assertBool "PlanCanceled missing" (PlanCanceled expectedCanceledPlan `elem` events)
         , testCase "discards planned actions" $ do
-            let initialState = mkActorState [c3]
+            let initialState = mkActorState [card3]
             let plannedState =
                   initialState
                     { coreState =
@@ -177,8 +176,8 @@ test_plannedActions =
             let ((), finalState, _) = runLogic plannedState discardPlannedActions
 
             let d = finalState.coreState.discard
-            assertBool "Expect c1 in discard" (c1 `elem` d)
-            assertBool "Expect c2 in discard" (c2 `elem` d)
+            assertBool "Expect c1 in discard" (card1 `elem` d)
+            assertBool "Expect c2 in discard" (card2 `elem` d)
         ]
 
 test_consequenceLogic :: TestTree
@@ -187,42 +186,45 @@ test_consequenceLogic =
       cid2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       cid3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
       cidRes = CardInstanceId (read "00000000-0000-0000-0000-000000000009")
+      
+      cons1 = Identified cid1 (mkConsTemplate 0)
+      cons2 = Identified cid2 (mkConsTemplate 0)
+      cons3 = Identified cid3 (mkConsTemplate 0)
    in testGroup
         "Consequence Logic"
         [ testCase "adds specific severity consequence" $ do
-            let env = mkEnv [mockConsTemplate 5]
+            let env = mkEnv [mkConsTemplate 5]
             let state = mkActorState []
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence (Just 5))
 
             length finalState.tableState.consequences @?= 1
-            assertBool "ConsequenceAdded 5 missing" (ConsequenceAdded 5 `elem` events)
+            assertBool "ConsequenceAdded 5 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 5; _ -> False) events)
         , testCase "calculates default resilience of 1 and proper severity" $ do
             -- No items, Res=1. existing=0. Sev = 0/1 + 1 = 1.
-            let env = mkEnv [mockConsTemplate 1]
+            let env = mkEnv [mkConsTemplate 1]
             let state = mkActorState []
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-            assertBool "ConsequenceAdded 1 missing" (ConsequenceAdded 1 `elem` events)
+            assertBool "ConsequenceAdded 1 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
         , testCase "uses equipped resilience" $ do
             -- Item with Res=3. Existing=0. Sev = 0/3 + 1 = 1.
-            let item = mockItemRes 3
+            let item = mkItemRes 3
             let tc = TCItem item
             let state0 = mkActorState []
             let state =
                   state0
                     { tableState =
                         state0.tableState
-                          { registry = Map.singleton cidRes tc
-                          , assets = Map.singleton cidRes (Equipped SlotBody)
+                          { assets = Map.singleton cidRes (Identified cidRes tc, Equipped SlotBody)
                           }
                     }
-            let env = mkEnv [mockConsTemplate 1]
+            let env = mkEnv [mkConsTemplate 1]
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-            assertBool "ConsequenceAdded 1 missing" (ConsequenceAdded 1 `elem` events)
+            assertBool "ConsequenceAdded 1 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
         , testCase "calculates severity based on existing count and resilience" $ do
             -- Res=2. Existing=3 consequences. Sev = 3/2 + 1 = 1 + 1 = 2.
-            let item = mockItemRes 2
+            let item = mkItemRes 2
             let tc = TCItem item
 
             let state0 = mkActorState []
@@ -230,15 +232,15 @@ test_consequenceLogic =
                   state0
                     { tableState =
                         state0.tableState
-                          { registry = Map.singleton cidRes tc
-                          , assets = Map.singleton cidRes (Equipped SlotBody)
-                          , consequences = [cid1, cid2, cid3] -- 3 dummy existing
+
+                          { assets = Map.singleton cidRes (Identified cidRes tc, Equipped SlotBody)
+                          , consequences = [cons1, cons2, cons3] -- 3 dummy existing
                           }
                     }
-            let env = mkEnv [mockConsTemplate 2]
+            let env = mkEnv [mkConsTemplate 2]
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-            assertBool "ConsequenceAdded 2 missing" (ConsequenceAdded 2 `elem` events)
+            assertBool "ConsequenceAdded 2 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 2; _ -> False) events)
         ]
 
 test_statusLogic :: TestTree
@@ -276,15 +278,12 @@ test_statusLogic =
 
         -- 1. Add Status
         let ((), state1, _) = runLogicWithEnv env state0 (addStatus statusName LocationHand)
-        let registrySizeAfterAdd = Map.size state1.coreState.registry
         let handCardId = head state1.coreState.hand
 
         -- 2. Remove Status
-        let ((), state2, _) = runLogicWithEnv env state1 (destroyStatus statusName (Just handCardId))
-        let registrySizeAfterRemove = Map.size state2.coreState.registry
+        let ((), state2, _) = runLogicWithEnv env state1 (destroyStatus statusName (Just handCardId.id))
 
         -- 3. Verify
         -- The registry size should decrease by 1
-        registrySizeAfterRemove @?= (registrySizeAfterAdd - 1)
         length state2.coreState.hand @?= 0
     ]

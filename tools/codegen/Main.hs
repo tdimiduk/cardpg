@@ -67,7 +67,6 @@ import CardPG.Server.Types
   , StateUpdate
   , Token
   )
-import CardPG.Server.Types.Wire qualified as Wire
 
 collectDeclarations :: [TSType] -> [TSDeclaration]
 collectDeclarations roots =

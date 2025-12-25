@@ -240,11 +240,19 @@ instance Arbitrary SpatialState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance Arbitrary RealizedAttack where
+instance Arbitrary ChallengeSource where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary ActiveChallenge where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
 instance Arbitrary RevealedEffect where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance (Arbitrary id, Arbitrary a) => Arbitrary (Identified id a) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 

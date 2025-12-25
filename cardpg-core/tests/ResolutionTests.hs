@@ -11,7 +11,7 @@ import System.Random (StdGen, mkStdGen)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCardT (..))
+import CardPG.Core.Card (CoreCardT (..), Identified (..))
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)
@@ -49,14 +49,17 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         , flavor = fatigueCard.flavor
         }
 
+    card1 = Identified c1Id dummyActionCard
+    card2 = Identified c2Id dummyCard
+    card3 = Identified c3Id dummyCard
+
     initialCore =
       CoreCardState
         { deck = []
-        , hand = [c1Id, c2Id, c3Id]
+        , hand = [card1, card2, card3]
         , discard = []
         , defending = []
         , inPlay = Map.empty
-        , registry = Map.fromList [(c1Id, dummyActionCard), (c2Id, dummyCard), (c3Id, dummyCard)]
         , planned = Nothing
         , revealed = Nothing
         }
@@ -66,7 +69,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         { name = "Tester"
         , actorType = "PC"
         , coreState = initialCore
-        , tableState = TableState Map.empty Map.empty [] Map.empty
+        , tableState = TableState Map.empty []
         , spatial = SpatialState 0 0 1 Nothing
         , plannedMove = Nothing
         }
@@ -78,8 +81,8 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
   -- Verify plan
   case actorAfterPlan.coreState.planned of
     Just (PStandard (ActionStack ac res)) -> do
-      assertEqual "Action card correct" c1Id ac
-      assertEqual "Resource card correct" [c2Id] res
+      assertEqual "Action card correct" c1Id ac.id
+      assertEqual "Resource card correct" [c2Id] (map (.id) res)
     Just _ -> assertFailure "unexpected action planned"
     Nothing -> assertFailure "Action should be planned"
 
@@ -91,10 +94,10 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         initialActor
           & #coreState
           % #hand
-          .~ [c1Id, c2Id]
+          .~ [card1, card2]
           & #coreState
           % #deck
-          .~ [c3Id]
+          .~ [card3]
 
       -- Plan again on this state
       ((_, actorAfterPlan2, _), gen2) = runState (runRWST (runGameM planAction) env actorWithDeck) gen
@@ -103,7 +106,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
       ((_, actorAfterDefend, _), gen3) = runState (runRWST (runGameM Logic.flipCardToDefense) env actorAfterPlan2) gen2
 
   -- Verify defense
-  assertEqual "Defending stack has c3" [c3Id] actorAfterDefend.coreState.defending
+  assertEqual "Defending stack has c3" [c3Id] (map (.id) actorAfterDefend.coreState.defending)
 
   -- 3. Resolve Round (End Defense + Discard Planned)
   let resolveAction = do
@@ -116,7 +119,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
   assertEqual "Defending stack empty" [] actorFinal.coreState.defending
   assertEqual "Planned action empty" Nothing actorFinal.coreState.planned
 
-  let discard = actorFinal.coreState.discard
+  let discard = map (.id) actorFinal.coreState.discard
   assertBool "c1 (action) in discard" (c1Id `elem` discard)
   assertBool "c2 (resource) in discard" (c2Id `elem` discard)
   assertBool "c3 (defense) in discard" (c3Id `elem` discard)

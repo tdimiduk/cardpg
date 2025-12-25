@@ -9,7 +9,7 @@ import Data.Map.Strict qualified as Map
 import Data.UUID qualified as UUID
 import Test.Tasty.QuickCheck
 
-import CardPG.Core.Card (ItemCardT (..))
+import CardPG.Core.Card (ItemCardT (..), Identified (..))
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..))
 import CardPG.Core.RichText (unsafeSimpleString)
@@ -49,10 +49,8 @@ prop_tableStateJsonStructure =
 
     ts =
       TableState
-        (Map.singleton cid1 asset)
-        (Map.singleton cid1 tableCard)
+        (Map.singleton cid1 (Identified cid1 tableCard, asset))
         []
-        Map.empty
 
     encoded = encode ts
     encodedStr = unpack encoded
