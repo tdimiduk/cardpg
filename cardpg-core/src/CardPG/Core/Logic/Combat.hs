@@ -23,11 +23,10 @@ import CardPG.Core.Card
   , Identified (..)
   , ItemCardT (..)
   , NatureCardT (..)
-  , Stats (..)
   , TalentCardT (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
-import CardPG.Core.Primitives (ResourceType (..), StackPower (..), getStat)
+import CardPG.Core.Primitives (StackPower (..), getStat)
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State

@@ -3,7 +3,6 @@ module CardPG.Core.State where
 import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
-import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import GHC.Generics (Generic)
 

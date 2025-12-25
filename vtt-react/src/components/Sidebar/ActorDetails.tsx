@@ -26,7 +26,6 @@ export const ActorDetails: React.FC<ActorDetailsProps> = ({ actor, onResumeDefen
   const defense = actor.defense ?? 1;
   const resilience = actor.resilience ?? 1;
 
-  // Resolve IDs to Card Objects
   // Resolve piles directly (since they are now instances)
   const drawPile = actor.coreState.deck.map(flattenInstance);
   const discardPile = actor.coreState.discard.map(flattenInstance);

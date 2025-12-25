@@ -32,8 +32,6 @@ module CardPG.Core.Card
 import Data.Aeson
   ( FromJSON (..)
   , ToJSON (..)
-  , Value (Object)
-  , genericParseJSON
   , genericToJSON
   , withObject
   , (.:)

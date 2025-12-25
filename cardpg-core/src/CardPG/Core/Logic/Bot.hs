@@ -6,7 +6,6 @@ module CardPG.Core.Logic.Bot
   ) where
 
 import Data.List (sortOn)
-import Data.Map.Strict qualified as Map
 import Data.Ord (Down (..))
 import Optics
 

@@ -1,6 +1,6 @@
 -- | Frontend types shared with the client.
 -- These types are enriched versions of core types, with computed fields baked in.
--- Import qualified as @Frontend@ when both core and wire types are needed:
+-- Import qualified as @Frontend@ when both core and frontend types are needed:
 --
 -- @
 -- import CardPG.Core.State qualified as Core
@@ -54,7 +54,6 @@ data DefenseDetails = DefenseDetails
 
 $(deriveJSON cardpgJsonDef ''DefenseDetails)
 
--- | Wire Instances (Concrete Types)
 data CoreCardInstance = CoreCardInstance {id :: CardInstanceId, content :: CoreCard}
   deriving (Show, Eq, Generic)
 
@@ -77,8 +76,6 @@ toTableInst (Identified i c) = TableCardInstance i c
 toConsInst :: Identified CardInstanceId ConsequenceCard -> ConsequenceCardInstance
 toConsInst (Identified i c) = ConsequenceCardInstance i c
 
--- | Wire ActionStack/PlannedAction
--- Needed because ActionStack contains CardInstance which we want to be CoreCardInstance
 data ActionStack = ActionStack
   { actionCard :: CoreCardInstance
   , resources :: [CoreCardInstance]
@@ -108,7 +105,6 @@ toPlannedAction (Core.PNarrative (Core.NarrativeStack cs col)) =
   PNarrative $ NarrativeStack (map toCoreInst (toList cs)) col
 toPlannedAction Core.PPass = PPass
 
--- | Wire States
 data CoreCardState = CoreCardState
   { deck :: [CoreCardInstance]
   , hand :: [CoreCardInstance]
@@ -129,7 +125,6 @@ data TableState = TableState
   deriving (Show, Eq, Generic)
 $(deriveJSON cardpgJsonDef ''TableState)
 
--- | Wire GameEvent
 data GameEvent
   = CardsCreated [CoreCardInstance]
   | DeckShuffled
@@ -167,7 +162,7 @@ toGameEvent (Core.StatusRemoved t l) = StatusRemoved t l
 toGameEvent (Core.ConsequenceAdded c) = ConsequenceAdded (toConsInst c)
 toGameEvent (Core.ConsequenceRemoved t) = ConsequenceRemoved t
 
--- | Wire format for ActorState with computed stats baked in.
+-- | Frontend format for ActorState with computed stats baked in.
 -- Internal Core.ActorState stays clean; this adds presentation-layer fields.
 data ActorState = ActorState
   { name :: Text
@@ -185,12 +180,10 @@ data ActorState = ActorState
 
 $(deriveJSON cardpgJsonDef ''ActorState)
 
--- | Enrich Core.ActorState for wire transmission
 toActorState :: Core.ActorState -> ActorState
 toActorState Core.ActorState{..} =
   let
-    -- Wire Conversions
-    wireCoreState =
+    frontendCoreState =
       CoreCardState
         { deck = map toCoreInst coreState.deck
         , hand = map toCoreInst coreState.hand
@@ -201,7 +194,7 @@ toActorState Core.ActorState{..} =
         , revealed = coreState.revealed
         }
 
-    wireTableState =
+    frontendTableState =
       TableState
         { assets = Map.map (Data.Bifunctor.first toTableInst) tableState.assets
         , consequences = map toConsInst tableState.consequences
@@ -243,7 +236,7 @@ toActorState Core.ActorState{..} =
       { defense = defStat
       , resilience = resStat
       , defenseDetails = details
-      , coreState = wireCoreState
-      , tableState = wireTableState
+      , coreState = frontendCoreState
+      , tableState = frontendTableState
       , ..
       }
