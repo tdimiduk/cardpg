@@ -61,7 +61,7 @@ import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
 import CardPG.Core.State (ActiveChallenge, ActorState, GameEnv, GameEvent, PlannedAction)
 import CardPG.Server.Config (Config)
-import CardPG.Server.Types.Wire qualified as Wire
+import CardPG.Server.Types.Frontend qualified as Frontend
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution
@@ -74,7 +74,7 @@ data LogPayload
   | LogChat {content :: Text}
   | LogChallenge
       { challenge :: ActiveChallenge
-      , plannedAction :: Wire.PlannedAction
+      , plannedAction :: Frontend.PlannedAction
       }
   | LogDefense
       { defenseActorId :: ActorId
@@ -138,7 +138,7 @@ $(deriveJSON cardpgJsonDef ''Token)
 
 data ActorGameEvent = ActorGameEvent
   { actorId :: ActorId
-  , event :: Wire.GameEvent
+  , event :: Frontend.GameEvent
   }
   deriving (Show, Eq, Generic)
 
@@ -186,7 +186,7 @@ $(deriveJSON cardpgJsonDef ''ClientMessage)
 -- | Updates to the authoritative state
 data StateUpdate = StateUpdate
   { updateActorId :: ActorId
-  , updateActorState :: Wire.ActorState
+  , updateActorState :: Frontend.ActorState
   }
   deriving (Show, Eq, Generic)
 

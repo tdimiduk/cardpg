@@ -71,7 +71,7 @@ import CardPG.Server.Types
   , StateUpdate (..)
   , Token
   )
-import CardPG.Server.Types.Wire qualified as Wire
+import CardPG.Server.Types.Frontend qualified as Frontend
 import DeriveSpecialized
   ( deriveSpecializedInstance
   , makeBridgeInstance
@@ -261,8 +261,8 @@ $( do
      p_consequence2 <-
        makeProxyInstance [t|ConsequenceCardT DSLRule|] ''ConsequenceCard "ConsequenceCard"
 
-     i_coreInstT <- deriveTypeScript cardpgJsonDef ''Wire.CoreCardInstance
-     i_consInstT <- deriveTypeScript cardpgJsonDef ''Wire.ConsequenceCardInstance
+     i_coreInstT <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCardInstance
+     i_consInstT <- deriveTypeScript cardpgJsonDef ''Frontend.ConsequenceCardInstance
 
      return
        ( i_attack
@@ -304,9 +304,9 @@ $( do
      i_actorGameEvent <- deriveTypeScript cardpgJsonDef ''ActorGameEvent
      i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
 
-     i_actionStack <- deriveTypeScript cardpgJsonDef ''Wire.ActionStack
-     i_narrativeStack <- deriveTypeScript cardpgJsonDef ''Wire.NarrativeStack
-     i_plannedAction <- deriveTypeScript cardpgJsonDef ''Wire.PlannedAction
+     i_actionStack <- deriveTypeScript cardpgJsonDef ''Frontend.ActionStack
+     i_narrativeStack <- deriveTypeScript cardpgJsonDef ''Frontend.NarrativeStack
+     i_plannedAction <- deriveTypeScript cardpgJsonDef ''Frontend.PlannedAction
      i_challengeSource <- deriveTypeScript cardpgJsonDef ''ChallengeSource
      i_activeChallenge <- deriveTypeScript cardpgJsonDef ''ActiveChallenge
      i_revealedEffect <- deriveTypeScript cardpgJsonDef ''RevealedEffect
@@ -315,7 +315,7 @@ $( do
      i_logEntry <- deriveTypeScript cardpgJsonDef ''LogEntry
 
      i_tableCard <- deriveTypeScript cardpgJsonDef ''TableCard
-     i_gameEvent <- deriveTypeScript cardpgJsonDef ''Wire.GameEvent
+     i_gameEvent <- deriveTypeScript cardpgJsonDef ''Frontend.GameEvent
 
      return
        ( i_token
@@ -338,17 +338,17 @@ $( do
 
 -- 4. TableCardInstance Instance (Must see TableCard instance and TableCardInstance data)
 $( do
-     deriveTypeScript cardpgJsonDef ''Wire.TableCardInstance
+     deriveTypeScript cardpgJsonDef ''Frontend.TableCardInstance
  )
 
 -- 5. Dependent State (Must see TableCardInstance proxy)
 $( do
      i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
-     i_coreState <- deriveTypeScript cardpgJsonDef ''Wire.CoreCardState
-     i_tableState <- deriveTypeScript cardpgJsonDef ''Wire.TableState
+     i_coreState <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCardState
+     i_tableState <- deriveTypeScript cardpgJsonDef ''Frontend.TableState
      i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
-     i_actorState <- deriveTypeScript cardpgJsonDef ''Wire.ActorState
-     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''Wire.DefenseDetails
+     i_actorState <- deriveTypeScript cardpgJsonDef ''Frontend.ActorState
+     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''Frontend.DefenseDetails
      i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
      i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
 

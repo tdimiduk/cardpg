@@ -1,12 +1,12 @@
--- | Wire types for client communication.
+-- | Frontend types shared with the client.
 -- These types are enriched versions of core types, with computed fields baked in.
--- Import qualified as @Wire@ when both core and wire types are needed:
+-- Import qualified as @Frontend@ when both core and wire types are needed:
 --
 -- @
 -- import CardPG.Core.State qualified as Core
--- import CardPG.Server.Types.Wire qualified as Wire
+-- import CardPG.Server.Types.Frontend qualified as Frontend
 -- @
-module CardPG.Server.Types.Wire
+module CardPG.Server.Types.Frontend
   ( ActorState (..)
   , DefenseDetails (..)
   , CoreCardInstance (..)

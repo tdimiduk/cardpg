@@ -26,7 +26,7 @@ import CardPG.Server.Game (GameState(..), emptyGame, addActor)
 import CardPG.Server.Engine (runActorAction, concludeRound)
 import CardPG.Server.Dispatch (processCommand)
 import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
-import qualified CardPG.Server.Types.Wire as Wire
+import qualified CardPG.Server.Types.Frontend as Frontend
 import CardPG.Core.Card (CardInstance, Identified(..))
 
 test_game :: TestTree
@@ -82,7 +82,7 @@ test_game = testGroup "Server Game Engine"
       let evt = head actions
       evt.actorId @?= actorId
       case evt.event of
-        Wire.CardDrawn c -> c.id @?= cid1
+        Frontend.CardDrawn c -> c.id @?= cid1
         _ -> assertBool "Expected CardDrawn event" False
       
       let actorSt2 = game2 ^. #actors % at actorId
@@ -99,7 +99,7 @@ test_game = testGroup "Server Game Engine"
       let evt2 = head actions2
       evt2.actorId @?= actorId
       case evt2.event of
-        Wire.CardDefended c -> c.id @?= cid2
+        Frontend.CardDefended c -> c.id @?= cid2
         _ -> assertBool "Expected CardDefended event" False
 
       -- Verify Actor State in Game
@@ -199,7 +199,7 @@ test_game = testGroup "Server Game Engine"
       let ((game2, _, events, _logs), _) = runState (processCommand (EndRoundIntent npcId) 3000 game1) gen
       
       -- Expect ActionPlanned event (from auto-planning)
-      let planEvents = [e | e <- events, case e.event of Wire.ActionPlanned _ -> True; _ -> False]
+      let planEvents = [e | e <- events, case e.event of Frontend.ActionPlanned _ -> True; _ -> False]
       length planEvents @?= 1
       
       -- Verify Plan
@@ -246,7 +246,7 @@ test_game = testGroup "Server Game Engine"
       
       length actions @?= 1
       case head actions of
-        ActorGameEvent _ (Wire.ActionPlanned (Wire.PStandard stack)) -> do
+        ActorGameEvent _ (Frontend.ActionPlanned (Frontend.PStandard stack)) -> do
            stack.actionCard.id @?= actionCid
            (head stack.resources).id @?= resCid
         _ -> assertBool "Expected ActionPlanned event" False
@@ -256,11 +256,11 @@ test_game = testGroup "Server Game Engine"
 -- Helpers
 
 -- Helper to match constructor names for easier assertion
-toConstr :: Wire.GameEvent -> String
-toConstr (Wire.CardsCreated {}) = "CardsCreated"
-toConstr (Wire.DeckShuffled {}) = "DeckShuffled"
-toConstr (Wire.CardDrawn {}) = "CardDrawn"
-toConstr (Wire.CardDefended {}) = "CardDefended"
+toConstr :: Frontend.GameEvent -> String
+toConstr (Frontend.CardsCreated {}) = "CardsCreated"
+toConstr (Frontend.DeckShuffled {}) = "DeckShuffled"
+toConstr (Frontend.CardDrawn {}) = "CardDrawn"
+toConstr (Frontend.CardDefended {}) = "CardDefended"
 toConstr _ = "Other"
 
 mockCard :: Text -> CoreCard

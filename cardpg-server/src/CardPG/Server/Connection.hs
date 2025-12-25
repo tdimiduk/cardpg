@@ -42,7 +42,7 @@ import CardPG.Server.Types
   , clientExists
   , removeClient
   )
-import CardPG.Server.Types.Wire qualified as Wire
+import CardPG.Server.Types.Frontend qualified as Frontend
 
 application :: MVar ServerState -> ServerApp
 application state pending = do
@@ -107,7 +107,7 @@ application state pending = do
   (msgs, initialUpdate, currentClients) <-
     readMVar state >>= \s -> do
       let updates =
-            map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (s.gameState.actors)
+            map (\(aid, actor) -> StateUpdate aid (Frontend.toActorState actor)) $ Map.toList (s.gameState.actors)
       let welcomeMsg =
             Welcome
               finalClientId
@@ -185,7 +185,7 @@ talk client socket state = forever $ do
         return (s', (gs, s.dbPool, s.clients))
 
       -- Send custom Welcome to all clients
-      let initialUpdates = map (\(aid, actor) -> StateUpdate aid (Wire.toActorState actor)) $ Map.toList (newGs.actors)
+      let initialUpdates = map (\(aid, actor) -> StateUpdate aid (Frontend.toActorState actor)) $ Map.toList (newGs.actors)
       let connectedNames = map (.clientName) $ Map.elems clientsMap
 
       -- Broadcast Welcome manually to all sockets
