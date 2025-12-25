@@ -1,7 +1,9 @@
 module Rules.Haskell
   ( buildCore
+  , buildApi
   , buildServer
   , replCore
+  , replApi
   , replServer
   , defineHaskellTestRules
   , defineHaskellLintRules
@@ -17,6 +19,9 @@ import Development.Shake.FilePath
 getCoreSources :: Action [FilePath]
 getCoreSources = getPackageSources "cardpg-core" "src"
 
+getApiSources :: Action [FilePath]
+getApiSources = getPackageSources "cardpg-api" "src"
+
 getServerSources :: Action [FilePath]
 getServerSources = getPackageSources "cardpg-server" "src"
 
@@ -26,11 +31,17 @@ getCardCompilerSources = getPackageSources "tools/card-compiler" "src"
 buildCore :: Action ()
 buildCore = need ["_build/libs/cardpg-core"]
 
+buildApi :: Action ()
+buildApi = need ["_build/libs/cardpg-api"]
+
 buildServer :: Action ()
 buildServer = need ["_build/libs/cardpg-server"]
 
 replCore :: Action ()
 replCore = cmd_ (["cabal", "repl", "cardpg-core"] :: [String])
+
+replApi :: Action ()
+replApi = cmd_ (["cabal", "repl", "cardpg-api"] :: [String])
 
 replServer :: Action ()
 replServer = cmd_ (["cabal", "repl", "cardpg-server"] :: [String])
@@ -54,10 +65,17 @@ defineHaskellLibraryRules = do
     cmd_ (["cabal", "build", "cardpg-core"] :: [String])
     cmd_ (["touch", out] :: [String])
 
+  "_build/libs/cardpg-api" %> \out -> do
+    srcs <- getApiSources
+    need srcs
+    need ["_build/libs/cardpg-core"]
+    cmd_ (["cabal", "build", "cardpg-api"] :: [String])
+    cmd_ (["touch", out] :: [String])
+
   "_build/libs/cardpg-server" %> \out -> do
     srcs <- getServerSources
     need srcs
-    need ["_build/libs/cardpg-core"]
+    need ["_build/libs/cardpg-core", "_build/libs/cardpg-api"]
     cmd_ (["cabal", "build", "cardpg-server"] :: [String])
     cmd_ (["touch", out] :: [String])
 
@@ -77,12 +95,13 @@ getHaskellSources = do
   let srcDirs =
         [ "cardpg-core/src"
         , "cardpg-core/tests"
+        , "cardpg-api/src"
+        , "cardpg-api/app"
         , "cardpg-server/src"
         , "cardpg-server/tests"
         , "shake-build/src"
         , "tools/card-compiler/src"
         , "tools/card-compiler/test"
-        , "tools/codegen"
         ]
   getDirectoryFiles "" [d ++ "/**/*.hs" | d <- srcDirs]
 

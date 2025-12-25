@@ -28,7 +28,6 @@ library
   import: project-config
   exposed-modules:
     CardPG.Server.Types
-    CardPG.Server.Types.Frontend
     CardPG.Server.Game
     CardPG.Server.Engine
     CardPG.Server.Dispatch
@@ -49,6 +48,7 @@ library
                      , containers
                      , uuid
                      , cardpg-core
+                     , cardpg-api
                      , random
                      , optics
                      , mtl
@@ -98,6 +98,7 @@ test-suite cardpg-server-test
   build-depends:       base >= 4.7 && < 5
                      , cardpg-server
                      , cardpg-core
+                     , cardpg-api
                      , tasty
                      , tasty-hunit
                      , tasty-quickcheck

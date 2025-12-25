@@ -24,12 +24,12 @@ import CardPG.Server.Types
   , LogEntry (..)
   , LogPayload (..)
   )
-import CardPG.Server.Types.Frontend
+import CardPG.Api.Frontend
   ( ActionStack (..)
   , GameEvent (..)
   , PlannedAction (..)
   )
-import CardPG.Server.Types.Frontend qualified as Frontend
+import CardPG.Api.Frontend qualified as Frontend
 
 mkChatLog :: Int -> Int -> Maybe ActorId -> Text -> Text -> LogEntry
 mkChatLog ts seqNum senderId senderName content =

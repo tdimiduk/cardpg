@@ -9,7 +9,7 @@ import qualified Data.List
 
 import CardPG.Core.Primitives (ActorId(..))
 import CardPG.Server.Types (ServerMessage(..), ActorGameEvent(..))
-import qualified CardPG.Server.Types.Frontend as Frontend
+import qualified CardPG.Api.Frontend as Frontend
 
 test_json :: TestTree
 test_json = testGroup "JSON Serialization"

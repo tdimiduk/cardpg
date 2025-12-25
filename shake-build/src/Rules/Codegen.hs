@@ -5,7 +5,7 @@ import Development.Shake
 import Common (getPackageSources)
 
 getCodegenSources :: Action [FilePath]
-getCodegenSources = getPackageSources "tools/codegen" "."
+getCodegenSources = getPackageSources "cardpg-api" "app"
 
 getCardCompilerSources :: Action [FilePath]
 getCardCompilerSources = getPackageSources "tools/card-compiler" "."
@@ -20,10 +20,10 @@ buildGenTypes =
 defineCodegenRules :: Rules ()
 defineCodegenRules = do
   "_build/codegen" %> \out -> do
-    need ["_build/libs/cardpg-core", "_build/libs/cardpg-server"]
-    -- We need core and server sources too.
+    need ["_build/libs/cardpg-core", "_build/libs/cardpg-api"]
+    -- We need core and api sources too.
     -- Safe replacement for head
-    srcs <- getDirectoryFiles "" ["tools/codegen//*.hs"]
+    srcs <- getDirectoryFiles "" ["cardpg-api/app//*.hs"]
     case srcs of
       [] -> fail "No source files found for codegen"
       srcs' -> need srcs'

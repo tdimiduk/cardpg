@@ -1,0 +1,54 @@
+cabal-version: 3.0
+name:                cardpg-api
+version:             0.1.0.0
+license:             BSD-3-Clause
+license-file:        LICENSE
+author:              Antigravity
+maintainer:          antigravity@example.com
+build-type:          Simple
+
+common project-config
+  default-language: GHC2021
+  default-extensions:
+    -- Project Standard
+    DerivingStrategies
+    DuplicateRecordFields
+    NoFieldSelectors
+    OverloadedLabels
+    OverloadedRecordDot
+    OverloadedStrings
+    QuantifiedConstraints
+    RecordWildCards
+    TemplateHaskell
+
+    -- Control Flow
+    MultiWayIf
+
+library
+  import: project-config
+  hs-source-dirs:      src
+  exposed-modules:
+    CardPG.Api.Frontend
+    CardPG.Api.Types
+  build-depends:       base >= 4.7 && < 5
+                     , cardpg-core
+                     , aeson
+                     , aeson-typescript
+                     , text
+                     , containers
+                     , uuid
+                     , time
+
+executable codegen
+  import: project-config
+  main-is:             Main.hs
+  other-modules:       DeriveSpecialized, TypeScriptInstances
+  hs-source-dirs:      app
+  build-depends:       base >= 4.7 && < 5
+                     , cardpg-api
+                     , cardpg-core
+                     , aeson
+                     , aeson-typescript
+                     , text
+                     , template-haskell
+                     , containers

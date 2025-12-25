@@ -1,7 +1,7 @@
 packages:
   cardpg-core/cardpg-core.cabal
   cardpg-server/cardpg-server.cabal
-  tools/codegen/cardpg-codegen.cabal
+  cardpg-api/cardpg-api.cabal
   tools/card-compiler/card-compiler.cabal
   shake-build/shake-build.cabal
   ../beam-automigrate/beam-automigrate.cabal

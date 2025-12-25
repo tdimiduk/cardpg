@@ -23,7 +23,7 @@ import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId)
 import CardPG.Core.State (ActorState (..), CoreCardState (..), GameEvent)
 import CardPG.Server.Types (ActorGameEvent (..), GameState (..), StateUpdate (..))
-import CardPG.Server.Types.Frontend qualified as Frontend
+import CardPG.Api.Frontend qualified as Frontend
 
 runActorAction ::
   ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)

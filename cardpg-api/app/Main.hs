@@ -16,7 +16,7 @@ import System.IO (writeFile)
 -- The instances are discovered transitively from the root types below.
 import TypeScriptInstances ()
 
-import CardPG.Server.Types (AdminCommand, ClientMessage, ServerMessage)
+import CardPG.Api.Types (AdminCommand, ClientMessage, ServerMessage)
 
 collectDeclarations :: [TSType] -> [TSDeclaration]
 collectDeclarations roots =

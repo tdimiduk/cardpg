@@ -42,7 +42,7 @@ import CardPG.Server.Types
   , clientExists
   , removeClient
   )
-import CardPG.Server.Types.Frontend qualified as Frontend
+import CardPG.Api.Frontend qualified as Frontend
 
 application :: MVar ServerState -> ServerApp
 application state pending = do

@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module TypeScriptInstances where
@@ -47,7 +48,7 @@ import CardPG.Core.State
   , SpatialState (..)
   , TableCard (..)
   )
-import CardPG.Server.Types
+import CardPG.Api.Types
   ( ActorGameEvent (..)
   , AdminCommand (..)
   , ClientMessage
@@ -59,7 +60,7 @@ import CardPG.Server.Types
   , StateUpdate (..)
   , Token
   )
-import CardPG.Server.Types.Frontend qualified as Frontend
+import CardPG.Api.Frontend qualified as Frontend
 import DeriveSpecialized
   ( deriveSpecializedInstance
   , specializeType

@@ -9,7 +9,7 @@
 -- 1. Flattened IDs: 'id' is a field on the record, not a wrapper.
 -- 2. Explicit JSON: We use standard Generic deriving without complex custom options.
 -- 3. Stability: Changes to Core don't automatically break Frontend.
-module CardPG.Server.Types.Frontend
+module CardPG.Api.Frontend
   ( -- * Actors
     ActorState (..)
   , DefenseDetails (..)

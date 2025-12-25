@@ -118,5 +118,3 @@ substType subst t = case t of
   ListT -> return ListT
   ConT n -> return (ConT n)
   _ -> return t
-
-

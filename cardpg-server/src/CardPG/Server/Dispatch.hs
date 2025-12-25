@@ -29,7 +29,7 @@ import CardPG.Server.Types
   , Phase (..)
   , StateUpdate (..)
   )
-import CardPG.Server.Types.Frontend qualified as Frontend
+import CardPG.Api.Frontend qualified as Frontend
 import Data.Text qualified as T
 
 processCommand ::

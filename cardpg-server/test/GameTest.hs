@@ -26,7 +26,7 @@ import CardPG.Server.Game (GameState(..), emptyGame, addActor)
 import CardPG.Server.Engine (runActorAction, concludeRound)
 import CardPG.Server.Dispatch (processCommand)
 import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
-import qualified CardPG.Server.Types.Frontend as Frontend
+import qualified CardPG.Api.Frontend as Frontend
 import CardPG.Core.Card (CardInstance, Identified(..))
 
 test_game :: TestTree
