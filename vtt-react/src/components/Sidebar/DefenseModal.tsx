@@ -3,7 +3,7 @@ import { X, Shield, Skull, Zap, ChevronRight, Layers } from 'lucide-react';
 import { DefenseDetails, CoreCard, ActorState } from '../../generated/types';
 import { CoreCardComponent, ConsequenceCardComponent } from '../Card/Card';
 import { CardStack } from '../Card/CardStack';
-import { flattenInstance, ClientCard } from '../../store/selectors';
+import { ClientCard } from '../../store/selectors';
 
 // Updated imports for strict view usage with Wrappers
 // Note: We'll use simple div wrappers for some "chips" but standard components for full cards
@@ -47,11 +47,10 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   };
 
   // Resolve Consequences
-  const consequences =
-    activeActor?.tableState.consequences.map((c) => ({ ...c.content, id: c.id })) || [];
+  const consequences = activeActor?.tableState.consequences || [];
 
   // Resolve Defense Stack
-  const defenseStack = activeActor?.coreState.defending.map(flattenInstance) || [];
+  const defenseStack = activeActor?.coreState.defending || [];
 
   const defenseDetails = activeActor?.defenseDetails || defaultDefenseDetails;
   const currentDefense = activeActor?.defense || 0;

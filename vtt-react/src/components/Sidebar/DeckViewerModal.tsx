@@ -6,7 +6,7 @@ import { CardComponent } from '../Card/Card';
 interface DeckViewerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cards: (CoreCard & { id: string })[];
+  cards: CoreCard[];
 }
 
 export const DeckViewerModal: React.FC<DeckViewerModalProps> = ({ isOpen, onClose, cards }) => {

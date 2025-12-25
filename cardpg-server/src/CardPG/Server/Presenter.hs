@@ -68,7 +68,7 @@ eventToLogs ts actorId event game =
         CardDefended _ ->
           [mkLog "defend" (LogDefense actorId False Nothing)]
         DefenseEnded stack ->
-          let names = [getRawText c.content.name | c <- stack]
+          let names = [getRawText c.name | c <- stack]
            in [mkLog "end-defend" (LogDefense actorId True (Just names))]
         DeckShuffled -> [mkLog "shuffle" (LogInfo $ actorName <> " reshuffled their deck.")]
         ConsequenceAdded _ -> [mkLog "cons-add" (LogInfo $ actorName <> " gained a consequence.")]

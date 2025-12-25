@@ -7,7 +7,7 @@ import { RESOURCE_TYPES } from '../../constants';
 
 describe('CardComponent', () => {
   const mockCoreCard: CoreCard = {
-    type: 'coreCard',
+    id: 'core-1',
     name: 'Strike',
     stats: { red: 2, yellow: 0, blue: 0 },
     cost: 1,
@@ -26,9 +26,9 @@ describe('CardComponent', () => {
 
   // Mock TableCard (Wrapper)
   const mockItemCard: ITCItem = {
-    type: 'tCItem',
+    type: 'item',
     data: {
-      type: 'itemCard',
+      id: 'item-1',
       name: 'Sword',
       traits: ['Sharp'],
       weight: 1,

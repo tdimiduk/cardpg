@@ -16,7 +16,6 @@ import TypeScriptInstances
   ( AttackDef
   , ConsequenceCard
   , CoreCard
-  , EncounterCard
   , GeneralDef
   , ItemCard
   , NatureCard
@@ -98,7 +97,6 @@ main = do
             [ TSType (Proxy :: Proxy AdminCommand)
             , TSType (Proxy :: Proxy ClientMessage)
             , TSType (Proxy :: Proxy ServerMessage)
-            , TSType (Proxy :: Proxy EncounterCard)
             ]
 
   let exportedDeclarations =

@@ -6,7 +6,7 @@ import { Card } from '../Card/Card';
 interface StackViewerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cards: (Card & { id: string })[];
+  cards: Card[];
   title: string;
 }
 

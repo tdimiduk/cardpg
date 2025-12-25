@@ -30,7 +30,7 @@ const BaseCard: React.FC<{
   className?: string;
 }> = ({ card, children, selected, onClick, scale = 1, className = '' }) => {
   // Safe helper to check card type for CoreCard styling
-  const isCore = 'type' in card && card.type === 'coreCard';
+  const isCore = 'stats' in card;
   const hasCost = isCore && (card as CoreCard).cost !== undefined;
 
   return (
@@ -316,15 +316,20 @@ export const TableCardComponent: React.FC<CardProps & { card: TableCard }> = (pr
 export const CardView: React.FC<CardProps> = (props) => {
   const { card } = props;
 
-  if (card.type === 'coreCard') {
+  // Dispatch based on unique properties since CoreCard/ConsequenceCard lack 'type' discriminator
+  if ('stats' in card) {
     return <CoreCardComponent {...props} card={card} />;
   }
 
-  if (card.type === 'consequenceCard') {
+  if ('severity' in card) {
     return <ConsequenceCardComponent {...props} card={card} />;
   }
 
-  if (card.type === 'tCItem' || card.type === 'tCNature' || card.type === 'tCTalent') {
+  // TableCard is the only one with 'type' property in this union
+  if (
+    'type' in card &&
+    (card.type === 'item' || card.type === 'nature' || card.type === 'talent')
+  ) {
     return <TableCardComponent {...props} card={card} />;
   }
 

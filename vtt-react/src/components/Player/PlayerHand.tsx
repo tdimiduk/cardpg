@@ -3,7 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { useHandSelection } from '../../hooks/useHandSelection';
 import { CoreCardComponent } from '../Card/Card';
-import { CardStack } from '../Card/CardStack';
+import { CardStack, getCardId } from '../Card/CardStack';
 import { SkipForward, Lock, RotateCcw, Layers, Zap, Check, Ban } from 'lucide-react';
 import {
   selectHand,
@@ -119,7 +119,7 @@ export const PlayerHandView: React.FC<PlayerHandProps> = ({
                 <CardStack
                   cards={stagedResourceCards}
                   mode="stack"
-                  onCardClick={(c) => toggleResource(c.id)}
+                  onCardClick={(c) => toggleResource(getCardId(c))}
                   emptyMessage={
                     <div className="w-[100px] h-[140px] border-2 border-dashed border-slate-700 rounded-lg bg-slate-800/50 flex items-center justify-center">
                       <Layers size={24} className="text-slate-600" />

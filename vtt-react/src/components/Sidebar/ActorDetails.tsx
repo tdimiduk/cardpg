@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { flattenInstance } from '../../store/selectors';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { ActorState, CardLocation } from '../../generated/types';
 
@@ -27,9 +26,9 @@ export const ActorDetails: React.FC<ActorDetailsProps> = ({ actor, onResumeDefen
   const resilience = actor.resilience ?? 1;
 
   // Resolve piles directly (since they are now instances)
-  const drawPile = actor.coreState.deck.map(flattenInstance);
-  const discardPile = actor.coreState.discard.map(flattenInstance);
-  const flippedPile = actor.coreState.defending.map(flattenInstance);
+  const drawPile = actor.coreState.deck;
+  const discardPile = actor.coreState.discard;
+  const flippedPile = actor.coreState.defending;
 
   // Handlers
   const handleDraw = (_count: number) => {

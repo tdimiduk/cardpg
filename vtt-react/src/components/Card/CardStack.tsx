@@ -4,16 +4,22 @@ import { Layers } from 'lucide-react';
 
 export type StackLayoutMode = 'row' | 'grid' | 'fan' | 'stack' | 'list';
 
+export const getCardId = (card: AnyCard): string => {
+  if ('id' in card) return card.id;
+  // TableCard wrapper
+  return card.data.id;
+};
+
 export interface CardStackProps {
-  cards: (AnyCard & { id: string })[];
+  cards: AnyCard[];
   mode?: StackLayoutMode;
   scale?: number;
   className?: string;
-  onCardClick?: (card: AnyCard & { id: string }) => void;
+  onCardClick?: (card: AnyCard) => void;
   selectedIds?: Set<string>;
   emptyMessage?: React.ReactNode;
   // Optional override if we don't want to use standard CardView (e.g. for simple badges in list mode)
-  renderCard?: (card: AnyCard & { id: string }, index: number) => React.ReactNode;
+  renderCard?: (card: AnyCard, index: number) => React.ReactNode;
 }
 
 export const CardStack: React.FC<CardStackProps> = ({
@@ -41,10 +47,11 @@ export const CardStack: React.FC<CardStackProps> = ({
 
   // --- Render Helpers ---
 
-  const defaultRender = (card: AnyCard & { id: string }, index: number, extraClass = '') => {
+  const defaultRender = (card: AnyCard, index: number, extraClass = '') => {
     if (renderCard) return renderCard(card, index);
 
-    const isSelected = selectedIds?.has(card.id);
+    const id = getCardId(card);
+    const isSelected = selectedIds?.has(id);
     return (
       <CardView
         card={card}
@@ -62,7 +69,7 @@ export const CardStack: React.FC<CardStackProps> = ({
     return (
       <div className={`flex flex-wrap gap-4 justify-center ${className}`}>
         {cards.map((card, idx) => (
-          <div key={card.id || idx} className="relative">
+          <div key={getCardId(card) || idx} className="relative">
             {defaultRender(card, idx)}
           </div>
         ))}
@@ -74,7 +81,7 @@ export const CardStack: React.FC<CardStackProps> = ({
     return (
       <div className={`flex gap-2 overflow-x-auto custom-scrollbar p-2 ${className}`}>
         {cards.map((card, idx) => (
-          <div key={card.id || idx} className="shrink-0">
+          <div key={getCardId(card) || idx} className="shrink-0">
             {defaultRender(card, idx)}
           </div>
         ))}
@@ -90,7 +97,7 @@ export const CardStack: React.FC<CardStackProps> = ({
       >
         {cards.map((card, idx) => (
           <div
-            key={card.id || idx}
+            key={getCardId(card) || idx}
             className="absolute top-0 left-0 shadow-xl transition-transform hover:z-50"
             style={{
               transform: `translate(${idx * 20}px, ${idx * 2}px) rotate(${idx * 2}deg)`,
@@ -109,7 +116,7 @@ export const CardStack: React.FC<CardStackProps> = ({
       <div className={`flex -space-x-12 hover:-space-x-4 transition-all p-2 ${className}`}>
         {cards.map((card, idx) => (
           <div
-            key={card.id || idx}
+            key={getCardId(card) || idx}
             className="relative transition-transform hover:-translate-y-4 hover:z-50"
             style={{ zIndex: idx }}
           >

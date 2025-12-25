@@ -20,7 +20,7 @@ export const ConsequenceList: React.FC<ConsequenceListProps> = ({
   // Resolve Consequences
   const consequences = useMemo(() => {
     if (!activeActor) return [];
-    return activeActor.tableState.consequences.map((c) => ({ ...c.content, id: c.id }));
+    return activeActor.tableState.consequences;
   }, [activeActor]);
 
   const currentSeverity = activeActor?.defenseDetails.nextSeverity || 1;

@@ -19,7 +19,7 @@ describe('Game Store Integration', () => {
     const testCardId = 'card-1';
 
     const testCard: CoreCard = {
-      type: 'coreCard',
+      id: testCardId,
       name: 'Slash',
       stats: { red: 0, yellow: 0, blue: 0 },
     };
@@ -29,7 +29,7 @@ describe('Game Store Integration', () => {
       actorType: 'PC',
       coreState: {
         deck: [],
-        hand: [{ id: testCardId, content: testCard }],
+        hand: [testCard],
         discard: [],
         defending: [],
         inPlay: {},

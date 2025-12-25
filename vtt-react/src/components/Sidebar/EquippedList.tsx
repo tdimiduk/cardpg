@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { Briefcase } from 'lucide-react';
 import { ItemCard, NatureCard, TalentCard, ActorState } from '../../generated/types';
 
-// Union of cards that can be equipped, intersected with ID
-export type EquipmentCardWithId = (ItemCard | NatureCard | TalentCard) & { id: string };
+// Union of cards that can be equipped
+export type EquipmentCard = ItemCard | NatureCard | TalentCard;
 
 interface EquippedListProps {
   activeActor?: ActorState;
@@ -16,20 +16,17 @@ export const EquippedList: React.FC<EquippedListProps> = ({ activeActor }) => {
     // Filter assets for type: "equipped" and map direct to content
     return Object.entries(activeActor.tableState.assets)
       .filter(([_, val]) => val && val[1].type === 'equipped')
-      .map(([id, val]) => {
+      .map(([_, val]) => {
         const instance = val![0];
-        const wrapper = instance.content;
 
-        if (
-          wrapper.type === 'tCItem' ||
-          wrapper.type === 'tCNature' ||
-          wrapper.type === 'tCTalent'
-        ) {
-          return { ...wrapper.data, id };
+        // TableCard is a Discriminated Union { type: 'item', data: ... }
+        if (instance.type === 'item' || instance.type === 'nature' || instance.type === 'talent') {
+          // data already has 'id', but we ensure it matches the map key if needed (it should)
+          return instance.data;
         }
         return undefined;
       })
-      .filter((c): c is EquipmentCardWithId => !!c);
+      .filter((c): c is EquipmentCard => !!c);
   }, [activeActor]);
 
   return (

@@ -5,11 +5,6 @@ import { Send, Bot, Square, ArrowRight, Play, Rewind, Shield } from 'lucide-reac
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { DefenseModalCard } from './DefenseModal';
-import { WithId, flattenInstance } from '../../store/selectors';
-import { CoreCardInstance } from '../../generated/types';
-
-// Helper type for cards in stack view - Log attack stacks are strictly CoreCards
-type StackCard = WithId<CoreCard>;
 
 // --- View ---
 export interface SidebarRightProps {
@@ -46,12 +41,11 @@ const ChallengeLogItem: React.FC<{
     if (!actor) return undefined;
     const { coreState } = actor;
 
-    const findInList = (list: CoreCardInstance[], id: string) =>
-      list.find((c) => c.id === id)?.content;
+    const findInList = (list: CoreCard[], id: string) => list.find((c) => c.id === id);
 
     // Check Map first
     if (coreState.inPlay && coreState.inPlay[sourceCardId]) {
-      return coreState.inPlay[sourceCardId]![0].content;
+      return coreState.inPlay[sourceCardId]![0];
     }
 
     // Check Lists
@@ -66,14 +60,13 @@ const ChallengeLogItem: React.FC<{
   const sourceCard = resolvedSourceCard ? { ...resolvedSourceCard, id: sourceCardId } : undefined;
 
   const stackCards = useMemo(() => {
-    const cards: StackCard[] = [];
+    const cards: CoreCard[] = [];
 
     // Ad-Hoc Source handling
     if (challenge.source.type === 'cSAdHoc') {
       const adhoc = challenge.source;
       cards.push({
         id: `adhoc-${log.id}`,
-        type: 'coreCard',
         name: adhoc.name,
         stats: {
           red: challenge.challengeColor === 'red' ? challenge.challengeStrength : 0,
@@ -89,10 +82,10 @@ const ChallengeLogItem: React.FC<{
     // Planned Action Cards (Directly from Wire payload)
     if (plannedAction) {
       if (plannedAction.type === 'pStandard') {
-        cards.push(flattenInstance(plannedAction.data.actionCard));
-        cards.push(...plannedAction.data.resources.map(flattenInstance));
+        cards.push(plannedAction.data.actionCard);
+        cards.push(...plannedAction.data.resources);
       } else if (plannedAction.type === 'pNarrative') {
-        cards.push(...plannedAction.data.cards.map(flattenInstance));
+        cards.push(...plannedAction.data.cards);
       }
     }
 

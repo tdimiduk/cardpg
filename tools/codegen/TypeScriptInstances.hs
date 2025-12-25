@@ -114,10 +114,6 @@ $(deriveTypeScript cardpgJsonDef ''Block)
 
 $(deriveTypeScript cardpgJsonDef ''SpatialState)
 
--- Helper for creating splices
--- Using runIO or just simple do block
--- We separate Data Generation (Specialize) from Instance Generation
-
 $(deriveTypeScript cardpgJsonDef ''Phase)
 
 -- 1. Data Generation Scope
@@ -192,61 +188,12 @@ $( do
      i_genAction <- deriveTypeScript cardpgJsonDef ''GeneralActionDef
      i_encMech <- deriveTypeScript cardpgJsonDef ''EncounterMechanics
 
-     -- Core Cards
-     i_core <-
-       deriveSpecializedInstance
-         (cardpgTaggedOptions "")
-         ''CoreCard
-         ''CoreCardT
-         [ConT ''CC.Rule, inline]
-
-     i_item <- deriveSpecializedInstance (cardpgTaggedOptions "") ''ItemCard ''ItemCardT [inline]
-     i_nature <- deriveSpecializedInstance (cardpgTaggedOptions "") ''NatureCard ''NatureCardT [inline]
-     i_talent <- deriveSpecializedInstance (cardpgTaggedOptions "") ''TalentCard ''TalentCardT [inline]
-     i_encounter <-
-       deriveSpecializedInstance (cardpgTaggedOptions "") ''EncounterCard ''EncounterCardT [inline]
-     i_consequence <-
-       deriveSpecializedInstance
-         (cardpgTaggedOptions "")
-         ''ConsequenceCard
-         ''ConsequenceCardT
-         [ConT ''CC.Rule]
-
-     -- Proxy Instances (Bridge original types to local specialized types)
-     let inline = AppT ListT (ConT ''Inline)
-     let richStr = ConT ''RichString
-     let richTxt = ConT ''RichText
-     let text = ConT ''Text
-     let maybeText = AppT (ConT ''Maybe) (ConT ''Text)
-     let dslRule = ConT ''DSLRule
-     let rule = ConT ''Rule
-
-     -- CoreCard
-     -- p_core1 handled by d_core implicit instance
-     p_core2 <- makeProxyInstance [t|CoreCardT DSLRule RichString|] ''CoreCard "CoreCard"
-
-     -- ItemCard
-
-     p_item3 <- makeProxyInstance [t|ItemCardT RichString|] ''ItemCard "ItemCard"
-
-     -- NatureCard
-
-     p_nature3 <- makeProxyInstance [t|NatureCardT RichString|] ''NatureCard "NatureCard"
-
-     -- TalentCard
-
-     p_talent3 <- makeProxyInstance [t|TalentCardT RichString|] ''TalentCard "TalentCard"
-
-     -- EncounterCard
-
-     p_encounter3 <- makeProxyInstance [t|EncounterCardT RichString|] ''EncounterCard "EncounterCard"
-
-     -- ConsequenceCard
-     p_consequence2 <-
-       makeProxyInstance [t|ConsequenceCardT DSLRule|] ''ConsequenceCard "ConsequenceCard"
-
-     i_coreInstT <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCardInstance
-     i_consInstT <- deriveTypeScript cardpgJsonDef ''Frontend.ConsequenceCardInstance
+     -- Frontend Types (Direct Derivation)
+     i_core <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCard
+     i_item <- deriveTypeScript cardpgJsonDef ''Frontend.ItemCard
+     i_nature <- deriveTypeScript cardpgJsonDef ''Frontend.NatureCard
+     i_talent <- deriveTypeScript cardpgJsonDef ''Frontend.TalentCard
+     i_consequence <- deriveTypeScript cardpgJsonDef ''Frontend.ConsequenceCard
 
      return
        ( i_attack
@@ -262,16 +209,7 @@ $( do
            ++ i_item
            ++ i_nature
            ++ i_talent
-           ++ i_encounter
            ++ i_consequence
-           ++ p_core2
-           ++ p_item3
-           ++ p_nature3
-           ++ p_talent3
-           ++ p_encounter3
-           ++ p_consequence2
-           ++ i_coreInstT
-           ++ i_consInstT
            ++ i_stats
            ++ i_specDef
        )
@@ -296,7 +234,8 @@ $( do
      i_logPayload <- deriveTypeScript cardpgJsonDef ''LogPayload
      i_logEntry <- deriveTypeScript cardpgJsonDef ''LogEntry
 
-     i_tableCard <- deriveTypeScript cardpgJsonDef ''TableCard
+     -- Frontend.TableCard
+     i_tableCard <- deriveTypeScript (cardpgTaggedOptions "TC") ''Frontend.TableCard
      i_gameEvent <- deriveTypeScript cardpgJsonDef ''Frontend.GameEvent
 
      return
@@ -318,10 +257,11 @@ $( do
        )
  )
 
--- 4. TableCardInstance Instance (Must see TableCard instance and TableCardInstance data)
-$( do
-     deriveTypeScript cardpgJsonDef ''Frontend.TableCardInstance
- )
+-- 4. TableCardInstance Instance Refactored -> Removed as TableCard is now explicit in 3.
+
+-- $( do
+--      deriveTypeScript cardpgJsonDef ''Frontend.TableCardInstance
+--  )
 
 -- 5. Dependent State (Must see TableCardInstance proxy)
 $( do

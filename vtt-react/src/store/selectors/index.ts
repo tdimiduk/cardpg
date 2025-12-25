@@ -4,27 +4,21 @@ import {
   ItemCard,
   NatureCard,
   TalentCard,
-  EncounterCard,
   ConsequenceCard,
   ResourceType,
-  CoreCardInstance,
 } from '../../generated/types';
 
 // --- Type Helpers ---
 
-// The "WithId" pattern bridges the gap between Backend (Record<Id, Obj>) and Frontend (Obj.id)
-export type WithId<T> = T & { id: string };
-
-export type ClientActor = WithId<ActorState> & {
+export type ClientActor = ActorState & {
+  id: string;
   // Derived / Convenience properties can go here
   isPC: boolean;
 };
 
-export type ClientCard = WithId<
-  CoreCard | ItemCard | NatureCard | TalentCard | EncounterCard | ConsequenceCard
->;
+export type ClientCard = CoreCard | ItemCard | NatureCard | TalentCard | ConsequenceCard;
 
-export type ClientCoreCard = WithId<CoreCard>;
+export type ClientCoreCard = CoreCard;
 
 // --- Selectors ---
 
@@ -34,7 +28,7 @@ export type ClientCoreCard = WithId<CoreCard>;
 export const selectActors = (state: { actors: Record<string, ActorState> }): ClientActor[] => {
   return Object.entries(state.actors).map(([id, actor]) => ({
     ...actor,
-    id,
+    id, // ActorState doesn't technically have 'id' field in Haskell, but key is ID. Frontend adds it here.
     isPC: actor.actorType === 'PC',
   }));
 };
@@ -58,10 +52,6 @@ export const selectActor = (
 
 // -- Card Hydration Helpers --
 
-export const flattenInstance = (inst: CoreCardInstance): ClientCoreCard => {
-  return { ...inst.content, id: inst.id };
-};
-
 /**
  * Selects the player's Hand cards with IDs.
  */
@@ -74,7 +64,7 @@ export const selectHand = (
   const core = actor.coreState;
 
   // The hand is directly available as instances in the new Wire Wire model
-  return core.hand.map(flattenInstance);
+  return core.hand;
 };
 
 /**
@@ -87,7 +77,7 @@ export const selectDeck = (
   const actor = state.actors[actorId];
   if (!actor) return [];
   if (!actor) return [];
-  return actor.coreState.deck.map(flattenInstance);
+  return actor.coreState.deck;
 };
 
 /**
@@ -100,7 +90,7 @@ export const selectDiscard = (
   const actor = state.actors[actorId];
   if (!actor) return [];
   if (!actor) return [];
-  return actor.coreState.discard.map(flattenInstance);
+  return actor.coreState.discard;
 };
 
 /**
@@ -113,7 +103,7 @@ export const selectDefending = (
   const actor = state.actors[actorId];
   if (!actor) return [];
   if (!actor) return [];
-  return actor.coreState.defending.map(flattenInstance);
+  return actor.coreState.defending;
 };
 
 // -- Planned Action Selectors --
@@ -145,8 +135,8 @@ export const selectPlannedAction = (
   if (planned.type === 'pStandard') {
     return {
       type: 'standard',
-      actionCard: flattenInstance(planned.data.actionCard),
-      resources: planned.data.resources.map(flattenInstance),
+      actionCard: planned.data.actionCard,
+      resources: planned.data.resources,
     };
   }
 
@@ -154,7 +144,7 @@ export const selectPlannedAction = (
     return {
       type: 'narrative',
       color: planned.data.color,
-      cards: planned.data.cards.map(flattenInstance),
+      cards: planned.data.cards,
     };
   }
 
