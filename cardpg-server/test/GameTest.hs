@@ -20,11 +20,14 @@ import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableS
 import CardPG.Core.Card (CoreCard(..), CoreCardT(..), Stats(..))
 import CardPG.Core.RuleDefs (RuleT(..), AttackDefT(..))
 import Data.List.NonEmpty (NonEmpty(..))
+import CardPG.Core.NonEmptyText (NonEmptyText, mkNonEmptyText)
 
 import CardPG.Server.Game (GameState(..), emptyGame, addActor)
 import CardPG.Server.Engine (runActorAction, concludeRound)
 import CardPG.Server.Dispatch (processCommand)
 import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
+import qualified CardPG.Server.Types.Wire as Wire
+import CardPG.Core.Card (CardInstance, Identified(..))
 
 test_game :: TestTree
 test_game = testGroup "Server Game Engine"
@@ -34,7 +37,8 @@ test_game = testGroup "Server Game Engine"
       let game0 = emptyGame env
       
       let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
-      let deck = [CardInstanceId (read "00000000-0000-0000-0000-000000000002")]
+      let cardId = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      let deck = [Identified cardId (mockCard "test")]
       let actorState = emptyActorState & #coreState % #deck .~ deck
       
       let game1 = addActor actorId actorState game0
@@ -45,7 +49,7 @@ test_game = testGroup "Server Game Engine"
       -- Verify Events
       fmap length events @?= Just 1
       case events of
-        Just [CardDrawn cid] -> cid @?= head deck
+        Just [CardDrawn c] -> c.id @?= cardId
         _ -> assertBool "Expected CardDrawn event" False
         
       -- Verify State Update
@@ -62,8 +66,10 @@ test_game = testGroup "Server Game Engine"
       let game0 = emptyGame env
       
       let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
-      let card1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
-      let card2 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      let cid1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      let cid2 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      let card1 = Identified cid1 (mockCard "c1")
+      let card2 = Identified cid2 (mockCard "c2")
       let deck = [card1, card2]
       
       let actorState = emptyActorState & #coreState % #deck .~ deck
@@ -76,7 +82,7 @@ test_game = testGroup "Server Game Engine"
       let evt = head actions
       evt.actorId @?= actorId
       case evt.event of
-        CardDrawn cid -> cid @?= card1
+        Wire.CardDrawn c -> c.id @?= cid1
         _ -> assertBool "Expected CardDrawn event" False
       
       let actorSt2 = game2 ^. #actors % at actorId
@@ -93,7 +99,7 @@ test_game = testGroup "Server Game Engine"
       let evt2 = head actions2
       evt2.actorId @?= actorId
       case evt2.event of
-        CardDefended cid -> cid @?= card2 -- The card from deck
+        Wire.CardDefended c -> c.id @?= cid2
         _ -> assertBool "Expected CardDefended event" False
 
       -- Verify Actor State in Game
@@ -131,11 +137,16 @@ test_game = testGroup "Server Game Engine"
       let game0 = emptyGame env
       
       let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
-      let card1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
-      let card3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
-      let card4 = CardInstanceId (read "00000000-0000-0000-0000-000000000004")
-      let deck = [card3, card4] -- Enough for 2 draws
-      let defending = [card1] -- Actor has active defense
+      let cid1 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+      let cid3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
+      let cid4 = CardInstanceId (read "00000000-0000-0000-0000-000000000004")
+      
+      let card1 = Identified cid1 (mockCard "c1")
+      let card3 = Identified cid3 (mockCard "c3")
+      let card4 = Identified cid4 (mockCard "c4")
+      
+      let deck = [card3, card4]
+      let defending = [card1]
       
       let actorState = emptyActorState 
             & #coreState % #defending .~ defending
@@ -172,17 +183,15 @@ test_game = testGroup "Server Game Engine"
       let actionCid = CardInstanceId (read "00000000-0000-0000-0000-000000000010")
       let resCid = CardInstanceId (read "00000000-0000-0000-0000-000000000011")
       
-      let actionCard = mockAttackCard "Attack" Red 1 -- Cost 1, Red
-      let resCard = mockResCard "Resource" -- High stats
+      let actionCard = Identified actionCid (mockAttackCard "Attack" Red 1)
+      let resCard = Identified resCid (mockResCard "Resource")
       
-      let hand = [actionCid, resCid]
-      let registry = Map.fromList [(actionCid, actionCard), (resCid, resCard)]
+      let hand = [actionCard, resCard]
       
       let npcState = emptyActorState 
              & #name .~ "Bad Guy"
              & #actorType .~ "Monster"
              & #coreState % #hand .~ hand
-             & #coreState % #registry .~ registry
              
       let game1 = addActor npcId npcState game0
       
@@ -190,7 +199,7 @@ test_game = testGroup "Server Game Engine"
       let ((game2, _, events, _logs), _) = runState (processCommand (EndRoundIntent npcId) 3000 game1) gen
       
       -- Expect ActionPlanned event (from auto-planning)
-      let planEvents = [e | e <- events, case e.event of ActionPlanned _ -> True; _ -> False]
+      let planEvents = [e | e <- events, case e.event of Wire.ActionPlanned _ -> True; _ -> False]
       length planEvents @?= 1
       
       -- Verify Plan
@@ -200,9 +209,9 @@ test_game = testGroup "Server Game Engine"
         Just st -> do
            case st.coreState.planned of
              Just (PStandard stack) -> do
-               stack.actionCard @?= actionCid
+               stack.actionCard.id @?= actionCid
                length stack.resources @?= 1
-               head stack.resources @?= resCid
+               (head stack.resources).id @?= resCid
              _ -> assertBool "Expected Standard Plan" False
 
 
@@ -215,15 +224,14 @@ test_game = testGroup "Server Game Engine"
       let actionCid = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       let resCid = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
       
-      let actionCard = mockAttackCard "Attack" Red 1
-      let resCard = mockResCard "Resource"
+      let actionCard = Identified actionCid (mockAttackCard "Attack" Red 1)
+      let resCard = Identified resCid (mockResCard "Resource")
       
-      let hand = [actionCid, resCid]
-      let registry = Map.fromList [(actionCid, actionCard), (resCid, resCard)]
+      let hand = [actionCard, resCard]
       
       let actorState = emptyActorState 
              & #coreState % #hand .~ hand
-             & #coreState % #registry .~ registry
+
              
       let game1 = addActor actorId actorState game0
       
@@ -238,9 +246,9 @@ test_game = testGroup "Server Game Engine"
       
       length actions @?= 1
       case head actions of
-        ActorGameEvent _ (ActionPlanned (PStandard stack)) -> do
-           stack.actionCard @?= actionCid
-           stack.resources @?= [resCid]
+        ActorGameEvent _ (Wire.ActionPlanned (Wire.PStandard stack)) -> do
+           stack.actionCard.id @?= actionCid
+           (head stack.resources).id @?= resCid
         _ -> assertBool "Expected ActionPlanned event" False
 
   ]
@@ -248,16 +256,16 @@ test_game = testGroup "Server Game Engine"
 -- Helpers
 
 -- Helper to match constructor names for easier assertion
-toConstr :: GameEvent -> String
-toConstr (CardsCreated {}) = "CardsCreated"
-toConstr (DeckShuffled {}) = "DeckShuffled"
-toConstr (CardDrawn {}) = "CardDrawn"
-toConstr (CardDefended {}) = "CardDefended"
+toConstr :: Wire.GameEvent -> String
+toConstr (Wire.CardsCreated {}) = "CardsCreated"
+toConstr (Wire.DeckShuffled {}) = "DeckShuffled"
+toConstr (Wire.CardDrawn {}) = "CardDrawn"
+toConstr (Wire.CardDefended {}) = "CardDefended"
 toConstr _ = "Other"
 
 mockCard :: Text -> CoreCard
 mockCard name' = CoreCard
-  { name = undefined -- Safe for this test
+  { name = fromJust (mkNonEmptyText name')
   , cost = Nothing
   , tags = Nothing
   , stats = Stats 0 0 0
@@ -293,14 +301,12 @@ emptyActorState = ActorState
       , discard = []
       , defending = []
       , inPlay = Map.empty
-      , registry = Map.empty
       , planned = Nothing
+      , revealed = Nothing
       }
   , tableState = TableState
       { assets = Map.empty
-      , registry = Map.empty
       , consequences = []
-      , consequenceRegistry = Map.empty
       }
   , name = "Tester"
   , actorType = "PC"

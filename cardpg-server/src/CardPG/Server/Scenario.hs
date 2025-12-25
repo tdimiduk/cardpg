@@ -1,4 +1,5 @@
 {-# LANGUAGE DisambiguateRecordFields #-}
+
 {- HLINT ignore "Redundant id" -}
 
 module CardPG.Server.Scenario where

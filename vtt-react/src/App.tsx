@@ -56,10 +56,10 @@ const GameBoard: React.FC = () => {
   const defenseIds = activeActor?.coreState.defending || [];
 
   const handleOpenDefense = (attack: ActiveChallenge, stack: DefenseModalCard[]) => {
-    // If we are already defending (defenseIds > 0), we assume the user intends to view or modify 
+    // If we are already defending (defenseIds > 0), we assume the user intends to view or modify
     // the existing defense. We trust the Widget to handle the visualization of the current attack context.
     if (defenseIds.length > 0) {
-       // Logic to handle existing defense context
+      // Logic to handle existing defense context
     }
     setDefenseModal({ isOpen: true, attack, stack });
   };

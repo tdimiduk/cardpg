@@ -16,7 +16,6 @@ export interface SidebarLeftProps {
   onRemoveActor: (actorId: string) => void;
   onResumeDefense: () => void;
   phase: Phase;
-  plannedActions: Record<string, unknown>; // Legacy stub
 }
 
 export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
@@ -27,7 +26,6 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
   onRemoveActor,
   onResumeDefense,
   phase,
-  plannedActions,
 }) => {
   // Empty State / Character Selector
   if (!activeActorId || !activeActor) {
@@ -39,7 +37,6 @@ export const SidebarLeftView: React.FC<SidebarLeftProps> = ({
           onSelectActor={onSelectActor}
           onRemoveActor={onRemoveActor}
           phase={phase}
-          plannedActions={plannedActions}
         />
         <div className="p-4 border-t border-slate-800 mt-auto">
           <button
@@ -79,7 +76,6 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
   const phase = useGameStore((state) => state.phase);
-  const plannedActions = {}; // Stub
 
   const setActiveActor = useGameStore((state) => state.setActiveActor);
 
@@ -104,7 +100,6 @@ const SidebarLeftContainer: React.FC<SidebarLeftContainerProps> = ({ onResumeDef
       onRemoveActor={removeActor}
       onResumeDefense={onResumeDefense}
       phase={phase}
-      plannedActions={plannedActions}
     />
   );
 };

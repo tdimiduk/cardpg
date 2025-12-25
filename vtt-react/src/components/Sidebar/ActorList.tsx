@@ -5,16 +5,14 @@ interface ActorListProps {
   actors: Record<string, ActorState>;
   onSelectActor: (actorId: string) => void;
   onRemoveActor: (actorId: string, e: React.MouseEvent) => void;
+
   phase: Phase;
-  plannedActions: unknown; // Legacy stub
 }
 
 export const ActorList: React.FC<ActorListProps> = ({
   actors,
   onSelectActor: _onSelectActor,
   onRemoveActor: _onRemoveActor,
-  phase: _phase,
-  plannedActions: _plannedActions,
 }) => {
   const actorList = Object.entries(actors);
 

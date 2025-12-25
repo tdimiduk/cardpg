@@ -8,14 +8,14 @@ import qualified Data.ByteString.Lazy.Char8 as B
 import qualified Data.List
 
 import CardPG.Core.Primitives (ActorId(..))
-import CardPG.Core.State (GameEvent(..))
 import CardPG.Server.Types (ServerMessage(..), ActorGameEvent(..))
+import qualified CardPG.Server.Types.Wire as Wire
 
 test_json :: TestTree
 test_json = testGroup "JSON Serialization"
   [ testCase "MultiMessage Serialization" $ do
       let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
-      let evt = ActorGameEvent actorId DeckShuffled
+      let evt = ActorGameEvent actorId Wire.DeckShuffled
       let msg1 = BroadcastMessage (read "00000000-0000-0000-0000-000000000001") [evt]
       let msg2 = ErrorMessage "Test Error"
       let batch = MultiMessage [msg1, msg2]
