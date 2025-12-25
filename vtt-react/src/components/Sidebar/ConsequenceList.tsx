@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { AlertTriangle, X, ChevronDown } from 'lucide-react';
-import { ActorState, ConsequenceCard } from '../../generated/types';
+import { ActorState } from '../../generated/types';
 import { RuleRenderer } from '../Card/RuleRenderer';
 
 interface ConsequenceListProps {

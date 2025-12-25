@@ -1,3 +1,4 @@
+{-# HLINT ignore "Redundant id" #-}
 module CardPG.Core.LogicTest where
 
 import Control.Monad.RWS (runRWST)
@@ -200,7 +201,7 @@ test_consequenceLogic =
             length finalState.tableState.consequences @?= 1
             assertBool
               "ConsequenceAdded 5 missing"
-              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 5; _ -> False) events)
+              (any (\case ConsequenceAdded c -> c.content.severity == 5; _ -> False) events)
         , testCase "calculates default resilience of 1 and proper severity" $ do
             -- No items, Res=1. existing=0. Sev = 0/1 + 1 = 1.
             let env = mkEnv [mkConsTemplate 1]
@@ -209,7 +210,7 @@ test_consequenceLogic =
 
             assertBool
               "ConsequenceAdded 1 missing"
-              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
+              (any (\case ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
         , testCase "uses equipped resilience" $ do
             -- Item with Res=3. Existing=0. Sev = 0/3 + 1 = 1.
             let item = mkItemRes 3
@@ -227,7 +228,7 @@ test_consequenceLogic =
 
             assertBool
               "ConsequenceAdded 1 missing"
-              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
+              (any (\case ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
         , testCase "calculates severity based on existing count and resilience" $ do
             -- Res=2. Existing=3 consequences. Sev = 3/2 + 1 = 1 + 1 = 2.
             let item = mkItemRes 2
@@ -247,7 +248,7 @@ test_consequenceLogic =
 
             assertBool
               "ConsequenceAdded 2 missing"
-              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 2; _ -> False) events)
+              (any (\case ConsequenceAdded c -> c.content.severity == 2; _ -> False) events)
         ]
 
 test_statusLogic :: TestTree

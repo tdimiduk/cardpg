@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActionStack, CoreCard } from '../../generated/types';
+
 import { flattenInstance } from '../../store/selectors';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { ActorState, CardLocation } from '../../generated/types';

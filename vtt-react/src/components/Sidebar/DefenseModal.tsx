@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { X, Shield, Skull, Zap, ChevronRight, Layers } from 'lucide-react';
-import { DefenseDetails, ConsequenceCard, CoreCard, ActorState } from '../../generated/types';
+import { DefenseDetails, CoreCard, ActorState } from '../../generated/types';
 import { CoreCardComponent, ConsequenceCardComponent } from '../Card/Card';
 import { CardStack } from '../Card/CardStack';
 import { flattenInstance, ClientCard } from '../../store/selectors';
