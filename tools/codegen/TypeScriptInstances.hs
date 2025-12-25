@@ -14,8 +14,7 @@ import GHC.Generics (Generic)
 import Language.Haskell.TH (Type (AppT, ConT, ListT), mkName)
 
 import CardPG.Core.Card
-  ( ActorDefinitionT (..)
-  , ConsequenceCardT (..)
+  ( ConsequenceCardT (..)
   , CoreCardT (..)
   , EncounterCardT (..)
   , EncounterMechanics
@@ -135,11 +134,7 @@ $( do
          ''CoreCardT
          [ConT ''CC.Rule, ConT ''RichText]
          "CoreCard"
-     d_actor <-
-       specializeType
-         ''ActorDefinitionT
-         [ConT ''CC.Rule, ConT ''RichText]
-         "ActorDefinition"
+
 
      d_item <- specializeType ''ItemCardT [ConT ''RichText] "ItemCard"
      d_nature <- specializeType ''NatureCardT [ConT ''RichText] "NatureCard"
@@ -160,7 +155,7 @@ $( do
            ++ d_ongoing
            ++ d_rule
            ++ d_core
-           ++ d_actor
+
            ++ d_item
            ++ d_nature
            ++ d_talent
@@ -206,12 +201,7 @@ $( do
          ''CoreCard
          ''CoreCardT
          [ConT ''CC.Rule, inline]
-     i_actor <-
-       deriveSpecializedInstance
-         cardpgJsonDef
-         ''ActorDefinition
-         ''ActorDefinitionT
-         [ConT ''CC.Rule, inline]
+
      i_item <- deriveSpecializedInstance (cardpgTaggedOptions "") ''ItemCard ''ItemCardT [inline]
      i_nature <- deriveSpecializedInstance (cardpgTaggedOptions "") ''NatureCard ''NatureCardT [inline]
      i_talent <- deriveSpecializedInstance (cardpgTaggedOptions "") ''TalentCard ''TalentCardT [inline]
@@ -237,9 +227,7 @@ $( do
      -- p_core1 handled by d_core implicit instance
      p_core2 <- makeProxyInstance [t|CoreCardT DSLRule RichString|] ''CoreCard "CoreCard"
 
-     -- ActorDefinition
-     p_actor <-
-       makeProxyInstance [t|ActorDefinitionT DSLRule RichString|] ''ActorDefinition "ActorDefinition"
+
 
      -- ItemCard
 
@@ -275,14 +263,14 @@ $( do
            ++ i_genAction
            ++ i_encMech
            ++ i_core
-           ++ i_actor
+
            ++ i_item
            ++ i_nature
            ++ i_talent
            ++ i_encounter
            ++ i_consequence
            ++ p_core2
-           ++ p_actor
+
            ++ p_item3
            ++ p_nature3
            ++ p_talent3

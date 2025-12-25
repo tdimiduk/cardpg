@@ -13,8 +13,7 @@ import Data.Typeable (TypeRep, typeRep)
 import System.Environment (getArgs)
 import System.IO (writeFile)
 import TypeScriptInstances
-  ( ActorDefinition
-  , AttackDef
+  ( AttackDef
   , ConsequenceCard
   , CoreCard
   , EncounterCard
@@ -99,7 +98,6 @@ main = do
             [ TSType (Proxy :: Proxy AdminCommand)
             , TSType (Proxy :: Proxy ClientMessage)
             , TSType (Proxy :: Proxy ServerMessage)
-            , TSType (Proxy :: Proxy ActorDefinition)
             , TSType (Proxy :: Proxy EncounterCard)
             ]
 
