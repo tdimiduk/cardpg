@@ -15,17 +15,15 @@ module CardPG.Core.RuleDefs
   , OngoingDef
   , RuleT (..)
   , Rule
-  , DSLBase
-  , DSLRule (..)
   ) where
 
-import Data.Aeson.TH (deriveJSON)
+import Data.Aeson.TH (deriveJSON, deriveToJSON)
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives (Difficulty, ResourceType (..))
-import CardPG.Core.RichText (RichString, RichText, StackPower)
+import CardPG.Core.RichText (RichText, StackPower)
 
 -- | A static modifier.
 -- | Addresses: "+2 to resource values when used in a defense stack"
@@ -109,12 +107,6 @@ type TaskDef = TaskDefT RichText
 type TriggerDef = TriggerDefT RichText
 type OngoingDef = OngoingDefT RichText
 
--- | DSL Base (Human Readable)
-type DSLBase = RuleT RichString
-
-newtype DSLRule = DSLRule {unDSLRule :: DSLBase}
-  deriving (Show, Eq, Generic)
-
 -- | Note:
 -- | 1. 'Rule' is excluded because it has a custom manual instance in RuleInstances.hs
 -- |    to support DSL parsing (e.g. "Attack {Red}...").
@@ -132,6 +124,5 @@ $( do
            , ''TriggerDefT
            , ''OngoingDefT
            ]
-     rule <- deriveJSON (cardpgJsonOptions "Rule") ''RuleT
-     return (defs ++ rule)
+     return defs
  )

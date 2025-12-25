@@ -20,7 +20,7 @@ import CardPG.Core.DSL.Printer (richToString)
 import CardPG.Core.NonEmptyText (NonEmptyText (..), getRawText, unsafeNonEmptyText)
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
-import CardPG.Core.RuleDefs (AttackDefT (..), DSLRule (..), RuleT (RuleAttack))
+import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
 import CardPG.Core.State
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
@@ -61,19 +61,40 @@ instance Arbitrary TextStyle where
   shrink = genericShrink
 
 instance Arbitrary Inline where
-  arbitrary = genericArbitrary uniform
+  arbitrary =
+    oneof
+      [ TextRun <$> arbitrary <*> arbitrary
+      , ColorValue <$> arbitrary
+      , DifficultyValue <$> arbitrary
+      , pure Break
+      ]
 
-instance Arbitrary RichString where
+instance Arbitrary RichText where
   arbitrary = do
     inlines <- listOf1 arbitrary
-    case mkRichString inlines of
-      Nothing -> return $ unsafeSimpleString "empty" -- Fallback, though listOf1 shouldn't be empty, stripping might make it empty
-      Just rs -> return rs
+    case mkRichText inlines of
+      Nothing -> arbitrary
+      Just rs -> do
+        -- Ensure it doesn't start with a keyword
+        let t = richToString rs
+        if any (`T.isPrefixOf` t) keywords
+          then arbitrary
+          else return rs
+    where
+      keywords =
+        [ "Attack"
+        , "Action:"
+        , "General:"
+        , "Task:"
+        , "When"
+        , "Ongoing"
+        , "Passive:"
+        ]
   shrink rs =
     [ rs'
-    | l <- shrink (NE.toList (getInlines (getRichText rs)))
+    | l <- shrink (NE.toList (getInlines rs))
     , not (null l)
-    , Just rs' <- [mkRichString l]
+    , Just rs' <- [mkRichText l]
     ]
 
 instance Arbitrary Block where
@@ -109,7 +130,7 @@ instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
     TaskDef name check time cost <$> arbitrary
   shrink = genericShrink
 
-instance Arbitrary DSLBase where
+instance (Arbitrary rt) => Arbitrary (RuleT rt) where
   arbitrary =
     oneof
       [ RuleAttack <$> arbitrary
@@ -117,32 +138,9 @@ instance Arbitrary DSLBase where
       , RuleTask <$> arbitrary
       , RuleTrigger <$> arbitrary
       , RuleOngoing <$> arbitrary
-      , RuleNarrative <$> arbitrarySafeRichString
+      , RuleNarrative <$> arbitrary
       ]
   shrink = genericShrink
-
-instance Arbitrary DSLRule where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-
-arbitrarySafeRichString :: Gen RichString
-arbitrarySafeRichString = do
-  rs <- arbitrary
-  -- Ensure it doesn't start with a keyword
-  let t = richToString rs
-  if any (`T.isPrefixOf` t) keywords
-    then arbitrarySafeRichString
-    else return rs
-  where
-    keywords =
-      [ "Attack"
-      , "Action:"
-      , "General:"
-      , "Task:"
-      , "When"
-      , "Ongoing"
-      , "Passive:"
-      ]
 
 instance (Arbitrary a) => Arbitrary (Stats a) where
   arbitrary = genericArbitrary uniform
@@ -273,12 +271,5 @@ instance Arbitrary TableState where
   shrink = genericShrink
 
 instance Arbitrary ActorState where
-  arbitrary = genericArbitrary uniform
-  shrink = genericShrink
-instance Arbitrary RichText where
-  arbitrary = RichText <$> arbitrary
-  shrink (RichText rs) = [RichText rs' | rs' <- shrink rs]
-
-instance Arbitrary (RuleT RichText) where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

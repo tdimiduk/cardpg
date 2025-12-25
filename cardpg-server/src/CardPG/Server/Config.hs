@@ -16,7 +16,7 @@ data DBConfig = DBConfig
 data Config = Config
   { dbConfig :: DBConfig
   , serverPort :: Int
-  , cardsFile :: FilePath
+  , cardsDir :: FilePath
   , scenarioFile :: FilePath
   , useInMemoryDB :: Bool
   }
@@ -40,7 +40,7 @@ loadConfig = do
   let port = maybe 8080 read portStr
 
   -- File Config
-  cFile <- fromMaybe "vtt-react/src/data/generated_cards.json" <$> lookupEnv "CARDPG_CARDS_FILE"
+  cDir <- fromMaybe "data/cards" <$> lookupEnv "CARDPG_CARDS_DIR"
   sFile <- fromMaybe "data/scenarios/starter.yaml" <$> lookupEnv "CARDPG_SCENARIO_FILE"
 
   -- Feature Flags
@@ -53,7 +53,7 @@ loadConfig = do
     Config
       { dbConfig = dbConfig
       , serverPort = port
-      , cardsFile = cFile
+      , cardsDir = cDir
       , scenarioFile = sFile
       , useInMemoryDB = useInMem
       }

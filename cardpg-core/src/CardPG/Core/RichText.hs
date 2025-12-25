@@ -2,10 +2,8 @@ module CardPG.Core.RichText
   ( TextStyle (..)
   , Inline (..)
   , RichText (..)
-  , RichString (..)
-  , getRichText
   , getInlines
-  , mkRichString
+  , mkRichText
   , Block (..)
   , CardBody
   , StackPower (..)
@@ -61,10 +59,6 @@ data Inline
 
 $(deriveJSON cardpgJsonDef ''Inline)
 
--- | Smart constructor that merges adjacent TextRuns with the same style
--- | and strips leading/trailing whitespace from the entire RichString.
--- | MOVED BELOW RichString to avoid scope issues if any (though usually not needed in Haskell, TH might be picky)
-
 -- | The Base Machine Type (Always an Array)
 newtype RichText = RichText {inlines :: NE.NonEmpty Inline}
   deriving stock (Eq, Show, Generic)
@@ -72,26 +66,13 @@ newtype RichText = RichText {inlines :: NE.NonEmpty Inline}
 getInlines :: RichText -> NE.NonEmpty Inline
 getInlines (RichText x) = x
 
-$(deriveJSON (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichText)
-
-instance Semigroup RichText where
-  (RichText a) <> (RichText b) =
-    RichText $ NE.fromList $ mergeAdjacent (NE.toList a ++ NE.toList b)
-
--- | The Human Wrapper (Supports "String" or Array)
-newtype RichString = RichString {richText :: RichText}
-  deriving stock (Eq, Show, Generic)
-
-getRichText :: RichString -> RichText
-getRichText (RichString x) = x
-
 -- | Smart constructor that merges adjacent TextRuns with the same style
--- | and strips leading/trailing whitespace from the entire RichString.
-mkRichString :: [Inline] -> Maybe RichString
-mkRichString inlines =
+-- | and strips leading/trailing whitespace from the entire RichText.
+mkRichText :: [Inline] -> Maybe RichText
+mkRichText inlines =
   let merged = mergeAdjacent inlines
       stripped = stripBoundaryWhitespace merged
-   in RichString . RichText <$> NE.nonEmpty stripped
+   in RichText <$> NE.nonEmpty stripped
 
 mergeAdjacent :: [Inline] -> [Inline]
 mergeAdjacent (TextRun s1 c1 : TextRun s2 c2 : xs)
@@ -116,43 +97,48 @@ stripBoundaryWhitespace inlines =
 
 -- | Unsafe constructor for literals.
 -- | Assumes the text is non-empty and does not require stripping/merging.
-unsafeSimpleString :: Text -> RichString
-unsafeSimpleString t = RichString $ RichText (TextRun Nothing (unsafeNonEmptyText t) NE.:| [])
+unsafeSimpleString :: Text -> RichText
+unsafeSimpleString t = RichText (TextRun Nothing (unsafeNonEmptyText t) NE.:| [])
 
--- | Safe constructor that attempts to create a RichString from Text.
+-- | Safe constructor that attempts to create a RichText from Text.
 -- | Returns Nothing if the text is empty or whitespace-only after stripping.
-simpleString :: Text -> Maybe RichString
-simpleString t = mkRichString [TextRun Nothing (unsafeNonEmptyText t)]
+simpleString :: Text -> Maybe RichText
+simpleString t = mkRichText [TextRun Nothing (unsafeNonEmptyText t)]
 
-instance ToJSON RichString where
-  toJSON (RichString rs) = toJSON rs
-  toEncoding (RichString rs) = toEncoding rs
+instance ToJSON RichText where
+  toJSON (RichText rs) = toJSON rs
+  toEncoding (RichText rs) = toEncoding rs
 
-instance FromJSON RichString where
+instance FromJSON RichText where
   parseJSON v = case v of
     String t -> case simpleString t of
       Just rs -> pure rs
-      Nothing -> fail "RichString cannot be empty or whitespace only"
+      Nothing -> fail "RichText cannot be empty or whitespace only"
     _ -> do
-      RichText inlines <- parseJSON v
-      case mkRichString (NE.toList inlines) of
-        Nothing -> fail "RichString cannot be empty or whitespace only"
+      -- Parse as a list of Inlines (default for newtype with unwrapUnaryRecords=True or just list?)
+      -- Wait, RichText is a newtype around NonEmpty Inline.
+      -- If we use genericParseJSON with unwrap, it expects the inner type.
+      -- Inner type is NonEmpty Inline. Array of Inlines.
+      inlines <- parseJSON v
+      case mkRichText (NE.toList inlines) of
+        Nothing -> fail "RichText cannot be empty or whitespace only"
         Just rs -> pure rs
 
-instance Semigroup RichString where
-  (RichString a) <> (RichString b) = RichString (a <> b)
+instance Semigroup RichText where
+  (RichText a) <> (RichText b) =
+    RichText $ NE.fromList $ mergeAdjacent (NE.toList a ++ NE.toList b)
 
 -- | 2. The Layout Structure
 
 -------------------------------------------------------------------------------
 
 data Block
-  = Paragraph RichString
-  | Header RichString
+  = Paragraph RichText
+  | Header RichText
   | -- | <hr />
     Rule
   | -- | <ul><li>...</li></ul>
-    BulletList [RichString]
+    BulletList [RichText]
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''Block)

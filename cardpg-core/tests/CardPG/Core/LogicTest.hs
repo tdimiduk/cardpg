@@ -1,4 +1,6 @@
 {-# HLINT ignore "Redundant id" #-}
+{-# LANGUAGE LambdaCase #-}
+
 module CardPG.Core.LogicTest where
 
 import Control.Monad.RWS (runRWST)

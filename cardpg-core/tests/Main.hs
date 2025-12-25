@@ -52,7 +52,7 @@ prop_jsonRoundtrip x =
       decoded = eitherDecode encoded
    in counterexample (show encoded) $ decoded === Right x
 
-prop_dslRoundtrip :: DSLBase -> Property
+prop_dslRoundtrip :: Rule -> Property
 prop_dslRoundtrip r =
   let printed = prettyRule r
       parsed = parseRule printed

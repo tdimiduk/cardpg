@@ -7,6 +7,7 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import System.Random (StdGen)
 
+import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Planning qualified as Logic
 import CardPG.Core.Logic.Status qualified as Logic
@@ -29,7 +30,6 @@ import CardPG.Server.Types
   , Phase (..)
   , StateUpdate (..)
   )
-import CardPG.Api.Frontend qualified as Frontend
 import Data.Text qualified as T
 
 processCommand ::

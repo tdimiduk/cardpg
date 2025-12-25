@@ -24,6 +24,7 @@ import Network.WebSockets
   , withPingThread
   )
 
+import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Server.DB (saveGame)
 import CardPG.Server.Dispatch (processCommand)
 import CardPG.Server.Session (initGame)
@@ -42,7 +43,6 @@ import CardPG.Server.Types
   , clientExists
   , removeClient
   )
-import CardPG.Api.Frontend qualified as Frontend
 
 application :: MVar ServerState -> ServerApp
 application state pending = do

@@ -15,6 +15,7 @@ import Data.Maybe (isJust, isNothing)
 import Optics ((%~), (&))
 import System.Random (StdGen)
 
+import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Logic.Bot qualified as Logic
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)
@@ -23,7 +24,6 @@ import CardPG.Core.Logic.Status qualified as Logic
 import CardPG.Core.Primitives (ActorId)
 import CardPG.Core.State (ActorState (..), CoreCardState (..), GameEvent)
 import CardPG.Server.Types (ActorGameEvent (..), GameState (..), StateUpdate (..))
-import CardPG.Api.Frontend qualified as Frontend
 
 runActorAction ::
   ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)

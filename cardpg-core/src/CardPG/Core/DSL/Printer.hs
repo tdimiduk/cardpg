@@ -3,18 +3,17 @@ module CardPG.Core.DSL.Printer (prettyRule, richToString) where
 import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
 import CardPG.Core.RichText
   ( Inline (..)
-  , RichString
+  , RichText
   , StackPower (..)
   , TextStyle (..)
   , getInlines
-  , getRichText
   )
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)
-  , DSLBase
   , GeneralDefT (..)
   , OngoingDefT (..)
   , PassiveDef (..)
+  , Rule
   , RuleT (..)
   , TaskDefT (..)
   , TriggerDefT (..)
@@ -36,7 +35,7 @@ wrapped wrapper t = wrapper <> t <> wrapper
 inParens :: Text -> Text
 inParens t = "(" <> t <> ")"
 
-prettyRule :: DSLBase -> Text
+prettyRule :: Rule -> Text
 prettyRule (RuleAttack AttackDef{..}) =
   "Attack "
     <> prettyResource resistedBy
@@ -103,12 +102,12 @@ prettyModifier n
 prettyDifficulty :: Difficulty -> Text
 prettyDifficulty (Difficulty attr val) = prettyResource attr <> " " <> T.pack (show val)
 
-prettyExtra :: Maybe RichString -> Text
+prettyExtra :: Maybe RichText -> Text
 prettyExtra Nothing = ""
 prettyExtra (Just rt) = " -> " <> richToString rt
 
-richToString :: RichString -> Text
-richToString rs = T.concat . map inlineToString . NE.toList . getInlines $ getRichText rs
+richToString :: RichText -> Text
+richToString rs = T.concat . map inlineToString . NE.toList . getInlines $ rs
 
 inlineToString :: Inline -> Text
 inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getRawText content

@@ -4,27 +4,20 @@ module CardPG.Core.Card
   , SpecialDefend
   , CoreCardT (..)
   , CoreCard
-  , CoreCardDSL
   , ItemCardT (..)
   , ItemCard
-  , ItemCardDSL
   , NatureCardT (..)
   , NatureCard
-  , NatureCardDSL
   , TalentCardT (..)
   , TalentCard
-  , TalentCardDSL
   , GeneralActionDef (..)
   , EncounterMechanics (..)
   , EncounterCardT (..)
   , EncounterCard
-  , EncounterCardDSL
   , ConsequenceCardT (..)
   , ConsequenceCard
-  , ConsequenceCardDSL
   , ActorDefinitionT (..)
   , ActorDefinition
-  , ActorDefinitionDSL
   , Identified (..)
   , CardInstance
   ) where
@@ -83,7 +76,6 @@ data CoreCardT rule rt = CoreCard
   }
   deriving stock (Eq, Show, Generic)
 
-type CoreCardDSL = CoreCardT DSLRule RichString
 type CoreCard = CoreCardT Rule RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''CoreCardT)
@@ -103,7 +95,6 @@ data ItemCardT rt = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-type ItemCardDSL = ItemCardT RichString
 type ItemCard = ItemCardT RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''ItemCardT)
@@ -121,7 +112,6 @@ data NatureCardT rt = NatureCard
   }
   deriving stock (Eq, Show, Generic)
 
-type NatureCardDSL = NatureCardT RichString
 type NatureCard = NatureCardT RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''NatureCardT)
@@ -138,7 +128,6 @@ data TalentCardT rt = TalentCard
   }
   deriving stock (Eq, Show, Generic)
 
-type TalentCardDSL = TalentCardT RichString
 type TalentCard = TalentCardT RichText
 
 $(deriveJSON (cardpgTaggedOptions "") ''TalentCardT)
@@ -179,7 +168,6 @@ data EncounterCardT rt = EncounterCard
   }
   deriving stock (Eq, Show, Generic)
 
-type EncounterCardDSL = EncounterCardT RichString
 type EncounterCard = EncounterCardT RichText
 
 $(deriveJSON cardpgJsonDef ''EncounterCardT)
@@ -196,7 +184,6 @@ data ConsequenceCardT rule = ConsequenceCard
   }
   deriving stock (Eq, Show, Generic)
 
-type ConsequenceCardDSL = ConsequenceCardT DSLRule
 type ConsequenceCard = ConsequenceCardT Rule
 
 $(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCardT)
@@ -212,7 +199,6 @@ data ActorDefinitionT rule rt = ActorDefinition
   }
   deriving stock (Eq, Show, Generic)
 
-type ActorDefinitionDSL = ActorDefinitionT DSLRule RichString
 type ActorDefinition = ActorDefinitionT Rule RichText
 
 $(deriveJSON cardpgJsonDef ''ActorDefinitionT)

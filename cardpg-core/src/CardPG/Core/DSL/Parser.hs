@@ -21,7 +21,7 @@ import Text.Megaparsec
   , try
   )
 import Text.Megaparsec.Char (char, space, space1, string, string')
-import Text.Megaparsec.Char.Lexer qualified as L
+import Text.Megaparsec.Char.Lexer (decimal)
 
 import CardPG.Core.NonEmptyText
   ( mkNonEmptyText
@@ -30,13 +30,13 @@ import CardPG.Core.NonEmptyText
   , unsafeNonEmptyText
   )
 import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
-import CardPG.Core.RichText (Inline (..), RichString, StackPower (..), TextStyle (..), mkRichString)
+import CardPG.Core.RichText (Inline (..), RichText, StackPower (..), TextStyle (..), mkRichText)
 import CardPG.Core.RuleDefs
   ( AttackDefT (..)
-  , DSLBase
   , GeneralDefT (..)
   , OngoingDefT (..)
   , PassiveDef (..)
+  , Rule
   , RuleT (..)
   , TaskDefT (..)
   , TriggerDefT (..)
@@ -44,12 +44,12 @@ import CardPG.Core.RuleDefs
 
 type Parser = Parsec Void Text
 
-parseRule :: Text -> Either String DSLBase
+parseRule :: Text -> Either String Rule
 parseRule t = case parse ruleParser "" t of
   Left err -> Left $ errorBundlePretty err
   Right r -> Right r
 
-ruleParser :: Parser DSLBase
+ruleParser :: Parser Rule
 ruleParser =
   choice
     [ try (attackParser <* eof)
@@ -74,7 +74,7 @@ effectArrow :: Parser Text
 effectArrow = string "->"
 
 -- Attack
-attackParser :: Parser DSLBase
+attackParser :: Parser Rule
 attackParser = do
   _ <- string' "attack"
   _ <- space1
@@ -89,7 +89,7 @@ attackParser = do
 
 -- Ongoing (Stance, Channel, Prime)
 -- Ongoing (Life) -> Effect
-ongoingParser :: Parser DSLBase
+ongoingParser :: Parser Rule
 ongoingParser = do
   _ <- string' "Ongoing"
   _ <- space
@@ -98,7 +98,7 @@ ongoingParser = do
   RuleOngoing . OngoingDef life <$> richTextParser
 
 -- Passive
-passiveParser :: Parser DSLBase
+passiveParser :: Parser Rule
 passiveParser = do
   _ <- string' "passive"
   _ <- space
@@ -111,7 +111,7 @@ passiveParser = do
 
 -- Task
 -- Task: Name ({Color} X, Time) -> Effect
-taskParser :: Parser DSLBase
+taskParser :: Parser Rule
 taskParser = do
   _ <- string' "Task:"
   _ <- space
@@ -163,7 +163,7 @@ taskParser = do
 
 -- Trigger (When)
 -- When [Trigger] -> [Effect]
-triggerParser :: Parser DSLBase
+triggerParser :: Parser Rule
 triggerParser = do
   _ <- string' "When"
   _ <- space1
@@ -176,7 +176,7 @@ triggerParser = do
   RuleTrigger . TriggerDef trigger <$> richTextParser
 
 -- General (Explicit Action)
-generalParser :: Parser DSLBase
+generalParser :: Parser Rule
 generalParser = do
   _ <- string' "Action:" <|> string' "General:"
   _ <- space
@@ -194,7 +194,7 @@ generalParser = do
   RuleGeneral . GeneralDef name cost difficulty <$> richTextParser
 
 -- Narrative (Fallback for General)
-narrativeParser :: Parser DSLBase
+narrativeParser :: Parser Rule
 narrativeParser = RuleNarrative <$> richTextParser
 
 -- Separator Parser
@@ -212,13 +212,13 @@ hspace :: Parser ()
 hspace = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
 
 -- Rich Text Parser
-richTextParser :: Parser RichString
+richTextParser :: Parser RichText
 richTextParser = richTextParserWith []
 
-richTextParserWith :: [Char] -> Parser RichString
+richTextParserWith :: [Char] -> Parser RichText
 richTextParserWith stopChars = do
   inlines <- some (inlineParserStopAt stopChars)
-  case mkRichString inlines of
+  case mkRichText inlines of
     Just rs -> pure rs
     Nothing -> fail "Empty rich string"
 
@@ -335,7 +335,7 @@ stackPowerParser = do
   modVal <- optional $ try $ do
     sign <- (id <$ char '+') <|> (negate <$ char '-')
     _ <- hspace
-    sign <$> L.decimal
+    sign <$> decimal
   _ <- hspace
   conditional <- optional $ try $ do
     _ <- char '('
@@ -355,4 +355,4 @@ difficultyParser = do
     hspace
   base <- resourceSymbol
   _ <- hspace
-  Difficulty base <$> L.decimal
+  Difficulty base <$> decimal

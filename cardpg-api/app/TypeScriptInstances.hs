@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module TypeScriptInstances where
@@ -27,8 +27,21 @@ import CardPG.Core.Primitives
   , StackPower
   , TargetId
   )
-import CardPG.Core.RichText (Block, Inline, RichString, RichText, TextStyle)
+import CardPG.Core.RichText (Block, Inline, RichText, TextStyle)
 
+import CardPG.Api.Frontend qualified as Frontend
+import CardPG.Api.Types
+  ( ActorGameEvent (..)
+  , AdminCommand (..)
+  , ClientMessage
+  , Command (..)
+  , LogEntry (..)
+  , LogPayload (..)
+  , Phase (..)
+  , ServerMessage
+  , StateUpdate (..)
+  , Token
+  )
 import CardPG.Core.Primitives qualified as P
 import CardPG.Core.RuleDefs hiding
   ( AttackDef
@@ -48,26 +61,10 @@ import CardPG.Core.State
   , SpatialState (..)
   , TableCard (..)
   )
-import CardPG.Api.Types
-  ( ActorGameEvent (..)
-  , AdminCommand (..)
-  , ClientMessage
-  , Command (..)
-  , LogEntry (..)
-  , LogPayload (..)
-  , Phase (..)
-  , ServerMessage
-  , StateUpdate (..)
-  , Token
-  )
-import CardPG.Api.Frontend qualified as Frontend
 import DeriveSpecialized
   ( deriveSpecializedInstance
   , specializeType
   )
-
-instance TypeScript DSLRule where
-  getTypeScriptType _ = "string"
 
 instance TypeScript CardInstanceId where
   getTypeScriptType _ = "string"
@@ -95,7 +92,7 @@ $(deriveTypeScript cardpgJsonDef ''EquipSlot)
 $(deriveTypeScript cardpgJsonDef ''TextStyle)
 $(deriveTypeScript cardpgJsonDef ''Inline)
 $(deriveTypeScript (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichText)
-$(deriveTypeScript (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichString)
+
 $(deriveTypeScript cardpgJsonDef ''Block)
 
 -- Stats
@@ -113,7 +110,7 @@ $( do
      d_task <- specializeType ''TaskDefT [ConT ''RichText] "TaskDef"
      d_trigger <- specializeType ''TriggerDefT [ConT ''RichText] "TriggerDef"
      d_ongoing <- specializeType ''OngoingDefT [ConT ''RichText] "OngoingDef"
-     d_rule <- specializeType ''RuleT [ConT ''RichText] "Rule"
+     d_ongoing <- specializeType ''OngoingDefT [ConT ''RichText] "OngoingDef"
      d_stats <- specializeType ''P.Stats [ConT ''Int] "Stats"
      d_specDef <- specializeType ''P.Stats [ConT ''P.ResourceType] "SpecialDefend"
 
@@ -123,7 +120,6 @@ $( do
            ++ d_task
            ++ d_trigger
            ++ d_ongoing
-           ++ d_rule
            ++ d_stats
            ++ d_specDef
        )
@@ -142,7 +138,8 @@ $( do
        deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TriggerDef ''TriggerDefT [inline]
      i_ongoing <-
        deriveSpecializedInstance (cardpgJsonOptions "Rule") ''OngoingDef ''OngoingDefT [inline]
-     i_rule <- deriveSpecializedInstance (cardpgJsonOptions "RuleRule") ''Rule ''RuleT [inline]
+     i_ongoing <-
+       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''OngoingDef ''OngoingDefT [inline]
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
 
      -- Stats
@@ -151,6 +148,7 @@ $( do
        deriveSpecializedInstance cardpgJsonDef ''SpecialDefend ''P.Stats [ConT ''P.ResourceType]
 
      -- Frontend Card Types
+     i_rule <- deriveTypeScript (cardpgJsonOptions "Rule") ''Frontend.Rule
      i_core <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCard
      i_item <- deriveTypeScript cardpgJsonDef ''Frontend.ItemCard
      i_nature <- deriveTypeScript cardpgJsonDef ''Frontend.NatureCard

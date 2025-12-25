@@ -27,7 +27,6 @@ executable shake-build
                     , extra
                     , process
     other-modules:    Common
-                    , Rules.Cards
                     , Rules.Codegen
                     , Rules.Deploy
                     , Rules.Frontend

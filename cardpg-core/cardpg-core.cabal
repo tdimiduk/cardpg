@@ -55,7 +55,6 @@ library
     CardPG.Core.Primitives
     CardPG.Core.Util
     CardPG.Core.Json
-    CardPG.Core.Conversion
     CardPG.Core.RichText
     CardPG.Core.DSL.Parser
     CardPG.Core.DSL.Printer

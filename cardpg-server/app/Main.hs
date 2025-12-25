@@ -23,6 +23,7 @@ import CardPG.Core.State (GameEnv(..))
 import CardPG.Server.Connection (application)
 import CardPG.Server.Config (Config(..), DBConfig(..), loadConfig)
 import CardPG.Server.DB (initDB, initInMemoryDB, loadGame, saveGame)
+import CardPG.Server.Loader (loadLibrary)
 import CardPG.Server.Scenario (loadScenario)
 import CardPG.Server.Session (initGame)
 import CardPG.Server.Types (CardLibrary(..), ServerState(..), newServerState, GameState(..))
@@ -43,14 +44,8 @@ main = do
         initDB config.dbConfig
 
     -- Load Cards from Disk
-    T.putStrLn $ "Loading card library from " <> T.pack config.cardsFile <> "..."
-    cardLibraryResult <- eitherDecodeFileStrict config.cardsFile
-    
-    lib <- case cardLibraryResult of
-        Left err -> do
-             T.putStrLn $ "WARNING: Failed to load card library: " <> T.pack err
-             return (CardLibrary [] [] [])
-        Right l -> return l
+    T.putStrLn $ "Loading card library from " <> T.pack config.cardsDir <> "..."
+    lib <- loadLibrary config.cardsDir
 
     -- Initialize Game Session
     (gameGs, gameRng) <- initGame backend config lib False

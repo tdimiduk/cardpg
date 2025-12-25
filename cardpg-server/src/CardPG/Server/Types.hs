@@ -44,17 +44,19 @@ import GHC.Generics (Generic)
 import Network.WebSockets qualified as WS
 import System.Random (StdGen)
 
+import CardPG.Api.Frontend qualified as Frontend
+import CardPG.Api.Types
 import CardPG.Core.Card
   ( ActorDefinition
   , ConsequenceCard
   , CoreCard (..)
+  , ItemCard
+  , NatureCard
   )
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ActorId)
 import CardPG.Core.State (ActorState, GameEnv)
 import CardPG.Server.Config (Config)
-import CardPG.Api.Frontend qualified as Frontend
-import CardPG.Api.Types
 
 -- | GameState depends on Phase and LogEntry from Api.Types
 data GameState = GameState
@@ -88,6 +90,8 @@ data CardLibrary = CardLibrary
   { actors :: [ActorDefinition]
   , statuses :: [CoreCard]
   , consequences :: [ConsequenceCard]
+  , items :: [ItemCard]
+  , nature :: [NatureCard]
   }
   deriving (Show, Eq, Generic)
 
@@ -112,7 +116,7 @@ data StorageBackend
   | InMemoryBackend (IORef (Map Text GameState))
 
 newServerState :: StorageBackend -> GameState -> StdGen -> Config -> ServerState
-newServerState backend gs = ServerState Map.empty (CardLibrary [] [] []) gs backend
+newServerState backend gs = ServerState Map.empty (CardLibrary [] [] [] [] []) gs backend
 
 -- | Helpers for managing server state
 numClients :: ServerState -> Int

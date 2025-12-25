@@ -21,6 +21,7 @@ module CardPG.Api.Frontend
   , NatureCard (..)
   , TalentCard (..)
   , ConsequenceCard (..)
+  , Rule (..)
 
     -- * State Containers
   , CoreCardState (..)
@@ -48,13 +49,12 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
-import CardPG.Core.Card (DSLRule, Rule)
 import CardPG.Core.Card qualified as Core
-import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
+import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.Logic.Combat (computeDefense, computeResilience)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives (CardInstanceId, CardLocation, ResourceType, Stats (..))
-import CardPG.Core.RichText (RichString, RichText)
+import CardPG.Core.RichText (RichText)
 import CardPG.Core.State
   ( AssetState
   , CorePlayState
@@ -62,8 +62,30 @@ import CardPG.Core.State
   , SpatialState
   )
 import CardPG.Core.State qualified as Core
+import CardPG.Core.RuleDefs
+  ( AttackDef
+  , GeneralDef
+  , OngoingDef
+  , PassiveDef
+  , TaskDef
+  , TriggerDef
+  )
+import CardPG.Core.RuleDefs qualified as Core
 
 -- * Cards (Explicit DTOs)
+
+-- | Frontend version of 'Core.Rule' (Explicit DTO, forces Object encoding)
+data Rule
+  = RuleAttack AttackDef
+  | RuleGeneral GeneralDef
+  | RuleTask TaskDef
+  | RuleTrigger TriggerDef
+  | RuleOngoing OngoingDef
+  | RuleNarrative RichText
+  | RulePassive PassiveDef
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON (cardpgJsonOptions "Rule") ''Rule)
 
 -- | Frontend version of 'Core.CoreCard' with ID flattened.
 data CoreCard = CoreCard
@@ -152,10 +174,15 @@ data ConsequenceCard = ConsequenceCard
 
 $(deriveJSON cardpgJsonDef ''ConsequenceCard)
 
+
 -- * Converters
 
 toCoreCard :: Core.CardInstance Core.CoreCard -> CoreCard
-toCoreCard (Core.Identified id Core.CoreCard{..}) = CoreCard{..}
+toCoreCard (Core.Identified id Core.CoreCard{..}) =
+  CoreCard
+    { rules = fmap (fmap toRule) rules
+    , ..
+    }
 
 toItemCard :: Core.CardInstance Core.ItemCard -> ItemCard
 toItemCard (Core.Identified id Core.ItemCard{..}) = ItemCard{..}
@@ -172,7 +199,20 @@ toTableCard (Core.Identified id (Core.TCNature c)) = TCNature $ toNatureCard (Co
 toTableCard (Core.Identified id (Core.TCTalent c)) = TCTalent $ toTalentCard (Core.Identified id c)
 
 toConsequenceCard :: Core.CardInstance Core.ConsequenceCard -> ConsequenceCard
-toConsequenceCard (Core.Identified id Core.ConsequenceCard{..}) = ConsequenceCard{..}
+toConsequenceCard (Core.Identified id Core.ConsequenceCard{..}) =
+  ConsequenceCard
+    { rules = fmap (fmap toRule) rules
+    , ..
+    }
+
+toRule :: Core.Rule -> Rule
+toRule (Core.RuleAttack d) = RuleAttack d
+toRule (Core.RuleGeneral d) = RuleGeneral d
+toRule (Core.RuleTask d) = RuleTask d
+toRule (Core.RuleTrigger d) = RuleTrigger d
+toRule (Core.RuleOngoing d) = RuleOngoing d
+toRule (Core.RuleNarrative d) = RuleNarrative d
+toRule (Core.RulePassive d) = RulePassive d
 
 -- * State Containers (Frontend Versions)
 

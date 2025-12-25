@@ -12,14 +12,14 @@ import Optics ((^.))
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCardDSL, CoreCardT (..))
-import CardPG.Core.RuleDefs (DSLRule (DSLRule), RuleT (..))
+import CardPG.Core.Card (CoreCard, CoreCardT (..))
+import CardPG.Core.RuleDefs (RuleT (..))
 import CardPG.Core.RuleInstances ()
 
 test_statusParsing :: TestTree
 test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
   let path = "../data/cards/status/core.yaml"
-  result <- decodeFileEither path :: IO (Either ParseException [CoreCardDSL])
+  result <- decodeFileEither path :: IO (Either ParseException [CoreCard])
   case result of
     Left err -> assertFailure $ "Failed to parse status cards: " ++ show err
     Right cards -> do
@@ -29,8 +29,8 @@ test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
           -- Verify that rules are parsed as General, not Narrative (fallback)
           let rules = fromMaybe (error "No rules") (fatigue ^. #rules)
           case NE.head rules of
-            DSLRule (RuleGeneral _) -> return ()
-            DSLRule (RuleTask _) -> return ()
+            RuleGeneral _ -> return ()
+            RuleTask _ -> return ()
             r -> assertFailure $ "Expected RuleGeneral or RuleTask, got: " ++ show r
 
           -- Roundtrip check

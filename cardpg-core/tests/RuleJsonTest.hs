@@ -13,14 +13,14 @@ import CardPG.Core.Card (Identified (..), ItemCardT (..))
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..))
 import CardPG.Core.RichText (unsafeSimpleString)
-import CardPG.Core.RuleDefs (DSLBase, GeneralDefT (..), RuleT (..))
+import CardPG.Core.RuleDefs (GeneralDefT (..), Rule, RuleT (..))
 import CardPG.Core.RuleInstances ()
 import CardPG.Core.State (AssetState (..), TableCard (..), TableState (..))
 
 prop_ruleJsonParsing :: Property
 prop_ruleJsonParsing =
   let json = "{\"type\": \"general\", \"data\": {\"effect\": \"Test Effect\", \"name\": \"Test Action\"}}"
-      decoded = eitherDecode json :: Either String DSLBase
+      decoded = eitherDecode json :: Either String Rule
       expected =
         RuleGeneral $
           GeneralDef (unsafeNonEmptyText "Test Action") Nothing Nothing (unsafeSimpleString "Test Effect")

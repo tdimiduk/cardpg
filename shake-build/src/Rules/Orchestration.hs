@@ -26,7 +26,6 @@ runDev = do
   need ["gen-types"]
 
   let runServer = do
-        need ["vtt-react/src/data/generated_cards.json"]
         putInfo "Starting cardpg-server..."
         cmd_ (["cabal", "run", "cardpg-server"] :: [String])
 
@@ -43,7 +42,6 @@ testAll :: Action ()
 testAll = do
   need
     [ "_build/tests/.cardpg-core.timestamp"
-    , "_build/tests/.card-compiler.timestamp"
     , "_build/tests/.vtt-react.timestamp"
     , "_build/frontend/.lint.timestamp"
     , "_build/frontend/.typecheck.timestamp"

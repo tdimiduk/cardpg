@@ -38,6 +38,7 @@ library
     CardPG.Server.Config
     CardPG.Server.Session
     CardPG.Server.ChatParser
+    CardPG.Server.Loader
   hs-source-dirs:      src
   build-depends:       base >= 4.7 && < 5
                      , websockets
@@ -62,6 +63,7 @@ library
                      , time
                      , beam-automigrate
                      , megaparsec
+                     , directory
 
 executable cardpg-server
   import: project-config

@@ -11,6 +11,12 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (toText)
 
+import CardPG.Api.Frontend
+  ( ActionStack (..)
+  , GameEvent (..)
+  , PlannedAction (..)
+  )
+import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Card (CoreCardT (..), Identified (..))
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Primitives (ActorId (..))
@@ -24,12 +30,6 @@ import CardPG.Server.Types
   , LogEntry (..)
   , LogPayload (..)
   )
-import CardPG.Api.Frontend
-  ( ActionStack (..)
-  , GameEvent (..)
-  , PlannedAction (..)
-  )
-import CardPG.Api.Frontend qualified as Frontend
 
 mkChatLog :: Int -> Int -> Maybe ActorId -> Text -> Text -> LogEntry
 mkChatLog ts seqNum senderId senderName content =

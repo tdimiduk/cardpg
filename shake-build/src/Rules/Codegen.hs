@@ -7,9 +7,6 @@ import Common (getPackageSources)
 getCodegenSources :: Action [FilePath]
 getCodegenSources = getPackageSources "cardpg-api" "app"
 
-getCardCompilerSources :: Action [FilePath]
-getCardCompilerSources = getPackageSources "tools/card-compiler" "."
-
 buildGenTypes :: Action ()
 buildGenTypes =
   need
@@ -23,7 +20,7 @@ defineCodegenRules = do
     need ["_build/libs/cardpg-core", "_build/libs/cardpg-api"]
     -- We need core and api sources too.
     -- Safe replacement for head
-    srcs <- getDirectoryFiles "" ["cardpg-api/app//*.hs"]
+    srcs <- getDirectoryFiles "" ["cardpg-api/app/*.hs"]
     case srcs of
       [] -> fail "No source files found for codegen"
       srcs' -> need srcs'

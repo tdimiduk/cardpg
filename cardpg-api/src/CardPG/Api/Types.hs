@@ -28,10 +28,10 @@ import Data.Text (Text)
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
 
+import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
 import CardPG.Core.State (ActiveChallenge)
-import CardPG.Api.Frontend qualified as Frontend
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution
@@ -133,7 +133,7 @@ data StateUpdate = StateUpdate
 
 $(deriveJSON cardpgJsonDef ''StateUpdate)
 
---Orphan instance for UUID if not defined elsewhere or imported
+-- Orphan instance for UUID if not defined elsewhere or imported
 instance TypeScript UUID where
   getTypeScriptType _ = "string"
 

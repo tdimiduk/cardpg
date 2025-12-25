@@ -32,7 +32,6 @@ import System.Random.Stateful (Uniform (..), uniformM)
 
 import CardPG.Core.Card
   ( ActorDefinition
-  , ActorDefinitionDSL
   , CoreCard
   , Identified (..)
   , ItemCard
@@ -40,7 +39,6 @@ import CardPG.Core.Card
   , TalentCard
   )
 import CardPG.Core.Card qualified as Card
-import CardPG.Core.Conversion (compileActorDefinition)
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Primitives (ActorId, CardInstanceId, EquipSlot (..), TargetId)
 import CardPG.Core.State
@@ -127,8 +125,7 @@ loadScenarioActors baseDir actorsList = do
 
 loadAndInstantiateActor :: FilePath -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
 loadAndInstantiateActor path x y handSize = do
-  dsl :: ActorDefinitionDSL <- liftIO $ decodeFileThrow path
-  let def = compileActorDefinition dsl
+  def :: ActorDefinition <- liftIO $ decodeFileThrow path
   instantiateActor def x y handSize
 
 -- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
