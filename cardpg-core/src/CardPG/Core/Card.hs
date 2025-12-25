@@ -134,6 +134,7 @@ data TalentCardT rt = TalentCard
   , traits :: Maybe (NonEmpty Text)
   , passive :: Maybe Text
   , defense :: Maybe Int
+  , resilience :: Maybe Int
   }
   deriving stock (Eq, Show, Generic)
 

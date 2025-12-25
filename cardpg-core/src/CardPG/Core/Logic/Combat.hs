@@ -102,7 +102,6 @@ computeDefense tblSt =
       getDef (TCItem item) = fromMaybe 0 item.defense
       getDef (TCNature nature) = fromMaybe 0 nature.defense
       getDef (TCTalent talent) = fromMaybe 0 talent.defense
-      getDef _ = 0
       maxDef = maximum (0 : map getDef activeCards)
    in max 1 maxDef
 
@@ -112,7 +111,7 @@ computeResilience tblSt =
   let activeCards = getActiveTableCards tblSt
       getRes (TCItem item) = fromMaybe 0 item.resilience
       getRes (TCNature nature) = fromMaybe 0 nature.resilience
-      getRes _ = 0
+      getRes (TCTalent talent) = fromMaybe 0 talent.resilience
       maxRes = maximum (0 : map getRes activeCards)
    in max 1 maxRes
 

@@ -107,7 +107,8 @@ application state pending = do
   (msgs, initialUpdate, currentClients) <-
     readMVar state >>= \s -> do
       let updates =
-            map (\(aid, actor) -> StateUpdate aid (Frontend.toActorState actor)) $ Map.toList (s.gameState.actors)
+            map (\(aid, actor) -> StateUpdate aid (Frontend.toActorState actor)) $
+              Map.toList (s.gameState.actors)
       let welcomeMsg =
             Welcome
               finalClientId

@@ -234,11 +234,6 @@ export const ConsequenceCardView: React.FC<{ card: ConsequenceCard }> = ({ card 
 // --- Table View (Dispatcher for Wrappers) ---
 
 export const TableCardView: React.FC<{ card: TableCard }> = ({ card }) => {
-  // If it's a consequence wrapper, render explicit consequence view
-  if (card.type === 'tCConsequence') {
-    return <ConsequenceCardView card={card.data} />;
-  }
-
   // Otherwise, render generic table view (Item, Nature, Talent)
   const data = card.data;
 
@@ -329,12 +324,7 @@ export const CardView: React.FC<CardProps> = (props) => {
     return <ConsequenceCardComponent {...props} card={card} />;
   }
 
-  if (
-    card.type === 'tCItem' ||
-    card.type === 'tCNature' ||
-    card.type === 'tCTalent' ||
-    card.type === 'tCConsequence'
-  ) {
+  if (card.type === 'tCItem' || card.type === 'tCNature' || card.type === 'tCTalent') {
     return <TableCardComponent {...props} card={card} />;
   }
 

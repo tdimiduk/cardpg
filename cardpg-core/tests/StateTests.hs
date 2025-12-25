@@ -12,7 +12,7 @@ import Test.Tasty
 import Test.Tasty.QuickCheck hiding (discard)
 
 import ArbitraryInstances ()
-import CardPG.Core.Card (ItemCard, ItemCardT (..), Identified (..))
+import CardPG.Core.Card (Identified (..), ItemCard, ItemCardT (..))
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck (performFatigueCycle)
 import CardPG.Core.Logic.Monad (runGameM)

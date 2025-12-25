@@ -9,17 +9,17 @@ import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 
 import CardPG.Core.Card
-  ( ConsequenceCard
+  ( CardInstance
+  , ConsequenceCard
   , ConsequenceCardT (..)
   , CoreCard
   , CoreCardT (..)
+  , Identified (..)
   , ItemCard
   , ItemCardT (..)
   , NatureCard
   , Stats (..)
   , TalentCard
-  , Identified (..)
-  , CardInstance
   )
 import CardPG.Core.Logic.Deck qualified as Deck
 import CardPG.Core.Logic.Monad (GameM (..), runGameM)
@@ -119,14 +119,14 @@ test_plannedActions =
   let c1 = CardInstanceId (read "00000000-0000-0000-0000-000000000001")
       c2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       c3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
-      
+
       dummyCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing
       dummyActionCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing
-      
+
       card1 = Identified c1 dummyActionCard
       card2 = Identified c2 dummyCard
       card3 = Identified c3 dummyCard
-      
+
       planActionC1C2 = PStandard (ActionStack card1 [card2])
    in testGroup
         "Planned Actions Logic"
@@ -186,7 +186,7 @@ test_consequenceLogic =
       cid2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       cid3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
       cidRes = CardInstanceId (read "00000000-0000-0000-0000-000000000009")
-      
+
       cons1 = Identified cid1 (mkConsTemplate 0)
       cons2 = Identified cid2 (mkConsTemplate 0)
       cons3 = Identified cid3 (mkConsTemplate 0)
@@ -198,14 +198,18 @@ test_consequenceLogic =
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence (Just 5))
 
             length finalState.tableState.consequences @?= 1
-            assertBool "ConsequenceAdded 5 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 5; _ -> False) events)
+            assertBool
+              "ConsequenceAdded 5 missing"
+              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 5; _ -> False) events)
         , testCase "calculates default resilience of 1 and proper severity" $ do
             -- No items, Res=1. existing=0. Sev = 0/1 + 1 = 1.
             let env = mkEnv [mkConsTemplate 1]
             let state = mkActorState []
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-            assertBool "ConsequenceAdded 1 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
+            assertBool
+              "ConsequenceAdded 1 missing"
+              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
         , testCase "uses equipped resilience" $ do
             -- Item with Res=3. Existing=0. Sev = 0/3 + 1 = 1.
             let item = mkItemRes 3
@@ -221,7 +225,9 @@ test_consequenceLogic =
             let env = mkEnv [mkConsTemplate 1]
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-            assertBool "ConsequenceAdded 1 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
+            assertBool
+              "ConsequenceAdded 1 missing"
+              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 1; _ -> False) events)
         , testCase "calculates severity based on existing count and resilience" $ do
             -- Res=2. Existing=3 consequences. Sev = 3/2 + 1 = 1 + 1 = 2.
             let item = mkItemRes 2
@@ -232,7 +238,6 @@ test_consequenceLogic =
                   state0
                     { tableState =
                         state0.tableState
-
                           { assets = Map.singleton cidRes (Identified cidRes tc, Equipped SlotBody)
                           , consequences = [cons1, cons2, cons3] -- 3 dummy existing
                           }
@@ -240,7 +245,9 @@ test_consequenceLogic =
             let env = mkEnv [mkConsTemplate 2]
             let ((), finalState, events) = runLogicWithEnv env state (addConsequence Nothing)
 
-            assertBool "ConsequenceAdded 2 missing" (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 2; _ -> False) events)
+            assertBool
+              "ConsequenceAdded 2 missing"
+              (any (\evt -> case evt of ConsequenceAdded c -> c.content.severity == 2; _ -> False) events)
         ]
 
 test_statusLogic :: TestTree

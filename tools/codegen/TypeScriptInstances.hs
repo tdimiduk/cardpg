@@ -135,7 +135,6 @@ $( do
          [ConT ''CC.Rule, ConT ''RichText]
          "CoreCard"
 
-
      d_item <- specializeType ''ItemCardT [ConT ''RichText] "ItemCard"
      d_nature <- specializeType ''NatureCardT [ConT ''RichText] "NatureCard"
      d_talent <- specializeType ''TalentCardT [ConT ''RichText] "TalentCard"
@@ -155,7 +154,6 @@ $( do
            ++ d_ongoing
            ++ d_rule
            ++ d_core
-
            ++ d_item
            ++ d_nature
            ++ d_talent
@@ -227,8 +225,6 @@ $( do
      -- p_core1 handled by d_core implicit instance
      p_core2 <- makeProxyInstance [t|CoreCardT DSLRule RichString|] ''CoreCard "CoreCard"
 
-
-
      -- ItemCard
 
      p_item3 <- makeProxyInstance [t|ItemCardT RichString|] ''ItemCard "ItemCard"
@@ -263,14 +259,12 @@ $( do
            ++ i_genAction
            ++ i_encMech
            ++ i_core
-
            ++ i_item
            ++ i_nature
            ++ i_talent
            ++ i_encounter
            ++ i_consequence
            ++ p_core2
-
            ++ p_item3
            ++ p_nature3
            ++ p_talent3

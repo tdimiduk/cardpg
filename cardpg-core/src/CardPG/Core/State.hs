@@ -20,7 +20,6 @@ data TableCard
   = TCItem ItemCard
   | TCNature NatureCard
   | TCTalent TalentCard
-  | TCConsequence ConsequenceCard
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''TableCard)
