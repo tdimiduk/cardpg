@@ -5,9 +5,12 @@ import { ActorSlice } from './actorSlice';
 
 export interface GameSlice {
   phase: Phase;
+  readyCount: number;
+  totalCount: number;
   revealAndResolve: () => void;
   setPhase: (phase: Phase) => void;
   setResolutionPhase: () => void;
+  setReadiness: (ready: number, total: number) => void;
 }
 
 export const createGameSlice: StateCreator<
@@ -17,6 +20,8 @@ export const createGameSlice: StateCreator<
   GameSlice
 > = (set) => ({
   phase: 'planning',
+  readyCount: 0,
+  totalCount: 0,
 
   revealAndResolve: () =>
     set((state) => {
@@ -34,5 +39,11 @@ export const createGameSlice: StateCreator<
   setResolutionPhase: () =>
     set((state) => {
       state.phase = 'resolution';
+    }),
+
+  setReadiness: (ready, total) =>
+    set((state) => {
+      state.readyCount = ready;
+      state.totalCount = total;
     }),
 });

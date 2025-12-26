@@ -145,13 +145,20 @@ data ServerMessage
       , initialActors :: [StateUpdate]
       , phase :: Phase
       , history :: [LogEntry]
+      , readyCount :: Int
+      , totalCount :: Int
       }
   | BroadcastMessage {fromClientId :: UUID, payload :: [ActorGameEvent]}
   | ClientJoined {newClientName :: Text, newClientId :: UUID}
   | ClientLeft {leftClientId :: UUID}
   | ErrorMessage {error :: Text}
   | MultiMessage {messages :: [ServerMessage]}
-  | GameStateUpdate {updates :: [StateUpdate], newPhase :: Maybe Phase}
+  | GameStateUpdate
+      { updates :: [StateUpdate]
+      , newPhase :: Maybe Phase
+      , readyCount :: Int
+      , totalCount :: Int
+      }
   | NewLogs {logs :: [LogEntry]}
   deriving (Show, Generic)
 

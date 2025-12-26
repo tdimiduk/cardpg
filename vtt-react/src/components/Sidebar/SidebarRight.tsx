@@ -229,43 +229,45 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
 
   return (
     <div className="w-80 h-full bg-slate-900 border-l border-slate-800 flex flex-col shadow-2xl z-20 shrink-0">
-      {/* Header / Phase Control */}
-      <div className="p-4 bg-slate-950 border-b border-slate-800 shrink-0">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Game Log</h2>
-          <div className="text-[10px] text-slate-600 font-mono">{logs.length} Entries</div>
-        </div>
-
-        {/* Phase Interface */}
-        <div className="bg-slate-900 rounded p-2 border border-slate-800">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-300 uppercase">Phase: {phase}</span>
-            {phase === 'planning' && (
-              <div className="flex items-center gap-1 text-[10px] text-slate-500">
-                <div
-                  className={`w-2 h-2 rounded-full ${readyCount === totalCount ? 'bg-green-500' : 'bg-yellow-500'}`}
-                ></div>
-                {readyCount}/{totalCount} Ready
-              </div>
-            )}
-          </div>
-
-          {phase === 'planning' ? (
-            <button
-              onClick={onRevealActions}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Play size={14} fill="currentColor" /> Reveal Actions
-            </button>
-          ) : (
-            <button
-              onClick={onEndRound}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded flex items-center justify-center gap-2 transition-colors"
-            >
-              <Rewind size={14} fill="currentColor" /> New Round
-            </button>
+      <div className="bg-slate-950 border-b border-slate-800 p-4 shrink-0">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Phase: {phase}</span>
+          {phase === 'planning' && (
+            <div className="flex items-center gap-1 text-[10px] text-slate-500">
+            </div>
           )}
         </div>
+
+        {phase === 'planning' ? (
+          <button
+            onClick={onRevealActions}
+            disabled={readyCount < totalCount}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded shadow-lg shadow-indigo-900/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+          >
+            {readyCount < totalCount ? (
+              <span className="text-sm">
+                {readyCount}/{totalCount} Ready
+              </span>
+            ) : (
+              <>
+                <Play size={14} fill="currentColor" /> Reveal Actions
+              </>
+            )}
+          </button>
+        ) : (
+          <button
+            onClick={onEndRound}
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 transition-all"
+          >
+            <Rewind size={14} fill="currentColor" /> New Round
+          </button>
+        )}
+      </div>
+
+      {/* Game Log Header */}
+      <div className="px-4 py-2 bg-slate-900 border-b border-slate-800 shrink-0 flex justify-between items-center shadow-sm">
+        <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Game Log</h2>
+        <div className="text-[10px] text-slate-600 font-mono">{logs.length} Entries</div>
       </div>
 
       {/* Logs Scroll Area */}
@@ -317,13 +319,12 @@ const SidebarRight: React.FC<{
 }> = ({ onOpenDefense }) => {
   const logs = useGameStore((state) => state.logs);
   const phase = useGameStore((state) => state.phase);
-  const actors = useGameStore((state) => state.actors);
+  // const actors = useGameStore((state) => state.actors); // Unused
   const { dispatchCommand, dispatchAdmin } = useGameDispatch();
 
   // Calculate readiness
-  const totalCount = Object.keys(actors).length;
-  // This is a naive readiness check (if planned action exists)
-  const readyCount = Object.values(actors).filter((a) => a.coreState.planned).length;
+  const totalCount = useGameStore((state) => state.totalCount);
+  const readyCount = useGameStore((state) => state.readyCount);
 
   const handleReveal = () => {
     // Trigger resolution phase via specific intent.

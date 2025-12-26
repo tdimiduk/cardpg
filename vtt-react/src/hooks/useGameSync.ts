@@ -32,6 +32,9 @@ export const useGameSync = () => {
         if (msg.history) {
           useGameStore.getState().setLogs(msg.history);
         }
+
+        // Sync Readiness
+        useGameStore.getState().setReadiness(msg.readyCount, msg.totalCount);
       } else if (msg.type === 'gameStateUpdate') {
         console.log('Received State Updates:', msg.updates);
         msg.updates.forEach((update) => {
@@ -40,6 +43,7 @@ export const useGameSync = () => {
         if (msg.newPhase) {
           useGameStore.getState().setPhase(msg.newPhase);
         }
+        useGameStore.getState().setReadiness(msg.readyCount, msg.totalCount);
       } else if (msg.type === 'newLogs') {
         if (msg.logs && Array.isArray(msg.logs)) {
           console.log('Received New Logs:', msg.logs.length, msg.logs);

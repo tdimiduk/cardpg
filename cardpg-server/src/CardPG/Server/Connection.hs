@@ -6,7 +6,7 @@ import Control.Monad (forM_, forever, unless, when)
 import Control.Monad.State (runState)
 import Data.Aeson (decode, encode)
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust)
 import Data.Text qualified as T
 import Data.Text.Encoding qualified as T
 import Data.Text.IO qualified as T
@@ -25,6 +25,7 @@ import Network.WebSockets
   )
 
 import CardPG.Api.Frontend qualified as Frontend
+import CardPG.Core.State (ActorState (..), CoreCardState (..))
 import CardPG.Server.DB (saveGame)
 import CardPG.Server.Dispatch (processCommand)
 import CardPG.Server.Session (initGame)
@@ -109,6 +110,7 @@ application state pending = do
       let updates =
             map (\(aid, actor) -> StateUpdate aid (Frontend.toActorState actor)) $
               Map.toList (s.gameState.actors)
+      let (ready, total) = getReadinessCounts s.gameState
       let welcomeMsg =
             Welcome
               finalClientId
@@ -116,6 +118,8 @@ application state pending = do
               updates
               (s.gameState.phase)
               (s.gameState.history)
+              ready
+              total
       return ([welcomeMsg], updates, s.clients)
 
   forM_ msgs $ \msg -> sendTextData conn (encode msg)
@@ -190,7 +194,8 @@ talk client socket state = forever $ do
       let connectedNames = map (.clientName) $ Map.elems clientsMap
 
       -- Broadcast Welcome manually to all sockets
-      let welcomeMsg c = Welcome (c.clientId) connectedNames initialUpdates (newGs.phase) (newGs.history)
+      let (ready, total) = getReadinessCounts newGs
+      let welcomeMsg c = Welcome (c.clientId) connectedNames initialUpdates (newGs.phase) (newGs.history) ready total
 
       forM_ (Map.elems clientsMap) $ \c ->
         forM_ (c.clientConns) $ \sock ->
@@ -219,11 +224,20 @@ handleGameCommand clientId clientName state cmd = do
   -- Persist State
   saveGame pool "default-game" newGame
 
+  let (ready, total) = getReadinessCounts newGame
+
   -- Broadcast results (State updates + Logs only, no event stream)
   let messages =
-        [ GameStateUpdate updates (if newPhase /= oldPhase then Just newPhase else Nothing)
+        [ GameStateUpdate updates (if newPhase /= oldPhase then Just newPhase else Nothing) ready total
         | not (null updates) || newPhase /= oldPhase
         ]
           ++ [NewLogs logs | not (null logs)]
 
   unless (null messages) $ broadcast (MultiMessage messages) clientsMap
+
+getReadinessCounts :: GameState -> (Int, Int)
+getReadinessCounts gs =
+  let allActors = Map.elems (gs.actors)
+      total = length allActors
+      ready = length $ filter (\a -> isJust (a.coreState.planned)) allActors
+   in (ready, total)
