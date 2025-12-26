@@ -13,8 +13,19 @@ import CardPG.Core.Primitives
   , CardLocation
   , EquipSlot (..)
   , ResourceType
+  , Stats (..)
   , TargetId (..)
   )
+
+data DefenseDetails = DefenseDetails
+  { values :: Stats Int
+  , impact :: Int
+  , consequencesFromDefense :: Int
+  , nextSeverity :: Int
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''DefenseDetails)
 
 data TableCard
   = TCItem ItemCard

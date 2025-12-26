@@ -8,6 +8,7 @@ module CardPG.Core.Logic.Combat
   , calculateResilience
   , computeDefense
   , computeResilience
+  , computeDefenseDetails
   , getActiveTableCards
   ) where
 
@@ -18,15 +19,14 @@ import Data.Text (Text)
 import Optics
 
 import CardPG.Core.Card
-  ( CoreCard
-  , CoreCard (..)
+  ( CoreCard (..)
   , Identified (..)
   , ItemCard (..)
   , NatureCard (..)
   , TalentCard (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
-import CardPG.Core.Primitives (StackPower (..), getStat)
+import CardPG.Core.Primitives (ResourceType (..), StackPower (..), Stats (..), getStat)
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
@@ -35,6 +35,8 @@ import CardPG.Core.State
   , ActorState (..)
   , AssetState (..)
   , ChallengeSource (..)
+  , CoreCardState (..)
+  , DefenseDetails (..)
   , NarrativeStack (..)
   , PlannedAction (..)
   , TableCard (..)
@@ -120,3 +122,31 @@ calculateResilience :: GameM g Int
 calculateResilience = do
   tblSt <- use #tableState
   return $ computeResilience tblSt
+
+computeDefenseDetails :: ActorState -> DefenseDetails
+computeDefenseDetails ActorState{coreState, tableState} =
+  let
+    CoreCardState{defending} = coreState
+    TableState{consequences} = tableState
+
+    defStat = computeDefense tableState
+    resStat = computeResilience tableState
+
+    defRed = sum [getStat Red content.stats | Identified _ content <- defending]
+    defYellow = sum [getStat Yellow content.stats | Identified _ content <- defending]
+    defBlue = sum [getStat Blue content.stats | Identified _ content <- defending]
+
+    impactVal = length defending
+    consequencesVal = if defStat > 0 then impactVal `div` defStat else impactVal
+    currentConsequences = length consequences
+    nextSeverityVal =
+      if resStat > 0
+        then ((currentConsequences + consequencesVal) `div` resStat) + 1
+        else currentConsequences + consequencesVal + 1
+   in
+    DefenseDetails
+      { values = Stats{red = defRed, yellow = defYellow, blue = defBlue}
+      , impact = impactVal
+      , consequencesFromDefense = consequencesVal
+      , nextSeverity = nextSeverityVal
+      }

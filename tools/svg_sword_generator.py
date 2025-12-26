@@ -7,6 +7,8 @@ SVG Sword Generator
 This script generates SVG icons of crossed swords, specifically modeled after Oakeshott Type XVII swords.
 It was originally created to generate favicons for the CardPG VTT project.
 
+It is not currently used for any specific purpose, but it is kept around because it seems like it might be a useful pattern to keep in mind
+
 Usage:
     python3 svg_sword_generator.py --output_dir ./output --name my_sword
 

@@ -33,8 +33,8 @@ initGame backend config lib forceReset = do
 
   let hydrate gs =
         let env = gs.env
-            statusMap = Map.fromList [(getRawText name, c) | c@CoreCard {name} <- lib.statuses]
-            consequenceMap = Map.fromList [(getRawText name, c) | c@ConsequenceCard {name} <- lib.consequences]
+            statusMap = Map.fromList [(getRawText name, c) | c@CoreCard{name} <- lib.statuses]
+            consequenceMap = Map.fromList [(getRawText name, c) | c@ConsequenceCard{name} <- lib.consequences]
             newEnv = env{statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap}
          in gs{env = newEnv}
 

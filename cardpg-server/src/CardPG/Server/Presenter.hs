@@ -47,7 +47,15 @@ eventToLogs ts idx actorId event game =
         Just a -> a.name
         Nothing -> "Unknown"
 
-      mkId suffix = T.pack $ show ts <> "-" <> T.unpack (toText (let ActorId uid = actorId in uid)) <> "-idx" <> show idx <> "-" <> suffix
+      mkId suffix =
+        T.pack $
+          show ts
+            <> "-"
+            <> T.unpack (toText (let ActorId uid = actorId in uid))
+            <> "-idx"
+            <> show idx
+            <> "-"
+            <> suffix
 
       mkLog suffix payload =
         LogEntry

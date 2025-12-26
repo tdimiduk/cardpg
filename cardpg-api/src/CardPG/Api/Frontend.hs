@@ -51,17 +51,10 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Card qualified as Core
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
-import CardPG.Core.Logic.Combat (computeDefense, computeResilience)
+import CardPG.Core.Logic.Combat (computeDefense, computeDefenseDetails, computeResilience)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives (CardInstanceId, CardLocation, ResourceType, Stats (..))
 import CardPG.Core.RichText (RichText)
-import CardPG.Core.State
-  ( AssetState
-  , CorePlayState
-  , RevealedEffect
-  , SpatialState
-  )
-import CardPG.Core.State qualified as Core
 import CardPG.Core.RuleDefs
   ( AttackDef
   , GeneralDef
@@ -71,6 +64,14 @@ import CardPG.Core.RuleDefs
   , TriggerDef
   )
 import CardPG.Core.RuleDefs qualified as Core
+import CardPG.Core.State
+  ( AssetState
+  , CorePlayState
+  , DefenseDetails (..)
+  , RevealedEffect
+  , SpatialState
+  )
+import CardPG.Core.State qualified as Core
 
 -- * Cards (Explicit DTOs)
 
@@ -174,7 +175,6 @@ data ConsequenceCard = ConsequenceCard
 
 $(deriveJSON cardpgJsonDef ''ConsequenceCard)
 
-
 -- * Converters
 
 toCoreCard :: Core.CardInstance Core.CoreCard -> CoreCard
@@ -268,16 +268,6 @@ toPlannedAction (Core.PNarrative (Core.NarrativeStack cs col)) =
   PNarrative $ NarrativeStack (map toCoreCard (toList cs)) col
 toPlannedAction Core.PPass = PPass
 
-data DefenseDetails = DefenseDetails
-  { values :: Stats Int
-  , impact :: Int
-  , consequencesFromDefense :: Int
-  , nextSeverity :: Int
-  }
-  deriving (Show, Eq, Generic)
-
-$(deriveJSON cardpgJsonDef ''DefenseDetails)
-
 data ActorState = ActorState
   { name :: Text
   , actorType :: Text
@@ -314,28 +304,9 @@ toActorState Core.ActorState{..} =
         , consequences = map toConsequenceCard tableState.consequences
         }
 
-    -- Calculation logic stays the same
+    details = computeDefenseDetails Core.ActorState{..}
     defStat = computeDefense tableState
     resStat = computeResilience tableState
-    defendingCards = coreState.defending
-    defRed = sum [c.content.stats.red | c <- defendingCards]
-    defYellow = sum [c.content.stats.yellow | c <- defendingCards]
-    defBlue = sum [c.content.stats.blue | c <- defendingCards]
-    impactVal = length defendingCards
-    consequencesVal = if defStat > 0 then impactVal `div` defStat else impactVal
-    currentConsequences = length tableState.consequences
-    nextSeverityVal =
-      if resStat > 0
-        then ((currentConsequences + consequencesVal) `div` resStat) + 1
-        else currentConsequences + consequencesVal + 1
-
-    details =
-      DefenseDetails
-        { values = Stats{red = defRed, yellow = defYellow, blue = defBlue}
-        , impact = impactVal
-        , consequencesFromDefense = consequencesVal
-        , nextSeverity = nextSeverityVal
-        }
    in
     ActorState
       { defense = defStat

@@ -39,14 +39,20 @@ processCommand cmd ts game =
     StartResolutionIntent tid -> do
       (newGame, events) <- revealPlannedActions game
       let newGameWithPhase = newGame{phase = Resolution}
-      let newLogs = concatMap (\(i, ActorGameEvent aid evt) -> eventToLogs ts i aid evt newGameWithPhase) (zip [length game.history ..] events)
+      let newLogs =
+            concatMap
+              (\(i, ActorGameEvent aid evt) -> eventToLogs ts i aid evt newGameWithPhase)
+              (zip [length game.history ..] events)
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, [], events, newLogs)
     EndRoundIntent _ -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
       let newGameWithPhase = gameWithPlan{phase = Planning}
-      let newLogs = concatMap (\(i, ActorGameEvent aid evt) -> eventToLogs ts i aid evt newGame) (zip [length game.history ..] roundEvents)
+      let newLogs =
+            concatMap
+              (\(i, ActorGameEvent aid evt) -> eventToLogs ts i aid evt newGame)
+              (zip [length game.history ..] roundEvents)
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, updates, planEvents ++ roundEvents, newLogs)
     ChatIntent maybeAid content -> do
@@ -143,7 +149,10 @@ processCommand cmd ts game =
 
             actorEvents = map (ActorGameEvent targetId . Frontend.toGameEvent) events
             stateUpdates = [StateUpdate targetId (Frontend.toActorState updatedActorState)]
-            newLogs = concatMap (\(i, evt) -> eventToLogs ts i targetId (Frontend.toGameEvent evt) newGame) (zip [length game.history ..] events)
+            newLogs =
+              concatMap
+                (\(i, evt) -> eventToLogs ts i targetId (Frontend.toGameEvent evt) newGame)
+                (zip [length game.history ..] events)
             finalGame = newGame{history = game.history ++ newLogs}
 
           return (finalGame, stateUpdates, actorEvents, newLogs)
