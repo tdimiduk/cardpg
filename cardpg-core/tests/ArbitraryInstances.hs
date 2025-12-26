@@ -244,6 +244,14 @@ instance Arbitrary ActiveChallenge where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary ChallengeId where
+  arbitrary = ChallengeId <$> arbitrary
+  shrink (ChallengeId u) = ChallengeId <$> shrink u
+
+instance Arbitrary ActiveDefense where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary RevealedEffect where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

@@ -15,8 +15,8 @@ import Data.Maybe (fromJust)
 import Text.Read (readMaybe)
 
 import CardPG.Core.Logic.Deck (drawCard)
-import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..), StackPower(..), ResourceType(..))
-import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..), SpatialState(..), PlannedAction(..), ActionStack(..))
+import CardPG.Core.Primitives (CardInstanceId(..), ActorId(..), StackPower(..), ResourceType(..), ChallengeId(..))
+import CardPG.Core.State (ActorState(..), CoreCardState(..), GameEnv(..), TableState(..), GameEvent(..), CorePlayState(..), SpatialState(..), PlannedAction(..), ActionStack(..), ActiveDefense(..))
 import CardPG.Core.Card (CoreCard(..), Stats(..))
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..))
 import Data.List.NonEmpty (NonEmpty(..))
@@ -93,7 +93,8 @@ test_game = testGroup "Server Game Engine"
            (st ^. #coreState % #deck) @?= [card2]
       
       -- 2. Defend Command
-      let ((game3, _updates2, actions2, _logs2), _) = runState (processCommand (DefendIntent actorId) 2000 game2) gen2
+      let cid = ChallengeId (read "00000000-0000-0000-0000-000000000001")
+      let ((game3, _updates2, actions2, _logs2), _) = runState (processCommand (DefendIntent actorId cid) 2000 game2) gen2
       
       length actions2 @?= 1
       let evt2 = head actions2
@@ -107,7 +108,11 @@ test_game = testGroup "Server Game Engine"
       case actorSt3 of
         Nothing -> assertBool "Actor state lost" False
         Just st -> do
-           (st ^. #coreState % #defending) @?= [card2]
+           case st ^. #coreState % #defending of
+             Just (ActiveDefense c cards) -> do
+               c @?= cid
+               map (.id) cards @?= [cid2]
+             Nothing -> assertBool "Expected defending state" False
            (st ^. #coreState % #deck) @?= []
 
   , testCase "Gameplay Sequence (Fatigue)" $ do
@@ -146,7 +151,8 @@ test_game = testGroup "Server Game Engine"
       let card4 = Identified cid4 (mockCard "c4")
       
       let deck = [card3, card4]
-      let defending = [card1]
+      let defId = ChallengeId (read "00000000-0000-0000-0000-000000000099")
+      let defending = Just $ ActiveDefense defId [card1]
       
       let actorState = emptyActorState 
             & #coreState % #defending .~ defending
@@ -169,7 +175,8 @@ test_game = testGroup "Server Game Engine"
         Nothing -> assertBool "Actor state lost" False
         Just st -> do
            -- Defense should be cleared
-           (st ^. #coreState % #defending) @?= []
+           -- Defense should be cleared
+           (st ^. #coreState % #defending) @?= Nothing
            -- Card should be in discard
            (st ^. #coreState % #discard) @?= [card1]
 
@@ -299,7 +306,7 @@ emptyActorState = ActorState
       { deck = []
       , hand = []
       , discard = []
-      , defending = []
+      , defending = Nothing
       , inPlay = Map.empty
       , planned = Nothing
       , revealed = Nothing

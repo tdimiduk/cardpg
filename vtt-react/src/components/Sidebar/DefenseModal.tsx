@@ -50,7 +50,7 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   const consequences = activeActor?.tableState.consequences || [];
 
   // Resolve Defense Stack
-  const defenseStack = activeActor?.coreState.defending || [];
+  const defenseStack = activeActor?.coreState.defending?.cards || [];
 
   const defenseDetails = activeActor?.defenseDetails || defaultDefenseDetails;
   const currentDefense = activeActor?.defense || 0;

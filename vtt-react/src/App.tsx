@@ -51,7 +51,7 @@ const GameBoard: React.FC = () => {
   }>({ isOpen: false, attack: null, stack: [] });
 
   // Resolve Defense Stack for Logic Check
-  const defenseIds = activeActor?.coreState.defending || [];
+  const defenseIds = activeActor?.coreState.defending?.cards || [];
 
   const handleOpenDefense = (attack: ActiveChallenge, stack: DefenseModalCard[]) => {
     // If we are already defending (defenseIds > 0), we assume the user intends to view or modify
@@ -73,8 +73,16 @@ const GameBoard: React.FC = () => {
 
   // --- Defense Handlers (Duplicates of Sidebar Logic for Modal) ---
   const handleDefend = () => {
-    if (!activeActorId) return;
-    dispatchCommand({ type: 'defendIntent', actorId: activeActorId });
+    if (!activeActorId || !defenseModal.attack) return;
+
+    // We now have the ID directly on the challenge object
+    const targetChallengeId = defenseModal.attack.id;
+
+    dispatchCommand({
+      type: 'defendIntent',
+      actorId: activeActorId,
+      targetChallengeId,
+    });
   };
 
   const handleAddConsequence = (severity?: number) => {

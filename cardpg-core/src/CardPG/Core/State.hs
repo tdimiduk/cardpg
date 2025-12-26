@@ -11,6 +11,7 @@ import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives
   ( CardInstanceId (..)
   , CardLocation
+  , ChallengeId (..)
   , EquipSlot (..)
   , ResourceType
   , Stats (..)
@@ -79,7 +80,8 @@ data ChallengeSource
 $(deriveJSON cardpgJsonDef ''ChallengeSource)
 
 data ActiveChallenge = ActiveChallenge
-  { source :: ChallengeSource
+  { id :: ChallengeId
+  , source :: ChallengeSource
   , challengeStrength :: Int
   , challengeColor :: ResourceType
   }
@@ -95,12 +97,20 @@ data RevealedEffect
 
 $(deriveJSON cardpgJsonDef ''RevealedEffect)
 
+data ActiveDefense = ActiveDefense
+  { challengeId :: ChallengeId
+  , cards :: [CardInstance CoreCard]
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ActiveDefense)
+
 data CoreCardState = CoreCardState
   { deck :: [CardInstance CoreCard] -- Top is head
   , hand :: [CardInstance CoreCard] -- User-defined order
   , discard :: [CardInstance CoreCard] -- Top is head (most recently played)
   , planned :: Maybe PlannedAction
-  , defending :: [CardInstance CoreCard] -- Currently committed to a defense
+  , defending :: Maybe ActiveDefense -- Currently committed to a defense
   , inPlay :: Map CardInstanceId (CardInstance CoreCard, CorePlayState) -- Buffs, Stances, Attached effects
   , revealed :: Maybe RevealedEffect
   }

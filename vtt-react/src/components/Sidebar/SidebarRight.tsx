@@ -53,7 +53,7 @@ const ChallengeLogItem: React.FC<{
       findInList(coreState.hand, sourceCardId) ||
       findInList(coreState.deck, sourceCardId) ||
       findInList(coreState.discard, sourceCardId) ||
-      findInList(coreState.defending, sourceCardId)
+      (coreState.defending ? findInList(coreState.defending.cards, sourceCardId) : undefined)
     );
   });
 

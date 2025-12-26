@@ -33,7 +33,7 @@ import System.Random.Stateful (Uniform (..), uniformM)
 
 import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
-import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType)
+import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId, ResourceType)
 import CardPG.Core.State (ActiveChallenge)
 
 -- | The authoritative state for a game session
@@ -104,7 +104,7 @@ $(deriveJSON cardpgJsonDef ''ActorGameEvent)
 -- | Commands for game actions (Intents)
 data Command
   = DrawIntent {actorId :: ActorId}
-  | DefendIntent {actorId :: ActorId}
+  | DefendIntent {actorId :: ActorId, targetChallengeId :: ChallengeId}
   | PlanMove {actorId :: ActorId, x :: Int, y :: Int}
   | PlanAction {actorId :: ActorId, actionCardId :: CardInstanceId, resourceCardIds :: [CardInstanceId]}
   | PlanNarrative {actorId :: ActorId, cardIds :: [CardInstanceId], color :: ResourceType}
@@ -148,6 +148,9 @@ data StateUpdate = StateUpdate
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''StateUpdate)
+
+instance TypeScript ChallengeId where
+  getTypeScriptType _ = "string"
 
 -- Orphan instance for UUID if not defined elsewhere or imported
 instance TypeScript UUID where

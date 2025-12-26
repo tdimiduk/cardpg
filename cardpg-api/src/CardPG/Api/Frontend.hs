@@ -12,6 +12,7 @@
 module CardPG.Api.Frontend
   ( -- * Actors
     ActorState (..)
+  , ActiveDefense (..)
   , DefenseDetails (..)
 
     -- * Cards
@@ -54,7 +55,7 @@ import CardPG.Core.Card qualified as Core
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.Logic.Combat (computeDefense, computeDefenseDetails, computeResilience)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId, CardLocation, ResourceType, Stats (..))
+import CardPG.Core.Primitives (CardInstanceId, CardLocation, ChallengeId, ResourceType, Stats (..))
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs
   ( AttackDef
@@ -239,13 +240,21 @@ data PlannedAction
   deriving (Show, Eq, Generic)
 $(deriveJSON cardpgJsonDef ''PlannedAction)
 
+data ActiveDefense = ActiveDefense
+  { challengeId :: ChallengeId
+  , cards :: [CoreCard]
+  }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ActiveDefense)
+
 -- | Mirrors Core.CoreCardState but uses Frontend CoreCard
 data CoreCardState = CoreCardState
   { deck :: [CoreCard]
   , hand :: [CoreCard]
   , discard :: [CoreCard]
   , planned :: Maybe PlannedAction
-  , defending :: [CoreCard]
+  , defending :: Maybe ActiveDefense
   , inPlay :: Map.Map CardInstanceId (CoreCard, CorePlayState)
   , revealed :: Maybe RevealedEffect
   }
@@ -294,7 +303,10 @@ toActorState Core.ActorState{..} =
         , hand = map toCoreCard coreState.hand
         , discard = map toCoreCard coreState.discard
         , planned = fmap toPlannedAction coreState.planned
-        , defending = map toCoreCard coreState.defending
+        , defending = case coreState.defending of
+            Nothing -> Nothing
+            Just (Core.ActiveDefense cid cards) ->
+              Just (ActiveDefense cid (map toCoreCard cards))
         , inPlay = Map.map (Data.Bifunctor.first toCoreCard) coreState.inPlay
         , revealed = coreState.revealed
         }

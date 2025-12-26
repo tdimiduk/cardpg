@@ -103,7 +103,7 @@ export const selectDefending = (
   const actor = state.actors[actorId];
   if (!actor) return [];
   if (!actor) return [];
-  return actor.coreState.defending;
+  return actor.coreState.defending?.cards ?? [];
 };
 
 // -- Planned Action Selectors --

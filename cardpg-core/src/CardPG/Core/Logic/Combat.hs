@@ -26,11 +26,12 @@ import CardPG.Core.Card
   , TalentCard (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
-import CardPG.Core.Primitives (ResourceType (..), StackPower (..), Stats (..), getStat)
+import CardPG.Core.Primitives (ChallengeId, ResourceType (..), StackPower (..), Stats (..), getStat)
 import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
   ( ActionStack (..)
   , ActiveChallenge (..)
+  , ActiveDefense (..)
   , ActorState (..)
   , AssetState (..)
   , ChallengeSource (..)
@@ -59,14 +60,15 @@ stackPower stack power =
    in
     rawTotal + power.modifier
 
-attackAction :: PlannedAction -> Either Text ActiveChallenge
-attackAction matPlan = case matPlan of
+attackAction :: ChallengeId -> PlannedAction -> Either Text ActiveChallenge
+attackAction cid matPlan = case matPlan of
   PStandard stack -> case getAttackRule stack.actionCard.content of
     Left err -> Left err
     Right attackRule ->
       Right $
         ActiveChallenge
-          { source = CSCard stack.actionCard.id
+          { id = cid
+          , source = CSCard stack.actionCard.id
           , challengeStrength = stackPower stack attackRule.power
           , challengeColor = attackRule.resistedBy
           }
@@ -79,7 +81,8 @@ attackAction matPlan = case matPlan of
      in
       Right $
         ActiveChallenge
-          { source = CSCard (let (h :| _) = cs in h.id) -- Safe as narrative stack must have cards
+          { id = cid
+          , source = CSCard (let (h :| _) = cs in h.id) -- Safe as narrative stack must have cards
           , challengeStrength = rawTotal -- Modifier 0 for now
           , challengeColor = col -- Defense matches Action Color
           }
@@ -131,11 +134,15 @@ computeDefenseDetails ActorState{coreState, tableState} =
     defStat = computeDefense tableState
     resStat = computeResilience tableState
 
-    defRed = sum [getStat Red content.stats | Identified _ content <- defending]
-    defYellow = sum [getStat Yellow content.stats | Identified _ content <- defending]
-    defBlue = sum [getStat Blue content.stats | Identified _ content <- defending]
+    defendingCards = case defending of
+      Nothing -> []
+      Just (ActiveDefense _ cards) -> cards
 
-    impactVal = length defending
+    defRed = sum [getStat Red content.stats | Identified _ content <- defendingCards]
+    defYellow = sum [getStat Yellow content.stats | Identified _ content <- defendingCards]
+    defBlue = sum [getStat Blue content.stats | Identified _ content <- defendingCards]
+
+    impactVal = length defendingCards
     consequencesVal = if defStat > 0 then impactVal `div` defStat else impactVal
     currentConsequences = length consequences
     nextSeverityVal =

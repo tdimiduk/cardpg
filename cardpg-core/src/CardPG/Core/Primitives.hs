@@ -9,7 +9,9 @@ module CardPG.Core.Primitives
   , Difficulty (..)
   , CardLocation (..)
   , Stats (..)
+  , Stats (..)
   , getStat
+  , ChallengeId (..)
   ) where
 
 import Data.Aeson
@@ -112,3 +114,12 @@ data CardLocation = LocationHand | LocationDiscard | LocationDeck
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON (cardpgJsonOptions "Location") ''CardLocation)
+
+newtype ChallengeId = ChallengeId UUID
+  deriving stock (Show, Eq, Ord)
+  deriving newtype (FromJSONKey, ToJSONKey)
+
+$(deriveJSON cardpgJsonDef ''ChallengeId)
+
+instance Uniform ChallengeId where
+  uniformM g = ChallengeId <$> uniformM g

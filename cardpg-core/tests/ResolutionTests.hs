@@ -16,7 +16,7 @@ import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)
 import CardPG.Core.Logic.Planning qualified as Logic
-import CardPG.Core.Primitives (CardInstanceId (..))
+import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId (..))
 import CardPG.Core.State
 import Optics ((%), (&), (.~))
 
@@ -58,7 +58,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         { deck = []
         , hand = [card1, card2, card3]
         , discard = []
-        , defending = []
+        , defending = Nothing
         , inPlay = Map.empty
         , planned = Nothing
         , revealed = Nothing
@@ -87,7 +87,8 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
     Nothing -> assertFailure "Action should be planned"
 
   -- 2. Defend with c3
-  let _defendAction = Logic.flipCardToDefense :: GameM System.Random.StdGen ()
+  let cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
+  let _defendAction = Logic.flipCardToDefense cid :: GameM System.Random.StdGen ()
   -- TODO: check something about this defend action
 
   let actorWithDeck =
@@ -103,10 +104,14 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
       ((_, actorAfterPlan2, _), gen2) = runState (runRWST (runGameM planAction) env actorWithDeck) gen
 
       -- Defend
-      ((_, actorAfterDefend, _), gen3) = runState (runRWST (runGameM Logic.flipCardToDefense) env actorAfterPlan2) gen2
+      ((_, actorAfterDefend, _), gen3) = runState (runRWST (runGameM (Logic.flipCardToDefense cid)) env actorAfterPlan2) gen2
 
   -- Verify defense
-  assertEqual "Defending stack has c3" [c3Id] (map (.id) actorAfterDefend.coreState.defending)
+  case actorAfterDefend.coreState.defending of
+    Just (ActiveDefense c cards) -> do
+      assertEqual "Challenge Id matches" cid c
+      assertEqual "Defending stack has c3" [c3Id] (map (.id) cards)
+    Nothing -> assertFailure "Expected defending state"
 
   -- 3. Resolve Round (End Defense + Discard Planned)
   let resolveAction = do
@@ -116,7 +121,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
       ((_, actorFinal, _), _) = runState (runRWST (runGameM resolveAction) env actorAfterDefend) gen3
 
   -- Verify cleanup
-  assertEqual "Defending stack empty" [] actorFinal.coreState.defending
+  assertEqual "Defending stack empty" Nothing actorFinal.coreState.defending
   assertEqual "Planned action empty" Nothing actorFinal.coreState.planned
 
   let discard = map (.id) actorFinal.coreState.discard

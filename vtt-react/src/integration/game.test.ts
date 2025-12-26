@@ -31,7 +31,7 @@ describe('Game Store Integration', () => {
         deck: [],
         hand: [testCard],
         discard: [],
-        defending: [],
+        defending: undefined,
         inPlay: {},
       },
       tableState: {

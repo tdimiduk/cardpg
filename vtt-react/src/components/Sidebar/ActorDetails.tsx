@@ -28,7 +28,7 @@ export const ActorDetails: React.FC<ActorDetailsProps> = ({ actor, onResumeDefen
   // Resolve piles directly (since they are now instances)
   const drawPile = actor.coreState.deck;
   const discardPile = actor.coreState.discard;
-  const flippedPile = actor.coreState.defending;
+  const flippedPile = actor.coreState.defending?.cards || [];
 
   // Handlers
   const handleDraw = (_count: number) => {

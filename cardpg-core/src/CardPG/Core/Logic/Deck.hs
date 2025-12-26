@@ -22,9 +22,10 @@ import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Card (CardInstance, CoreCard, Identified (..), ItemCard (..))
 import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
-import CardPG.Core.Primitives (CardInstanceId)
+import CardPG.Core.Primitives (CardInstanceId, ChallengeId)
 import CardPG.Core.State
-  ( ActorState (..)
+  ( ActiveDefense (..)
+  , ActorState (..)
   , AssetState (..)
   , CoreCardState (..)
   , GameEnv (..)
@@ -83,8 +84,29 @@ deckCardTo dst gameLog = do
 drawCard :: (RandomGen g) => GameM g ()
 drawCard = deckCardTo #hand CardDrawn
 
-flipCardToDefense :: (RandomGen g) => GameM g ()
-flipCardToDefense = deckCardTo #defending CardDefended
+flipCardToDefense :: (RandomGen g) => ChallengeId -> GameM g ()
+flipCardToDefense cid = do
+  currentDeck <- use (#coreState % #deck)
+  case currentDeck of
+    [] -> do
+      performFatigueCycle
+      flipCardToDefense cid
+    (top : rest) -> do
+      currentDefense <- use (#coreState % #defending)
+      case currentDefense of
+        Nothing -> do
+          modify $ #coreState % #deck .~ rest
+          modify $ #coreState % #defending .~ Just (ActiveDefense cid [top])
+          tell [CardDefended top]
+        Just (ActiveDefense existingCid cards) ->
+          if existingCid == cid
+            then do
+              modify $ #coreState % #deck .~ rest
+              modify $ #coreState % #defending .~ Just (ActiveDefense existingCid (top : cards))
+              tell [CardDefended top]
+            else
+              -- Attempted to defend against a different challenge while already defending
+              return ()
 
 reshuffleDeck :: (RandomGen g) => GameM g ()
 reshuffleDeck = do

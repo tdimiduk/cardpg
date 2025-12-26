@@ -13,7 +13,13 @@ import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Planning qualified as Logic
 import CardPG.Core.Logic.Status qualified as Logic
-import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ResourceType (..))
+import CardPG.Core.Primitives
+  ( ActorId
+  , CardInstanceId
+  , CardLocation
+  , ChallengeId
+  , ResourceType (..)
+  )
 import CardPG.Core.State
   ( ActiveChallenge (..)
   , ActorState (..)
@@ -75,10 +81,14 @@ processCommand cmd ts game =
     ChatIntent maybeAid content -> do
       case parseChatCommand content of
         CmdChallenge (ChallengeDetails color val name desc) -> do
+          -- Generate ID for ad-hoc challenge
+          cid <- state uniform
+
           -- Ad-hoc challenge Logic
           let challenge =
                 ActiveChallenge
-                  { source = CSAdHoc name desc
+                  { id = cid
+                  , source = CSAdHoc name desc
                   , challengeStrength = val
                   , challengeColor = color
                   }
@@ -112,7 +122,7 @@ processCommand cmd ts game =
     _ -> do
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)
-            DefendIntent tid -> (tid, Logic.flipCardToDefense)
+            DefendIntent tid cid -> (tid, Logic.flipCardToDefense cid)
             EndDefenseIntent tid -> (tid, Logic.endDefense)
             PlanMove tid x y -> (tid, Logic.planMove x y)
             PlanAction tid actionId resourceIds ->

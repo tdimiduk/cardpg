@@ -50,7 +50,7 @@ mkActorState handCards =
           , hand = handCards
           , discard = []
           , planned = Nothing
-          , defending = []
+          , defending = Nothing
           , inPlay = Map.empty
           , revealed = Nothing
           }

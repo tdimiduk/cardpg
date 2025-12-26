@@ -164,6 +164,7 @@ $( do
      i_plannedAction <- deriveTypeScript cardpgJsonDef ''Frontend.PlannedAction
      i_challengeSource <- deriveTypeScript cardpgJsonDef ''ChallengeSource
      i_activeChallenge <- deriveTypeScript cardpgJsonDef ''ActiveChallenge
+     i_activeDefense <- deriveTypeScript cardpgJsonDef ''Frontend.ActiveDefense
      i_revealedEffect <- deriveTypeScript cardpgJsonDef ''RevealedEffect
 
      i_logPayload <- deriveTypeScript cardpgJsonDef ''LogPayload
@@ -185,6 +186,7 @@ $( do
            ++ i_plannedAction
            ++ i_challengeSource
            ++ i_activeChallenge
+           ++ i_activeDefense
            ++ i_revealedEffect
            ++ i_logPayload
            ++ i_logEntry

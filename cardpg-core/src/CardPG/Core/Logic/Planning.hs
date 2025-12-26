@@ -14,20 +14,22 @@ module CardPG.Core.Logic.Planning
   ) where
 
 import Control.Monad.RWS (tell)
-import Control.Monad.State (modify)
+import Control.Monad.State (modify, state)
 import Data.List (find, partition)
 import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
 
 import Data.Maybe (fromMaybe)
 import Data.UUID (nil)
 import Optics
+import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Card (CardInstance, CoreCard (..), Identified (..))
 import CardPG.Core.Logic.Combat (attackAction)
-import CardPG.Core.Logic.Monad (GameM (..))
-import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..))
+import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
+import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId, ResourceType (..))
 import CardPG.Core.State
   ( ActionStack (..)
+  , ActiveDefense (..)
   , ActorState (..)
   , CoreCardState (..)
   , GameEvent (..)
@@ -120,15 +122,16 @@ plannedActionTo dst gameLog = do
 cancelPlan :: GameM g ()
 cancelPlan = plannedActionTo #hand PlanCanceled
 
-revealPlannedActions :: GameM g ()
+revealPlannedActions :: (RandomGen g) => GameM g ()
 revealPlannedActions = do
   maybePlan <- use (#coreState % #planned)
   case maybePlan of
     Nothing -> return ()
     Just plan -> do
+      cid <- liftRandom uniform
       let revealedEffect = case plan of
             PPass -> REPass
-            _ -> case attackAction plan of
+            _ -> case attackAction cid plan of
               Right challenge -> REChallenge challenge
               Left err -> REInvalid err
 
@@ -140,11 +143,11 @@ discardPlannedActions = plannedActionTo #discard PlanCanceled
 
 endDefense :: GameM g ()
 endDefense = do
-  stack <- use (#coreState % #defending)
-  case stack of
-    [] -> return ()
-    _ -> do
-      modify $ #coreState % #defending .~ []
+  maybeDefense <- use (#coreState % #defending)
+  case maybeDefense of
+    Nothing -> return ()
+    Just (ActiveDefense _ stack) -> do
+      modify $ #coreState % #defending .~ Nothing
       modify $ #coreState % #discard %~ (stack ++)
       tell [DefenseEnded stack]
 

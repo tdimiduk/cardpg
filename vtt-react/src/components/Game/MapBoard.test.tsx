@@ -16,7 +16,7 @@ describe('MapBoard', () => {
       deck: [],
       hand: [],
       discard: [],
-      defending: [],
+      defending: undefined,
       inPlay: {},
     },
     tableState: {
