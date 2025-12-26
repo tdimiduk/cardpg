@@ -231,10 +231,11 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
     <div className="w-80 h-full bg-slate-900 border-l border-slate-800 flex flex-col shadow-2xl z-20 shrink-0">
       <div className="bg-slate-950 border-b border-slate-800 p-4 shrink-0">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Phase: {phase}</span>
+          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+            Phase: {phase}
+          </span>
           {phase === 'planning' && (
-            <div className="flex items-center gap-1 text-[10px] text-slate-500">
-            </div>
+            <div className="flex items-center gap-1 text-[10px] text-slate-500"></div>
           )}
         </div>
 

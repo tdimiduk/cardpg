@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, codegen, gameData }:
+{ pkgs ? import <nixpkgs> {}, codegen }:
 
 pkgs.buildNpmPackage {
   pname = "cardpg-frontend";
@@ -10,16 +10,13 @@ pkgs.buildNpmPackage {
   
   nativeBuildInputs = [ 
     codegen
-    gameData
   ];
 
   preBuild = ''
-    # Copy tools, data, and design into the build directory so generation scripts work
+    # Copy design into the build directory so generation scripts work
     # We do this in preBuild to ensure they are present in the current working directory
-    cp -r ${../tools} tools
-    cp -r ${../data} data
     cp -r ${../design} design
-    chmod -R u+w tools data design
+    chmod -R u+w design
 
     # Patch App.tsx to point to the correct design directory location in the build environment
     # In dev: ../../../design (repo root sibling)
@@ -34,12 +31,6 @@ pkgs.buildNpmPackage {
     # We need to run ts-to-zod. It should be in node_modules/.bin
     ./node_modules/.bin/ts-to-zod src/generated/types.ts src/generated/schemas.ts --skipValidation
     
-    # Generate Data
-    echo "Generating data..."
-    
-    # Copy from gameData
-    mkdir -p src/data
-    cp ${gameData}/data/generated_cards.json src/data/generated_cards.json
   '';
 
   installPhase = ''

@@ -27,7 +27,6 @@ import CardPG.Core.Card
   )
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Primitives (ResourceType (..), StackPower (..), Stats (..), getStat)
-import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
   ( ActionStack (..)

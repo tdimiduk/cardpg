@@ -4,27 +4,32 @@ let
   haskellPackages = pkgs.haskellPackages.override {
     overrides = self: super: {
       cardpg-core = pkgs.haskell.lib.dontCheck (self.callCabal2nix "cardpg-core" ../cardpg-core {});
+      cardpg-api = pkgs.haskell.lib.dontCheck (self.callCabal2nix "cardpg-api" ../cardpg-api {});
+      
+      # Simple data derivation for server usage
+      game-data = pkgs.runCommand "cardpg-game-data" {} ''
+        mkdir -p $out/data/scenarios
+        mkdir -p $out/data/cards
+        cp -r ${../data}/scenarios/* $out/data/scenarios/
+        cp -r ${../data}/cards/* $out/data/cards/
+      '';
+
       cardpg-server = pkgs.haskell.lib.overrideCabal (self.callCabal2nix "cardpg-server" ../cardpg-server {}) (old: {
         testToolDepends = (old.testToolDepends or []) ++ [ self.game-data ];
         # We need to set env vars for tests
         preCheck = ''
-          export CARDPG_CARDS_FILE="${self.game-data}/data/generated_cards.json"
+          export CARDPG_CARDS_DIR="${self.game-data}/data/cards"
           export CARDPG_SCENARIO_FILE="${self.game-data}/data/scenarios/starter.yaml"
         '';
         
         buildTools = (old.buildTools or []) ++ [ pkgs.makeWrapper ];
         postInstall = (old.postInstall or "") + ''
           wrapProgram $out/bin/cardpg-server \
-            --set CARDPG_CARDS_FILE "${self.game-data}/data/generated_cards.json" \
+            --set CARDPG_CARDS_DIR "${self.game-data}/data/cards" \
             --set CARDPG_SCENARIO_FILE "${self.game-data}/data/scenarios/starter.yaml"
         '';
       });
-      cardpg-codegen = self.callCabal2nix "cardpg-codegen" ../tools/codegen {};
-      card-compiler = self.callCabal2nix "card-compiler" ../tools/card-compiler {};
       beam-automigrate = pkgs.haskell.lib.doJailbreak (self.callCabal2nix "beam-automigrate" ../../beam-automigrate {});
-      game-data = pkgs.callPackage ./game-data.nix {
-        cardCompiler = self.card-compiler;
-      };
     };
   };
 in

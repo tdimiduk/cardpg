@@ -11,10 +11,10 @@ module CardPG.Core.RuleDefs
   , Rule (..)
   ) where
 
-import Data.Aeson.TH (deriveJSON, deriveToJSON)
+import Data.Aeson.TH (deriveJSON)
 import GHC.Generics (Generic)
 
-import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
+import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.NonEmptyText (NonEmptyText)
 import CardPG.Core.Primitives (Difficulty, ResourceType (..))
 import CardPG.Core.RichText (RichText, StackPower)

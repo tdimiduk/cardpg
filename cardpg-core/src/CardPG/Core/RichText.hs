@@ -12,7 +12,7 @@ module CardPG.Core.RichText
   )
 where
 
-import Data.Aeson (FromJSON (..), Options (..), ToJSON (..), Value (..))
+import Data.Aeson (FromJSON (..), ToJSON (..), Value (..))
 import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty qualified as NE
 import Data.Text (Text)

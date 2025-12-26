@@ -1,7 +1,6 @@
 module CardPG.Core.RuleInstances () where
 
 import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON)
-import Data.Aeson.Types (Parser)
 
 import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
