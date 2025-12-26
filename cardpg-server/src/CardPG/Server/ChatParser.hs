@@ -25,7 +25,6 @@ data ChallengeDetails = ChallengeDetails
 
 data ChatCommand
   = CmdChallenge ChallengeDetails
-  | CmdRoll Int -- Just an example, maybe not implementing yet
   | CmdText Text -- Fallback for normal chat
   deriving (Show, Eq)
 

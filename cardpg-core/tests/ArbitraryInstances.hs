@@ -9,7 +9,6 @@ module ArbitraryInstances where
 
 import Data.List.NonEmpty (NonEmpty (..))
 import Data.List.NonEmpty qualified as NE
-import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Generic.Random
@@ -17,10 +16,9 @@ import Test.Tasty.QuickCheck
 
 import CardPG.Core.Card
 import CardPG.Core.DSL.Printer (richToString)
-import CardPG.Core.NonEmptyText (NonEmptyText (..), getRawText, unsafeNonEmptyText)
+import CardPG.Core.NonEmptyText (NonEmptyText, getRawText, unsafeNonEmptyText)
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
-import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID

@@ -4,8 +4,7 @@
 module CardPG.Core.LogicTest where
 
 import Control.Monad.RWS (runRWST)
-import Control.Monad.State (evalState, runState)
-import Data.List (sort)
+import Control.Monad.State (runState)
 import Data.Map.Strict qualified as Map
 import System.Random (StdGen, mkStdGen)
 import Test.Tasty (TestTree, testGroup)
@@ -17,11 +16,8 @@ import CardPG.Core.Card
   , CoreCard (..)
   , Identified (..)
   , ItemCard (..)
-  , NatureCard
   , Stats (..)
-  , TalentCard
   )
-import CardPG.Core.Logic.Deck qualified as Deck
 import CardPG.Core.Logic.Monad (GameM (..), runGameM)
 import CardPG.Core.Logic.Planning
 import CardPG.Core.Logic.Status
@@ -30,7 +26,6 @@ import CardPG.Core.Primitives
   ( CardInstanceId (..)
   , CardLocation (..)
   , EquipSlot (..)
-  , TargetId (..)
   )
 import CardPG.Core.State
 import Data.Text qualified as T

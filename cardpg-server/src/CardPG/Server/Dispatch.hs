@@ -99,17 +99,6 @@ processCommand cmd ts game =
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, [], [], newLogs)
-        _ -> do
-          -- Fallback/Other commands
-          let senderName = case maybeAid of
-                Just aid -> case Map.lookup aid game.actors of
-                  Just a -> a.name
-                  Nothing -> "Unknown"
-                Nothing -> "GM"
-          let logEntry = mkChatLog ts (length game.history) maybeAid senderName content
-          let newLogs = [logEntry]
-          let finalGame = game{history = game.history ++ newLogs}
-          return (finalGame, [], [], newLogs)
     _ -> do
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)
