@@ -31,6 +31,7 @@ import CardPG.Core.State
   , ActorState (..)
   , CoreCardState (..)
   , GameEvent (..)
+  , IllegalActionDetails (..)
   , NarrativeStack (..)
   , PlannedAction (..)
   , RevealedEffect (..)
@@ -66,7 +67,7 @@ planAction actionCardId resourceIds = do
   case maybeActionCard of
     Nothing ->
       tell
-        [IllegalAction (PStandard (ActionStack (error "placeholder") [])) (Just "action card not in hand")] -- Hacky placeholder, but ID is missing so...
+        [IllegalAction (IllegalActionDetails Nothing (Just "action card not in hand"))]
     Just ac -> do
       let plan = PStandard (ActionStack ac resourceCards)
           cost = maybe 0 (\c -> fromMaybe 0 c.cost) (Just ac.content)
@@ -80,8 +81,8 @@ planAction actionCardId resourceIds = do
               modify $ #coreState % #hand .~ remaining
               modify $ #coreState % #planned ?~ plan
               tell [ActionPlanned plan]
-            else tell [IllegalAction plan (Just "incorrect resource cost")]
-        else tell [IllegalAction plan (Just "cards not in hand")]
+            else tell [IllegalAction (IllegalActionDetails (Just plan) (Just "incorrect resource cost"))]
+        else tell [IllegalAction (IllegalActionDetails (Just plan) (Just "cards not in hand"))]
 
 planNarrative :: [CardInstanceId] -> ResourceType -> GameM g ()
 planNarrative cardIds color = do
@@ -93,8 +94,7 @@ planNarrative cardIds color = do
     Nothing ->
       tell
         [ IllegalAction
-            (PNarrative (NarrativeStack (Identified (CardInstanceId nil) (error "placeholder") :| []) color))
-            (Just "no cards selected")
+            (IllegalActionDetails Nothing (Just "no cards selected"))
         ]
     Just neCards -> do
       let plan = PNarrative (NarrativeStack neCards color)
@@ -103,7 +103,7 @@ planNarrative cardIds color = do
           modify $ #coreState % #hand .~ remaining
           modify $ #coreState % #planned ?~ plan
           tell [ActionPlanned plan]
-        else tell [IllegalAction plan (Just "cards not in hand")]
+        else tell [IllegalAction (IllegalActionDetails (Just plan) (Just "cards not in hand"))]
 
 plannedActionTo ::
   Lens' CoreCardState [CardInstance CoreCard] -> (PlannedAction -> GameEvent) -> GameM g ()

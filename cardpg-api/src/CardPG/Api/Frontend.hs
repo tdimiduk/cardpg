@@ -29,6 +29,7 @@ module CardPG.Api.Frontend
 
     -- * Events & Actions
   , GameEvent (..)
+  , IllegalActionDetails (..)
   , ActionStack (..)
   , NarrativeStack (..)
   , PlannedAction (..)
@@ -317,6 +318,14 @@ toActorState Core.ActorState{..} =
       , ..
       }
 
+data IllegalActionDetails = IllegalActionDetails
+  { planned :: Maybe PlannedAction
+  , reason :: Maybe Text
+  }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''IllegalActionDetails)
+
 data GameEvent
   = CardsCreated [CoreCard]
   | DeckShuffled
@@ -328,7 +337,7 @@ data GameEvent
   | PlanCanceled PlannedAction
   | ActionRevealed PlannedAction RevealedEffect
   | DefenseEnded [CoreCard]
-  | IllegalAction PlannedAction (Maybe Text)
+  | IllegalAction IllegalActionDetails
   | StatusAdded Text CardLocation
   | StatusRemoved Text Text
   | ConsequenceAdded ConsequenceCard
@@ -348,7 +357,8 @@ toGameEvent (Core.ActionPlanned p) = ActionPlanned (toPlannedAction p)
 toGameEvent (Core.PlanCanceled p) = PlanCanceled (toPlannedAction p)
 toGameEvent (Core.ActionRevealed p r) = ActionRevealed (toPlannedAction p) r
 toGameEvent (Core.DefenseEnded cs) = DefenseEnded (map toCoreCard cs)
-toGameEvent (Core.IllegalAction p t) = IllegalAction (toPlannedAction p) t
+toGameEvent (Core.IllegalAction Core.IllegalActionDetails{..}) =
+  IllegalAction (IllegalActionDetails (fmap toPlannedAction planned) reason)
 toGameEvent (Core.StatusAdded t l) = StatusAdded t l
 toGameEvent (Core.StatusRemoved t l) = StatusRemoved t l
 toGameEvent (Core.ConsequenceAdded c) = ConsequenceAdded (toConsequenceCard c)

@@ -149,6 +149,14 @@ data ActorState = ActorState
 
 $(deriveJSON cardpgJsonDef ''ActorState)
 
+data IllegalActionDetails = IllegalActionDetails
+  { planned :: Maybe PlannedAction
+  , reason :: Maybe Text
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''IllegalActionDetails)
+
 data GameEvent
   = CardsCreated [CardInstance CoreCard]
   | DeckShuffled
@@ -160,7 +168,7 @@ data GameEvent
   | PlanCanceled PlannedAction
   | ActionRevealed PlannedAction RevealedEffect
   | DefenseEnded [CardInstance CoreCard]
-  | IllegalAction PlannedAction (Maybe Text)
+  | IllegalAction IllegalActionDetails
   | -- | Type, Destination
     StatusAdded Text CardLocation
   | -- | Type, Destination

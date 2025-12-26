@@ -177,6 +177,15 @@ const LogItem: React.FC<{
     );
   }
 
+  if (log.payload.type === 'logError') {
+    return (
+      <div className="bg-red-950/20 border-l-2 border-red-500 p-2 mb-2 animate-pulse-once">
+        <div className="text-xs font-bold text-red-500 mb-1">Error</div>
+        <div className="text-sm text-red-300">{log.payload.content}</div>
+      </div>
+    );
+  }
+
   if (log.payload.type === 'logChat') {
     return (
       <div className="bg-slate-800/50 rounded p-2 mb-2 animate-fade-in flex gap-2">

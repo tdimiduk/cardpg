@@ -71,7 +71,7 @@ eventToLogs ts idx actorId event game =
             [mkLog "challenge" (LogChallenge challenge plan)]
           REPass -> [mkLog "pass" (LogInfo $ actorName <> " passed.")]
           REInvalid msg -> [mkLog "invalid" (LogInfo $ "Invalid Action for " <> actorName <> ": " <> msg)]
-        IllegalAction _ (Just reason) -> [mkLog "illegal" (LogInfo $ "Illegal Action for " <> actorName <> ": " <> reason)]
+        IllegalAction (Frontend.IllegalActionDetails _ (Just reason)) -> [mkLog "illegal" (LogError $ "Illegal Action for " <> actorName <> ": " <> reason)]
         CardDrawn _ -> [mkLog "draw" (LogInfo $ actorName <> " drew a card.")]
         CardDefended _ ->
           [mkLog "defend" (LogDefense actorId False Nothing)]

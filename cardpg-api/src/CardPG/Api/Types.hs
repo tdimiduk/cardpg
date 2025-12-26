@@ -51,6 +51,7 @@ data LogPayload
       , ended :: Bool
       , snapshot :: Maybe [Text]
       }
+  | LogError {content :: Text}
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''LogPayload)

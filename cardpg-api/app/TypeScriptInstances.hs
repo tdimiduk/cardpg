@@ -171,6 +171,7 @@ $( do
 
      -- Frontend.TableCard
      i_tableCard <- deriveTypeScript (cardpgTaggedOptions "TC") ''Frontend.TableCard
+     i_illegalDetails <- deriveTypeScript cardpgJsonDef ''Frontend.IllegalActionDetails
      i_gameEvent <- deriveTypeScript cardpgJsonDef ''Frontend.GameEvent
 
      return
@@ -188,6 +189,7 @@ $( do
            ++ i_logPayload
            ++ i_logEntry
            ++ i_tableCard
+           ++ i_illegalDetails
            ++ i_gameEvent
        )
  )
