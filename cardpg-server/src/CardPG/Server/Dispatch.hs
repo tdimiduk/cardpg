@@ -2,10 +2,12 @@ module CardPG.Server.Dispatch
   ( processCommand
   ) where
 
-import Control.Monad.State (State)
+import Control.Monad (replicateM)
+import Control.Monad.State (State, state)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import System.Random (StdGen)
+import System.Random.Stateful (Uniform (..), uniform, uniformM)
 
 import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Logic.Deck qualified as Logic
@@ -20,17 +22,30 @@ import CardPG.Core.State
   )
 import CardPG.Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import CardPG.Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
-import CardPG.Server.Presenter (eventToLogs, mkChatLog)
+import CardPG.Server.Presenter (eventToLogs)
 import CardPG.Server.Types
   ( ActorGameEvent (..)
   , Command (..)
   , GameState (..)
   , LogEntry (..)
+  , LogId (..)
   , LogPayload (..)
   , Phase (..)
   , StateUpdate (..)
   )
 import Data.Text qualified as T
+
+mkLogEntry :: Int -> Text -> Maybe ActorId -> LogPayload -> State StdGen LogEntry
+mkLogEntry ts senderName senderId payload = do
+  logId <- state uniform
+  return $
+    LogEntry
+      { id = logId
+      , timestamp = ts
+      , sender = senderName
+      , senderId = senderId
+      , payload = payload
+      }
 
 processCommand ::
   Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
@@ -39,20 +54,22 @@ processCommand cmd ts game =
     StartResolutionIntent tid -> do
       (newGame, events) <- revealPlannedActions game
       let newGameWithPhase = newGame{phase = Resolution}
-      let newLogs =
+      let payloads =
             concatMap
-              (\(i, ActorGameEvent aid evt) -> eventToLogs ts i aid evt newGameWithPhase)
-              (zip [length game.history ..] events)
+              (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGameWithPhase)
+              events
+      newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, [], events, newLogs)
     EndRoundIntent _ -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
       let newGameWithPhase = gameWithPlan{phase = Planning}
-      let newLogs =
+      let payloads =
             concatMap
-              (\(i, ActorGameEvent aid evt) -> eventToLogs ts i aid evt newGame)
-              (zip [length game.history ..] roundEvents)
+              (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGame)
+              roundEvents
+      newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, updates, planEvents ++ roundEvents, newLogs)
     ChatIntent maybeAid content -> do
@@ -77,14 +94,7 @@ processCommand cmd ts game =
                   Nothing -> "Unknown"
                 Nothing -> "GM"
 
-          let logEntry =
-                LogEntry
-                  { id = T.pack $ show ts <> "-adhoc-" <> show (length game.history)
-                  , timestamp = ts
-                  , sender = senderName
-                  , senderId = maybeAid
-                  , payload = logPayload
-                  }
+          logEntry <- mkLogEntry ts senderName maybeAid logPayload
 
           let newGame = game{phase = Resolution, history = game.history ++ [logEntry]}
           return (newGame, [], [], [logEntry])
@@ -95,7 +105,7 @@ processCommand cmd ts game =
                   Just a -> a.name
                   Nothing -> "Unknown"
                 Nothing -> "GM"
-          let logEntry = mkChatLog ts (length game.history) maybeAid senderName content
+          logEntry <- mkLogEntry ts senderName maybeAid (LogChat content)
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, [], [], newLogs)
@@ -138,10 +148,11 @@ processCommand cmd ts game =
 
             actorEvents = map (ActorGameEvent targetId . Frontend.toGameEvent) events
             stateUpdates = [StateUpdate targetId (Frontend.toActorState updatedActorState)]
-            newLogs =
-              concatMap
-                (\(i, evt) -> eventToLogs ts i targetId (Frontend.toGameEvent evt) newGame)
-                (zip [length game.history ..] events)
-            finalGame = newGame{history = game.history ++ newLogs}
+
+            payloads = concatMap (\evt -> eventToLogs targetId (Frontend.toGameEvent evt) newGame) events
+
+          newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
+
+          let finalGame = newGame{history = game.history ++ newLogs}
 
           return (finalGame, stateUpdates, actorEvents, newLogs)

@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
 import { LogEntry, LogPayload } from '../../generated/types';
+import { generateId } from '../../utils/id';
 
 export interface LogSlice {
   logs: LogEntry[];
@@ -56,7 +57,7 @@ export const createLogSlice: StateCreator<LogSlice, [['zustand/immer', never]], 
       }
 
       state.logs.push({
-        id: Math.random().toString(36),
+        id: generateId(),
         timestamp: Date.now(),
         sender: sender,
         payload: payload,

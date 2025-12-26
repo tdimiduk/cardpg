@@ -36,6 +36,7 @@ library
                      , containers
                      , uuid
                      , time
+                     , random
 
 executable codegen
   import: project-config

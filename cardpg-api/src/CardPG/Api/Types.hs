@@ -7,6 +7,7 @@ module CardPG.Api.Types
   , ActorGameEvent (..)
 
     -- * Logging
+  , LogId (..)
   , LogEntry (..)
   , LogPayload (..)
 
@@ -22,11 +23,13 @@ module CardPG.Api.Types
   , Token (..)
   ) where
 
+import Data.Aeson (FromJSONKey, ToJSONKey)
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.TypeScript.TH (TypeScript (..))
 import Data.Text (Text)
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
+import System.Random.Stateful (Uniform (..), uniformM)
 
 import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
@@ -38,6 +41,18 @@ data Phase = Planning | Resolution
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Phase)
+
+newtype LogId = LogId UUID
+  deriving (Show, Eq, Ord, Generic)
+  deriving newtype (FromJSONKey, ToJSONKey)
+
+$(deriveJSON cardpgJsonDef ''LogId)
+
+instance Uniform LogId where
+  uniformM g = LogId <$> uniformM g
+
+instance TypeScript LogId where
+  getTypeScriptType _ = "string"
 
 data LogPayload
   = LogInfo {content :: Text}
@@ -57,7 +72,7 @@ data LogPayload
 $(deriveJSON cardpgJsonDef ''LogPayload)
 
 data LogEntry = LogEntry
-  { id :: Text
+  { id :: LogId
   , timestamp :: Int
   , sender :: Text
   , senderId :: Maybe ActorId

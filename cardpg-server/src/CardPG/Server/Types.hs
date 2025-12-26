@@ -13,6 +13,7 @@ module CardPG.Server.Types
   , StateUpdate (..)
   , GameState (..)
   , LogEntry (..)
+  , LogId (..)
   , LogPayload (..)
   , Phase (..)
   , ConnectedSocket (..)

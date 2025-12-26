@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { serverMessageSchema } from '../generated/types.zod';
 import { ClientMessage, ServerMessage } from '../generated/types';
+import { generateShortId } from '../utils/id';
 
 interface WebSocketContextType {
   isConnected: boolean;
@@ -58,8 +59,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode; url?: stri
       // We still send Join to set the name, but ID is handled by handshake now.
       let name = localStorage.getItem('cardpg_client_name');
       if (!name) {
-        name = 'Player-' + Math.floor(Math.random() * 1000);
-        localStorage.setItem('cardpg_client_name', name);
+        const newName = generateShortId('Player');
+        localStorage.setItem('cardpg_client_name', newName);
+        name = newName;
       }
 
       sendMessage({
