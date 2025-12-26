@@ -9,6 +9,7 @@ module Rules.Haskell
   , defineHaskellLintRules
   , defineHaskellFormatRules
   , defineHaskellLibraryRules
+  , formatCabal
   ) where
 
 import Common (getPackageSources, persistentTask, persistentTaskWithSrcs)
@@ -101,3 +102,11 @@ defineHaskellLintRules :: Rules ()
 defineHaskellLintRules = do
   persistentTaskWithSrcs "_build/haskell/.lint.timestamp" getHaskellSources [] $ \srcFiles -> do
     cmd_ ("hlint" : srcFiles)
+
+-- | Format cabal files using cabal-fmt
+formatCabal :: Action ()
+formatCabal = do
+  need ["_build/shake-build"]
+  cmd_ (["cabal-fmt", "-i", "cardpg-core/cardpg-core.cabal"] :: [String])
+  cmd_ (["cabal-fmt", "-i", "cardpg-server/cardpg-server.cabal"] :: [String])
+  cmd_ (["cabal-fmt", "-i", "cardpg-api/cardpg-api.cabal"] :: [String])

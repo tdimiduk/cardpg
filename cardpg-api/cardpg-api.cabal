@@ -10,7 +10,6 @@ build-type:          Simple
 common project-config
   default-language: GHC2021
   default-extensions:
-    -- Project Standard
     DerivingStrategies
     DuplicateRecordFields
     NoFieldSelectors
@@ -20,13 +19,12 @@ common project-config
     QuantifiedConstraints
     RecordWildCards
     TemplateHaskell
-
-    -- Control Flow
     MultiWayIf
 
 library
   import: project-config
   hs-source-dirs:      src
+  -- cabal-fmt: expand src
   exposed-modules:
     CardPG.Api.Frontend
     CardPG.Api.Types
@@ -42,6 +40,7 @@ library
 executable codegen
   import: project-config
   main-is:             Main.hs
+  -- cabal-fmt: expand app
   other-modules:       DeriveSpecialized, TypeScriptInstances
   hs-source-dirs:      app
   build-depends:       base >= 4.7 && < 5

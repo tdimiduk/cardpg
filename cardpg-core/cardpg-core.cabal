@@ -1,16 +1,16 @@
 cabal-version: 3.0
-name: cardpg-core
-version: 0.1.0.0
-build-type: Simple
-license: BSD-3-Clause
-license-file: LICENSE
+name:          cardpg-core
+version:       0.1.0.0
+build-type:    Simple
+license:       BSD-3-Clause
+license-file:  LICENSE
 
 common project-config
-  default-language: GHC2021
+  default-language:   GHC2021
   default-extensions:
-    -- Project Standard
     DerivingStrategies
     DuplicateRecordFields
+    MultiWayIf
     NoFieldSelectors
     OverloadedLabels
     OverloadedRecordDot
@@ -19,82 +19,88 @@ common project-config
     RecordWildCards
     TemplateHaskell
 
-    -- Control Flow
-    MultiWayIf
-
 library
-  import: project-config
-  hs-source-dirs: src
+  import:          project-config
+  hs-source-dirs:  src
   ghc-options:
     -Wall -Wredundant-constraints -Wincomplete-uni-patterns
     -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
-  build-depends: base >= 4.16 && < 5
-               , aeson
-               , text
-               , vector
-               , containers
-               , generic-lens
-               , megaparsec
-               , uuid
-               , random
-               , optics
-               , optics-th
-               , mtl
-               , transformers
+
+  build-depends:
+    , aeson
+    , base          >=4.16 && <5
+    , containers
+    , generic-lens
+    , megaparsec
+    , mtl
+    , optics
+    , optics-th
+    , random
+    , text
+    , transformers
+    , uuid
+    , vector
+
+  -- cabal-fmt: expand src
   exposed-modules:
-    CardPG.Core.State
-    CardPG.Core.Logic.Monad
-    
-    CardPG.Core.Logic.Deck
-    CardPG.Core.Logic.Planning
-    CardPG.Core.Logic.Combat
-    CardPG.Core.Logic.Status
-    CardPG.Core.Logic.Bot
-    CardPG.Core.Hardcoded
     CardPG.Core.Card
-    CardPG.Core.Primitives
-    CardPG.Core.Util
-    CardPG.Core.Json
-    CardPG.Core.RichText
     CardPG.Core.DSL.Parser
     CardPG.Core.DSL.Printer
+    CardPG.Core.Hardcoded
+    CardPG.Core.Json
+    CardPG.Core.Logic.Bot
+    CardPG.Core.Logic.Combat
+    CardPG.Core.Logic.Deck
+    CardPG.Core.Logic.Monad
+    CardPG.Core.Logic.Planning
+    CardPG.Core.Logic.Status
+    CardPG.Core.NonEmptyText
+    CardPG.Core.Primitives
+    CardPG.Core.RichText
     CardPG.Core.RuleDefs
     CardPG.Core.RuleInstances
+    CardPG.Core.State
+
     CardPG.Core.TextFmt
-    CardPG.Core.NonEmptyText
+    CardPG.Core.Util
 
 test-suite cardpg-core-test
-  import: project-config
-  type: exitcode-stdio-1.0
-  main-is: Main.hs
-  other-modules: 
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+
+  -- cabal-fmt: expand tests
+  other-modules:
     ArbitraryInstances
-    StateTests
-    RuleJsonTest
-    StatusParsingTest
+    CardPG.Core.LogicTest
     ConsequenceParsingTest
+    Main
     ReadmeExamplesTest
     ResolutionTests
-    CardPG.Core.LogicTest
+    RuleJsonTest
+    StateTests
+    StatusParsingTest
+
   hs-source-dirs: tests
   ghc-options:
     -Wall -Wredundant-constraints -Wincomplete-uni-patterns
     -Wincomplete-record-updates -O -fno-show-valid-hole-fits
-  build-depends: base
-               , cardpg-core
-               , aeson
-               , text
-               , vector
-               , containers
-               , QuickCheck
-               , tasty
-               , tasty-quickcheck
-               , tasty-hunit
-               , generic-random
-               , bytestring
-               , yaml
-               , uuid
-               , random
-               , random
-               , mtl
-               , optics
+
+  build-depends:
+    , aeson
+    , base
+    , bytestring
+    , cardpg-core
+    , containers
+    , generic-random
+    , mtl
+    , optics
+    , QuickCheck
+    , random
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , uuid
+    , vector
+    , yaml

@@ -5,10 +5,9 @@ let
 in
 backendPkgs.shellFor {
   packages = p: [
+    p.cardpg-api
     p.cardpg-core
     p.cardpg-server
-    p.cardpg-codegen
-    p.card-compiler
   ];
 
   buildInputs = with pkgs; [
@@ -17,6 +16,7 @@ backendPkgs.shellFor {
     haskell-language-server
     hlint
     fourmolu
+    haskellPackages.cabal-fmt
 
     # Python environment
     (python313.withPackages (ps: with ps; [

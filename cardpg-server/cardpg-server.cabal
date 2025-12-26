@@ -10,7 +10,6 @@ build-type:          Simple
 common project-config
   default-language: GHC2021
   default-extensions:
-    -- Project Standard
     DerivingStrategies
     DuplicateRecordFields
     NoFieldSelectors
@@ -20,12 +19,11 @@ common project-config
     QuantifiedConstraints
     RecordWildCards
     TemplateHaskell
-
-    -- Control Flow
     MultiWayIf
 
 library
   import: project-config
+  -- cabal-fmt: expand src
   exposed-modules:
     CardPG.Server.Types
     CardPG.Server.Game
@@ -92,6 +90,7 @@ test-suite cardpg-server-test
   import: project-config
   type:                exitcode-stdio-1.0
   main-is:             Main.hs
+  -- cabal-fmt: expand test
   other-modules:       GameTest
                      , ScenarioTest
                      , JsonTest
@@ -110,7 +109,7 @@ test-suite cardpg-server-test
                      , directory
                      , optics
                      , mtl
-                     , yaml
+
                      , yaml
                      , filepath
                      , bytestring

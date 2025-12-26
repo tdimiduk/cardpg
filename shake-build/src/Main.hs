@@ -25,7 +25,7 @@ main = do
         , ("build-api", "Build cardpg-api", Haskell.buildApi)
         , ("build-core", "Build cardpg-core", Haskell.buildCore)
         , ("build-server", "Build cardpg-server", Haskell.buildServer)
-        , ("build", "Build all targets", Orchestration.buildAll)
+        , ("build", "Build all targets", need ["format-cabal"] >> Orchestration.buildAll)
         , ("dev", "Run dev servers", Orchestration.runDev)
         , ("test", "Run all tests", need ["test-core", "test-server", "check-types"])
         , ("lint-backend", "Lint backend code", need ["_build/haskell/.lint.timestamp"])
@@ -39,10 +39,11 @@ main = do
         , ("repl-server", "REPL for cardpg-server", Haskell.replServer)
         , ("deploy-prod", "Deploy to prod (smart rebuild)", Deploy.deploy False)
         , ("deploy-rebuild", "Deploy to prod (force rebuild)", Deploy.deploy True)
+        , ("format-cabal", "Format cabal files", Haskell.formatCabal)
         ,
           ( "format"
           , "Format code"
-          , need ["_build/haskell/.format.timestamp", "_build/frontend/.format.timestamp"]
+          , need ["_build/haskell/.format.timestamp", "_build/frontend/.format.timestamp", "format-cabal"]
           )
         ,
           ( "format-check"
