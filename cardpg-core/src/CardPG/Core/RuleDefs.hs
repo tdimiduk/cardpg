@@ -3,18 +3,12 @@
 
 module CardPG.Core.RuleDefs
   ( PassiveDef (..)
-  , AttackDefT (..)
-  , AttackDef
-  , GeneralDefT (..)
-  , GeneralDef
-  , TaskDefT (..)
-  , TaskDef
-  , TriggerDefT (..)
-  , TriggerDef
-  , OngoingDefT (..)
-  , OngoingDef
-  , RuleT (..)
-  , Rule
+  , AttackDef (..)
+  , GeneralDef (..)
+  , TaskDef (..)
+  , TriggerDef (..)
+  , OngoingDef (..)
+  , Rule (..)
   ) where
 
 import Data.Aeson.TH (deriveJSON, deriveToJSON)
@@ -34,78 +28,69 @@ data PassiveDef = PassiveDef
   deriving (Show, Eq, Generic)
 
 -- | Standard Attack Logic
-data AttackDefT rt = AttackDef
+data AttackDef = AttackDef
   { power :: StackPower
   , resistedBy :: ResourceType
-  , effect :: Maybe rt
+  , effect :: Maybe RichText
   }
-  deriving (Show, Eq, Generic, Functor)
+  deriving (Show, Eq, Generic)
 
 -- | General/Utility Actions
 -- | Addresses: "Fatigue: Action (Sleep 2 hours): Remove this"
-data GeneralDefT rt = GeneralDef
+data GeneralDef = GeneralDef
   { name :: NonEmptyText
-  , cost :: Maybe rt
+  , cost :: Maybe RichText
   -- ^ Narrative Cost: "Sleep 2 hours"
   , difficulty :: Maybe Difficulty
   -- ^ Optional. Fatigue removal isn't a check.
-  , effect :: rt
+  , effect :: RichText
   -- ^ Effect: "Remove this card"
   }
-  deriving (Show, Eq, Generic, Functor)
+  deriving (Show, Eq, Generic)
 
 -- | Persistent Effects: Ongoing (Stance, Channel, Prime)
 -- | Addresses: "Stance (1 min): +1 Strength", "Until triggered: ..."
-data OngoingDefT rt = OngoingDef
-  { life :: rt
+data OngoingDef = OngoingDef
+  { life :: RichText
   -- ^ Duration or Condition: "1 min", "Until triggered", "While holding a shield"
-  , effect :: rt
+  , effect :: RichText
   -- ^ The mechanical or narrative effect
   }
-  deriving (Show, Eq, Generic, Functor)
+  deriving (Show, Eq, Generic)
 
 -- | Task Actions (Downtime/Narrative)
 -- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
-data TaskDefT rt = TaskDef
+data TaskDef = TaskDef
   { name :: NonEmptyText
   , check :: Maybe Difficulty
   -- ^ The difficulty check: "Check {Blue} 3"
-  , time :: Maybe rt
+  , time :: Maybe RichText
   -- ^ Duration: "Time 1 min"
-  , cost :: Maybe rt
+  , cost :: Maybe RichText
   -- ^ Narrative Cost: "Cost Bandage"
-  , effect :: rt
+  , effect :: RichText
   -- ^ Effect: "Remove this card"
   }
-  deriving (Show, Eq, Generic, Functor)
+  deriving (Show, Eq, Generic)
 
 -- | Triggered Effects (When)
 -- | Addresses: "When removed -> Add 1 Wound"
-data TriggerDefT rt = TriggerDef
+data TriggerDef = TriggerDef
   { trigger :: NonEmptyText
-  , effect :: rt
+  , effect :: RichText
   }
-  deriving (Show, Eq, Generic, Functor)
+  deriving (Show, Eq, Generic)
 
 -- | The Top-Level Rule Sum Type
-data RuleT rt
-  = RuleAttack (AttackDefT rt)
-  | RuleGeneral (GeneralDefT rt)
-  | RuleTask (TaskDefT rt)
-  | RuleTrigger (TriggerDefT rt)
-  | RuleOngoing (OngoingDefT rt)
-  | RuleNarrative rt
+data Rule
+  = RuleAttack AttackDef
+  | RuleGeneral GeneralDef
+  | RuleTask TaskDef
+  | RuleTrigger TriggerDef
+  | RuleOngoing OngoingDef
+  | RuleNarrative RichText
   | RulePassive PassiveDef
-  deriving stock (Eq, Show, Generic, Functor)
-
--- | Base Types (Machine Readable)
-type Rule = RuleT RichText
-
-type AttackDef = AttackDefT RichText
-type GeneralDef = GeneralDefT RichText
-type TaskDef = TaskDefT RichText
-type TriggerDef = TriggerDefT RichText
-type OngoingDef = OngoingDefT RichText
+  deriving stock (Eq, Show, Generic)
 
 -- | Note:
 -- | 1. 'Rule' is excluded because it has a custom manual instance in RuleInstances.hs
@@ -118,11 +103,11 @@ $( do
          <$> traverse
            (deriveJSON cardpgJsonDef)
            [ ''PassiveDef
-           , ''AttackDefT
-           , ''GeneralDefT
-           , ''TaskDefT
-           , ''TriggerDefT
-           , ''OngoingDefT
+           , ''AttackDef
+           , ''GeneralDef
+           , ''TaskDef
+           , ''TriggerDef
+           , ''OngoingDef
            ]
      return defs
  )

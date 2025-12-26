@@ -116,7 +116,7 @@ const ChallengeLogItem: React.FC<{
       <div className="space-y-1 mb-2">
         {stackCards.map((card, idx) => (
           <div
-            key={card.id || idx}
+            key={`${card.id}-${idx}`}
             className="text-white font-bold text-sm bg-black/20 rounded px-2 py-1 flex items-center gap-2"
           >
             <span>{card.name}</span>

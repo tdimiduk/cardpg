@@ -12,8 +12,8 @@ import Optics ((^.))
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..))
-import CardPG.Core.RuleDefs (RuleT (..))
+import CardPG.Core.Card (CoreCard (..))
+import CardPG.Core.RuleDefs (Rule (..))
 import CardPG.Core.RuleInstances ()
 
 test_statusParsing :: TestTree

@@ -9,12 +9,12 @@ import Data.List (sortOn)
 import Data.Ord (Down (..))
 import Optics
 
-import CardPG.Core.Card (CoreCardT (..), Identified (..), Stats (..))
+import CardPG.Core.Card (CoreCard (..), Identified (..), Stats (..))
 import CardPG.Core.Logic.Combat (getAttackRule)
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Logic.Planning (passAction, planAction)
 import CardPG.Core.Primitives (ResourceType (..), StackPower (..))
-import CardPG.Core.RuleDefs (AttackDefT (..))
+import CardPG.Core.RuleDefs (AttackDef (..))
 import CardPG.Core.State (ActorState (..), CoreCardState (..))
 
 planBestAvailableAction :: GameM g ()

@@ -12,7 +12,7 @@ import Data.Text.IO qualified as T
 import Database.PostgreSQL.Simple qualified as Pg
 import System.Random (StdGen, newStdGen)
 
-import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT (..), CoreCard, CoreCardT (..))
+import CardPG.Core.Card (ConsequenceCard (..), CoreCard (..))
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.State (GameEnv (..))
 import CardPG.Server.Config (Config (..))
@@ -33,8 +33,8 @@ initGame backend config lib forceReset = do
 
   let hydrate gs =
         let env = gs.env
-            statusMap = Map.fromList [(getRawText c.name, c) | c <- lib.statuses]
-            consequenceMap = Map.fromList [(getRawText c.name, c) | c <- lib.consequences]
+            statusMap = Map.fromList [(getRawText name, c) | c@CoreCard {name} <- lib.statuses]
+            consequenceMap = Map.fromList [(getRawText name, c) | c@ConsequenceCard {name} <- lib.consequences]
             newEnv = env{statusCardTemplates = statusMap, consequenceCardTemplates = consequenceMap}
          in gs{env = newEnv}
 

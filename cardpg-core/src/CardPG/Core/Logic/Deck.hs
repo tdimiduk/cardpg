@@ -20,7 +20,7 @@ import Data.Maybe (fromMaybe)
 import Optics
 import System.Random (RandomGen, uniform)
 
-import CardPG.Core.Card (CardInstance, CoreCard, Identified (..), ItemCardT (..))
+import CardPG.Core.Card (CardInstance, CoreCard, Identified (..), ItemCard (..))
 import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
 import CardPG.Core.Primitives (CardInstanceId)
 import CardPG.Core.State

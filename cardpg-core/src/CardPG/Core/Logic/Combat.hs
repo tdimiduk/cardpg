@@ -19,16 +19,16 @@ import Optics
 
 import CardPG.Core.Card
   ( CoreCard
-  , CoreCardT (..)
+  , CoreCard (..)
   , Identified (..)
-  , ItemCardT (..)
-  , NatureCardT (..)
-  , TalentCardT (..)
+  , ItemCard (..)
+  , NatureCard (..)
+  , TalentCard (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Primitives (StackPower (..), getStat)
 import CardPG.Core.RichText (RichText)
-import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
+import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
   ( ActionStack (..)
   , ActiveChallenge (..)
@@ -41,7 +41,7 @@ import CardPG.Core.State
   , TableState (..)
   )
 
-getAttackRule :: CoreCard -> Either Text (AttackDefT RichText)
+getAttackRule :: CoreCard -> Either Text AttackDef
 getAttackRule card = case card.rules of
   Nothing -> Left "no attack rule"
   Just rules -> case [r | RuleAttack r <- toList rules] of

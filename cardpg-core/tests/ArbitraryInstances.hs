@@ -20,7 +20,7 @@ import CardPG.Core.DSL.Printer (richToString)
 import CardPG.Core.NonEmptyText (NonEmptyText (..), getRawText, unsafeNonEmptyText)
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
-import CardPG.Core.RuleDefs (AttackDefT (..), RuleT (RuleAttack))
+import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
@@ -105,23 +105,23 @@ instance Arbitrary PassiveDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (AttackDefT rt) where
+instance Arbitrary AttackDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (GeneralDefT rt) where
+instance Arbitrary GeneralDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (OngoingDefT rt) where
+instance Arbitrary OngoingDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (TriggerDefT rt) where
+instance Arbitrary TriggerDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
+instance Arbitrary TaskDef where
   arbitrary = do
     name <- arbitrary
     check <- arbitrary
@@ -130,7 +130,7 @@ instance (Arbitrary rt) => Arbitrary (TaskDefT rt) where
     TaskDef name check time cost <$> arbitrary
   shrink = genericShrink
 
-instance (Arbitrary rt) => Arbitrary (RuleT rt) where
+instance Arbitrary Rule where
   arbitrary =
     oneof
       [ RuleAttack <$> arbitrary

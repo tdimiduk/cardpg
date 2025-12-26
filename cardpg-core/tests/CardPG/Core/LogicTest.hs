@@ -13,13 +13,10 @@ import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 
 import CardPG.Core.Card
   ( CardInstance
-  , ConsequenceCard
-  , ConsequenceCardT (..)
-  , CoreCard
-  , CoreCardT (..)
+  , ConsequenceCard (..)
+  , CoreCard (..)
   , Identified (..)
-  , ItemCard
-  , ItemCardT (..)
+  , ItemCard (..)
   , NatureCard
   , Stats (..)
   , TalentCard

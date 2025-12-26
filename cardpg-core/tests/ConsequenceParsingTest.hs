@@ -11,8 +11,8 @@ import Data.Yaml (ParseException, decodeFileEither, encode)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (ConsequenceCard, ConsequenceCardT (..))
-import CardPG.Core.RuleDefs (RuleT (..))
+import CardPG.Core.Card (ConsequenceCard (..))
+import CardPG.Core.RuleDefs (Rule (..))
 import CardPG.Core.RuleInstances ()
 
 test_consequenceParsing :: TestTree

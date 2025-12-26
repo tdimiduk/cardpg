@@ -43,14 +43,7 @@ import CardPG.Api.Types
   , Token
   )
 import CardPG.Core.Primitives qualified as P
-import CardPG.Core.RuleDefs hiding
-  ( AttackDef
-  , GeneralDef
-  , OngoingDef
-  , Rule
-  , TaskDef
-  , TriggerDef
-  )
+import CardPG.Core.RuleDefs
 import CardPG.Core.State
   ( ActiveChallenge (..)
   , AssetState (..)
@@ -105,22 +98,11 @@ $(deriveTypeScript cardpgJsonDef ''Phase)
 -- These create concrete Haskell types from parameterized ones for TypeScript generation.
 -- Card types (CoreCard, ItemCard, etc.) are handled by Frontend.* types instead.
 $( do
-     d_attack <- specializeType ''AttackDefT [ConT ''RichText] "AttackDef"
-     d_general <- specializeType ''GeneralDefT [ConT ''RichText] "GeneralDef"
-     d_task <- specializeType ''TaskDefT [ConT ''RichText] "TaskDef"
-     d_trigger <- specializeType ''TriggerDefT [ConT ''RichText] "TriggerDef"
-     d_ongoing <- specializeType ''OngoingDefT [ConT ''RichText] "OngoingDef"
-     d_ongoing <- specializeType ''OngoingDefT [ConT ''RichText] "OngoingDef"
      d_stats <- specializeType ''P.Stats [ConT ''Int] "Stats"
      d_specDef <- specializeType ''P.Stats [ConT ''P.ResourceType] "SpecialDefend"
 
      return
-       ( d_attack
-           ++ d_general
-           ++ d_task
-           ++ d_trigger
-           ++ d_ongoing
-           ++ d_stats
+       ( d_stats
            ++ d_specDef
        )
  )
@@ -130,16 +112,11 @@ $( do
      let inline = ConT ''RichText
 
      -- Rule Variants (needed for Rule union type)
-     i_attack <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''AttackDef ''AttackDefT [inline]
-     i_general <-
-       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''GeneralDef ''GeneralDefT [inline]
-     i_task <- deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TaskDef ''TaskDefT [inline]
-     i_trigger <-
-       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''TriggerDef ''TriggerDefT [inline]
-     i_ongoing <-
-       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''OngoingDef ''OngoingDefT [inline]
-     i_ongoing <-
-       deriveSpecializedInstance (cardpgJsonOptions "Rule") ''OngoingDef ''OngoingDefT [inline]
+     i_attack <- deriveTypeScript (cardpgJsonOptions "Rule") ''AttackDef
+     i_general <- deriveTypeScript (cardpgJsonOptions "Rule") ''GeneralDef
+     i_task <- deriveTypeScript (cardpgJsonOptions "Rule") ''TaskDef
+     i_trigger <- deriveTypeScript (cardpgJsonOptions "Rule") ''TriggerDef
+     i_ongoing <- deriveTypeScript (cardpgJsonOptions "Rule") ''OngoingDef
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
 
      -- Stats

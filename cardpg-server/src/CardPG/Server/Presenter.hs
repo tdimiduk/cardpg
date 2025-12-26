@@ -17,7 +17,7 @@ import CardPG.Api.Frontend
   , PlannedAction (..)
   )
 import CardPG.Api.Frontend qualified as Frontend
-import CardPG.Core.Card (CoreCardT (..), Identified (..))
+import CardPG.Core.Card (Identified (..))
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Primitives (ActorId (..))
 import CardPG.Core.State
@@ -41,13 +41,13 @@ mkChatLog ts seqNum senderId senderName content =
     , payload = LogChat content
     }
 
-eventToLogs :: Int -> ActorId -> GameEvent -> GameState -> [LogEntry]
-eventToLogs ts actorId event game =
+eventToLogs :: Int -> Int -> ActorId -> GameEvent -> GameState -> [LogEntry]
+eventToLogs ts idx actorId event game =
   let actorName = case Map.lookup actorId game.actors of
         Just a -> a.name
         Nothing -> "Unknown"
 
-      mkId suffix = T.pack $ show ts <> "-" <> T.unpack (toText (let ActorId uid = actorId in uid)) <> "-" <> suffix
+      mkId suffix = T.pack $ show ts <> "-" <> T.unpack (toText (let ActorId uid = actorId in uid)) <> "-idx" <> show idx <> "-" <> suffix
 
       mkLog suffix payload =
         LogEntry

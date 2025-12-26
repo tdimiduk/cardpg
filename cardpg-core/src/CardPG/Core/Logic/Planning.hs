@@ -22,7 +22,7 @@ import Data.Maybe (fromMaybe)
 import Data.UUID (nil)
 import Optics
 
-import CardPG.Core.Card (CardInstance, CoreCard, CoreCardT (..), Identified (..))
+import CardPG.Core.Card (CardInstance, CoreCard (..), Identified (..))
 import CardPG.Core.Logic.Combat (attackAction)
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Primitives (CardInstanceId (..), ResourceType (..))

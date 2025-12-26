@@ -9,14 +9,13 @@ import CardPG.Core.RichText
   , getInlines
   )
 import CardPG.Core.RuleDefs
-  ( AttackDefT (..)
-  , GeneralDefT (..)
-  , OngoingDefT (..)
+  ( AttackDef (..)
+  , GeneralDef (..)
+  , OngoingDef (..)
   , PassiveDef (..)
-  , Rule
-  , RuleT (..)
-  , TaskDefT (..)
-  , TriggerDefT (..)
+  , Rule (..)
+  , TaskDef (..)
+  , TriggerDef (..)
   )
 
 import Data.List.NonEmpty qualified as NE

@@ -19,9 +19,8 @@ import System.Random (RandomGen, uniform, uniformR)
 
 import CardPG.Core.Card
   ( CardInstance
-  , ConsequenceCardT (..)
-  , CoreCard
-  , CoreCardT (..)
+  , ConsequenceCard (..)
+  , CoreCard (..)
   , Identified (..)
   )
 import CardPG.Core.Logic.Combat (calculateResilience)

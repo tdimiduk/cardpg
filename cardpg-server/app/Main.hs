@@ -17,7 +17,7 @@ import Network.WebSockets qualified as WS
 import System.IO (hSetBuffering, stdout, BufferMode(..))
 import System.Random (newStdGen)
 
-import CardPG.Core.Card (CoreCardT(..), CoreCard, ConsequenceCardT(..), ConsequenceCard)
+import CardPG.Core.Card (ConsequenceCard (..), CoreCard (..))
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.State (GameEnv(..))
 import CardPG.Server.Connection (application)

@@ -9,11 +9,11 @@ import Data.Map.Strict qualified as Map
 import Data.UUID qualified as UUID
 import Test.Tasty.QuickCheck
 
-import CardPG.Core.Card (Identified (..), ItemCardT (..))
+import CardPG.Core.Card (Identified (..), ItemCard (..))
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives (CardInstanceId (..), EquipSlot (..))
-import CardPG.Core.RichText (unsafeSimpleString)
-import CardPG.Core.RuleDefs (GeneralDefT (..), Rule, RuleT (..))
+import CardPG.Core.RichText (RichText, unsafeSimpleString)
+import CardPG.Core.RuleDefs (GeneralDef (..), Rule (..))
 import CardPG.Core.RuleInstances ()
 import CardPG.Core.State (AssetState (..), TableCard (..), TableState (..))
 

@@ -11,7 +11,7 @@ import System.Random (StdGen, mkStdGen)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.Card (CoreCardT (..), Identified (..))
+import CardPG.Core.Card (CoreCard (..), Identified (..))
 import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)

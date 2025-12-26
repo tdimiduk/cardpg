@@ -12,7 +12,7 @@ import CardPG.Server.DB (saveGame, loadGame, initInMemoryDB)
 import CardPG.Server.Types (GameState(..), StorageBackend(..))
 import CardPG.Core.State (GameEnv(..))
 import CardPG.Server.Game (emptyGame)
-import CardPG.Core.Card (CoreCard(..), CoreCardT(..), Stats(..))
+import CardPG.Core.Card (CoreCard(..), Stats(..))
 
 -- Mock GameState for testing
 mockGameState :: GameState

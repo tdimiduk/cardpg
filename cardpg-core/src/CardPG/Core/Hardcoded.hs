@@ -2,10 +2,10 @@ module CardPG.Core.Hardcoded where
 
 import Data.List.NonEmpty (NonEmpty (..))
 
-import CardPG.Core.Card (CoreCard, CoreCardT (..), Stats (..))
+import CardPG.Core.Card (CoreCard (..), Stats (..))
 import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.RichText (unsafeSimpleString)
-import CardPG.Core.RuleDefs (RuleT (RuleTask), TaskDefT (..))
+import CardPG.Core.RuleDefs (Rule (RuleTask), TaskDef (..))
 
 -- | The canonical Fatigue Card
 -- Hardcoded here as a fundamental mechanic of the engine.
