@@ -171,13 +171,13 @@ data GameEvent
   = CardsCreated [CardInstance CoreCard]
   | DeckShuffled
   | CardDrawn (CardInstance CoreCard)
-  | CardDefended (CardInstance CoreCard)
+  | CardDefended ActiveChallenge (CardInstance CoreCard)
   | MovePlanned (Int, Int)
   | ActorMoved (Int, Int)
   | ActionPlanned PlannedAction
   | PlanCanceled PlannedAction
   | ActionRevealed PlannedAction RevealedEffect
-  | DefenseEnded [CardInstance CoreCard]
+  | DefenseEnded ActiveDefense DefenseDetails
   | IllegalAction IllegalActionDetails
   | -- | Type, Destination
     StatusAdded Text CardLocation

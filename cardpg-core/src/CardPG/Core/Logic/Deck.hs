@@ -98,13 +98,13 @@ flipCardToDefense challenge = do
         Nothing -> do
           modify $ #coreState % #deck .~ rest
           modify $ #coreState % #defending .~ Just (ActiveDefense challenge [top])
-          tell [CardDefended top]
+          tell [CardDefended challenge top]
         Just (ActiveDefense existingChallenge cards) ->
           if existingChallenge.id == challenge.id
             then do
               modify $ #coreState % #deck .~ rest
               modify $ #coreState % #defending .~ Just (ActiveDefense existingChallenge (top : cards))
-              tell [CardDefended top]
+              tell [CardDefended existingChallenge top]
             else
               -- Attempted to defend against a different challenge while already defending
               return ()

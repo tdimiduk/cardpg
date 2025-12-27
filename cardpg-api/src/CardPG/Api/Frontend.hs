@@ -24,6 +24,7 @@ module CardPG.Api.Frontend
   , NatureCard (..)
   , TalentCard (..)
   , ConsequenceCard (..)
+  , LogCard (..)
   , Rule (..)
 
     -- * State Containers
@@ -44,6 +45,7 @@ module CardPG.Api.Frontend
   , toCoreCard
   , toTableCard
   , toConsequenceCard
+  , toDefenseDetails
   ) where
 
 import Data.Aeson.TH (deriveJSON)
@@ -71,7 +73,6 @@ import CardPG.Core.RuleDefs qualified as Core
 import CardPG.Core.State
   ( AssetState
   , CorePlayState
-  , DefenseDetails (..)
   , RevealedEffect
   , SpatialState
   )
@@ -91,6 +92,20 @@ data Rule
   deriving (Show, Eq, Generic)
 
 $(deriveJSON (cardpgJsonOptions "Rule") ''Rule)
+
+-- | Frontend version of 'Core.DefenseDetails'
+data DefenseDetails = DefenseDetails
+  { values :: Stats Int
+  , impact :: Int
+  , consequencesFromDefense :: Int
+  , nextSeverity :: Int
+  }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''DefenseDetails)
+
+toDefenseDetails :: Core.DefenseDetails -> DefenseDetails
+toDefenseDetails Core.DefenseDetails{..} = DefenseDetails{..}
 
 -- | Frontend version of 'Core.CoreCard' with ID flattened.
 data CoreCard = CoreCard
@@ -267,6 +282,15 @@ data ActiveDefense = ActiveDefense
 
 $(deriveJSON cardpgJsonDef ''ActiveDefense)
 
+data LogCard = LogCard
+  { name :: Text
+  , color :: ResourceType
+  , power :: Int
+  }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''LogCard)
+
 -- | Mirrors Core.CoreCardState but uses Frontend CoreCard
 data CoreCardState = CoreCardState
   { deck :: [CoreCard]
@@ -347,7 +371,7 @@ toActorState Core.ActorState{..} =
         , consequences = map toConsequenceCard tableState.consequences
         }
 
-    details = computeDefenseDetails Core.ActorState{..}
+    details = toDefenseDetails $ computeDefenseDetails Core.ActorState{..}
     defStat = computeDefense tableState
     resStat = computeResilience tableState
    in
@@ -372,13 +396,13 @@ data GameEvent
   = CardsCreated [CoreCard]
   | DeckShuffled
   | CardDrawn CoreCard
-  | CardDefended CoreCard
+  | CardDefended ActiveChallenge CoreCard
   | MovePlanned (Int, Int)
   | ActorMoved (Int, Int)
   | ActionPlanned PlannedAction
   | PlanCanceled PlannedAction
   | ActionRevealed PlannedAction RevealedEffect
-  | DefenseEnded [CoreCard]
+  | DefenseEnded ActiveDefense DefenseDetails
   | IllegalAction IllegalActionDetails
   | StatusAdded Text CardLocation
   | StatusRemoved Text Text
@@ -392,13 +416,16 @@ toGameEvent :: Core.GameEvent -> GameEvent
 toGameEvent (Core.CardsCreated cs) = CardsCreated (map toCoreCard cs)
 toGameEvent Core.DeckShuffled = DeckShuffled
 toGameEvent (Core.CardDrawn c) = CardDrawn (toCoreCard c)
-toGameEvent (Core.CardDefended c) = CardDefended (toCoreCard c)
+toGameEvent (Core.CardDefended chal c) = CardDefended (toActiveChallenge chal) (toCoreCard c)
 toGameEvent (Core.MovePlanned p) = MovePlanned p
 toGameEvent (Core.ActorMoved p) = ActorMoved p
 toGameEvent (Core.ActionPlanned p) = ActionPlanned (toPlannedAction p)
 toGameEvent (Core.PlanCanceled p) = PlanCanceled (toPlannedAction p)
 toGameEvent (Core.ActionRevealed p r) = ActionRevealed (toPlannedAction p) r
-toGameEvent (Core.DefenseEnded cs) = DefenseEnded (map toCoreCard cs)
+toGameEvent (Core.DefenseEnded (Core.ActiveDefense chal cards) details) =
+  DefenseEnded
+    (ActiveDefense (toActiveChallenge chal) (map toCoreCard cards))
+    (toDefenseDetails details)
 toGameEvent (Core.IllegalAction Core.IllegalActionDetails{..}) =
   IllegalAction (IllegalActionDetails (fmap toPlannedAction planned) reason)
 toGameEvent (Core.StatusAdded t l) = StatusAdded t l

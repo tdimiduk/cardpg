@@ -63,8 +63,10 @@ data LogPayload
       }
   | LogDefense
       { defenseActorId :: ActorId
+      , challengeId :: ChallengeId
+      , details :: Maybe Frontend.DefenseDetails
+      , cards :: Maybe [Frontend.LogCard] -- Summary
       , ended :: Bool
-      , snapshot :: Maybe [Text]
       }
   | LogError {content :: Text}
   deriving (Show, Eq, Generic)

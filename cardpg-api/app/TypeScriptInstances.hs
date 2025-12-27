@@ -139,6 +139,8 @@ $( do
      i_nature <- deriveTypeScript cardpgJsonDef ''Frontend.NatureCard
      i_talent <- deriveTypeScript cardpgJsonDef ''Frontend.TalentCard
      i_consequence <- deriveTypeScript cardpgJsonDef ''Frontend.ConsequenceCard
+     i_logCard <- deriveTypeScript cardpgJsonDef ''Frontend.LogCard
+     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''Frontend.DefenseDetails
 
      return
        ( i_attack
@@ -155,6 +157,8 @@ $( do
            ++ i_nature
            ++ i_talent
            ++ i_consequence
+           ++ i_logCard
+           ++ i_defenseDetails
        )
  )
 
@@ -211,7 +215,6 @@ $( do
      i_tableState <- deriveTypeScript cardpgJsonDef ''Frontend.TableState
      i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
      i_actorState <- deriveTypeScript cardpgJsonDef ''Frontend.ActorState
-     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''Frontend.DefenseDetails
      i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
      i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
 
@@ -221,7 +224,6 @@ $( do
            ++ i_tableState
            ++ i_assetState
            ++ i_actorState
-           ++ i_defenseDetails
            ++ i_stateUpdate
            ++ i_serverMsg
        )

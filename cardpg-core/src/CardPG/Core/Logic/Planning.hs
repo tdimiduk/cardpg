@@ -14,7 +14,7 @@ module CardPG.Core.Logic.Planning
   ) where
 
 import Control.Monad.RWS (tell)
-import Control.Monad.State (modify, state)
+import Control.Monad.State (get, modify, state)
 import Data.List (find, partition)
 import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
 
@@ -24,7 +24,7 @@ import Optics
 import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Card (CardInstance, CoreCard (..), Identified (..))
-import CardPG.Core.Logic.Combat (attackAction)
+import CardPG.Core.Logic.Combat (attackAction, computeDefenseDetails)
 import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
 import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId, ResourceType (..))
 import CardPG.Core.State
@@ -32,6 +32,8 @@ import CardPG.Core.State
   , ActiveDefense (..)
   , ActorState (..)
   , CoreCardState (..)
+  , CoreCardState (..)
+  , DefenseDetails (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
   , NarrativeStack (..)
@@ -147,9 +149,18 @@ endDefense = do
   case maybeDefense of
     Nothing -> return ()
     Just (ActiveDefense _ stack) -> do
+      state <- get -- Capture state while defending is still active to read defense cards
+      let defenseDetails = computeDefenseDetails state
+      
       modify $ #coreState % #defending .~ Nothing
       modify $ #coreState % #discard %~ (stack ++)
-      tell [DefenseEnded stack]
+      
+      -- We need to reconstruct ActiveDefense from state or use what we matched
+      -- 'stack' is just cards. 'defending' in state is 'Maybe ActiveDefense'
+      -- The 'ActiveDefense' we matched is what we want.
+      let activeDef = fromMaybe (error "Defense state inconsistent") $ state ^. (#coreState % #defending)
+      
+      tell [DefenseEnded activeDef defenseDetails]
 
 passAction :: GameM g ()
 passAction = do

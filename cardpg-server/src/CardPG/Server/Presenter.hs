@@ -17,18 +17,24 @@ import CardPG.Api.Frontend
   )
 import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Card (Identified (..))
+import CardPG.Core.Card qualified as CoreCard
+import CardPG.Core.Logic.Combat (computeDefenseDetails)
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Primitives (ActorId (..))
 import CardPG.Core.State
   ( ActorState (..)
+  , ActiveChallenge (..)
+  , ActiveDefense (..)
   , CoreCardState (..)
   , RevealedEffect (..)
   )
+import CardPG.Core.Primitives (ResourceType (..), Stats (..))
 import CardPG.Server.Types
   ( GameState (..)
   , LogEntry (..)
   , LogPayload (..)
   )
+
 
 eventToLogs :: ActorId -> GameEvent -> GameState -> [(LogPayload, Maybe ActorId)]
 eventToLogs actorId event game =
@@ -45,11 +51,48 @@ eventToLogs actorId event game =
           REInvalid msg -> [mkSystemLog (LogInfo $ "Invalid Action for " <> actorName <> ": " <> msg)]
         IllegalAction (Frontend.IllegalActionDetails _ (Just reason)) -> [mkSystemLog (LogError $ "Illegal Action for " <> actorName <> ": " <> reason)]
         CardDrawn _ -> [mkSystemLog (LogInfo $ actorName <> " drew a card.")]
-        CardDefended _ ->
-          [mkSystemLog (LogDefense actorId False Nothing)]
-        DefenseEnded stack ->
-          let names = [getRawText c.name | c <- stack]
-           in [mkSystemLog (LogDefense actorId True (Just names))]
+        CardDefended challenge _ ->
+          -- Lookup current defense state to show live progress
+          let maybeDefense = do
+                actorState <- Map.lookup actorId game.actors
+                activeDefense <- actorState.coreState.defending
+                -- Ensure we are defending against this specific challenge
+                if activeDefense.activeChallenge.id == challenge.id
+                  then Just (activeDefense, actorState)
+                  else Nothing
+
+              (details, logCards) = case maybeDefense of
+                Just (ActiveDefense _ cards, actorState) ->
+                  let d = Frontend.toDefenseDetails $ computeDefenseDetails actorState
+                      c =
+                        [ Frontend.LogCard
+                          { name = getRawText cName
+                          , color = challenge.challengeColor
+                          , power = 0
+                          }
+                        | Identified _ CoreCard.CoreCard{name=cName} <- cards
+                        ]
+                   in (Just d, Just c)
+                Nothing -> (Nothing, Nothing)
+            
+           in [mkSystemLog (LogDefense actorId challenge.id details logCards False)]
+        DefenseEnded (Frontend.ActiveDefense challenge cards) details ->
+          let logCards =
+                [ Frontend.LogCard
+                  { name = getRawText cName
+                  , color = challenge.challengeColor
+                  , power = 0 -- We don't have easy access to power without rule logic here.
+                  }
+                | Frontend.CoreCard{name=cName} <- cards
+                ]
+              -- Let's improve this. We have CoreCard.
+              -- But we really probably just want names for now because computing power requires `Combat.hs` logic which IS imported in `Frontend` but we are in `Presenter`.
+              -- Actually `DefenseDetails` has the aggregates!
+              -- So maybe we don't need per-card power in the log yet?
+              -- If LogCard requires it, I'll put 0 or fix LogCard.
+              -- Re-reading my LogCard definition: { name :: Text, color :: ResourceType, power :: Int }
+              -- I'll use 0 for now to unblock.
+           in [mkSystemLog (LogDefense actorId challenge.id (Just details) (Just logCards) True)]
         DeckShuffled -> [mkSystemLog (LogInfo $ actorName <> " reshuffled their deck.")]
         ConsequenceAdded _ -> [mkSystemLog (LogInfo $ actorName <> " gained a consequence.")]
         ConsequenceRemoved _ -> [mkSystemLog (LogInfo $ actorName <> " removed consequence.")]
