@@ -122,7 +122,20 @@ processCommand cmd ts game =
     _ -> do
       let (targetId, action) = case cmd of
             DrawIntent tid -> (tid, Logic.drawCard)
-            DefendIntent tid cid -> (tid, Logic.flipCardToDefense cid)
+            DefendIntent tid cid ->
+              -- Lookup the challenge in history
+              let findChallenge [] = Nothing
+                  findChallenge (logEntry : rest) = case logEntry.payload of
+                    LogChallenge activeChallenge _ ->
+                      if activeChallenge.id == cid
+                        then Just activeChallenge
+                        else findChallenge rest
+                    _ -> findChallenge rest
+
+                  maybeChallenge = findChallenge game.history
+               in case maybeChallenge of
+                    Just challenge -> (tid, Logic.flipCardToDefense challenge)
+                    Nothing -> (tid, return ()) -- If challenge not found, do nothing (client handles error via lack of response/log, or we could add explicit log)
             EndDefenseIntent tid -> (tid, Logic.endDefense)
             PlanMove tid x y -> (tid, Logic.planMove x y)
             PlanAction tid actionId resourceIds ->

@@ -21,11 +21,12 @@ import CardPG.Core.Card (CoreCard(..), Stats(..))
 import CardPG.Core.RuleDefs (Rule(..), AttackDef(..))
 import Data.List.NonEmpty (NonEmpty(..))
 import CardPG.Core.NonEmptyText (NonEmptyText, mkNonEmptyText)
+import CardPG.Core.State (ChallengeSource(..), ActiveChallenge(..))
 
 import CardPG.Server.Game (GameState(..), emptyGame, addActor)
 import CardPG.Server.Engine (runActorAction, concludeRound)
 import CardPG.Server.Dispatch (processCommand)
-import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..))
+import CardPG.Server.Types (Command(..), ActorGameEvent(..), StateUpdate(..), LogPayload(..), LogEntry(..), LogId(..))
 import qualified CardPG.Api.Frontend as Frontend
 import CardPG.Core.Card (CardInstance, Identified(..))
 
@@ -94,7 +95,15 @@ test_game = testGroup "Server Game Engine"
       
       -- 2. Defend Command
       let cid = ChallengeId (read "00000000-0000-0000-0000-000000000001")
-      let ((game3, _updates2, actions2, _logs2), _) = runState (processCommand (DefendIntent actorId cid) 2000 game2) gen2
+      
+      -- We must inject a LogChallenge into history for the defense to work
+      let challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 1 Red
+      let logPayload = LogChallenge challenge Frontend.PPass
+      let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) 1500 "Admin" Nothing logPayload
+      
+      let game2WithHistory = game2 { history = game2.history ++ [logEntry] }
+      
+      let ((game3, _updates2, actions2, _logs2), _) = runState (processCommand (DefendIntent actorId cid) 2000 game2WithHistory) gen2
       
       length actions2 @?= 1
       let evt2 = head actions2
@@ -110,7 +119,7 @@ test_game = testGroup "Server Game Engine"
         Just st -> do
            case st ^. #coreState % #defending of
              Just (ActiveDefense c cards) -> do
-               c @?= cid
+               c.id @?= cid
                map (.id) cards @?= [cid2]
              Nothing -> assertBool "Expected defending state" False
            (st ^. #coreState % #deck) @?= []
@@ -152,7 +161,8 @@ test_game = testGroup "Server Game Engine"
       
       let deck = [card3, card4]
       let defId = ChallengeId (read "00000000-0000-0000-0000-000000000099")
-      let defending = Just $ ActiveDefense defId [card1]
+      let defChallenge = ActiveChallenge defId (CSAdHoc "test" Nothing) 1 Red
+      let defending = Just $ ActiveDefense defChallenge [card1]
       
       let actorState = emptyActorState 
             & #coreState % #defending .~ defending

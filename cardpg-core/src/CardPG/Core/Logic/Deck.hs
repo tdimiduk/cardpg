@@ -22,9 +22,10 @@ import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Card (CardInstance, CoreCard, Identified (..), ItemCard (..))
 import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
-import CardPG.Core.Primitives (CardInstanceId, ChallengeId)
+import CardPG.Core.Primitives (CardInstanceId)
 import CardPG.Core.State
-  ( ActiveDefense (..)
+  ( ActiveChallenge (..)
+  , ActiveDefense (..)
   , ActorState (..)
   , AssetState (..)
   , CoreCardState (..)
@@ -84,25 +85,25 @@ deckCardTo dst gameLog = do
 drawCard :: (RandomGen g) => GameM g ()
 drawCard = deckCardTo #hand CardDrawn
 
-flipCardToDefense :: (RandomGen g) => ChallengeId -> GameM g ()
-flipCardToDefense cid = do
+flipCardToDefense :: (RandomGen g) => ActiveChallenge -> GameM g ()
+flipCardToDefense challenge = do
   currentDeck <- use (#coreState % #deck)
   case currentDeck of
     [] -> do
       performFatigueCycle
-      flipCardToDefense cid
+      flipCardToDefense challenge
     (top : rest) -> do
       currentDefense <- use (#coreState % #defending)
       case currentDefense of
         Nothing -> do
           modify $ #coreState % #deck .~ rest
-          modify $ #coreState % #defending .~ Just (ActiveDefense cid [top])
+          modify $ #coreState % #defending .~ Just (ActiveDefense challenge [top])
           tell [CardDefended top]
-        Just (ActiveDefense existingCid cards) ->
-          if existingCid == cid
+        Just (ActiveDefense existingChallenge cards) ->
+          if existingChallenge.id == challenge.id
             then do
               modify $ #coreState % #deck .~ rest
-              modify $ #coreState % #defending .~ Just (ActiveDefense existingCid (top : cards))
+              modify $ #coreState % #defending .~ Just (ActiveDefense existingChallenge (top : cards))
               tell [CardDefended top]
             else
               -- Attempted to defend against a different challenge while already defending

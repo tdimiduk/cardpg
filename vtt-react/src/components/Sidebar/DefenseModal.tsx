@@ -23,6 +23,9 @@ interface DefenseWidgetProps {
   onDefend: () => void;
   onAddConsequence: (severity?: number) => void;
   onClearDefense: () => void;
+  // Warning Banner
+  warningMessage?: string | null;
+  onDismissWarning?: () => void;
 }
 
 export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
@@ -35,6 +38,8 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
   onDefend,
   onAddConsequence,
   onClearDefense,
+  warningMessage,
+  onDismissWarning,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +85,24 @@ export const DefenseWidget: React.FC<DefenseWidgetProps> = ({
         Container is pointer-events-none so we don't block clicks around it if we add transparency 
         But children need pointer-events-auto
       */}
+
+      {/* WARNING BANNER */}
+      {warningMessage && (
+        <div className="bg-yellow-950/90 border border-yellow-600 rounded-lg p-3 shadow-xl pointer-events-auto backdrop-blur-sm animate-in slide-in-from-bottom-2 flex justify-between items-start gap-3">
+          <div className="text-xs text-yellow-200">
+            <span className="font-bold block mb-1 text-yellow-500 uppercase flex items-center gap-1">
+              <Zap size={12} /> Active Defense Conflict
+            </span>
+            {warningMessage}
+          </div>
+          <button
+            onClick={onDismissWarning}
+            className="text-yellow-600 hover:text-yellow-400 transition-colors"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* MAIN WIDGET */}
       <div className="bg-slate-900 border border-slate-700 shadow-2xl rounded-xl overflow-hidden pointer-events-auto flex flex-col">

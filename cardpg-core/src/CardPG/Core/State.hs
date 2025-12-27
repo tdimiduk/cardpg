@@ -98,7 +98,7 @@ data RevealedEffect
 $(deriveJSON cardpgJsonDef ''RevealedEffect)
 
 data ActiveDefense = ActiveDefense
-  { challengeId :: ChallengeId
+  { activeChallenge :: ActiveChallenge
   , cards :: [CardInstance CoreCard]
   }
   deriving stock (Show, Eq, Generic)

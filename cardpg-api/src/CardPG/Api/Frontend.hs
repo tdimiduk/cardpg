@@ -13,6 +13,8 @@ module CardPG.Api.Frontend
   ( -- * Actors
     ActorState (..)
   , ActiveDefense (..)
+  , ActiveChallenge (..)
+  , ChallengeSource (..)
   , DefenseDetails (..)
 
     -- * Cards
@@ -240,8 +242,25 @@ data PlannedAction
   deriving (Show, Eq, Generic)
 $(deriveJSON cardpgJsonDef ''PlannedAction)
 
+data ChallengeSource
+  = CSAdHoc {name :: Text, description :: Maybe Text}
+  | CSCard CardInstanceId
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ChallengeSource)
+
+data ActiveChallenge = ActiveChallenge
+  { id :: ChallengeId
+  , source :: ChallengeSource
+  , challengeStrength :: Int
+  , challengeColor :: ResourceType
+  }
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ActiveChallenge)
+
 data ActiveDefense = ActiveDefense
-  { challengeId :: ChallengeId
+  { activeChallenge :: ActiveChallenge
   , cards :: [CoreCard]
   }
   deriving (Show, Eq, Generic)
@@ -294,6 +313,17 @@ data ActorState = ActorState
 
 $(deriveJSON cardpgJsonDef ''ActorState)
 
+toActiveChallenge :: Core.ActiveChallenge -> ActiveChallenge
+toActiveChallenge Core.ActiveChallenge{..} =
+  ActiveChallenge
+    { source = toChallengeSource source
+    , ..
+    }
+
+toChallengeSource :: Core.ChallengeSource -> ChallengeSource
+toChallengeSource (Core.CSAdHoc n d) = CSAdHoc n d
+toChallengeSource (Core.CSCard c) = CSCard c
+
 toActorState :: Core.ActorState -> ActorState
 toActorState Core.ActorState{..} =
   let
@@ -305,8 +335,8 @@ toActorState Core.ActorState{..} =
         , planned = fmap toPlannedAction coreState.planned
         , defending = case coreState.defending of
             Nothing -> Nothing
-            Just (Core.ActiveDefense cid cards) ->
-              Just (ActiveDefense cid (map toCoreCard cards))
+            Just (Core.ActiveDefense coreChallenge cards) ->
+              Just (ActiveDefense (toActiveChallenge coreChallenge) (map toCoreCard cards))
         , inPlay = Map.map (Data.Bifunctor.first toCoreCard) coreState.inPlay
         , revealed = coreState.revealed
         }

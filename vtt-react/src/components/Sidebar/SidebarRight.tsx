@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { LogEntry, Phase, LogPayload, CoreCard, ActiveChallenge } from '../../generated/types';
+import { LogEntry, Phase, LogPayload, ActiveChallenge } from '../../generated/types';
 // TODO: Replace lucide icons if needed, or keep them
 import { Send, Bot, Square, ArrowRight, Play, Rewind, Shield } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
 import { useGameDispatch } from '../../hooks/useGameDispatch';
 import { DefenseModalCard } from './DefenseModal';
+import { resolveChallengeStack } from '../../utils';
 
 // --- View ---
 export interface SidebarRightProps {
@@ -31,66 +32,12 @@ const ChallengeLogItem: React.FC<{
   const actorName = useGameStore((state) =>
     actorId ? state.actors[actorId]?.name || 'Unknown' : 'Unknown',
   );
-  // Resolve source card if applicable
-  const sourceCardId = challenge.source.type === 'cSCard' ? challenge.source.data : '';
-
-  // Inline Lookup (replacement for useActorCoreCard)
-  const resolvedSourceCard = useGameStore((state) => {
-    if (!actorId || !sourceCardId) return undefined;
-    const actor = state.actors[actorId];
-    if (!actor) return undefined;
-    const { coreState } = actor;
-
-    const findInList = (list: CoreCard[], id: string) => list.find((c) => c.id === id);
-
-    // Check Map first
-    if (coreState.inPlay && coreState.inPlay[sourceCardId]) {
-      return coreState.inPlay[sourceCardId]![0];
-    }
-
-    // Check Lists
-    return (
-      findInList(coreState.hand, sourceCardId) ||
-      findInList(coreState.deck, sourceCardId) ||
-      findInList(coreState.discard, sourceCardId) ||
-      (coreState.defending ? findInList(coreState.defending.cards, sourceCardId) : undefined)
-    );
-  });
-
-  const sourceCard = resolvedSourceCard ? { ...resolvedSourceCard, id: sourceCardId } : undefined;
+  // Use the actor object for resolution
+  const actor = useGameStore((state) => (actorId ? state.actors[actorId] : undefined));
 
   const stackCards = useMemo(() => {
-    const cards: CoreCard[] = [];
-
-    // Ad-Hoc Source handling
-    if (challenge.source.type === 'cSAdHoc') {
-      const adhoc = challenge.source;
-      cards.push({
-        id: `adhoc-${log.id}`,
-        name: adhoc.name,
-        stats: {
-          red: challenge.challengeColor === 'red' ? challenge.challengeStrength : 0,
-          yellow: challenge.challengeColor === 'yellow' ? challenge.challengeStrength : 0,
-          blue: challenge.challengeColor === 'blue' ? challenge.challengeStrength : 0,
-        },
-        flavor: adhoc.description ? [{ type: 'textRun', content: adhoc.description }] : undefined,
-      });
-    } else if (sourceCard) {
-      cards.push(sourceCard);
-    }
-
-    // Planned Action Cards (Directly from Wire payload)
-    if (plannedAction) {
-      if (plannedAction.type === 'pStandard') {
-        cards.push(plannedAction.data.actionCard);
-        cards.push(...plannedAction.data.resources);
-      } else if (plannedAction.type === 'pNarrative') {
-        cards.push(...plannedAction.data.cards);
-      }
-    }
-
-    return cards;
-  }, [log.id, challenge, plannedAction, sourceCard]);
+    return resolveChallengeStack(challenge, plannedAction, log.id, actor);
+  }, [log.id, challenge, plannedAction, actor]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();

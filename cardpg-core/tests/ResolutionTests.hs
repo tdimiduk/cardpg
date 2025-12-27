@@ -16,7 +16,7 @@ import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)
 import CardPG.Core.Logic.Planning qualified as Logic
-import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId (..))
+import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId (..), ResourceType (..))
 import CardPG.Core.State
 import Optics ((%), (&), (.~))
 
@@ -88,7 +88,15 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
 
   -- 2. Defend with c3
   let cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
-  let _defendAction = Logic.flipCardToDefense cid :: GameM System.Random.StdGen ()
+  let dummyChallenge =
+        ActiveChallenge
+          { id = cid
+          , source = CSAdHoc "Test Challenge" Nothing
+          , challengeStrength = 5
+          , challengeColor = Red
+          }
+
+  let _defendAction = Logic.flipCardToDefense dummyChallenge :: GameM System.Random.StdGen ()
   -- TODO: check something about this defend action
 
   let actorWithDeck =
@@ -104,12 +112,12 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
       ((_, actorAfterPlan2, _), gen2) = runState (runRWST (runGameM planAction) env actorWithDeck) gen
 
       -- Defend
-      ((_, actorAfterDefend, _), gen3) = runState (runRWST (runGameM (Logic.flipCardToDefense cid)) env actorAfterPlan2) gen2
+      ((_, actorAfterDefend, _), gen3) = runState (runRWST (runGameM (Logic.flipCardToDefense dummyChallenge)) env actorAfterPlan2) gen2
 
   -- Verify defense
   case actorAfterDefend.coreState.defending of
     Just (ActiveDefense c cards) -> do
-      assertEqual "Challenge Id matches" cid c
+      assertEqual "Challenge Id matches" cid c.id
       assertEqual "Defending stack has c3" [c3Id] (map (.id) cards)
     Nothing -> assertFailure "Expected defending state"
 

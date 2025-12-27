@@ -59,6 +59,14 @@ import DeriveSpecialized
   , specializeType
   )
 
+import CardPG.Core.State qualified as Core
+
+instance TypeScript Core.ActiveChallenge where
+  getTypeScriptType _ = "ActiveChallenge"
+
+instance TypeScript Core.ChallengeSource where
+  getTypeScriptType _ = "ChallengeSource"
+
 instance TypeScript CardInstanceId where
   getTypeScriptType _ = "string"
 
@@ -162,8 +170,8 @@ $( do
      i_actionStack <- deriveTypeScript cardpgJsonDef ''Frontend.ActionStack
      i_narrativeStack <- deriveTypeScript cardpgJsonDef ''Frontend.NarrativeStack
      i_plannedAction <- deriveTypeScript cardpgJsonDef ''Frontend.PlannedAction
-     i_challengeSource <- deriveTypeScript cardpgJsonDef ''ChallengeSource
-     i_activeChallenge <- deriveTypeScript cardpgJsonDef ''ActiveChallenge
+     i_challengeSource <- deriveTypeScript cardpgJsonDef ''Frontend.ChallengeSource
+     i_activeChallenge <- deriveTypeScript cardpgJsonDef ''Frontend.ActiveChallenge
      i_activeDefense <- deriveTypeScript cardpgJsonDef ''Frontend.ActiveDefense
      i_revealedEffect <- deriveTypeScript cardpgJsonDef ''RevealedEffect
 

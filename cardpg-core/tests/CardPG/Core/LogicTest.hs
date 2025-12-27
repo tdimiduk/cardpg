@@ -18,6 +18,7 @@ import CardPG.Core.Card
   , ItemCard (..)
   , Stats (..)
   )
+import CardPG.Core.Logic.Deck (flipCardToDefense)
 import CardPG.Core.Logic.Monad (GameM (..), runGameM)
 import CardPG.Core.Logic.Planning
 import CardPG.Core.Logic.Status
@@ -25,7 +26,9 @@ import CardPG.Core.NonEmptyText (unsafeNonEmptyText)
 import CardPG.Core.Primitives
   ( CardInstanceId (..)
   , CardLocation (..)
+  , ChallengeId (..)
   , EquipSlot (..)
+  , ResourceType (..)
   )
 import CardPG.Core.State
 import Data.Text qualified as T
@@ -107,6 +110,7 @@ test_logic =
     [ test_plannedActions
     , test_consequenceLogic
     , test_statusLogic
+    , test_defenseLogic
     ]
 
 test_plannedActions :: TestTree
@@ -289,3 +293,34 @@ test_statusLogic =
         -- The registry size should decrease by 1
         length state2.coreState.hand @?= 0
     ]
+
+test_defenseLogic :: TestTree
+test_defenseLogic =
+  let
+    cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
+    challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 3 Red
+    fatigueCard = CoreCard (unsafeNonEmptyText "Fatigue") Nothing (Stats 0 0 0) Nothing Nothing Nothing
+   in
+    testGroup
+      "Defense Logic"
+      [ testCase "recursively flips card after fatigue" $ do
+          -- Setup state with EMPTY deck and EMPTY discard
+          -- This forces fatigue cycle which should create cards, shuffle, AND THEN flip
+          let env =
+                GameEnv
+                  { fatigueCardTemplate = fatigueCard
+                  , statusCardTemplates = Map.empty
+                  , consequenceCardTemplates = Map.empty
+                  }
+          let state = mkActorState [] -- Empty deck implied by mkActorState helper
+
+          -- Run action
+          let ((), finalState, _) = runLogicWithEnv env state (flipCardToDefense challenge)
+
+          -- Verify
+          case finalState.coreState.defending of
+            Just (ActiveDefense c cards) -> do
+              c.id @?= cid
+              length cards @?= 1
+            Nothing -> assertBool "Expected defending state, but got Nothing (likely missed recursive call)" False
+      ]

@@ -11,6 +11,7 @@ import { useGameSync } from './hooks/useGameSync';
 import { useGameDispatch } from './hooks/useGameDispatch';
 import { DefenseWidget, DefenseModalCard } from './components/Sidebar/DefenseModal';
 import { ActiveChallenge } from './generated/types';
+import { resolveChallengeStack } from './utils';
 
 // Rules Components
 import RulesLayout from './layouts/RulesLayout';
@@ -25,6 +26,7 @@ import colorsOfActionContent from '../../../design/rules/colors-of-action.md?raw
 const GameBoard: React.FC = () => {
   // --- Store Hooks Needed for Layout/Initialization ---
   const phase = useGameStore((state) => state.phase);
+  const logs = useGameStore((state) => state.logs);
   const actors = useGameStore((state) => state.actors);
   const activeActorId = useGameStore((state) => state.activeActorId);
   const activeActor = activeActorId ? actors[activeActorId] : undefined;
@@ -49,26 +51,85 @@ const GameBoard: React.FC = () => {
     attack: ActiveChallenge | null;
     stack: DefenseModalCard[];
   }>({ isOpen: false, attack: null, stack: [] });
+  const [warningMessage, setWarningMessage] = useState<string | null>(null);
+
+  // Helper to reconstruct defense state from active actor
+  const reconstructDefenseState = () => {
+    const defending = activeActor?.coreState.defending;
+    if (!defending) return null;
+
+    const activeChallenge = defending.activeChallenge;
+    // Try to find context from logs to enrich visuals (the stack)
+    const originalLog = logs.find(
+      (l) => l.payload.type === 'logChallenge' && l.payload.challenge.id === activeChallenge.id,
+    );
+
+    let stack: DefenseModalCard[] = [];
+
+    if (originalLog && originalLog.payload.type === 'logChallenge') {
+      const senderId = originalLog.senderId;
+      const sender = senderId ? actors[senderId] : undefined;
+      stack = resolveChallengeStack(
+        originalLog.payload.challenge,
+        originalLog.payload.plannedAction,
+        originalLog.id,
+        sender,
+      );
+    }
+
+    return { attack: activeChallenge, stack };
+  };
 
   // Resolve Defense Stack for Logic Check
-  const defenseIds = activeActor?.coreState.defending?.cards || [];
-
   const handleOpenDefense = (attack: ActiveChallenge, stack: DefenseModalCard[]) => {
-    // If we are already defending (defenseIds > 0), we assume the user intends to view or modify
-    // the existing defense. We trust the Widget to handle the visualization of the current attack context.
-    if (defenseIds.length > 0) {
-      // Logic to handle existing defense context
+    const defending = activeActor?.coreState.defending;
+
+    if (defending) {
+      // Logic: Always prefer the Active State if we are defending.
+      const reconstructed = reconstructDefenseState();
+
+      if (reconstructed) {
+        setDefenseModal({
+          isOpen: true,
+          attack: reconstructed.attack,
+          stack: reconstructed.stack.length > 0 ? reconstructed.stack : stack, // Fallback to passed stack if log lookup failed but we have passed data (e.g. from just clicking the log)
+        });
+
+        // Warn if they clicked a different one
+        if (defending.activeChallenge.id !== attack.id) {
+          setWarningMessage(
+            'You are already defending against another challenge. We have brought up your active defense instead.',
+          );
+        } else {
+          setWarningMessage(null);
+        }
+        return;
+      }
     }
+
+    // Not defending yet? Start new.
     setDefenseModal({ isOpen: true, attack, stack });
+    setWarningMessage(null);
   };
 
   const handleCloseDefense = () => {
     setDefenseModal((prev) => ({ ...prev, isOpen: false }));
+    setWarningMessage(null);
   };
 
   const handleResumeDefense = () => {
-    // Re-open if we have context.
-    setDefenseModal((prev) => ({ ...prev, isOpen: true }));
+    // Logic: derived entirely from state
+    const reconstructed = reconstructDefenseState();
+    if (reconstructed) {
+      setDefenseModal({
+        isOpen: true,
+        attack: reconstructed.attack,
+        stack: reconstructed.stack,
+      });
+      setWarningMessage(null);
+    } else {
+      console.warn('Attempted to resume defense but no active defense state found.');
+    }
   };
 
   // --- Defense Handlers (Duplicates of Sidebar Logic for Modal) ---
@@ -145,6 +206,8 @@ const GameBoard: React.FC = () => {
         onClearDefense={() => {
           if (activeActorId) handleEndDefense(activeActorId);
         }}
+        warningMessage={warningMessage}
+        onDismissWarning={() => setWarningMessage(null)}
       />
     </div>
   );
