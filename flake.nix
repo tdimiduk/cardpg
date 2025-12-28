@@ -101,7 +101,6 @@
         };
 
         devenv.shells.default = {
-          devenv.root = toString ./.;
           imports = [ ./devenv.nix ];
         };
       };

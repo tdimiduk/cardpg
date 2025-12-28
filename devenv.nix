@@ -22,8 +22,15 @@
   languages.javascript = {
     enable = true;
     npm.enable = true;
-    npm.install.enable = true;
+    npm.install.enable = false;
   };
+
+  enterShell = ''
+    echo "Installing frontend dependencies..."
+    cd vtt-react && npm install
+    cd ..
+    echo "${config.env.GREET}"
+  '';
 
   # https://devenv.sh/processes/
   processes.backend.exec = "cabal run cardpg-server";
@@ -31,6 +38,13 @@
 
   # https://devenv.sh/scripts/
   scripts.gen-types.exec = ''
+    # Ensure we run from project root
+    ROOT=$(git rev-parse --show-toplevel)
+    cd "$ROOT"
+
+    # Ensure target directory exists for codegen
+    mkdir -p vtt-react/src/generated
+
     echo "Building codegen..."
     cabal build codegen
     
@@ -49,8 +63,8 @@
     set -e
     
     # Configuration
-    SERVER_HOST="tgd.me"
-    ROOT_AT="root@tgd.me"
+    SERVER_HOST="${"$"}{SERVER_HOST:-tgd.me}"
+    ROOT_AT="${"$"}{ROOT_AT:-root@tgd.me}"
     SERVICE_FILE="deploy/cardpg-service.nix"
     LAST_SERVICE_FILE=".devenv/state/deploy/cardpg-service.nix.last"
     
