@@ -20,21 +20,19 @@ import CardPG.Core.Card (Identified (..))
 import CardPG.Core.Card qualified as CoreCard
 import CardPG.Core.Logic.Combat (computeDefenseDetails)
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives (ActorId (..))
+import CardPG.Core.Primitives (ActorId (..), ResourceType (..), Stats (..))
 import CardPG.Core.State
-  ( ActorState (..)
-  , ActiveChallenge (..)
+  ( ActiveChallenge (..)
   , ActiveDefense (..)
+  , ActorState (..)
   , CoreCardState (..)
   , RevealedEffect (..)
   )
-import CardPG.Core.Primitives (ResourceType (..), Stats (..))
 import CardPG.Server.Types
   ( GameState (..)
   , LogEntry (..)
   , LogPayload (..)
   )
-
 
 eventToLogs :: ActorId -> GameEvent -> GameState -> [(LogPayload, Maybe ActorId)]
 eventToLogs actorId event game =
@@ -66,33 +64,32 @@ eventToLogs actorId event game =
                   let d = Frontend.toDefenseDetails $ computeDefenseDetails actorState
                       c =
                         [ Frontend.LogCard
-                          { name = getRawText cName
-                          , color = challenge.challengeColor
-                          , power = 0
-                          }
-                        | Identified _ CoreCard.CoreCard{name=cName} <- cards
+                            { name = getRawText cName
+                            , color = challenge.challengeColor
+                            , power = 0
+                            }
+                        | Identified _ CoreCard.CoreCard{name = cName} <- cards
                         ]
                    in (Just d, Just c)
                 Nothing -> (Nothing, Nothing)
-            
            in [mkSystemLog (LogDefense actorId challenge.id details logCards False)]
         DefenseEnded (Frontend.ActiveDefense challenge cards) details ->
           let logCards =
                 [ Frontend.LogCard
-                  { name = getRawText cName
-                  , color = challenge.challengeColor
-                  , power = 0 -- We don't have easy access to power without rule logic here.
-                  }
-                | Frontend.CoreCard{name=cName} <- cards
+                    { name = getRawText cName
+                    , color = challenge.challengeColor
+                    , power = 0 -- We don't have easy access to power without rule logic here.
+                    }
+                | Frontend.CoreCard{name = cName} <- cards
                 ]
-              -- Let's improve this. We have CoreCard.
+           in -- Let's improve this. We have CoreCard.
               -- But we really probably just want names for now because computing power requires `Combat.hs` logic which IS imported in `Frontend` but we are in `Presenter`.
               -- Actually `DefenseDetails` has the aggregates!
               -- So maybe we don't need per-card power in the log yet?
               -- If LogCard requires it, I'll put 0 or fix LogCard.
               -- Re-reading my LogCard definition: { name :: Text, color :: ResourceType, power :: Int }
               -- I'll use 0 for now to unblock.
-           in [mkSystemLog (LogDefense actorId challenge.id (Just details) (Just logCards) True)]
+              [mkSystemLog (LogDefense actorId challenge.id (Just details) (Just logCards) True)]
         DeckShuffled -> [mkSystemLog (LogInfo $ actorName <> " reshuffled their deck.")]
         ConsequenceAdded _ -> [mkSystemLog (LogInfo $ actorName <> " gained a consequence.")]
         ConsequenceRemoved _ -> [mkSystemLog (LogInfo $ actorName <> " removed consequence.")]

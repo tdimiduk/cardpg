@@ -8,7 +8,7 @@ description: Evaluate context window status before proceeding with a task or pre
 
 2. **Branch: Condition Green (Context is Good)**:
    - If your context is healthy, **IMMEDIATELY PROCEED** with the specific task requested by the user in the prompt following this workflow command.
-   - *Example: "Cleaning up hardcoded strings" or "Refactoring module X".*
+   - _Example: "Cleaning up hardcoded strings" or "Refactoring module X"._
 
 3. **Branch: Condition Red (Context is Full/Bad)**:
    - **Do NOT** start new coding tasks.

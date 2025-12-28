@@ -98,16 +98,14 @@ data Rule
 -- | 2. 'PrimeDef' is excluded because it depends on 'Rule', creating a cycle if defined here.
 -- |    Its instance is derived in RuleInstances.hs instead.
 $( do
-     defs <-
-       mconcat
-         <$> traverse
-           (deriveJSON cardpgJsonDef)
-           [ ''PassiveDef
-           , ''AttackDef
-           , ''GeneralDef
-           , ''TaskDef
-           , ''TriggerDef
-           , ''OngoingDef
-           ]
-     return defs
+     mconcat
+       <$> traverse
+         (deriveJSON cardpgJsonDef)
+         [ ''PassiveDef
+         , ''AttackDef
+         , ''GeneralDef
+         , ''TaskDef
+         , ''TriggerDef
+         , ''OngoingDef
+         ]
  )

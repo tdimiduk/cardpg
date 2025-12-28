@@ -20,7 +20,7 @@ description: Design a research prompt and initialize the report directory.
    - **Write Prompt**: Write the drafted prompt content to `design/research/reports/<slug>/prompt.md`.
    - **Write Metadata**: Write the following to `design/research/reports/<slug>/meta.yaml`:
      ```yaml
-     report_date: {YYYY-MM-DD}
+     report_date: { YYYY-MM-DD }
      generation_details:
        tool: "Gemini 3 Pro with Deep Research"
        prompt_file: "prompt.md"

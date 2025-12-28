@@ -32,7 +32,6 @@ import CardPG.Core.State
   , ActiveDefense (..)
   , ActorState (..)
   , CoreCardState (..)
-  , CoreCardState (..)
   , DefenseDetails (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
@@ -151,15 +150,15 @@ endDefense = do
     Just (ActiveDefense _ stack) -> do
       state <- get -- Capture state while defending is still active to read defense cards
       let defenseDetails = computeDefenseDetails state
-      
+
       modify $ #coreState % #defending .~ Nothing
       modify $ #coreState % #discard %~ (stack ++)
-      
+
       -- We need to reconstruct ActiveDefense from state or use what we matched
       -- 'stack' is just cards. 'defending' in state is 'Maybe ActiveDefense'
       -- The 'ActiveDefense' we matched is what we want.
       let activeDef = fromMaybe (error "Defense state inconsistent") $ state ^. (#coreState % #defending)
-      
+
       tell [DefenseEnded activeDef defenseDetails]
 
 passAction :: GameM g ()

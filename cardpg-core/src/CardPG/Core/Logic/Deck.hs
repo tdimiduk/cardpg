@@ -10,7 +10,7 @@ module CardPG.Core.Logic.Deck
   , returnCardsToDeck
   ) where
 
-import Control.Monad (replicateM)
+import Control.Monad (replicateM, when)
 import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (modify)
 import Control.Monad.Trans.Class (lift)
@@ -97,17 +97,13 @@ flipCardToDefense challenge = do
       case currentDefense of
         Nothing -> do
           modify $ #coreState % #deck .~ rest
-          modify $ #coreState % #defending .~ Just (ActiveDefense challenge [top])
+          modify $ (#coreState % #defending) ?~ ActiveDefense challenge [top]
           tell [CardDefended challenge top]
         Just (ActiveDefense existingChallenge cards) ->
-          if existingChallenge.id == challenge.id
-            then do
-              modify $ #coreState % #deck .~ rest
-              modify $ #coreState % #defending .~ Just (ActiveDefense existingChallenge (top : cards))
-              tell [CardDefended existingChallenge top]
-            else
-              -- Attempted to defend against a different challenge while already defending
-              return ()
+          Control.Monad.when (existingChallenge.id == challenge.id) $ do
+            modify $ #coreState % #deck .~ rest
+            modify $ (#coreState % #defending) ?~ ActiveDefense existingChallenge (top : cards)
+            tell [CardDefended existingChallenge top]
 
 reshuffleDeck :: (RandomGen g) => GameM g ()
 reshuffleDeck = do

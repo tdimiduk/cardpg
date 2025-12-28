@@ -2,7 +2,10 @@ packages:
   cardpg-core/cardpg-core.cabal
   cardpg-server/cardpg-server.cabal
   cardpg-api/cardpg-api.cabal
-  shake-build/shake-build.cabal
-  ../beam-automigrate/beam-automigrate.cabal
+source-repository-package
+  type: git
+  location: https://github.com/obsidiansystems/beam-automigrate.git
+  tag: 3933b82b8affc1192638ab84fd3844991195b9cc
+
 
 allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector

@@ -106,7 +106,7 @@ prettyExtra Nothing = ""
 prettyExtra (Just rt) = " -> " <> richToString rt
 
 richToString :: RichText -> Text
-richToString rs = T.concat . map inlineToString . NE.toList . getInlines $ rs
+richToString = T.concat . map inlineToString . NE.toList . getInlines
 
 inlineToString :: Inline -> Text
 inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getRawText content

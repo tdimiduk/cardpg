@@ -3,14 +3,12 @@ description: Update an existing rule based on new evidence using the Artificer p
 ---
 
 1. Read the Standards and Persona:
-
    - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
    - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/personas/artificer.md`
 
 2. Adopt the **Lead Systems Designer** persona.
 
 3. **Execution Protocol:**
-
    - **Locate:** Identify the specific file/section in `design/rules/`.
    - **Diff:** Propose a targeted edit (Old Text -> New Text) that reconciles the rule with the fact.
 

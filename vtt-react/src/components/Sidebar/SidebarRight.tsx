@@ -114,36 +114,42 @@ const ChallengeLogItem: React.FC<{
             </div>
             {/* Show totals robustly */}
             {defensePayload && (
-               <div className="flex gap-2 text-[10px] font-mono ml-auto">
-                 <span className="text-red-400">R:{defenseDetails?.values.red ?? 0}</span>
-                 <span className="text-yellow-400">Y:{defenseDetails?.values.yellow ?? 0}</span>
-                 <span className="text-blue-400">B:{defenseDetails?.values.blue ?? 0}</span>
-               </div>
+              <div className="flex gap-2 text-[10px] font-mono ml-auto">
+                <span className="text-red-400">R:{defenseDetails?.values.red ?? 0}</span>
+                <span className="text-yellow-400">Y:{defenseDetails?.values.yellow ?? 0}</span>
+                <span className="text-blue-400">B:{defenseDetails?.values.blue ?? 0}</span>
+              </div>
             )}
           </div>
-          
+
           {/* Show defense cards summary if available */}
           {defensePayload.cards && defensePayload.cards.length > 0 && (
-             <div className="flex flex-wrap gap-1 mt-1">
-               {defensePayload.cards.map((c, i) => (
-                 <span key={i} className="text-[10px] bg-blue-950/50 text-blue-200 px-1.5 py-0.5 rounded border border-blue-900/30">
-                   {c.name}
-                 </span>
-               ))}
-             </div>
-          )}
-          
-          {/* Show impact if ended */}
-           {defensePayload.ended && defenseDetails && (
-            <div className="flex gap-3 mt-2 text-xs bg-black/20 p-1 rounded">
-               <div className="text-slate-300">
-                 Impact: <span className="text-white font-bold">{defenseDetails.impact}</span>
-               </div>
-               <div className="text-slate-300">
-                 Cons: <span className="text-white font-bold">{defenseDetails.consequencesFromDefense}</span>
-               </div>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {defensePayload.cards.map((c, i) => (
+                <span
+                  key={i}
+                  className="text-[10px] bg-blue-950/50 text-blue-200 px-1.5 py-0.5 rounded border border-blue-900/30"
+                >
+                  {c.name}
+                </span>
+              ))}
             </div>
-           )}
+          )}
+
+          {/* Show impact if ended */}
+          {defensePayload.ended && defenseDetails && (
+            <div className="flex gap-3 mt-2 text-xs bg-black/20 p-1 rounded">
+              <div className="text-slate-300">
+                Impact: <span className="text-white font-bold">{defenseDetails.impact}</span>
+              </div>
+              <div className="text-slate-300">
+                Cons:{' '}
+                <span className="text-white font-bold">
+                  {defenseDetails.consequencesFromDefense}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -162,13 +168,20 @@ const LogItem: React.FC<{
   // TODO: Use CardViewById for inline cards if we want to do that in chat?
 
   if (log.payload.type === 'logChallenge') {
-     const defenseLog = findDefenseLog(relatedLogs, log.payload.challenge.id);
-    return <ChallengeLogItem log={log} payload={log.payload} defenseLog={defenseLog} onOpenDefense={onOpenDefense} />;
+    const defenseLog = findDefenseLog(relatedLogs, log.payload.challenge.id);
+    return (
+      <ChallengeLogItem
+        log={log}
+        payload={log.payload}
+        defenseLog={defenseLog}
+        onOpenDefense={onOpenDefense}
+      />
+    );
   }
 
   // We DO NOT render logDefense items independently anymore (unless they are orphans, but groupedLogs logic handles that)
   if (log.payload.type === 'logDefense') {
-     // Orphan defense log or unexpected case
+    // Orphan defense log or unexpected case
     const payload = log.payload;
     return (
       <div className="bg-blue-950/30 border border-blue-900/50 rounded p-3 mb-2 animate-fade-in opacity-50">
@@ -176,7 +189,7 @@ const LogItem: React.FC<{
           <Shield size={12} className="fill-blue-500 text-blue-500" />
           <span>Defense (Orphan)</span>
         </div>
-         <div className="text-sm text-slate-300">
+        <div className="text-sm text-slate-300">
           {payload.ended ? 'Defense Ended' : 'Defending...'}
         </div>
       </div>
@@ -292,22 +305,22 @@ export const SidebarRightView: React.FC<SidebarRightProps> = ({
         <div className="text-[10px] text-slate-600 font-mono">{logs.length} Entries</div>
       </div>
 
-        {/* Logs Scroll Area */}
-         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-           {groupedLogs.length === 0 && (
-             <div className="text-center text-slate-700 italic text-xs mt-10">No logs yet.</div>
-           )}
- 
-           {groupedLogs.map((log) => (
-             <LogItem
-               key={log.id}
-               log={log}
-               onOpenDefense={onOpenDefense}
-               relatedLogs={logs} // Pass all logs to find related defense logs
-             />
-           ))}
-           <div ref={logsEndRef} />
-         </div>
+      {/* Logs Scroll Area */}
+      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+        {groupedLogs.length === 0 && (
+          <div className="text-center text-slate-700 italic text-xs mt-10">No logs yet.</div>
+        )}
+
+        {groupedLogs.map((log) => (
+          <LogItem
+            key={log.id}
+            log={log}
+            onOpenDefense={onOpenDefense}
+            relatedLogs={logs} // Pass all logs to find related defense logs
+          />
+        ))}
+        <div ref={logsEndRef} />
+      </div>
 
       {/* Chat Input */}
       <form

@@ -1,17 +1,18 @@
 cabal-version: 3.0
-name:                cardpg-server
-version:             0.1.0.0
-license:             BSD-3-Clause
-license-file:        LICENSE
-author:              Antigravity
-maintainer:          antigravity@example.com
-build-type:          Simple
+name:          cardpg-server
+version:       0.1.0.0
+license:       BSD-3-Clause
+license-file:  LICENSE
+author:        Antigravity
+maintainer:    antigravity@example.com
+build-type:    Simple
 
 common project-config
-  default-language: GHC2021
+  default-language:   GHC2021
   default-extensions:
     DerivingStrategies
     DuplicateRecordFields
+    MultiWayIf
     NoFieldSelectors
     OverloadedLabels
     OverloadedRecordDot
@@ -19,98 +20,104 @@ common project-config
     QuantifiedConstraints
     RecordWildCards
     TemplateHaskell
-    MultiWayIf
 
 library
-  import: project-config
+  import:          project-config
+
   -- cabal-fmt: expand src
   exposed-modules:
-    CardPG.Server.Types
-    CardPG.Server.Game
-    CardPG.Server.Engine
-    CardPG.Server.Dispatch
-    CardPG.Server.Scenario
-    CardPG.Server.DB
-    CardPG.Server.Presenter
-    CardPG.Server.Connection
-    CardPG.Server.Config
-    CardPG.Server.Session
     CardPG.Server.ChatParser
+    CardPG.Server.Config
+    CardPG.Server.Connection
+    CardPG.Server.DB
+    CardPG.Server.Dispatch
+    CardPG.Server.Engine
+    CardPG.Server.Game
     CardPG.Server.Loader
-  hs-source-dirs:      src
-  build-depends:       base >= 4.7 && < 5
-                     , websockets
-                     , text
-                     , aeson
-                     , aeson-typescript
-                     , stm
-                     , containers
-                     , uuid
-                     , cardpg-core
-                     , cardpg-api
-                     , random
-                     , optics
-                     , mtl
-                     , yaml
-                     , filepath
-                     , beam-core
-                     , beam-postgres
-                     , beam-migrate
-                     , postgresql-simple
-                     , resource-pool
-                     , time
-                     , beam-automigrate
-                     , megaparsec
-                     , directory
+    CardPG.Server.Presenter
+    CardPG.Server.Scenario
+    CardPG.Server.Session
+    CardPG.Server.Types
+
+  hs-source-dirs:  src
+  build-depends:
+    , aeson
+    , aeson-typescript
+    , base               >=4.7 && <5
+    , beam-automigrate
+    , beam-core
+    , beam-migrate
+    , beam-postgres
+    , cardpg-api
+    , cardpg-core
+    , containers
+    , directory
+    , filepath
+    , megaparsec
+    , mtl
+    , optics
+    , postgresql-simple
+    , random
+    , resource-pool
+    , stm
+    , text
+    , time
+    , uuid
+    , websockets
+    , yaml
 
 executable cardpg-server
-  import: project-config
-  main-is:             Main.hs
-  other-modules:       
-  hs-source-dirs:      app
-  build-depends:       base >= 4.7 && < 5
-                     , cardpg-server
-                     , websockets
-                     , text
-                     , aeson
-                     , stm
-                     , containers
-                     , uuid
-                     , cardpg-core
-                     , bytestring
-                     , random
-                     , postgresql-simple
-                     , beam-core
-                     , beam-postgres
-                     , resource-pool
-                     , time
-                     , mtl
+  import:         project-config
+  main-is:        Main.hs
+  other-modules:
+  hs-source-dirs: app
+  build-depends:
+    , aeson
+    , base               >=4.7 && <5
+    , beam-core
+    , beam-postgres
+    , bytestring
+    , cardpg-core
+    , cardpg-server
+    , containers
+    , mtl
+    , postgresql-simple
+    , random
+    , resource-pool
+    , stm
+    , text
+    , time
+    , uuid
+    , websockets
 
 test-suite cardpg-server-test
-  import: project-config
-  type:                exitcode-stdio-1.0
-  main-is:             Main.hs
-  -- cabal-fmt: expand test
-  other-modules:       GameTest
-                     , ScenarioTest
-                     , JsonTest
-                     , InMemoryTest
-  hs-source-dirs:      test
-  build-depends:       base >= 4.7 && < 5
-                     , cardpg-server
-                     , cardpg-core
-                     , cardpg-api
-                     , tasty
-                     , tasty-hunit
-                     , tasty-quickcheck
-                     , random
-                     , containers
-                     , text
-                     , directory
-                     , optics
-                     , mtl
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
 
-                     , yaml
-                     , filepath
-                     , bytestring
-                     , aeson
+  -- cabal-fmt: expand test -Main
+  other-modules:
+    GameTest
+    InMemoryTest
+    JsonTest
+    ScenarioTest
+
+  hs-source-dirs: test
+  build-depends:
+    , aeson
+    , base              >=4.7 && <5
+    , bytestring
+    , cardpg-api
+    , cardpg-core
+    , cardpg-server
+    , containers
+    , directory
+    , filepath
+    , mtl
+    , optics
+    , random
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , yaml

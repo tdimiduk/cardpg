@@ -3,14 +3,12 @@ description: Evaluate a source for "Tangible Materiality" using the Chronicler p
 ---
 
 1. Read the Standards and Persona:
-
    - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
    - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/personas/chronicler.md`
 
 2. Adopt the **Lead Technical Researcher** persona.
 
 3. **Execution Protocol:**
-
    - Critique the source's adherence to **Tangible Materiality**.
    - _Good:_ Discusses physics/biology/mechanics.
    - _Bad:_ Discusses mythology/lineage/symbolism.

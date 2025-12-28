@@ -60,4 +60,6 @@ dist-ssr
 
 data/cards/status/core.reformatted.yaml
 .direnv
+.devenv
 .stamp*
+.pre-commit-config.yaml

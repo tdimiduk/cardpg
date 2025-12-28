@@ -60,7 +60,6 @@ library
     CardPG.Core.RuleDefs
     CardPG.Core.RuleInstances
     CardPG.Core.State
-
     CardPG.Core.TextFmt
     CardPG.Core.Util
 
@@ -69,7 +68,7 @@ test-suite cardpg-core-test
   type:           exitcode-stdio-1.0
   main-is:        Main.hs
 
-  -- cabal-fmt: expand tests
+  -- cabal-fmt: expand tests -Main
   other-modules:
     ArbitraryInstances
     CardPG.Core.LogicTest
