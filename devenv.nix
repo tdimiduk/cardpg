@@ -5,18 +5,8 @@
   env.GREET = "CardPG Environment";
 
   # https://devenv.sh/packages/
-  languages.haskell = {
-    enable = true;
-    package = pkgs.haskell.compiler.ghc9103;
-  };
-
   packages = [
     pkgs.git
-    pkgs.cabal-install
-    pkgs.haskell-language-server
-    pkgs.hlint
-    pkgs.fourmolu
-    pkgs.haskellPackages.cabal-fmt
   ];
 
   languages.javascript = {

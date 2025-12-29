@@ -1,66 +1,84 @@
 {
+  nixConfig = {
+    extra-substituters = [
+      "https://cache.iog.io"
+    ];
+    extra-trusted-public-keys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+    ];
+  };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv/v1.11.2";
-    beam-automigrate = {
-      url = "github:obsidiansystems/beam-automigrate";
+    haskellNix.url = "github:input-output-hk/haskell.nix";
+    nixpkgs.follows = "haskellNix/nixpkgs-unstable";
+    hackage = {
+      url = "github:input-output-hk/hackage.nix";
       flake = false;
     };
+    stackage = {
+      url = "github:input-output-hk/stackage.nix";
+      flake = false;
+    };
+    devenv.url = "github:cachix/devenv/v1.11.2";
   };
 
-  outputs = inputs@{ flake-parts, beam-automigrate, ... }:
+  outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ inputs.devenv.flakeModule ];
-      systems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      systems = [ "x86_64-linux" ];
 
       perSystem = { config, self', inputs', pkgs, system, ... }:
         let
-          # Haskell Overlay
-          haskellOverlay = self: super: {
-            # Use specific GHC version
-            haskell = super.haskell // {
-              packages = super.haskell.packages // {
-                ghc9103 = super.haskell.packages.ghc9103.override {
-                  overrides = hfinal: hprev: {
-                    # Project Packages
-                    cardpg-core = pkgs.haskell.lib.dontCheck (hfinal.callCabal2nix "cardpg-core" ./cardpg-core {});
-                    cardpg-api = pkgs.haskell.lib.dontCheck (hfinal.callCabal2nix "cardpg-api" ./cardpg-api {});
+          # Haskell.nix pkgs
+          hpkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [ inputs.haskellNix.overlay ];
+            config = inputs.haskellNix.config;
+          };
 
-                    # Beam Automigrate from Input
-                    beam-automigrate = pkgs.haskell.lib.doJailbreak (hfinal.callCabal2nix "beam-automigrate" beam-automigrate {});
-
-                    # Game Data Wrapper
-                    cardpg-server = pkgs.haskell.lib.overrideCabal (hfinal.callCabal2nix "cardpg-server" ./cardpg-server {}) (old: {
-                      testToolDepends = (old.testToolDepends or []) ++ [ self'.packages.game-data ];
-                      preCheck = ''
-                        export CARDPG_CARDS_DIR="${self'.packages.game-data}/data/cards"
-                        export CARDPG_SCENARIO_FILE="${self'.packages.game-data}/data/scenarios/starter.yaml"
-                      '';
-                      buildTools = (old.buildTools or []) ++ [ pkgs.makeWrapper ];
-                      postInstall = (old.postInstall or "") + ''
-                         wrapProgram $out/bin/cardpg-server \
-                           --set CARDPG_CARDS_DIR "${self'.packages.game-data}/data/cards" \
-                           --set CARDPG_SCENARIO_FILE "${self'.packages.game-data}/data/scenarios/starter.yaml"
-                      '';
-                    });
-                  };
-                };
+          project = hpkgs.haskell-nix.project {
+            src = hpkgs.haskell-nix.haskellLib.cleanGit {
+              name = "cardpg";
+              src = ./.;
+            };
+            compiler-nix-name = "ghc9103";
+            
+            sha256map = {
+              "https://github.com/obsidiansystems/beam-automigrate.git" = {
+                "3933b82b8affc1192638ab84fd3844991195b9cc" = "0fhwh5cy8h2z6mhkklym09njpw2mgz3ljg1pwp8gyfc46ksf2hrs";
               };
+            };
+
+            # Module overrides if needed
+            modules = [{
+              # Example: fix broken dependencies if any
+            }];
+
+            inputMap = {
+               "https://input-output-hk.github.io/hackage.nix" = inputs.hackage;
+               "https://input-output-hk.github.io/stackage.nix" = inputs.stackage;
             };
           };
 
-          _pkgs = import inputs.nixpkgs {
-             inherit system;
-             overlays = [ haskellOverlay ];
-          };
-          
-          hsPkgs = _pkgs.haskell.packages.ghc9103;
-
         in {
-        
+       
         # Deployable Packages
         packages = {
-          default = pkgs.haskell.lib.justStaticExecutables hsPkgs.cardpg-server;
+          default = self'.packages.cardpg-server-wrapped;
+          
+          # Raw server executable from haskell.nix
+          cardpg-server-raw = project.cardpg-server.components.exes.cardpg-server;
+
+          # Wrapped server with data paths
+          cardpg-server-wrapped = pkgs.runCommand "cardpg-server" {
+             buildInputs = [ pkgs.makeWrapper ];
+          } ''
+             mkdir -p $out/bin
+             cp ${self'.packages.cardpg-server-raw}/bin/cardpg-server $out/bin/
+             
+             wrapProgram $out/bin/cardpg-server \
+               --set CARDPG_CARDS_DIR "${self'.packages.game-data}/data/cards" \
+               --set CARDPG_SCENARIO_FILE "${self'.packages.game-data}/data/scenarios/starter.yaml"
+          '';
           
           game-data = pkgs.runCommand "cardpg-game-data" {} ''
             mkdir -p $out/data/scenarios
@@ -75,7 +93,8 @@
             src = ./vtt-react;
             npmDepsHash = "sha256-4ngCSqVZZYHpWKG9S1WmeIE+oB2uECVuqQYb0eYvDNc=";
             
-            nativeBuildInputs = [ hsPkgs.cardpg-api ]; # Logic for codegen
+            # Use the project's executable for codegen
+            nativeBuildInputs = [ project.cardpg-api.components.exes.codegen ];
 
             preBuild = ''
               cp -r ${./design} design
@@ -84,7 +103,7 @@
               
               echo "Generating types..."
               mkdir -p src/generated
-              ${hsPkgs.cardpg-api}/bin/codegen $(pwd)/src/generated/types.ts
+              codegen $(pwd)/src/generated/types.ts
               ./node_modules/.bin/ts-to-zod src/generated/types.ts src/generated/types.zod.ts --skipValidation
             '';
             
@@ -102,6 +121,21 @@
 
         devenv.shells.default = {
           imports = [ ./devenv.nix ];
+          
+          # Inject project tools
+          packages = [
+            project.tool "cabal" "latest"
+            project.tool "haskell-language-server" "latest"
+            project.tool "hlint" "latest"
+            project.tool "fourmolu" "latest"
+            pkgs.haskellPackages.cabal-fmt
+          ];
+          
+          # Disable default haskell to avoid GHC conflict, we use the one from project
+          languages.haskell.enable = false;
+          
+          # Fix for "devenv was not able to determine the current directory"
+          devenv.root = let src = ./.; in toString src;
         };
       };
     };

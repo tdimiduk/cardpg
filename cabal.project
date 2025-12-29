@@ -9,3 +9,6 @@ source-repository-package
 
 
 allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector
+
+
+constraints: entropy >= 0.4.1.11
