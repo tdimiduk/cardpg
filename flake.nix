@@ -68,6 +68,9 @@
           # Raw server executable from haskell.nix
           cardpg-server-raw = project.cardpg-server.components.exes.cardpg-server;
 
+          # Reflex Client (Native)
+          reflex-client-native = project.cardpg-client-reflex.components.exes.cardpg-client-reflex;
+
           # Wrapped server with data paths
           cardpg-server-wrapped = pkgs.runCommand "cardpg-server" {
              buildInputs = [ pkgs.makeWrapper ];

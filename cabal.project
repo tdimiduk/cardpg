@@ -2,6 +2,7 @@ packages:
   cardpg-core/cardpg-core.cabal
   cardpg-server/cardpg-server.cabal
   cardpg-api/cardpg-api.cabal
+  cardpg-client-reflex/cardpg-client-reflex.cabal
 source-repository-package
   type: git
   location: https://github.com/obsidiansystems/beam-automigrate.git

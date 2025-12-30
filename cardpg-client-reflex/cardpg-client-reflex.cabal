@@ -1,0 +1,21 @@
+cabal-version: 3.4
+name:          cardpg-client-reflex
+version:       0.1.0.0
+synopsis:      Reflex-DOM frontend for CardPG
+license:       MIT
+author:        Antigravity
+maintainer:    antigravity@example.com
+build-type:    Simple
+
+common warnings
+  ghc-options: -Wall
+
+executable cardpg-client-reflex
+  import:           warnings
+  main-is:          Main.hs
+  build-depends:
+    , base
+    , reflex-dom
+
+  hs-source-dirs:   src
+  default-language: GHC2021
