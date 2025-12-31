@@ -66,6 +66,7 @@ data/cards/status/core.reformatted.yaml
 .devenv*
 devenv.local.nix
 devenv.local.yaml
+devenv.lock
 
 # direnv
 .direnv

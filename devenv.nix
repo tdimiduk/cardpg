@@ -7,7 +7,23 @@
   # https://devenv.sh/packages/
   packages = [
     pkgs.git
+    pkgs.rsync
+    pkgs.openssh
   ];
+
+  # Create a persistent GC root to protect the JS cross-compiler from garbage collection
+  scripts.root-ghcjs.exec = ''
+    GC_ROOT="/nix/var/nix/gcroots/per-user/$USER/cardpg-ghcjs"
+    mkdir -p "$(dirname "$GC_ROOT")"
+    echo "Building and rooting JS cross-compiler..."
+    nix build .#js-ghc -o "$GC_ROOT" --print-build-logs
+    echo ""
+    echo "✓ GC root created at: $GC_ROOT"
+    echo "  The JS cross-compiler is now protected from garbage collection."
+    echo ""
+    echo "Verification:"
+    ls -la "$GC_ROOT"
+  '';
 
   languages.javascript = {
     enable = true;
@@ -16,9 +32,24 @@
   };
 
   enterShell = ''
-    echo "Installing frontend dependencies..."
-    cd vtt-react && npm install
-    cd ..
+    # Only install if node_modules is missing or outdated
+    if [ -f vtt-react/package.json ]; then
+      if [ ! -d vtt-react/node_modules ] || \
+         [ vtt-react/package.json -nt vtt-react/node_modules ]; then
+        echo "Installing frontend dependencies..."
+        (cd vtt-react && npm install)
+      fi
+    fi
+
+    # Warn about GC rooting for GHCJS compiler
+    GC_ROOT="/nix/var/nix/gcroots/per-user/$USER/cardpg-ghcjs"
+    if [ ! -L "$GC_ROOT" ]; then
+      echo ""
+      echo "⚠️  GHCJS cross-compiler is NOT GC-protected!"
+      echo "   Run 'root-ghcjs' to prevent garbage collection."
+      echo ""
+    fi
+
     echo "${config.env.GREET}"
   '';
 
@@ -49,79 +80,7 @@
     npm --prefix vtt-react run gen:zod
   '';
 
-  scripts.deploy-prod.exec = ''
-    set -e
-    
-    # Configuration
-    SERVER_HOST="${"$"}{SERVER_HOST:-tgd.me}"
-    ROOT_AT="${"$"}{ROOT_AT:-root@tgd.me}"
-    SERVICE_FILE="deploy/cardpg-service.nix"
-    LAST_SERVICE_FILE=".devenv/state/deploy/cardpg-service.nix.last"
-    
-    # 1. Check for Key
-    if [ -z "$NIX_SIGNING_KEY" ]; then
-      echo "Error: NIX_SIGNING_KEY must be set to deploy"
-      exit 1
-    fi
-    echo "Deploying with key: $NIX_SIGNING_KEY"
-    
-    # 2. Build Package
-    echo "Building release package..."
-    # Build the bundle which includes both server and frontend
-    # This matches the structure expected by the deployment logic
-    nix build .#bundle --print-build-logs
-    PACKAGE=$(readlink -f result)
-    echo "Built package: $PACKAGE"
-    
-    # 3. Sign Package
-    echo "Signing package..."
-    nix store sign -r --key-file "$NIX_SIGNING_KEY" "$PACKAGE"
-    
-    # 4. Copy to server
-    echo "Copying to server..."
-    nix copy --to "ssh://$ROOT_AT" --verbose "$PACKAGE"
-    
-    # 5. Detect change in service file
-    mkdir -p "$(dirname "$LAST_SERVICE_FILE")"
-    CHANGED=0
-    if ! cmp -s "$SERVICE_FILE" "$LAST_SERVICE_FILE"; then
-      CHANGED=1
-    fi
-    
-    FORCE_REBUILD=''${1:-}
-    SHOULD_REBUILD=0
-    if [ "$CHANGED" -eq 1 ] || [ "$FORCE_REBUILD" = "true" ]; then
-      SHOULD_REBUILD=1
-    fi
-    
-    # 6. Update Symlink
-    echo "Updating symlink..."
-    TARGET_LINK="/sites/cardpg.tgd.me"
-    ssh "$ROOT_AT" "mkdir -p /sites"
-    ssh "$ROOT_AT" "ln -sfn $PACKAGE $TARGET_LINK"
-    
-    # Register GC Root
-    GC_ROOT="/nix/var/nix/gcroots/cardpg-live"
-    ssh "$ROOT_AT" "ln -sfn $TARGET_LINK $GC_ROOT"
-    
-    if [ "$SHOULD_REBUILD" -eq 1 ]; then
-      echo "Service changed or rebuild forced. Rebuilding NixOS..."
-      rsync -rav "$SERVICE_FILE" "$ROOT_AT:/etc/nixos/"
-      ssh "$ROOT_AT" "nixos-rebuild switch"
-      cp "$SERVICE_FILE" "$LAST_SERVICE_FILE"
-    else
-      echo "Service file unchanged. Skipping nixos-rebuild."
-    fi
-    
-    # 7. Restart Service
-    echo "Restarting service..."
-    ssh "$ROOT_AT" "systemctl restart cardpg"
-    
-    # 8. Log Deployment
-    GITHASH=$(git rev-parse --verify HEAD)
-    GITMSG=$(git log -1 --pretty=%B)
-    echo "Deployed $GITHASH: $GITMSG"
-  '';
+  scripts.deploy-prod.exec = "./deploy/deploy-prod.sh \"$@\"";
 
   scripts.test-integration.exec = ''
     set -e
@@ -163,7 +122,7 @@
     fourmolu.enable = true;
     hlint.enable = true;
     cabal-fmt.enable = true;
-    
+
     # Frontend
     prettier.enable = true;
     prettier.excludes = [ "^data/" "^design/" ];

@@ -8,8 +8,20 @@ source-repository-package
   location: https://github.com/obsidiansystems/beam-automigrate.git
   tag: 3933b82b8affc1192638ab84fd3844991195b9cc
 
+source-repository-package
+  type: git
+  location: https://github.com/reflex-frp/reflex-dom.git
+  tag: 97f08ae82335b9645ffd9ca89bf1187033265a9f
+  subdir: reflex-dom reflex-dom-core
+
+source-repository-package
+  type: git
+  location: https://github.com/ghcjs/jsaddle.git
+  tag: 0fb7260ad02592546c9f180078d770256fb1f0f6
+  subdir: jsaddle jsaddle-warp jsaddle-wkwebview jsaddle-clib
+
 
 allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector
 
 
-constraints: entropy >= 0.4.1.11
+constraints: entropy >= 0.4.1.11, reflex-dom -webkit2gtk
