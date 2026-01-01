@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Building Reflex client..."
+nix build .#reflex-client-js
+
+echo "Preparing distribution..."
+rm -rf client-dist
+mkdir -p client-dist
+
+# The output is a single node script in result/bin/exe-name
+# We need to find it, copy it, and strip the shebang
+EXE_PATH=$(find result/bin -type f | head -n 1)
+
+if [ -z "$EXE_PATH" ]; then
+  echo "Error: Could not find output executable in result/bin"
+  ls -R result
+  exit 1
+fi
+
+echo "Found output at $EXE_PATH"
+
+# Remove the first line (#!/usr/bin/env node) and save as all.js
+tail -n +2 "$EXE_PATH" > client-dist/all.js
+
+# Generate index.html
+cat > client-dist/index.html <<EOF
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CardPG Reflex Client</title>
+    <script language="javascript" src="all.js" defer></script>
+  </head>
+  <body>
+  </body>
+</html>
+EOF
+
+echo ""
+echo "Serving client at http://localhost:8000"
+echo "Press Ctrl+C to stop"
+python3 -m http.server 8000 --directory client-dist

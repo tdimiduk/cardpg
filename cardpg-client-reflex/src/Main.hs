@@ -15,6 +15,8 @@ main = mainWidgetWithHead headWidget bodyWidget
 
 headWidget :: (MonadWidget t m) => m ()
 headWidget = do
+  el "title" $ text "CardPG Reflex Client"
+  elAttr "meta" ("charset" =: "utf-8") blank
   el "style" $ text appCss
 
 bodyWidget :: (MonadWidget t m) => m ()

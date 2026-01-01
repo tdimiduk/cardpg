@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -e
+
+# Ensure we run from project root
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+# Ensure target directory exists for codegen
+mkdir -p vtt-react/src/generated
+
+echo "Building codegen..."
+cabal build codegen
+
+# Extract binary path (robust way)
+BIN_PATH=$(cabal list-bin codegen)
+
+echo "Running codegen from $BIN_PATH..."
+$BIN_PATH vtt-react/src/generated/types.ts
+
+echo "Formatting and generating Zod schemas..."
+npm --prefix vtt-react run format
+npm --prefix vtt-react run gen:zod

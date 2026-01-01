@@ -20,12 +20,12 @@
       url = "github:input-output-hk/stackage.nix";
       flake = false;
     };
-    devenv.url = "github:cachix/devenv/v1.11.2";
+    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
   };
 
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ inputs.devenv.flakeModule ];
+      imports = [ inputs.pre-commit-hooks.flakeModule ];
       systems = [ "x86_64-linux" ];
 
       perSystem = { config, self', inputs', pkgs, system, ... }:
@@ -164,31 +164,68 @@
             '';
           };
 
-          devenv.shells.default = {
-            imports = [ ./devenv.nix ];
+          # Pre-commit hooks configuration
+          pre-commit.settings.hooks = {
+            fourmolu.enable = true;
+            hlint.enable = true;
+            cabal-fmt.enable = true;
+            prettier.enable = true;
+          };
 
-            # Inject project tools
-            packages = [
-              project.tool
-              "cabal"
-              "latest"
-              project.tool
-              "haskell-language-server"
-              "latest"
-              project.tool
-              "hlint"
-              "latest"
-              project.tool
-              "fourmolu"
-              "latest"
-              pkgs.haskellPackages.cabal-fmt
+          # Development shell using haskell.nix - guarantees correct GHC 9.12
+          devShells.default = project.shellFor {
+            name = "cardpg-dev";
+
+            # Tools built with the project's GHC
+            tools = {
+              cabal = "latest";
+              haskell-language-server = "latest";
+              hlint = "latest";
+              fourmolu = "latest";
+            };
+
+            # Additional packages from nixpkgs (not GHC-dependent)
+            buildInputs = [
+              pkgs.haskellPackages.cabal-fmt  # cabal-fmt doesn't support GHC 9.12 yet
+              pkgs.nodejs
+              pkgs.git
+              pkgs.rsync
+              pkgs.openssh
+              pkgs.python3  # for run-client http server
+              config.pre-commit.settings.package  # pre-commit hooks
             ];
 
-            # Disable default haskell to avoid GHC conflict, we use the one from project
-            languages.haskell.enable = false;
+            # Development shell setup
+            shellHook = ''
+              echo "CardPG Development Shell (GHC 9.12)"
+              
+              # Add project scripts to PATH
+              export PATH="$PWD/scripts:$PATH"
+              
+              # Install pre-commit hooks
+              ${config.pre-commit.settings.installationScript}
+              
+              # npm install if needed
+              if [ -f vtt-react/package.json ]; then
+                if [ ! -d vtt-react/node_modules ] || \
+                   [ vtt-react/package.json -nt vtt-react/node_modules ]; then
+                  echo "Installing frontend dependencies..."
+                  (cd vtt-react && npm install)
+                fi
+              fi
 
-            # Fix for "devenv was not able to determine the current directory"
-            devenv.root = let src = ./.; in toString src;
+              # Warn about GC rooting for GHCJS compiler
+              GC_ROOT="/nix/var/nix/gcroots/per-user/$USER/cardpg-ghcjs"
+              if [ ! -L "$GC_ROOT" ]; then
+                echo ""
+                echo "⚠️  GHCJS cross-compiler is NOT GC-protected!"
+                echo "   Run: root-ghcjs"
+                echo ""
+              fi
+
+              echo ""
+              echo "Available commands: gen-types, deploy-prod, run-client, root-ghcjs"
+            '';
           };
         };
     };

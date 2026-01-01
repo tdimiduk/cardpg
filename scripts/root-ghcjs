@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+GC_ROOT="/nix/var/nix/gcroots/per-user/$USER/cardpg-ghcjs"
+mkdir -p "$(dirname "$GC_ROOT")"
+echo "Building and rooting JS cross-compiler..."
+nix build .#js-ghc -o "$GC_ROOT" --print-build-logs
+echo ""
+echo "✓ GC root created at: $GC_ROOT"
+echo "  The JS cross-compiler is now protected from garbage collection."
+echo ""
+echo "Verification:"
+ls -la "$GC_ROOT"
