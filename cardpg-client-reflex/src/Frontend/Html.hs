@@ -6,7 +6,7 @@ module Frontend.Html
   ) where
 
 import Data.List.NonEmpty (NonEmpty)
-import Data.Text (Text, pack)
+import Data.Text (Text)
 import Data.Vector (Vector)
 
 import Reflex.Dom.Core
@@ -29,9 +29,6 @@ instance (Render a m, Monad m) => Render (Vector a) m where
 
 instance {-# OVERLAPPING #-} (DomBuilder t m) => Render Text m where
   render = text
-
-instance (DomBuilder t m) => Render [Char] m where
-  render = text . pack
 
 instance (Render a m, Render b m, DomBuilder t m) => Render (Either a b) m where
   render (Right a) = render a

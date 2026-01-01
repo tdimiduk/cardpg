@@ -1,37 +1,31 @@
+{-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+{-# OPTIONS_GHC -Wno-type-defaults #-}
 
 module Frontend.Card
   (
   ) where
 
 import Control.Monad (forM_)
-import Data.List.NonEmpty (NonEmpty (..))
-import Data.List.NonEmpty qualified as NE
 import Data.Text (Text)
-import Data.Text qualified as T
-import Optics.Core ((^.))
 
 import Reflex.Dom.Core
 
 import CardPG.Core.Card
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Primitives
-  ( Difficulty (..)
-  , ResourceType (..)
+  ( ResourceType (..)
   , StackPower (..)
-  , Stats (..)
   , getStat
   )
-import CardPG.Core.RichText (Inline (..), RichText (..), unsafeSimpleString)
-import CardPG.Core.RuleDefs
+import CardPG.Core.RichText (Inline (..))
 
 import Frontend.Card.Common (art, inParensLS, tshow)
 import Frontend.Html
 
--- Legacy helper
-asCardText :: Text -> RichText
-asCardText = unsafeSimpleString
+default (Text)
 
 instance (DomBuilder t m) => Render CoreCard m where
   render c = divClass "card" $ do
@@ -66,54 +60,54 @@ instance (DomBuilder t m) => Render Rule m where
     RulePassive x -> render x
 
 instance (DomBuilder t m) => Render AttackDef m where
-  render def = do
+  render d = do
     -- Simple rendering for now, mimicking standard attack line
     el "p" $ do
       text "Attack "
-      render (ColorValue (StackPower def.resistedBy 0 Nothing))
+      render (ColorValue (StackPower d.resistedBy 0 Nothing))
       -- TODO: Render power (source, modifier) nicely
-      text $ ": " <> tshow def.power.modifier
-      forM_ def.effect $ \eff -> do
+      text $ ": " <> tshow d.power.modifier
+      forM_ d.effect $ \eff -> do
         text " "
         render eff
 
 instance (DomBuilder t m) => Render GeneralDef m where
-  render def = do
+  render d = do
     el "p" $ do
-      text $ getRawText def.name
-      maybe blank inParensLS (def.cost)
+      text $ getRawText d.name
+      maybe blank inParensLS (d.cost)
       text ": "
-      render def.effect
+      render d.effect
 
 instance (DomBuilder t m) => Render TaskDef m where
-  render def = do
+  render d = do
     el "p" $ do
-      text $ getRawText def.name
-      case (def.check, def.time) of
+      text $ getRawText d.name
+      case (d.check, d.time) of
         (Just c, Just t) -> text " (" >> render c >> render ", " >> render t >> text ")"
         (Just c, Nothing) -> inParensLS c
         (Nothing, Just t) -> inParensLS t
         (Nothing, Nothing) -> blank
       text ": "
-      render def.effect
+      render d.effect
 
 instance (DomBuilder t m) => Render TriggerDef m where
-  render def = do
+  render d = do
     el "p" $ do
-      text $ "When " <> getRawText def.trigger
+      text $ "When " <> getRawText d.trigger
       text " -> "
-      render def.effect
+      render d.effect
 
 instance (DomBuilder t m) => Render OngoingDef m where
-  render def = do
+  render d = do
     el "p" $ do
-      render def.life
+      render d.life
       text ": "
-      render def.effect
+      render d.effect
 
 instance (DomBuilder t m) => Render PassiveDef m where
-  render def = do
+  render d = do
     el "p" $ do
-      text $ "Passive: " <> tshow def.bonus.modifier
+      text $ "Passive: " <> tshow d.bonus.modifier
 
 -- TODO: Render stack power fully
