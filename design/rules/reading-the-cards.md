@@ -15,14 +15,12 @@ Cards use specific keywords to tell you **when** and **how** they can be used.
 These are used during **Crisis Time** (combat or tense situations). They happen instantly or within seconds.
 
 - **`Attack {Color}: Strength = {Color} (+/- Mod)`**
-
   - _Example:_ `Attack {Red}: Strength = {Red} + 2`
   - **Usage:** Play this card during your turn to attack.
   - **Cost:** You must pay the card's printed Resource Cost (top right).
   - **Effect:** Generates Strength equal to the formula to overcome an enemy's Defense.
 
 - **`Defend {Color}: Strength = {Color} (+/- Mod)`**
-
   - _Example:_ `Defend {Red}: Strength = {Red} + 1`
   - **Usage:** Play this card in response to an attack.
   - **Cost:** You must pay the card's printed Resource Cost.
@@ -50,7 +48,6 @@ These are used during **Adventuring Time** (exploration, downtime, or safe momen
 These rules are always active as long as the card is in play (on the table or in your hand, depending on the card type).
 
 - **`Passive: ...`**
-
   - **Usage:** Always in effect. Usually provides a bonus to stats or armor.
   - _Example:_ `Passive: +1 Defense against Physical attacks.`
 

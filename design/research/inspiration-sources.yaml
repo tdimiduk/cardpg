@@ -5,71 +5,135 @@ document_purpose: >
   inspirational touchstones—including books, films, and other games—this document helps to
   establish a common creative vocabulary for the design team. It is a source of ideas,
   not a book of rules.
-
 ---
-
 inspiration_by_design_goal:
   - goal: "Sources for Combat"
     sources:
       - sub_goal: "For Gritty, Technical Combat"
-        titles: ["The Soulsborne Series & Nioh Series", "Samurai Cinema", "The Witcher Series"]
+        titles:
+          - "The Soulsborne Series & Nioh Series"
+          - "Samurai Cinema"
+          - "The Witcher Series"
       - sub_goal: "For Heroic, High-Powered Combat"
-        titles: ["Exalted", "Final Fantasy Series", "The Wuxia Genre"]
+        titles:
+          - "Exalted"
+          - "Final Fantasy Series"
+          - "The Wuxia Genre"
       - sub_goal: "For Tactical, Team-Based Combat"
-        titles: ["Gloomhaven", "Divinity: Original Sin 2", "Dungeons & Dragons / Pathfinder", "Might and Magic Series"]
+        titles:
+          - "Gloomhaven"
+          - "Divinity: Original Sin 2"
+          - "Dungeons & Dragons / Pathfinder"
+          - "Might and Magic Series"
   - goal: "Sources for Exploration"
     sources:
       - sub_goal: "For Player-Driven Journeys"
-        titles: ["Ironsworn", "The Lord of the Rings", "Red Dead Redemption 2", "Avatar: The Last Airbender", "Torchbearer", "Might and Magic Series"]
+        titles:
+          - "Ironsworn"
+          - "The Lord of the Rings"
+          - "Red Dead Redemption 2"
+          - "Avatar: The Last Airbender"
+          - "Torchbearer"
+          - "Might and Magic Series"
       - sub_goal: "For Non-Combat Problem Solving"
-        titles: ["Mushishi", "Disco Elysium", "Thief: The Dark Project", "Alien (1979)"]
+        titles:
+          - "Mushishi"
+          - "Disco Elysium"
+          - "Thief: The Dark Project"
+          - "Alien (1979)"
       - sub_goal: "For Environmental Storytelling"
-        titles: ["The Soulsborne Series", "Studio Ghibli Films", "Diablo (1997)"]
+        titles:
+          - "The Soulsborne Series"
+          - "Studio Ghibli Films"
+          - "Diablo (1997)"
   - goal: "Sources for Social & Intrigue"
     sources:
       - sub_goal: "For Political & Dynastic Intrigue"
-        titles: ["Crusader Kings", "Dune", "Romance of the Three Kingdoms", "A Song of Ice and Fire"]
+        titles:
+          - "Crusader Kings"
+          - "Dune"
+          - "Romance of the Three Kingdoms"
+          - "A Song of Ice and Fire"
       - sub_goal: "For Personal & Factional Intrigue"
-        titles: ["World of Darkness Games", "Blades in the Dark", "The Tale of Genji", "The Harry Potter Series", "The Thing (1982)"]
+        titles:
+          - "World of Darkness Games"
+          - "Blades in the Dark"
+          - "The Tale of Genji"
+          - "The Harry Potter Series"
+          - "The Thing (1982)"
       - sub_goal: "For Structured Social Conflict"
-        titles: ["Burning Wheel", "Monsterhearts"]
+        titles:
+          - "Burning Wheel"
+          - "Monsterhearts"
   - goal: "Sources for Downtime"
     sources:
       - sub_goal: "For Downtime Activities & Projects"
-        titles: ["Blades in the Dark", "Ars Magica", "Red Dead Redemption 2", "Torchbearer"]
+        titles:
+          - "Blades in the Dark"
+          - "Ars Magica"
+          - "Red Dead Redemption 2"
+          - "Torchbearer"
       - sub_goal: "For Generational Play & Legacy"
-        titles: ["King Arthur Pendragon", "Crusader Kings"]
+        titles:
+          - "King Arthur Pendragon"
+          - "Crusader Kings"
       - sub_goal: "For Faction & Base Building"
-        titles: ["Water Margin", "OSR Stronghold Building rules"]
-
+        titles:
+          - "Water Margin"
+          - "OSR Stronghold Building rules"
 ---
-
 inspiration_by_theme_and_tone:
   - theme: "Gritty & Lethal Tone"
-    titles: ["The Black Company Series", "Darkest Dungeon", "Berserk", "The Soulsborne Series", "Robert E. Howard (Conan the Barbarian)", "Torchbearer", "Diablo (1997)", "Alien (1979)"]
+    titles:
+      - "The Black Company Series"
+      - "Darkest Dungeon"
+      - "Berserk"
+      - "The Soulsborne Series"
+      - "Robert E. Howard (Conan the Barbarian)"
+      - "Torchbearer"
+      - "Diablo (1997)"
+      - "Alien (1979)"
   - theme: "Heroic & High-Powered Tone"
-    titles: ["Exalted", "Final Fantasy Series", "Journey to the West", "The Wuxia Genre", "King Arthur Pendragon"]
+    titles:
+      - "Exalted"
+      - "Final Fantasy Series"
+      - "Journey to the West"
+      - "The Wuxia Genre"
+      - "King Arthur Pendragon"
   - theme: "Kid-Friendly & Whimsical Tone"
-    titles: ["Avatar: The Last Airbender", "The Hobbit", "Studio Ghibli Films", "No Thank You, Evil!", "The Chronicles of Narnia"]
-
+    titles:
+      - "Avatar: The Last Airbender"
+      - "The Hobbit"
+      - "Studio Ghibli Films"
+      - "No Thank You, Evil!"
+      - "The Chronicles of Narnia"
 ---
-
 inspiration_by_game_mechanic:
   - mechanic: "Card & Deck Mechanics"
-    titles: ["Slay the Spire", "Gloomhaven", "Magic: The Gathering", "Library of Ruina", "Arkham Horror: The Card Game"]
+    titles:
+      - "Slay the Spire"
+      - "Gloomhaven"
+      - "Magic: The Gathering"
+      - "Library of Ruina"
+      - "Arkham Horror: The Card Game"
   - mechanic: "Magic Systems"
     sources:
       - sub_mechanic: "For Detailed, Rule-Bound Magic"
-        titles: ["Ars Magica", "Mage: The Ascension"]
+        titles:
+          - "Ars Magica"
+          - "Mage: The Ascension"
       - sub_mechanic: "For Gritty, Consequential Magic"
-        titles: ["The Witcher Series", "Darkest Dungeon"]
+        titles:
+          - "The Witcher Series"
+          - "Darkest Dungeon"
       - sub_mechanic: "For Flexible, Narrative Magic"
-        titles: ["Fate", "Numenera"]
+        titles:
+          - "Fate"
+          - "Numenera"
       - sub_mechanic: "For Thematic & Elemental Magic"
-        titles: ["Avatar: The Last Airbender"]
-
+        titles:
+          - "Avatar: The Last Airbender"
 ---
-
 master_source_index:
   - category: "Literary, Cinematic, & Mythological Sources"
     entries:
@@ -194,7 +258,7 @@ master_source_index:
           - title: "Crusader Kings"
           - title: "Divinity: Original Sin 2"
           - title: "Disco Elysium"
-          - title: Might and Magic Series
+          - title: "Might and Magic Series"
             description: "A classic series known for its party-based, first-person exploration, tactical grid-based combat, and a unique blend of high fantasy and science fiction elements."
       - type: "Immersive Sims"
         sources:
@@ -212,8 +276,7 @@ master_source_index:
         sources:
           - title: "Diablo (1997)"
             description: "A masterclass in establishing a gothic horror tone and a gameplay loop built on resource attrition, forcing a compelling risk/reward choice between pressing forward and retreating to safety."
-
-- category: "Game Design & Theory"
+  - category: "Game Design & Theory"
     entries:
       - type: "Design Blog / Essay"
         sources:

@@ -66,7 +66,13 @@ project_foundation:
       purpose: "The 'Why.' The ultimate authority on the project's creative vision and core philosophies."
       type: "Design Philosophy"
       status: "Canon"
-      tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:pillars-of-play"]
+      tags:
+        [
+          "doc-type:philosophy",
+          "audience:designer-facing",
+          "core-concept:design-vision",
+          "core-concept:pillars-of-play",
+        ]
     - name: "Game Settings"
       id: "game-settings"
       path: "philosophy/game-settings.md"
@@ -74,7 +80,13 @@ project_foundation:
       purpose: "A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences, from grim realism to lighthearted adventure."
       type: "Design Philosophy"
       status: "Canon"
-      tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
+      tags:
+        [
+          "doc-type:philosophy",
+          "audience:designer-facing",
+          "core-concept:design-vision",
+          "core-concept:game-tone",
+        ]
   design_patterns:
     - name: "Design Precepts"
       id: "design-precepts"
@@ -83,7 +95,15 @@ project_foundation:
       purpose: "The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics."
       type: "Design Patterns"
       status: "Canon"
-      tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-patterns", "core-concept:core-mechanic", "core-concept:hand-management", "core-concept:status-cards"]
+      tags:
+        [
+          "doc-type:philosophy",
+          "audience:designer-facing",
+          "core-concept:design-patterns",
+          "core-concept:core-mechanic",
+          "core-concept:hand-management",
+          "core-concept:status-cards",
+        ]
     - name: "Paradigm Shifts"
       id: "paradigm-shifts"
       path: "methodology/paradigm-shifts.md" # <-- New Document
@@ -91,7 +111,12 @@ project_foundation:
       purpose: "An onboarding guide for designers familiar with other TTRPGs, detailing the core assumptions they need to 'un-learn' to design for this system effectively."
       type: "Meta Document"
       status: "Canon"
-      tags: ["doc-type:meta", "audience:designer-facing", "core-concept:design-patterns"]
+      tags:
+        [
+          "doc-type:meta",
+          "audience:designer-facing",
+          "core-concept:design-patterns",
+        ]
   methodology:
     - name: "Documentation Standards"
       id: "documentation-standards"
@@ -135,7 +160,19 @@ game_system_and_rules:
       purpose: "The foundational player-facing rules. The single most important mechanics document."
       type: "Game Rules"
       status: "Canon"
-      tags: ["doc-type:rules", "audience:player-facing", "core-concept:core-mechanic", "core-concept:action-resolution", "core-concept:consequences", "core-concept:fatigue", "core-concept:harm", "pillar:combat", "pillar:exploration", "pillar:social"]
+      tags:
+        [
+          "doc-type:rules",
+          "audience:player-facing",
+          "core-concept:core-mechanic",
+          "core-concept:action-resolution",
+          "core-concept:consequences",
+          "core-concept:fatigue",
+          "core-concept:harm",
+          "pillar:combat",
+          "pillar:exploration",
+          "pillar:social",
+        ]
     - name: "Player's Guide"
       id: "players-guide"
       path: "rules/players-guide.md"
@@ -143,7 +180,14 @@ game_system_and_rules:
       purpose: "A player-facing document for strategic advice, advanced tactics, and detailed examples of play. Complements core-rules.md by providing deeper strategic insights and other elaborations innaproprate for that focused document."
       type: "Player Guide"
       status: "Canon"
-      tags: ["doc-type:guide", "audience:player-facing", "core-concept:strategy", "core-concept:fatigue", "core-concept:hand-management"]
+      tags:
+        [
+          "doc-type:guide",
+          "audience:player-facing",
+          "core-concept:strategy",
+          "core-concept:fatigue",
+          "core-concept:hand-management",
+        ]
     - name: "Gamemaster's Guide"
       id: "gamemasters-guide"
       path: "rules/gamemaster-guide.md"
@@ -151,14 +195,30 @@ game_system_and_rules:
       purpose: "Instructions, best practices, and advanced guidance for running the game and writing adventures."
       type: "GM Procedures"
       status: "Canon"
-      tags: ["doc-type:guide", "audience:gm-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:npc-design", "core-concept:pacing", "core-concept:clocks", "core-concept:fronts", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:disengagement"]
+      tags:
+        [
+          "doc-type:guide",
+          "audience:gm-facing",
+          "core-concept:action-resolution",
+          "core-concept:consequences",
+          "core-concept:npc-design",
+          "core-concept:pacing",
+          "core-concept:clocks",
+          "core-concept:fronts",
+          "pillar:combat",
+          "pillar:exploration",
+          "pillar:social",
+          "pillar:downtime",
+          "core-concept:disengagement",
+        ]
     - name: "Keyword Glossary"
       id: "keyword-glossary"
       path: "rules/keyword-glossary.md"
       source_type: "local_file"
       purpose: "Reference for the keywords in the game"
       status: "Canon"
-      tags: ["doc-type:rules", "audience:player-facing", "core-concept:keywords"]
+      tags:
+        ["doc-type:rules", "audience:player-facing", "core-concept:keywords"]
     - name: "Reading the Cards"
       id: "rules-reading-cards"
       path: "rules/reading-the-cards.md"
@@ -175,7 +235,14 @@ game_system_and_rules:
       purpose: "A extensive lexicon that to guide classifying actions in-game actions into Red, `Yellow`, or Blue."
       type: "Action Lexicon"
       status: "Canon"
-      tags: ["doc-type:content-library", "audience:player-facing", "audience:gm-facing", "core-concept:colors-of-action", "core-concept:action-resolution"]
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:player-facing",
+          "audience:gm-facing",
+          "core-concept:colors-of-action",
+          "core-concept:action-resolution",
+        ]
   modules:
     - name: "Clocks and Fronts"
       id: "module-clocks-and-fronts"
@@ -184,7 +251,15 @@ game_system_and_rules:
       purpose: "Optional rules for dynamic campaign play."
       type: "Game Rules Module"
       status: "Canon"
-      tags: ["doc-type:module", "audience:gm-facing", "pillar:downtime", "core-concept:clocks", "core-concept:fronts", "core-concept:pacing"]
+      tags:
+        [
+          "doc-type:module",
+          "audience:gm-facing",
+          "pillar:downtime",
+          "core-concept:clocks",
+          "core-concept:fronts",
+          "core-concept:pacing",
+        ]
     - name: "Snap Check"
       id: "module-snap-check"
       path: "rules/modules/snap-check.md"
@@ -192,7 +267,16 @@ game_system_and_rules:
       purpose: "Optional rules for passive checks (like perception)."
       type: "Game Rules Module"
       status: "Canon"
-      tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing", "pillar:exploration", "pillar:social", "core-concept:passive-check", "core-concept:perception"]
+      tags:
+        [
+          "doc-type:module",
+          "audience:player-facing",
+          "audience:gm-facing",
+          "pillar:exploration",
+          "pillar:social",
+          "core-concept:passive-check",
+          "core-concept:perception",
+        ]
 
 design_process_and_research:
   inspiration_library:
@@ -203,7 +287,12 @@ design_process_and_research:
       purpose: "A curated library of media (books, games, films) and their key design lessons."
       type: "Inspiration Library"
       status: "Canon"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:inspiration"]
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:inspiration",
+        ]
   factual_bedrock:
     - name: "Verisimilitude Sources"
       id: "verisimilitude-sources"
@@ -212,85 +301,243 @@ design_process_and_research:
       purpose: "A list of historical and scientific sources used to ground the game in casual realism."
       type: "Factual Bedrock"
       status: "Canon"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:verisimilitude", "core-concept:research"]
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:verisimilitude",
+          "core-concept:research",
+        ]
   research_reports:
     - name: "Battlefield Injury Research"
       id: "report-battlefield-injury"
       type: "Research Report"
       status: "Canon"
       purpose: "A detailed analysis of pre-modern battlefield trauma, its functional impacts, and progression. Used for designing injury, death, and healing mechanics."
-      tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:harm", "core-concept:injury", "core-concept:healing", "core-concept:lethality", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/pre-modern_battlefield_injury/report.md", meta_file: "research/reports/pre-modern_battlefield_injury/meta.yaml", prompt_file: "research/reports/pre-modern_battlefield_injury/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "core-concept:harm",
+          "core-concept:injury",
+          "core-concept:healing",
+          "core-concept:lethality",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/pre-modern_battlefield_injury/report.md",
+          meta_file: "research/reports/pre-modern_battlefield_injury/meta.yaml",
+          prompt_file: "research/reports/pre-modern_battlefield_injury/prompt.md",
+        }
     - name: "Decline Under Physical Hardship"
       id: "report-physical-hardship"
       type: "Research Report"
       status: "Canon"
       purpose: "A scientific analysis of how real-world injuries and hardship affect the human body, providing a factual basis for the game's consequence and harm mechanics."
-      tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:hardship", "core-concept:attrition", "core-concept:injury", "core-concept:fatigue", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/functional-decline-under-physical-hardship/report.md", meta_file: "research/reports/functional-decline-under-physical-hardship/meta.yaml", prompt_file: "research/reports/functional-decline-under-physical-hardship/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "core-concept:hardship",
+          "core-concept:attrition",
+          "core-concept:injury",
+          "core-concept:fatigue",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/functional-decline-under-physical-hardship/report.md",
+          meta_file: "research/reports/functional-decline-under-physical-hardship/meta.yaml",
+          prompt_file: "research/reports/functional-decline-under-physical-hardship/prompt.md",
+        }
     - name: "Catastrophic Trauma Timelines"
       id: "report-catastrophic-trauma"
       type: "Research Report"
       status: "Canon"
       purpose: "A quantitative analysis of the physiological timelines of death following catastrophic trauma. Provides a factual basis for designing high-severity consequences and 'dying' states with specific, evidence-based timers."
-      tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:harm", "core-concept:lethality", "core-concept:consequences", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/catastrophic-trauma-timelines/report.md", meta_file: "research/reports/catastrophic-trauma-timelines/meta.yaml", prompt_file: "research/reports/catastrophic-trauma-timelines/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "core-concept:harm",
+          "core-concept:lethality",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/catastrophic-trauma-timelines/report.md",
+          meta_file: "research/reports/catastrophic-trauma-timelines/meta.yaml",
+          prompt_file: "research/reports/catastrophic-trauma-timelines/prompt.md",
+        }
     - name: "The Dynamics of the duel"
       id: "report-dynamics-of-duel"
       type: "Research Report"
       status: "Canon"
       purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:fatigue", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/dynamics-of-the-duel/report.md", meta_file: "research/reports/dynamics-of-the-duel/meta.yaml", prompt_file: "research/reports/dynamics-of-the-duel/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:pacing",
+          "core-concept:tempo",
+          "core-concept:fatigue",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/dynamics-of-the-duel/report.md",
+          meta_file: "research/reports/dynamics-of-the-duel/meta.yaml",
+          prompt_file: "research/reports/dynamics-of-the-duel/prompt.md",
+        }
     - name: "Combat Dynamics Analysis"
       id: "report-combat-dynamics"
       type: "Research Report"
       status: "Canon"
       purpose: "A detailed tactical and mechanical analysis of pre-modern combat. Note: Its data on armor's metabolic cost and mobility penalties has been superseded by the more detailed 'report-combat-locomotion'."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:reach", "core-concept:spacing", "core-concept:armor", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/combat-dynamics-analysis/report.md", meta_file: "research/reports/combat-dynamics-analysis/meta.yaml", prompt_file: "research/reports/combat-dynamics-analysis/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:pacing",
+          "core-concept:tempo",
+          "core-concept:reach",
+          "core-concept:spacing",
+          "core-concept:armor",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/combat-dynamics-analysis/report.md",
+          meta_file: "research/reports/combat-dynamics-analysis/meta.yaml",
+          prompt_file: "research/reports/combat-dynamics-analysis/prompt.md",
+        }
     - name: "Combat Locomotion Analysis"
       id: "report-combat-locomotion"
       type: "Research Report"
       status: "Canon"
       purpose: "A detailed biomechanical analysis of pre-modern combat locomotion. Its findings on movement speeds and metabolic costs are the current authority and supersede data in 'report-combat-dynamics'."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/combat-locomotion/report.md", meta_file: "research/reports/combat-locomotion/meta.yaml", prompt_file: "research/reports/combat-locomotion/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:movement",
+          "core-concept:fatigue",
+          "core-concept:encumbrance",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/combat-locomotion/report.md",
+          meta_file: "research/reports/combat-locomotion/meta.yaml",
+          prompt_file: "research/reports/combat-locomotion/prompt.md",
+        }
     - name: "Combat Action Time Lexicon"
       id: "report-combat-action-time"
       type: "Research Report"
       status: "Canon"
       purpose: "A quantitative lexicon of the time costs, in seconds, for discrete pre-modern combat actions, including ranged attacks, movement, and weapon handling. Used for designing the game's action economy and the pacing of Crisis Time."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:action-resolution", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/combat-action-time/report.md", meta_file: "research/reports/combat-action-time/meta.yaml", prompt_file: "research/reports/combat-action-time/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:pacing",
+          "core-concept:tempo",
+          "core-concept:action-resolution",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/combat-action-time/report.md",
+          meta_file: "research/reports/combat-action-time/meta.yaml",
+          prompt_file: "research/reports/combat-action-time/prompt.md",
+        }
     - name: "Metabolic Cost of Armor"
       id: "report-metabolic-cost-armor"
       type: "Research Report"
       status: "Canon"
       purpose: "A deep-dive research report on the metabolic and biomechanical costs of wearing replica medieval armor, providing quantitative multipliers for plate and maille."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:armor", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/metabolic-cost-of-armor/report.md", meta_file: "research/reports/metabolic-cost-of-armor/meta.yaml", prompt_file: "research/reports/metabolic-cost-of-armor/prompt.yaml" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:armor",
+          "core-concept:encumbrance",
+          "core-concept:fatigue",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/metabolic-cost-of-armor/report.md",
+          meta_file: "research/reports/metabolic-cost-of-armor/meta.yaml",
+          prompt_file: "research/reports/metabolic-cost-of-armor/prompt.yaml",
+        }
     - name: "Exertion and Recovery Dynamics"
       id: "report-exertion-recovery"
       type: "Research Report"
       status: "Canon"
       purpose: "A quantitative analysis of the physiological dynamics of exertion, stress, and multi-stage recovery. Provides a factual basis for designing mechanics related to fatigue, attrition, and the cumulative cost of hardship."
-      tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:fatigue", "core-concept:hardship", "core-concept:attrition", "core-concept:consequences", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/exertion-recovery-dynamics/report.md", meta_file: "research/reports/exertion-recovery-dynamics/meta.yaml", prompt_file: "research/reports/exertion-recovery-dynamics/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "core-concept:fatigue",
+          "core-concept:hardship",
+          "core-concept:attrition",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/exertion-recovery-dynamics/report.md",
+          meta_file: "research/reports/exertion-recovery-dynamics/meta.yaml",
+          prompt_file: "research/reports/exertion-recovery-dynamics/prompt.md",
+        }
     - name: "Positional Advantage"
       id: "report-positional-advantage"
       type: "Research Report"
       status: "Canon"
       purpose: "A biomechanical, perceptual, and cognitive analysis of positional advantage in pre-modern melee. Used for designing mechanics related to facing, angular attacks, and multi-combatant engagements."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:perception", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/positional-advantage/report.md", meta_file: "research/reports/positional-advantage/meta.yaml", prompt_file: "research/reports/positional-advantage/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:movement",
+          "core-concept:spacing",
+          "core-concept:perception",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/positional-advantage/report.md",
+          meta_file: "research/reports/positional-advantage/meta.yaml",
+          prompt_file: "research/reports/positional-advantage/prompt.md",
+        }
     - name: "Armor Effectiveness Research"
       id: "report-armor-effectiveness"
       type: "Research Report"
       status: "Canon"
       purpose: "Research on armor effectiveness against different damage types."
-      tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:armor", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/armor_effectiveness/report.md", meta_file: "research/reports/armor_effectiveness/meta.yaml", prompt_file: "research/reports/armor_effectiveness/prompt.md" }
+      tags:
+        [
+          "doc-type:research-report",
+          "audience:designer-facing",
+          "core-concept:armor",
+          "core-concept:verisimilitude",
+        ]
+      components:
+        {
+          report_file: "research/reports/armor_effectiveness/report.md",
+          meta_file: "research/reports/armor_effectiveness/meta.yaml",
+          prompt_file: "research/reports/armor_effectiveness/prompt.md",
+        }
   research_synthesis:
     - name: "Factual Basis for Design: The Armor Tradeoff"
       id: "synthesis-armor"
@@ -299,7 +546,15 @@ design_process_and_research:
       purpose: "A synthesis of research on historical armor, analyzing the fundamental tradeoff between protection and the physiological costs of exertion (metabolic energy, mobility, and fatigue). It provides a factual basis for designing armor mechanics."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:armor", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "core-concept:armor",
+          "core-concept:encumbrance",
+          "core-concept:fatigue",
+          "core-concept:verisimilitude",
+        ]
     - name: "Factual Basis for Design: Tactical Movement & Positioning"
       id: "synthesis-tactical-movement"
       path: "research/synthesis/tactical-movement.md"
@@ -307,7 +562,16 @@ design_process_and_research:
       purpose: "A synthesis of research on historical combat locomotion, providing a factual basis for designing mechanics related to tactical movement, positioning, disengagement, and retreats. It also establishes the canonical vocabulary for tactical footwork (e.g., Passing Step, Traverse Step) that should be used in all related designs."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:disengagement", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:movement",
+          "core-concept:spacing",
+          "core-concept:disengagement",
+          "core-concept:verisimilitude",
+        ]
     - name: "Factual Basis for Consequences: Physical Harm & Trauma"
       id: "synthesis-physical-harm"
       path: "research/synthesis/physical-harm-and-trauma.md"
@@ -315,7 +579,15 @@ design_process_and_research:
       purpose: "A synthesis of research reports on battlefield injuries and physical hardship, providing a factual basis for designing consequences related to physical harm. It maps real-world conditions to the game's severity levels."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:harm", "core-concept:injury", "core-concept:consequences", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "core-concept:harm",
+          "core-concept:injury",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
     - name: "Factual Basis for Consequences: Hardship & Exertion"
       id: "synthesis-hardship-and-exertion"
       path: "research/synthesis/hardship-and-exertion.md"
@@ -323,7 +595,16 @@ design_process_and_research:
       purpose: "A synthesis of research on the functional impact of physical hardship, providing a factual basis for designing consequences related to athletics, survival, and exploration. It maps real-world conditions to the game's severity levels."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:attrition", "core-concept:consequences", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:exploration",
+          "core-concept:hardship",
+          "core-concept:attrition",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
     - name: "Factual Basis for Consequences: Catastrophic Trauma & Lethality"
       id: "synthesis-catastrophic-trauma"
       path: "research/synthesis/catastrophic-trauma-and-lethality.md"
@@ -331,7 +612,15 @@ design_process_and_research:
       purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:harm", "core-concept:lethality", "core-concept:consequences", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "core-concept:harm",
+          "core-concept:lethality",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
     - name: "Summary: The Dynamics of the duel"
       id: "synthesis-dynamics-of-duel"
       path: "research/synthesis/dynamics-of-duel.md"
@@ -339,7 +628,16 @@ design_process_and_research:
       purpose: "Synthesizes the key findings from 'The Dynamics of the Duel' report into a concise summary of actionable design principles for combat pacing."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:fatigue", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:pacing",
+          "core-concept:tempo",
+          "core-concept:fatigue",
+          "core-concept:verisimilitude",
+        ]
     - name: "Combat Spacing and Reach"
       id: "synthesis-combat-spacing"
       path: "research/synthesis/combat-spacing-and-reach.md"
@@ -347,7 +645,17 @@ design_process_and_research:
       purpose: "A synthesis of research on historical weapon lengths, armor, and fighting styles, providing a factual basis and reference table for modeling a combatant's tactical 'threat bubble' or area of control."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:reach", "core-concept:spacing", "core-concept:movement", "core-concept:tempo", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:reach",
+          "core-concept:spacing",
+          "core-concept:movement",
+          "core-concept:tempo",
+          "core-concept:verisimilitude",
+        ]
     - name: "Combat Timelines and Tempos"
       id: "synthesis-combat-timelines"
       path: "research/synthesis/combat-timelines-and-tempos.md"
@@ -355,7 +663,16 @@ design_process_and_research:
       purpose: "A consolidated synthesis of research on the timescales of combat, providing reference tables for physiological phases, performance degradation, and the duration of discrete tactical actions (e.g., firing a bow, standing from prone)."
       type: "Research Synthesis"
       status: "Canon"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:action-resolution", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:pacing",
+          "core-concept:tempo",
+          "core-concept:action-resolution",
+          "core-concept:verisimilitude",
+        ]
   ideation:
     - name: "Design Sketchbook"
       id: "design-sketchbook"
@@ -397,7 +714,13 @@ design_process_and_research:
       purpose: "A specific research summary on historical armor, used for designing related mechanics."
       type: "Research Synthesis"
       status: "Archived"
-      tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:armor", "core-concept:verisimilitude"]
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "core-concept:armor",
+          "core-concept:verisimilitude",
+        ]
 
 global_registries:
   - name: "Card Catalog"
@@ -427,11 +750,30 @@ game_content_design:
       purpose: "The primary spreadsheet for consequence card design."
       type: "Cards"
       status: "Canon"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards", "core-concept:consequences", "core-concept:harm"]
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:cards",
+          "core-concept:consequences",
+          "core-concept:harm",
+        ]
       sheets:
-        - { name: "combat-general", purpose: "consequences cards for direct combat action or other physical harm.", status: "Canon" }
-        - { name: "task-general", purpose: "Contains consequences for non-combat tasks.", status: "Canon" }
-        - { name: "Conditions", purpose: "Lists ongoing status effects that characters can gain.", status: "Archived" }
+        - {
+            name: "combat-general",
+            purpose: "consequences cards for direct combat action or other physical harm.",
+            status: "Canon",
+          }
+        - {
+            name: "task-general",
+            purpose: "Contains consequences for non-combat tasks.",
+            status: "Canon",
+          }
+        - {
+            name: "Conditions",
+            purpose: "Lists ongoing status effects that characters can gain.",
+            status: "Archived",
+          }
     - name: "Encounters (2025)"
       id: "gdoc-encounters-2025"
       path: "https://docs.google.com/spreadsheets/d/1iIy53SLPovtR9VlpGvmtJ1Q8Vmv0cUyJEx83_0iE9WI/edit?gid=0#gid=0"
@@ -439,7 +781,13 @@ game_content_design:
       purpose: "Adventure decks from a recent playtest campaign, mostly up to date with current rules."
       type: "Cards"
       status: "Canon"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:cards",
+          "core-concept:npc-design",
+        ]
   archived_playtest_content:
     - name: "Cards - v 0.0.4"
       id: "gdoc-cards-v004"
@@ -448,13 +796,39 @@ game_content_design:
       purpose: "Early playtesting character decks. Useful as few-shot examples for card structure."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "type:pc-deck", "audience:designer-facing", "core-concept:cards"]
-      sheets: 
-        - { name: "Swashbuckler", purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.", status: "Archived" }
-        - { name: "Berserker", purpose: "Early playtesting aggressive red. More speculative, we never actually used this.", status: "Archived" }
-        - { name: "Squire", purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot.", status: "Archived" }
-        - { name: "Wizard", purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date.", status: "Archived" }
-        - { name: "shield-fighter", purpose: "Very Early playtesting defensive character.", status: "Archived" }
+      tags:
+        [
+          "doc-type:content-library",
+          "type:pc-deck",
+          "audience:designer-facing",
+          "core-concept:cards",
+        ]
+      sheets:
+        - {
+            name: "Swashbuckler",
+            purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.",
+            status: "Archived",
+          }
+        - {
+            name: "Berserker",
+            purpose: "Early playtesting aggressive red. More speculative, we never actually used this.",
+            status: "Archived",
+          }
+        - {
+            name: "Squire",
+            purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot.",
+            status: "Archived",
+          }
+        - {
+            name: "Wizard",
+            purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date.",
+            status: "Archived",
+          }
+        - {
+            name: "shield-fighter",
+            purpose: "Very Early playtesting defensive character.",
+            status: "Archived",
+          }
     - name: "Monsters - v 0.0.4"
       id: "gdoc-monsters-v004"
       path: "https://docs.google.com/spreadsheets/u/0/d/1_vBIPPSB4B2Y7_icIl3v2-iKZvIJRFEYM6kfAWTLSbQ/edit"
@@ -462,13 +836,40 @@ game_content_design:
       purpose: "Early playtesting monster decks. Useful as few-shot examples for monster design."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "type:monster-deck", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]
+      tags:
+        [
+          "doc-type:content-library",
+          "type:monster-deck",
+          "audience:designer-facing",
+          "core-concept:cards",
+          "core-concept:npc-design",
+        ]
       sheets:
-        - { name: "Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
-        - { name: "Campaign 2025", purpose: "Most recent monsters we have written", status: "Canon" }
-        - { name: "Vin's Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
-        - { name: "Peter's Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
-        - { name: "Kid's Campaign Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful.", status: "Archived" }
+        - {
+            name: "Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+        - {
+            name: "Campaign 2025",
+            purpose: "Most recent monsters we have written",
+            status: "Canon",
+          }
+        - {
+            name: "Vin's Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+        - {
+            name: "Peter's Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+        - {
+            name: "Kid's Campaign Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
     - name: "Kid’s Campaign Characters"
       id: "gdoc-kids-campaign-chars"
       path: "https://docs.google.com/spreadsheets/u/0/d/1kN1ZZoWVXjpMAbjw0x33D6DWrHIYvVjaYM8qC-ViqYI/edit"
@@ -476,11 +877,29 @@ game_content_design:
       purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "type:pc-deck", "audience:designer-facing", "core-concept:cards"]
+      tags:
+        [
+          "doc-type:content-library",
+          "type:pc-deck",
+          "audience:designer-facing",
+          "core-concept:cards",
+        ]
       sheets:
-        - { name: "Vin", purpose: "The oldest of the kids with the most complex characters", status: "Archived" }
-        - { name: "Peter", purpose: "The middle child with intermediate characters", status: "Archived" }
-        - { name: "Luke", purpose: "The youngest of the kids with the simplest characters", status: "Archived" }
+        - {
+            name: "Vin",
+            purpose: "The oldest of the kids with the most complex characters",
+            status: "Archived",
+          }
+        - {
+            name: "Peter",
+            purpose: "The middle child with intermediate characters",
+            status: "Archived",
+          }
+        - {
+            name: "Luke",
+            purpose: "The youngest of the kids with the simplest characters",
+            status: "Archived",
+          }
     - name: "Kids Events"
       id: "gdoc-kids-campaign-events"
       path: "https://docs.google.com/spreadsheets/u/0/d/1XH0j1CNqiYYSc4hoSCuY-9dznPsv3ZiE2cg4UrSk2Q8/edit"
@@ -488,4 +907,9 @@ game_content_design:
       purpose: "Location, Travel and event cards from an early playtest campaign."
       type: "Cards"
       status: "Archived"
-      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards"]
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:cards",
+        ]

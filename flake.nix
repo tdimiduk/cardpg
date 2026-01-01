@@ -89,7 +89,6 @@
           formatter = pkgs.writeShellScriptBin "nixpkgs-fmt" ''
             ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt \
               flake.nix \
-              devenv.nix \
               deploy/*.nix \
               tools/*.nix \
               "$@"
@@ -171,11 +170,17 @@
           };
 
           # Pre-commit hooks configuration
-          pre-commit.settings.hooks = {
-            fourmolu.enable = true;
-            hlint.enable = true;
-            cabal-fmt.enable = true;
-            prettier.enable = true;
+          pre-commit.settings = {
+            excludes = [
+              "data/cards/.*"
+              "design/research/reports/.*"
+            ];
+            hooks = {
+              fourmolu.enable = true;
+              hlint.enable = true;
+              cabal-fmt.enable = true;
+              prettier.enable = true;
+            };
           };
 
           # Development shell using haskell.nix - guarantees correct GHC 9.12

@@ -28,7 +28,6 @@ Refer to the Haskell types (`CoreCard`, `ItemCard`, `NatureCard`) for the exact 
 ### Key Concepts
 
 - **Deck Cards (`CoreCard`)**:
-
   - Must have `stats` (Red/Yellow/Blue).
   - Use `rules` for active abilities (Attack, Defend, Action).
   - Use `cost` for play cost.

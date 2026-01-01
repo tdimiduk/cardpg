@@ -1,9 +1,11 @@
 # Proposal: Standardized Stats Record
 
 ## Objective
+
 Unify the handling of Red/Yellow/Blue resource values across the codebase to remove duplicated case logic and provide standard accessors/lenses.
 
 ## Current State
+
 - `ResourceType` (Red | Yellow | Blue) is defined in `Primitives.hs`.
 - `Stats` { red :: Int, yellow :: Int, blue :: Int } is defined in `Card.hs` (specific to Int).
 - `DefenseDetails` (Wire type) has flattened `red`, `yellow`, `blue` fields.
@@ -12,6 +14,7 @@ Unify the handling of Red/Yellow/Blue resource values across the codebase to rem
 ## Proposed Changes
 
 ### 1. Polymorphic `Stats` Record
+
 Move `Stats` to `CardPG.Core.Primitives` (or kept in `Card`) and make it polymorphic.
 
 ```haskell
@@ -30,6 +33,7 @@ instance FromJSON a => FromJSON (Stats a) where
 ```
 
 ### 2. Standard Accessor & Lenses
+
 Provide a utility to access a field by `ResourceType`.
 
 ```haskell
@@ -48,9 +52,11 @@ statLens Blue   = #blue
 ### 3. Usage Updates
 
 #### `CoreCard`
+
 Update `CoreCardT` to use `Stats Int`.
 
 #### `DefenseDetails` (Wire)
+
 Refactor `DefenseDetails` to group color stats.
 
 ```haskell
@@ -61,9 +67,11 @@ data DefenseDetails = DefenseDetails
   , nextSeverity :: Int
   }
 ```
-*Note: This changes the JSON structure sent to the frontend.*
+
+_Note: This changes the JSON structure sent to the frontend._
 
 #### `SpecialDefend`
+
 Refactor `SpecialDefend` to be `Stats ResourceType`.
 
 ```haskell
@@ -71,6 +79,7 @@ type SpecialDefend = Stats ResourceType
 ```
 
 ### 4. Logic Refactor (`stackPower`, etc.)
+
 Replace case expressions with `getStat`.
 
 ```haskell
@@ -84,17 +93,20 @@ relevantStat c = getStat power.source c.stats
 ```
 
 ## Benefits
+
 - **Typesafety**: Guarantees all 3 colors are handled.
 - **Brevity**: Removes verbose case expressions.
 - **Consistency**: Single source of truth for "color-based value container".
 - **Flexibility**: Can hold `Int`, `ResourceType`, `Text`, etc.
 
 ## Drawbacks / Risks
+
 - **Frontend Breaking Change**: Changing `DefenseDetails` or `CoreCard` JSON structure requires frontend updates.
-    - *Mitigation*: We are already updating frontend types via codegen.
+  - _Mitigation_: We are already updating frontend types via codegen.
 - **Migration Effort**: Need to update all construction sites of `Stats` and `DefenseDetails`.
 
 ## Implementation Plan
+
 1.  **Backend**:
     - Move/Update `Stats` definition.
     - Add `getStat` accessor.
@@ -106,5 +118,6 @@ relevantStat c = getStat power.source c.stats
     - Update `Card` components if `stats` structure changes (it shouldn't if it was already `Stats`).
 
 ## Open Questions
+
 - Should `DefenseDetails` keep flattened fields for backward compatibility, or is nested `values` (or `stats`) preferred?
-    - *Recommendation*: Nest it. It clarifies that these 3 values are the "color stats".
+  - _Recommendation_: Nest it. It clarifies that these 3 values are the "color stats".

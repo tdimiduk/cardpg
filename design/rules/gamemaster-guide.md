@@ -6,9 +6,9 @@ Your role as Gamemaster (GM) is a blend of two crafts: the **Chronicler** and th
 
 This guide is built upon a few core philosophies that are essential to running the game effectively:
 
-* **Fail Forward & Success at a Cost:** The story should never stall. An action doesn't simply pass or fail; it always moves the narrative forward, with the core tension coming from the *cost* of success. Your primary role is to determine that cost.
-* **The Illusion of Lethality:** Danger should feel real and consequential, but character death is a telegraphed, dramatic outcome of a downward spiral, not a random event. Your job is to signal the escalating risk, giving players the agency to react.
-* **Symmetrical Design:** All characters, whether controlled by players or the GM, operate under the same core rules. NPCs have decks, suffer fatigue, and face consequences just like the players do. This creates a fair and consistent world.
+- **Fail Forward & Success at a Cost:** The story should never stall. An action doesn't simply pass or fail; it always moves the narrative forward, with the core tension coming from the _cost_ of success. Your primary role is to determine that cost.
+- **The Illusion of Lethality:** Danger should feel real and consequential, but character death is a telegraphed, dramatic outcome of a downward spiral, not a random event. Your job is to signal the escalating risk, giving players the agency to react.
+- **Symmetrical Design:** All characters, whether controlled by players or the GM, operate under the same core rules. NPCs have decks, suffer fatigue, and face consequences just like the players do. This creates a fair and consistent world.
 
 ## Part 1: Adjudicating the Core Engine
 
@@ -22,19 +22,19 @@ Your most frequent and important task is adjudicating **General Actions**. When 
 
 When a player undertakes a General Action, you provide its `Color` and `Strength`.
 
-* `Color` is determined by the *nature* of the approach. The `Color`s of Action* document provides an extensive list of examples, but your ruling should be guided by the following principles:
-  * `Red` (Force, Endurance, Presence, Passion, Dominion): Red is the `Color` of direct, overwhelming force. It's about solving problems by applying power, whether physical, social, or emotional. Choose Red for actions that involve smashing obstacles, enduring hardship, intimidating others through sheer presence, or making a passionate appeal.
-  * `Yellow` (Speed, Precision, Perception, Cunning, Finesse): `Yellow` is the `Color` of speed, subtlety, and cleverness. It's about exploiting openings and acting before others can react. Choose `Yellow` for actions that rely on reflexes, precise strikes, deft maneuvering, fast-talking, or spotting a hidden detail under pressure.
-  * Blue (Intellect, Planning, Discipline, Lore, Intrigue): Blue is the `Color` of control, knowledge, and strategy. It's about solving problems through superior information and careful planning. Choose Blue for actions that involve deciphering clues, recalling critical lore, executing a multi-step scheme, or exercising immense self-control.
-* `Strength` is determined by the *narrative difficulty* of the task. Use the following table as a baseline, keeping in mind that these numbers are scaled for a typical starting character.
+- `Color` is determined by the _nature_ of the approach. The `Color`s of Action\* document provides an extensive list of examples, but your ruling should be guided by the following principles:
+  - `Red` (Force, Endurance, Presence, Passion, Dominion): Red is the `Color` of direct, overwhelming force. It's about solving problems by applying power, whether physical, social, or emotional. Choose Red for actions that involve smashing obstacles, enduring hardship, intimidating others through sheer presence, or making a passionate appeal.
+  - `Yellow` (Speed, Precision, Perception, Cunning, Finesse): `Yellow` is the `Color` of speed, subtlety, and cleverness. It's about exploiting openings and acting before others can react. Choose `Yellow` for actions that rely on reflexes, precise strikes, deft maneuvering, fast-talking, or spotting a hidden detail under pressure.
+  - Blue (Intellect, Planning, Discipline, Lore, Intrigue): Blue is the `Color` of control, knowledge, and strategy. It's about solving problems through superior information and careful planning. Choose Blue for actions that involve deciphering clues, recalling critical lore, executing a multi-step scheme, or exercising immense self-control.
+- `Strength` is determined by the _narrative difficulty_ of the task. Use the following table as a baseline, keeping in mind that these numbers are scaled for a typical starting character.
 
-| `Strength` | Difficulty | Example & Narrative Context |
-| :---- | :---- | :---- |
-| **5-10** | **Routine** | Climbing a knotted rope. (A starting character should expect to flip 1-3 cards with little risk of consequences). |
-| **15-25** | **Challenging** | Leaping between two close rooftops. (A starting character will likely need to exert themselves and risk minor consequences). |
-| **30-45** | **Difficult** | Picking a well-made lock under pressure. (Pushes a starting character to their limits, making consequences very likely). |
-| **50-75** | **Very Difficult** | Persuading a skeptical city guard captain on a matter of state. (Likely requires a specialist or an experienced character to succeed without severe consequences). |
-| **100+** | **Legendary** | Deciphering a unique, forgotten magical script during a collapsing ritual. (Represents a challenge for a group or a truly legendary hero). |
+| `Strength` | Difficulty         | Example & Narrative Context                                                                                                                                        |
+| :--------- | :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **5-10**   | **Routine**        | Climbing a knotted rope. (A starting character should expect to flip 1-3 cards with little risk of consequences).                                                  |
+| **15-25**  | **Challenging**    | Leaping between two close rooftops. (A starting character will likely need to exert themselves and risk minor consequences).                                       |
+| **30-45**  | **Difficult**      | Picking a well-made lock under pressure. (Pushes a starting character to their limits, making consequences very likely).                                           |
+| **50-75**  | **Very Difficult** | Persuading a skeptical city guard captain on a matter of state. (Likely requires a specialist or an experienced character to succeed without severe consequences). |
+| **100+**   | **Legendary**      | Deciphering a unique, forgotten magical script during a collapsing ritual. (Represents a challenge for a group or a truly legendary hero).                         |
 
 **GM Note:** If a task seems too broad (e.g., "I storm the castle"), you can either ask the player to break it down into a smaller first step or assign a prohibitively high `Strength` (e.g., 200+) to signal its immense, campaign-level difficulty.
 
@@ -44,9 +44,9 @@ The numbers in the difficulty table are derived from a formula that allows you t
 
 Target `Strength` \= (Avg. Card Value) x (Target's `Defense`) x (Target's `Resilience`) x (Desired Severity)
 
-* **Avg. Card Value:** An assumption about the average value a character will get from a card. For a starting character, **3** is a solid baseline.
-* **Target's `Defense` & `Resilience`:** The defensive stats of the character you're designing the challenge *for*.
-* **Desired Severity:** Your key creative decision, representing how far up the consequence ladder you want this single action to push a character (e.g., 0.5 for a minor risk, 1.5 for a serious one).
+- **Avg. Card Value:** An assumption about the average value a character will get from a card. For a starting character, **3** is a solid baseline.
+- **Target's `Defense` & `Resilience`:** The defensive stats of the character you're designing the challenge _for_.
+- **Desired Severity:** Your key creative decision, representing how far up the consequence ladder you want this single action to push a character (e.g., 0.5 for a minor risk, 1.5 for a serious one).
 
 **Worked Example:** You want a "Difficult" challenge for a character with a `Defense` of 3 and `Resilience` of 2\. You decide this should be a "warning shot" (Desired Severity 1.5). The math is: 3 (Avg. Card) x 3 (`Defense`) x 2 (`Resilience`) x 1.5 (Severity) \= **27**.
 
@@ -60,17 +60,17 @@ The General Action system is a powerful tool that scales beyond individual tasks
 
 **Case Study: The Coordinated Retreat**
 
-* **The Situation:** The party has been ambushed by foes in a tactically superior position (e.g., on a high ridge or behind fortified cover). They are pinned down and decide they need to pull back to a more defensible position in an orderly fashion, creating openings for each other as they move. This is not a panicked rout; it is a tactical maneuver.
+- **The Situation:** The party has been ambushed by foes in a tactically superior position (e.g., on a high ridge or behind fortified cover). They are pinned down and decide they need to pull back to a more defensible position in an orderly fashion, creating openings for each other as they move. This is not a panicked rout; it is a tactical maneuver.
 
-* **Your Adjudication:**
-    1.  **Identify the Leader and the Approach:** The party's veteran warrior takes command, directing the others on when to move and when to press the enemy. This is an act of battlefield analysis and coordination. You rule that this is a `Blue` action, representing the intellect and planning required to execute the maneuver. The warrior is the one who will perform the General Action on behalf of the group.
-    2.  **Set the `Strength`:** You determine the base difficulty is **Challenging (`Strength` 25)**. However, the ambushers have a significant advantage and are actively attacking, so you increase the difficulty, setting the final `Strength` at **35**.
-    3.  **Resolve the Action:** The warrior's player resolves the `Blue` 35 General Action as normal, flipping cards to meet the `Strength` and determining consequences based on their `Defense`.
+- **Your Adjudication:**
+  1.  **Identify the Leader and the Approach:** The party's veteran warrior takes command, directing the others on when to move and when to press the enemy. This is an act of battlefield analysis and coordination. You rule that this is a `Blue` action, representing the intellect and planning required to execute the maneuver. The warrior is the one who will perform the General Action on behalf of the group.
+  2.  **Set the `Strength`:** You determine the base difficulty is **Challenging (`Strength` 25)**. However, the ambushers have a significant advantage and are actively attacking, so you increase the difficulty, setting the final `Strength` at **35**.
+  3.  **Resolve the Action:** The warrior's player resolves the `Blue` 35 General Action as normal, flipping cards to meet the `Strength` and determining consequences based on their `Defense`.
 
-* **Interpreting the Outcome:** The consequences (or lack thereof) now apply to the entire group's retreat.
-    * **Success (0 Consequences):** The warrior's plan is flawless. The party executes a perfect fighting withdrawal, with some members harrying the enemy and keeping them occupied while others fall back. They reach the new position safely.
-    * **Success at a Cost (1-2 Consequences):** The retreat is successful, but costly. A consequence card might be `Exposed Position` (the new cover isn't as good as they thought), `Dropped Pack` (in the haste, someone loses vital gear), or a minor `Wound` for one character from a parting shot.
-    * **Success with Severe Complications (3+ Consequences):** The plan goes badly wrong. The consequence might be a `Failure`, resulting in a disorganized rout where the party is separated. Or, a key character might suffer a severe `Injury` like a `Shattered Ankle`, turning the tactical retreat into a desperate rescue mission.
+- **Interpreting the Outcome:** The consequences (or lack thereof) now apply to the entire group's retreat.
+  - **Success (0 Consequences):** The warrior's plan is flawless. The party executes a perfect fighting withdrawal, with some members harrying the enemy and keeping them occupied while others fall back. They reach the new position safely.
+  - **Success at a Cost (1-2 Consequences):** The retreat is successful, but costly. A consequence card might be `Exposed Position` (the new cover isn't as good as they thought), `Dropped Pack` (in the haste, someone loses vital gear), or a minor `Wound` for one character from a parting shot.
+  - **Success with Severe Complications (3+ Consequences):** The plan goes badly wrong. The consequence might be a `Failure`, resulting in a disorganized rout where the party is separated. Or, a key character might suffer a severe `Injury` like a `Shattered Ankle`, turning the tactical retreat into a desperate rescue mission.
 
 By framing the complex group maneuver as a single General Action, you maintain the game's narrative momentum while creating a tense, high-stakes moment that hinges on the designated leader's cool-headedness and planning. This approach can be applied to many group activities, such as "Sneak past the guards," "Sail through the storm," or "Coordinate a diversion."
 
@@ -80,9 +80,9 @@ Players can always perform a Narrative Action if they don't have a specific Acti
 
 Use the printed modifiers on a player's Action Cards as your benchmark. When a player declares a Narrative Action and chooses the cards to pay for it, **consider what a printed Action Card of that same cost would provide**. Use that as your baseline for its effectiveness.
 
-* **The Clever Improvisation:** This is the ideal to encourage. The player describes an action that cleverly uses specific details of the scene, their equipment, or an opponent's situation. (*"I'll kick the brazier over to fill the room with smoke, covering my escape\!"*). This should be rewarded with a modifier comparable to, or even greater than, a printed Action Card of a similar cost.
-* **The Standard Improvisation:** This represents a straightforward, generic attempt that lacks specific tactical nuance. (*"I hit him with my sword." "I try to persuade the guard."*). This is less effective than a trained technique. It should receive a negative modifier, making it noticeably weaker than a typical printed Action Card of the same cost.
-* **The Ill-Suited Improvisation:** This is an action that is narratively plausible but a poor choice for the situation. (*"The knight in full plate armor tries to silently swim across the moat."*). This should receive a significant negative modifier to reflect its inherent ineffectiveness.
+- **The Clever Improvisation:** This is the ideal to encourage. The player describes an action that cleverly uses specific details of the scene, their equipment, or an opponent's situation. (_"I'll kick the brazier over to fill the room with smoke, covering my escape\!"_). This should be rewarded with a modifier comparable to, or even greater than, a printed Action Card of a similar cost.
+- **The Standard Improvisation:** This represents a straightforward, generic attempt that lacks specific tactical nuance. (_"I hit him with my sword." "I try to persuade the guard."_). This is less effective than a trained technique. It should receive a negative modifier, making it noticeably weaker than a typical printed Action Card of the same cost.
+- **The Ill-Suited Improvisation:** This is an action that is narratively plausible but a poor choice for the situation. (_"The knight in full plate armor tries to silently swim across the moat."_). This should receive a significant negative modifier to reflect its inherent ineffectiveness.
 
 **A Note on Repetition:** A clever improvisation is, by its nature, unexpected. If a player attempts the same `Narrative Action` repeatedly in an encounter, its effectiveness should diminish as opponents adapt. As the GM, you should reduce the action's `Strength` modifier on each subsequent use, reflecting this new narrative reality. This encourages tactical variety and makes the world feel more responsive.
 
@@ -96,10 +96,10 @@ To make the world feel dynamic and alive, consider having antagonists enter a sc
 
 #### Designing Mooks & Minions
 
-You can create a wide variety of opponents by manipulating their core math, not by adding new rules. For fragile minions, `Resilience` is your most powerful tool.**
+You can create a wide variety of opponents by manipulating their core math, not by adding new rules. For fragile minions, `Resilience` is your most powerful tool.\*\*
 
-* A character with `Resilience` 1** will suffer a new severity level with every consequence, making them decline rapidly.
-* A character with `Resilience` 0** is taken out by the very first consequence they suffer. This is the perfect tool for creating minions who are threatening on offense but can be dispatched in a single, satisfying blow, minimizing your need to track them.
+- A character with `Resilience` 1\*\* will suffer a new severity level with every consequence, making them decline rapidly.
+- A character with `Resilience` 0\*\* is taken out by the very first consequence they suffer. This is the perfect tool for creating minions who are threatening on offense but can be dispatched in a single, satisfying blow, minimizing your need to track them.
 
 A common pitfall is setting `Defense` too low. Because `Defense` and `Resilience` have a multiplicative effect, a very low `Defense` can make an enemy trivially easy to defeat. A weak goblin with `Defense` 3** and `Resilience` 0** is an excellent template: they can still be a threat while they're active, but a single solid hit will remove them from the fight.
 
@@ -119,19 +119,19 @@ Remember, a player attempting a General Action is assumed to succeed at their im
 
 While both card types represent harm, they operate on different time scales and serve distinct narrative purposes.
 
-* **Status Cards (Wound, Fatigue) track campaign-level attrition.** These cards represent the slow accumulation of wear and tear. They are added to a character's deck, making them less efficient over the long haul. While they can have an impact in a fight, their primary role is to track the lingering costs of adventuring, making downtime and recovery meaningful.
-* **Condition Cards (Armor Sundered, Bleeding Out) create urgent tactical imperatives.** These cards represent specific, critical complications that fundamentally alter the state of the crisis. Their accumulation is what forces a fight to its conclusion. They are not abstract penalties; they are new battlefield realities. A character with Armor Sundered is no longer a frontline combatant; they are a vulnerability. An ally who is Bleeding Out creates a new, desperate objective for the entire party that supersedes all others. These conditions impose harsh **constraints** on what a character can do and create **urgent new situations** that demand an immediate response, forcing the players to adapt to a rapidly deteriorating tactical landscape.
+- **Status Cards (Wound, Fatigue) track campaign-level attrition.** These cards represent the slow accumulation of wear and tear. They are added to a character's deck, making them less efficient over the long haul. While they can have an impact in a fight, their primary role is to track the lingering costs of adventuring, making downtime and recovery meaningful.
+- **Condition Cards (Armor Sundered, Bleeding Out) create urgent tactical imperatives.** These cards represent specific, critical complications that fundamentally alter the state of the crisis. Their accumulation is what forces a fight to its conclusion. They are not abstract penalties; they are new battlefield realities. A character with Armor Sundered is no longer a frontline combatant; they are a vulnerability. An ally who is Bleeding Out creates a new, desperate objective for the entire party that supersedes all others. These conditions impose harsh **constraints** on what a character can do and create **urgent new situations** that demand an immediate response, forcing the players to adapt to a rapidly deteriorating tactical landscape.
 
 #### The Scale of Severity
 
 While specific outcomes are determined by the Consequence Deck in use, each severity level has a clear narrative purpose. Remember that these effects are cumulative; a character suffering from a Severity 3 consequence is likely also dealing with the stacked penalties of multiple Severity 1 and 2 conditions.
 
-* **Severity 1 (Acceptable Costs):** These are the expected hindrances of a fight. They are noticeable penalties that a character can and should expect to push through to achieve victory. They don't necessarily signal a need for a change in strategy, unless they are being handed out far too easily.
-* **Severity 2 (The Turning Point):** These consequences impose significant constraints and should make a character feel vulnerable. A player taking a severity 2 consequence is on notice that they are at risk of being taken out if they take further attacks.
-* **Severity 3 (Taken out)** The resolution of the conflict for that character.
-  * **For Most Enemies:** Do not draw a card. The enemy is simply defeated. Depending on the your preferences and the scene and campaign tone either Invite the player who delivered the blow to describe the finish ("Do you kill him, knock him out, or force him to yield?") or narrate the foe's demise yourself. Remove the model from play immediately to keep the pace high.
+- **Severity 1 (Acceptable Costs):** These are the expected hindrances of a fight. They are noticeable penalties that a character can and should expect to push through to achieve victory. They don't necessarily signal a need for a change in strategy, unless they are being handed out far too easily.
+- **Severity 2 (The Turning Point):** These consequences impose significant constraints and should make a character feel vulnerable. A player taking a severity 2 consequence is on notice that they are at risk of being taken out if they take further attacks.
+- **Severity 3 (Taken out)** The resolution of the conflict for that character.
+  - **For Most Enemies:** Do not draw a card. The enemy is simply defeated. Depending on the your preferences and the scene and campaign tone either Invite the player who delivered the blow to describe the finish ("Do you kill him, knock him out, or force him to yield?") or narrate the foe's demise yourself. Remove the model from play immediately to keep the pace high.
 
-  * **For PCs and Major Villains:** Draw a Severity 3 Consequence Card. This state effectively removes them from the conflict as a combatant, though they may retain limited agency to crawl or speak final words (e.g. `Unconsious`, `Trapped`, `Bleeding out`). They remain in the scene as a narrative focus, often turning into an objective that must be protected or stabilized.
+  - **For PCs and Major Villains:** Draw a Severity 3 Consequence Card. This state effectively removes them from the conflict as a combatant, though they may retain limited agency to crawl or speak final words (e.g. `Unconsious`, `Trapped`, `Bleeding out`). They remain in the scene as a narrative focus, often turning into an objective that must be protected or stabilized.
 
 ## Part 2: Managing the Flow of Play
 
@@ -146,10 +146,10 @@ Adventuring Time is the default mode of play, covering exploration, travel, and 
 During Adventuring Time, players do not hold a hand of cards. Instead, they maintain a **Ready** hand of up to 4 cards, kept face down. This represents their character's general state of alertness and readiness to react to sudden events.
 This vigilance is not free. It represents a low-level but constant exertion. You should call for an **Effort Cycle** periodically to represent this cost.
 
-* **When to Call for an Effort Cycle:** The trigger for an Effort Cycle depends on your GMing style.
-  * **Ad-Hoc Pacing:** For free-flowing adventures, a good guideline is to call for a cycle about once per hour of in-game time when characters are in a state of alert (traveling, on watch, exploring a ruin).
-  * **Structured Pacing (Advanced):** For detailed, high-stakes scenarios like a dungeon crawl, you can use pre-designed **Location Decks** (representing places and obstacles) and **Clock Decks** (representing the passage of time and external pressures). In this style, the draw of a card from the Clock Deck is the trigger for an Effort Cycle, tightly coupling the characters' exertion to the pressures of the environment.
-* **Resolving an Effort Cycle:** Each player discards their entire Ready hand and draws a new one. This simulates the mental fatigue and renewed focus of staying alert.
+- **When to Call for an Effort Cycle:** The trigger for an Effort Cycle depends on your GMing style.
+  - **Ad-Hoc Pacing:** For free-flowing adventures, a good guideline is to call for a cycle about once per hour of in-game time when characters are in a state of alert (traveling, on watch, exploring a ruin).
+  - **Structured Pacing (Advanced):** For detailed, high-stakes scenarios like a dungeon crawl, you can use pre-designed **Location Decks** (representing places and obstacles) and **Clock Decks** (representing the passage of time and external pressures). In this style, the draw of a card from the Clock Deck is the trigger for an Effort Cycle, tightly coupling the characters' exertion to the pressures of the environment.
+- **Resolving an Effort Cycle:** Each player discards their entire Ready hand and draws a new one. This simulates the mental fatigue and renewed focus of staying alert.
 
 ### 2.2. Running Crisis Time
 
@@ -169,25 +169,25 @@ With an experienced group, you can speed up the Resolve Step significantly. Anno
 
 An NPC's hand of cards represents their available tactical options and current focus. Use the way they play these cards to express their intelligence and personality.
 
-* **For simple or aggressive foes (like beasts or mooks):** Play their actions as soon as they can. If a goblin draws an Attack card and has enough cards in hand to play it, it will. This makes them predictable but relentless, and it's fast for you to run. Their nature is expressed through the limited, aggressive actions in their deck.
-* **For cunning or disciplined foes (like a bandit captain or an elite guard):** Use more advanced tactics. A cunning foe might hold onto a powerful Attack card, waiting to draw the right cards to support it for a devastating blow. They might pass a turn to build up their hand, or hold back a key defensive card for a critical moment. This is where you can engage in the same hand-management puzzle as the players, making these NPCs feel like thinking, dangerous opponents.
+- **For simple or aggressive foes (like beasts or mooks):** Play their actions as soon as they can. If a goblin draws an Attack card and has enough cards in hand to play it, it will. This makes them predictable but relentless, and it's fast for you to run. Their nature is expressed through the limited, aggressive actions in their deck.
+- **For cunning or disciplined foes (like a bandit captain or an elite guard):** Use more advanced tactics. A cunning foe might hold onto a powerful Attack card, waiting to draw the right cards to support it for a devastating blow. They might pass a turn to build up their hand, or hold back a key defensive card for a critical moment. This is where you can engage in the same hand-management puzzle as the players, making these NPCs feel like thinking, dangerous opponents.
 
 ### 2.3. The Flexible Resolution Scale: Your Pacing Tool
 
 The choice between resolving a situation with a single General Action or entering full Crisis Time is your most powerful tool for controlling the game's pacing. This is a collaborative decision you should make with your players.
 
-* **Use a General Action...** when the outcome is more important than the process. A scuffle with bar thugs could be a single Red General Action to "Intimidate them into backing down." The risk is consolidated into one roll, making it faster but potentially more swingy.  
-* **Enter Crisis Time...** when the moment-to-moment decisions are the heart of the drama. A duel with a sworn rival, a desperate defense against a monster, or a tense negotiation with a queen are all excellent candidates for Crisis Time. It's more resource-intensive but gives players greater control over the outcome.
+- **Use a General Action...** when the outcome is more important than the process. A scuffle with bar thugs could be a single Red General Action to "Intimidate them into backing down." The risk is consolidated into one roll, making it faster but potentially more swingy.
+- **Enter Crisis Time...** when the moment-to-moment decisions are the heart of the drama. A duel with a sworn rival, a desperate defense against a monster, or a tense negotiation with a queen are all excellent candidates for Crisis Time. It's more resource-intensive but gives players greater control over the outcome.
 
 #### Transitioning Between Modes
 
 Moving between the two modes should be a clear and deliberate act.
 
-* **To Crisis Time:** When a threat appears, the transition is determined by awareness.
-  * **Mutual Awareness:** Both sides spot each other. Everyone picks up their Ready hand and the first round of Crisis Time begins.
-  * **Surprise:** One side has the advantage. The aware characters can take one or more full Crisis Time rounds while their opponents are oblivious and do not draw or act.
-  * **Player-Initiated Crisis:** Any player can declare their intent to enter Crisis Time. This is the primary tool for modeling a character taking time to prepare, focus, or set up an ambush. This preparation comes at a significant cost; the player will draw cards and act as normal for as many rounds as they wish to prepare, but they must still pay the standard cost for ending a crisis (discarding their hand) when their preparation is complete.
-* **Out of Crisis Time:** When the threat is gone or the tension breaks, the crisis ends. Crisis Time represents a state of heightened, second-by-second focus, and the cards in hand are the immediate tactical options relevant to that specific moment. Upon leaving the crisis, all characters must expend any cards remaining in their hands. This represents letting go of those fleeting opportunities as your character's focus shifts to the new situation.
+- **To Crisis Time:** When a threat appears, the transition is determined by awareness.
+  - **Mutual Awareness:** Both sides spot each other. Everyone picks up their Ready hand and the first round of Crisis Time begins.
+  - **Surprise:** One side has the advantage. The aware characters can take one or more full Crisis Time rounds while their opponents are oblivious and do not draw or act.
+  - **Player-Initiated Crisis:** Any player can declare their intent to enter Crisis Time. This is the primary tool for modeling a character taking time to prepare, focus, or set up an ambush. This preparation comes at a significant cost; the player will draw cards and act as normal for as many rounds as they wish to prepare, but they must still pay the standard cost for ending a crisis (discarding their hand) when their preparation is complete.
+- **Out of Crisis Time:** When the threat is gone or the tension breaks, the crisis ends. Crisis Time represents a state of heightened, second-by-second focus, and the cards in hand are the immediate tactical options relevant to that specific moment. Upon leaving the crisis, all characters must expend any cards remaining in their hands. This represents letting go of those fleeting opportunities as your character's focus shifts to the new situation.
 
 #### GM Note on Narrative Scale
 
@@ -202,11 +202,11 @@ This section provides the tools and frameworks for campaign and adventure constr
 A core principle of the game is **Modular Design**. The rules you've read in Parts 1 and 2 represent the core engine—a simple, robust foundation for resolving actions. On top of this foundation, you can add optional modules to add depth and tailor the game's tone to your group's preferences. This is your primary tool for creating a **Curated Experience**.
 Think of your campaign as having a set of dials you can tune:
 
-* **Consequence Decks:** This is the most common and impactful module. The core rules will provide a handful of decks to get you started, likely including a general-purpose "Physical Harm" deck for combat and a "General Actions" deck for other challenges. From there, you can increase the specificity to better match your campaign's tone. You might use decks tailored to each `Color` (Red, `Yellow`, Blue) to reflect the different risks of forceful vs. subtle actions, or get even more granular with decks for specific damage types (Piercing, Fire) or challenge types (Social, Wilderness). The decks you choose to include fundamentally change the game's stakes.
-* **Advanced Rules Modules:** You can add more detailed subsystems for specific pillars of play.
-  * A **Tactical Movement** module could introduce rules for zones, range bands, or a tactical grid to add more depth to positioning in combat.
-  * A **Faction & Intrigue** module might add rules for managing alliances and long-term schemes.
-  * An **Advanced Downtime** module could introduce mechanics for crafting, research, and building a stronghold.
+- **Consequence Decks:** This is the most common and impactful module. The core rules will provide a handful of decks to get you started, likely including a general-purpose "Physical Harm" deck for combat and a "General Actions" deck for other challenges. From there, you can increase the specificity to better match your campaign's tone. You might use decks tailored to each `Color` (Red, `Yellow`, Blue) to reflect the different risks of forceful vs. subtle actions, or get even more granular with decks for specific damage types (Piercing, Fire) or challenge types (Social, Wilderness). The decks you choose to include fundamentally change the game's stakes.
+- **Advanced Rules Modules:** You can add more detailed subsystems for specific pillars of play.
+  - A **Tactical Movement** module could introduce rules for zones, range bands, or a tactical grid to add more depth to positioning in combat.
+  - A **Faction & Intrigue** module might add rules for managing alliances and long-term schemes.
+  - An **Advanced Downtime** module could introduce mechanics for crafting, research, and building a stronghold.
 
 As the GM, you should have a conversation with your players about the kind of game they want to play, and then select the modules that best support that vision.
 
@@ -215,8 +215,8 @@ As the GM, you should have a conversation with your players about the kind of ga
 To make the world feel alive and create meaningful tradeoffs for the players, you need threats that advance and react to the players' actions—or inaction. The **Clocks and Fronts** system is a modular ruleset designed to create this external pressure, ensuring that time is a meaningful resource and that the players' choices have tangible consequences.
 At its heart, the system uses **Clock Decks**—actual decks of cards—to represent the passage of time and the progression of threats.
 
-* **Fronts** are your tool for organizing the major threats in your campaign, such as "The Iron Cult" or "The Wasting Plague." Each Front is represented by its own **Front Clock Deck**. This deck is filled with cards representing the grim portents and escalating actions the threat takes as it advances toward its ultimate goal.  
-* A **Global Clock Deck** models the wider world. During downtime, you'll draw from this deck to introduce flavor, random events, and—most importantly—triggers that instruct you to draw from a specific Front's Clock Deck, causing that threat to advance.
+- **Fronts** are your tool for organizing the major threats in your campaign, such as "The Iron Cult" or "The Wasting Plague." Each Front is represented by its own **Front Clock Deck**. This deck is filled with cards representing the grim portents and escalating actions the threat takes as it advances toward its ultimate goal.
+- A **Global Clock Deck** models the wider world. During downtime, you'll draw from this deck to introduce flavor, random events, and—most importantly—triggers that instruct you to draw from a specific Front's Clock Deck, causing that threat to advance.
 
 Players don't just react to Fronts; they can actively interfere with them. When players succeed in an action that hinders a Front, they add **Interference Cards** to that Front's Clock Deck. This dilutes the deck, pushing the impending doom further away and literally buying the world more time.  
 This system turns the world from a static backdrop into a set of active, evolving challenges. For the complete rules on building and running this system, please refer to the **Game System: Clocks and Fronts** document.
@@ -233,11 +233,11 @@ Your primary goal when designing a series of challenges is to ensure that, acros
 
 A structured challenge is best thought of as two distinct parts: the public information you present to the players, and the private information you keep for yourself. This allows you to provide clear starting points without stifling player creativity.
 
-* **The Challenge Card:** This is the player-facing component. When players encounter the obstacle, you can present this information by reading it aloud or showing them a physical card. It should contain:
+- **The Challenge Card:** This is the player-facing component. When players encounter the obstacle, you can present this information by reading it aloud or showing them a physical card. It should contain:
   1. **The Situation:** An evocative description of the obstacle.
   2. **Obvious Approaches:** One or two clearly defined Tasks that serve as a starting point. This prevents players from getting stuck and encourages them to think of even better solutions.
   3. **A Reference Number:** A small number in the corner (e.g., "Obstacle 2.5") that links to your private notes.
-* **Your GM's Guide:** This is your private set of notes, keyed to the reference numbers on the Challenge Cards. Here, you'll keep:
+- **Your GM's Guide:** This is your private set of notes, keyed to the reference numbers on the Challenge Cards. Here, you'll keep:
   1. **Secret Knowledge:** Details about non-obvious solutions, especially those that reward investigation or specific character knowledge (often Blue-colored approaches).
   2. **Adjudication Notes:** Reminders to yourself on how to handle other creative solutions or specific consequences for failure.
 
@@ -247,18 +247,18 @@ This model is practical for table play and elegantly supports potential GM-less 
 
 Let's revisit the chasm challenge using this framework. The players enter a chamber and you present them with the **Challenge Card**:
 **(Challenge Card 3.1)**
-*A wide, deep chasm splits the ancient hall. A single, crumbling stone bridge, slick with moss, spans the gap. It looks treacherous.*
+_A wide, deep chasm splits the ancient hall. A single, crumbling stone bridge, slick with moss, spans the gap. It looks treacherous._
 
-* **Leap the Chasm:** Task (Red 25)
-* **Cross the Bridge:** Task (`Yellow` 22)
+- **Leap the Chasm:** Task (Red 25)
+- **Cross the Bridge:** Task (`Yellow` 22)
 
 This gives the players two immediate, obvious options. Now, let's look at your private notes in your **GM's Guide**:
 **(GM Guide \- 3.1)**
 
-* **Secret:** A character who examines the bridge's architecture and succeeds on a **Task (Blue 18)** will notice the keystone is an illusion. A nearby statue has a hidden switch that activates a solid, magical bridge.
-* **Adjudication:**
-  * *Rope/Grapple:* The far side has poor anchor points. Add the "Falling Rocks" consequence to the deck for this attempt.
-  * *Climbing:* The walls are sheer and slick. This is a Very Difficult Task (`Strength` 35+).
+- **Secret:** A character who examines the bridge's architecture and succeeds on a **Task (Blue 18)** will notice the keystone is an illusion. A nearby statue has a hidden switch that activates a solid, magical bridge.
+- **Adjudication:**
+  - _Rope/Grapple:_ The far side has poor anchor points. Add the "Falling Rocks" consequence to the deck for this attempt.
+  - _Climbing:_ The walls are sheer and slick. This is a Very Difficult Task (`Strength` 35+).
 
 This structure gives you the best of both worlds: clear, actionable information for the players, and the hidden depth and adjudication support you need to run a dynamic and reactive encounter.
 

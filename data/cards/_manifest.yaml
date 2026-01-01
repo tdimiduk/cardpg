@@ -34,7 +34,7 @@ definitions:
     status: "Pending"
     notes: "Source: Encouters - monster chef.csv"
 
-# Core Rules Definitions
+  # Core Rules Definitions
   - name: "Core Status Cards"
     id: "lib-status-core"
     path: "status/core.yaml"

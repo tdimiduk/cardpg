@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+# formatting via pre-commit (configured in flake.nix)
+pre-commit run --all-files

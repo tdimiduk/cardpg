@@ -8,11 +8,11 @@ This repository contains the complete design landscape of the game, from high-le
 
 The repository is structured into several key directories, each with a distinct purpose.
 
-* **[philosophy](philosophy)**: The "Why." This is the heart of the project's creative vision. Start here to understand the core goals and design patterns that guide all our work.
-* **[rules](rules)**: The "How." This contains the player-facing and GM-facing rulebooks. [Core Rules](rules/core-rules.md) is the foundational document for the entire game system.
-* **[research](research)**: The Factual Bedrock. This directory houses the historical, physiological, and scientific research that grounds our mechanics in "Casual Realism."
-* **[iteration](iteration)**: The Workshop. This is the space for active design, brainstorming, and sketching out new mechanics and ideas.
-* **[ai](ai)**: AI & Automation. This directory contains the operational prompts and instructions for the AI partners who assist in this project. It is meta-documentation about our workflow.
+- **[philosophy](philosophy)**: The "Why." This is the heart of the project's creative vision. Start here to understand the core goals and design patterns that guide all our work.
+- **[rules](rules)**: The "How." This contains the player-facing and GM-facing rulebooks. [Core Rules](rules/core-rules.md) is the foundational document for the entire game system.
+- **[research](research)**: The Factual Bedrock. This directory houses the historical, physiological, and scientific research that grounds our mechanics in "Casual Realism."
+- **[iteration](iteration)**: The Workshop. This is the space for active design, brainstorming, and sketching out new mechanics and ideas.
+- **[ai](ai)**: AI & Automation. This directory contains the operational prompts and instructions for the AI partners who assist in this project. It is meta-documentation about our workflow.
 
 ## For AI Partners (Chronicler & Artificer)
 
