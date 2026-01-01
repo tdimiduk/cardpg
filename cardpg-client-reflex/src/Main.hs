@@ -11,7 +11,9 @@ import Frontend.Html
 import Frontend.Style (appCss)
 
 main :: IO ()
-main = mainWidgetWithHead headWidget bodyWidget
+main = do
+  putStrLn "Starting CardPG Reflex Client..."
+  mainWidgetWithHead headWidget bodyWidget
 
 headWidget :: (MonadWidget t m) => m ()
 headWidget = do

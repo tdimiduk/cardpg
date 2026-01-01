@@ -24,4 +24,11 @@ source-repository-package
 allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector
 
 
-constraints: entropy >= 0.4.1.11, reflex-dom -webkit2gtk
+constraints: entropy >= 0.4.1.11, reflex-dom -webkit2gtk +use-warp
+
+-- Enable parallel package builds
+jobs: $ncpus
+
+package *
+  -- Enable parallel module compilation and optimize GC for many cores
+  ghc-options: +RTS -A128m -n4m -RTS

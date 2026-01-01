@@ -65,7 +65,13 @@
             compiler-nix-name = "ghc9122";
             sha256map = commonSha256map;
             inputMap = commonInputMap;
-            modules = [{ }]; # Placeholder for future overrides
+            modules = [{
+              # Enable parallel compilation for all local packages
+              packages.cardpg-core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.cardpg-api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.cardpg-server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.cardpg-client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+            }];
           };
 
           # Native project (for server, tools, native reflex client)
@@ -182,6 +188,7 @@
               haskell-language-server = "latest";
               hlint = "latest";
               fourmolu = "latest";
+              ghcid = "latest";
             };
 
             # Additional packages from nixpkgs (not GHC-dependent)

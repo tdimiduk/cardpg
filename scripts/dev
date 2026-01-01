@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+
+# Create a temporary ghci config to force a standard prompt
+# This is needed because ghcid expects "ghci> " but our environment provides "λ> "
+GHCI_CONFIG=$(mktemp)
+echo ':set prompt "ghci> "' > "$GHCI_CONFIG"
+trap 'rm -f "$GHCI_CONFIG"' EXIT
+
+# Uses ghcid to run the main application in a repl
+# jsaddle-warp will serve it at localhost:3003 (default)
+ghcid --command "cabal repl exe:cardpg-client-reflex --repl-options=\"-ghci-script $GHCI_CONFIG\"" --test ":main"
