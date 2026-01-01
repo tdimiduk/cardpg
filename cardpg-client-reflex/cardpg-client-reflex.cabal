@@ -33,6 +33,7 @@ executable cardpg-client-reflex
     , base
     , cardpg-core
     , containers
+    , jsaddle-warp
     , optics-core
     , reflex-dom
     , text
