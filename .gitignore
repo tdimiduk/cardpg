@@ -3,6 +3,7 @@
 /vtt-react/src/generated/*.ts
 vtt-react/src/data/generated_cards.json
 *.yaml.reformatted
+cardpg.code-workspace
 
 # Temporary while we are still iterating on the parsers
 data/cards/encounters
@@ -67,6 +68,7 @@ data/cards/status/core.reformatted.yaml
 devenv.local.nix
 devenv.local.yaml
 devenv.lock
+client-dist
 
 # direnv
 .direnv

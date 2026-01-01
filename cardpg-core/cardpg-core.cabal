@@ -38,7 +38,7 @@ library
     , random
     , text
     , transformers
-    , uuid
+    , uuid-types
     , vector
 
   -- cabal-fmt: expand src
@@ -99,6 +99,6 @@ test-suite cardpg-core-test
     , tasty-hunit
     , tasty-quickcheck
     , text
-    , uuid
+    , uuid-types
     , vector
     , yaml

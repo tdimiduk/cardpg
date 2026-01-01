@@ -10,12 +10,38 @@ build-type:    Simple
 common warnings
   ghc-options: -Wall
 
+common project-config
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    DuplicateRecordFields
+    MultiWayIf
+    NoFieldSelectors
+    OverloadedLabels
+    OverloadedRecordDot
+    OverloadedStrings
+    QuantifiedConstraints
+    RecordWildCards
+    RecursiveDo
+    TemplateHaskell
+
 executable cardpg-client-reflex
-  import:           warnings
-  main-is:          Main.hs
+  import:         warnings
+  import:         project-config
+  main-is:        Main.hs
   build-depends:
     , base
+    , cardpg-core
+    , containers
+    , optics-core
     , reflex-dom
+    , text
+    , vector
 
-  hs-source-dirs:   src
-  default-language: GHC2021
+  other-modules:
+    Frontend.Card
+    Frontend.Card.Common
+    Frontend.Html
+    Frontend.Style
+
+  hs-source-dirs: src

@@ -19,7 +19,7 @@ import Data.List (find, partition)
 import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
 
 import Data.Maybe (fromMaybe)
-import Data.UUID (nil)
+import Data.UUID.Types (nil)
 import Optics
 import System.Random (RandomGen, uniform)
 
