@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecursiveDo #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -6,18 +7,13 @@
 module Main where
 
 import Control.Monad (void)
-import Control.Monad.IO.Class (liftIO)
 import Data.Aeson
   ( FromJSON (..)
-  , ToJSON (..)
   , eitherDecode
   , encode
   , genericParseJSON
-  , genericToJSON
   )
-import Data.Aeson.TH (deriveJSON)
 import Data.ByteString.Lazy qualified as BL
-import Data.Either (fromRight)
 import Data.Map (Map)
 import Data.Map qualified as Map
 import Data.Text (Text)
@@ -25,7 +21,13 @@ import Data.Text qualified as T
 import Data.UUID (UUID)
 import Data.UUID.V4 qualified as UUID
 import GHC.Generics (Generic)
-import Reflex.Dom
+import Language.Javascript.JSaddle.WebSockets (jsaddleApp, jsaddleOr)
+import Network.Wai (Application)
+import Network.Wai.Handler.Warp (run)
+import Network.WebSockets (defaultConnectionOptions)
+import Reflex.Dom.Core
+import Reflex.Dom.Main (mainWidgetWithHead)
+import System.Environment (lookupEnv)
 
 import CardPG.Api.Types qualified as Api -- Still used for sending Join
 import CardPG.Core.Card (CardInstance, CoreCard)
@@ -33,7 +35,6 @@ import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ActorId)
 import Frontend.Card ()
 import Frontend.Html (Render (..))
-import Frontend.Style (appCss)
 
 -- Local definition matching server
 data ReflexServerMessage
@@ -54,13 +55,23 @@ main :: IO ()
 main = do
   putStrLn "Starting CardPG Reflex Client..."
   clientId <- UUID.nextRandom
-  mainWidgetWithHead headWidget (bodyWidget clientId)
+  port <- maybe 3003 read <$> lookupEnv "JSADDLE_WARP_PORT"
+  putStrLn $ "Running jsaddle-warp server on port " <> show port
 
-headWidget :: (MonadWidget t m) => m ()
+  -- Build the jsaddle application with websocket support
+  jsaddleApplication <-
+    jsaddleOr
+      defaultConnectionOptions
+      (mainWidgetWithHead headWidget (bodyWidget clientId))
+      jsaddleApp
+
+  run port jsaddleApplication
+
+headWidget :: (DomBuilder t m) => m ()
 headWidget = do
   el "title" $ text "CardPG Reflex Client"
   elAttr "meta" ("charset" =: "utf-8") blank
-  el "style" $ text appCss
+  elAttr "link" ("rel" =: "stylesheet" <> "href" =: "/output.css") blank
 
 bodyWidget :: (MonadWidget t m) => UUID -> m ()
 bodyWidget clientId = do

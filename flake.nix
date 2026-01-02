@@ -218,12 +218,21 @@
               # Install pre-commit hooks
               ${config.pre-commit.settings.installationScript}
               
-              # npm install if needed
+              # npm install if needed for vtt-react
               if [ -f vtt-react/package.json ]; then
                 if [ ! -d vtt-react/node_modules ] || \
                    [ vtt-react/package.json -nt vtt-react/node_modules ]; then
-                  echo "Installing frontend dependencies..."
+                  echo "Installing vtt-react dependencies..."
                   (cd vtt-react && npm install)
+                fi
+              fi
+
+              # npm install if needed for cardpg-client-reflex (Tailwind)
+              if [ -f cardpg-client-reflex/package.json ]; then
+                if [ ! -d cardpg-client-reflex/node_modules ] || \
+                   [ cardpg-client-reflex/package.json -nt cardpg-client-reflex/node_modules ]; then
+                  echo "Installing cardpg-client-reflex dependencies..."
+                  (cd cardpg-client-reflex && npm install)
                 fi
               fi
 

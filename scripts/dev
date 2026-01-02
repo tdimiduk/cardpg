@@ -4,7 +4,7 @@ set -e
 # Run the development environment using process-compose
 # This handles both the server and the client with clean shutdown
 if command -v process-compose &> /dev/null; then
-  process-compose up -f process-compose.yaml
+  process-compose up -f process-compose.yaml "$@"
 else
   echo "Error: process-compose not found. Please reload your direnv/shell."
   exit 1

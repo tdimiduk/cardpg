@@ -1,0 +1,192 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@source "../src/**/*.hs";
+
+/* Custom theme tokens matching vtt-react */
+@theme {
+  --color-slate-850: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+  --color-amber-950: #451a03;
+
+  --background-image-grid-pattern:
+    linear-gradient(to right, #334155 1px, transparent 1px),
+    linear-gradient(to bottom, #334155 1px, transparent 1px);
+}
+
+body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ============================================
+   Card Styling (ported from legacy)
+   ============================================ */
+
+.name {
+  font-size: 10;
+}
+
+.card {
+  width: 56mm;
+  /* height: 83mm; */
+  height: 80mm;
+  border: solid 0.2mm;
+  break-inside: avoid;
+  display: flex;
+  flex-direction: column;
+  padding: 3mm;
+}
+
+.art {
+  flex-grow: 1;
+  height: 33mm;
+}
+
+.art-short {
+  height: 22.849mm;
+}
+
+.cost {
+  display: flex;
+  /* Aim for the aspect ratio of a magic card */
+  min-height: 1.117em;
+  min-width: 0.8em;
+  border-style: solid;
+  border-width: 0.15em;
+  border-radius: 1mm;
+  justify-content: center;
+}
+
+.outline {
+  outline: solid 0.2mm;
+  padding: 1mm;
+  border-radius: 1mm;
+}
+
+.textbox {
+  flex-grow: 1;
+  border: solid 0.2mm;
+  margin-top: 2mm;
+  padding: 1mm;
+  border-radius: 1mm;
+}
+
+.textbox p {
+  margin-top: 0;
+  margin-bottom: 0.1em;
+}
+
+.numbers {
+  display: flex;
+  /* height: 4.5em; */
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 1mm;
+  margin-bottom: 3mm;
+  vertical-align: middle;
+  align-items: center;
+}
+
+.numbers .resource-symbol {
+  width: 1em;
+  height: 1em;
+}
+
+.textbox .resource-symbol {
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.15em;
+}
+
+.textbox .resource-symbol.blue {
+  width: 0.65em;
+  height: 0.65em;
+  margin-right: 0.15em;
+}
+
+.cards {
+  display: flex;
+  flex: 60mm;
+  flex-wrap: wrap;
+}
+
+.red {
+  border-color: red;
+}
+
+.yellow {
+  border-color: gold;
+}
+
+.blue {
+  border-color: blue;
+}
+
+.resource-symbol {
+  display: inline-block;
+  vertical-align: middle;
+  border-style: solid;
+  border-width: 0.15em;
+  border-radius: 0.15em;
+}
+
+textarea {
+  width: 90%;
+  min-height: 40em;
+}
+
+.expand {
+  flex-grow: 1;
+}
+
+.resource-number {
+  vertical-align: middle;
+  text-align: center;
+  width: inherit;
+  height: inherit;
+}
+
+.resource-symbol.blue {
+  transform: rotate(45deg);
+  margin: 0.1em;
+}
+
+.resource-symbol.blue > .resource-number {
+  transform: rotate(-45deg);
+}
+
+.resource-symbol.yellow {
+  border-radius: 50%;
+}
+
+.numbers .resource-symbol.yellow {
+  margin-bottom: 0.1em;
+}
+
+.w-18 {
+  width: 4.5rem;
+}
+
+.h-18 {
+  height: 4.5rem;
+}

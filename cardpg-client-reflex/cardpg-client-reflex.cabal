@@ -41,9 +41,13 @@ executable cardpg-client-reflex
     , optics-core
     , random
     , reflex-dom
+    , reflex-dom-core
     , text
     , uuid
     , vector
+    , wai
+    , warp
+    , websockets
 
   other-modules:
     Frontend.Card
