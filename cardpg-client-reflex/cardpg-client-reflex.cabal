@@ -28,15 +28,21 @@ common project-config
 executable cardpg-client-reflex
   import:         warnings
   import:         project-config
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
   main-is:        Main.hs
   build-depends:
+    , aeson
     , base
+    , bytestring
+    , cardpg-api
     , cardpg-core
     , containers
     , jsaddle-warp
     , optics-core
+    , random
     , reflex-dom
     , text
+    , uuid
     , vector
 
   other-modules:

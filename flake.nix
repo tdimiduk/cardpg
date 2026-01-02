@@ -198,6 +198,7 @@
 
             # Additional packages from nixpkgs (not GHC-dependent)
             buildInputs = [
+              pkgs.process-compose
               pkgs.haskellPackages.cabal-fmt  # cabal-fmt doesn't support GHC 9.12 yet
               pkgs.nodejs
               pkgs.git

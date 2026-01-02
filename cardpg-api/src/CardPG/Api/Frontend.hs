@@ -1,7 +1,7 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE RecordWildCards #-}
 
--- | Frontend types shared with the client.
+-- | Frontend types shared with the react client, do not use this from reflex code.
 -- These types are explicit DTOs (Data Transfer Objects) that decouple
 -- the internal Core representation from the external API contract.
 --

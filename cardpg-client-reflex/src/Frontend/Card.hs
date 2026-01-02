@@ -9,7 +9,8 @@ module Frontend.Card
   ) where
 
 import Control.Monad (forM_)
-import Data.Text (Text)
+
+-- import Data.Text (Text)
 
 import Reflex.Dom.Core
 
@@ -24,8 +25,6 @@ import CardPG.Core.RichText (Inline (..))
 
 import Frontend.Card.Common (art, inParensLS, tshow)
 import Frontend.Html
-
-default (Text)
 
 instance (DomBuilder t m) => Render CoreCard m where
   render c = divClass "card" $ do
@@ -84,12 +83,15 @@ instance (DomBuilder t m) => Render TaskDef m where
     el "p" $ do
       text $ getRawText d.name
       case (d.check, d.time) of
-        (Just c, Just t) -> text " (" >> render c >> render ", " >> render t >> text ")"
+        (Just c, Just t) -> text " (" >> render c >> text ", " >> render t >> text ")"
         (Just c, Nothing) -> inParensLS c
         (Nothing, Just t) -> inParensLS t
         (Nothing, Nothing) -> blank
       text ": "
       render d.effect
+
+instance (DomBuilder t m, Render a m) => Render (Identified id a) m where
+  render (Identified _ content) = render content
 
 instance (DomBuilder t m) => Render TriggerDef m where
   render d = do

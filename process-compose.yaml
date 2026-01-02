@@ -1,0 +1,25 @@
+version: "0.5"
+
+processes:
+  server:
+    command: cabal run exe:cardpg-server-reflex
+    is_restart: true
+    shutdown:
+      signal: 15
+    availability:
+      restart: "on_failure"
+    ready_log_line: "Starting CardPG Reflex Server on port 3004"
+
+  client:
+    # We use ghcid for the client to allow fast reloads
+    # Note: We need a temporary config for ghci prompt
+    command: |
+      GHCI_CONFIG=$(mktemp)
+      echo ':set prompt "ghci> "' > "$GHCI_CONFIG"
+      ghcid --command "cabal repl exe:cardpg-client-reflex --repl-options=\"-ghci-script $GHCI_CONFIG\"" --test ":main"
+    depends_on:
+      server:
+        condition: process_log_ready
+    is_restart: false
+    shutdown:
+      signal: 15

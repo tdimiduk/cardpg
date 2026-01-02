@@ -35,6 +35,7 @@ library
     CardPG.Server.Game
     CardPG.Server.Loader
     CardPG.Server.Presenter
+    CardPG.Server.ReflexConnection
     CardPG.Server.Scenario
     CardPG.Server.Session
     CardPG.Server.Types
@@ -88,6 +89,21 @@ executable cardpg-server
     , text
     , time
     , uuid
+    , websockets
+
+executable cardpg-server-reflex
+  import:         project-config
+  main-is:        ReflexMain.hs
+  hs-source-dirs: app
+  build-depends:
+    , aeson
+    , base               >=4.7 && <5
+    , cardpg-core
+    , cardpg-server
+    , network
+    , postgresql-simple
+    , resource-pool
+    , text
     , websockets
 
 test-suite cardpg-server-test
