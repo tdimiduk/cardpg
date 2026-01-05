@@ -256,6 +256,9 @@
   .flex-wrap {
     flex-wrap: wrap;
   }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
+  }
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -338,8 +341,10 @@ body {
   align-items: center;
 }
 .numbers .resource-symbol {
-  width: 1em;
-  height: 1em;
+  width: 1.5em;
+  height: 1.5em;
+  font-weight: bold;
+  font-size: 1.2em;
 }
 .textbox .resource-symbol {
   width: 0.8em;
@@ -366,10 +371,12 @@ body {
   border-color: blue;
 }
 .resource-symbol {
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   vertical-align: middle;
   border-style: solid;
-  border-width: 0.15em;
+  border-width: 0.18em;
   border-radius: 0.15em;
 }
 textarea {
@@ -378,12 +385,6 @@ textarea {
 }
 .expand {
   flex-grow: 1;
-}
-.resource-number {
-  vertical-align: middle;
-  text-align: center;
-  width: inherit;
-  height: inherit;
 }
 .resource-symbol.blue {
   transform: rotate(45deg);

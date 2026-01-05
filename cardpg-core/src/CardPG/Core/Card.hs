@@ -29,10 +29,11 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId, ResourceType (..), Stats (..))
+import CardPG.Core.Primitives (CardInstanceId)
 import CardPG.Core.RichText
 import CardPG.Core.RuleDefs
 import CardPG.Core.RuleInstances ()
+import CardPG.Core.Stats (ResourceType (..), Stats (..))
 
 data Identified id a = Identified
   { id :: id

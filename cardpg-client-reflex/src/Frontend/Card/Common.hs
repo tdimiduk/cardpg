@@ -4,7 +4,6 @@
 
 module Frontend.Card.Common
   ( art
-  , tshow
   , inParensLS
   ) where
 
@@ -13,14 +12,13 @@ import Data.Text qualified as T
 
 import Reflex.Dom.Core
 
+import CardPG.Core.DSL.Printer (prettyModifier)
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives (Difficulty (..), ResourceType (..), StackPower (..))
 import CardPG.Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (..), getInlines)
+import CardPG.Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
+import CardPG.Core.Util (tshow)
 
 import Frontend.Html
-
-tshow :: (Show a) => a -> Text
-tshow = T.pack . show
 
 resourceSymbol :: (DomBuilder t m) => ResourceType -> Maybe Text -> m ()
 resourceSymbol r t =
@@ -47,7 +45,7 @@ instance (DomBuilder t m) => Render Inline m where
           Just Bold -> el "b" $ text txt
           Just Italic -> el "i" $ text txt
           Just GameKeyword -> el "strong" $ text txt
-  render (ColorValue (StackPower r i _)) = resourceSymbol r (if i > 0 then Just (tshow i) else Nothing)
+  render (ColorValue v) = render v
   render (DifficultyValue d) = render d
   render Break = el "br" $ pure ()
 
@@ -59,3 +57,15 @@ inParensLS a = text " (" >> render a >> text ")"
 
 instance (DomBuilder t m) => Render Difficulty m where
   render d = resourceSymbol (d.attribute) $ Just $ tshow (d.value)
+
+instance (DomBuilder t m) => Render StatValue m where
+  render s = resourceSymbol (s.color) $ Just $ tshow (s.value)
+
+instance (DomBuilder t m) => Render StackPower m where
+  render s = do
+    render s.source
+    text $ " " <> prettyModifier s.modifier
+    maybe blank text s.conditional
+
+instance (DomBuilder t m) => Render ResourceType m where
+  render = flip resourceSymbol Nothing

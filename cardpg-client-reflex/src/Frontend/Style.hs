@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Legacy. We are moving styling to tailwind. Delete this once we are confident we get good enough styling from the tailwind styling.
+
 module Frontend.Style where
 
 import Data.Text (Text)

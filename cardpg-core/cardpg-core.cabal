@@ -44,8 +44,8 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     CardPG.Core.Card
-    CardPG.Core.DSL.Parser
     CardPG.Core.DSL.Printer
+    CardPG.Core.DSL.RuleParser
     CardPG.Core.Hardcoded
     CardPG.Core.Json
     CardPG.Core.Logic.Bot
@@ -55,11 +55,13 @@ library
     CardPG.Core.Logic.Planning
     CardPG.Core.Logic.Status
     CardPG.Core.NonEmptyText
+    CardPG.Core.Parser
     CardPG.Core.Primitives
     CardPG.Core.RichText
     CardPG.Core.RuleDefs
     CardPG.Core.RuleInstances
     CardPG.Core.State
+    CardPG.Core.Stats
     CardPG.Core.TextFmt
     CardPG.Core.Util
 

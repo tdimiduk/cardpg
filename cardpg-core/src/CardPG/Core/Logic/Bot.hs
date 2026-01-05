@@ -13,9 +13,9 @@ import CardPG.Core.Card (CoreCard (..), Identified (..), Stats (..))
 import CardPG.Core.Logic.Combat (getAttackRule)
 import CardPG.Core.Logic.Monad (GameM (..))
 import CardPG.Core.Logic.Planning (passAction, planAction)
-import CardPG.Core.Primitives (ResourceType (..), StackPower (..))
 import CardPG.Core.RuleDefs (AttackDef (..))
 import CardPG.Core.State (ActorState (..), CoreCardState (..))
+import CardPG.Core.Stats (ResourceType (..), StackPower (..))
 
 planBestAvailableAction :: GameM g ()
 planBestAvailableAction = do

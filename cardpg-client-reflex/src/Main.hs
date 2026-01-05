@@ -22,18 +22,18 @@ import Data.UUID (UUID)
 import Data.UUID.V4 qualified as UUID
 import GHC.Generics (Generic)
 import Language.Javascript.JSaddle.WebSockets (jsaddleApp, jsaddleOr)
-import Network.Wai (Application)
 import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
 import Reflex.Dom.Core
-import Reflex.Dom.Main (mainWidgetWithHead)
-import System.Environment (lookupEnv)
+import System.Environment (getArgs, lookupEnv)
 
 import CardPG.Api.Types qualified as Api -- Still used for sending Join
 import CardPG.Core.Card (CardInstance, CoreCard)
 import CardPG.Core.Json (cardpgJsonDef)
 import CardPG.Core.Primitives (ActorId)
+import CardPG.Core.Util (tshow)
 import Frontend.Card ()
+import Frontend.Catalog (catalogWidget)
 import Frontend.Html (Render (..))
 
 -- Local definition matching server
@@ -53,19 +53,31 @@ instance FromJSON ReflexServerMessage where
 
 main :: IO ()
 main = do
-  putStrLn "Starting CardPG Reflex Client..."
-  clientId <- UUID.nextRandom
-  port <- maybe 3003 read <$> lookupEnv "JSADDLE_WARP_PORT"
-  putStrLn $ "Running jsaddle-warp server on port " <> show port
+  args <- getArgs
+  case args of
+    ["--static"] -> do
+      putStrLn "Generating static catalog.html..."
+      (_, body) <- renderStatic catalogWidget
+      let html =
+            "<!DOCTYPE html><html><head><meta charset='utf-8'><title>CardPG Catalog</title><link rel='stylesheet' href='cardpg-client-reflex/static/output.css'></head><body>"
+              <> BL.fromStrict body
+              <> "</body></html>"
+      BL.writeFile "catalog.html" html
+      putStrLn "Done."
+    _ -> do
+      putStrLn "Starting CardPG Reflex Client..."
+      clientId <- UUID.nextRandom
+      port <- maybe 3003 read <$> lookupEnv "JSADDLE_WARP_PORT"
+      putStrLn $ "Running jsaddle-warp server on port " <> show port
 
-  -- Build the jsaddle application with websocket support
-  jsaddleApplication <-
-    jsaddleOr
-      defaultConnectionOptions
-      (mainWidgetWithHead headWidget (bodyWidget clientId))
-      jsaddleApp
+      -- Build the jsaddle application with websocket support
+      jsaddleApplication <-
+        jsaddleOr
+          defaultConnectionOptions
+          (mainWidgetWithHead headWidget (appWidget clientId))
+          jsaddleApp
 
-  run port jsaddleApplication
+      run port jsaddleApplication
 
 headWidget :: (DomBuilder t m) => m ()
 headWidget = do
@@ -75,10 +87,17 @@ headWidget = do
 
 bodyWidget :: (MonadWidget t m) => UUID -> m ()
 bodyWidget clientId = do
+  clickEvt <- button "Toggle Catalog Mode"
+  isCatalog <- toggle False clickEvt
+  el "hr" blank
+  dyn_ $ ffor isCatalog $ \case
+    True -> catalogWidget
+    False -> appWidget clientId
+
+appWidget :: (MonadWidget t m) => UUID -> m ()
+appWidget clientId = do
   let
     wsUrl = "ws://localhost:3004/api?clientId=" <> T.pack (show clientId) <> "&name=ReflexReflex"
-
-  el "h1" $ text "Websocket Hand Spike"
 
   rec let
         -- Send Join message immediately on open using Api types for compatibility with input parser
@@ -112,7 +131,6 @@ bodyWidget clientId = do
   el "h2" $ text "Cards in Hand"
 
   -- Render a section for each actor found
-  let tshow = T.pack . show
   void $ listWithKey handsMapDyn $ \actorId cardsDyn -> do
     el "h3" $ text $ "Actor: " <> tshow actorId
     elClass "div" "hand-container" $ do

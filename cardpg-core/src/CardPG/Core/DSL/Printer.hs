@@ -1,6 +1,11 @@
-module CardPG.Core.DSL.Printer (prettyRule, richToString) where
+module CardPG.Core.DSL.Printer (prettyRule, richToString, prettyModifier) where
 
-import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
+import Data.List.NonEmpty qualified as NE
+import Data.Maybe (catMaybes)
+import Data.Text (Text)
+import Data.Text qualified as T
+
+import CardPG.Core.NonEmptyText (NonEmptyText, getRawText)
 import CardPG.Core.RichText
   ( Inline (..)
   , RichText
@@ -17,13 +22,8 @@ import CardPG.Core.RuleDefs
   , TaskDef (..)
   , TriggerDef (..)
   )
-
-import Data.List.NonEmpty qualified as NE
-import Data.Maybe (catMaybes)
-import Data.Text (Text)
-import Data.Text qualified as T
-
-import CardPG.Core.NonEmptyText (NonEmptyText, getRawText)
+import CardPG.Core.Stats (Difficulty (..), ResourceType (..), StatValue (..))
+import CardPG.Core.Util (tshow)
 
 effectArrow :: Text
 effectArrow = "->"
@@ -95,6 +95,7 @@ prettyConditional (Just c) = " " <> c
 
 prettyModifier :: Int -> Text
 prettyModifier n
+  | n == 0 = ""
   | n >= 0 = "+ " <> T.pack (show n)
   | otherwise = "- " <> T.pack (show (abs n))
 
@@ -108,11 +109,14 @@ prettyExtra (Just rt) = " -> " <> richToString rt
 richToString :: RichText -> Text
 richToString = T.concat . map inlineToString . NE.toList . getInlines
 
+prettyStatValue :: StatValue -> Text
+prettyStatValue s = "{" <> tshow s.color <> ":" <> tshow s.value <> "}"
+
 inlineToString :: Inline -> Text
 inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getRawText content
 inlineToString (TextRun (Just Italic) content) = wrapped "*" $ getRawText content
 inlineToString (TextRun (Just GameKeyword) content) = wrapped "`" $ getRawText content
 inlineToString (TextRun _ content) = getRawText content
-inlineToString (ColorValue power) = prettyPower power
+inlineToString (ColorValue power) = prettyStatValue power
 inlineToString (DifficultyValue diff) = prettyDifficulty diff
 inlineToString Break = "\n"

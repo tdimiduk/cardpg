@@ -21,7 +21,7 @@ import GHC.Generics (Generic)
 
 import CardPG.Core.Json
 import CardPG.Core.NonEmptyText (NonEmptyText, getRawText, mkNonEmptyText, unsafeNonEmptyText)
-import CardPG.Core.Primitives (Difficulty, StackPower (..))
+import CardPG.Core.Stats (Difficulty, StackPower (..), StatValue)
 
 -- | 1. The Token Stream
 
@@ -49,7 +49,7 @@ data Inline
       , content :: NonEmptyText
       }
   | ColorValue
-      { value :: StackPower
+      { value :: StatValue
       }
   | DifficultyValue
       { difficulty :: Difficulty

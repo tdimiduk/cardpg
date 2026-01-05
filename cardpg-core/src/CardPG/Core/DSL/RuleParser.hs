@@ -1,22 +1,17 @@
-module CardPG.Core.DSL.Parser (parseRule) where
+module CardPG.Core.DSL.RuleParser (parseRule) where
 
 import Control.Applicative (optional, some, (<|>))
 import Control.Monad (void)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 
-import Data.Void (Void)
 import Text.Megaparsec
-  ( Parsec
-  , between
+  ( between
   , choice
   , eof
-  , errorBundlePretty
   , lookAhead
   , notFollowedBy
-  , parse
   , sepBy1
-  , takeWhile1P
   , takeWhileP
   , try
   )
@@ -29,7 +24,7 @@ import CardPG.Core.NonEmptyText
   , takeWhilePNonEmptyStripped
   , unsafeNonEmptyText
   )
-import CardPG.Core.Primitives (Difficulty (..), ResourceType (..))
+import CardPG.Core.Parser (Parser, basicParse, hspace, hspace1)
 import CardPG.Core.RichText (Inline (..), RichText, StackPower (..), TextStyle (..), mkRichText)
 import CardPG.Core.RuleDefs
   ( AttackDef (..)
@@ -40,13 +35,10 @@ import CardPG.Core.RuleDefs
   , TaskDef (..)
   , TriggerDef (..)
   )
-
-type Parser = Parsec Void Text
+import CardPG.Core.Stats (Difficulty (..), ResourceType (..), parseStatValue)
 
 parseRule :: Text -> Either String Rule
-parseRule t = case parse ruleParser "" t of
-  Left err -> Left $ errorBundlePretty err
-  Right r -> Right r
+parseRule = basicParse ruleParser
 
 ruleParser :: Parser Rule
 ruleParser =
@@ -207,9 +199,6 @@ separatorParser =
       , hspace
       ]
 
-hspace :: Parser ()
-hspace = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
-
 -- Rich Text Parser
 richTextParser :: Parser RichText
 richTextParser = richTextParserWith []
@@ -267,7 +256,7 @@ colorValueParser = do
   -- Lookahead to ensure we are parsing something that looks like a resource symbol
   -- to avoid consuming normal text that starts with '{' but isn't a resource.
   _ <- lookAhead (char '{')
-  (DifficultyValue <$> try difficultyParser) <|> (ColorValue <$> stackPowerParser)
+  (DifficultyValue <$> try difficultyParser) <|> (ColorValue <$> parseStatValue)
 
 textParserStopAt :: [Char] -> Parser Inline
 textParserStopAt stopChars =
@@ -293,14 +282,17 @@ resourceSymbol =
     , legacyResource
     ]
 
+canonicalResourceName :: Parser ResourceType
+canonicalResourceName =
+  choice
+    [ Red <$ string' "Red"
+    , Yellow <$ string' "Yellow"
+    , Blue <$ string' "Blue"
+    ]
+
 canonicalResource :: Parser ResourceType
 canonicalResource =
-  between (char '{') (char '}') $
-    choice
-      [ Red <$ string' "Red"
-      , Yellow <$ string' "Yellow"
-      , Blue <$ string' "Blue"
-      ]
+  between (char '{') (char '}') canonicalResourceName
 
 shorthandResource :: Parser ResourceType
 shorthandResource =
@@ -318,9 +310,6 @@ legacyResource =
       , Yellow <$ char 'y'
       , Blue <$ char 'z'
       ]
-
-hspace1 :: Parser ()
-hspace1 = void $ takeWhile1P Nothing (\c -> c == ' ' || c == '\t')
 
 stackPowerParser :: Parser StackPower
 stackPowerParser = do

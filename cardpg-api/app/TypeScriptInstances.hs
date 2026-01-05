@@ -14,21 +14,6 @@ import Data.Text (Text)
 import GHC.Generics (Generic)
 import Language.Haskell.TH (Type (AppT, ConT, ListT), mkName)
 
-import CardPG.Core.Card qualified as CC
-import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
-import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives
-  ( ActorId
-  , CardInstanceId
-  , CardLocation (..)
-  , Difficulty
-  , EquipSlot (..)
-  , ResourceType (..)
-  , StackPower
-  , TargetId
-  )
-import CardPG.Core.RichText (Block, Inline, RichText, TextStyle)
-
 import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Api.Types
   ( ActorGameEvent (..)
@@ -42,7 +27,18 @@ import CardPG.Api.Types
   , StateUpdate (..)
   , Token
   )
+import CardPG.Core.Card qualified as CC
+import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
+import CardPG.Core.NonEmptyText (NonEmptyText)
+import CardPG.Core.Primitives
+  ( ActorId
+  , CardInstanceId
+  , CardLocation (..)
+  , EquipSlot (..)
+  , TargetId
+  )
 import CardPG.Core.Primitives qualified as P
+import CardPG.Core.RichText (Block, Inline, RichText, TextStyle)
 import CardPG.Core.RuleDefs
 import CardPG.Core.State
   ( ActiveChallenge (..)
@@ -54,6 +50,8 @@ import CardPG.Core.State
   , SpatialState (..)
   , TableCard (..)
   )
+import CardPG.Core.Stats (Difficulty, ResourceType, StackPower)
+import CardPG.Core.Stats qualified as S
 import DeriveSpecialized
   ( deriveSpecializedInstance
   , specializeType
@@ -81,12 +79,13 @@ instance TypeScript NonEmptyText where
   getTypeScriptType _ = "string"
 
 -- Basic Types
-$(deriveTypeScript cardpgJsonDef ''ResourceType)
-$(deriveTypeScript cardpgJsonDef ''StackPower)
+$(deriveTypeScript cardpgJsonDef ''S.ResourceType)
+$(deriveTypeScript cardpgJsonDef ''S.StackPower)
+$(deriveTypeScript cardpgJsonDef ''S.StatValue)
 
 $(deriveTypeScript (cardpgJsonOptions "Location") ''CardLocation)
 
-$(deriveTypeScript cardpgJsonDef ''Difficulty)
+$(deriveTypeScript cardpgJsonDef ''S.Difficulty)
 $(deriveTypeScript cardpgJsonDef ''EquipSlot)
 
 -- RichText
@@ -106,8 +105,8 @@ $(deriveTypeScript cardpgJsonDef ''Phase)
 -- These create concrete Haskell types from parameterized ones for TypeScript generation.
 -- Card types (CoreCard, ItemCard, etc.) are handled by Frontend.* types instead.
 $( do
-     d_stats <- specializeType ''P.Stats [ConT ''Int] "Stats"
-     d_specDef <- specializeType ''P.Stats [ConT ''P.ResourceType] "SpecialDefend"
+     d_stats <- specializeType ''S.Stats [ConT ''Int] "Stats"
+     d_specDef <- specializeType ''S.Stats [ConT ''S.ResourceType] "SpecialDefend"
 
      return
        ( d_stats
@@ -128,9 +127,9 @@ $( do
      i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
 
      -- Stats
-     i_stats <- deriveSpecializedInstance cardpgJsonDef ''Stats ''P.Stats [ConT ''Int]
+     i_stats <- deriveSpecializedInstance cardpgJsonDef ''Stats ''S.Stats [ConT ''Int]
      i_specDef <-
-       deriveSpecializedInstance cardpgJsonDef ''SpecialDefend ''P.Stats [ConT ''P.ResourceType]
+       deriveSpecializedInstance cardpgJsonDef ''SpecialDefend ''S.Stats [ConT ''S.ResourceType]
 
      -- Frontend Card Types
      i_rule <- deriveTypeScript (cardpgJsonOptions "Rule") ''Frontend.Rule

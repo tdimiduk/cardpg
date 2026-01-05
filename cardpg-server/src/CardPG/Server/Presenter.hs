@@ -20,7 +20,7 @@ import CardPG.Core.Card (Identified (..))
 import CardPG.Core.Card qualified as CoreCard
 import CardPG.Core.Logic.Combat (computeDefenseDetails)
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives (ActorId (..), ResourceType (..), Stats (..))
+import CardPG.Core.Primitives (ActorId (..))
 import CardPG.Core.State
   ( ActiveChallenge (..)
   , ActiveDefense (..)
@@ -28,6 +28,7 @@ import CardPG.Core.State
   , CoreCardState (..)
   , RevealedEffect (..)
   )
+import CardPG.Core.Stats (ResourceType (..), Stats (..))
 import CardPG.Server.Types
   ( GameState (..)
   , LogEntry (..)

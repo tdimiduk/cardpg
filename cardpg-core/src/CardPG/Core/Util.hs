@@ -3,11 +3,13 @@
 module CardPG.Core.Util
   ( shuffleList
   , shuffleListM
+  , tshow
   ) where
 
 import Control.Monad (replicateM)
 import Control.Monad.State (MonadState, state)
 import Data.List (sortOn)
+import Data.Text qualified as T
 import System.Random (Random (..), RandomGen)
 
 -- | Helper to shuffle a list
@@ -32,3 +34,6 @@ splitGenList n g =
   let (i, g1) = random g
       (is, g2) = splitGenList (n - 1) g1
    in (i : is, g2)
+
+tshow :: (Show a) => a -> T.Text
+tshow = T.pack . show

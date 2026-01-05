@@ -13,7 +13,7 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer qualified as L
 
-import CardPG.Core.Primitives (ResourceType (..))
+import CardPG.Core.Stats (ResourceType (..))
 
 data ChallengeDetails = ChallengeDetails
   { color :: ResourceType

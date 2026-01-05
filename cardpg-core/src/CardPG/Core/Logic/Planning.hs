@@ -14,25 +14,23 @@ module CardPG.Core.Logic.Planning
   ) where
 
 import Control.Monad.RWS (tell)
-import Control.Monad.State (get, modify, state)
+import Control.Monad.State (get, modify)
 import Data.List (find, partition)
-import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
+import Data.List.NonEmpty (nonEmpty)
 
 import Data.Maybe (fromMaybe)
-import Data.UUID.Types (nil)
 import Optics
 import System.Random (RandomGen, uniform)
 
 import CardPG.Core.Card (CardInstance, CoreCard (..), Identified (..))
 import CardPG.Core.Logic.Combat (attackAction, computeDefenseDetails)
 import CardPG.Core.Logic.Monad (GameM (..), liftRandom)
-import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId, ResourceType (..))
+import CardPG.Core.Primitives (CardInstanceId (..))
 import CardPG.Core.State
   ( ActionStack (..)
   , ActiveDefense (..)
   , ActorState (..)
   , CoreCardState (..)
-  , DefenseDetails (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
   , NarrativeStack (..)
@@ -41,6 +39,7 @@ import CardPG.Core.State
   , SpatialState (..)
   , plannedActionCards
   )
+import CardPG.Core.Stats (ResourceType (..))
 
 planMove :: Int -> Int -> GameM g ()
 planMove x y = do

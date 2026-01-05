@@ -13,9 +13,11 @@ import CardPG.Core.Primitives
   , CardLocation
   , ChallengeId (..)
   , EquipSlot (..)
-  , ResourceType
-  , Stats (..)
   , TargetId (..)
+  )
+import CardPG.Core.Stats
+  ( ResourceType
+  , Stats (..)
   )
 
 data DefenseDetails = DefenseDetails

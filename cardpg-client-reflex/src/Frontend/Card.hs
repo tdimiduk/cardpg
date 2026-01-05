@@ -8,22 +8,18 @@ module Frontend.Card
   (
   ) where
 
-import Control.Monad (forM_)
-
--- import Data.Text (Text)
-
 import Reflex.Dom.Core
 
 import CardPG.Core.Card
 import CardPG.Core.NonEmptyText (getRawText)
-import CardPG.Core.Primitives
+import CardPG.Core.Stats
   ( ResourceType (..)
   , StackPower (..)
-  , getStat
+  , getStatValue
   )
-import CardPG.Core.RichText (Inline (..))
+import CardPG.Core.Util (tshow)
 
-import Frontend.Card.Common (art, inParensLS, tshow)
+import Frontend.Card.Common (art, inParensLS)
 import Frontend.Html
 
 instance (DomBuilder t m) => Render CoreCard m where
@@ -40,12 +36,7 @@ instance (DomBuilder t m) => Render CoreCard m where
       render c.flavor
 
 instance (DomBuilder t m) => Render (Stats Int) m where
-  render s = do
-    divClass "numbers" $ do
-      let r s' = (\v -> if v > 0 then render (ColorValue (StackPower s' v Nothing)) else blank) $ getStat s' s
-      r Red
-      r Yellow
-      r Blue
+  render s = divClass "numbers" $ mapM_ (render . flip getStatValue s) [Red, Yellow, Blue]
 
 -- Rules rendering to match legacy textbox style
 instance (DomBuilder t m) => Render Rule m where
@@ -60,15 +51,12 @@ instance (DomBuilder t m) => Render Rule m where
 
 instance (DomBuilder t m) => Render AttackDef m where
   render d = do
-    -- Simple rendering for now, mimicking standard attack line
     el "p" $ do
       text "Attack "
-      render (ColorValue (StackPower d.resistedBy 0 Nothing))
-      -- TODO: Render power (source, modifier) nicely
-      text $ ": " <> tshow d.power.modifier
-      forM_ d.effect $ \eff -> do
-        text " "
-        render eff
+      render d.resistedBy
+      text ": "
+      render d.power
+      maybe blank render d.effect
 
 instance (DomBuilder t m) => Render GeneralDef m where
   render d = do

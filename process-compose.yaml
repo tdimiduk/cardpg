@@ -27,7 +27,7 @@ processes:
       signal: 15
 
   tailwind-reflex:
-    command: npm run watch:css
+    command: ./node_modules/.bin/tailwindcss -i ./styles/input.css -o ./static/output.css --watch=always
     working_dir: cardpg-client-reflex
     is_restart: true
     shutdown:

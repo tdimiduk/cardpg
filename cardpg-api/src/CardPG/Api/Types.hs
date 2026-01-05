@@ -33,8 +33,9 @@ import System.Random.Stateful (Uniform (..), uniformM)
 
 import CardPG.Api.Frontend qualified as Frontend
 import CardPG.Core.Json (cardpgJsonDef, cardpgTaggedOptions)
-import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId, ResourceType)
+import CardPG.Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
 import CardPG.Core.State (ActiveChallenge)
+import CardPG.Core.Stats (ResourceType)
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution

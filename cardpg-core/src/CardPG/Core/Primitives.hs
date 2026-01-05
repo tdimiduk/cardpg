@@ -4,13 +4,7 @@ module CardPG.Core.Primitives
   , ActorId (..)
   , CardKind (..)
   , EquipSlot (..)
-  , ResourceType (..)
-  , StackPower (..)
-  , Difficulty (..)
   , CardLocation (..)
-  , Stats (..)
-  , Stats (..)
-  , getStat
   , ChallengeId (..)
   ) where
 
@@ -19,6 +13,7 @@ import Data.Aeson
   , FromJSONKey
   , ToJSON (..)
   , ToJSONKey
+  , Value (..)
   , genericParseJSON
   , genericToJSON
   )
@@ -29,6 +24,7 @@ import GHC.Generics (Generic)
 import System.Random.Stateful (Uniform (..), uniformM)
 
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
+import CardPG.Core.Util (tshow)
 
 -- | Unique Identity for any card instance
 newtype CardInstanceId = CardInstanceId UUID
@@ -69,46 +65,6 @@ data EquipSlot = SlotMainHand | SlotOffHand | SlotBody | SlotAccessory | SlotUns
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''EquipSlot)
-
-data ResourceType = Red | Yellow | Blue
-  deriving stock (Eq, Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''ResourceType)
-
-data Stats a = Stats
-  { red :: a
-  , yellow :: a
-  , blue :: a
-  }
-  deriving stock (Eq, Show, Generic, Functor, Foldable, Traversable)
-
-instance (ToJSON a) => ToJSON (Stats a) where
-  toJSON = genericToJSON cardpgJsonDef
-
-instance (FromJSON a) => FromJSON (Stats a) where
-  parseJSON = genericParseJSON cardpgJsonDef
-
-getStat :: ResourceType -> Stats a -> a
-getStat Red = (.red)
-getStat Yellow = (.yellow)
-getStat Blue = (.blue)
-
-data StackPower = StackPower
-  { source :: ResourceType
-  , modifier :: Int
-  , conditional :: Maybe Text
-  }
-  deriving stock (Eq, Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''StackPower)
-
-data Difficulty = Difficulty
-  { attribute :: ResourceType
-  , value :: Int
-  }
-  deriving stock (Eq, Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''Difficulty)
 
 data CardLocation = LocationHand | LocationDiscard | LocationDeck
   deriving stock (Show, Eq, Generic)

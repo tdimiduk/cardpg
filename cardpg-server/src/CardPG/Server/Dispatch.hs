@@ -18,7 +18,6 @@ import CardPG.Core.Primitives
   , CardInstanceId
   , CardLocation
   , ChallengeId
-  , ResourceType (..)
   )
 import CardPG.Core.State
   ( ActiveChallenge (..)
@@ -26,6 +25,7 @@ import CardPG.Core.State
   , ChallengeSource (..)
   , PlannedAction (PPass)
   )
+import CardPG.Core.Stats (ResourceType (..))
 import CardPG.Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import CardPG.Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
 import CardPG.Server.Presenter (eventToLogs)

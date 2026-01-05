@@ -26,7 +26,7 @@ import CardPG.Core.Card
   , TalentCard (..)
   )
 import CardPG.Core.Logic.Monad (GameM (..))
-import CardPG.Core.Primitives (ChallengeId, ResourceType (..), StackPower (..), Stats (..), getStat)
+import CardPG.Core.Primitives (ChallengeId)
 import CardPG.Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
 import CardPG.Core.State
   ( ActionStack (..)
@@ -42,6 +42,7 @@ import CardPG.Core.State
   , TableCard (..)
   , TableState (..)
   )
+import CardPG.Core.Stats (ResourceType (..), StackPower (..), Stats (..), getStat)
 
 getAttackRule :: CoreCard -> Either Text AttackDef
 getAttackRule card = case card.rules of

@@ -59,7 +59,7 @@ import CardPG.Core.Card qualified as Core
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
 import CardPG.Core.Logic.Combat (computeDefense, computeDefenseDetails, computeResilience)
 import CardPG.Core.NonEmptyText (NonEmptyText)
-import CardPG.Core.Primitives (CardInstanceId, CardLocation, ChallengeId, ResourceType, Stats (..))
+import CardPG.Core.Primitives (CardInstanceId, CardLocation, ChallengeId)
 import CardPG.Core.RichText (RichText)
 import CardPG.Core.RuleDefs
   ( AttackDef
@@ -77,6 +77,7 @@ import CardPG.Core.State
   , SpatialState
   )
 import CardPG.Core.State qualified as Core
+import CardPG.Core.Stats (ResourceType, Stats (..))
 
 -- * Cards (Explicit DTOs)
 

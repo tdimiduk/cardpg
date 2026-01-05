@@ -52,6 +52,7 @@ executable cardpg-client-reflex
   other-modules:
     Frontend.Card
     Frontend.Card.Common
+    Frontend.Catalog
     Frontend.Html
     Frontend.Style
 
