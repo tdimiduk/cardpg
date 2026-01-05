@@ -16,6 +16,12 @@ import CardPG.Core.Language
   , cmdPassive
   , cmdTask
   , cmdWhen
+  , kwCheck
+  , kwCost
+  , kwStrength
+  , kwTime
+  , sepColon
+  , sepSemi
   )
 import CardPG.Core.NonEmptyText (NonEmptyText, getRawText)
 import CardPG.Core.Render
@@ -43,7 +49,11 @@ instance
     render cmdAttack
     renderSpace
     render resistedBy
-    render (": Strength = " :: Text)
+    render sepColon
+    renderSpace
+    render kwStrength
+    renderSpace
+    render ("= " :: Text)
     render power
     case effect of
       Nothing -> pure ()
@@ -121,9 +131,9 @@ instance
 
     let parts =
           catMaybes
-            [ fmap (\c -> ("Check ", render c)) check
-            , fmap (\t -> ("Time ", render t)) time
-            , fmap (\c -> ("Cost ", render c)) cost
+            [ fmap (\c -> (kwCheck, render c)) check
+            , fmap (\t -> (kwTime, render t)) time
+            , fmap (\c -> (kwCost, render c)) cost
             ]
 
     if null parts
@@ -141,11 +151,14 @@ instance
       renderParts [] = pure ()
       renderParts [(label, val)] = do
         render (label :: Text)
+        renderSpace
         val
       renderParts ((label, val) : rest) = do
         render (label :: Text)
+        renderSpace
         val
-        render ("; " :: Text)
+        render sepSemi
+        renderSpace
         renderParts rest
 
 instance

@@ -7,6 +7,7 @@ import Control.Monad.Writer (Writer, execWriter, tell)
 import Data.Text (Text)
 import Data.Text qualified as T
 
+import CardPG.Core.Language (styleDelimiter)
 import CardPG.Core.NonEmptyText (NonEmptyText, getRawText)
 import CardPG.Core.Render (Render (..))
 import CardPG.Core.Render.Rule ()
@@ -15,7 +16,6 @@ import CardPG.Core.Render.Util (renderSpace)
 import CardPG.Core.RichText
   ( Inline (..)
   , RichText
-  , TextStyle (..)
   , getInlines
   )
 import CardPG.Core.RuleDefs (Rule (..))
@@ -37,10 +37,8 @@ instance Render RichText PrinterM where
   render rt = mapM_ render (getInlines rt)
 
 instance Render Inline PrinterM where
-  render (TextRun (Just Bold) content) = tell [wrapped "**" $ getRawText content]
-  render (TextRun (Just Italic) content) = tell [wrapped "*" $ getRawText content]
-  render (TextRun (Just GameKeyword) content) = tell [wrapped "`" $ getRawText content]
-  render (TextRun _ content) = tell [getRawText content]
+  render (TextRun (Just style) content) = tell [wrapped (styleDelimiter style) $ getRawText content]
+  render (TextRun Nothing content) = tell [getRawText content]
   render (ColorValue power) = tell [prettyStatValue power]
   render (DifficultyValue diff) = tell [prettyDifficulty diff]
   render Break = tell ["\n"]

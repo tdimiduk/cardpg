@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module CardPG.Core.Render.Util
   ( renderSpace
@@ -9,7 +8,7 @@ module CardPG.Core.Render.Util
 
 import Data.Text (Text)
 
-import CardPG.Core.Language (sepArrow, sepSpace)
+import CardPG.Core.Language (sepArrow, sepCloseParen, sepOpenParen, sepSpace)
 import CardPG.Core.Render (Render (..))
 
 renderSpace :: (Render Text m) => m ()
@@ -20,6 +19,6 @@ renderArrow = render sepArrow
 
 renderParens :: (Render Text m) => m () -> m ()
 renderParens inner = do
-  render ("(" :: Text)
+  render sepOpenParen
   inner
-  render (")" :: Text)
+  render sepCloseParen

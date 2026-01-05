@@ -20,21 +20,13 @@ import Data.Text qualified as T
 import GHC.Generics (Generic)
 
 import CardPG.Core.Json
+import CardPG.Core.Language (TextStyle (..))
 import CardPG.Core.NonEmptyText (NonEmptyText, getRawText, mkNonEmptyText, unsafeNonEmptyText)
 import CardPG.Core.Stats (Difficulty, StackPower (..), StatValue)
 
 -- | 1. The Token Stream
 
 -------------------------------------------------------------------------------
-
-data TextStyle
-  = Bold
-  | Italic
-  | -- | For "Resolve:", "Setup:", etc.
-    GameKeyword
-  deriving stock (Eq, Show, Enum, Bounded, Generic)
-
-$(deriveJSON cardpgJsonDef ''TextStyle)
 
 -- | Payload for Color Values (Icons or Dynamic Values)
 -- | We use inline records in Inline now, but keeping these for backward compat if needed

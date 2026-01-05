@@ -27,8 +27,17 @@ import CardPG.Core.Language
   , cmdPassive
   , cmdTask
   , cmdWhen
+  , kwCheck
+  , kwCost
+  , kwStrength
+  , kwTime
   , sepArrow
+  , sepCloseParen
   , sepColon
+  , sepComma
+  , sepOpenParen
+  , sepSemi
+  , styleDelimiter
   )
 import CardPG.Core.NonEmptyText
   ( mkNonEmptyText
@@ -73,7 +82,7 @@ ruleParser =
 
 -- The parser p must not consume ')'
 betweenParens :: Parser a -> Parser a
-betweenParens = between (char '(') (char ')')
+betweenParens = between (string sepOpenParen) (string sepCloseParen)
 
 effectArrow :: Parser Text
 effectArrow = string sepArrow
@@ -125,17 +134,17 @@ taskParser = do
           _ <- char '('
 
           let checkP = try $ do
-                _ <- string' "Check"
+                _ <- string' kwCheck
                 _ <- hspace1
                 difficultyParser
 
           let timeP = try $ do
-                _ <- string' "Time"
+                _ <- string' kwTime
                 _ <- hspace1
                 richTextParserWith [';', ')']
 
           let costP = try $ do
-                _ <- string' "Cost"
+                _ <- string' kwCost
                 _ <- hspace1
                 richTextParserWith [';', ')']
 
@@ -202,8 +211,8 @@ separatorParser =
   void $
     tryChoice
       [ space >> effectArrow >> hspace
-      , space >> string ";" >> hspace
-      , space >> char ',' >> hspace
+      , space >> string sepSemi >> hspace
+      , space >> string sepComma >> hspace
       , hspace
       ]
 
@@ -241,16 +250,11 @@ formattingParser :: Parser Inline
 formattingParser = choiceEnum $ \style ->
   TextRun (Just style)
     <$> between'
-      (string $ formattingDelimiter style)
+      (string $ styleDelimiter style)
       (takeWhilePNonEmpty Nothing (`notElem` formattingStopChars style))
 
-formattingDelimiter :: TextStyle -> Text
-formattingDelimiter Bold = "**"
-formattingDelimiter Italic = "*"
-formattingDelimiter GameKeyword = "`"
-
 formattingStopChars :: TextStyle -> [Char]
-formattingStopChars = T.unpack . T.take 1 . formattingDelimiter
+formattingStopChars = T.unpack . T.take 1 . styleDelimiter
 
 colorValueParser :: Parser Inline
 colorValueParser = do
@@ -294,7 +298,7 @@ legacyResource = between' (char '|') $ mkEnumParser toLegacy
 stackPowerParser :: Parser StackPower
 stackPowerParser = do
   _ <- optional $ try $ do
-    _ <- string' "strength" <|> string' "str"
+    _ <- string' kwStrength <|> string' "str"
     _ <- hspace1
     _ <- optional (char '=')
     hspace
@@ -317,7 +321,7 @@ stackPowerParser = do
 difficultyParser :: Parser Difficulty
 difficultyParser = do
   _ <- optional $ try $ do
-    _ <- string' "Check" <|> string' "Diff"
+    _ <- string' kwCheck <|> string' "Diff"
     _ <- hspace1
     _ <- optional (char '=')
     hspace
