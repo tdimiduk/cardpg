@@ -160,7 +160,7 @@ renderHand handDyn = do
       -- We need to render the list with standard Reflex list function
       -- Note: simpleList is efficient for dynamic lists
       void $ simpleList handDyn $ \cardDyn -> do
-        divClass "pointer-events-auto relative group w-[220px] shrink-0" $ do
+        divClass "pointer-events-auto relative group w-64 shrink-0" $ do
           divClass
             "transition-transform duration-200 ease-out origin-bottom hover:-translate-y-8 hover:z-50 cursor-pointer"
             $ do

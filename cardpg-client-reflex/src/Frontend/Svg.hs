@@ -6,6 +6,7 @@ module Frontend.Svg
   , renderSquare
   , renderCircle
   , renderDiamond
+  , renderHexagon
   ) where
 
 import Data.Map qualified as Map
@@ -104,6 +105,21 @@ renderDiamond colorClass mLabel =
           <> "rx" =: "5"
           <> "ry" =: "5"
           <> "transform" =: "rotate(45 50 50)"
+          <> "class" =: "resource-shape"
+          <> "fill" =: "none"
+          <> "stroke" =: "currentColor"
+          <> "stroke-width" =: "8"
+      )
+      blank
+    renderLabel mLabel
+
+-- | Renders a hexagon icon.
+renderHexagon :: (DomBuilder t m) => Text -> Maybe Text -> m ()
+renderHexagon colorClass mLabel =
+  svgEl "svg" ("viewBox" =: "0 0 100 100" <> "class" =: ("resource-icon " <> colorClass)) $ do
+    svgEl
+      "polygon"
+      ( "points" =: "50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
           <> "class" =: "resource-shape"
           <> "fill" =: "none"
           <> "stroke" =: "currentColor"

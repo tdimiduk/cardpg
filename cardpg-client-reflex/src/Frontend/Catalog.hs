@@ -20,7 +20,7 @@ catalogWidget = do
   el "h1" $ text "Component Catalog"
 
   el "h2" $ text "Core Cards"
-  divClass "cards flex flex-wrap gap-4" $ do
+  divClass "cards" $ do
     render exampleAttack
     render exampleSkill
     render exampleHeavyText

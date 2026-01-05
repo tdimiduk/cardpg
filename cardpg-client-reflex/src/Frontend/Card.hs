@@ -22,13 +22,14 @@ import CardPG.Core.Util (tshow)
 
 import Frontend.Card.Common (art)
 import Frontend.Html
+import Frontend.Svg (renderHexagon)
 
 instance (Monad m, DomBuilder t m) => Render CoreCard m where
   render c = divClass "card" $ do
     divClass "flex" $ do
       divClass "name" $ text $ getRawText c.name
       divClass "expand" blank
-      maybe blank (divClass "cost" . text . tshow) (c.cost)
+      maybe blank (\c' -> renderHexagon "cost text-slate-200" (Just $ tshow c')) (c.cost)
     divClass "flex" $ do
       render c.stats
       art
