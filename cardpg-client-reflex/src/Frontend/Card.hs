@@ -8,13 +8,15 @@ module Frontend.Card
   (
   ) where
 
+import Data.List (intersperse)
+import Data.Maybe (catMaybes)
+
 import Reflex.Dom.Core
 
 import CardPG.Core.Card
 import CardPG.Core.NonEmptyText (getRawText)
 import CardPG.Core.Stats
   ( ResourceType (..)
-  , StackPower (..)
   , getStatValue
   )
 import CardPG.Core.Util (tshow)
@@ -61,21 +63,32 @@ instance (DomBuilder t m) => Render AttackDef m where
 instance (DomBuilder t m) => Render GeneralDef m where
   render d = do
     el "p" $ do
+      text "Action: "
       text $ getRawText d.name
       maybe blank inParensLS (d.cost)
-      text ": "
+      maybe blank (\x -> text " " >> render x) d.difficulty
+      text " -> "
       render d.effect
 
 instance (DomBuilder t m) => Render TaskDef m where
   render d = do
     el "p" $ do
+      text "Task: "
       text $ getRawText d.name
-      case (d.check, d.time) of
-        (Just c, Just t) -> text " (" >> render c >> text ", " >> render t >> text ")"
-        (Just c, Nothing) -> inParensLS c
-        (Nothing, Just t) -> inParensLS t
-        (Nothing, Nothing) -> blank
-      text ": "
+
+      let checkPart = fmap (\x -> text "Check " >> render x) d.check
+          timePart = fmap (\x -> text "Time " >> render x) d.time
+          costPart = fmap (\x -> text "Cost " >> render x) d.cost
+          parts = catMaybes [checkPart, timePart, costPart]
+
+      case parts of
+        [] -> blank
+        ps -> do
+          text " ("
+          sequence_ $ intersperse (text "; ") ps
+          text ")"
+
+      text " -> "
       render d.effect
 
 instance (DomBuilder t m, Render a m) => Render (Identified id a) m where
@@ -91,13 +104,17 @@ instance (DomBuilder t m) => Render TriggerDef m where
 instance (DomBuilder t m) => Render OngoingDef m where
   render d = do
     el "p" $ do
+      text "Ongoing ("
       render d.life
-      text ": "
+      text ")"
+      text " -> "
       render d.effect
 
 instance (DomBuilder t m) => Render PassiveDef m where
   render d = do
     el "p" $ do
-      text $ "Passive: " <> tshow d.bonus.modifier
+      text "Passive: "
+      render d.bonus
+      maybe blank (\t -> text (" " <> getRawText t)) d.condition
 
 -- TODO: Render stack power fully
