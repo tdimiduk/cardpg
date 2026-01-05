@@ -76,8 +76,7 @@ deck:
   type: coreCard
 - name: Supercharged
   rules:
-  - 'Action: Put in play. Attack 10 |x| anyone who attacks you. At the end of resolution
-    expend this if it triggered, recover it to hand if it did not'
+  - 'Action: Put in play. Attack {red:10} anyone who attacks you. Resolve (end): expend the attack the attack triggered, otherwise recover to hand'
   stats:
     blue: 1
     red: 2
