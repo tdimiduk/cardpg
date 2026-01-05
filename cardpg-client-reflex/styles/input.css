@@ -94,7 +94,7 @@ body {
 }
 
 .textbox .resource-icon {
-  @apply w-[0.8em] h-[0.8em] mr-[0.15em] align-middle inline-block;
+  @apply w-[1em] h-[1em] mr-[0.05em] align-middle inline-block;
 }
 
 .cards {
