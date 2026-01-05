@@ -8,11 +8,6 @@ import CardPG.Core.DSL.Printer (prettyRule)
 import CardPG.Core.DSL.RuleParser (parseRule)
 import CardPG.Core.Json (cardpgJsonOptions)
 import CardPG.Core.RuleDefs (Rule)
-import CardPG.Core.TextFmt (TextFmt (..))
-
-instance TextFmt Rule where
-  toText = prettyRule
-  fromText = parseRule
 
 instance ToJSON Rule where
   toJSON = String . prettyRule
