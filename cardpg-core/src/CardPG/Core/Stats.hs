@@ -11,6 +11,8 @@ module CardPG.Core.Stats
   , prettyModifier
   ) where
 
+import CardPG.Core.Language (sepColon)
+
 import Data.Aeson
   ( FromJSON (..)
   , ToJSON (..)
@@ -23,17 +25,16 @@ import Data.Text (Text)
 import GHC.Generics (Generic)
 import Text.Megaparsec
   ( between
-  , choice
   )
-import Text.Megaparsec.Char (char, space, string')
+import Text.Megaparsec.Char (char, space, string)
 import Text.Megaparsec.Char.Lexer (decimal)
 
 import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Parser (Parser, basicParse)
+import CardPG.Core.Parser (Parser, basicParse, mkEnumParser)
 import CardPG.Core.Util (tshow)
 
 data ResourceType = Red | Yellow | Blue
-  deriving stock (Eq, Show, Generic)
+  deriving stock (Eq, Show, Enum, Bounded, Generic)
 
 $(deriveJSON cardpgJsonDef ''ResourceType)
 
@@ -51,17 +52,12 @@ instance (FromJSON a) => FromJSON (Stats a) where
   parseJSON = genericParseJSON cardpgJsonDef
 
 parseCanonicalResourceName :: Parser ResourceType
-parseCanonicalResourceName =
-  choice
-    [ Red <$ string' "Red"
-    , Yellow <$ string' "Yellow"
-    , Blue <$ string' "Blue"
-    ]
+parseCanonicalResourceName = mkEnumParser tshow
 
 parseStatValue :: Parser StatValue
 parseStatValue = between (char '{') (char '}') $ do
   color <- parseCanonicalResourceName
-  _ <- char ':'
+  _ <- string sepColon
   _ <- space
   value <- decimal
   pure $ StatValue{..}

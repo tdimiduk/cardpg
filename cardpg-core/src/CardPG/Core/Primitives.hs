@@ -9,11 +9,8 @@ module CardPG.Core.Primitives
   ) where
 
 import Data.Aeson
-  ( FromJSON (..)
-  , FromJSONKey
-  , ToJSON (..)
+  ( FromJSONKey
   , ToJSONKey
-  , Value (..)
   )
 import Data.Aeson.TH (deriveJSON)
 import Data.UUID.Types (UUID)

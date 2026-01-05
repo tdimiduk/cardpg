@@ -32,7 +32,7 @@ data TextStyle
   | Italic
   | -- | For "Resolve:", "Setup:", etc.
     GameKeyword
-  deriving stock (Eq, Show, Generic)
+  deriving stock (Eq, Show, Enum, Bounded, Generic)
 
 $(deriveJSON cardpgJsonDef ''TextStyle)
 

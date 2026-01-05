@@ -4,6 +4,7 @@ import Control.Applicative (optional, some, (<|>))
 import Control.Monad (void)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
+import Data.Text qualified as T
 
 import Text.Megaparsec
   ( between
@@ -18,13 +19,24 @@ import Text.Megaparsec
 import Text.Megaparsec.Char (char, space, space1, string, string')
 import Text.Megaparsec.Char.Lexer (decimal)
 
+import CardPG.Core.Language
+  ( cmdAction
+  , cmdAttack
+  , cmdGeneral
+  , cmdOngoing
+  , cmdPassive
+  , cmdTask
+  , cmdWhen
+  , sepArrow
+  , sepColon
+  )
 import CardPG.Core.NonEmptyText
   ( mkNonEmptyText
   , takeWhilePNonEmpty
   , takeWhilePNonEmptyStripped
   , unsafeNonEmptyText
   )
-import CardPG.Core.Parser (Parser, basicParse, hspace, hspace1)
+import CardPG.Core.Parser (Parser, basicParse, choiceEnum, hspace, hspace1, mkEnumParser, tryChoice)
 import CardPG.Core.RichText (Inline (..), RichText, StackPower (..), TextStyle (..), mkRichText)
 import CardPG.Core.RuleDefs
   ( AttackDef (..)
@@ -35,54 +47,55 @@ import CardPG.Core.RuleDefs
   , TaskDef (..)
   , TriggerDef (..)
   )
-import CardPG.Core.Stats (Difficulty (..), ResourceType (..), parseStatValue)
+import CardPG.Core.Stats
+  ( Difficulty (..)
+  , ResourceType (..)
+  , parseCanonicalResourceName
+  , parseStatValue
+  )
+import CardPG.Core.Util (tshow)
 
 parseRule :: Text -> Either String Rule
 parseRule = basicParse ruleParser
 
 ruleParser :: Parser Rule
 ruleParser =
-  choice
-    [ try (attackParser <* eof)
-    , try (ongoingParser <* eof)
-    , try (passiveParser <* eof)
-    , try (taskParser <* eof)
-    , try (triggerParser <* eof)
-    , try (generalParser <* eof)
-    , narrativeParser <* eof
-    ]
+  tryChoice $
+    (<* eof)
+      <$> [ attackParser
+          , ongoingParser
+          , passiveParser
+          , taskParser
+          , triggerParser
+          , generalParser
+          , narrativeParser
+          ]
 
--- Helpers (General)
 -- The parser p must not consume ')'
 betweenParens :: Parser a -> Parser a
-betweenParens p = do
-  _ <- char '('
-  r <- p
-  _ <- char ')'
-  pure r
+betweenParens = between (char '(') (char ')')
 
 effectArrow :: Parser Text
-effectArrow = string "->"
+effectArrow = string sepArrow
 
 -- Attack
 attackParser :: Parser Rule
 attackParser = do
-  _ <- string' "attack"
+  _ <- string' cmdAttack
   _ <- space1
   resistedBy <- resourceSymbol
   _ <- space
-  _ <- optional (char ':')
+  _ <- optional (string sepColon)
   _ <- space1
   power <- stackPowerParser
   _ <- separatorParser
   extra <- optional richTextParser
   pure $ RuleAttack $ AttackDef power resistedBy extra
 
--- Ongoing (Stance, Channel, Prime)
 -- Ongoing (Life) -> Effect
 ongoingParser :: Parser Rule
 ongoingParser = do
-  _ <- string' "Ongoing"
+  _ <- string' cmdOngoing
   _ <- space
   life <- betweenParens (richTextParserWith [')'])
   _ <- separatorParser
@@ -91,9 +104,7 @@ ongoingParser = do
 -- Passive
 passiveParser :: Parser Rule
 passiveParser = do
-  _ <- string' "passive"
-  _ <- space
-  _ <- char ':'
+  _ <- string' cmdPassive
   _ <- space
   bonus <- stackPowerParser
   condStr <- takeWhileP Nothing (const True)
@@ -104,7 +115,7 @@ passiveParser = do
 -- Task: Name ({Color} X, Time) -> Effect
 taskParser :: Parser Rule
 taskParser = do
-  _ <- string' "Task:"
+  _ <- string' cmdTask
   _ <- space
   name <- takeWhilePNonEmptyStripped (Just "Task name") (\c -> c /= '(' && c /= '{' && c /= '-')
 
@@ -156,20 +167,18 @@ taskParser = do
 -- When [Trigger] -> [Effect]
 triggerParser :: Parser Rule
 triggerParser = do
-  _ <- string' "When"
+  _ <- string' cmdWhen
   _ <- space1
   trigger <- takeWhilePNonEmptyStripped (Just "Trigger condition") (\c -> c /= '-' && c /= '>')
-
   _ <- space
   _ <- effectArrow
   _ <- hspace
-
   RuleTrigger . TriggerDef trigger <$> richTextParser
 
 -- General (Explicit Action)
 generalParser :: Parser Rule
 generalParser = do
-  _ <- string' "Action:" <|> string' "General:"
+  _ <- string' cmdAction <|> string' cmdGeneral
   _ <- space
   name <- takeWhilePNonEmptyStripped (Just "Action name") (\c -> c /= '(' && c /= '{' && c /= '-')
 
@@ -181,7 +190,6 @@ generalParser = do
   _ <- space
   _ <- effectArrow
   _ <- hspace
-
   RuleGeneral . GeneralDef name cost difficulty <$> richTextParser
 
 -- Narrative (Fallback for General)
@@ -192,10 +200,10 @@ narrativeParser = RuleNarrative <$> richTextParser
 separatorParser :: Parser ()
 separatorParser =
   void $
-    choice
-      [ try (space >> effectArrow >> hspace)
-      , try (space >> string ";" >> hspace)
-      , try (space >> char ',' >> hspace)
+    tryChoice
+      [ space >> effectArrow >> hspace
+      , space >> string ";" >> hspace
+      , space >> char ',' >> hspace
       , hspace
       ]
 
@@ -212,44 +220,37 @@ richTextParserWith stopChars = do
 
 inlineParserStopAt :: [Char] -> Parser Inline
 inlineParserStopAt stopChars =
-  choice
-    [ try boldParser
-    , try italicParser
-    , try keywordParser
-    , try colorValueParser
+  tryChoice
+    [ formattingParser
+    , colorValueParser
     , breakParser stopChars
     , textParserStopAt stopChars
     ]
 
 breakParser :: [Char] -> Parser Inline
 breakParser stopChars = do
-  c <- lookAhead (char ';' <|> char '\n')
+  c <- char ';' <|> char '\n'
   if c `elem` stopChars
     then fail "Stop char"
-    else do
-      _ <- char c
-      pure Break
+    else pure Break
 
-boldParser :: Parser Inline
-boldParser = do
-  _ <- string "**"
-  content <- takeWhilePNonEmpty Nothing (/= '*')
-  _ <- string "**"
-  pure $ TextRun (Just Bold) content
+between' :: Parser a -> Parser b -> Parser b
+between' p = between p p
 
-italicParser :: Parser Inline
-italicParser = do
-  _ <- char '*'
-  content <- takeWhilePNonEmpty Nothing (/= '*')
-  _ <- char '*'
-  pure $ TextRun (Just Italic) content
+formattingParser :: Parser Inline
+formattingParser = choiceEnum $ \style ->
+  TextRun (Just style)
+    <$> between'
+      (string $ formattingDelimiter style)
+      (takeWhilePNonEmpty Nothing (`notElem` formattingStopChars style))
 
-keywordParser :: Parser Inline
-keywordParser = do
-  _ <- char '`'
-  content <- takeWhilePNonEmpty Nothing (/= '`')
-  _ <- char '`'
-  pure $ TextRun (Just GameKeyword) content
+formattingDelimiter :: TextStyle -> Text
+formattingDelimiter Bold = "**"
+formattingDelimiter Italic = "*"
+formattingDelimiter GameKeyword = "`"
+
+formattingStopChars :: TextStyle -> [Char]
+formattingStopChars = T.unpack . T.take 1 . formattingDelimiter
 
 colorValueParser :: Parser Inline
 colorValueParser = do
@@ -275,41 +276,20 @@ textParserStopAt stopChars =
 
 -- Helpers
 resourceSymbol :: Parser ResourceType
-resourceSymbol =
-  choice
-    [ try canonicalResource
-    , try shorthandResource
-    , legacyResource
-    ]
-
-canonicalResourceName :: Parser ResourceType
-canonicalResourceName =
-  choice
-    [ Red <$ string' "Red"
-    , Yellow <$ string' "Yellow"
-    , Blue <$ string' "Blue"
-    ]
+resourceSymbol = tryChoice [canonicalResource, shorthandResource, legacyResource]
 
 canonicalResource :: Parser ResourceType
-canonicalResource =
-  between (char '{') (char '}') canonicalResourceName
+canonicalResource = between (char '{') (char '}') parseCanonicalResourceName
 
 shorthandResource :: Parser ResourceType
-shorthandResource =
-  choice
-    [ Red <$ string' "R"
-    , Yellow <$ string' "Y"
-    , Blue <$ string' "B"
-    ]
+shorthandResource = mkEnumParser (T.take 1 . tshow)
 
 legacyResource :: Parser ResourceType
-legacyResource =
-  between (char '|') (char '|') $
-    choice
-      [ Red <$ char 'x'
-      , Yellow <$ char 'y'
-      , Blue <$ char 'z'
-      ]
+legacyResource = between' (char '|') $ mkEnumParser toLegacy
+  where
+    toLegacy Red = "x"
+    toLegacy Yellow = "y"
+    toLegacy Blue = "z"
 
 stackPowerParser :: Parser StackPower
 stackPowerParser = do
