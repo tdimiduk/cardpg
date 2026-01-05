@@ -83,16 +83,12 @@ body {
   @apply flex flex-col justify-between mt-1 mb-3 align-middle items-center;
 }
 
-.numbers .resource-symbol {
-  @apply w-6 h-6 font-bold text-xl;
+.numbers .resource-icon {
+  @apply w-10 h-10 font-bold text-xl;
 }
 
-.textbox .resource-symbol {
-  @apply w-[0.8em] h-[0.8em] mr-[0.15em];
-}
-
-.textbox .resource-symbol.blue {
-  @apply w-[0.65em] h-[0.65em] mr-[0.15em];
+.textbox .resource-icon {
+  @apply w-[0.8em] h-[0.8em] mr-[0.15em] align-middle inline-block;
 }
 
 .cards {
@@ -100,41 +96,21 @@ body {
 }
 
 .red {
-  @apply border-red-500;
+  @apply text-red-500;
 }
 
 .yellow {
-  @apply border-yellow-400;
+  @apply text-yellow-400;
 }
 
 .blue {
-  @apply border-blue-500;
+  @apply text-blue-500;
 }
 
-.resource-symbol {
-  @apply inline-flex justify-center items-center align-middle border-[0.18em] rounded-[0.15em];
+.resource-icon {
+  @apply inline-block;
 }
 
-textarea {
-  @apply w-[90%] min-h-[40em];
-}
-
-.expand {
-  @apply grow;
-}
-
-.resource-symbol.blue {
-  @apply rotate-45 m-[0.1em];
-}
-
-.resource-symbol.blue > .resource-number {
-  @apply -rotate-45;
-}
-
-.resource-symbol.yellow {
-  @apply rounded-full;
-}
-
-.numbers .resource-symbol.yellow {
-  @apply mb-[0.1em];
+.resource-text {
+  @apply fill-slate-200 font-sans font-bold;
 }

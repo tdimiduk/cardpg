@@ -20,18 +20,20 @@ import CardPG.Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (
 import CardPG.Core.Stats (Difficulty (..), ResourceType (..), StatValue (..))
 import CardPG.Core.Util (tshow)
 
+import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
+
 -- Base text instance
 instance {-# OVERLAPPING #-} (Monad m, DomBuilder t m) => Render Text m where
   render = text
 
 -- Style helpers
 resourceSymbol :: (DomBuilder t m) => ResourceType -> Maybe Text -> m ()
-resourceSymbol r t =
-  divClass cls $
-    divClass "resource-number" $
-      mapM_ text t
+resourceSymbol r t = case r of
+  Red -> renderSquare color t
+  Yellow -> renderCircle color t
+  Blue -> renderDiamond color t
   where
-    cls = "resource-symbol " <> T.toLower (tshow r)
+    color = T.toLower (tshow r)
 
 instance (Monad m, DomBuilder t m) => Render ResourceType m where
   render = flip resourceSymbol Nothing

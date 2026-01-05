@@ -38,7 +38,7 @@ exampleAttack =
   CoreCard
     { name = mkText "Strike"
     , tags = Just $ "Melee" :| ["Attack"]
-    , stats = Stats{red = 1, yellow = 0, blue = 0}
+    , stats = Stats{red = 3, yellow = 3, blue = 1}
     , cost = Just 1
     , rules = Just $ RuleAttack attackDef :| []
     , flavor = Nothing
