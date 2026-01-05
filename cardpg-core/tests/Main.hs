@@ -10,8 +10,8 @@ import Test.Tasty
 import Test.Tasty.QuickCheck
 
 import CardPG.Core.Card
-import CardPG.Core.DSL.Parser (parseRule)
 import CardPG.Core.DSL.Printer (prettyRule)
+import CardPG.Core.DSL.RuleParser (parseRule)
 import CardPG.Core.LogicTest (test_logic)
 
 import ArbitraryInstances ()

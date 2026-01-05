@@ -48,6 +48,7 @@ library
     CardPG.Core.DSL.RuleParser
     CardPG.Core.Hardcoded
     CardPG.Core.Json
+    CardPG.Core.Language
     CardPG.Core.Logic.Bot
     CardPG.Core.Logic.Combat
     CardPG.Core.Logic.Deck
@@ -57,12 +58,15 @@ library
     CardPG.Core.NonEmptyText
     CardPG.Core.Parser
     CardPG.Core.Primitives
+    CardPG.Core.Render
+    CardPG.Core.Render.Rule
+    CardPG.Core.Render.Stats
+    CardPG.Core.Render.Util
     CardPG.Core.RichText
     CardPG.Core.RuleDefs
     CardPG.Core.RuleInstances
     CardPG.Core.State
     CardPG.Core.Stats
-    CardPG.Core.TextFmt
     CardPG.Core.Util
 
 test-suite cardpg-core-test

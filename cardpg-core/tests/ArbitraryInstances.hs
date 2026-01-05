@@ -16,12 +16,29 @@ import Test.Tasty.QuickCheck
 
 import CardPG.Core.Card
 import CardPG.Core.DSL.Printer (richToString)
+import CardPG.Core.Language
+  ( cmdAction
+  , cmdAttack
+  , cmdGeneral
+  , cmdOngoing
+  , cmdPassive
+  , cmdTask
+  , cmdWhen
+  )
 import CardPG.Core.NonEmptyText (NonEmptyText, getRawText, unsafeNonEmptyText)
 import CardPG.Core.Primitives
 import CardPG.Core.RichText
+  ( Block (..)
+  , Inline (..)
+  , RichText (..)
+  , TextStyle (..)
+  , getInlines
+  , mkRichText
+  )
 import CardPG.Core.State
-import Data.UUID (UUID)
-import Data.UUID qualified as UUID
+import CardPG.Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
+import Data.UUID.Types (UUID)
+import Data.UUID.Types qualified as UUID
 
 -- Arbitrary Instances
 
@@ -31,6 +48,13 @@ instance Arbitrary Text where
 
 instance Arbitrary ResourceType where
   arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary StatValue where
+  arbitrary = do
+    c <- arbitrary
+    v <- getNonNegative <$> arbitrary
+    pure $ StatValue v c
   shrink = genericShrink
 
 instance Arbitrary StackPower where
@@ -80,13 +104,13 @@ instance Arbitrary RichText where
           else return rs
     where
       keywords =
-        [ "Attack"
-        , "Action:"
-        , "General:"
-        , "Task:"
-        , "When"
-        , "Ongoing"
-        , "Passive:"
+        [ cmdAttack
+        , cmdAction
+        , cmdGeneral
+        , cmdTask
+        , cmdWhen
+        , cmdOngoing
+        , cmdPassive
         ]
   shrink rs =
     [ rs'

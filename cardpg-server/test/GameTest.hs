@@ -21,8 +21,6 @@ import CardPG.Core.Primitives
   ( ActorId (..)
   , CardInstanceId (..)
   , ChallengeId (..)
-  , ResourceType (..)
-  , StackPower (..)
   )
 import CardPG.Core.RuleDefs (AttackDef (..), Rule (..))
 import CardPG.Core.State
@@ -39,6 +37,7 @@ import CardPG.Core.State
   , SpatialState (..)
   , TableState (..)
   )
+import CardPG.Core.Stats (ResourceType (..), StackPower (..))
 import Data.List.NonEmpty (NonEmpty (..))
 
 import CardPG.Api.Frontend qualified as Frontend

@@ -16,8 +16,9 @@ import CardPG.Core.Hardcoded (fatigueCard)
 import CardPG.Core.Logic.Deck qualified as Logic
 import CardPG.Core.Logic.Monad (GameM, runGameM)
 import CardPG.Core.Logic.Planning qualified as Logic
-import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId (..), ResourceType (..))
+import CardPG.Core.Primitives (CardInstanceId (..), ChallengeId (..))
 import CardPG.Core.State
+import CardPG.Core.Stats (ResourceType (..))
 import Optics ((%), (&), (.~))
 
 test_resolutionCycle :: TestTree

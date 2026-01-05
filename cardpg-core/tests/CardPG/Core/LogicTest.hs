@@ -28,9 +28,9 @@ import CardPG.Core.Primitives
   , CardLocation (..)
   , ChallengeId (..)
   , EquipSlot (..)
-  , ResourceType (..)
   )
 import CardPG.Core.State
+import CardPG.Core.Stats (ResourceType (..))
 import Data.Text qualified as T
 
 -- Helper to create a dummy game logic execution

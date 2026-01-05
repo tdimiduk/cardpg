@@ -14,17 +14,13 @@ import Data.Aeson
   , ToJSON (..)
   , ToJSONKey
   , Value (..)
-  , genericParseJSON
-  , genericToJSON
   )
 import Data.Aeson.TH (deriveJSON)
-import Data.Text (Text)
 import Data.UUID.Types (UUID)
 import GHC.Generics (Generic)
 import System.Random.Stateful (Uniform (..), uniformM)
 
 import CardPG.Core.Json (cardpgJsonDef, cardpgJsonOptions)
-import CardPG.Core.Util (tshow)
 
 -- | Unique Identity for any card instance
 newtype CardInstanceId = CardInstanceId UUID

@@ -7,7 +7,7 @@ import Data.Text.IO qualified as TIO
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import CardPG.Core.DSL.Parser (parseRule)
+import CardPG.Core.DSL.RuleParser (parseRule)
 
 test_readmeExamples :: TestTree
 test_readmeExamples = testCase "README Syntax Examples" $ do

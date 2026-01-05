@@ -1,122 +1,84 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 module CardPG.Core.DSL.Printer (prettyRule, richToString, prettyModifier) where
 
-import Data.List.NonEmpty qualified as NE
-import Data.Maybe (catMaybes)
+import Control.Monad.Writer (Writer, execWriter, tell)
 import Data.Text (Text)
 import Data.Text qualified as T
 
 import CardPG.Core.NonEmptyText (NonEmptyText, getRawText)
+import CardPG.Core.Render (Render (..))
+import CardPG.Core.Render.Rule ()
+import CardPG.Core.Render.Stats ()
+import CardPG.Core.Render.Util (renderSpace)
 import CardPG.Core.RichText
   ( Inline (..)
   , RichText
-  , StackPower (..)
   , TextStyle (..)
   , getInlines
   )
-import CardPG.Core.RuleDefs
-  ( AttackDef (..)
-  , GeneralDef (..)
-  , OngoingDef (..)
-  , PassiveDef (..)
-  , Rule (..)
-  , TaskDef (..)
-  , TriggerDef (..)
-  )
-import CardPG.Core.Stats (Difficulty (..), ResourceType (..), StatValue (..))
+import CardPG.Core.RuleDefs (Rule (..))
+import CardPG.Core.Stats (Difficulty (..), ResourceType (..), StatValue (..), prettyModifier)
 import CardPG.Core.Util (tshow)
 
-effectArrow :: Text
-effectArrow = "->"
+-- PrinterM Monad
+type PrinterM = Writer [Text]
 
-wrapped :: Text -> Text -> Text
-wrapped wrapper t = wrapper <> t <> wrapper
+instance Render Text PrinterM where
+  render t = tell [t]
 
-inParens :: Text -> Text
-inParens t = "(" <> t <> ")"
+instance Render ResourceType PrinterM where
+  render Red = tell ["{Red}"]
+  render Yellow = tell ["{Yellow}"]
+  render Blue = tell ["{Blue}"]
+
+instance Render RichText PrinterM where
+  render rt = mapM_ render (getInlines rt)
+
+instance Render Inline PrinterM where
+  render (TextRun (Just Bold) content) = tell [wrapped "**" $ getRawText content]
+  render (TextRun (Just Italic) content) = tell [wrapped "*" $ getRawText content]
+  render (TextRun (Just GameKeyword) content) = tell [wrapped "`" $ getRawText content]
+  render (TextRun _ content) = tell [getRawText content]
+  render (ColorValue power) = tell [prettyStatValue power]
+  render (DifficultyValue diff) = tell [prettyDifficulty diff]
+  render Break = tell ["\n"]
+
+instance Render NonEmptyText PrinterM where
+  render net = tell [getRawText net]
+
+instance Render Difficulty PrinterM where
+  render (Difficulty attr val) = do
+    render attr
+    renderSpace
+    render (tshow val)
+
+instance Render Rule PrinterM where
+  render (RuleAttack def) = render def
+  render (RuleGeneral def) = render def
+  render (RuleOngoing def) = render def
+  render (RulePassive def) = render def
+  render (RuleTask def) = render def
+  render (RuleTrigger def) = render def
+  render (RuleNarrative rt) = render rt
 
 prettyRule :: Rule -> Text
-prettyRule (RuleAttack AttackDef{..}) =
-  "Attack "
-    <> prettyResource resistedBy
-    <> ": Strength = "
-    <> prettyPower power
-    <> prettyExtra effect
-prettyRule (RuleGeneral GeneralDef{..}) =
-  "Action: "
-    <> getRawText name
-    <> maybe "" ((" " <>) . inParens . richToString) cost
-    <> maybe "" ((" " <>) . prettyDifficulty) difficulty
-    <> " "
-    <> effectArrow
-    <> " "
-    <> richToString effect
-prettyRule (RuleOngoing OngoingDef{..}) =
-  "Ongoing " <> inParens (richToString life) <> prettyExtra (Just effect)
-prettyRule (RulePassive PassiveDef{..}) =
-  "Passive: " <> prettyPower bonus <> prettyCondition condition
-prettyRule (RuleTask TaskDef{..}) =
-  "Task: "
-    <> getRawText name
-    <> parensContent
-    <> " "
-    <> effectArrow
-    <> " "
-    <> richToString effect
-  where
-    checkStr = fmap (\c -> "Check " <> prettyDifficulty c) check
-    timeStr = fmap (\t -> "Time " <> richToString t) time
-    costStr = fmap (\c -> "Cost " <> richToString c) cost
+prettyRule rule = T.concat $ execWriter (render rule)
 
-    parts = [checkStr, timeStr, costStr]
-    inner = T.intercalate "; " (catMaybes parts)
+richToString :: RichText -> Text
+richToString rt = T.concat $ execWriter (render rt)
 
-    parensContent = if T.null inner then "" else " (" <> inner <> ")"
-prettyRule (RuleTrigger TriggerDef{..}) =
-  "When " <> getRawText trigger <> " " <> effectArrow <> " " <> richToString effect
-prettyRule (RuleNarrative rt) = richToString rt
+prettyStatValue :: StatValue -> Text
+prettyStatValue s = "{" <> tshow s.color <> ":" <> tshow s.value <> "}"
 
-prettyCondition :: Maybe NonEmptyText -> Text
-prettyCondition Nothing = ""
-prettyCondition (Just c) = " " <> getRawText c
+prettyDifficulty :: Difficulty -> Text
+prettyDifficulty (Difficulty attr val) = prettyResource attr <> " " <> tshow val
 
 prettyResource :: ResourceType -> Text
 prettyResource Red = "{Red}"
 prettyResource Yellow = "{Yellow}"
 prettyResource Blue = "{Blue}"
 
-prettyPower :: StackPower -> Text
-prettyPower (StackPower base 0 Nothing) = prettyResource base
-prettyPower (StackPower base modifier conditional) =
-  prettyResource base <> " " <> prettyModifier modifier <> prettyConditional conditional
-
-prettyConditional :: Maybe Text -> Text
-prettyConditional Nothing = ""
-prettyConditional (Just c) = " " <> c
-
-prettyModifier :: Int -> Text
-prettyModifier n
-  | n == 0 = ""
-  | n >= 0 = "+ " <> T.pack (show n)
-  | otherwise = "- " <> T.pack (show (abs n))
-
-prettyDifficulty :: Difficulty -> Text
-prettyDifficulty (Difficulty attr val) = prettyResource attr <> " " <> T.pack (show val)
-
-prettyExtra :: Maybe RichText -> Text
-prettyExtra Nothing = ""
-prettyExtra (Just rt) = " -> " <> richToString rt
-
-richToString :: RichText -> Text
-richToString = T.concat . map inlineToString . NE.toList . getInlines
-
-prettyStatValue :: StatValue -> Text
-prettyStatValue s = "{" <> tshow s.color <> ":" <> tshow s.value <> "}"
-
-inlineToString :: Inline -> Text
-inlineToString (TextRun (Just Bold) content) = wrapped "**" $ getRawText content
-inlineToString (TextRun (Just Italic) content) = wrapped "*" $ getRawText content
-inlineToString (TextRun (Just GameKeyword) content) = wrapped "`" $ getRawText content
-inlineToString (TextRun _ content) = getRawText content
-inlineToString (ColorValue power) = prettyStatValue power
-inlineToString (DifficultyValue diff) = prettyDifficulty diff
-inlineToString Break = "\n"
+wrapped :: Text -> Text -> Text
+wrapped wrapper t = wrapper <> t <> wrapper

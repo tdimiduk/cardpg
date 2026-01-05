@@ -8,6 +8,7 @@ module CardPG.Core.Stats
   , Stats (..)
   , StackPower (..)
   , Difficulty (..)
+  , prettyModifier
   ) where
 
 import Data.Aeson
@@ -104,3 +105,9 @@ data Difficulty = Difficulty
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''Difficulty)
+
+prettyModifier :: Int -> Text
+prettyModifier n
+  | n == 0 = ""
+  | n >= 0 = "+ " <> tshow n
+  | otherwise = "- " <> tshow (abs n)
