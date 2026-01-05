@@ -56,7 +56,7 @@ kwStr = "Str"
 
 -- Separators
 sepArrow :: Text
-sepArrow = "->"
+sepArrow = "→"
 
 sepColon :: Text
 sepColon = ":"

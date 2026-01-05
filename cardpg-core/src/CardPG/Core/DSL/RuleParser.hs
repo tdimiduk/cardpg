@@ -85,7 +85,7 @@ betweenParens :: Parser a -> Parser a
 betweenParens = between (string sepOpenParen) (string sepCloseParen)
 
 effectArrow :: Parser Text
-effectArrow = string sepArrow
+effectArrow = string sepArrow <|> string "->"
 
 -- Attack
 attackParser :: Parser Rule
@@ -126,7 +126,8 @@ taskParser :: Parser Rule
 taskParser = do
   _ <- string' cmdTask
   _ <- space
-  name <- takeWhilePNonEmptyStripped (Just "Task name") (\c -> c /= '(' && c /= '{' && c /= '-')
+  name <-
+    takeWhilePNonEmptyStripped (Just "Task name") (\c -> c /= '(' && c /= '{' && c /= '-' && c /= '→')
 
   (check, time, cost) <-
     try
@@ -178,7 +179,8 @@ triggerParser :: Parser Rule
 triggerParser = do
   _ <- string' cmdWhen
   _ <- space1
-  trigger <- takeWhilePNonEmptyStripped (Just "Trigger condition") (\c -> c /= '-' && c /= '>')
+  trigger <-
+    takeWhilePNonEmptyStripped (Just "Trigger condition") (\c -> c /= '-' && c /= '>' && c /= '→')
   _ <- space
   _ <- effectArrow
   _ <- hspace
@@ -189,7 +191,8 @@ generalParser :: Parser Rule
 generalParser = do
   _ <- string' cmdAction <|> string' cmdGeneral
   _ <- space
-  name <- takeWhilePNonEmptyStripped (Just "Action name") (\c -> c /= '(' && c /= '{' && c /= '-')
+  name <-
+    takeWhilePNonEmptyStripped (Just "Action name") (\c -> c /= '(' && c /= '{' && c /= '-' && c /= '→')
 
   -- Support "Action: Name (Spend {Color} X) -> Effect"
   -- We treat the parenthetical as the cost

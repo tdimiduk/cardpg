@@ -2,8 +2,8 @@
   notes: Models minor muscle strain or poor positioning requiring extra effort.
   passive: You must discard a card to perform an Attack Action.
   rules:
-  - 'Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) -> Remove this'
-  - When removed -> Add 1 Wound to your expended pile
+  - 'Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) → Remove this'
+  - When removed → Add 1 Wound to your expended pile
   severity: 1
   tags:
   - Combat
@@ -13,8 +13,8 @@
   notes: Increases the risk from future attacks
   passive: Impact of Defense +1
   rules:
-  - 'Task: Stretch Out (Check {Yellow} 3; Time 1 min) -> Remove this'
-  - When removed -> Add 2 Fatigue to your expended pile
+  - 'Task: Stretch Out (Check {Yellow} 3; Time 1 min) → Remove this'
+  - When removed → Add 2 Fatigue to your expended pile
   severity: 1
   tags:
   - Combat
@@ -25,8 +25,8 @@
   name: Minor Trauma
   notes: Immediate deck pollution.
   rules:
-  - 'Task: Steady Yourself (Check {Red} 3; Time 1 min) -> Remove this'
-  - 'Action: Push Through (Spend {Red} 10) -> Remove this'
+  - 'Task: Steady Yourself (Check {Red} 3; Time 1 min) → Remove this'
+  - 'Action: Push Through (Spend {Red} 10) → Remove this'
   severity: 1
   tags:
   - General
@@ -37,8 +37,8 @@
   passive: When calculating Attack Strength, treat the highest value card in your
     stack as 0
   rules:
-  - 'Task: Set and Bind Wound (Check {Blue} 10; Time 1 hour) -> Remove this'
-  - When removed -> Add 2 Wounds to your expended pile
+  - 'Task: Set and Bind Wound (Check {Blue} 10; Time 1 hour) → Remove this'
+  - When removed → Add 2 Wounds to your expended pile
   severity: 2
   tags:
   - Combat
@@ -49,10 +49,10 @@
   passive: When calculating Defense Strength, treat the highest value card in your
     stack as 0
   rules:
-  - 'Task: Hammer Out (Check {Red} 8; Time 1 hour; Cost Hammer) -> Remove this'
-  - 'Task: Careful Repair (Check {Yellow} 12; Time 4 hours; Cost Repair Tools) ->
-    Remove this'
-  - When removed -> If you used 'Hammer Out', this armor gains the 'Battered' condition
+  - 'Task: Hammer Out (Check {Red} 8; Time 1 hour; Cost Hammer) → Remove this'
+  - 'Task: Careful Repair (Check {Yellow} 12; Time 4 hours; Cost Repair Tools) → Remove
+    this'
+  - When removed → If you used 'Hammer Out', this armor gains the 'Battered' condition
   severity: 2
   tags:
   - Combat
@@ -64,9 +64,9 @@
   name: Major Trauma
   notes: Severe immediate attrition.
   rules:
-  - 'Task: Recuperate (Check {Red} 5; Time 1 hour) -> Remove this'
-  - 'Action: Force Yourself Back (Spend {Red} 10) -> Remove this'
-  - When removed -> Add 1 Fatigue to your expended pile
+  - 'Task: Recuperate (Check {Red} 5; Time 1 hour) → Remove this'
+  - 'Action: Force Yourself Back (Spend {Red} 10) → Remove this'
+  - When removed → Add 1 Fatigue to your expended pile
   severity: 2
   tags:
   - General

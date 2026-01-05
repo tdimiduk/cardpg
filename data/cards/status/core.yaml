@@ -3,8 +3,8 @@
     type: textRun
   name: Fatigue
   rules:
-  - 'Task: Sleep (Time 2 Hours) -> Remove this card.'
-  - 'Task: Light Rest (Time 4 Hours) -> Remove this card.'
+  - 'Task: Sleep (Time 2 Hours) → Remove this card.'
+  - 'Task: Light Rest (Time 4 Hours) → Remove this card.'
   stats:
     blue: 1
     red: 1
@@ -20,7 +20,7 @@
   name: Injury
   rules:
   - If this card is in your hand at the end of the Resolve Step, expend it.
-  - 'Task: Rest (Time 1 Day) -> Remove this card.'
+  - 'Task: Rest (Time 1 Day) → Remove this card.'
   stats:
     blue: 0
     red: 0
