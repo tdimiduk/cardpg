@@ -54,7 +54,7 @@ body {
   break-inside: avoid;
   display: flex;
   flex-direction: column;
-  padding: 3mm;
+  padding: 1.5mm;
 }
 
 .art {
@@ -94,6 +94,7 @@ body {
 .textbox p {
   margin-top: 0;
   margin-bottom: 0.1em;
+  line-height: 1.2em;
 }
 
 .numbers {

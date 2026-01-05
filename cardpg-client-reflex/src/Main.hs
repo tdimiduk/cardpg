@@ -7,20 +7,12 @@
 module Main where
 
 import Control.Monad (void)
-import Data.Aeson
-  ( FromJSON (..)
-  , eitherDecode
-  , encode
-  , genericParseJSON
-  )
+import Data.Aeson (eitherDecode, encode)
 import Data.ByteString.Lazy qualified as BL
-import Data.Map (Map)
 import Data.Map qualified as Map
-import Data.Text (Text)
 import Data.Text qualified as T
 import Data.UUID (UUID)
 import Data.UUID.V4 qualified as UUID
-import GHC.Generics (Generic)
 import Language.Javascript.JSaddle.WebSockets (jsaddleApp, jsaddleOr)
 import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
@@ -29,27 +21,14 @@ import System.Environment (getArgs, lookupEnv)
 
 import CardPG.Api.Types qualified as Api -- Still used for sending Join
 import CardPG.Core.Card (CardInstance, CoreCard)
-import CardPG.Core.Json (cardpgJsonDef)
-import CardPG.Core.Primitives (ActorId)
+import CardPG.Core.State (ActorState (..), CoreCardState (..))
 import CardPG.Core.Util (tshow)
 import Frontend.Card ()
 import Frontend.Catalog (catalogWidget)
 import Frontend.Html (Render (..))
 
 -- Local definition matching server
-data ReflexServerMessage
-  = ReflexWelcome
-      { yourClientId :: UUID
-      , hands :: Map ActorId [CardInstance CoreCard]
-      }
-  | ReflexUpdate
-      { hands :: Map ActorId [CardInstance CoreCard]
-      }
-  | ReflexError {error :: Text}
-  deriving (Show, Generic)
-
-instance FromJSON ReflexServerMessage where
-  parseJSON = genericParseJSON cardpgJsonDef
+import CardPG.Api.Reflex (ReflexServerMessage (..))
 
 main :: IO ()
 main = do
@@ -110,29 +89,79 @@ appWidget clientId = do
 
       let serverMsgEvt = fmap (eitherDecode . BL.fromStrict) (_webSocket_recv ws)
 
-      -- Debug: show last message status
-      divClass "status" $ do
-        let statusText = ffor serverMsgEvt $ \case
-              Left e -> "Decode Error: " <> T.pack e
-              Right (ReflexWelcome{}) -> "Welcome received"
-              Right (ReflexUpdate{}) -> "Update received"
-              Right (ReflexError e) -> "Error: " <> e
-
-        dynText =<< holdDyn "Connecting..." statusText
-
-      -- State: Hold the hands of all actors
       let
-        updateHands (Right (ReflexWelcome _ h)) _ = h
-        updateHands (Right (ReflexUpdate h)) _ = h
-        updateHands _ old = old
+        updateActors (Right (ReflexWelcome _ a)) _ = a
+        updateActors (Right (ReflexUpdate a)) _ = a
+        updateActors _ old = old
 
-      handsMapDyn <- foldDyn updateHands Map.empty serverMsgEvt
+      actorsMapDyn <- foldDyn updateActors Map.empty serverMsgEvt
 
-  el "h2" $ text "Cards in Hand"
+      -- Actor Selection State
+      rec selectedActorId <- holdDyn Nothing (fmap Just selectEvt)
 
-  -- Render a section for each actor found
-  void $ listWithKey handsMapDyn $ \actorId cardsDyn -> do
-    el "h3" $ text $ "Actor: " <> tshow actorId
-    elClass "div" "hand-container" $ do
-      simpleList cardsDyn $ \cardDyn -> do
-        dyn_ $ ffor cardDyn render
+          -- Layout: Sidebar + Main Content
+          selectEvt <- divClass "flex flex-row h-screen bg-slate-950 text-slate-100 overflow-hidden" $ do
+            -- Sidebar (Left)
+            selectEvt' <- divClass "w-72 bg-slate-950 border-r border-slate-800 flex flex-col h-full z-20 shadow-xl" $ do
+              -- Sidebar Header (Static for now)
+              divClass "p-6 border-b border-slate-800" $ do
+                elClass "h1" "text-xl font-bold text-slate-100" $ text "CardPG"
+
+              -- Actor List or Active Actor Details
+              dyn_ $ ffor selectedActorId $ \case
+                Nothing -> divClass "p-4 text-center text-slate-500 italic text-sm" $ text "Select an actor"
+                Just aid -> do
+                  -- Active Actor Header (Mini)
+                  divClass "p-4 border-b border-slate-800 bg-slate-900 flex items-center gap-3" $ do
+                    divClass
+                      "w-10 h-10 rounded-full border-2 border-slate-600 bg-slate-800 flex items-center justify-center shrink-0"
+                      $ text "A" -- Placeholder Avatar
+                    divClass "flex-1 overflow-hidden" $ do
+                      -- We need to look up the name from the map, but for now just show ID
+                      elClass "div" "font-bold text-slate-100 truncate" $ text $ tshow aid
+                      elClass "div" "text-xs text-slate-500 uppercase" $ text "Player"
+
+              -- Actor List (Always visible in this simple version, or switchable)
+              divClass "flex-1 overflow-y-auto p-4 space-y-2" $ do
+                selectClick <- listWithKey actorsMapDyn $ \aid actorDyn -> do
+                  (e, _) <- elClass'
+                    "button"
+                    "w-full text-left px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded transition-colors group"
+                    $ do
+                      dyn_ $ ffor actorDyn $ \actor -> do
+                        text $ actor.name
+                  return (aid <$ domEvent Click e)
+
+                -- Aggregate clicks
+                return $ switchDyn $ fmap (leftmost . Map.elems) selectClick
+
+            -- Main Content Area (Right)
+            divClass "flex-1 relative bg-slate-900 overflow-hidden flex flex-col" $ do
+              -- Top Bar / Game Board Area (Placeholder)
+              divClass "flex-1 flex items-center justify-center text-slate-700" $
+                text "Game Board Area"
+
+              -- Player Hand Area (Bottom Overlay)
+              dyn_ $ ffor selectedActorId $ \case
+                Nothing -> blank
+                Just aid -> do
+                  let handDyn =
+                        fmap (maybe [] (\a -> a.coreState.hand) . Map.lookup aid) actorsMapDyn
+                  renderHand handDyn
+
+            return selectEvt'
+
+  return ()
+
+renderHand :: (MonadWidget t m) => Dynamic t [CardInstance CoreCard] -> m ()
+renderHand handDyn = do
+  divClass "absolute bottom-0 left-0 right-0 flex justify-center items-end pb-4 pointer-events-none" $ do
+    divClass "pointer-events-auto flex items-end justify-center px-8" $ do
+      -- We need to render the list with standard Reflex list function
+      -- Note: simpleList is efficient for dynamic lists
+      void $ simpleList handDyn $ \cardDyn -> do
+        divClass "pointer-events-auto relative group w-[220px] shrink-0" $ do
+          divClass
+            "transition-transform duration-200 ease-out origin-bottom hover:-translate-y-8 hover:z-50 cursor-pointer"
+            $ do
+              dyn_ $ ffor cardDyn render

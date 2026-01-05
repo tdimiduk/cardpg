@@ -28,6 +28,7 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     CardPG.Api.Frontend
+    CardPG.Api.Reflex
     CardPG.Api.Types
 
   build-depends:

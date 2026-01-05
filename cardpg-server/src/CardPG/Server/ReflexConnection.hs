@@ -49,19 +49,9 @@ import CardPG.Server.Types
   , removeClient
   )
 
--- | New message type using Core types directly
-data ReflexServerMessage
-  = ReflexWelcome
-      { yourClientId :: UUID
-      , hands :: Map ActorId [CardInstance CoreCard]
-      }
-  | ReflexUpdate
-      { hands :: Map ActorId [CardInstance CoreCard]
-      }
-  | ReflexError {error :: Text}
-  deriving (Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''ReflexServerMessage)
+import CardPG.Api.Reflex
+  ( ReflexServerMessage (..)
+  )
 
 application :: MVar ServerState -> ServerApp
 application state pending = do
@@ -112,10 +102,7 @@ application state pending = do
 
   -- Send Welcome
   (msgs, currentClients) <-
-    readMVar state >>= \s -> do
-      let allHands = Map.map (\a -> a.coreState.hand) (s.gameState.actors)
-      let welcomeMsg = ReflexWelcome finalClientId allHands
-      return ([welcomeMsg], s.clients)
+    readMVar state >>= \s -> return ([ReflexWelcome finalClientId s.gameState.actors], s.clients)
 
   forM_ msgs $ \msg -> sendTextData conn (encode msg)
 
@@ -168,9 +155,7 @@ talk client socket state = forever $ do
         let s' = s{gameState = gs, rng = rng}
         return (s', (gs, s.dbPool, s.clients))
 
-      let allHands = Map.map (\a -> a.coreState.hand) (newGs.actors)
-      let msg = ReflexUpdate allHands
-      broadcastReflex msg clientsMap
+      broadcastReflex (ReflexUpdate newGs.actors) clientsMap
 
 handleGameCommand :: UUID -> T.Text -> MVar ServerState -> Command -> IO ()
 handleGameCommand _ clientName state cmd = do
@@ -189,7 +174,4 @@ handleGameCommand _ clientName state cmd = do
 
   saveGame pool "default-game" newGame
 
-  -- Send Full Hands Update
-  let allHands = Map.map (\a -> a.coreState.hand) (newGame.actors)
-  let msg = ReflexUpdate allHands
-  broadcastReflex msg clientsMap
+  broadcastReflex (ReflexUpdate newGame.actors) clientsMap

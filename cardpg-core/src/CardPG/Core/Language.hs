@@ -51,6 +51,9 @@ kwCost = "Cost"
 kwStrength :: Text
 kwStrength = "Strength"
 
+kwStr :: Text
+kwStr = "Str"
+
 -- Separators
 sepArrow :: Text
 sepArrow = "->"

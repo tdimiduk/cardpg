@@ -18,7 +18,7 @@ import CardPG.Core.Language
   , cmdWhen
   , kwCheck
   , kwCost
-  , kwStrength
+  , kwStr
   , kwTime
   , sepColon
   , sepSemi
@@ -51,7 +51,7 @@ instance
     render resistedBy
     render sepColon
     renderSpace
-    render kwStrength
+    render kwStr
     renderSpace
     render ("= " :: Text)
     render power
