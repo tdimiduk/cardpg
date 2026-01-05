@@ -54,6 +54,5 @@ executable cardpg-client-reflex
     Frontend.Card.Common
     Frontend.Catalog
     Frontend.Html
-    Frontend.Style
 
   hs-source-dirs: src
