@@ -28,6 +28,7 @@ result
 result-*
 tags
 TAGS
+output/
 static.out
 
 # --- Design ---

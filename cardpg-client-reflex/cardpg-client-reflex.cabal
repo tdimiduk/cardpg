@@ -37,6 +37,7 @@ executable cardpg-client-reflex
     , cardpg-api
     , cardpg-core
     , containers
+    , filepath
     , jsaddle-warp
     , optics-core
     , random
@@ -48,6 +49,7 @@ executable cardpg-client-reflex
     , wai
     , warp
     , websockets
+    , yaml
 
   other-modules:
     Frontend.Card

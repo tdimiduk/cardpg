@@ -11,11 +11,19 @@
 
   --background-image-grid-pattern:
     linear-gradient(to right, #334155 1px, transparent 1px),
+    linear-gradient(to right, #334155 1px, transparent 1px),
     linear-gradient(to bottom, #334155 1px, transparent 1px);
 }
 
+@media print {
+  @page {
+    size: letter;
+    margin: 0.25in;
+  }
+}
+
 body {
-  @apply bg-slate-900 text-slate-200 m-0;
+  @apply bg-slate-900 text-slate-200 m-0 print:bg-white;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -34,10 +42,6 @@ body {
   @apply bg-slate-500;
 }
 
-/* ============================================
-   Card Styling (ported from legacy)
-   ============================================ */
-
 .name {
   @apply text-base font-bold text-slate-200 print:text-black;
 }
@@ -51,14 +55,14 @@ body {
   @apply w-full h-auto aspect-[63/88] flex flex-col p-1.5 break-inside-avoid relative overflow-hidden;
   @apply rounded-[3mm] border-2 border-slate-600 bg-slate-900 text-slate-200 shadow-xl;
 
-  /* Print: 56mm x 80mm (approx 90% scale), sharp, white bg, black text */
+  /* Print: 56mm x 80mm, sharp, white bg, black text */
   @media print {
-    @apply w-[56mm] h-[80mm] border-[0.2mm] rounded-none bg-white text-black shadow-none border-black m-0 block aspect-auto;
+    @apply w-[56mm] h-[80mm] border-[0.2mm] rounded-none bg-white text-black shadow-none border-black m-0 flex flex-col aspect-auto p-[2mm];
   }
 }
 
 .art {
-  @apply grow h-[33mm] rounded-sm bg-slate-800 print:bg-transparent print:rounded-none border border-slate-700 print:border-black;
+  @apply h-[33mm] rounded-sm bg-slate-800 print:bg-transparent print:rounded-none;
 }
 
 .art-short {
@@ -71,14 +75,15 @@ body {
 
 .cost .resource-text {
   font-size: 60px;
+  @apply print:text-black;
 }
 
 .outline {
-  @apply outline-[0.2mm] outline-solid p-1 rounded border border-slate-700 print:border-black;
+  @apply outline-[0.2mm] outline-solid p-[2mm] rounded border border-slate-700 print:border-black;
 }
 
 .textbox {
-  @apply grow border-[0.2mm] mt-2 p-1 rounded bg-slate-800/50 border-slate-600 print:bg-transparent print:border-black;
+  @apply flex-1 border-[0.2mm] p-[2mm] rounded bg-slate-800/50 border-slate-600 print:bg-transparent print:border-black grow;
 }
 
 .textbox p {
@@ -86,7 +91,7 @@ body {
 }
 
 .numbers {
-  @apply flex flex-col justify-between mt-1 mb-3 align-middle items-center;
+  @apply flex flex-col justify-between mt-0 mb-1 align-middle items-center;
 }
 
 .numbers .resource-icon {
@@ -94,23 +99,29 @@ body {
 }
 
 .textbox .resource-icon {
-  @apply w-[1em] h-[1em] mr-[0.05em] align-middle inline-block;
+  @apply w-[1em] h-[1em] ml-[-0.15em] mr-[-0.05em] align-middle inline-block;
+  transform: translateY(-0.1em);
 }
 
 .cards {
-  @apply grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-4 print:gap-0 print:p-0 print:block;
+  @apply grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))]  p-4 print:gap-0 print:p-0 print:block;
+}
+
+.print-deck-grid {
+  @apply hidden print:grid print:gap-[3mm] justify-start;
+  grid-template-columns: repeat(3, 56mm);
 }
 
 .red {
-  @apply text-red-500 print:text-black;
+  @apply text-red-500;
 }
 
 .yellow {
-  @apply text-yellow-400 print:text-black;
+  @apply text-yellow-400;
 }
 
 .blue {
-  @apply text-blue-500 print:text-black;
+  @apply text-blue-500;
 }
 
 /* SVG Icon specific coloring for screen vs print */

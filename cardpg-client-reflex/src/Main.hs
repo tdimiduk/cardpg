@@ -8,27 +8,30 @@ module Main where
 
 import Control.Monad (void)
 import Data.Aeson (eitherDecode, encode)
+import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
 import Data.Text qualified as T
+import Data.Text.Encoding (encodeUtf8)
 import Data.UUID (UUID)
 import Data.UUID.V4 qualified as UUID
+import Data.Yaml qualified as Yaml
 import Language.Javascript.JSaddle.WebSockets (jsaddleApp, jsaddleOr)
 import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
 import Reflex.Dom.Core
 import System.Environment (getArgs, lookupEnv)
+import System.FilePath (takeBaseName, takeFileName)
 
-import CardPG.Api.Types qualified as Api -- Still used for sending Join
-import CardPG.Core.Card (CardInstance, CoreCard)
+import CardPG.Api.Reflex (ReflexServerMessage (..))
+import CardPG.Api.Types qualified as Api
+import CardPG.Core.Card (ActorDefinition (..), CardInstance, CoreCard)
 import CardPG.Core.State (ActorState (..), CoreCardState (..))
 import CardPG.Core.Util (tshow)
+
 import Frontend.Card ()
 import Frontend.Catalog (catalogWidget)
 import Frontend.Html (Render (..))
-
--- Local definition matching server
-import CardPG.Api.Reflex (ReflexServerMessage (..))
 
 main :: IO ()
 main = do
@@ -42,7 +45,28 @@ main = do
               <> BL.fromStrict body
               <> "</body></html>"
       BL.writeFile "catalog.html" html
+      BL.writeFile "catalog.html" html
       putStrLn "Done."
+    ["--deck", deckPath] -> do
+      putStrLn $ "Generating deck for " <> deckPath
+      -- Read the YAML file
+      yamlContent <- BS.readFile deckPath
+      case Yaml.decodeEither' yamlContent of
+        Left err -> putStrLn $ "Error decoding YAML: " <> show err
+        Right (actorDef :: ActorDefinition) -> do
+          let baseName = takeBaseName deckPath
+              outName = baseName <> ".html"
+          putStrLn $ "Rendering to " <> outName
+
+          (_, body) <- renderStatic (deckWidget actorDef)
+          let html =
+                "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
+                  <> BL.fromStrict (encodeUtf8 $ actorDef.name)
+                  <> "</title><link rel='stylesheet' href='cardpg-client-reflex/static/output.css'></head><body>"
+                  <> BL.fromStrict body
+                  <> "</body></html>"
+          BL.writeFile outName html
+          putStrLn "Done."
     _ -> do
       putStrLn "Starting CardPG Reflex Client..."
       clientId <- UUID.nextRandom
@@ -165,3 +189,10 @@ renderHand handDyn = do
             "transition-transform duration-200 ease-out origin-bottom hover:-translate-y-8 hover:z-50 cursor-pointer"
             $ do
               dyn_ $ ffor cardDyn render
+
+deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
+deckWidget actor = do
+  divClass "print-deck-grid" $ do
+    mapM_ render actor.nature
+    mapM_ render actor.items
+    mapM_ render actor.deck

@@ -53,3 +53,25 @@ instance (Monad m, DomBuilder t m) => Render Rule m where
 
 instance (Monad m, DomBuilder t m, Render a m) => Render (Identified id a) m where
   render (Identified _ content) = render content
+
+instance (Monad m, DomBuilder t m) => Render ItemCard m where
+  render c = divClass "card" $ do
+    divClass "flex" $ do
+      divClass "name" $ text $ getRawText c.name
+      divClass "expand" blank
+    divClass "flex" $ do
+      divClass "art" blank
+    divClass "textbox" $ do
+      maybe blank render c.passive
+      maybe blank render c.flavor
+
+instance (Monad m, DomBuilder t m) => Render NatureCard m where
+  render c = divClass "card" $ do
+    divClass "flex" $ do
+      divClass "name" $ text $ getRawText c.name
+      divClass "expand" blank
+    divClass "flex" $ do
+      divClass "art" blank
+    divClass "textbox" $ do
+      maybe blank render c.passive
+      maybe blank render c.flavor
