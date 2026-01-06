@@ -1,0 +1,43 @@
+{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE OverloadedStrings #-}
+
+module StatusParsingTest where
+
+import Control.Monad qualified
+import Data.ByteString qualified as BS
+import Data.List.NonEmpty qualified as NE
+import Data.Maybe (fromMaybe)
+import Data.Yaml (ParseException, decodeFileEither, encode)
+import Optics ((^.))
+import Test.Tasty
+import Test.Tasty.HUnit
+
+import Core.Card (CoreCard (..))
+import Core.RuleDefs (Rule (..))
+import Core.RuleInstances ()
+
+test_statusParsing :: TestTree
+test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
+  let path = "../data/cards/status/core.yaml"
+  result <- decodeFileEither path :: IO (Either ParseException [CoreCard])
+  case result of
+    Left err -> assertFailure $ "Failed to parse status cards: " ++ show err
+    Right cards -> do
+      case cards of
+        [] -> assertFailure "Should have at least one card"
+        fatigue : _ -> do
+          -- Verify that rules are parsed as General, not Narrative (fallback)
+          let rules = fromMaybe (error "No rules") (fatigue ^. #rules)
+          case NE.head rules of
+            RuleGeneral _ -> return ()
+            RuleTask _ -> return ()
+            r -> assertFailure $ "Expected RuleGeneral or RuleTask, got: " ++ show r
+
+          -- Roundtrip check
+          let encoded = encode cards
+          original <- BS.readFile path
+
+          Control.Monad.when (encoded /= original) $ do
+            let reformattedPath = "../data/cards/status/core.yaml.reformatted"
+            BS.writeFile reformattedPath encoded
+            assertFailure $ "YAML output mismatch. Reformatted content written to " ++ reformattedPath

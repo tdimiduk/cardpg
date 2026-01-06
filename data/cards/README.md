@@ -21,7 +21,7 @@ The data is stored in **YAML** format, which combines structured fields (Stats, 
 ## Schema Reference
 
 **The authoritative schema is defined in the Haskell source code:**
-[`CardPG.Core.Card`](../../cardpg-core/src/CardPG/Core/Card.hs)
+[`Core.Card`](../../core/src/Core/Card.hs)
 
 Refer to the Haskell types (`CoreCard`, `ItemCard`, `NatureCard`) for the exact list of required and optional fields.
 

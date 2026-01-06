@@ -5,25 +5,22 @@
 roots = [
   # Main executables
   "^Main.main$",
-  "shake-build:exe:shake-build",
-  "cardpg-server:exe:cardpg-server",
-  "card-compiler:exe:card-compiler",
-  "cardpg-codegen:exe:codegen",
+  "server:exe:server",
+  "codegen:exe:codegen",
 
   # Tests are entry points
-  "cardpg-core:test:cardpg-core-test",
-  "card-compiler:test:card-compiler-test"
+  "core:test:core-test",
 ]
 
 type-class-roots = true
 
 # False positives due to Template Haskell or test usage not correctly tracked
 [[unused]]
-module = "CardPG.Core.Json"
+module = "Core.Json"
 symbol = "cardpgTaggedOptions"
 
 [[unused]]
-module = "CardPG.Core.RichText"
+module = "Core.RichText"
 symbol = "unsafeSimpleString"
 
 # Ignore generated record fields in TypeScriptInstances and others
@@ -38,11 +35,11 @@ symbol = ".*"
 
 # Ignore generated/utility fields in CardCompiler.Parser
 [[unused]]
-module = "CardCompiler.Parser"
+module = "Core.Parser"
 symbol = "compareParsedCard"
 
 [[unused]]
-module = "CardCompiler.Parser"
+module = "Core.Parser"
 symbol = "toInt"
 
 # Ignore unused Main exports

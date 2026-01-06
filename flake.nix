@@ -67,10 +67,10 @@
             inputMap = commonInputMap;
             modules = [{
               # Enable parallel compilation for all local packages
-              packages.cardpg-core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
-              packages.cardpg-api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
-              packages.cardpg-server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
-              packages.cardpg-client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
             }];
           };
 
@@ -97,8 +97,8 @@
           # Checks for CI (`nix flake check`)
           checks = {
             # Uncomment when tests are stable:
-            # cardpg-core-test = project.cardpg-core.checks.cardpg-core-test;
-            # cardpg-server-test = project.cardpg-server.checks.cardpg-server-test;
+            # core-test = project.core.checks.core-test;
+            # server-test = project.server.checks.server-test;
           };
 
           # Deployable Packages
@@ -106,13 +106,13 @@
             default = self'.packages.cardpg-server-wrapped;
 
             # Raw server executable from haskell.nix
-            cardpg-server-raw = project.cardpg-server.components.exes.cardpg-server;
+            cardpg-server-raw = project.server.components.exes.server;
 
             # Reflex Client (Native)
-            reflex-client-native = project.cardpg-client-reflex.components.exes.cardpg-client-reflex;
+            reflex-client-native = project.client-reflex.components.exes.client-reflex;
 
             # Reflex Client (JS) 
-            reflex-client-js = projectJS.cardpg-client-reflex.components.exes.cardpg-client-reflex;
+            reflex-client-js = projectJS.client-reflex.components.exes.client-reflex;
 
             # GHC JS cross-compiler - run `root-ghcjs` to protect from GC
             js-ghc = projectJS.pkg-set.config.ghc.package;
@@ -144,7 +144,7 @@
               npmDepsHash = "sha256-4ngCSqVZZYHpWKG9S1WmeIE+oB2uECVuqQYb0eYvDNc=";
 
               # Use the project's executable for codegen
-              nativeBuildInputs = [ project.cardpg-api.components.exes.codegen ];
+              nativeBuildInputs = [ project.api.components.exes.codegen ];
 
               preBuild = ''
                 cp -r ${./design} design
@@ -227,12 +227,12 @@
                 fi
               fi
 
-              # npm install if needed for cardpg-client-reflex (Tailwind)
-              if [ -f cardpg-client-reflex/package.json ]; then
-                if [ ! -d cardpg-client-reflex/node_modules ] || \
-                   [ cardpg-client-reflex/package.json -nt cardpg-client-reflex/node_modules ]; then
-                  echo "Installing cardpg-client-reflex dependencies..."
-                  (cd cardpg-client-reflex && npm install)
+              # npm install if needed for client-reflex (Tailwind)
+              if [ -f client-reflex/package.json ]; then
+                if [ ! -d client-reflex/node_modules ] || \
+                   [ client-reflex/package.json -nt client-reflex/node_modules ]; then
+                  echo "Installing client-reflex dependencies..."
+                  (cd client-reflex && npm install)
                 fi
               fi
 

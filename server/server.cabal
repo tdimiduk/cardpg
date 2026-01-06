@@ -1,0 +1,139 @@
+cabal-version: 3.0
+name:          server
+version:       0.1.0.0
+license:       BSD-3-Clause
+license-file:  LICENSE
+author:        Antigravity
+maintainer:    antigravity@example.com
+build-type:    Simple
+
+common project-config
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    DuplicateRecordFields
+    MultiWayIf
+    NoFieldSelectors
+    OverloadedLabels
+    OverloadedRecordDot
+    OverloadedStrings
+    QuantifiedConstraints
+    RecordWildCards
+    TemplateHaskell
+
+library
+  import:          project-config
+
+  -- cabal-fmt: expand src
+  exposed-modules:
+    Server.ChatParser
+    Server.Config
+    Server.Connection
+    Server.DB
+    Server.Dispatch
+    Server.Engine
+    Server.Game
+    Server.Loader
+    Server.Presenter
+    Server.ReflexConnection
+    Server.Scenario
+    Server.Session
+    Server.Types
+
+  hs-source-dirs:  src
+  build-depends:
+    , aeson
+    , aeson-typescript
+    , api
+    , base               >=4.7 && <5
+    , beam-automigrate
+    , beam-core
+    , beam-migrate
+    , beam-postgres
+    , containers
+    , core
+    , directory
+    , filepath
+    , megaparsec
+    , mtl
+    , optics
+    , postgresql-simple
+    , random
+    , resource-pool
+    , stm
+    , text
+    , time
+    , uuid
+    , websockets
+    , yaml
+
+executable server
+  import:         project-config
+  main-is:        Main.hs
+  other-modules:
+  hs-source-dirs: app
+  build-depends:
+    , aeson
+    , base               >=4.7 && <5
+    , beam-core
+    , beam-postgres
+    , bytestring
+    , containers
+    , core
+    , mtl
+    , postgresql-simple
+    , random
+    , resource-pool
+    , server
+    , stm
+    , text
+    , time
+    , uuid
+    , websockets
+
+executable server-reflex
+  import:         project-config
+  main-is:        ReflexMain.hs
+  hs-source-dirs: app
+  build-depends:
+    , aeson
+    , base               >=4.7 && <5
+    , core
+    , network
+    , postgresql-simple
+    , resource-pool
+    , server
+    , text
+    , websockets
+
+test-suite server-test
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+
+  -- cabal-fmt: expand test -Main
+  other-modules:
+    GameTest
+    InMemoryTest
+    JsonTest
+    ScenarioTest
+
+  hs-source-dirs: test
+  build-depends:
+    , aeson
+    , api
+    , base              >=4.7 && <5
+    , bytestring
+    , containers
+    , core
+    , directory
+    , filepath
+    , mtl
+    , optics
+    , random
+    , server
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , yaml

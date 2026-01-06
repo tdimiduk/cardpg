@@ -1,0 +1,110 @@
+cabal-version: 3.0
+name:          core
+version:       0.1.0.0
+build-type:    Simple
+license:       BSD-3-Clause
+license-file:  LICENSE
+
+common project-config
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    DuplicateRecordFields
+    MultiWayIf
+    NoFieldSelectors
+    OverloadedLabels
+    OverloadedRecordDot
+    OverloadedStrings
+    QuantifiedConstraints
+    RecordWildCards
+    TemplateHaskell
+
+library
+  import:          project-config
+  hs-source-dirs:  src
+  ghc-options:
+    -Wall -Wredundant-constraints -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -O -threaded -fno-show-valid-hole-fits
+
+  build-depends:
+    , aeson
+    , base          >=4.16 && <5
+    , containers
+    , generic-lens
+    , megaparsec
+    , mtl
+    , optics
+    , optics-th
+    , random
+    , text
+    , transformers
+    , uuid-types
+    , vector
+
+  -- cabal-fmt: expand src
+  exposed-modules:
+    Core.Card
+    Core.DSL.Printer
+    Core.DSL.RuleParser
+    Core.Hardcoded
+    Core.Json
+    Core.Language
+    Core.Logic.Bot
+    Core.Logic.Combat
+    Core.Logic.Deck
+    Core.Logic.Monad
+    Core.Logic.Planning
+    Core.Logic.Status
+    Core.NonEmptyText
+    Core.Parser
+    Core.Primitives
+    Core.Render
+    Core.Render.Rule
+    Core.Render.Stats
+    Core.Render.Util
+    Core.RichText
+    Core.RuleDefs
+    Core.RuleInstances
+    Core.State
+    Core.Stats
+    Core.Util
+
+test-suite core-test
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+
+  -- cabal-fmt: expand tests -Main
+  other-modules:
+    ArbitraryInstances
+    ConsequenceParsingTest
+    Core.LogicTest
+    ReadmeExamplesTest
+    ResolutionTests
+    RuleJsonTest
+    StateTests
+    StatusParsingTest
+
+  hs-source-dirs: tests
+  ghc-options:
+    -Wall -Wredundant-constraints -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -O -fno-show-valid-hole-fits
+
+  build-depends:
+    , aeson
+    , base
+    , bytestring
+    , containers
+    , core
+    , generic-random
+    , mtl
+    , optics
+    , QuickCheck
+    , random
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , uuid-types
+    , vector
+    , yaml

@@ -1,0 +1,229 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
+module TypeScriptInstances where
+
+-- Force rebuild
+import Data.Aeson (Options (..), Value)
+import Data.Aeson.TypeScript.TH
+import Data.List.NonEmpty (NonEmpty)
+import Data.Proxy (Proxy (..))
+import Data.Text (Text)
+import GHC.Generics (Generic)
+import Language.Haskell.TH (Type (AppT, ConT, ListT), mkName)
+
+import Api.Frontend qualified as Frontend
+import Api.Types
+  ( ActorGameEvent (..)
+  , AdminCommand (..)
+  , ClientMessage
+  , Command (..)
+  , LogEntry (..)
+  , LogPayload (..)
+  , Phase (..)
+  , ServerMessage
+  , StateUpdate (..)
+  , Token
+  )
+import Core.Card qualified as CC
+import Core.Json (cardpgJsonDef, cardpgJsonOptions, cardpgTaggedOptions)
+import Core.NonEmptyText (NonEmptyText)
+import Core.Primitives
+  ( ActorId
+  , CardInstanceId
+  , CardLocation (..)
+  , EquipSlot (..)
+  , TargetId
+  )
+import Core.Primitives qualified as P
+import Core.RichText (Block, Inline, RichText, TextStyle)
+import Core.RuleDefs
+import Core.State
+  ( ActiveChallenge (..)
+  , AssetState (..)
+  , ChallengeSource (..)
+  , CorePlayState (..)
+  , NarrativeStack (..)
+  , RevealedEffect (..)
+  , SpatialState (..)
+  , TableCard (..)
+  )
+import Core.Stats (Difficulty, ResourceType, StackPower)
+import Core.Stats qualified as S
+import DeriveSpecialized
+  ( deriveSpecializedInstance
+  , specializeType
+  )
+
+import Core.State qualified as Core
+
+instance TypeScript Core.ActiveChallenge where
+  getTypeScriptType _ = "ActiveChallenge"
+
+instance TypeScript Core.ChallengeSource where
+  getTypeScriptType _ = "ChallengeSource"
+
+instance TypeScript CardInstanceId where
+  getTypeScriptType _ = "string"
+
+instance TypeScript TargetId where
+  getTypeScriptType _ = "string"
+
+instance TypeScript ActorId where
+  getTypeScriptType _ = "string"
+
+-- NonEmptyText
+instance TypeScript NonEmptyText where
+  getTypeScriptType _ = "string"
+
+-- Basic Types
+$(deriveTypeScript cardpgJsonDef ''S.ResourceType)
+$(deriveTypeScript cardpgJsonDef ''S.StackPower)
+$(deriveTypeScript cardpgJsonDef ''S.StatValue)
+
+$(deriveTypeScript (cardpgJsonOptions "Location") ''CardLocation)
+
+$(deriveTypeScript cardpgJsonDef ''S.Difficulty)
+$(deriveTypeScript cardpgJsonDef ''EquipSlot)
+
+-- RichText
+$(deriveTypeScript cardpgJsonDef ''TextStyle)
+$(deriveTypeScript cardpgJsonDef ''Inline)
+$(deriveTypeScript (cardpgJsonDef{unwrapUnaryRecords = True}) ''RichText)
+
+$(deriveTypeScript cardpgJsonDef ''Block)
+
+-- Stats
+
+$(deriveTypeScript cardpgJsonDef ''SpatialState)
+
+$(deriveTypeScript cardpgJsonDef ''Phase)
+
+-- 1. Specialized Types for Rules and Stats
+-- These create concrete Haskell types from parameterized ones for TypeScript generation.
+-- Card types (CoreCard, ItemCard, etc.) are handled by Frontend.* types instead.
+$( do
+     d_stats <- specializeType ''S.Stats [ConT ''Int] "Stats"
+     d_specDef <- specializeType ''S.Stats [ConT ''S.ResourceType] "SpecialDefend"
+
+     return
+       ( d_stats
+           ++ d_specDef
+       )
+ )
+
+-- 2. TypeScript Instances
+$( do
+     let inline = ConT ''RichText
+
+     -- Rule Variants (needed for Rule union type)
+     i_attack <- deriveTypeScript (cardpgJsonOptions "Rule") ''AttackDef
+     i_general <- deriveTypeScript (cardpgJsonOptions "Rule") ''GeneralDef
+     i_task <- deriveTypeScript (cardpgJsonOptions "Rule") ''TaskDef
+     i_trigger <- deriveTypeScript (cardpgJsonOptions "Rule") ''TriggerDef
+     i_ongoing <- deriveTypeScript (cardpgJsonOptions "Rule") ''OngoingDef
+     i_passive <- deriveTypeScript (cardpgJsonOptions "Rule") ''PassiveDef
+
+     -- Stats
+     i_stats <- deriveSpecializedInstance cardpgJsonDef ''Stats ''S.Stats [ConT ''Int]
+     i_specDef <-
+       deriveSpecializedInstance cardpgJsonDef ''SpecialDefend ''S.Stats [ConT ''S.ResourceType]
+
+     -- Frontend Card Types
+     i_rule <- deriveTypeScript (cardpgJsonOptions "Rule") ''Frontend.Rule
+     i_core <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCard
+     i_item <- deriveTypeScript cardpgJsonDef ''Frontend.ItemCard
+     i_nature <- deriveTypeScript cardpgJsonDef ''Frontend.NatureCard
+     i_talent <- deriveTypeScript cardpgJsonDef ''Frontend.TalentCard
+     i_consequence <- deriveTypeScript cardpgJsonDef ''Frontend.ConsequenceCard
+     i_logCard <- deriveTypeScript cardpgJsonDef ''Frontend.LogCard
+     i_defenseDetails <- deriveTypeScript cardpgJsonDef ''Frontend.DefenseDetails
+
+     return
+       ( i_attack
+           ++ i_general
+           ++ i_task
+           ++ i_trigger
+           ++ i_ongoing
+           ++ i_rule
+           ++ i_passive
+           ++ i_stats
+           ++ i_specDef
+           ++ i_core
+           ++ i_item
+           ++ i_nature
+           ++ i_talent
+           ++ i_consequence
+           ++ i_logCard
+           ++ i_defenseDetails
+       )
+ )
+
+-- 3. Dependent Types (Must see ItemCard instance etc)
+$( do
+     -- State Types
+     i_token <- deriveTypeScript cardpgJsonDef ''Token
+     i_admin <- deriveTypeScript (cardpgTaggedOptions "") ''AdminCommand
+     i_command <- deriveTypeScript cardpgJsonDef ''Command
+     i_actorGameEvent <- deriveTypeScript cardpgJsonDef ''ActorGameEvent
+     i_clientMsg <- deriveTypeScript cardpgJsonDef ''ClientMessage
+
+     i_actionStack <- deriveTypeScript cardpgJsonDef ''Frontend.ActionStack
+     i_narrativeStack <- deriveTypeScript cardpgJsonDef ''Frontend.NarrativeStack
+     i_plannedAction <- deriveTypeScript cardpgJsonDef ''Frontend.PlannedAction
+     i_challengeSource <- deriveTypeScript cardpgJsonDef ''Frontend.ChallengeSource
+     i_activeChallenge <- deriveTypeScript cardpgJsonDef ''Frontend.ActiveChallenge
+     i_activeDefense <- deriveTypeScript cardpgJsonDef ''Frontend.ActiveDefense
+     i_revealedEffect <- deriveTypeScript cardpgJsonDef ''RevealedEffect
+
+     i_logPayload <- deriveTypeScript cardpgJsonDef ''LogPayload
+     i_logEntry <- deriveTypeScript cardpgJsonDef ''LogEntry
+
+     -- Frontend.TableCard
+     i_tableCard <- deriveTypeScript (cardpgTaggedOptions "TC") ''Frontend.TableCard
+     i_illegalDetails <- deriveTypeScript cardpgJsonDef ''Frontend.IllegalActionDetails
+     i_gameEvent <- deriveTypeScript cardpgJsonDef ''Frontend.GameEvent
+
+     return
+       ( i_token
+           ++ i_admin
+           ++ i_command
+           ++ i_actorGameEvent
+           ++ i_clientMsg
+           ++ i_actionStack
+           ++ i_narrativeStack
+           ++ i_plannedAction
+           ++ i_challengeSource
+           ++ i_activeChallenge
+           ++ i_activeDefense
+           ++ i_revealedEffect
+           ++ i_logPayload
+           ++ i_logEntry
+           ++ i_tableCard
+           ++ i_illegalDetails
+           ++ i_gameEvent
+       )
+ )
+
+-- 4. Dependent State
+$( do
+     i_corePlay <- deriveTypeScript cardpgJsonDef ''CorePlayState
+     i_coreState <- deriveTypeScript cardpgJsonDef ''Frontend.CoreCardState
+     i_tableState <- deriveTypeScript cardpgJsonDef ''Frontend.TableState
+     i_assetState <- deriveTypeScript cardpgJsonDef ''AssetState
+     i_actorState <- deriveTypeScript cardpgJsonDef ''Frontend.ActorState
+     i_stateUpdate <- deriveTypeScript cardpgJsonDef ''StateUpdate
+     i_serverMsg <- deriveTypeScript cardpgJsonDef ''ServerMessage
+
+     return
+       ( i_corePlay
+           ++ i_coreState
+           ++ i_tableState
+           ++ i_assetState
+           ++ i_actorState
+           ++ i_stateUpdate
+           ++ i_serverMsg
+       )
+ )

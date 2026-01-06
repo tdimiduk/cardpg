@@ -1,0 +1,61 @@
+cabal-version: 3.4
+name:          client-reflex
+version:       0.1.0.0
+synopsis:      Reflex-DOM frontend for CardPG
+license:       MIT
+author:        Antigravity
+maintainer:    antigravity@example.com
+build-type:    Simple
+
+common warnings
+  ghc-options: -Wall
+
+common project-config
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    DuplicateRecordFields
+    MultiWayIf
+    NoFieldSelectors
+    OverloadedLabels
+    OverloadedRecordDot
+    OverloadedStrings
+    QuantifiedConstraints
+    RecordWildCards
+    RecursiveDo
+    TemplateHaskell
+
+executable client-reflex
+  import:         warnings
+  import:         project-config
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  main-is:        Main.hs
+  build-depends:
+    , aeson
+    , api
+    , base
+    , bytestring
+    , containers
+    , core
+    , filepath
+    , jsaddle-warp
+    , optics-core
+    , random
+    , reflex-dom
+    , reflex-dom-core
+    , text
+    , uuid
+    , vector
+    , wai
+    , warp
+    , websockets
+    , yaml
+
+  other-modules:
+    Frontend.Card
+    Frontend.Card.Common
+    Frontend.Catalog
+    Frontend.Html
+    Frontend.Svg
+
+  hs-source-dirs: src

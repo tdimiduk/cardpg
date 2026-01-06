@@ -1,7 +1,7 @@
 /scratch
 /data/cards/raw
 /vtt-react/src/generated/*.ts
-/cardpg-client-reflex/static/*.css
+/client-reflex/static/*.css
 vtt-react/src/data/generated_cards.json
 *.yaml.reformatted
 cardpg.code-workspace
