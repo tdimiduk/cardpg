@@ -21,7 +21,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
 import Reflex.Dom.Core
 import System.Environment (getArgs, lookupEnv)
-import System.FilePath (takeBaseName, takeFileName)
+import System.FilePath (takeBaseName)
 
 import CardPG.Api.Reflex (ReflexServerMessage (..))
 import CardPG.Api.Types qualified as Api

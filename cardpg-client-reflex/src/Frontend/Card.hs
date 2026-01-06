@@ -62,8 +62,8 @@ instance (Monad m, DomBuilder t m) => Render ItemCard m where
     divClass "flex" $ do
       divClass "art" blank
     divClass "textbox" $ do
-      maybe blank render c.passive
-      maybe blank render c.flavor
+      render c.passive
+      render c.flavor
 
 instance (Monad m, DomBuilder t m) => Render NatureCard m where
   render c = divClass "card" $ do
@@ -73,5 +73,5 @@ instance (Monad m, DomBuilder t m) => Render NatureCard m where
     divClass "flex" $ do
       divClass "art" blank
     divClass "textbox" $ do
-      maybe blank render c.passive
-      maybe blank render c.flavor
+      render c.passive
+      render c.flavor
