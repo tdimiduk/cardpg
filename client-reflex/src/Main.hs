@@ -6,7 +6,7 @@
 
 module Main where
 
-import Control.Monad (void)
+import Control.Monad (forM_, void)
 import Data.Aeson (eitherDecode, encode)
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
@@ -26,7 +26,13 @@ import System.FilePath (takeBaseName)
 import Api.Reflex (ReflexServerMessage (..))
 import Api.Types qualified as Api
 import Core.Card (ActorDefinition (..), CardInstance, CoreCard)
-import Core.State (ActorState (..), CoreCardState (..))
+import Core.State
+  ( ActionStack (..)
+  , ActorState (..)
+  , CoreCardState (..)
+  , NarrativeStack (..)
+  , PlannedAction (..)
+  )
 import Core.Util (tshow)
 
 import Frontend.Card ()
@@ -169,26 +175,87 @@ appWidget clientId = do
               dyn_ $ ffor selectedActorId $ \case
                 Nothing -> blank
                 Just aid -> do
-                  let handDyn =
-                        fmap (maybe [] (\a -> a.coreState.hand) . Map.lookup aid) actorsMapDyn
-                  renderHand handDyn
+                  let actorDyn = fmap (Map.lookup aid) actorsMapDyn
+                  handWidget actorDyn
 
             return selectEvt'
 
   return ()
 
-renderHand :: (MonadWidget t m) => Dynamic t [CardInstance CoreCard] -> m ()
-renderHand handDyn = do
+handWidget :: (MonadWidget t m) => Dynamic t (Maybe ActorState) -> m ()
+handWidget actorDyn = do
   divClass "absolute bottom-0 left-0 right-0 flex justify-center items-end pb-4 pointer-events-none" $ do
-    divClass "pointer-events-auto flex items-end justify-center px-8" $ do
-      -- We need to render the list with standard Reflex list function
-      -- Note: simpleList is efficient for dynamic lists
-      void $ simpleList handDyn $ \cardDyn -> do
-        divClass "pointer-events-auto relative group w-64 shrink-0" $ do
+    divClass "pointer-events-auto flex items-end justify-center px-8 gap-12" $ do
+      -- Planned Action Section (Left)
+      dyn_ $ ffor actorDyn $ \case
+        Just actor -> maybe blank plannedActionWidget actor.coreState.planned
+        Nothing -> blank
+
+      -- Hand Section (Right)
+      let handDyn = ffor actorDyn $ \case
+            Just actor -> actor.coreState.hand
+            Nothing -> []
+
+      -- We need to check if there is a planned action to know if we should dim the hand
+      -- But for now, we'll just render the hand as is.
+
+      divClass "flex items-end transition-opacity duration-300 min-h-[260px]" $ do
+        void $ simpleList handDyn $ \cardDyn -> do
+          divClass "pointer-events-auto relative group w-[160px]" $ do
+            divClass
+              "transition-transform duration-200 ease-out origin-bottom hover:-translate-y-8 hover:z-50 cursor-pointer"
+              $ do
+                dyn_ $ ffor cardDyn render
+
+plannedActionWidget :: (MonadWidget t m) => PlannedAction -> m ()
+plannedActionWidget planned = case planned of
+  PStandard (ActionStack action res) -> do
+    divClass "flex flex-col items-center gap-2" $ do
+      -- Revise Button (Floating above)
+      elClass
+        "button"
+        "text-red-400 hover:text-red-300 text-[10px] font-bold uppercase flex items-center gap-1 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50 backdrop-blur transition-colors"
+        $ do
+          text "↺ Revise"
+
+      -- Stack
+      divClass "relative mt-2 w-[160px] h-[220px]" $ do
+        -- Resources (Underneath, shifted left)
+        -- We iterate with index to shift them
+        forM_ (zip [1 :: Int ..] res) $ \(i, r) -> do
+          -- Style for shift: translate(-50px * i) matching React
+          -- 50px covers the number strip + padding
+          let offset = negate (i * 50)
+              styleStr = "transform: translate(" <> tshow offset <> "px, 0px); z-index: " <> tshow (10 - i)
+          elAttr "div" ("style" =: styleStr <> "class" =: "absolute top-0 left-0 shadow-xl brightness-75") $
+            render r
+
+        -- Action Card (Top)
+        divClass "absolute top-0 left-0 z-20 shadow-2xl hover:scale-105 transition-transform" $ do
+          render action
           divClass
-            "transition-transform duration-200 ease-out origin-bottom hover:-translate-y-8 hover:z-50 cursor-pointer"
-            $ do
-              dyn_ $ ffor cardDyn render
+            "absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow z-50"
+            $ text "PLANNED"
+  PNarrative (NarrativeStack cards _color) -> do
+    divClass "flex flex-col items-center gap-2" $ do
+      elClass
+        "button"
+        "text-red-400 hover:text-red-300 text-[10px] font-bold uppercase flex items-center gap-1 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50 backdrop-blur transition-colors"
+        $ do
+          text "↺ Revise"
+
+      divClass "flex -space-x-8" $ do
+        mapM_
+          (divClass "relative z-10 hover:z-20 transform hover:-translate-y-2 transition-transform" . render)
+          cards
+  PPass -> do
+    divClass "flex flex-col items-center gap-2" $ do
+      elClass
+        "button"
+        "text-red-400 hover:text-red-300 text-[10px] font-bold uppercase flex items-center gap-1 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/50 backdrop-blur transition-colors"
+        $ do
+          text "↺ Revise"
+      divClass "text-slate-500 italic text-sm" $ text "Passed turn"
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
