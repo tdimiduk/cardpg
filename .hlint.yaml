@@ -12,5 +12,5 @@
 # - warn: {lhs: "map f (map g x)", rhs: "map (f . g) x"}
 
 # Define arguments to pass to extensions
-- arguments: [-XTypeApplications, -XOverloadedStrings]
+- arguments: [-XTypeApplications, -XOverloadedStrings, -XRecursiveDo]
 #####################################################################

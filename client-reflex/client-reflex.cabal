@@ -15,6 +15,7 @@ common project-config
   default-extensions:
     DerivingStrategies
     DuplicateRecordFields
+    LambdaCase
     MultiWayIf
     NoFieldSelectors
     OverloadedLabels
@@ -52,9 +53,13 @@ executable client-reflex
     , yaml
 
   other-modules:
+    Frontend.App
     Frontend.Card
     Frontend.Card.Common
     Frontend.Catalog
+    Frontend.Game.Hand
+    Frontend.Game.PlannedAction
+    Frontend.Game.Sidebar
     Frontend.Html
     Frontend.Svg
 
