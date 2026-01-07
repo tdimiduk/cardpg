@@ -1,9 +1,11 @@
 {-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE RankNTypes #-}
 
 module Main where
 
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
+import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8)
 import Data.UUID.V4 qualified as UUID
 import Data.Yaml qualified as Yaml
@@ -26,15 +28,7 @@ main = do
   args <- getArgs
   case args of
     ["--static"] -> do
-      putStrLn "Generating static catalog.html..."
-      (_, body) <- renderStatic catalogWidget
-      let html =
-            "<!DOCTYPE html><html><head><meta charset='utf-8'><title>CardPG Catalog</title><link rel='stylesheet' href='client-reflex/static/output.css'></head><body>"
-              <> BL.fromStrict body
-              <> "</body></html>"
-      BL.writeFile "catalog.html" html
-      BL.writeFile "catalog.html" html
-      putStrLn "Done."
+      writeStaticPage "catalog.html" "CardPG Catalog" catalogWidget
     ["--deck", deckPath] -> do
       putStrLn $ "Generating deck for " <> deckPath
       -- Read the YAML file
@@ -44,17 +38,7 @@ main = do
         Right (actorDef :: ActorDefinition) -> do
           let baseName = takeBaseName deckPath
               outName = baseName <> ".html"
-          putStrLn $ "Rendering to " <> outName
-
-          (_, body) <- renderStatic (deckWidget actorDef)
-          let html =
-                "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
-                  <> BL.fromStrict (encodeUtf8 $ actorDef.name)
-                  <> "</title><link rel='stylesheet' href='client-reflex/static/output.css'></head><body>"
-                  <> BL.fromStrict body
-                  <> "</body></html>"
-          BL.writeFile outName html
-          putStrLn "Done."
+          writeStaticPage outName actorDef.name (deckWidget actorDef)
     _ -> do
       putStrLn "Starting CardPG Reflex Client..."
       clientId <- UUID.nextRandom
@@ -83,3 +67,19 @@ deckWidget actor = do
     mapM_ (renderWith printSettings) actor.nature
     mapM_ (renderWith printSettings) actor.items
     mapM_ (renderWith printSettings) actor.deck
+
+wrapHtml :: Text -> BS.ByteString -> BL.ByteString
+wrapHtml title body =
+  "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
+    <> BL.fromStrict (encodeUtf8 title)
+    <> "</title><link rel='stylesheet' href='client-reflex/static/output.css'></head><body>"
+    <> BL.fromStrict body
+    <> "</body></html>"
+
+writeStaticPage :: FilePath -> Text -> (forall x. StaticWidget x ()) -> IO ()
+writeStaticPage outPath title widget = do
+  putStrLn $ "Rendering to " <> outPath
+  (_, body) <- renderStatic widget
+  let html = wrapHtml title body
+  BL.writeFile outPath html
+  putStrLn "Done."
