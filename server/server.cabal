@@ -10,6 +10,7 @@ build-type:    Simple
 common project-config
   default-language:   GHC2021
   default-extensions:
+    DefaultSignatures
     DerivingStrategies
     DuplicateRecordFields
     MultiWayIf
@@ -20,6 +21,7 @@ common project-config
     QuantifiedConstraints
     RecordWildCards
     TemplateHaskell
+    TypeFamilies
 
 library
   import:          project-config

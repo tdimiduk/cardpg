@@ -17,7 +17,7 @@ import System.FilePath (takeBaseName)
 import Api.Reflex ()
 import Core.Card (ActorDefinition (..))
 import Frontend.App (appWidget)
-import Frontend.Card ()
+import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Catalog (catalogWidget)
 import Frontend.Html (Render (..))
 
@@ -29,7 +29,7 @@ main = do
       putStrLn "Generating static catalog.html..."
       (_, body) <- renderStatic catalogWidget
       let html =
-            "<!DOCTYPE html><html><head><meta charset='utf-8'><title>CardPG Catalog</title><link rel='stylesheet' href='cardpg-client-reflex/static/output.css'></head><body>"
+            "<!DOCTYPE html><html><head><meta charset='utf-8'><title>CardPG Catalog</title><link rel='stylesheet' href='client-reflex/static/output.css'></head><body>"
               <> BL.fromStrict body
               <> "</body></html>"
       BL.writeFile "catalog.html" html
@@ -50,7 +50,7 @@ main = do
           let html =
                 "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
                   <> BL.fromStrict (encodeUtf8 $ actorDef.name)
-                  <> "</title><link rel='stylesheet' href='cardpg-client-reflex/static/output.css'></head><body>"
+                  <> "</title><link rel='stylesheet' href='client-reflex/static/output.css'></head><body>"
                   <> BL.fromStrict body
                   <> "</body></html>"
           BL.writeFile outName html
@@ -78,7 +78,8 @@ headWidget = do
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
-  divClass "print-deck-grid" $ do
-    mapM_ render actor.nature
-    mapM_ render actor.items
-    mapM_ render actor.deck
+  let printSettings = CardSettings{displayMode = CardPrint}
+  divClass "grid gap-[3mm] justify-start grid-cols-[repeat(3,56mm)]" $ do
+    mapM_ (renderWith printSettings) actor.nature
+    mapM_ (renderWith printSettings) actor.items
+    mapM_ (renderWith printSettings) actor.deck

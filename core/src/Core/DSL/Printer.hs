@@ -9,7 +9,7 @@ import Data.Text qualified as T
 
 import Core.Language (styleDelimiter)
 import Core.NonEmptyText (NonEmptyText, getRawText)
-import Core.Render (Render (..))
+import Core.Render (IconMode (..), Render (..))
 import Core.Render.Rule ()
 import Core.Render.Stats ()
 import Core.Render.Util (renderSpace)
@@ -29,9 +29,10 @@ instance Render Text PrinterM where
   render t = tell [t]
 
 instance Render ResourceType PrinterM where
-  render Red = tell ["{Red}"]
-  render Yellow = tell ["{Yellow}"]
-  render Blue = tell ["{Blue}"]
+  type RenderConfig ResourceType = IconMode
+  renderWith _ Red = tell ["{Red}"]
+  renderWith _ Yellow = tell ["{Yellow}"]
+  renderWith _ Blue = tell ["{Blue}"]
 
 instance Render RichText PrinterM where
   render rt = mapM_ render (getInlines rt)
@@ -47,7 +48,8 @@ instance Render NonEmptyText PrinterM where
   render net = tell [getRawText net]
 
 instance Render Difficulty PrinterM where
-  render (Difficulty attr val) = do
+  type RenderConfig Difficulty = IconMode
+  renderWith _ (Difficulty attr val) = do
     render attr
     renderSpace
     render (tshow val)

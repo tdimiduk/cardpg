@@ -12,8 +12,9 @@ def setup_output_dir(output_dir: Path):
         output_dir.mkdir(parents=True)
     
     # Symlink config
-    link_name = "cardpg-client-reflex"
-    target = Path("..") / link_name
+    # Symlink config
+    link_name = "client-reflex"
+    target = Path("..") / "client-reflex"
     link_path = output_dir / link_name
 
     if link_path.exists() or link_path.is_symlink():
@@ -23,7 +24,7 @@ def setup_output_dir(output_dir: Path):
 
 def run_cabal(args):
     """Runs the cabal command."""
-    cmd = ["cabal", "run", "exe:cardpg-client-reflex", "--"] + args
+    cmd = ["cabal", "run", "exe:client-reflex", "--"] + args
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
 
 def snapshot_catalog(args):

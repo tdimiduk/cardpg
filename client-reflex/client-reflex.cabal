@@ -13,6 +13,7 @@ common warnings
 common project-config
   default-language:   GHC2021
   default-extensions:
+    DefaultSignatures
     DerivingStrategies
     DuplicateRecordFields
     LambdaCase
@@ -25,6 +26,7 @@ common project-config
     RecordWildCards
     RecursiveDo
     TemplateHaskell
+    TypeFamilies
 
 executable client-reflex
   import:         warnings
@@ -38,6 +40,7 @@ executable client-reflex
     , bytestring
     , containers
     , core
+    , data-default
     , filepath
     , jsaddle-warp
     , optics-core
@@ -61,6 +64,7 @@ executable client-reflex
     Frontend.Game.PlannedAction
     Frontend.Game.Sidebar
     Frontend.Html
+    Frontend.Style
     Frontend.Svg
 
   hs-source-dirs: src

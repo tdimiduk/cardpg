@@ -8,6 +8,7 @@ license-file:  LICENSE
 common project-config
   default-language:   GHC2021
   default-extensions:
+    DefaultSignatures
     DerivingStrategies
     DuplicateRecordFields
     MultiWayIf
@@ -18,6 +19,7 @@ common project-config
     QuantifiedConstraints
     RecordWildCards
     TemplateHaskell
+    TypeFamilies
 
 library
   import:          project-config
@@ -30,6 +32,7 @@ library
     , aeson
     , base          >=4.16 && <5
     , containers
+    , data-default
     , generic-lens
     , megaparsec
     , mtl
