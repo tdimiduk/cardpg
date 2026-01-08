@@ -28,11 +28,9 @@ common project-config
     TemplateHaskell
     TypeFamilies
 
-executable client-reflex
-  import:         warnings
-  import:         project-config
-  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
-  main-is:        Main.hs
+library
+  import:          warnings
+  import:          project-config
   build-depends:
     , aeson
     , api
@@ -41,8 +39,6 @@ executable client-reflex
     , containers
     , core
     , data-default
-    , filepath
-    , jsaddle-warp
     , optics-core
     , random
     , reflex-dom
@@ -50,12 +46,9 @@ executable client-reflex
     , text
     , uuid
     , vector
-    , wai
-    , warp
-    , websockets
     , yaml
 
-  other-modules:
+  exposed-modules:
     Frontend.App
     Frontend.Card
     Frontend.Catalog
@@ -65,5 +58,42 @@ executable client-reflex
     Frontend.Html
     Frontend.Style
     Frontend.Svg
+    Frontend.UI.Scaler
 
-  hs-source-dirs: src
+  hs-source-dirs:  src
+
+executable client-reflex
+  import:         warnings
+  import:         project-config
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  main-is:        Main.hs
+  build-depends:
+    , api
+    , base
+    , client-reflex
+    , jsaddle-warp
+    , reflex-dom-core
+    , text
+    , uuid
+    , wai
+    , warp
+    , websockets
+
+  hs-source-dirs: app
+
+executable cardpg-static
+  import:         warnings
+  import:         project-config
+  main-is:        StaticMain.hs
+  build-depends:
+    , api
+    , base
+    , bytestring
+    , client-reflex
+    , core
+    , filepath
+    , reflex-dom-core
+    , text
+    , yaml
+
+  hs-source-dirs: app

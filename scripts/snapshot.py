@@ -24,7 +24,7 @@ def setup_output_dir(output_dir: Path):
 
 def run_cabal(args):
     """Runs the cabal command."""
-    cmd = ["cabal", "run", "exe:client-reflex", "--"] + args
+    cmd = ["cabal", "run", "exe:cardpg-static", "--"] + args
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
 
 def snapshot_catalog(args):

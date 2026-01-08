@@ -5,7 +5,7 @@ module Frontend.UI.Scaler (scalable) where
 
 import Control.Monad (void)
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Reflex.Dom.Core
 
 -- | Wraps content in a responsive "scaler" container.
