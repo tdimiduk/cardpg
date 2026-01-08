@@ -1,4 +1,5 @@
 {-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE MultilineStrings #-}
 {-# LANGUAGE RankNTypes #-}
 
 module Main where
@@ -6,6 +7,7 @@ module Main where
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
 import Data.Text (Text)
+import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
 import Data.UUID.V4 qualified as UUID
 import Data.Yaml qualified as Yaml
@@ -22,6 +24,7 @@ import Frontend.App (appWidget)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Catalog (catalogWidget)
 import Frontend.Html (Render (..))
+import Frontend.Style qualified as Style
 
 main :: IO ()
 main = do
@@ -59,11 +62,51 @@ headWidget = do
   el "title" $ text "CardPG Reflex Client"
   elAttr "meta" ("charset" =: "utf-8") blank
   elAttr "link" ("rel" =: "stylesheet" <> "href" =: "/output.css") blank
+  el "script" $
+    text
+      """
+      const init = () => {
+        const ro = new ResizeObserver(entries => {
+          for (const entry of entries) {
+            const container = entry.target;
+            const content = container.querySelector('.scaler-target');
+            if (!content) continue;
+            const nativeW = parseFloat(container.dataset.nativeW);
+            const currentW = entry.contentRect.width;
+            if (nativeW && currentW) {
+              const scale = currentW / (nativeW * 3.7795275591);
+              content.style.transform = `scale(${scale})`;
+            }
+          }
+        });
+
+        const mo = new MutationObserver(mutations => {
+          for (const m of mutations) {
+            for (const node of m.addedNodes) {
+              if (node.nodeType === 1) {
+                if (node.classList.contains('scaler-container')) ro.observe(node);
+                node.querySelectorAll('.scaler-container').forEach(c => ro.observe(c));
+              }
+            }
+          }
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+
+        // Find existing ones
+        document.querySelectorAll('.scaler-container').forEach(c => ro.observe(c));
+      };
+
+      if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+      """
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
-  divClass "grid gap-[3mm] justify-start grid-cols-[repeat(3,56mm)]" $ do
+  Style.divStyle Style.deckGrid $ do
     mapM_ (renderWith printSettings) actor.nature
     mapM_ (renderWith printSettings) actor.items
     mapM_ (renderWith printSettings) actor.deck

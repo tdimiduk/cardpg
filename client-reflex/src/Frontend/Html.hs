@@ -9,12 +9,9 @@ module Frontend.Html
   , resourceSymbol -- Exporting helper if needed, though mostly used via Render
   ) where
 
-import Data.Default (Default (..))
 import Data.Text (Text)
-import Data.Text qualified as T
 import Reflex.Dom.Core
 
-import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.Render (IconMode (..), Render (..))
 import Core.Render.Rule ()
 import Core.Render.Stats ()
@@ -22,6 +19,7 @@ import Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (..), ge
 import Core.Stats (Difficulty (..), ResourceType (..), StatValue (..))
 import Core.Util (tshow)
 
+import Frontend.Style qualified as Style
 import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
 
 -- Base text instance
@@ -31,16 +29,18 @@ instance {-# OVERLAPPING #-} (Monad m, DomBuilder t m) => Render Text m where
 -- Style helpers
 resourceSymbol :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
 resourceSymbol mode r t = case r of
-  Red -> renderSquare (color <> " " <> style) t
-  Yellow -> renderCircle (color <> " " <> style) t
-  Blue -> renderDiamond (color <> " " <> style) t
+  Red -> renderSquare (color <> style) t
+  Yellow -> renderCircle (color <> style) t
+  Blue -> renderDiamond (color <> style) t
   where
-    color = T.toLower (tshow r)
+    color = case r of
+      Red -> [Style.textRed500]
+      Yellow -> [Style.textYellow400]
+      Blue -> [Style.textBlue500]
     style = case mode of
-      IconInline ->
-        "w-[1em] h-[1em] ml-[-0.15em] mr-[-0.05em] align-middle inline-block transform translate-y-[-0.1em]"
-      IconBlock -> "w-10 h-10 font-bold text-xl"
-      IconResponsive -> "h-[30%] w-auto aspect-square font-bold"
+      IconInline -> Style.iconInline
+      IconBlock -> Style.iconBlock
+      IconResponsive -> Style.iconResponsive
 
 instance (Monad m, DomBuilder t m) => Render ResourceType m where
   type RenderConfig ResourceType = IconMode
@@ -51,12 +51,11 @@ instance (Monad m, DomBuilder t m) => Render RichText m where
 
 instance (Monad m, DomBuilder t m) => Render Inline m where
   render (TextRun style content) =
-    let txt = getRawText content
-     in case style of
-          Nothing -> text txt
-          Just Bold -> el "b" $ text txt
-          Just Italic -> el "i" $ text txt
-          Just GameKeyword -> el "strong" $ text txt
+    case style of
+      Nothing -> render content
+      Just Bold -> el "b" $ render content
+      Just Italic -> el "i" $ render content
+      Just GameKeyword -> el "strong" $ render content
   render (ColorValue v) = render v
   render (DifficultyValue d) = render d
   render Break = el "br" $ pure ()
@@ -66,9 +65,6 @@ instance (Monad m, DomBuilder t m) => Render Block m where
   render Rule = el "hr" $ pure ()
   render (Header t) = el "h3" $ render t
   render (BulletList items) = el "ul" $ mapM_ (el "li" . render) items
-
-instance (Monad m, DomBuilder t m) => Render NonEmptyText m where
-  render net = text (getRawText net)
 
 instance (Monad m, DomBuilder t m) => Render Difficulty m where
   type RenderConfig Difficulty = IconMode

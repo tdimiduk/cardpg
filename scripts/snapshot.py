@@ -84,10 +84,11 @@ def snapshot_deck(args):
             print(f"Error: {basename}.html not found", file=sys.stderr)
             continue # Skip to next file if HTML wasn't generated
 
-        print(f"Taking snapshot to output/{basename}.pdf...")
+        # PDF Generation
+        print(f"Generating PDF to output/{basename}.pdf...")
         output_pdf = output_dir / f"{basename}.pdf"
         
-        cmd = [
+        cmd_pdf = [
             "chromium",
             "--headless",
             "--disable-gpu",
@@ -95,8 +96,24 @@ def snapshot_deck(args):
             "--no-pdf-header-footer",
             f"file://{dest_html.resolve()}"
         ]
-        subprocess.run(cmd, check=True)
-        print(f"Snapshot saved to {output_pdf.resolve()}")
+        subprocess.run(cmd_pdf, check=True)
+        print(f"PDF saved to {output_pdf.resolve()}")
+
+        # PNG Generation (for visual diffing)
+        print(f"Generating PNG to output/{basename}.png...")
+        output_png = output_dir / f"{basename}.png"
+        
+        cmd_png = [
+            "chromium",
+            "--headless",
+            "--disable-gpu",
+            "--hide-scrollbars",
+            "--window-size=1920,2000", # Approximate decent size for a deck view
+            f"--screenshot={output_png}",
+            f"file://{dest_html.resolve()}"
+        ]
+        subprocess.run(cmd_png, check=True)
+        print(f"PNG saved to {output_png.resolve()}")
 
 def main():
     # Ensure we are in the project root

@@ -14,6 +14,33 @@ import Api.Reflex (ReflexServerMessage (..))
 import Api.Types qualified as Api
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.Sidebar (sidebarWidget)
+import Frontend.Style
+
+-- | Root layout for the app (full-screen row)
+appRoot :: [CssClass]
+appRoot =
+  [ flex
+  , flexRow
+  , "h-screen"
+  , "bg-slate-950"
+  , "text-slate-100"
+  , "overflow-hidden"
+  ]
+
+-- | Main content area (right of sidebar)
+mainContent :: [CssClass]
+mainContent =
+  [ "flex-1"
+  , relative
+  , "bg-slate-900"
+  , "overflow-hidden"
+  , flex
+  , flexCol
+  ]
+
+-- | Placeholder for game board
+gameBoardPlaceholder :: [CssClass]
+gameBoardPlaceholder = ["flex-1", flex, itemsCenter, justifyCenter, "text-slate-700"]
 
 appWidget :: (MonadWidget t m) => UUID -> m ()
 appWidget clientId = do
@@ -33,14 +60,14 @@ appWidget clientId = do
   rec selectedActorId <- holdDyn Nothing (leftmost [selectEvt])
 
       -- Layout: Sidebar + Main Content
-      selectEvt <- divClass "flex flex-row h-screen bg-slate-950 text-slate-100 overflow-hidden" $ do
+      selectEvt <- divStyle appRoot $ do
         -- Sidebar (Left)
         selEvt <- sidebarWidget selectedActorId actorsMapDyn
 
         -- Main Content Area (Right)
-        divClass "flex-1 relative bg-slate-900 overflow-hidden flex flex-col" $ do
+        divStyle mainContent $ do
           -- Top Bar / Game Board Area (Placeholder)
-          divClass "flex-1 flex items-center justify-center text-slate-700" $
+          divStyle gameBoardPlaceholder $
             text "Game Board Area"
 
           -- Player Hand Area (Bottom Overlay)

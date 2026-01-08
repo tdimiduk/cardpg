@@ -23,7 +23,7 @@ import Core.Language
   , sepColon
   , sepSemi
   )
-import Core.NonEmptyText (NonEmptyText, getRawText)
+import Core.NonEmptyText (NonEmptyText)
 import Core.Render
 import Core.Render.Util (renderArrow, renderParens, renderSpace)
 import Core.RichText (RichText)
@@ -70,7 +70,7 @@ instance
   render GeneralDef{..} = do
     render cmdAction
     renderSpace
-    render (getRawText name)
+    render name
     case cost of
       Nothing -> pure ()
       Just c -> do
@@ -118,7 +118,7 @@ instance
   render TaskDef{..} = do
     render cmdTask
     renderSpace
-    render (getRawText name)
+    render name
     -- Complex logic from Printer:
     -- parts = [checkStr, timeStr, costStr]
     -- inner = T.intercalate "; " (catMaybes parts)

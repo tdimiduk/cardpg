@@ -14,13 +14,14 @@ import Core.Stats
 -- Import the Render instance
 import Frontend.Card ()
 import Frontend.Html (Render (..))
+import Frontend.Style qualified as Style
 
 catalogWidget :: (DomBuilder t m) => m ()
 catalogWidget = do
   el "h1" $ text "Component Catalog"
 
   el "h2" $ text "Core Cards"
-  divClass "cards" $ do
+  Style.divStyle Style.cardGrid $ do
     render exampleAttack
     render exampleSkill
     render exampleHeavyText

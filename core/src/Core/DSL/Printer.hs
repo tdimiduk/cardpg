@@ -8,7 +8,7 @@ import Data.Text (Text)
 import Data.Text qualified as T
 
 import Core.Language (styleDelimiter)
-import Core.NonEmptyText (NonEmptyText, getRawText)
+import Core.NonEmptyText (getRawText)
 import Core.Render (IconMode (..), Render (..))
 import Core.Render.Rule ()
 import Core.Render.Stats ()
@@ -39,13 +39,10 @@ instance Render RichText PrinterM where
 
 instance Render Inline PrinterM where
   render (TextRun (Just style) content) = tell [wrapped (styleDelimiter style) $ getRawText content]
-  render (TextRun Nothing content) = tell [getRawText content]
+  render (TextRun Nothing content) = render content
   render (ColorValue power) = tell [prettyStatValue power]
   render (DifficultyValue diff) = tell [prettyDifficulty diff]
   render Break = tell ["\n"]
-
-instance Render NonEmptyText PrinterM where
-  render net = tell [getRawText net]
 
 instance Render Difficulty PrinterM where
   type RenderConfig Difficulty = IconMode

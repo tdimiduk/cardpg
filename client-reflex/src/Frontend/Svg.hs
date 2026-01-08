@@ -13,6 +13,9 @@ import Data.Map qualified as Map
 import Data.Text (Text)
 import Reflex.Dom.Core
 
+import Frontend.Style (CssClass)
+import Frontend.Style qualified as Style
+
 type ElAttrs = Map.Map Text Text
 
 svgXMLNamespace :: Namespace
@@ -49,81 +52,93 @@ renderLabel (Just t) =
         <> "font-size" =: "40"
         <> "font-family" =: "sans-serif"
         <> "font-weight" =: "bold"
-        <> "fill" =: "currentColor" -- Will be overridden by class if needed
-        <> "class" =: "resource-text" -- Allow external styling
+        <> "fill" =: "currentColor"
+        <> "class" =: Style.classes (Style.resourceTextBase <> Style.resourceTextPrint)
         <> "stroke" =: "none"
     )
     $ text t
 
 -- | Renders a square icon.
-renderSquare :: (DomBuilder t m) => Text -> Maybe Text -> m ()
-renderSquare colorClass mLabel =
-  svgEl "svg" ("viewBox" =: "0 0 100 100" <> "class" =: ("resource-icon " <> colorClass)) $ do
-    svgEl
-      "rect"
-      ( "x" =: "12.5"
-          <> "y" =: "12.5"
-          <> "width" =: "75"
-          <> "height" =: "75"
-          <> "rx" =: "10"
-          <> "ry" =: "10"
-          <> "class" =: "resource-shape"
-          <> "fill" =: "none"
-          <> "stroke" =: "currentColor"
-          <> "stroke-width" =: "8"
-      )
-      blank
-    renderLabel mLabel
+renderSquare :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
+renderSquare extraClasses mLabel =
+  svgEl
+    "svg"
+    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    $ do
+      svgEl
+        "rect"
+        ( "x" =: "12.5"
+            <> "y" =: "12.5"
+            <> "width" =: "75"
+            <> "height" =: "75"
+            <> "rx" =: "10"
+            <> "ry" =: "10"
+            <> "class" =: "resource-shape"
+            <> "fill" =: "none"
+            <> "stroke" =: "currentColor"
+            <> "stroke-width" =: "8"
+        )
+        blank
+      renderLabel mLabel
 
 -- | Renders a circle icon.
-renderCircle :: (DomBuilder t m) => Text -> Maybe Text -> m ()
-renderCircle colorClass mLabel =
-  svgEl "svg" ("viewBox" =: "0 0 100 100" <> "class" =: ("resource-icon " <> colorClass)) $ do
-    svgEl
-      "circle"
-      ( "cx" =: "50"
-          <> "cy" =: "50"
-          <> "r" =: "40"
-          <> "class" =: "resource-shape"
-          <> "fill" =: "none"
-          <> "stroke" =: "currentColor"
-          <> "stroke-width" =: "8"
-      )
-      blank
-    renderLabel mLabel
+renderCircle :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
+renderCircle extraClasses mLabel =
+  svgEl
+    "svg"
+    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    $ do
+      svgEl
+        "circle"
+        ( "cx" =: "50"
+            <> "cy" =: "50"
+            <> "r" =: "40"
+            <> "class" =: "resource-shape"
+            <> "fill" =: "none"
+            <> "stroke" =: "currentColor"
+            <> "stroke-width" =: "8"
+        )
+        blank
+      renderLabel mLabel
 
 -- | Renders a diamond icon.
-renderDiamond :: (DomBuilder t m) => Text -> Maybe Text -> m ()
-renderDiamond colorClass mLabel =
-  svgEl "svg" ("viewBox" =: "0 0 100 100" <> "class" =: ("resource-icon " <> colorClass)) $ do
-    svgEl
-      "rect"
-      ( "x" =: "19"
-          <> "y" =: "19"
-          <> "width" =: "62"
-          <> "height" =: "62"
-          <> "rx" =: "5"
-          <> "ry" =: "5"
-          <> "transform" =: "rotate(45 50 50)"
-          <> "class" =: "resource-shape"
-          <> "fill" =: "none"
-          <> "stroke" =: "currentColor"
-          <> "stroke-width" =: "8"
-      )
-      blank
-    renderLabel mLabel
+renderDiamond :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
+renderDiamond extraClasses mLabel =
+  svgEl
+    "svg"
+    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    $ do
+      svgEl
+        "rect"
+        ( "x" =: "19"
+            <> "y" =: "19"
+            <> "width" =: "62"
+            <> "height" =: "62"
+            <> "rx" =: "5"
+            <> "ry" =: "5"
+            <> "transform" =: "rotate(45 50 50)"
+            <> "class" =: "resource-shape"
+            <> "fill" =: "none"
+            <> "stroke" =: "currentColor"
+            <> "stroke-width" =: "8"
+        )
+        blank
+      renderLabel mLabel
 
 -- | Renders a hexagon icon.
-renderHexagon :: (DomBuilder t m) => Text -> Maybe Text -> m ()
-renderHexagon colorClass mLabel =
-  svgEl "svg" ("viewBox" =: "0 0 100 100" <> "class" =: ("resource-icon " <> colorClass)) $ do
-    svgEl
-      "polygon"
-      ( "points" =: "50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
-          <> "class" =: "resource-shape"
-          <> "fill" =: "none"
-          <> "stroke" =: "currentColor"
-          <> "stroke-width" =: "8"
-      )
-      blank
-    renderLabel mLabel
+renderHexagon :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
+renderHexagon extraClasses mLabel =
+  svgEl
+    "svg"
+    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    $ do
+      svgEl
+        "polygon"
+        ( "points" =: "50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
+            <> "class" =: "resource-shape"
+            <> "fill" =: "none"
+            <> "stroke" =: "currentColor"
+            <> "stroke-width" =: "8"
+        )
+        blank
+      renderLabel mLabel
