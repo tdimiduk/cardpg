@@ -1,5 +1,6 @@
 module Frontend.Game.Sidebar where
 
+import Control.Monad.Fix (MonadFix)
 import Data.Map qualified as Map
 import Reflex.Dom.Core
 
@@ -56,7 +57,12 @@ actorListContainer :: [CssClass]
 actorListContainer = ["flex-1", "overflow-y-auto", "p-4", "space-y-2"]
 
 sidebarWidget
-  :: (MonadWidget t m)
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     )
   => Dynamic t (Maybe ActorId) -> Dynamic t (Map.Map ActorId ActorState) -> m (Event t (Maybe ActorId))
 sidebarWidget selectedActorId actorsMapDyn = do
   divStyle sidebarContainer $ do

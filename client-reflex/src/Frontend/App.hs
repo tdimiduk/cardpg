@@ -5,6 +5,8 @@
 
 module Frontend.App where
 
+import Control.Monad.Fix (MonadFix)
+import Control.Monad.IO.Class (MonadIO)
 import Data.Aeson (decode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
@@ -75,7 +77,15 @@ appWidget clientId = do
     wsUrl = "ws://localhost:3004/api?clientId=" <> T.pack (show clientId)
 
 uiWidget
-  :: (MonadWidget t m, Requester t m, Request m ~ ApiRequest)
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Requester t m
+     , Request m ~ ApiRequest
+     )
   => UUID
   -> Dynamic t (Map.Map ActorId ActorState)
   -> m ()

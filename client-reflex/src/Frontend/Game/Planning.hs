@@ -3,6 +3,8 @@
 module Frontend.Game.Planning
   ( StagingState (..)
   , mkPlanBuilderLogic
+  , StagUpdate (..)
+  , applyUpdate
   ) where
 
 import Control.Monad.Fix (MonadFix)

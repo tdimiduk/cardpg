@@ -94,15 +94,43 @@ executable cardpg-static
   import:         warnings
   import:         project-config
   main-is:        StaticMain.hs
+  hs-source-dirs: app
   build-depends:
     , api
     , base
     , bytestring
     , client-reflex
+    , containers
     , core
+    , directory
     , filepath
+    , mtl
+    , optparse-applicative
+    , process
+    , random
     , reflex-dom-core
+    , server
     , text
+    , uuid
     , yaml
 
-  hs-source-dirs: app
+test-suite client-reflex-test
+  import:         warnings
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+  hs-source-dirs: tests
+  other-modules:  PlanningTest
+  build-depends:
+    , base
+    , client-reflex
+    , containers
+    , core
+    , mtl
+    , reflex
+    , reflex-dom-core
+    , reflex-test-host
+    , tasty
+    , tasty-hunit
+    , text
+    , uuid
