@@ -55,7 +55,13 @@ import Server.Types
   , removeClient
   )
 
-import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
+import Api.Reflex
+  ( ErrorMessage (..)
+  , ErrorType (..)
+  , GameView (..)
+  , ServerPush (..)
+  , WsMessage (..)
+  )
 import Api.Request (ApiRequest)
 import Api.Request qualified as Req
 
@@ -147,7 +153,10 @@ talk client socket state = forever $ do
         Req.GameAction cmd -> handleGameCommand client state cmd
       case result of
         Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
-        Left err -> sendTextData (socket.socketConn) (encode $ WsMsgPush $ PushError (T.pack err))
+        Left err ->
+          sendTextData
+            (socket.socketConn)
+            (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack err) ErrorSystem))
     Nothing ->
       case decode msgBytes of
         Just (GameCommand cmd) -> do
@@ -160,7 +169,10 @@ talk client socket state = forever $ do
             let s' = s{gameState = gs, rng = rng}
             return (s', (gs, s.dbPool, s.clients))
           broadcastReflex (PushUpdate $ GameView{actors = newGs.actors}) clientsMap
-        _ -> sendTextData (socket.socketConn) (encode $ WsMsgPush $ PushError "Invalid message")
+        _ ->
+          sendTextData
+            (socket.socketConn)
+            (encode $ WsMsgPush $ PushError (ErrorMessage "Invalid message" ErrorValidation))
 
 handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
 handleJoin client name state = do

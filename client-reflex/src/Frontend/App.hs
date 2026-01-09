@@ -5,21 +5,19 @@
 
 module Frontend.App where
 
-import Control.Monad.Fix (MonadFix)
-import Data.Aeson (decode, eitherDecode, encode)
+import Data.Aeson (decode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
 import Data.Text qualified as T
 import Data.UUID (UUID)
 import Reflex.Dom.Core
-import Reflex.Dom.GadtApi.WebSocket (TaggedRequest, TaggedResponse, tagRequests)
+import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
 import Api.Request (ApiRequest (..))
-import Api.Types qualified as Api
-
 import Core.Primitives (ActorId)
 import Core.State (ActorState)
+
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Style
@@ -58,8 +56,6 @@ appWidget clientId = do
 
       let sendEvt = fmap (map (BL.toStrict . encode)) taggedReqs
 
-      wsConfig <- holdDyn def (def{_webSocketConfig_send = sendEvt} <$ _webSocket_open ws)
-
       ws <- webSocket wsUrl (def{_webSocketConfig_send = sendEvt})
 
       let wsMsg = fmapMaybe (decode . BL.fromStrict) (_webSocket_recv ws)
@@ -69,6 +65,8 @@ appWidget clientId = do
           updateActors (PushWelcome _ a) _ = a.actors
           updateActors (PushUpdate a) _ = a.actors
           updateActors (PushError _) old = old
+          updateActors (PushChat _) old = old
+          updateActors (PushLog _) old = old
 
       actorsMapDyn <- foldDyn updateActors (Map.empty :: Map.Map ActorId ActorState) pushEvt
 
@@ -81,7 +79,7 @@ uiWidget ::
   UUID ->
   Dynamic t (Map.Map ActorId ActorState) ->
   m ()
-uiWidget clientId actorsMapDyn = do
+uiWidget _ actorsMapDyn = do
   -- Actor Selection State
   rec selectedActorId <- holdDyn Nothing (leftmost [selectEvt])
 
