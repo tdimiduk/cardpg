@@ -30,7 +30,7 @@ serveJsaddleJs fallback req sendResponse =
 
 main :: IO ()
 main = do
-  putStrLn "Starting CardPG Reflex Client (STATIC REFACTOR VERSION)..."
+  putStrLn "Starting CardPG Reflex Client ..."
   clientId <- UUID.nextRandom
   port <- maybe 3003 read <$> lookupEnv "JSADDLE_WARP_PORT"
   putStrLn $ "Running jsaddle-warp server on port " <> show port
