@@ -53,7 +53,8 @@ gameBoardPlaceholder = ["flex-1", flex, itemsCenter, justifyCenter, "text-slate-
 appWidget :: (MonadWidget t m, Prerender t m) => UUID -> m ()
 appWidget clientId = do
   rec -- RequesterT loop
-      (_, requests) <- runRequesterT (uiWidget clientId actorsMapDyn) responses
+      -- TODO: Load initial actor from local storage
+      (_, requests) <- runRequesterT (uiWidget Nothing actorsMapDyn) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let sendEvt = fmap (map (BL.toStrict . encode)) taggedReqs
@@ -86,11 +87,12 @@ uiWidget
      , Requester t m
      , Request m ~ ApiRequest
      )
-  => UUID
+  => Maybe ActorId
+  -- ^ Initial active actor
   -> Dynamic t (Map.Map ActorId ActorState)
   -> m ()
-uiWidget _ actorsMapDyn = divStyle appRoot $ do
-  rec selectedActorId <- holdDyn Nothing activeActorChange
+uiWidget initialActorId actorsMapDyn = divStyle appRoot $ do
+  rec selectedActorId <- holdDyn initialActorId activeActorChange
       activeActorChange <- sidebarWidget selectedActorId actorsMapDyn
 
       let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)

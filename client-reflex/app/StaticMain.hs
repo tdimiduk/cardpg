@@ -6,17 +6,16 @@
 module Main where
 
 import Control.Exception (SomeException, catch)
-import Control.Monad (unless, when)
+import Control.Monad (forM_, unless, when)
 import Control.Monad.Fix (MonadFix)
-import Control.Monad.IO.Class (MonadIO, liftIO)
+import Control.Monad.IO.Class (MonadIO)
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
+import Data.Char (isAlphaNum)
 import Data.Map qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
-import Data.UUID qualified as UUID
-import Data.UUID.V4 qualified as UUIDV4
 import Data.Yaml qualified as Yaml
 import Options.Applicative qualified as OA
 import Reflex.Dom.Core
@@ -28,13 +27,13 @@ import System.Directory
   , pathIsSymbolicLink
   , removePathForcibly
   )
-import System.FilePath (makeRelative, takeBaseName, (</>))
+import System.FilePath (takeBaseName, (</>))
 import System.Process (callProcess)
-import System.Random (newStdGen)
 
 import Api.Reflex ()
 import Core.Card (ActorDefinition (..))
-import Core.Primitives (ActorId, Identified (..))
+import Core.Primitives (ActorId)
+import Core.State (ActorState (..))
 import Frontend.App (uiWidget)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Catalog (catalogWidget)
@@ -203,20 +202,32 @@ generateGame :: Options -> FilePath -> Bool -> IO ()
 generateGame opts path skipSnapshot = do
   unless opts.quiet $ putStrLn $ "Generating game view for " <> path
   (gameState, _) <- loadScenario path
-  case Map.toList (gameState.actors) of
-    ((aid, _) : _) -> do
-      clientId <- UUIDV4.nextRandom
-      let outName = opts.outputDir </> "game.html"
-      writeStaticPage outName "CardPG Game" (mockGameWidget clientId aid gameState)
 
-      unless skipSnapshot $ do
-        unless opts.quiet $ putStrLn "Taking screenshot..."
-        currentDir <- getCurrentDirectory
-        let absHtml = currentDir </> outName
-            outPng = opts.outputDir </> "game.png"
-        takeScreenshot absHtml outPng 1920 1080
-        unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
-    [] -> putStrLn "No actors found in scenario"
+  -- Helper to generate snapshot for a specific state
+  let gen nameSuffix mActorId = do
+        let baseName = "game_" <> nameSuffix
+            outHtml = opts.outputDir </> baseName <> ".html"
+            outPng = opts.outputDir </> baseName <> ".png"
+
+        writeStaticPage outHtml ("CardPG Game - " <> T.pack nameSuffix) (mockGameWidget mActorId gameState)
+
+        unless skipSnapshot $ do
+          unless opts.quiet $ putStrLn $ "Taking screenshot for " <> nameSuffix <> "..."
+          currentDir <- getCurrentDirectory
+          let absHtml = currentDir </> outHtml
+          takeScreenshot absHtml outPng 1920 1080
+          unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
+
+  -- 1. No Actor Selected
+  gen "none" Nothing
+
+  -- 2. Each Actor Selected
+  let actors = Map.toList gameState.actors
+  forM_ actors $ \(aid, actorState) -> do
+    let rawName = T.unpack actorState.name
+        safeName = filter isAlphaNum rawName
+    unless (null safeName) $ do
+      gen safeName (Just aid)
 
 -- | Widgets (Copied/Adapted)
 mockGameWidget
@@ -227,14 +238,13 @@ mockGameWidget
      , Adjustable t m
      , MonadIO m
      )
-  => UUID.UUID
-  -> ActorId
+  => Maybe ActorId
   -> GameState
   -> m ()
-mockGameWidget clientId playerId gameState = do
+mockGameWidget initialActorId gameState = do
   let actorsMap = gameState.actors
   actorsDyn <- holdDyn actorsMap never
-  rec (_, _) <- runRequesterT (uiWidget clientId actorsDyn) never
+  rec (_, _) <- runRequesterT (uiWidget initialActorId actorsDyn) never
   return ()
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
