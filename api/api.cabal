@@ -31,15 +31,22 @@ library
   exposed-modules:
     Api.Frontend
     Api.Reflex
+    Api.Request
     Api.Types
 
   build-depends:
     , aeson
+    , aeson-gadt-th
     , aeson-typescript
-    , base              >=4.7 && <5
+    , base                    >=4.7 && <5
+    , constraints-extras
     , containers
     , core
+    , dependent-sum
+    , dependent-sum-template
     , random
+    , reflex-gadt-api
+    , some
     , text
     , time
     , uuid

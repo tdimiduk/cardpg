@@ -124,13 +124,13 @@ data Command
   | EndRoundIntent {actorId :: ActorId}
   | PassIntent {actorId :: ActorId}
   | ChatIntent {chatSenderId :: Maybe ActorId, content :: Text}
-  deriving (Show, Eq, Generic)
+  deriving (Show, Eq, Ord, Generic)
 
 $(deriveJSON cardpgJsonDef ''Command)
 
 data AdminCommand
   = ResetGame
-  deriving (Show, Eq, Generic)
+  deriving (Show, Eq, Ord, Generic)
 
 $(deriveJSON (cardpgTaggedOptions "") ''AdminCommand)
 

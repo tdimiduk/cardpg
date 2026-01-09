@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Applying refactorings to Haskell files in core, server, api, client-reflex..."
+
+# Find tracked Haskell files in target directories and run hlint --refactor on each
+# We execute in parallel since hlint on a single file is single-threaded
+git ls-files -z core server api client-reflex | grep -z "\.hs$" | xargs -0 -n 1 -P $(nproc) hlint --refactor --refactor-options="-i"

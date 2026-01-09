@@ -1,3 +1,6 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE LambdaCase #-}
+
 module Server.ReflexConnection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
@@ -29,6 +32,8 @@ import Network.WebSockets
   , withPingThread
   )
 
+import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), mkTaggedResponse)
+
 import Core.Card (CardInstance, CoreCard)
 import Core.Json (cardpgJsonDef)
 import Core.Primitives (ActorId)
@@ -44,14 +49,15 @@ import Server.Types
   , ConnectedSocket (..)
   , GameState (..)
   , ServerState (..)
+  , StateUpdate (..)
   , addClient
   , clientExists
   , removeClient
   )
 
-import Api.Reflex
-  ( ReflexServerMessage (..)
-  )
+import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
+import Api.Request (ApiRequest)
+import Api.Request qualified as Req
 
 application :: MVar ServerState -> ServerApp
 application state pending = do
@@ -102,9 +108,11 @@ application state pending = do
 
   -- Send Welcome
   (msgs, currentClients) <-
-    readMVar state >>= \s -> return ([ReflexWelcome finalClientId s.gameState.actors], s.clients)
+    readMVar state >>= \s -> do
+      let view = GameView{actors = s.gameState.actors}
+      return ([PushWelcome finalClientId view], s.clients)
 
-  forM_ msgs $ \msg -> sendTextData conn (encode msg)
+  forM_ msgs $ \msg -> sendTextData conn (encode $ WsMsgPush msg)
 
   if isNew
     then T.putStrLn $ "Client Joined: " <> (client.clientName)
@@ -120,9 +128,9 @@ disconnect clientId socketId state = do
     return $ removeClient clientId socketId s
   T.putStrLn $ "Client disconnected: " <> T.pack (show clientId)
 
-broadcastReflex :: ReflexServerMessage -> Map.Map UUID Client -> IO ()
+broadcastReflex :: ServerPush -> Map.Map UUID Client -> IO ()
 broadcastReflex msg clients = do
-  let msgBytes = encode msg
+  let msgBytes = encode (WsMsgPush msg)
   forM_ (Map.elems clients) $ \client ->
     forM_ (client.clientConns) $ \socket -> do
       _ <- try (sendTextData (socket.socketConn) msgBytes) :: IO (Either ConnectionException ())
@@ -131,47 +139,55 @@ broadcastReflex msg clients = do
 talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
 talk client socket state = forever $ do
   msgBytes <- receiveData (socket.socketConn)
+  -- Try to parse as TaggedRequest first, fall back to legacy if needed
   case decode msgBytes of
-    Nothing -> do
-      T.putStrLn "Received invalid JSON"
-      sendTextData (socket.socketConn) (encode $ ReflexError "Invalid JSON")
-    Just (Join name _) -> do
-      -- Rename logic
-      currentClient <- readMVar state >>= \s -> return $ Map.lookup (client.clientId) (s.clients)
-      let shouldUpdate = case currentClient of
-            Just c -> c.clientName /= name
-            Nothing -> True
-      when shouldUpdate $ do
-        modifyMVar_ state $ \s -> do
-          case Map.lookup (client.clientId) (s.clients) of
-            Just existing -> return $ addClient (existing{clientName = name}) s
-            Nothing -> return s
-        T.putStrLn $ "Client renamed: " <> name
-    Just (GameCommand cmd) -> handleGameCommand (client.clientId) (client.clientName) state cmd
-    Just (Admin ResetGame) -> do
-      T.putStrLn "Admin: Resetting Game"
-      (newGs, _, clientsMap) <- modifyMVar state $ \s -> do
-        (gs, rng) <- initGame (s.dbPool) (s.config) (s.library) True
-        let s' = s{gameState = gs, rng = rng}
-        return (s', (gs, s.dbPool, s.clients))
+    Just taggedReq@(TaggedRequest _ _) -> do
+      result <- mkTaggedResponse taggedReq $ \case
+        Req.Join name -> handleJoin client name state
+        Req.GameAction cmd -> handleGameCommand client state cmd
+      case result of
+        Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
+        Left err -> sendTextData (socket.socketConn) (encode $ WsMsgPush $ PushError (T.pack err))
+    Nothing ->
+      case decode msgBytes of
+        Just (GameCommand cmd) -> do
+          _ <- handleGameCommand' client state cmd
+          pure ()
+        Just (Admin ResetGame) -> do
+          T.putStrLn "Admin: Resetting Game"
+          (newGs, _, clientsMap) <- modifyMVar state $ \s -> do
+            (gs, rng) <- initGame (s.dbPool) (s.config) (s.library) True
+            let s' = s{gameState = gs, rng = rng}
+            return (s', (gs, s.dbPool, s.clients))
+          broadcastReflex (PushUpdate $ GameView{actors = newGs.actors}) clientsMap
+        _ -> sendTextData (socket.socketConn) (encode $ WsMsgPush $ PushError "Invalid message")
 
-      broadcastReflex (ReflexUpdate newGs.actors) clientsMap
+handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
+handleJoin client name state = do
+  modifyMVar_ state $ \s -> do
+    let s' = s{clients = Map.adjust (\c -> c{clientName = name}) (client.clientId) (s.clients)}
+    pure s'
+  T.putStrLn $ "Client renamed: " <> name
+  pure (Right client.clientId)
 
-handleGameCommand :: UUID -> T.Text -> MVar ServerState -> Command -> IO ()
-handleGameCommand _ clientName state cmd = do
-  T.putStrLn $ "Received command: " <> T.pack (show cmd) <> " from " <> clientName
+handleGameCommand :: Client -> MVar ServerState -> Command -> IO (Either Text [StateUpdate])
+handleGameCommand client state cmd = do
   t <- getPOSIXTime
   let ts = round (t * 1000) :: Int
 
-  (newGame, pool, clientsMap, newRng) <- modifyMVar state $ \s -> do
+  (updates, _newLog) <- modifyMVar state $ \s -> do
     let game = s.gameState
     let rng = s.rng
-    let ((newGame, _, _, _), newRng) = runState (processCommand cmd ts game) rng
-    return
-      ( s{gameState = newGame, rng = newRng}
-      , (newGame, s.dbPool, s.clients, newRng)
-      )
+    let ((newGame, updates, _, newLog), newRng) = runState (processCommand cmd ts game) rng
 
-  saveGame pool "default-game" newGame
+    let s' = s{gameState = newGame, rng = newRng}
+    return (s', (updates, newLog))
 
-  broadcastReflex (ReflexUpdate newGame.actors) clientsMap
+  -- Broadcast updates to others
+  -- We should ideally only broadcast if there ARE updates causing state change for others.
+  -- But PushUpdate serves to keep everyone in sync.
+  readMVar state >>= \s -> broadcastReflex (PushUpdate $ GameView{actors = s.gameState.actors}) (s.clients)
+  pure (Right updates)
+
+handleGameCommand' :: Client -> MVar ServerState -> Command -> IO (Either Text [StateUpdate])
+handleGameCommand' = handleGameCommand

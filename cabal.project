@@ -5,6 +5,11 @@ packages:
   client-reflex/client-reflex.cabal
 source-repository-package
   type: git
+  location: https://github.com/reflex-frp/reflex-gadt-api.git
+  tag: 45dcf247ba90490bd1d88c7a714a156e2051f109
+
+source-repository-package
+  type: git
   location: https://github.com/obsidiansystems/beam-automigrate.git
   tag: 3933b82b8affc1192638ab84fd3844991195b9cc
 

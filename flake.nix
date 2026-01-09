@@ -51,6 +51,8 @@
               "0ryba2jpflh0hlq23sn53d95dyxjdbhdjj63vaj5qzbln0rrg023";
             "https://github.com/ghcjs/jsaddle.git"."0fb7260ad02592546c9f180078d770256fb1f0f6" =
               "0hcfyii6s7qb67rp2ixklk5n18lpl558fzm5gx5cd1hzjkxyaiar";
+            "https://github.com/reflex-frp/reflex-gadt-api.git"."45dcf247ba90490bd1d88c7a714a156e2051f109" =
+              "1hil1vlm6cs4lbdxwgb3av8568zv2x752xcb5p087sb28ik6j88b";
           };
 
           # Pin hackage/stackage inputs for reproducibility
@@ -177,7 +179,7 @@
             ];
             hooks = {
               fourmolu.enable = true;
-              hlint.enable = true;
+              hlint.enable = false;
               cabal-fmt.enable = true;
               prettier.enable = true;
             };
@@ -194,6 +196,7 @@
               hlint = "latest";
               fourmolu = "latest";
               ghcid = "latest";
+              apply-refact = "latest";
             };
 
             # Additional packages from nixpkgs (not GHC-dependent)

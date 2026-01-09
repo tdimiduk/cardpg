@@ -50,17 +50,17 @@ $(deriveJSON cardpgJsonDef ''ActorId)
 
 -- | Discriminator for Logic
 data CardKind = KindCore | KindTable
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Eq, Ord, Generic)
 
 $(deriveJSON cardpgJsonDef ''CardKind)
 
 data EquipSlot = SlotMainHand | SlotOffHand | SlotBody | SlotAccessory | SlotUnspecified
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Eq, Ord, Generic)
 
 $(deriveJSON cardpgJsonDef ''EquipSlot)
 
 data CardLocation = LocationHand | LocationDiscard | LocationDeck
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Show, Eq, Ord, Generic)
 
 $(deriveJSON (cardpgJsonOptions "Location") ''CardLocation)
 

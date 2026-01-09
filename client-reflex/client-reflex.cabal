@@ -39,10 +39,12 @@ library
     , containers
     , core
     , data-default
+    , dependent-sum
     , optics-core
     , random
     , reflex-dom
     , reflex-dom-core
+    , reflex-gadt-api
     , text
     , uuid
     , vector

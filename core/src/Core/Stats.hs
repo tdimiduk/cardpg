@@ -34,7 +34,7 @@ import Core.Parser (Parser, basicParse, mkEnumParser)
 import Core.Util (tshow)
 
 data ResourceType = Red | Yellow | Blue
-  deriving stock (Eq, Show, Enum, Bounded, Generic)
+  deriving stock (Eq, Ord, Show, Enum, Bounded, Generic)
 
 $(deriveJSON cardpgJsonDef ''ResourceType)
 

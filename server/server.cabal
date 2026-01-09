@@ -47,11 +47,12 @@ library
     , aeson
     , aeson-typescript
     , api
-    , base               >=4.7 && <5
+    , base                >=4.7 && <5
     , beam-automigrate
     , beam-core
     , beam-migrate
     , beam-postgres
+    , constraints-extras
     , containers
     , core
     , directory
@@ -61,7 +62,9 @@ library
     , optics
     , postgresql-simple
     , random
+    , reflex-gadt-api
     , resource-pool
+    , some
     , stm
     , text
     , time
@@ -76,17 +79,20 @@ executable server
   hs-source-dirs: app
   build-depends:
     , aeson
-    , base               >=4.7 && <5
+    , base                >=4.7 && <5
     , beam-core
     , beam-postgres
     , bytestring
+    , constraints-extras
     , containers
     , core
     , mtl
     , postgresql-simple
     , random
+    , reflex-gadt-api
     , resource-pool
     , server
+    , some
     , stm
     , text
     , time
