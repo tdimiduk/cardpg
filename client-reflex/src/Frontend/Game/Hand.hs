@@ -77,7 +77,7 @@ handWidget actorDyn = do
       let viewMode = zipDynWith determineViewMode safeActor stagingState
 
       -- Render UI
-      (selectClick, toggleClick, cancelStaging, commitStaging, revisePlanned) <-
+      (selectClick, toggleClick, cancelStaging, unstageResource, commitStaging, revisePlanned) <-
         divStyle [absolute, bottom0, left0, right0, pointerEventsNone, z40] $ do
           -- Layer 1: Main Layout (Flex Row)
           (sel, tog, rev) <- divStyle [flex, justifyBetween, itemsEnd, "w-full", "px-8", "pb-4"] $ do
@@ -105,18 +105,19 @@ handWidget actorDyn = do
           -- This sits on top (dom order) but is transparent to clicks by default (controlled by Staging widget)
           overlayEvts <- dyn $ ffor viewMode $ \case
             VMStaging _ -> do
-              (cancel, _, commit) <- stagingWidget safeActor stagingState validation
-              return (cancel, commit)
-            _ -> return (never, never)
+              (cancel, unstageResource, commit) <- stagingWidget safeActor stagingState validation
+              return (cancel, unstageResource, commit)
+            _ -> return (never, never, never)
 
           -- Flatten events
-          cancel <- switchHold never (fmap fst overlayEvts)
-          commit <- switchHold never (fmap snd overlayEvts)
+          cancel <- switchHold never (fmap (\(c, _, _) -> c) overlayEvts)
+          unstageResource <- switchHold never (fmap (\(_, u, _) -> u) overlayEvts)
+          commit <- switchHold never (fmap (\(_, _, c) -> c) overlayEvts)
 
-          return (sel, tog, cancel, commit, rev)
+          return (sel, tog, cancel, unstageResource, commit, rev)
 
       let selectEvt = leftmost [selectClick]
-          toggleEvt = toggleClick
+          toggleEvt = leftmost [toggleClick, unstageResource]
           clearEvt = leftmost [cancelStaging, commitStaging]
 
       let commitPlan =

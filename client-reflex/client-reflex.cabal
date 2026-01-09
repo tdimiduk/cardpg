@@ -56,6 +56,7 @@ library
     Frontend.App
     Frontend.Card
     Frontend.Catalog
+    Frontend.Game.Common
     Frontend.Game.Hand
     Frontend.Game.PlannedAction
     Frontend.Game.Planning

@@ -1,11 +1,11 @@
 module Frontend.Game.PlannedAction where
 
-import Control.Monad (forM_)
 import Reflex.Dom.Core
 
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
+import Frontend.Game.Common (cardStackWidget)
 import Frontend.Html (Render (..))
 import Frontend.Style hiding (classes)
 
@@ -67,16 +67,22 @@ plannedActionWidget planned = case planned of
       (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
 
       -- Stack container
-      rowWith ["items-stretch", plannedCardOverlap] $ do
-        -- Resources (vertical strips)
-        forM_ res $ \r -> do
-          divStyle [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
-            renderWith (CardSettings CardFull) r
-
-        -- Action card (top)
-        divStyle [relative, cardHandWidth, "shrink-0"] $ do
-          divStyle actionCardHover $ render action
-          divStyle plannedBadge $ text "PLANNED"
+      _ <-
+        cardStackWidget
+          ( \r -> do
+              (eRes, _) <-
+                elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
+                  renderWith (CardSettings CardFull) r
+              return (domEvent Click eRes)
+          )
+          ( \a -> do
+              (eAct, _) <- elStyle' "div" [relative, cardHandWidth, "shrink-0"] $ do
+                divStyle actionCardHover $ render a
+                divStyle plannedBadge $ text "PLANNED"
+              return (domEvent Click eAct)
+          )
+          res
+          action
 
       return (domEvent Click e)
   PNarrative (NarrativeStack cards _color) -> do
