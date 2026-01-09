@@ -71,11 +71,13 @@ executable client-reflex
     , api
     , base
     , client-reflex
+    , http-types
     , jsaddle-warp
     , reflex-dom-core
     , text
     , uuid
     , wai
+    , wai-app-static
     , warp
     , websockets
 

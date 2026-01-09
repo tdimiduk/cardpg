@@ -32,13 +32,3 @@ processes:
     is_restart: true
     shutdown:
       signal: 15
-
-  assets-proxy:
-    command: npm run proxy
-    working_dir: client-reflex
-    is_restart: true
-    depends_on:
-      client:
-        condition: process_started
-    shutdown:
-      signal: 15
