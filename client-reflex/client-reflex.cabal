@@ -40,8 +40,10 @@ library
     , core
     , data-default
     , dependent-sum
+    , optics
     , optics-core
     , random
+    , reflex
     , reflex-dom
     , reflex-dom-core
     , reflex-gadt-api
@@ -56,7 +58,9 @@ library
     Frontend.Catalog
     Frontend.Game.Hand
     Frontend.Game.PlannedAction
+    Frontend.Game.Planning
     Frontend.Game.Sidebar
+    Frontend.Game.Staging
     Frontend.Html
     Frontend.Style
     Frontend.Svg

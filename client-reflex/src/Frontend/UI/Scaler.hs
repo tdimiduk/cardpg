@@ -15,15 +15,15 @@ import Reflex.Dom.Core
 -- positioned inside, and then scaled (via CSS transform) to fit the container.
 --
 -- This scaling happens entirely in JS via ResizeObserver to avoid layout thrashing.
-scalable ::
-  (DomBuilder t m) =>
-  -- | Width in mm
-  Double ->
-  -- | Height in mm
-  Double ->
-  -- | Content to scale
-  m a ->
-  m a
+scalable
+  :: (DomBuilder t m)
+  => Double
+  -- ^ Width in mm
+  -> Double
+  -- ^ Height in mm
+  -> m a
+  -- ^ Content to scale
+  -> m a
 scalable wMm hMm content = do
   let wVal = T.pack (show wMm) <> "mm"
       hVal = T.pack (show hMm) <> "mm"

@@ -12,9 +12,8 @@ import Core.Primitives (ActorId)
 import Core.RichText (RichText)
 import Core.State (ActorState)
 
-data GameView = GameView
-  { actors :: Map ActorId ActorState
-  }
+newtype GameView
+  = GameView {actors :: Map ActorId ActorState}
   deriving (Show, Eq, Generic)
 
 instance FromJSON GameView

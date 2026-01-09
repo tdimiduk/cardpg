@@ -59,23 +59,23 @@ loadLibrary root = do
 
   pure $ CardLibrary actors statuses consequences items nature
 
-classifyAndParse ::
-  ( [ActorDefinition]
-  , [CoreCard]
-  , [ConsequenceCard]
-  , [ItemCard]
-  , [NatureCard]
-  , [String]
-  ) ->
-  FilePath ->
-  IO
-    ( [ActorDefinition]
-    , [CoreCard]
-    , [ConsequenceCard]
-    , [ItemCard]
-    , [NatureCard]
-    , [String]
-    )
+classifyAndParse
+  :: ( [ActorDefinition]
+     , [CoreCard]
+     , [ConsequenceCard]
+     , [ItemCard]
+     , [NatureCard]
+     , [String]
+     )
+  -> FilePath
+  -> IO
+       ( [ActorDefinition]
+       , [CoreCard]
+       , [ConsequenceCard]
+       , [ItemCard]
+       , [NatureCard]
+       , [String]
+       )
 classifyAndParse acc@(a, s, c, i, n, errs) path
   | "/pc/" `isInfixOf` path || "/monsters/" `isInfixOf` path = do
       res <- parseAsListOrSingle path

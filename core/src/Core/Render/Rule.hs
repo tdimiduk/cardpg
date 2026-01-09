@@ -42,8 +42,8 @@ type RuleRender m =
 instance
   ( Monad m
   , RuleRender m
-  ) =>
-  Render AttackDef m
+  )
+  => Render AttackDef m
   where
   render AttackDef{..} = do
     render cmdAttack
@@ -64,8 +64,8 @@ instance
 instance
   ( Monad m
   , RuleRender m
-  ) =>
-  Render GeneralDef m
+  )
+  => Render GeneralDef m
   where
   render GeneralDef{..} = do
     render cmdAction
@@ -85,8 +85,8 @@ instance
 instance
   ( Monad m
   , RuleRender m
-  ) =>
-  Render OngoingDef m
+  )
+  => Render OngoingDef m
   where
   render OngoingDef{..} = do
     render cmdOngoing
@@ -100,8 +100,8 @@ instance
 instance
   ( Monad m
   , RuleRender m
-  ) =>
-  Render PassiveDef m
+  )
+  => Render PassiveDef m
   where
   render PassiveDef{..} = do
     render cmdPassive
@@ -112,8 +112,8 @@ instance
 instance
   ( Monad m
   , RuleRender m
-  ) =>
-  Render TaskDef m
+  )
+  => Render TaskDef m
   where
   render TaskDef{..} = do
     render cmdTask
@@ -164,8 +164,8 @@ instance
 instance
   ( Monad m
   , RuleRender m
-  ) =>
-  Render TriggerDef m
+  )
+  => Render TriggerDef m
   where
   render TriggerDef{..} = do
     render cmdWhen

@@ -6,11 +6,17 @@ module Core.Primitives
   , EquipSlot (..)
   , CardLocation (..)
   , ChallengeId (..)
+  , Identified (..)
   ) where
 
 import Data.Aeson
-  ( FromJSONKey
+  ( FromJSON (..)
+  , FromJSONKey
+  , ToJSON (..)
   , ToJSONKey
+  , genericToJSON
+  , withObject
+  , (.:)
   )
 import Data.Aeson.TH (deriveJSON)
 import Data.UUID.Types (UUID)
@@ -72,3 +78,18 @@ $(deriveJSON cardpgJsonDef ''ChallengeId)
 
 instance Uniform ChallengeId where
   uniformM g = ChallengeId <$> uniformM g
+
+data Identified id a = Identified
+  { id :: id
+  , content :: a
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance (ToJSON id, ToJSON a) => ToJSON (Identified id a) where
+  toJSON = genericToJSON cardpgJsonDef
+
+instance (FromJSON id, FromJSON a) => FromJSON (Identified id a) where
+  parseJSON = withObject "Identified" $ \o -> do
+    i <- o .: "id"
+    c <- o .: "content"
+    return $ Identified i c

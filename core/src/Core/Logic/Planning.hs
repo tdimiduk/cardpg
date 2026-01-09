@@ -11,6 +11,9 @@ module Core.Logic.Planning
   , revealPlannedActions
   , endDefense
   , passAction
+  , PlanValidation (..)
+  , validateStandardPlan
+  , validateNarrativePlan
   ) where
 
 import Control.Monad.RWS (tell)
@@ -19,6 +22,8 @@ import Data.List (find, partition)
 import Data.List.NonEmpty (nonEmpty)
 
 import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Optics
 import System.Random (RandomGen, uniform)
 
@@ -57,6 +62,27 @@ applyPlannedMove = do
       modify $ #plannedMove .~ Nothing
       tell [ActorMoved (newX, newY)]
 
+data PlanValidation
+  = PlanValid PlannedAction
+  | PlanIncomplete {cost :: Int, provided :: Int}
+  | PlanInvalid Text
+  deriving (Show, Eq)
+
+validateStandardPlan :: CardInstance CoreCard -> [CardInstance CoreCard] -> PlanValidation
+validateStandardPlan actionCard resourceCards =
+  let plan = PStandard (ActionStack actionCard resourceCards)
+      cost = maybe 0 (\c -> fromMaybe 0 c.cost) (Just actionCard.content)
+      provided = length resourceCards
+   in if provided == cost
+        then PlanValid plan
+        else PlanIncomplete cost provided
+
+validateNarrativePlan :: [CardInstance CoreCard] -> ResourceType -> PlanValidation
+validateNarrativePlan cardIds color =
+  case nonEmpty cardIds of
+    Nothing -> PlanInvalid "no cards selected"
+    Just neCards -> PlanValid $ PNarrative (NarrativeStack neCards color)
+
 planAction :: CardInstanceId -> [CardInstanceId] -> GameM g ()
 planAction actionCardId resourceIds = do
   currentHand <- use (#coreState % #hand)
@@ -71,44 +97,60 @@ planAction actionCardId resourceIds = do
       tell
         [IllegalAction (IllegalActionDetails Nothing (Just "action card not in hand"))]
     Just ac -> do
-      let plan = PStandard (ActionStack ac resourceCards)
-          cost = maybe 0 (\c -> fromMaybe 0 c.cost) (Just ac.content)
-          correctCost = length resourceCards == cost
-
-      -- Validate all cards are in hand AND cost is correct
-      if length found == length allIds
+      -- Validate cost locally first
+      if length found /= length allIds
         then
-          if correctCost
-            then do
+          tell
+            [ IllegalAction
+                (IllegalActionDetails Nothing (Just "cards not in hand"))
+            ]
+        else do
+          let validation = validateStandardPlan ac resourceCards
+          case validation of
+            PlanValid plan -> do
               modify $ #coreState % #hand .~ remaining
               modify $ #coreState % #planned ?~ plan
               tell [ActionPlanned plan]
-            else tell [IllegalAction (IllegalActionDetails (Just plan) (Just "incorrect resource cost"))]
-        else tell [IllegalAction (IllegalActionDetails (Just plan) (Just "cards not in hand"))]
+            PlanIncomplete cost provided ->
+              tell
+                [ IllegalAction
+                    ( IllegalActionDetails
+                        Nothing
+                        (Just $ "incorrect resource cost: " <> showT provided <> "/" <> showT cost)
+                    )
+                ]
+            PlanInvalid reason ->
+              tell [IllegalAction (IllegalActionDetails Nothing (Just reason))]
 
 planNarrative :: [CardInstanceId] -> ResourceType -> GameM g ()
 planNarrative cardIds color = do
   currentHand <- use (#coreState % #hand)
   let (found, remaining) = partition (\c -> c.id `elem` cardIds) currentHand
-      maybeNeCards = nonEmpty found
 
-  case maybeNeCards of
-    Nothing ->
+  if length found /= length cardIds
+    then
       tell
         [ IllegalAction
-            (IllegalActionDetails Nothing (Just "no cards selected"))
+            (IllegalActionDetails Nothing (Just "cards not in hand"))
         ]
-    Just neCards -> do
-      let plan = PNarrative (NarrativeStack neCards color)
-      if length found == length cardIds
-        then do
+    else do
+      let validation = validateNarrativePlan found color
+      case validation of
+        PlanValid plan -> do
           modify $ #coreState % #hand .~ remaining
           modify $ #coreState % #planned ?~ plan
           tell [ActionPlanned plan]
-        else tell [IllegalAction (IllegalActionDetails (Just plan) (Just "cards not in hand"))]
+        PlanIncomplete _ _ ->
+          -- Narrative plans shouldn't be incomplete based on count in this logic, but handle exhaustive case
+          tell [IllegalAction (IllegalActionDetails Nothing (Just "narrative plan incomplete"))]
+        PlanInvalid reason ->
+          tell [IllegalAction (IllegalActionDetails Nothing (Just reason))]
 
-plannedActionTo ::
-  Lens' CoreCardState [CardInstance CoreCard] -> (PlannedAction -> GameEvent) -> GameM g ()
+showT :: (Show a) => a -> Text.Text
+showT = Text.pack . show
+
+plannedActionTo
+  :: Lens' CoreCardState [CardInstance CoreCard] -> (PlannedAction -> GameEvent) -> GameM g ()
 plannedActionTo dst gameLog = do
   maybePlan <- use (#coreState % #planned)
   case maybePlan of

@@ -11,6 +11,7 @@ module Frontend.Card
   , CardSettings (..)
   , StatsDisplayMode (..)
   , StatsSettings (..)
+  , renderWith
   ) where
 
 import Data.Default (Default (..))
@@ -27,7 +28,7 @@ import Core.Stats
 import Core.Util (tshow)
 
 import Frontend.Html
-import Frontend.Style (CssClass, component, divStyle, row, rowWith, spacer)
+import Frontend.Style (CssClass, component, divStyle, row, spacer)
 import Frontend.Style qualified as Style
 import Frontend.Svg (renderHexagon)
 import Frontend.UI.Scaler (scalable)

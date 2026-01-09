@@ -82,6 +82,7 @@ test-suite core-test
     ArbitraryInstances
     ConsequenceParsingTest
     Core.LogicTest
+    PlanningTests
     ReadmeExamplesTest
     ResolutionTests
     RuleJsonTest

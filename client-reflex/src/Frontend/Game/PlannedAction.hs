@@ -59,12 +59,12 @@ narrativeCardHover :: [CssClass]
 narrativeCardHover =
   [relative, "z-10", "hover:z-20", "transform", "hover:-translate-y-2", "transition-transform"]
 
-plannedActionWidget :: (DomBuilder t m) => PlannedAction -> m ()
+plannedActionWidget :: (DomBuilder t m) => PlannedAction -> m (Event t ())
 plannedActionWidget planned = case planned of
   PStandard (ActionStack action res) -> do
     colWith ["gap-2", itemsCenter] $ do
       -- Revise Button
-      elStyle "button" buttonRevise $ text "↺ Revise"
+      (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
 
       -- Stack container
       rowWith ["items-stretch", plannedCardOverlap] $ do
@@ -77,12 +77,16 @@ plannedActionWidget planned = case planned of
         divStyle [relative, cardHandWidth, "shrink-0"] $ do
           divStyle actionCardHover $ render action
           divStyle plannedBadge $ text "PLANNED"
+
+      return (domEvent Click e)
   PNarrative (NarrativeStack cards _color) -> do
     colWith ["gap-2", itemsCenter] $ do
-      elStyle "button" buttonRevise $ text "↺ Revise"
+      (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
       rowGap "-space-x-8" $
         mapM_ (divStyle narrativeCardHover . render) cards
+      return (domEvent Click e)
   PPass -> do
     colWith ["gap-2", itemsCenter] $ do
-      elStyle "button" buttonRevise $ text "↺ Revise"
+      (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
       divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
+      return (domEvent Click e)

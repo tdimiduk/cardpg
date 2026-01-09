@@ -68,9 +68,9 @@ performFatigueCycle = do
   modify $ #coreState % #deck .~ newDeck
   tell [DeckShuffled]
 
-deckCardTo ::
-  (RandomGen g) =>
-  Lens' CoreCardState [CardInstance CoreCard] -> (CardInstance CoreCard -> GameEvent) -> GameM g ()
+deckCardTo
+  :: (RandomGen g)
+  => Lens' CoreCardState [CardInstance CoreCard] -> (CardInstance CoreCard -> GameEvent) -> GameM g ()
 deckCardTo dst gameLog = do
   currentDeck <- use (#coreState % #deck)
   case currentDeck of

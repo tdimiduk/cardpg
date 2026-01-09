@@ -25,8 +25,8 @@ import Core.Primitives (ActorId)
 import Core.State (ActorState (..), CoreCardState (..), GameEvent)
 import Server.Types (ActorGameEvent (..), GameState (..), StateUpdate (..))
 
-runActorAction ::
-  ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)
+runActorAction
+  :: ActorId -> GameM StdGen a -> GameState -> State StdGen (Maybe [GameEvent], GameState)
 runActorAction tid action game =
   case Map.lookup tid game.actors of
     Nothing -> return (Nothing, game)

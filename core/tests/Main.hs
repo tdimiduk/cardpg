@@ -16,6 +16,7 @@ import Core.LogicTest (test_logic)
 
 import ArbitraryInstances ()
 import ConsequenceParsingTest (test_consequenceParsing)
+import PlanningTests (test_planningLogic)
 import ReadmeExamplesTest (test_readmeExamples)
 import ResolutionTests (test_resolutionCycle)
 import RuleJsonTest (prop_ruleJsonParsing, prop_tableStateJsonStructure)
@@ -44,6 +45,7 @@ tests =
     , test_stateTests
     , test_resolutionCycle
     , test_logic
+    , test_planningLogic
     ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

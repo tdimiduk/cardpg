@@ -47,8 +47,8 @@ instance (Render a m, Monad m) => Render (Vector a) m where
   renderWith c = mapM_ (renderWith c)
 
 instance
-  (Render a m, Render b m, Default (RenderConfig a), Default (RenderConfig b)) =>
-  Render (Either a b) m
+  (Render a m, Render b m, Default (RenderConfig a), Default (RenderConfig b))
+  => Render (Either a b) m
   where
   type RenderConfig (Either a b) = (RenderConfig a, RenderConfig b)
   renderWith (ca, _) (Left a) = renderWith ca a

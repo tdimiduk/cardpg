@@ -15,8 +15,8 @@ import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
 import Api.Request (ApiRequest (..))
-import Core.Primitives (ActorId)
-import Core.State (ActorState)
+import Core.Primitives (ActorId, Identified (..))
+import Core.State (ActorState, identifiedLookup)
 
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.Sidebar (sidebarWidget)
@@ -74,28 +74,28 @@ appWidget clientId = do
   where
     wsUrl = "ws://localhost:3004/api?clientId=" <> T.pack (show clientId)
 
-uiWidget ::
-  (MonadWidget t m, Requester t m, Request m ~ ApiRequest) =>
-  UUID ->
-  Dynamic t (Map.Map ActorId ActorState) ->
-  m ()
-uiWidget _ actorsMapDyn = do
-  -- Actor Selection State
-  rec selectedActorId <- holdDyn Nothing (leftmost [selectEvt])
+uiWidget
+  :: (MonadWidget t m, Requester t m, Request m ~ ApiRequest)
+  => UUID
+  -> Dynamic t (Map.Map ActorId ActorState)
+  -> m ()
+uiWidget _ actorsMapDyn = divStyle appRoot $ do
+  rec selectedActorId <- holdDyn Nothing activeActorChange
+      activeActorChange <- sidebarWidget selectedActorId actorsMapDyn
 
-      -- Layout: Sidebar + Main Content
-      selectEvt <- divStyle appRoot $ do
-        -- Sidebar (Left)
-        selEvt <- sidebarWidget selectedActorId actorsMapDyn
+      let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)
 
-        -- Main Content Area (Right)
-        divStyle mainContent $ do
-          -- Top Bar / Game Board Area (Placeholder)
-          divStyle gameBoardPlaceholder $
-            text "Game Board Area"
+  -- Main Content Area (Right)
+  divStyle mainContent $ do
+    -- Top Bar / Game Board Area (Placeholder)
+    divStyle gameBoardPlaceholder $ text "Game Board Area"
 
-          -- Player Hand Area (Bottom Overlay)
-          dyn_ $ ffor selectedActorId $ maybe blank $ \aid ->
-            handWidget $ Map.lookup aid <$> actorsMapDyn
-        return selEvt
+    let activeActorMap = ffor activeActor $ \case
+          Nothing -> Map.empty
+          Just (Identified i c) -> Map.singleton i c
+
+    _ <- listWithKey activeActorMap $ \k vDyn ->
+      handWidget (Identified k <$> vDyn)
+
+    return ()
   pure ()

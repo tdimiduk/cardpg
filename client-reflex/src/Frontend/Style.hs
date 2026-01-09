@@ -32,6 +32,7 @@ module Frontend.Style
     -- * Element Helpers
   , divStyle
   , elStyle
+  , elStyle'
   , component
 
     -- * Layout Combinators
@@ -59,12 +60,18 @@ module Frontend.Style
   , flex
   , flexCol
   , flexRow
+  , flex1
   , itemsCenter
   , itemsEnd
   , justifyCenter
   , justifyBetween
+  , justifyEnd
   , relative
   , absolute
+  , bottom0
+  , left0
+  , right0
+  , z40
   , grow
 
     -- ** Interaction
@@ -82,6 +89,8 @@ module Frontend.Style
   , textXs
   , rounded
   , shadowXl
+  , shadow
+  , backdropBlur
 
     -- * Card Style Groups (Screen)
   , cardBase
@@ -136,7 +145,18 @@ import Data.Semigroup (Semigroup (..))
 import Data.String (IsString (..))
 import Data.Text (Text)
 import Data.Text qualified as T
-import Reflex.Dom.Core (DomBuilder, blank, divClass, elAttr, elClass, (=:))
+import Reflex.Dom.Core
+  ( DomBuilder
+  , DomBuilderSpace
+  , Element
+  , EventResult
+  , blank
+  , divClass
+  , elAttr
+  , elClass
+  , elClass'
+  , (=:)
+  )
 
 --------------------------------------------------------------------------------
 
@@ -177,6 +197,11 @@ divStyle cls = divClass (classes cls)
 -- | Helper to create an element with a list of typed classes.
 elStyle :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m a
 elStyle tag cls = elClass tag (classes cls)
+
+-- | Helper to create an element with a list of typed classes, returning the element and result.
+elStyle'
+  :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
+elStyle' tag cls = elClass' tag (classes cls)
 
 -- | Create a semantic div with data-component attribute for testing/inspection.
 component :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m a
@@ -260,6 +285,9 @@ flexCol = "flex-col"
 flexRow :: CssClass
 flexRow = "flex-row"
 
+flex1 :: CssClass
+flex1 = "flex-1"
+
 itemsCenter :: CssClass
 itemsCenter = "items-center"
 
@@ -272,11 +300,26 @@ justifyCenter = "justify-center"
 justifyBetween :: CssClass
 justifyBetween = "justify-between"
 
+justifyEnd :: CssClass
+justifyEnd = "justify-end"
+
 relative :: CssClass
 relative = "relative"
 
 absolute :: CssClass
 absolute = "absolute"
+
+bottom0 :: CssClass
+bottom0 = "bottom-0"
+
+left0 :: CssClass
+left0 = "left-0"
+
+right0 :: CssClass
+right0 = "right-0"
+
+z40 :: CssClass
+z40 = "z-40"
 
 grow :: CssClass
 grow = "grow"
@@ -320,6 +363,12 @@ rounded = "rounded"
 
 shadowXl :: CssClass
 shadowXl = "shadow-xl"
+
+shadow :: Text -> CssClass
+shadow s = CssClass $ "shadow-" <> s
+
+backdropBlur :: Text -> CssClass
+backdropBlur s = CssClass $ "backdrop-blur-" <> s
 
 --------------------------------------------------------------------------------
 
@@ -384,7 +433,7 @@ cardHandWidth = "w-40"
 
 -- | Overlap for stacked cards in planned actions (-128px)
 plannedCardOverlap :: CssClass
-plannedCardOverlap = "-ml-32"
+plannedCardOverlap = "[&>*:not(:first-child)]:-ml-32"
 
 standardCardSize :: CssClass
 standardCardSize = cardCanonicalWidth <> cardCanonicalHeight

@@ -53,8 +53,8 @@ mkLogEntry ts senderName senderId payload = do
       , payload = payload
       }
 
-processCommand ::
-  Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
+processCommand
+  :: Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
 processCommand cmd ts game =
   case cmd of
     StartResolutionIntent tid -> do

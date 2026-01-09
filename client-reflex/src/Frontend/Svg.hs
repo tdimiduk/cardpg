@@ -21,13 +21,13 @@ type ElAttrs = Map.Map Text Text
 svgXMLNamespace :: Namespace
 svgXMLNamespace = "http://www.w3.org/2000/svg"
 
-elAttrNS' ::
-  (DomBuilder t m) =>
-  Maybe Namespace ->
-  Text ->
-  Map.Map Text Text ->
-  m a ->
-  m (Element EventResult (DomBuilderSpace m) t, a)
+elAttrNS'
+  :: (DomBuilder t m)
+  => Maybe Namespace
+  -> Text
+  -> Map.Map Text Text
+  -> m a
+  -> m (Element EventResult (DomBuilderSpace m) t, a)
 elAttrNS' mns elementTag attrs =
   element elementTag $
     def

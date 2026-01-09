@@ -15,13 +15,6 @@ module Core.Card
   , CardInstance
   ) where
 
-import Data.Aeson
-  ( FromJSON (..)
-  , ToJSON (..)
-  , genericToJSON
-  , withObject
-  , (.:)
-  )
 import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty (NonEmpty)
 import Data.Text (Text)
@@ -29,26 +22,11 @@ import GHC.Generics (Generic)
 
 import Core.Json
 import Core.NonEmptyText (NonEmptyText)
-import Core.Primitives (CardInstanceId)
+import Core.Primitives (CardInstanceId, Identified (..))
 import Core.RichText
 import Core.RuleDefs
 import Core.RuleInstances ()
 import Core.Stats (ResourceType (..), Stats (..))
-
-data Identified id a = Identified
-  { id :: id
-  , content :: a
-  }
-  deriving stock (Eq, Show, Generic)
-
-instance (ToJSON id, ToJSON a) => ToJSON (Identified id a) where
-  toJSON = genericToJSON cardpgJsonDef
-
-instance (FromJSON id, FromJSON a) => FromJSON (Identified id a) where
-  parseJSON = withObject "Identified" $ \o -> do
-    i <- o .: "id"
-    c <- o .: "content"
-    return $ Identified i c
 
 type CardInstance a = Identified CardInstanceId a
 

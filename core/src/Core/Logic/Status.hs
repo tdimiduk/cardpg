@@ -63,8 +63,8 @@ destroyStatus statusType maybeCardId = do
           Just specificId -> specificId == c.id
           Nothing -> getRawText c.content.name == statusType
 
-  let findAndRemove ::
-        Lens' CoreCardState [CardInstance CoreCard] -> GameM g (Maybe (CardInstance CoreCard))
+  let findAndRemove
+        :: Lens' CoreCardState [CardInstance CoreCard] -> GameM g (Maybe (CardInstance CoreCard))
       findAndRemove location = do
         currentList <- use (#coreState % location)
         let (before, foundAndAfter) = break matchFunc currentList

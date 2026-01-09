@@ -3,6 +3,7 @@ module Core.State where
 import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
+import Data.Map.Strict qualified as M
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
@@ -13,6 +14,7 @@ import Core.Primitives
   , CardLocation
   , ChallengeId (..)
   , EquipSlot (..)
+  , Identified (..)
   , TargetId (..)
   )
 import Core.Stats
@@ -201,3 +203,6 @@ data GameEnv = GameEnv
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEnv)
+
+identifiedLookup :: (Ord id) => id -> Map id a -> Maybe (Identified id a)
+identifiedLookup key m = Identified key <$> M.lookup key m
