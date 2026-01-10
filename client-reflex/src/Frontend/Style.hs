@@ -134,6 +134,12 @@ module Frontend.Style
   , textYellow400
   , textBlue500
 
+    -- * Interactables
+  , buttonSecondary
+  , buttonPrimary
+  , buttonDisabled
+  , cursorNotAllowed
+
     -- * Layout Grids
   , cardGrid
   , deckGrid
@@ -572,3 +578,52 @@ deckGrid =
   , "justify-start"
   , "grid-cols-[repeat(3,56mm)]"
   ]
+
+--------------------------------------------------------------------------------
+
+-- * Interactables
+
+--------------------------------------------------------------------------------
+
+-- | Secondary/cancel button styling
+buttonSecondary :: [CssClass]
+buttonSecondary =
+  [ flex1
+  , "py-2"
+  , rounded
+  , "border"
+  , "border-slate-600"
+  , "text-slate-400"
+  , fontBold
+  , "hover:bg-slate-800"
+  , "transition-colors"
+  ]
+
+-- | Primary button styling (active state)
+buttonPrimary :: [CssClass]
+buttonPrimary =
+  [ flex1
+  , "py-2"
+  , rounded
+  , fontBold
+  , "transition-colors"
+  , "bg-indigo-600"
+  , "text-white"
+  , "hover:bg-indigo-500"
+  ]
+
+-- | Disabled button styling
+buttonDisabled :: [CssClass]
+buttonDisabled =
+  [ flex1
+  , "py-2"
+  , rounded
+  , fontBold
+  , "transition-colors"
+  , "bg-slate-800"
+  , "text-slate-600"
+  , cursorNotAllowed
+  ]
+
+cursorNotAllowed :: CssClass
+cursorNotAllowed = "cursor-not-allowed"

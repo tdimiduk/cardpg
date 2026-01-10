@@ -142,24 +142,14 @@ stagingControls
   -> m (Event t (), Event t ())
 stagingControls validation = do
   divStyle [flex, "gap-2", "w-full"] $ do
-    (e, _) <-
-      elAttr'
-        "button"
-        ( "class"
-            =: "flex-1 py-2 rounded-lg border border-slate-600 text-slate-400 font-bold hover:bg-slate-800 transition-colors"
-        )
-        $ text "Cancel"
+    (e, _) <- elStyle' "button" buttonSecondary $ text "Cancel"
 
     -- Commit (disabled if not valid)
     let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
         btnClass = ffor validDyn $ \v ->
-          "flex-1 py-2 rounded-lg font-bold transition-colors "
-            <> ( if v
-                   then "bg-indigo-600 text-white hover:bg-indigo-500"
-                   else "bg-slate-800 text-slate-600 cursor-not-allowed"
-               )
+          if v then buttonPrimary else buttonDisabled
 
-    (commitEl, _) <- elDynAttr' "button" (fmap ("class" =:) btnClass) $ text "Commit"
+    (commitEl, _) <- elDynAttr' "button" (("class" =:) . classes <$> btnClass) $ text "Commit"
 
     -- Only emit commit if valid
     let commitEvt = gate (current validDyn) (domEvent Click commitEl)
