@@ -11,7 +11,7 @@ import Data.Set qualified as Set
 import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))
-import Core.Card (CardInstance, CoreCard, Identified (..))
+import Core.Card (CardInstance, CoreCard (..), Identified (..))
 
 import Core.Primitives (ActorId, CardInstanceId)
 import Core.State
@@ -148,26 +148,36 @@ handCardsWidget actor stagingStack plannedAction = do
             <*> stagingStack
             <*> plannedAction
 
+    let handSizeDyn = length . (.coreState.hand) <$> actor
+
     cardClicks <- divStyle [flex, itemsEnd, "transition-opacity", "duration-300"] $ do
       simpleList visibleHand $ \cardDyn -> do
         let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
             isSelected = zipDynWith checkIsSelected stagingStack cardDyn
+            isPlayableDyn = zipDynWith (\size c -> isPlayable size c.content) handSizeDyn cardDyn
 
         let finalClassDyn =
-              ( \cand sel ->
-                  let
-                    base = if cand then resourceCandidate else cardHover
-                    ring = if sel then ["ring-2", "ring-indigo-400", "ring-offset-2"] else []
-                   in
-                    classes ([relative, pointerEventsAuto, group, cardHandWidth] ++ base ++ ring)
-              )
-                <$> isCandidate
-                <*> isSelected
+              ffor ((,,,) <$> isCandidate <*> isSelected <*> isPlayableDyn <*> stagingStack) $ \(cand, sel, playable, stk) ->
+                let
+                  inStaging = isJust stk
+                  baseStyle = if cand then resourceCandidate else cardHover
+
+                  -- Interaction highlights
+                  extraStyle
+                    | inStaging = if sel then ["ring-2", "ring-indigo-400", "ring-offset-2"] else []
+                    | playable = cardPlayable
+                    | otherwise = cardNotPlayable
+                 in
+                  classes ([relative, pointerEventsAuto, group, cardHandWidth] ++ baseStyle ++ extraStyle)
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderWith (CardSettings CardFull)
 
-        return (domEvent Click e, cardDyn)
+        -- Only allow clicking if playable (or if in staging mode)
+        let clickEnabled = ffor ((,) <$> isPlayableDyn <*> stagingStack) $ \(p, stk) -> isJust stk || p
+            effectiveClick = gate (current clickEnabled) (domEvent Click e)
+
+        return (effectiveClick, cardDyn)
 
     let flatClick = switchDyn $ fmap (leftmost . map (\(e, c) -> tag (current c) e)) cardClicks
         flatClickId = fmap (.id) flatClick
@@ -208,4 +218,11 @@ checkResourceCandidate stk c = case stk of
 checkIsSelected :: Maybe ActionStack -> CardInstance CoreCard -> Bool
 checkIsSelected stk c = case stk of
   Just s -> any (\r -> r.id == c.id) s.resources
+  Nothing -> False
+
+-- | Check if a card can be played as an action
+-- Must have a cost, and cost must be <= available resources (hand size - 1)
+isPlayable :: Int -> CoreCard -> Bool
+isPlayable handSize CoreCard{cost} = case cost of
+  Just c -> c <= handSize - 1
   Nothing -> False

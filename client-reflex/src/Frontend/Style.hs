@@ -139,6 +139,8 @@ module Frontend.Style
   , buttonPrimary
   , buttonDisabled
   , cursorNotAllowed
+  , cardPlayable
+  , cardNotPlayable
 
     -- * Staging Styles
   , stagedActionCard
@@ -631,6 +633,14 @@ buttonDisabled =
 
 cursorNotAllowed :: CssClass
 cursorNotAllowed = "cursor-not-allowed"
+
+-- | Style for cards that can be played (valid cost)
+cardPlayable :: [CssClass]
+cardPlayable = ["ring-2", "ring-indigo-400", "ring-offset-1"]
+
+-- | Style for cards that cannot be played (invalid cost)
+cardNotPlayable :: [CssClass]
+cardNotPlayable = ["opacity-75"]
 
 --------------------------------------------------------------------------------
 
