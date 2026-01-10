@@ -3,8 +3,6 @@
 module Frontend.Game.Staging where
 
 import Control.Monad.Fix (MonadFix)
-import Data.Text (Text)
-import Data.Text qualified as Text
 import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))
@@ -13,6 +11,7 @@ import Core.Card (Identified (..))
 import Core.Logic.Planning (PlanValidation (..))
 import Core.Primitives (ActorId, CardInstanceId)
 import Core.State (ActionStack (..))
+import Core.Util (tshow)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Style
@@ -150,7 +149,3 @@ stagingWidget actorId actionStackDyn validation = do
                 , unstage = clickResource
                 , commit = commitClick -- Use the gated commit event
                 }
-
--- Helper
-tshow :: (Show a) => a -> Text
-tshow = Text.pack . show

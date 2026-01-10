@@ -47,7 +47,7 @@ main = do
   jsaddleApplication <-
     jsaddleOr
       defaultConnectionOptions
-      (mainWidgetInElementById "app" (appWidget clientId))
+      (mainWidgetInElementById "app" (appWidget "ws://localhost:3004/api" clientId))
       (serveJsaddleJs (staticApp staticSettings))
 
   run port jsaddleApplication

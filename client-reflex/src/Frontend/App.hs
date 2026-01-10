@@ -50,8 +50,8 @@ mainContent =
 gameBoardPlaceholder :: [CssClass]
 gameBoardPlaceholder = ["flex-1", flex, itemsCenter, justifyCenter, "text-slate-700"]
 
-appWidget :: (MonadWidget t m, Prerender t m) => UUID -> m ()
-appWidget clientId = do
+appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
+appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
       (_, requests) <- runRequesterT (uiWidget Nothing actorsMapDyn) responses
@@ -75,7 +75,7 @@ appWidget clientId = do
 
   pure ()
   where
-    wsUrl = "ws://localhost:3004/api?clientId=" <> T.pack (show clientId)
+    wsUrl = wsBaseUrl <> "?clientId=" <> T.pack (show clientId)
 
 uiWidget
   :: ( DomBuilder t m
