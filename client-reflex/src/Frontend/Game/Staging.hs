@@ -113,23 +113,13 @@ stagedCardsRow actionStackDyn = do
     (clickResource, clickAction) <-
       cardStackWidget
         ( \rDyn -> do
-            (eRes, _) <- elAttr'
-              "div"
-              ( "class"
-                  =: "relative group cursor-pointer origin-bottom w-40 shrink-0 transition-all duration-200 hover:-translate-y-4 hover:z-20"
-              )
-              $ do
-                dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
+            (eRes, _) <- elStyle' "div" stagedResourceCard $ do
+              dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
             return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
         )
         ( \aDyn -> do
-            (eAct, _) <- elAttr'
-              "div"
-              ( "class"
-                  =: "relative group cursor-pointer origin-bottom w-40 shrink-0 z-10 hover:z-30 hover:scale-105 transition-transform"
-              )
-              $ do
-                dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
+            (eAct, _) <- elStyle' "div" stagedActionCard $ do
+              dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
             return (domEvent Click eAct)
         )
         stagedResourcesDyn

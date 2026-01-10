@@ -138,32 +138,19 @@ handCardsWidget actor stagingStack plannedAction = do
 
     cardClicks <- divStyle [flex, itemsEnd, "transition-opacity", "duration-300"] $ do
       simpleList visibleHand $ \cardDyn -> do
-        let isResourceCandidate =
-              zipDynWith
-                ( \stk c -> case stk of
-                    Just s -> Just c.id /= Just s.actionCard.id -- In staging mode, everything is a candidate except the action itself
-                    Nothing -> False
-                )
-                stagingStack
-                cardDyn
+        let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
+            isSelected = zipDynWith checkIsSelected stagingStack cardDyn
 
-        let cardClass = ffor isResourceCandidate $ \c -> if c then resourceCandidate else cardHover
-
-        let isSelectedResource =
-              zipDynWith
-                ( \stk c -> case stk of
-                    Just s -> any (\r -> r.id == c.id) s.resources
-                    Nothing -> False
-                )
-                stagingStack
-                cardDyn
-
-            ringClass = ffor isSelectedResource $ \sel -> if sel then ["ring-2", "ring-indigo-400", "ring-offset-2"] else []
-
-            finalClassDyn =
-              (\base ring -> classes ([relative, pointerEventsAuto, group, cardHandWidth] ++ base ++ ring))
-                <$> cardClass
-                <*> ringClass
+        let finalClassDyn =
+              ( \cand sel ->
+                  let
+                    base = if cand then resourceCandidate else cardHover
+                    ring = if sel then ["ring-2", "ring-indigo-400", "ring-offset-2"] else []
+                   in
+                    classes ([relative, pointerEventsAuto, group, cardHandWidth] ++ base ++ ring)
+              )
+                <$> isCandidate
+                <*> isSelected
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderWith (CardSettings CardFull)
@@ -198,3 +185,15 @@ isCardVisible stagingStack plannedAction c =
         Just s -> Just c.id == Just s.actionCard.id
         Nothing -> False
    in not hiddenInPlan && not hiddenInStaging
+
+-- | Check if a card is a valid resource candidate (not the action itself)
+checkResourceCandidate :: Maybe ActionStack -> CardInstance CoreCard -> Bool
+checkResourceCandidate stk c = case stk of
+  Just s -> c.id /= s.actionCard.id
+  Nothing -> False
+
+-- | Check if a card is currently selected as a resource in staging
+checkIsSelected :: Maybe ActionStack -> CardInstance CoreCard -> Bool
+checkIsSelected stk c = case stk of
+  Just s -> any (\r -> r.id == c.id) s.resources
+  Nothing -> False

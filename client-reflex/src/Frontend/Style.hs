@@ -140,6 +140,10 @@ module Frontend.Style
   , buttonDisabled
   , cursorNotAllowed
 
+    -- * Staging Styles
+  , stagedActionCard
+  , stagedResourceCard
+
     -- * Layout Grids
   , cardGrid
   , deckGrid
@@ -627,3 +631,39 @@ buttonDisabled =
 
 cursorNotAllowed :: CssClass
 cursorNotAllowed = "cursor-not-allowed"
+
+--------------------------------------------------------------------------------
+
+-- * Staging Styles
+
+--------------------------------------------------------------------------------
+
+-- | Style for the Action card in the staging area
+stagedActionCard :: [CssClass]
+stagedActionCard =
+  [ relative
+  , group
+  , cursorPointer
+  , "origin-bottom"
+  , "w-40"
+  , "shrink-0"
+  , "z-10"
+  , "hover:z-30"
+  , "hover:scale-105"
+  , "transition-transform"
+  ]
+
+-- | Style for Resource cards in the staging area
+stagedResourceCard :: [CssClass]
+stagedResourceCard =
+  [ relative
+  , group
+  , cursorPointer
+  , "origin-bottom"
+  , "w-40"
+  , "shrink-0"
+  , "transition-all"
+  , "duration-200"
+  , "hover:-translate-y-4"
+  , "hover:z-20"
+  ]
