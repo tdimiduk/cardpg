@@ -7,12 +7,20 @@ import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))
 import Api.Types (Command (..))
-import Core.Card (Identified (..))
+import Core.Card (CoreCard (..), Identified (..))
 import Core.Logic.Planning (PlanValidation (..))
 import Core.Primitives (ActorId, CardInstanceId)
+import Core.Render (IconMode (..))
 import Core.State (ActionStack (..))
 import Core.Util (tshow)
-import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
+import Data.Monoid (Sum (..))
+import Frontend.Card
+  ( CardDisplayMode (..)
+  , CardSettings (..)
+  , StatsDisplayMode (..)
+  , StatsSettings (..)
+  , renderWith
+  )
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Style
 
@@ -42,19 +50,22 @@ stagingWidget actorId actionStackDyn validation = do
     , flex
     , flexCol
     , itemsCenter
-    , "gap-6"
+    , "gap-3"
     , "min-w-[320px]"
     , "bg-slate-900/90"
     , backdropBlur "md"
     , "border"
     , "border-slate-700"
     , "rounded-3xl"
-    , "p-6"
+    , "p-4"
     , shadow "2xl"
     ]
     $ do
       -- Header / Status
       stagingStatusHeader validation
+
+      -- Live Stat Totals
+      stagingStats actionStackDyn
 
       -- Staged Cards Row
       (clickAction, clickResource) <- stagedCardsRow actionStackDyn
@@ -105,7 +116,7 @@ stagedCardsRow
   => Dynamic t ActionStack
   -> m (Event t (), Event t CardInstanceId)
 stagedCardsRow actionStackDyn = do
-  divStyle [flex, justifyCenter, "py-2"] $ do
+  divStyle [flex, justifyCenter] $ do
     -- Extract resources and action from the ActionStack dynamic
     let stagedResourcesDyn = fmap (.resources) actionStackDyn
         stagedActionDyn = fmap (.actionCard) actionStackDyn
@@ -144,3 +155,19 @@ stagingControls validation = do
     -- Only emit commit if valid
     let commitEvt = gate (current validDyn) (domEvent Click commitEl)
     return (domEvent Click e, commitEvt)
+
+stagingStats
+  :: (DomBuilder t m, PostBuild t m)
+  => Dynamic t ActionStack
+  -> m ()
+stagingStats stackDyn = do
+  let totalStats = ffor stackDyn $ \planStack ->
+        let toSum = fmap Sum
+            fromSum = fmap getSum
+            actionStats = toSum planStack.actionCard.content.stats
+            resStats = mconcat $ map (toSum . (.content.stats)) planStack.resources
+         in fromSum (actionStats <> resStats)
+
+  divStyle [flex, "gap-2", itemsCenter, "text-white"] $ do
+    dyn_ $ ffor totalStats $ \s ->
+      renderWith (StatsSettings StatsRow IconBlock) s

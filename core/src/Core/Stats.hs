@@ -51,6 +51,12 @@ instance (ToJSON a) => ToJSON (Stats a) where
 instance (FromJSON a) => FromJSON (Stats a) where
   parseJSON = genericParseJSON cardpgJsonDef
 
+instance (Semigroup a) => Semigroup (Stats a) where
+  Stats r1 y1 b1 <> Stats r2 y2 b2 = Stats (r1 <> r2) (y1 <> y2) (b1 <> b2)
+
+instance (Monoid a) => Monoid (Stats a) where
+  mempty = Stats mempty mempty mempty
+
 parseCanonicalResourceName :: Parser ResourceType
 parseCanonicalResourceName = mkEnumParser tshow
 
