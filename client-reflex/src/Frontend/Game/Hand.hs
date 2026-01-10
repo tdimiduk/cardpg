@@ -11,9 +11,8 @@ import Data.Set qualified as Set
 import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))
-import Api.Types (Command (..))
 import Core.Card (CardInstance, CoreCard, Identified (..))
-import Core.Logic.Planning (PlanValidation (..))
+
 import Core.Primitives (ActorId, CardInstanceId)
 import Core.State
   ( ActionStack (..)
@@ -25,7 +24,7 @@ import Core.State
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
 import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
-import Frontend.Game.Staging (stagingWidget)
+import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
 import Frontend.Style hiding (stack)
 
 -- | Styles for hand card hover interactions
@@ -80,16 +79,15 @@ handWidget actorDyn = do
           stagingStackDyn = zipDynWith buildStagingStack safeActor stagingState
 
       -- Render UI
-      (selectClick, toggleClick, cancelStaging, unstageResource, commitStaging, revisePlanned) <-
+      (selectEvt, toggleEvt, clearEvt) <-
         divStyle [absolute, bottom0, left0, right0, pointerEventsNone, z40] $ do
           -- Layer 1: Main Layout (Flex Row)
-          (sel, tog, rev) <- divStyle [flex, justifyBetween, itemsEnd, "w-full", "px-8", "pb-4"] $ do
+          (sel, tog) <- divStyle [flex, justifyBetween, itemsEnd, "w-full", "px-8", "pb-4"] $ do
             -- Left: Planned Action
-            revEvt' <- divStyle [flex1, flex, "justify-start"] $ do
-              dyn $ ffor plannedActionDyn $ \case
-                Just plan -> divStyle [pointerEventsAuto] $ plannedActionWidget plan
-                Nothing -> return never
-            revEvt <- switchHold never revEvt'
+            divStyle [flex1, flex, "justify-start"] $ do
+              dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
+                (aid, Just plan) -> divStyle [pointerEventsAuto] $ plannedActionWidget (Identified aid plan)
+                _ -> blank
 
             -- Center: Hand
             -- We wrap in pointerEventsAuto so cards catch clicks
@@ -100,53 +98,23 @@ handWidget actorDyn = do
             -- Right: Spacer
             divStyle [flex1] blank
 
-            return (s, t, revEvt)
+            return (s, t)
 
           -- Layer 2: Staging Overlay
-          overlayEvts <- dyn $ ffor stagingStackDyn $ \case
-            Just stk -> stagingWidget (constDyn stk) validation
-            Nothing -> return (never, never, never)
+          overlayEvts <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
+            (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
+            _ -> return (StagingEvents never never never)
 
           -- Flatten events
-          cancel <- switchHold never (fmap (\(c, _, _) -> c) overlayEvts)
-          unstageResource' <- switchHold never (fmap (\(_, u, _) -> u) overlayEvts)
-          commit <- switchHold never (fmap (\(_, _, c) -> c) overlayEvts)
+          cancel <- switchHold never (fmap (.cancel) overlayEvts)
+          unstageResource' <- switchHold never (fmap (.unstage) overlayEvts)
+          commit <- switchHold never (fmap (.commit) overlayEvts)
 
-          return (sel, tog, cancel, unstageResource', commit, rev)
-
-      let selectEvt = leftmost [selectClick]
-          toggleEvt = leftmost [toggleClick, unstageResource]
-          clearEvt = leftmost [cancelStaging, commitStaging]
-
-      let commitPlan =
-            attachWithMaybe
-              (\val _ -> case val of PlanValid p -> Just p; _ -> Nothing)
-              (current validation)
-              commitStaging
-
-      -- Requests
-      let planReq =
-            attachWith
-              ( \aid plan ->
-                  case plan of
-                    PStandard (ActionStack ac res) ->
-                      GameAction $
-                        PlanAction
-                          { actorId = aid
-                          , actionCardId = ac.id
-                          , resourceCardIds = map (.id) res
-                          }
-                    _ -> error "Narrative not supported in Hand yet"
-              )
-              (current actorId)
-              commitPlan
-
-      _ <- requesting planReq
-
-      -- Revise Request
-      let reviseReq = ffor (current actorId) $ \aid -> GameAction $ CancelPlanIntent aid
-
-      _ <- requesting $ tag reviseReq revisePlanned
+          return
+            ( sel
+            , leftmost [tog, unstageResource']
+            , leftmost [cancel, commit]
+            )
 
       return ()
 

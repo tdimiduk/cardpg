@@ -7,23 +7,32 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 import Reflex.Dom.Core
 
+import Api.Request (ApiRequest (..))
+import Api.Types (Command (..))
 import Core.Card (Identified (..))
 import Core.Logic.Planning (PlanValidation (..))
-import Core.Primitives (CardInstanceId)
+import Core.Primitives (ActorId, CardInstanceId)
 import Core.State (ActionStack (..))
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Style
 
+data StagingEvents t = StagingEvents
+  { cancel :: Event t ()
+  , unstage :: Event t CardInstanceId
+  , commit :: Event t ()
+  }
+
 -- | The Staging Widget handles the UI for building a plan (ACTION + RESOURCE + TARGETS)
 -- It appears as an overlay when an action card is selected.
 stagingWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
-  => Dynamic t ActionStack
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Requester t m, Request m ~ ApiRequest)
+  => ActorId
+  -> Dynamic t ActionStack
   -> Dynamic t PlanValidation
-  -> m (Event t (), Event t CardInstanceId, Event t ())
-stagingWidget actionStackDyn validation = do
-  -- Returns: (CancelStaging, CancelResource, CommitStaging)
+  -> m (StagingEvents t)
+stagingWidget actorId actionStackDyn validation = do
+  -- Returns: (CancelStaging, CancelResource)
 
   -- Staging UI Container
   component
@@ -118,8 +127,29 @@ stagingWidget actionStackDyn validation = do
               let commitEvt = gate (current validDyn) (domEvent Click commitEl)
               return (domEvent Click e, commitEvt)
 
+            -- Commit Request logic
+            let planReq =
+                  attachWith
+                    ( \inputStack _ ->
+                        GameAction $
+                          PlanAction
+                            { actorId = actorId
+                            , actionCardId = inputStack.actionCard.id
+                            , resourceCardIds = map (.id) inputStack.resources
+                            }
+                    )
+                    (current actionStackDyn)
+                    commitClick
+
+            _ <- requesting planReq
+
             -- Combine cancels (Clicking the ACTION card also cancels/unstages it)
-            return (leftmost [cancelClick, clickAction], clickResource, commitClick)
+            return $
+              StagingEvents
+                { cancel = leftmost [cancelClick, clickAction]
+                , unstage = clickResource
+                , commit = commitClick -- Use the gated commit event
+                }
 
 -- Helper
 tshow :: (Show a) => a -> Text

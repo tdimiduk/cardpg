@@ -3,7 +3,10 @@ module Frontend.Game.PlannedAction where
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
 
+import Api.Request (ApiRequest (..))
+import Api.Types (Command (..))
 import Core.Card (Identified (..))
+import Core.Primitives (ActorId)
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
@@ -62,41 +65,50 @@ narrativeCardHover =
   [relative, "z-10", "hover:z-20", "transform", "hover:-translate-y-2", "transition-transform"]
 
 plannedActionWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m) => PlannedAction -> m (Event t ())
-plannedActionWidget planned = case planned of
-  PStandard (ActionStack action res) -> do
-    colWith ["gap-2", itemsCenter] $ do
-      -- Revise Button
-      (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Requester t m, Request m ~ ApiRequest)
+  => Identified ActorId PlannedAction
+  -> m ()
+plannedActionWidget (Identified actorId planned) = do
+  case planned of
+    PStandard (ActionStack action res) -> do
+      colWith ["gap-2", itemsCenter] $ do
+        -- Revise Button
+        (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
+        let reviseReq = GameAction $ CancelPlanIntent actorId
+        _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
 
-      -- Stack container
-      _ <-
-        cardStackWidget
-          ( \rDyn -> do
-              (eRes, _) <-
-                elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
-                  dyn_ $
-                    fmap (renderWith (CardSettings CardFull)) rDyn
-              return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
-          )
-          ( \aDyn -> do
-              (eAct, _) <- elStyle' "div" [relative, cardHandWidth, "shrink-0"] $ do
-                divStyle actionCardHover $ dyn_ $ fmap render aDyn
-                divStyle plannedBadge $ text "PLANNED"
-              return (domEvent Click eAct)
-          )
-          (constDyn res)
-          (constDyn action)
+        -- Stack container
+        _ <-
+          cardStackWidget
+            ( \rDyn -> do
+                (eRes, _) <-
+                  elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
+                    dyn_ $
+                      fmap (renderWith (CardSettings CardFull)) rDyn
+                return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
+            )
+            ( \aDyn -> do
+                (eAct, _) <- elStyle' "div" [relative, cardHandWidth, "shrink-0"] $ do
+                  divStyle actionCardHover $ dyn_ $ fmap render aDyn
+                  divStyle plannedBadge $ text "PLANNED"
+                return (domEvent Click eAct)
+            )
+            (constDyn res)
+            (constDyn action)
 
-      return (domEvent Click e)
-  PNarrative (NarrativeStack cards _color) -> do
-    colWith ["gap-2", itemsCenter] $ do
-      (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
-      rowGap "-space-x-8" $
-        mapM_ (divStyle narrativeCardHover . render) cards
-      return (domEvent Click e)
-  PPass -> do
-    colWith ["gap-2", itemsCenter] $ do
-      (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
-      divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
-      return (domEvent Click e)
+        return ()
+    PNarrative (NarrativeStack cards _color) -> do
+      colWith ["gap-2", itemsCenter] $ do
+        (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
+        let reviseReq = GameAction $ CancelPlanIntent actorId
+        _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
+        rowGap "-space-x-8" $
+          mapM_ (divStyle narrativeCardHover . render) cards
+        return ()
+    PPass -> do
+      colWith ["gap-2", itemsCenter] $ do
+        (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
+        let reviseReq = GameAction $ CancelPlanIntent actorId
+        _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
+        divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
+        return ()
