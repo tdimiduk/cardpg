@@ -1,4 +1,6 @@
-module Frontend.Game.PlannedAction where
+module Frontend.Game.PlannedAction
+  ( plannedActionWidget
+  ) where
 
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
