@@ -1,7 +1,9 @@
 module Frontend.Game.PlannedAction where
 
+import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
 
+import Core.Card (Identified (..))
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
@@ -59,7 +61,8 @@ narrativeCardHover :: [CssClass]
 narrativeCardHover =
   [relative, "z-10", "hover:z-20", "transform", "hover:-translate-y-2", "transition-transform"]
 
-plannedActionWidget :: (DomBuilder t m) => PlannedAction -> m (Event t ())
+plannedActionWidget
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m) => PlannedAction -> m (Event t ())
 plannedActionWidget planned = case planned of
   PStandard (ActionStack action res) -> do
     colWith ["gap-2", itemsCenter] $ do
@@ -69,20 +72,21 @@ plannedActionWidget planned = case planned of
       -- Stack container
       _ <-
         cardStackWidget
-          ( \r -> do
+          ( \rDyn -> do
               (eRes, _) <-
                 elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
-                  renderWith (CardSettings CardFull) r
-              return (domEvent Click eRes)
+                  dyn_ $
+                    fmap (renderWith (CardSettings CardFull)) rDyn
+              return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
           )
-          ( \a -> do
+          ( \aDyn -> do
               (eAct, _) <- elStyle' "div" [relative, cardHandWidth, "shrink-0"] $ do
-                divStyle actionCardHover $ render a
+                divStyle actionCardHover $ dyn_ $ fmap render aDyn
                 divStyle plannedBadge $ text "PLANNED"
               return (domEvent Click eAct)
           )
-          res
-          action
+          (constDyn res)
+          (constDyn action)
 
       return (domEvent Click e)
   PNarrative (NarrativeStack cards _color) -> do

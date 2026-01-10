@@ -5,6 +5,7 @@ module Frontend.Game.Hand where
 
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
+import Data.List (find)
 import Data.Maybe (isJust)
 import Data.Set qualified as Set
 import Reflex.Dom.Core
@@ -25,7 +26,7 @@ import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
 import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (stagingWidget)
-import Frontend.Style
+import Frontend.Style hiding (stack)
 
 -- | Styles for hand card hover interactions
 cardHover :: [CssClass]
@@ -48,14 +49,14 @@ resourceCandidate =
   , cursorPointer
   ]
 
--- | View modes for the hand logic
-data ViewMode = VMPlanned PlannedAction | VMStaging CardInstanceId | VMDefault
-
--- | Determine the current view mode based on actor state and staging state
-determineViewMode :: ActorState -> StagingState -> ViewMode
-determineViewMode actor staging = case actor.coreState.planned of
-  Just p -> VMPlanned p
-  Nothing -> maybe VMDefault VMStaging staging.stagedActionId
+-- | Safely build the ActionStack for staging mode
+-- Returns Nothing if the staged action card is not in hand
+buildStagingStack :: ActorState -> StagingState -> Maybe ActionStack
+buildStagingStack actor staging = do
+  actId <- staging.stagedActionId
+  actCard <- find (\(Identified i _) -> i == actId) actor.coreState.hand
+  let resources = filter (\(Identified i _) -> i `Set.member` staging.stagedResourceIds) actor.coreState.hand
+  return $ ActionStack actCard resources
 
 handWidget
   :: ( DomBuilder t m
@@ -74,7 +75,9 @@ handWidget actorDyn = do
 
   rec (stagingState, validation) <- mkPlanBuilderLogic safeActor selectEvt toggleEvt clearEvt
 
-      let viewMode = zipDynWith determineViewMode safeActor stagingState
+      -- Derived View Models
+      let plannedActionDyn = (.coreState.planned) <$> safeActor
+          stagingStackDyn = zipDynWith buildStagingStack safeActor stagingState
 
       -- Render UI
       (selectClick, toggleClick, cancelStaging, unstageResource, commitStaging, revisePlanned) <-
@@ -83,18 +86,16 @@ handWidget actorDyn = do
           (sel, tog, rev) <- divStyle [flex, justifyBetween, itemsEnd, "w-full", "px-8", "pb-4"] $ do
             -- Left: Planned Action
             revEvt' <- divStyle [flex1, flex, "justify-start"] $ do
-              dyn $ ffor viewMode $ \case
-                VMPlanned plan -> do
-                  -- Planned action is interactive
-                  divStyle [pointerEventsAuto] $ plannedActionWidget plan
-                _ -> return never
+              dyn $ ffor plannedActionDyn $ \case
+                Just plan -> divStyle [pointerEventsAuto] $ plannedActionWidget plan
+                Nothing -> return never
             revEvt <- switchHold never revEvt'
 
             -- Center: Hand
             -- We wrap in pointerEventsAuto so cards catch clicks
             (s, t) <-
               divStyle [pointerEventsAuto] $
-                handCardsWidget safeActor stagingState viewMode
+                handCardsWidget safeActor stagingStackDyn plannedActionDyn
 
             -- Right: Spacer
             divStyle [flex1] blank
@@ -102,19 +103,16 @@ handWidget actorDyn = do
             return (s, t, revEvt)
 
           -- Layer 2: Staging Overlay
-          -- This sits on top (dom order) but is transparent to clicks by default (controlled by Staging widget)
-          overlayEvts <- dyn $ ffor viewMode $ \case
-            VMStaging _ -> do
-              (cancel, unstageResource, commit) <- stagingWidget safeActor stagingState validation
-              return (cancel, unstageResource, commit)
-            _ -> return (never, never, never)
+          overlayEvts <- dyn $ ffor stagingStackDyn $ \case
+            Just stk -> stagingWidget (constDyn stk) validation
+            Nothing -> return (never, never, never)
 
           -- Flatten events
           cancel <- switchHold never (fmap (\(c, _, _) -> c) overlayEvts)
-          unstageResource <- switchHold never (fmap (\(_, u, _) -> u) overlayEvts)
+          unstageResource' <- switchHold never (fmap (\(_, u, _) -> u) overlayEvts)
           commit <- switchHold never (fmap (\(_, _, c) -> c) overlayEvts)
 
-          return (sel, tog, cancel, unstageResource, commit, rev)
+          return (sel, tog, cancel, unstageResource', commit, rev)
 
       let selectEvt = leftmost [selectClick]
           toggleEvt = leftmost [toggleClick, unstageResource]
@@ -157,26 +155,41 @@ handWidget actorDyn = do
 handCardsWidget
   :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
   => Dynamic t ActorState
-  -> Dynamic t StagingState
-  -> Dynamic t ViewMode
+  -> Dynamic t (Maybe ActionStack)
+  -- ^ Staging Stack (defines staging mode)
+  -> Dynamic t (Maybe PlannedAction)
+  -- ^ Planned Action (defines hidden cards)
   -> m (Event t CardInstanceId, Event t CardInstanceId)
-handCardsWidget actor staging viewMode = do
+handCardsWidget actor stagingStack plannedAction = do
   divStyle [flex, justifyCenter, itemsEnd, "px-8", pointerEventsAuto] $ do
     let visibleHand =
-          (\a s vm -> filter (isCardVisible s vm) a.coreState.hand)
+          (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
             <$> actor
-            <*> staging
-            <*> viewMode
+            <*> stagingStack
+            <*> plannedAction
 
     cardClicks <- divStyle [flex, itemsEnd, "transition-opacity", "duration-300"] $ do
       simpleList visibleHand $ \cardDyn -> do
-        let isResourceCandidate = zipDynWith (\s c -> isStagingMode s && not (isStagedAction s c)) staging cardDyn
-            isStagingMode s = isJust s.stagedActionId
-            isStagedAction s c = Just c.id == s.stagedActionId
+        let isResourceCandidate =
+              zipDynWith
+                ( \stk c -> case stk of
+                    Just s -> Just c.id /= Just s.actionCard.id -- In staging mode, everything is a candidate except the action itself
+                    Nothing -> False
+                )
+                stagingStack
+                cardDyn
 
         let cardClass = ffor isResourceCandidate $ \c -> if c then resourceCandidate else cardHover
 
-        let isSelectedResource = zipDynWith (\s c -> Set.member c.id s.stagedResourceIds) staging cardDyn
+        let isSelectedResource =
+              zipDynWith
+                ( \stk c -> case stk of
+                    Just s -> any (\r -> r.id == c.id) s.resources
+                    Nothing -> False
+                )
+                stagingStack
+                cardDyn
+
             ringClass = ffor isSelectedResource $ \sel -> if sel then ["ring-2", "ring-indigo-400", "ring-offset-2"] else []
 
             finalClassDyn =
@@ -192,22 +205,28 @@ handCardsWidget actor staging viewMode = do
     let flatClick = switchDyn $ fmap (leftmost . map (\(e, c) -> tag (current c) e)) cardClicks
         flatClickId = fmap (.id) flatClick
 
+    -- Select Event: Only fires when NOT in staging mode
     let selectEvent =
           attachWithMaybe
-            (\vm cid -> case vm of VMDefault -> Just cid; _ -> Nothing)
-            (current viewMode)
+            (\stk cid -> if isJust stk then Nothing else Just cid)
+            (current stagingStack)
             flatClickId
 
+    -- Toggle Event: Only fires when IN staging mode
     let toggleEvent =
           attachWithMaybe
-            (\vm cid -> case vm of VMStaging _ -> Just cid; _ -> Nothing)
-            (current viewMode)
+            (\stk cid -> if isJust stk then Just cid else Nothing)
+            (current stagingStack)
             flatClickId
 
     return (selectEvent, toggleEvent)
 
-isCardVisible :: StagingState -> ViewMode -> CardInstance CoreCard -> Bool
-isCardVisible s vm c = case vm of
-  VMPlanned plan -> c.id `notElem` map (.id) (plannedActionCards plan)
-  VMStaging _ -> Just c.id /= s.stagedActionId
-  VMDefault -> True
+isCardVisible :: Maybe ActionStack -> Maybe PlannedAction -> CardInstance CoreCard -> Bool
+isCardVisible stagingStack plannedAction c =
+  let hiddenInPlan = case plannedAction of
+        Just p -> c.id `elem` map (.id) (plannedActionCards p)
+        Nothing -> False
+      hiddenInStaging = case stagingStack of
+        Just s -> Just c.id == Just s.actionCard.id
+        Nothing -> False
+   in not hiddenInPlan && not hiddenInStaging
