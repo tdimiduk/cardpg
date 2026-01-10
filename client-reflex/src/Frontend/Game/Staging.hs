@@ -31,121 +31,136 @@ stagingWidget
   -> Dynamic t PlanValidation
   -> m (StagingEvents t)
 stagingWidget actorId actionStackDyn validation = do
-  -- Returns: (CancelStaging, CancelResource)
-
   -- Staging UI Container
   component
     "action-staging"
-    [absolute, bottom0, left0, right0, pointerEventsNone, flex, flexCol, justifyEnd, "pb-64"]
+    [ absolute
+    , "bottom-72"
+    , "left-1/2"
+    , "-translate-x-1/2"
+    , pointerEventsAuto
+    , flex
+    , flexCol
+    , itemsCenter
+    , "gap-6"
+    , "min-w-[320px]"
+    , "bg-slate-900/90"
+    , backdropBlur "md"
+    , "border"
+    , "border-slate-700"
+    , "rounded-3xl"
+    , "p-6"
+    , shadow "2xl"
+    ]
     $ do
-      divStyle [flex1, flex, flexCol, itemsCenter, justifyEnd, "pb-8", pointerEventsNone] $ do
-        -- Widget Block
-        divStyle
-          [ pointerEventsAuto
-          , "bg-slate-900/90"
-          , backdropBlur "md"
-          , "border"
-          , "border-slate-700"
-          , "rounded-3xl"
-          , "p-6"
-          , shadow "2xl"
-          , flex
-          , flexCol
-          , itemsCenter
-          , "gap-6"
-          , "min-w-[320px]"
-          ]
-          $ do
-            -- Header / Status
-            (clickAction, clickResource) <- divStyle [flex, flexCol, itemsCenter, "gap-2"] $ do
-              text "Preparing Action"
-              dyn_ $ ffor validation $ \case
-                PlanIncomplete cost provided ->
-                  text $ "Need " <> tshow (cost - provided) <> " more resource(s)"
-                PlanValid _ ->
-                  text "Ready to Commit"
-                _ -> blank
+      -- Header / Status
+      stagingStatusHeader validation
 
-              -- Staged Cards Row
-              (clickAction, clickResource) <- divStyle [flex, justifyCenter, "py-2"] $ do
-                -- Extract resources and action from the ActionStack dynamic
-                let stagedResourcesDyn = fmap (.resources) actionStackDyn
-                    stagedActionDyn = fmap (.actionCard) actionStackDyn
+      -- Staged Cards Row
+      (clickAction, clickResource) <- stagedCardsRow actionStackDyn
 
-                (clickResource, clickAction) <-
-                  cardStackWidget
-                    ( \rDyn -> do
-                        (eRes, _) <- elAttr'
-                          "div"
-                          ( "class"
-                              =: "relative group cursor-pointer origin-bottom w-40 shrink-0 transition-all duration-200 hover:-translate-y-4 hover:z-20"
-                          )
-                          $ do
-                            dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
-                        return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
-                    )
-                    ( \aDyn -> do
-                        (eAct, _) <- elAttr'
-                          "div"
-                          ( "class"
-                              =: "relative group cursor-pointer origin-bottom w-40 shrink-0 z-10 hover:z-30 hover:scale-105 transition-transform"
-                          )
-                          $ do
-                            dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
-                        return (domEvent Click eAct)
-                    )
-                    stagedResourcesDyn
-                    stagedActionDyn
+      -- Controls
+      (cancelClick, commitClick) <- stagingControls validation
 
-                return (clickAction, clickResource)
+      -- Commit Request logic
+      let planReq =
+            attachWith
+              ( \inputStack _ ->
+                  GameAction $
+                    PlanAction
+                      { actorId = actorId
+                      , actionCardId = inputStack.actionCard.id
+                      , resourceCardIds = map (.id) inputStack.resources
+                      }
+              )
+              (current actionStackDyn)
+              commitClick
 
-              return (clickAction, clickResource)
+      _ <- requesting planReq
 
-            -- Controls
-            (cancelClick, commitClick) <- divStyle [flex, "gap-2", "w-full"] $ do
-              (e, _) <-
-                elAttr'
-                  "button"
-                  ( "class"
-                      =: "flex-1 py-2 rounded-lg border border-slate-600 text-slate-400 font-bold hover:bg-slate-800 transition-colors"
-                  )
-                  $ text "Cancel"
+      -- Combine cancels (Clicking the ACTION card also cancels/unstages it)
+      return $
+        StagingEvents
+          { cancel = leftmost [cancelClick, clickAction]
+          , unstage = clickResource
+          , commit = commitClick
+          }
 
-              -- Commit (disabled if not valid)
-              let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
-                  btnClass = ffor validDyn $ \v ->
-                    "flex-1 py-2 rounded-lg font-bold transition-colors "
-                      <> ( if v
-                             then "bg-indigo-600 text-white hover:bg-indigo-500"
-                             else "bg-slate-800 text-slate-600 cursor-not-allowed"
-                         )
+stagingStatusHeader
+  :: (DomBuilder t m, PostBuild t m)
+  => Dynamic t PlanValidation
+  -> m ()
+stagingStatusHeader validation = do
+  divStyle [flex, flexCol, itemsCenter, "gap-2"] $ do
+    text "Preparing Action"
+    dyn_ $ ffor validation $ \case
+      PlanIncomplete cost provided ->
+        text $ " Need " <> tshow (cost - provided) <> " more resource(s)"
+      PlanValid _ ->
+        text " Ready to Commit"
+      _ -> blank
 
-              (commitEl, _) <- elDynAttr' "button" (fmap ("class" =:) btnClass) $ text "Commit"
+stagedCardsRow
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  => Dynamic t ActionStack
+  -> m (Event t (), Event t CardInstanceId)
+stagedCardsRow actionStackDyn = do
+  divStyle [flex, justifyCenter, "py-2"] $ do
+    -- Extract resources and action from the ActionStack dynamic
+    let stagedResourcesDyn = fmap (.resources) actionStackDyn
+        stagedActionDyn = fmap (.actionCard) actionStackDyn
 
-              -- Only emit commit if valid
-              let commitEvt = gate (current validDyn) (domEvent Click commitEl)
-              return (domEvent Click e, commitEvt)
+    (clickResource, clickAction) <-
+      cardStackWidget
+        ( \rDyn -> do
+            (eRes, _) <- elAttr'
+              "div"
+              ( "class"
+                  =: "relative group cursor-pointer origin-bottom w-40 shrink-0 transition-all duration-200 hover:-translate-y-4 hover:z-20"
+              )
+              $ do
+                dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
+            return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
+        )
+        ( \aDyn -> do
+            (eAct, _) <- elAttr'
+              "div"
+              ( "class"
+                  =: "relative group cursor-pointer origin-bottom w-40 shrink-0 z-10 hover:z-30 hover:scale-105 transition-transform"
+              )
+              $ do
+                dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
+            return (domEvent Click eAct)
+        )
+        stagedResourcesDyn
+        stagedActionDyn
+    return (clickAction, clickResource)
 
-            -- Commit Request logic
-            let planReq =
-                  attachWith
-                    ( \inputStack _ ->
-                        GameAction $
-                          PlanAction
-                            { actorId = actorId
-                            , actionCardId = inputStack.actionCard.id
-                            , resourceCardIds = map (.id) inputStack.resources
-                            }
-                    )
-                    (current actionStackDyn)
-                    commitClick
+stagingControls
+  :: (DomBuilder t m, PostBuild t m)
+  => Dynamic t PlanValidation
+  -> m (Event t (), Event t ())
+stagingControls validation = do
+  divStyle [flex, "gap-2", "w-full"] $ do
+    (e, _) <-
+      elAttr'
+        "button"
+        ( "class"
+            =: "flex-1 py-2 rounded-lg border border-slate-600 text-slate-400 font-bold hover:bg-slate-800 transition-colors"
+        )
+        $ text "Cancel"
 
-            _ <- requesting planReq
+    -- Commit (disabled if not valid)
+    let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
+        btnClass = ffor validDyn $ \v ->
+          "flex-1 py-2 rounded-lg font-bold transition-colors "
+            <> ( if v
+                   then "bg-indigo-600 text-white hover:bg-indigo-500"
+                   else "bg-slate-800 text-slate-600 cursor-not-allowed"
+               )
 
-            -- Combine cancels (Clicking the ACTION card also cancels/unstages it)
-            return $
-              StagingEvents
-                { cancel = leftmost [cancelClick, clickAction]
-                , unstage = clickResource
-                , commit = commitClick -- Use the gated commit event
-                }
+    (commitEl, _) <- elDynAttr' "button" (fmap ("class" =:) btnClass) $ text "Commit"
+
+    -- Only emit commit if valid
+    let commitEvt = gate (current validDyn) (domEvent Click commitEl)
+    return (domEvent Click e, commitEvt)
