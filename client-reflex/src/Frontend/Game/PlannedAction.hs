@@ -73,7 +73,7 @@ plannedActionWidget
 plannedActionWidget (Identified actorId planned) = do
   case planned of
     PStandard (ActionStack action res) -> do
-      colWith ["gap-2", itemsCenter] $ do
+      colWith ["gap-2", itemsCenter, pointerEventsAuto] $ do
         -- Revise Button
         (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
         let reviseReq = GameAction $ CancelPlanIntent actorId
@@ -90,8 +90,8 @@ plannedActionWidget (Identified actorId planned) = do
                 return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
             )
             ( \aDyn -> do
-                (eAct, _) <- elStyle' "div" [relative, cardHandWidth, "shrink-0"] $ do
-                  divStyle actionCardHover $ dyn_ $ fmap render aDyn
+                (eAct, _) <- elStyle' "div" ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover) $ do
+                  dyn_ $ fmap render aDyn
                   divStyle plannedBadge $ text "PLANNED"
                 return (domEvent Click eAct)
             )
@@ -100,7 +100,7 @@ plannedActionWidget (Identified actorId planned) = do
 
         return ()
     PNarrative (NarrativeStack cards _color) -> do
-      colWith ["gap-2", itemsCenter] $ do
+      colWith ["gap-2", itemsCenter, pointerEventsAuto] $ do
         (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
         let reviseReq = GameAction $ CancelPlanIntent actorId
         _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
@@ -108,7 +108,7 @@ plannedActionWidget (Identified actorId planned) = do
           mapM_ (divStyle narrativeCardHover . render) cards
         return ()
     PPass -> do
-      colWith ["gap-2", itemsCenter] $ do
+      colWith ["gap-2", itemsCenter, pointerEventsAuto] $ do
         (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
         let reviseReq = GameAction $ CancelPlanIntent actorId
         _ <- requesting $ tag (constant reviseReq) (domEvent Click e)

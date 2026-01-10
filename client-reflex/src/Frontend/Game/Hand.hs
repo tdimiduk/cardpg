@@ -80,41 +80,53 @@ handWidget actorDyn = do
 
       -- Render UI
       (selectEvt, toggleEvt, clearEvt) <-
-        divStyle [absolute, bottom0, left0, right0, pointerEventsNone, z40] $ do
-          -- Layer 1: Main Layout (Flex Row)
-          (sel, tog) <- divStyle [flex, justifyBetween, itemsEnd, "w-full", "px-8", "pb-4"] $ do
-            -- Left: Planned Action
-            divStyle [flex1, flex, "justify-start"] $ do
-              dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
-                (aid, Just plan) -> divStyle [pointerEventsAuto] $ plannedActionWidget (Identified aid plan)
-                _ -> blank
+        divStyle
+          [ absolute
+          , bottom0
+          , left0
+          , right0
+          , pointerEventsNone
+          , z40
+          , flex
+          , justifyBetween
+          , itemsEnd
+          , "w-full"
+          , "px-8"
+          , "pb-4"
+          ]
+          $ do
+            -- Layer 1: Main Layout (Flex Row) merged into parent
+            (sel, tog) <- do
+              -- Left: Planned Action
+              divStyle [flex1, flex, "justify-start"] $ do
+                dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
+                  (aid, Just plan) -> plannedActionWidget (Identified aid plan)
+                  _ -> blank
 
-            -- Center: Hand
-            -- We wrap in pointerEventsAuto so cards catch clicks
-            (s, t) <-
-              divStyle [pointerEventsAuto] $
+              -- Center: Hand
+              (s, t) <-
                 handCardsWidget safeActor stagingStackDyn plannedActionDyn
 
-            -- Right: Spacer
-            divStyle [flex1] blank
+              -- Right: Spacer
+              divStyle [flex1] blank
 
-            return (s, t)
+              return (s, t)
 
-          -- Layer 2: Staging Overlay
-          overlayEvts <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
-            (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
-            _ -> return (StagingEvents never never never)
+            -- Layer 2: Staging Overlay
+            overlayEvts <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
+              (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
+              _ -> return (StagingEvents never never never)
 
-          -- Flatten events
-          cancel <- switchHold never (fmap (.cancel) overlayEvts)
-          unstageResource' <- switchHold never (fmap (.unstage) overlayEvts)
-          commit <- switchHold never (fmap (.commit) overlayEvts)
+            -- Flatten events
+            cancel <- switchHold never (fmap (.cancel) overlayEvts)
+            unstageResource' <- switchHold never (fmap (.unstage) overlayEvts)
+            commit <- switchHold never (fmap (.commit) overlayEvts)
 
-          return
-            ( sel
-            , leftmost [tog, unstageResource']
-            , leftmost [cancel, commit]
-            )
+            return
+              ( sel
+              , leftmost [tog, unstageResource']
+              , leftmost [cancel, commit]
+              )
 
       return ()
 
