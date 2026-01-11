@@ -2,8 +2,9 @@ module Frontend.Game.PlannedAction
   ( plannedActionWidget
   ) where
 
+import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
-import Reflex.Dom.Core
+import Reflex.Dom.Core hiding (button)
 
 import Api.Request (ApiRequest (..))
 import Api.Types (Command (..))
@@ -15,27 +16,7 @@ import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Html (Render (..))
 import Frontend.Style hiding (classes)
-
--- | Revise button styling (appears in all planned action variants)
-buttonRevise :: [CssClass]
-buttonRevise =
-  [ "text-red-400"
-  , "hover:text-red-300"
-  , "text-[10px]"
-  , fontBold
-  , "uppercase"
-  , flex
-  , itemsCenter
-  , "gap-1"
-  , "bg-slate-900/80"
-  , "px-3"
-  , "py-1"
-  , "rounded-full"
-  , "border"
-  , "border-slate-700/50"
-  , "backdrop-blur"
-  , "transition-colors"
-  ]
+import Frontend.UI.Button
 
 -- | "PLANNED" badge styling
 plannedBadge :: [CssClass]
@@ -70,47 +51,32 @@ plannedActionWidget
   :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Requester t m, Request m ~ ApiRequest)
   => Identified ActorId PlannedAction
   -> m ()
-plannedActionWidget (Identified actorId planned) = do
+plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
+  e <- button def{_buttonConfig_variant = constDyn VariantDestructive} $ text "↺ Revise"
+  _ <- requesting $ GameAction (CancelPlanIntent actorId) <$ e
   case planned of
     PStandard (ActionStack action res) -> do
-      colWith ["gap-2", itemsCenter, pointerEventsAuto] $ do
-        -- Revise Button
-        (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
-        let reviseReq = GameAction $ CancelPlanIntent actorId
-        _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
-
-        -- Stack container
-        _ <-
-          cardStackWidget
-            ( \rDyn -> do
-                (eRes, _) <-
-                  elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
-                    dyn_ $
-                      fmap (renderWith (CardSettings CardFull)) rDyn
-                return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
-            )
-            ( \aDyn -> do
-                (eAct, _) <- elStyle' "div" ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover) $ do
-                  dyn_ $ fmap render aDyn
-                  divStyle plannedBadge $ text "PLANNED"
-                return (domEvent Click eAct)
-            )
-            (constDyn res)
-            (constDyn action)
-
-        return ()
+      void $
+        cardStackWidget
+          ( \rDyn -> do
+              (eRes, _) <-
+                elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
+                  dyn_ $
+                    fmap (renderWith (CardSettings CardFull)) rDyn
+              return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
+          )
+          ( \aDyn -> do
+              (eAct, _) <- elStyle' "div" ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover) $ do
+                dyn_ $ fmap render aDyn
+                divStyle plannedBadge $ text "PLANNED"
+              return (domEvent Click eAct)
+          )
+          (constDyn res)
+          (constDyn action)
     PNarrative (NarrativeStack cards _color) -> do
-      colWith ["gap-2", itemsCenter, pointerEventsAuto] $ do
-        (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
-        let reviseReq = GameAction $ CancelPlanIntent actorId
-        _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
-        rowGap "-space-x-8" $
-          mapM_ (divStyle narrativeCardHover . render) cards
-        return ()
+      rowGap "-space-x-8" $
+        mapM_ (divStyle narrativeCardHover . render) cards
     PPass -> do
-      colWith ["gap-2", itemsCenter, pointerEventsAuto] $ do
-        (e, _) <- elStyle' "button" buttonRevise $ text "↺ Revise"
-        let reviseReq = GameAction $ CancelPlanIntent actorId
-        _ <- requesting $ tag (constant reviseReq) (domEvent Click e)
-        divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
-        return ()
+      divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
+  where
+    colStyle = ["gap-5", itemsCenter, pointerEventsAuto]

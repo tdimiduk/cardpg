@@ -151,6 +151,10 @@ talk client socket state = forever $ do
       result <- mkTaggedResponse taggedReq $ \case
         Req.Join name -> handleJoin client name state
         Req.GameAction cmd -> handleGameCommand client state cmd
+        Req.DrawCards aid -> handleGameCommand client state (DrawIntent aid)
+        Req.ReshuffleDeck aid -> handleGameCommand client state (ReshuffleIntent aid)
+        Req.AddConsequence aid sev -> handleGameCommand client state (AddConsequenceIntent aid sev)
+        Req.RemoveConsequence aid cid -> handleGameCommand client state (DestroyConsequenceIntent aid cid)
       case result of
         Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
         Left err ->

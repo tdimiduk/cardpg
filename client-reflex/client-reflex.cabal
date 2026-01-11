@@ -56,6 +56,12 @@ library
     Frontend.App
     Frontend.Card
     Frontend.Catalog
+    Frontend.Game.ActorDetails
+    Frontend.Game.ActorDetails.Assets
+    Frontend.Game.ActorDetails.Consequences
+    Frontend.Game.ActorDetails.Deck
+    Frontend.Game.ActorDetails.Stats
+    Frontend.Game.ActorLogic
     Frontend.Game.Common
     Frontend.Game.Hand
     Frontend.Game.PlannedAction
@@ -65,6 +71,7 @@ library
     Frontend.Html
     Frontend.Style
     Frontend.Svg
+    Frontend.UI.Button
     Frontend.UI.Scaler
 
   hs-source-dirs:  src

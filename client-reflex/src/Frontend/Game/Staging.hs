@@ -3,7 +3,7 @@
 module Frontend.Game.Staging where
 
 import Control.Monad.Fix (MonadFix)
-import Reflex.Dom.Core
+import Reflex.Dom.Core hiding (button)
 
 import Api.Request (ApiRequest (..))
 import Api.Types (Command (..))
@@ -13,6 +13,7 @@ import Core.Primitives (ActorId, CardInstanceId)
 import Core.Render (IconMode (..))
 import Core.State (ActionStack (..))
 import Core.Util (tshow)
+
 import Data.Monoid (Sum (..))
 import Frontend.Card
   ( CardDisplayMode (..)
@@ -23,6 +24,7 @@ import Frontend.Card
   )
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Style
+import Frontend.UI.Button
 
 data StagingEvents t = StagingEvents
   { cancel :: Event t ()
@@ -143,18 +145,29 @@ stagingControls
   -> m (Event t (), Event t ())
 stagingControls validation = do
   divStyle [flex, "gap-2", "w-full"] $ do
-    (e, _) <- elStyle' "button" buttonSecondary $ text "Cancel"
+    -- Cancel Button (Secondary)
+    cancelEvt <-
+      button
+        def
+          { _buttonConfig_variant = constDyn VariantSecondary
+          , _buttonConfig_classes = [flex1]
+          }
+        $ text "Cancel"
 
-    -- Commit (disabled if not valid)
+    -- Commit Button (Primary, disabled if invalid)
     let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
-        btnClass = ffor validDyn $ \v ->
-          if v then buttonPrimary else buttonDisabled
+        commitDisabled = not <$> validDyn
 
-    (commitEl, _) <- elDynAttr' "button" (("class" =:) . classes <$> btnClass) $ text "Commit"
+    commitEvt <-
+      button
+        def
+          { _buttonConfig_variant = constDyn VariantPrimary
+          , _buttonConfig_disabled = commitDisabled
+          , _buttonConfig_classes = [flex1]
+          }
+        $ text "Commit"
 
-    -- Only emit commit if valid
-    let commitEvt = gate (current validDyn) (domEvent Click commitEl)
-    return (domEvent Click e, commitEvt)
+    return (cancelEvt, commitEvt)
 
 stagingStats
   :: (DomBuilder t m, PostBuild t m)

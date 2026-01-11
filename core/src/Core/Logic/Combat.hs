@@ -8,6 +8,7 @@ module Core.Logic.Combat
   , calculateResilience
   , computeDefense
   , computeResilience
+  , computeNextSeverity
   , computeDefenseDetails
   , getActiveTableCards
   ) where
@@ -119,6 +120,15 @@ computeResilience tblSt =
       getRes (TCTalent talent) = fromMaybe 0 talent.resilience
       maxRes = maximum (0 : map getRes activeCards)
    in max 1 maxRes
+
+-- | Pure function to compute next consequence severity from table state
+computeNextSeverity :: TableState -> Int
+computeNextSeverity tblSt =
+  let res = computeResilience tblSt
+      currentCons = length tblSt.consequences
+   in if res > 0
+        then (currentCons `div` res) + 1
+        else currentCons + 1
 
 -- | Monadic version for use in GameM context (backwards compatibility)
 calculateResilience :: GameM g Int

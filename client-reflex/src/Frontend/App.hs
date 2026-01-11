@@ -93,9 +93,8 @@ uiWidget
   -> m ()
 uiWidget initialActorId actorsMapDyn = divStyle appRoot $ do
   rec selectedActorId <- holdDyn initialActorId activeActorChange
-      activeActorChange <- sidebarWidget selectedActorId actorsMapDyn
-
       let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)
+      activeActorChange <- sidebarWidget activeActor actorsMapDyn
 
   -- Main Content Area (Right)
   divStyle mainContent $ do

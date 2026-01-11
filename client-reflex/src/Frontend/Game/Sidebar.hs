@@ -2,13 +2,18 @@ module Frontend.Game.Sidebar where
 
 import Control.Monad.Fix (MonadFix)
 import Data.Map qualified as Map
-import Reflex.Dom.Core
+import Data.Text qualified as T
+import Reflex.Dom.Core hiding (button)
 
-import Core.Primitives (ActorId)
+import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..))
-import Core.Util (tshow)
+
 import Frontend.Style hiding (classes)
-import Frontend.Style qualified as Style
+
+import Api.Request (ApiRequest)
+import Data.Maybe (fromMaybe)
+import Frontend.Game.ActorDetails (actorDetailsWidget)
+import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: [CssClass]
@@ -38,20 +43,6 @@ avatar =
   , "shrink-0"
   ]
 
--- | Actor list button styling
-actorButton :: [CssClass]
-actorButton =
-  [ "w-full"
-  , "text-left"
-  , "px-4"
-  , "py-2"
-  , "bg-slate-800"
-  , "hover:bg-slate-700"
-  , rounded
-  , "transition-colors"
-  , group
-  ]
-
 -- | Actor list container
 actorListContainer :: [CssClass]
 actorListContainer = ["flex-1", "overflow-y-auto", "p-4", "space-y-2"]
@@ -62,33 +53,82 @@ sidebarWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
+     , Requester t m
+     , Request m ~ ApiRequest
      )
-  => Dynamic t (Maybe ActorId) -> Dynamic t (Map.Map ActorId ActorState) -> m (Event t (Maybe ActorId))
-sidebarWidget selectedActorId actorsMapDyn = do
+  => Dynamic t (Maybe (Identified ActorId ActorState))
+  -> Dynamic t (Map.Map ActorId ActorState)
+  -> m (Event t (Maybe ActorId))
+sidebarWidget selectionDyn actorsMapDyn = do
   divStyle sidebarContainer $ do
     -- Sidebar Header
     divStyle sidebarHeader $ do
       elStyle "h1" ["text-xl", fontBold, "text-slate-100"] $ text "CardPG"
 
-    -- Actor List or Active Actor Details
-    dyn_ $ ffor selectedActorId $ \case
-      Nothing ->
+    -- Dynamic Content: List or Details
+    dyContent <- dyn $ ffor selectionDyn $ \case
+      Nothing -> do
+        -- No selection: Show List
         divStyle ["p-4", "text-center", "text-slate-500", "italic", textSm] $
           text "Select an actor"
-      Just aid -> do
-        -- Active Actor Header (Mini)
-        rowWith ("gap-3" : activeActorHeader) $ do
-          divStyle avatar $ text "A" -- Placeholder Avatar
+
+        divStyle actorListContainer $ do
+          selectClick <- listWithKey actorsMapDyn $ \aid actorDyn -> do
+            e <- button
+              def
+                { _buttonConfig_variant = constDyn VariantSecondary
+                , _buttonConfig_fullWidth = True
+                , _buttonConfig_classes = ["justify-start", "text-left"]
+                }
+              $ dyn_
+              $ ffor actorDyn
+              $ \actor -> text actor.name
+            return (aid <$ e)
+
+          return (Just <$> switchDyn (fmap (leftmost . Map.elems) selectClick))
+      Just (Identified aid actorState) -> do
+        -- Selection: Show Details
+        -- Header (Click anywhere to deselect)
+        (minHeader, _) <- elStyle' "div" ("cursor-pointer" : "hover:bg-slate-800" : activeActorHeader) $ do
+          divStyle avatar $ text $ T.take 1 actorState.name
+
           divStyle ["flex-1", "overflow-hidden"] $ do
-            elStyle "div" [fontBold, "text-slate-100", truncateText] $ text $ tshow aid
+            elStyle "div" [fontBold, "text-slate-100", truncateText] $ text actorState.name
             elStyle "div" [textXs, "text-slate-500", "uppercase"] $ text "Player"
 
-    -- Actor List
-    divStyle actorListContainer $ do
-      selectClick <- listWithKey actorsMapDyn $ \aid actorDyn -> do
-        (e, _) <- elAttr' "button" ("class" =: Style.classes actorButton) $ do
-          dyn_ $ ffor actorDyn $ \actor -> text actor.name
-        return (aid <$ domEvent Click e)
+          -- Close indicator (decorative - header click handles deselection)
+          divStyle
+            [ "rounded-full"
+            , "w-8"
+            , "h-8"
+            , "p-0"
+            , flex
+            , itemsCenter
+            , justifyCenter
+            , "text-slate-400"
+            , "hover:text-slate-200"
+            ]
+            $ text "✕"
 
-      -- Aggregate clicks
-      return $ fmap Just $ switchDyn $ fmap (leftmost . Map.elems) selectClick
+        -- Header click deselects
+        let deselectEvent = Nothing <$ domEvent Click minHeader
+
+        -- Details Widget
+        -- We re-derive the Dynamic ActorState from the map to ensure it receives updates.
+        -- We gracefully fall back to the snapshot 'actorState' if the actor is removed from the map.
+        let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe actorState (Map.lookup aid m)
+
+        -- Auto-deselect if the actor is removed from the map
+        let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
+        let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
+
+        divStyle ["flex-1", "overflow-y-auto", "p-2"] $
+          actorDetailsWidget aid actorStateDyn
+
+        return $ leftmost [deselectEvent, actorLostEvent]
+
+    -- Extract events
+    contentEvents <- holdDyn never dyContent
+    let selectionChange = switchDyn contentEvents
+
+    return selectionChange

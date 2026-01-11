@@ -91,6 +91,8 @@ module Frontend.Style
   , shadowXl
   , shadow
   , backdropBlur
+  , uppercase
+  , trackingWider
 
     -- * Card Style Groups (Screen)
   , cardBase
@@ -135,10 +137,6 @@ module Frontend.Style
   , textBlue500
 
     -- * Interactables
-  , buttonSecondary
-  , buttonPrimary
-  , buttonDisabled
-  , cursorNotAllowed
   , cardPlayable
   , cardNotPlayable
 
@@ -373,6 +371,12 @@ textXs = "text-xs"
 rounded :: CssClass
 rounded = "rounded"
 
+uppercase :: CssClass
+uppercase = "uppercase"
+
+trackingWider :: CssClass
+trackingWider = "tracking-wider"
+
 shadowXl :: CssClass
 shadowXl = "shadow-xl"
 
@@ -590,49 +594,6 @@ deckGrid =
 -- * Interactables
 
 --------------------------------------------------------------------------------
-
--- | Secondary/cancel button styling
-buttonSecondary :: [CssClass]
-buttonSecondary =
-  [ flex1
-  , "py-2"
-  , rounded
-  , "border"
-  , "border-slate-600"
-  , "text-slate-400"
-  , fontBold
-  , "hover:bg-slate-800"
-  , "transition-colors"
-  ]
-
--- | Primary button styling (active state)
-buttonPrimary :: [CssClass]
-buttonPrimary =
-  [ flex1
-  , "py-2"
-  , rounded
-  , fontBold
-  , "transition-colors"
-  , "bg-indigo-600"
-  , "text-white"
-  , "hover:bg-indigo-500"
-  ]
-
--- | Disabled button styling
-buttonDisabled :: [CssClass]
-buttonDisabled =
-  [ flex1
-  , "py-2"
-  , rounded
-  , fontBold
-  , "transition-colors"
-  , "bg-slate-800"
-  , "text-slate-600"
-  , cursorNotAllowed
-  ]
-
-cursorNotAllowed :: CssClass
-cursorNotAllowed = "cursor-not-allowed"
 
 -- | Style for cards that can be played (valid cost)
 cardPlayable :: [CssClass]
