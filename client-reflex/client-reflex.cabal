@@ -69,8 +69,10 @@ library
     Frontend.Game.Sidebar
     Frontend.Game.Staging
     Frontend.Html
+    Frontend.Icons
     Frontend.Style
     Frontend.Svg
+    Frontend.Svg.Path
     Frontend.UI.Button
     Frontend.UI.Scaler
 

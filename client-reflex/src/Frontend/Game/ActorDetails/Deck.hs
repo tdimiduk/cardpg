@@ -5,7 +5,6 @@ module Frontend.Game.ActorDetails.Deck
   ) where
 
 import Control.Category ((.))
-import Data.Default (Default (..))
 import Reflex.Dom.Core hiding (button)
 import Prelude hiding (filter, id, map, (.))
 
@@ -14,6 +13,7 @@ import Api.Request qualified as Req
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..), CoreCardState (..))
 import Core.Util (tshow)
+import Frontend.Icons (iconDeck, iconRefresh)
 import Frontend.Style
 import Frontend.UI.Button
 
@@ -31,7 +31,9 @@ deckWidget actorId actorState = do
   colWith ["gap-2", "p-2", "bg-slate-950", rounded, "text-slate-100"] $ do
     -- Header Row
     rowWith [justifyBetween, itemsCenter, "mb-2"] $ do
-      elStyle "h2" [textSm, fontBold, uppercase, "text-slate-400", trackingWider] $ text "Deck"
+      divStyle [flex, itemsCenter, "gap-2", textSm, fontBold, uppercase, "text-slate-400", trackingWider] $ do
+        elClass "div" "w-5 h-5" iconDeck
+        text "Deck"
 
       -- Reshuffle Button
       reshuffleClick <-
@@ -40,7 +42,9 @@ deckWidget actorId actorState = do
             { _buttonConfig_variant = constDyn VariantSecondary
             , _buttonConfig_size = constDyn SizeSmall
             }
-          $ text "↻ Reshuffle"
+          $ do
+            elClass "div" "w-3 h-3 mr-1" iconRefresh
+            text "Reshuffle"
 
       requesting_ $ Req.ReshuffleDeck actorId <$ reshuffleClick
 

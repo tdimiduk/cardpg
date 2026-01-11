@@ -7,6 +7,7 @@ module Frontend.Svg
   , renderCircle
   , renderDiamond
   , renderHexagon
+  , svgPath
   ) where
 
 import Data.Map qualified as Map
@@ -38,6 +39,9 @@ elAttrNS' mns elementTag attrs =
 
 svgEl :: (DomBuilder t m) => Text -> ElAttrs -> m a -> m a
 svgEl elementTag attrs child = snd <$> elAttrNS' (Just svgXMLNamespace) elementTag attrs child
+
+svgPath :: (DomBuilder t m) => Text -> m ()
+svgPath d = svgEl "path" ("d" =: d) blank
 
 -- | Renders text centered in the SVG.
 renderLabel :: (DomBuilder t m) => Maybe Text -> m ()

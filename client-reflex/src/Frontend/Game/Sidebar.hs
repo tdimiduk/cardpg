@@ -13,6 +13,7 @@ import Frontend.Style hiding (classes)
 import Api.Request (ApiRequest)
 import Data.Maybe (fromMaybe)
 import Frontend.Game.ActorDetails (actorDetailsWidget)
+import Frontend.Icons (iconClose)
 import Frontend.UI.Button
 
 -- | Sidebar container styles
@@ -108,7 +109,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
             , "text-slate-400"
             , "hover:text-slate-200"
             ]
-            $ text "✕"
+            iconClose
 
         -- Header click deselects
         let deselectEvent = Nothing <$ domEvent Click minHeader
