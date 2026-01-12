@@ -145,6 +145,7 @@ module Frontend.Style
   , stagedResourceCard
 
     -- * Layout Grids
+  , cardPrintGrid
   , cardGrid
   , deckGrid
   ) where
@@ -445,7 +446,7 @@ cardCanonicalHeight = "h-[88mm]"
 
 -- | Width for cards in the hand/planned action area (approx 160px)
 cardHandWidth :: CssClass
-cardHandWidth = "w-40"
+cardHandWidth = "w-52"
 
 -- | Overlap for stacked cards in planned actions (-128px)
 plannedCardOverlap :: CssClass
@@ -571,14 +572,23 @@ cardRow =
 
 --------------------------------------------------------------------------------
 
-cardGrid :: [CssClass]
-cardGrid =
+cardPrintGrid :: [CssClass]
+cardPrintGrid =
   [ "grid"
   , "grid-cols-[repeat(auto-fill,minmax(240px,1fr))]"
   , "p-4"
   , "print:gap-0"
   , "print:p-0"
   , "print:block"
+  ]
+
+cardGrid :: [CssClass]
+cardGrid =
+  [ "grid"
+  , "grid-cols-[repeat(auto-fill,minmax(200px,1fr))]"
+  , "content-start"
+  , "gap-2"
+  , "p-2"
   ]
 
 deckGrid :: [CssClass]

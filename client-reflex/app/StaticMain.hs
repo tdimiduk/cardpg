@@ -237,6 +237,7 @@ mockGameWidget
      , MonadFix m
      , Adjustable t m
      , MonadIO m
+     , Prerender t m
      )
   => Maybe ActorId
   -> GameState

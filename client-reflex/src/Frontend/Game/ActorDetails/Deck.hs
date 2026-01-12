@@ -5,14 +5,16 @@ module Frontend.Game.ActorDetails.Deck
   ) where
 
 import Control.Category ((.))
+import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
-import Prelude hiding (filter, id, map, (.))
+import Prelude hiding (filter, id, (.))
 
 import Api.Request (ApiRequest)
 import Api.Request qualified as Req
-import Core.Primitives (ActorId)
+import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..), CoreCardState (..))
 import Core.Util (tshow)
+import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
 import Frontend.Icons (iconDeck, iconRefresh)
 import Frontend.Style
 import Frontend.UI.Button
@@ -21,6 +23,8 @@ deckWidget
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
+     , Prerender t m
+     , MonadFix m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -35,25 +39,13 @@ deckWidget actorId actorState = do
         elClass "div" "w-5 h-5" iconDeck
         text "Deck"
 
-      -- Reshuffle Button
-      reshuffleClick <-
-        button
-          def
-            { _buttonConfig_variant = constDyn VariantSecondary
-            , _buttonConfig_size = constDyn SizeSmall
-            }
-          $ do
-            elClass "div" "w-3 h-3 mr-1" iconRefresh
-            text "Reshuffle"
-
-      requesting_ $ Req.ReshuffleDeck actorId <$ reshuffleClick
-
     let cs = fmap (.coreState) actorState
 
     -- Cards Row
-    rowGap "gap-2" $ do
+    (viewDeck, viewDiscard) <- rowGap "gap-2" $ do
       let deckBox =
             [ flex1
+            , "relative"
             , "border"
             , "border-slate-800"
             , "bg-slate-900"
@@ -61,18 +53,27 @@ deckWidget actorId actorState = do
             , "p-3"
             , flex
             , flexCol
-            , itemsCenter
             , "gap-2"
             ]
       let labelStyle = ["text-slate-400", textXs]
       let countStyle = ["text-2xl", fontBold, "text-white"]
 
-      -- Draw Pile Box
-      divStyle deckBox $ do
-        divStyle ([flex, flexRow, itemsCenter, "gap-2"] <> labelStyle) $ text "Draw Pile"
-        elStyle "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
+      -- Helper for view button
+      let viewButton =
+            button
+              def
+                { _buttonConfig_variant = constDyn VariantGhost
+                , _buttonConfig_size = constDyn SizeSmall
+                , _buttonConfig_classes = ["absolute", "top-1", "right-1", "text-slate-600", "hover:text-indigo-400"]
+                }
+              (elClass "div" "w-5 h-5" iconDeck)
 
-        -- Draw Button
+      -- Draw Pile Box
+      viewDeckClick <- divStyle deckBox $ do
+        viewDeckClick' <- viewButton
+        row $ do
+          divStyle ([flex, flexRow, itemsCenter, "gap-2"] <> labelStyle) $ text "Draw Pile"
+        elStyle "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
         drawClick <-
           button
             def
@@ -81,13 +82,49 @@ deckWidget actorId actorState = do
               , _buttonConfig_fullWidth = True
               }
             $ text "Draw 1"
-
         requesting_ $ Req.DrawCards actorId <$ drawClick
+        pure viewDeckClick'
 
       -- Discard Box
-      divStyle deckBox $ do
-        divStyle ([flex, flexRow, itemsCenter, "gap-2"] <> labelStyle) $ text "Discard"
+      viewDiscardClick <- divStyle deckBox $ do
+        viewDiscardClick' <- viewButton
+        row $ do
+          divStyle ([flex, flexRow, itemsCenter, "gap-2"] <> labelStyle) $ text "Discard"
+
         elStyle "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
 
-        -- Spacer to match height of draw button
-        elStyle "div" ["h-[26px]"] blank
+        widgetHold_ buttonSpacer $ ffor (updated cs) $ \s -> case s.discard of
+          [] -> buttonSpacer
+          _ -> reshuffleButtonRequesting actorId
+
+        pure viewDiscardClick'
+
+      return (viewDeckClick, viewDiscardClick)
+
+    -- Handle Viewer Events
+    let deckCards = fmap (map (\(Identified _ c) -> c) . (.deck)) cs
+    let discardCards = fmap (map (\(Identified _ c) -> c) . (.discard)) cs
+
+    let viewDeckReq = attachWith (\cards _ -> Just (DeckViewData "Draw Pile" cards)) (current deckCards) viewDeck
+    let viewDiscardReq = attachWith (\cards _ -> Just (DeckViewData "Discard" cards)) (current discardCards) viewDiscard
+
+    deckViewerModal (leftmost [viewDeckReq, viewDiscardReq])
+
+buttonSpacer :: (DomBuilder t m) => m ()
+buttonSpacer = elStyle "div" ["h-[26px]"] blank
+
+reshuffleButtonRequesting
+  :: (Request m ~ ApiRequest, DomBuilder t m, PostBuild t m, Requester t m) => ActorId -> m ()
+reshuffleButtonRequesting actorId = do
+  reshuffleClick <-
+    button
+      def
+        { _buttonConfig_variant = constDyn VariantSecondary
+        , _buttonConfig_size = constDyn SizeSmall
+        , _buttonConfig_classes = ["gap-1"]
+        }
+      $ do
+        elClass "div" "w-4 h-4" iconRefresh
+        text "Reshuffle"
+
+  requesting_ $ Req.ReshuffleDeck actorId <$ reshuffleClick

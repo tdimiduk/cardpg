@@ -21,7 +21,7 @@ catalogWidget = do
   el "h1" $ text "Component Catalog"
 
   el "h2" $ text "Core Cards"
-  Style.divStyle Style.cardGrid $ do
+  Style.divStyle Style.cardPrintGrid $ do
     render exampleAttack
     render exampleSkill
     render exampleHeavyText

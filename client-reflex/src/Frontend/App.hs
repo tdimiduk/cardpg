@@ -86,6 +86,7 @@ uiWidget
      , MonadIO m
      , Requester t m
      , Request m ~ ApiRequest
+     , Prerender t m
      )
   => Maybe ActorId
   -- ^ Initial active actor

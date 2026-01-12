@@ -56,6 +56,7 @@ sidebarWidget
      , Adjustable t m
      , Requester t m
      , Request m ~ ApiRequest
+     , Prerender t m
      )
   => Dynamic t (Maybe (Identified ActorId ActorState))
   -> Dynamic t (Map.Map ActorId ActorState)

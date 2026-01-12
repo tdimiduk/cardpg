@@ -35,7 +35,7 @@ cardHover =
   , "ease-out"
   , "origin-bottom"
   , "hover:-translate-y-8"
-  , "hover:z-50"
+  , "hover:z-40"
   , cursorPointer
   ]
 

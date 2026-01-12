@@ -24,6 +24,7 @@ actorDetailsWidget
      , Adjustable t m
      , Requester t m
      , Request m ~ ApiRequest
+     , Prerender t m
      )
   => ActorId
   -> Dynamic t ActorState
