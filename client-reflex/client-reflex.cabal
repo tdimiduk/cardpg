@@ -40,6 +40,9 @@ library
     , core
     , data-default
     , dependent-sum
+    , foreign-store
+    , http-types
+    , jsaddle-warp
     , optics
     , optics-core
     , random
@@ -50,12 +53,17 @@ library
     , text
     , uuid
     , vector
+    , wai
+    , wai-app-static
+    , warp
+    , websockets
     , yaml
 
   exposed-modules:
     Frontend.App
     Frontend.Card
     Frontend.Catalog
+    Frontend.Devel
     Frontend.Game.ActorDetails
     Frontend.Game.ActorDetails.Assets
     Frontend.Game.ActorDetails.Consequences
@@ -81,21 +89,11 @@ library
 executable client-reflex
   import:         warnings
   import:         project-config
-  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N -main-is ClientMain
   main-is:        Main.hs
   build-depends:
-    , api
     , base
     , client-reflex
-    , http-types
-    , jsaddle-warp
-    , reflex-dom-core
-    , text
-    , uuid
-    , wai
-    , wai-app-static
-    , warp
-    , websockets
 
   hs-source-dirs: app
 

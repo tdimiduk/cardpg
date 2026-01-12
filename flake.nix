@@ -208,6 +208,7 @@
               pkgs.rsync
               pkgs.openssh
               pkgs.python3  # for run-client http server
+              pkgs.ghciwatch
               config.pre-commit.settings.package  # pre-commit hooks
             ];
 

@@ -3,8 +3,6 @@
 
 module Frontend.UI.Scaler (scalable) where
 
-import Control.Monad (void)
-import Data.Text (Text)
 import Data.Text qualified as T
 import Reflex.Dom.Core
 
@@ -37,7 +35,7 @@ scalable wMm hMm content = do
           <> hVal
           <> "; transform-origin: top left;"
 
-  (containerEl, result) <- elAttr'
+  (_, result) <- elAttr'
     "div"
     ( "style" =: containerStyle
         <> "class" =: "scaler-container"

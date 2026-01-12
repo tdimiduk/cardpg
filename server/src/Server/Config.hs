@@ -37,7 +37,7 @@ loadConfig = do
 
   -- Server Config
   portStr <- lookupEnv "PORT"
-  let port = maybe 8080 read portStr
+  let port = maybe 3004 read portStr
 
   -- File Config
   cDir <- fromMaybe "data/cards" <$> lookupEnv "CARDPG_CARDS_DIR"

@@ -38,6 +38,7 @@ library
     Server.Loader
     Server.Presenter
     Server.ReflexConnection
+    Server.Run
     Server.Scenario
     Server.Session
     Server.Types
@@ -59,6 +60,7 @@ library
     , filepath
     , megaparsec
     , mtl
+    , network
     , optics
     , postgresql-simple
     , random
@@ -75,28 +77,21 @@ library
 executable server
   import:         project-config
   main-is:        Main.hs
-  other-modules:
   hs-source-dirs: app
   build-depends:
-    , aeson
-    , base                >=4.7 && <5
-    , beam-core
-    , beam-postgres
-    , bytestring
-    , constraints-extras
-    , containers
-    , core
-    , mtl
-    , postgresql-simple
-    , random
-    , reflex-gadt-api
-    , resource-pool
+    , base    >=4.7 && <5
     , server
-    , some
-    , stm
+
+executable server-devel
+  import:         project-config
+  main-is:        Devel.hs
+  hs-source-dirs: app
+  build-depends:
+    , base           >=4.7 && <5
+    , foreign-store
+    , network
+    , server
     , text
-    , time
-    , uuid
     , websockets
 
 executable server-reflex
