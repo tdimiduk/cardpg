@@ -7,12 +7,12 @@ module Server.Engine
   , autoPlanForNPCs
   ) where
 
+import Control.Lens ((%~), (&))
 import Control.Monad (foldM)
 import Control.Monad.RWS (runRWST)
 import Control.Monad.State (State, get, put, runState)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (isJust, isNothing)
-import Optics ((%~), (&))
 import System.Random (StdGen)
 
 import Api.Frontend qualified as Frontend

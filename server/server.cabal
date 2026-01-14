@@ -60,10 +60,11 @@ library
     , core
     , directory
     , filepath
+    , generic-lens
+    , lens
     , megaparsec
     , mtl
     , network
-    , optics
     , postgresql-simple
     , random
     , reflex-gadt-api
@@ -133,8 +134,9 @@ test-suite server-test
     , core
     , directory
     , filepath
+    , generic-lens
+    , lens
     , mtl
-    , optics
     , random
     , server
     , tasty

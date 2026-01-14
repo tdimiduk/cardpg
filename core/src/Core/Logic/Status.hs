@@ -8,13 +8,14 @@ module Core.Logic.Status
   , isDefeated
   ) where
 
+import Control.Lens
 import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (get, modify, put)
 import Control.Monad.Trans.Class (lift)
+import Data.Generics.Labels ()
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
-import Optics
 import System.Random (RandomGen, uniform, uniformR)
 
 import Core.Card
@@ -49,9 +50,9 @@ addStatus statusType destination = do
       case cards of
         [card] -> do
           case destination of
-            LocationHand -> modify $ #coreState % #hand %~ (card :)
-            LocationDiscard -> modify $ #coreState % #discard %~ (card :)
-            LocationDeck -> modify $ #coreState % #deck %~ (card :)
+            LocationHand -> modify $ #coreState . #hand %~ (card :)
+            LocationDiscard -> modify $ #coreState . #discard %~ (card :)
+            LocationDeck -> modify $ #coreState . #deck %~ (card :)
           tell [ActionPlanned (PStandard (ActionStack card []))]
           tell [StatusAdded statusType destination]
         _ -> return ()
@@ -66,12 +67,12 @@ destroyStatus statusType maybeCardId = do
   let findAndRemove
         :: Lens' CoreCardState [CardInstance CoreCard] -> GameM g (Maybe (CardInstance CoreCard))
       findAndRemove location = do
-        currentList <- use (#coreState % location)
+        currentList <- use (#coreState . location)
         let (before, foundAndAfter) = break matchFunc currentList
         case foundAndAfter of
           (foundCard : xs) -> do
             -- Found one element 'x'
-            modify $ #coreState % location .~ (before ++ xs)
+            modify $ #coreState . location .~ (before ++ xs)
             return (Just foundCard)
           [] -> return Nothing
 
@@ -123,7 +124,7 @@ addConsequence maybeSeverity = do
       let newConsequence = Identified cid template
 
       -- Add to TableState list (no registry)
-      modify $ #tableState % #consequences %~ (newConsequence :)
+      modify $ #tableState . #consequences %~ (newConsequence :)
 
       tell [ConsequenceAdded newConsequence]
       return ()
@@ -131,7 +132,7 @@ addConsequence maybeSeverity = do
 destroyConsequence :: CardInstanceId -> GameM g ()
 destroyConsequence cid = do
   -- Remove from TableState
-  modify $ #tableState % #consequences %~ filter (\c -> c.id /= cid)
+  modify $ #tableState . #consequences %~ filter (\c -> c.id /= cid)
   tell [ConsequenceRemoved (T.pack $ show cid)]
 
 isDefeated :: ActorState -> Bool

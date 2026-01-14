@@ -4,11 +4,12 @@
 
 module GameTest where
 
+import Control.Lens
 import Control.Monad.State (runState)
+import Data.Generics.Labels ()
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromJust)
 import Data.Text (Text, pack)
-import Optics
 import System.Random (mkStdGen)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase, (@?=))
@@ -70,7 +71,7 @@ test_game =
         let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
         let cardId = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
         let deck = [Identified cardId (mockCard "test")]
-        let actorState = emptyActorState & #coreState % #deck .~ deck
+        let actorState = emptyActorState & #coreState . #deck .~ deck
 
         let game1 = addActor actorId actorState game0
 
@@ -84,12 +85,12 @@ test_game =
           _ -> assertBool "Expected CardDrawn event" False
 
         -- Verify State Update
-        let actorSt' = game2 ^. #actors % at actorId
+        let actorSt' = game2 ^. #actors . at actorId
         case (actorSt' :: Maybe ActorState) of
           Nothing -> assertBool "Actor state lost" False
           Just st -> do
-            (st ^. #coreState % #hand) @?= deck
-            (st ^. #coreState % #deck) @?= []
+            (st ^. #coreState . #hand) @?= deck
+            (st ^. #coreState . #deck) @?= []
     , testCase "Gameplay Sequence (Command Processing)" $ do
         let env =
               GameEnv
@@ -107,7 +108,7 @@ test_game =
         let card2 = Identified cid2 (mockCard "c2")
         let deck = [card1, card2]
 
-        let actorState = emptyActorState & #coreState % #deck .~ deck
+        let actorState = emptyActorState & #coreState . #deck .~ deck
         let game1 = addActor actorId actorState game0
 
         -- 1. Draw Command
@@ -120,12 +121,12 @@ test_game =
           Frontend.CardDrawn c -> c.id @?= cid1
           _ -> assertBool "Expected CardDrawn event" False
 
-        let actorSt2 = game2 ^. #actors % at actorId
+        let actorSt2 = game2 ^. #actors . at actorId
         case actorSt2 of
           Nothing -> assertBool "Actor state lost" False
           Just st -> do
-            (st ^. #coreState % #hand) @?= [card1]
-            (st ^. #coreState % #deck) @?= [card2]
+            (st ^. #coreState . #hand) @?= [card1]
+            (st ^. #coreState . #deck) @?= [card2]
 
         -- 2. Defend Command
         let cid = ChallengeId (read "00000000-0000-0000-0000-000000000001")
@@ -147,16 +148,16 @@ test_game =
           _ -> assertBool "Expected CardDefended event" False
 
         -- Verify Actor State in Game
-        let actorSt3 = game3 ^. #actors % at actorId
+        let actorSt3 = game3 ^. #actors . at actorId
         case actorSt3 of
           Nothing -> assertBool "Actor state lost" False
           Just st -> do
-            case st ^. #coreState % #defending of
+            case st ^. #coreState . #defending of
               Just (ActiveDefense c cards) -> do
                 c.id @?= cid
                 map (.id) cards @?= [cid2]
               Nothing -> assertBool "Expected defending state" False
-            (st ^. #coreState % #deck) @?= []
+            (st ^. #coreState . #deck) @?= []
     , testCase "Gameplay Sequence (Fatigue)" $ do
         let env =
               GameEnv
@@ -176,12 +177,12 @@ test_game =
         let actionTypes = map (toConstr . (.event)) actions
         actionTypes @?= ["CardsCreated", "DeckShuffled", "CardDrawn"]
 
-        let actorSt2 = game2 ^. #actors % at actorId
+        let actorSt2 = game2 ^. #actors . at actorId
         case actorSt2 of
           Nothing -> assertBool "Actor state lost" False
           Just st -> do
-            length (st ^. #coreState % #hand) @?= 1
-            length (st ^. #coreState % #deck) @?= 1
+            length (st ^. #coreState . #hand) @?= 1
+            length (st ^. #coreState . #deck) @?= 1
     , testCase "Round Conclusion (concludeRound)" $ do
         let env =
               GameEnv
@@ -209,14 +210,14 @@ test_game =
         let actorState =
               emptyActorState
                 & #coreState
-                % #defending
-                .~ defending
+                  . #defending
+                  .~ defending
                 & #coreState
-                % #discard
-                .~ []
+                  . #discard
+                  .~ []
                 & #coreState
-                % #deck
-                .~ deck
+                  . #deck
+                  .~ deck
 
         let game1 = addActor actorId actorState game0
 
@@ -229,15 +230,15 @@ test_game =
         uid @?= actorId
 
         -- Verify Actor State in Game
-        let actorSt' = game2 ^. #actors % at actorId
+        let actorSt' = game2 ^. #actors . at actorId
         case actorSt' of
           Nothing -> assertBool "Actor state lost" False
           Just st -> do
             -- Defense should be cleared
             -- Defense should be cleared
-            (st ^. #coreState % #defending) @?= Nothing
+            (st ^. #coreState . #defending) @?= Nothing
             -- Card should be in discard
-            (st ^. #coreState % #discard) @?= [card1]
+            (st ^. #coreState . #discard) @?= [card1]
     , testCase "NPC Auto-Planning" $ do
         let env =
               GameEnv
@@ -260,12 +261,12 @@ test_game =
         let npcState =
               emptyActorState
                 & #name
-                .~ "Bad Guy"
+                  .~ "Bad Guy"
                 & #actorType
-                .~ "Monster"
+                  .~ "Monster"
                 & #coreState
-                % #hand
-                .~ hand
+                  . #hand
+                  .~ hand
 
         let game1 = addActor npcId npcState game0
 
@@ -277,7 +278,7 @@ test_game =
         length planEvents @?= 1
 
         -- Verify Plan
-        let actorSt = game2 ^. #actors % at npcId
+        let actorSt = game2 ^. #actors . at npcId
         case actorSt of
           Nothing -> assertBool "NPC state lost" False
           Just st -> do
@@ -309,8 +310,8 @@ test_game =
         let actorState =
               emptyActorState
                 & #coreState
-                % #hand
-                .~ hand
+                  . #hand
+                  .~ hand
 
         let game1 = addActor actorId actorState game0
 

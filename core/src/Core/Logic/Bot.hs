@@ -5,9 +5,10 @@ module Core.Logic.Bot
   ( planBestAvailableAction
   ) where
 
+import Control.Lens
+import Data.Generics.Labels ()
 import Data.List (sortOn)
 import Data.Ord (Down (..))
-import Optics
 
 import Core.Card (CoreCard (..), Identified (..), Stats (..))
 import Core.Logic.Combat (getAttackRule)
@@ -19,7 +20,7 @@ import Core.Stats (ResourceType (..), StackPower (..))
 
 planBestAvailableAction :: GameM g ()
 planBestAvailableAction = do
-  hand <- use (#coreState % #hand)
+  hand <- use (#coreState . #hand)
 
   let cardsInHand = [(c.id, c.content) | c <- hand]
 

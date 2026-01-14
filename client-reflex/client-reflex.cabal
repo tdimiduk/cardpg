@@ -38,10 +38,10 @@ library
     , data-default
     , dependent-sum
     , foreign-store
+    , generic-lens
     , http-types
     , jsaddle-warp
-    , optics
-    , optics-core
+    , lens
     , random
     , reflex
     , reflex-dom

@@ -13,11 +13,12 @@ module Core.Logic.Combat
   , getActiveTableCards
   ) where
 
+import Control.Lens
+import Data.Generics.Labels ()
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import Optics
 
 import Core.Card
   ( CoreCard (..)

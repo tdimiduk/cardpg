@@ -36,10 +36,9 @@ library
     , containers
     , data-default
     , generic-lens
+    , lens
     , megaparsec
     , mtl
-    , optics
-    , optics-th
     , random
     , text
     , transformers
@@ -102,9 +101,10 @@ test-suite core-test
     , bytestring
     , containers
     , core
+    , generic-lens
     , generic-random
+    , lens
     , mtl
-    , optics
     , QuickCheck
     , random
     , tasty

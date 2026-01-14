@@ -4,6 +4,7 @@
 
 module Server.Scenario where
 
+import Control.Lens (at, set, (&), (.~), (?~))
 import Control.Monad (forM, forM_)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.State
@@ -18,6 +19,7 @@ import Control.Monad.State
   , runStateT
   )
 import Data.Aeson (FromJSON)
+import Data.Generics.Labels ()
 import Data.List.NonEmpty (toList)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
@@ -25,7 +27,6 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Yaml (decodeFileThrow)
 import GHC.Generics (Generic)
-import Optics (at, set, (&), (.~), (?~))
 import System.FilePath (takeDirectory, (</>))
 import System.Random (StdGen, getStdGen, newStdGen, uniform)
 import System.Random.Stateful (Uniform (..), uniformM)

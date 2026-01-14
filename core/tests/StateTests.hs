@@ -21,7 +21,8 @@ import Core.Primitives (CardInstanceId (..), EquipSlot (..))
 import Core.State
 import Data.Map.Strict qualified as Map
 
-import Optics ((%), (^.))
+import Control.Lens ((^.))
+import Data.Generics.Labels ()
 
 -- Bring instances into scope
 
@@ -84,8 +85,8 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
     stateAction = runRWST (runGameM action) env actorSt
     ((_, newState, _events), _) = runState stateAction gen
    in
-    length (newState ^. #coreState % #deck) === expectedDeckSize
-      .&&. length (newState ^. #coreState % #discard) === 0
+    length (newState ^. #coreState . #deck) === expectedDeckSize
+      .&&. length (newState ^. #coreState . #discard) === 0
 
 -- | Property: ActorState should roundtrip through JSON encoding/decoding.
 -- We resize the generator because the full unchecked recursion with default

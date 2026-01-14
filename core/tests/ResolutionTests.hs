@@ -11,6 +11,7 @@ import System.Random (StdGen, mkStdGen)
 import Test.Tasty
 import Test.Tasty.HUnit
 
+import Control.Lens ((&), (.~))
 import Core.Card (CoreCard (..), Identified (..))
 import Core.Hardcoded (fatigueCard)
 import Core.Logic.Deck qualified as Logic
@@ -19,7 +20,7 @@ import Core.Logic.Planning qualified as Logic
 import Core.Primitives (CardInstanceId (..), ChallengeId (..))
 import Core.State
 import Core.Stats (ResourceType (..))
-import Optics ((%), (&), (.~))
+import Data.Generics.Labels ()
 
 test_resolutionCycle :: TestTree
 test_resolutionCycle = testCase "Full Resolution Cycle" $ do
@@ -103,11 +104,11 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
   let actorWithDeck =
         initialActor
           & #coreState
-          % #hand
-          .~ [card1, card2]
+            . #hand
+            .~ [card1, card2]
           & #coreState
-          % #deck
-          .~ [card3]
+            . #deck
+            .~ [card3]
 
       -- Plan again on this state
       ((_, actorAfterPlan2, _), gen2) = runState (runRWST (runGameM planAction) env actorWithDeck) gen

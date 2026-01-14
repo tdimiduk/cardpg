@@ -10,14 +10,15 @@ module Core.Logic.Deck
   , returnCardsToDeck
   ) where
 
+import Control.Lens
 import Control.Monad (replicateM, when)
 import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (modify)
 import Control.Monad.Trans.Class (lift)
+import Data.Generics.Labels ()
 import Data.List (partition)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
-import Optics
 import System.Random (RandomGen, uniform)
 
 import Core.Card (CardInstance, CoreCard, Identified (..), ItemCard (..))
@@ -60,26 +61,26 @@ performFatigueCycle = do
 
   newFatigueCards <- createCards (env ^. #fatigueCardTemplate) (2 + burden)
 
-  currentDiscard <- use (#coreState % #discard)
-  modify $ #coreState % #discard .~ []
+  currentDiscard <- use (#coreState . #discard)
+  modify $ #coreState . #discard .~ []
 
   newDeck <- GameM . lift $ shuffleListM (newFatigueCards ++ currentDiscard)
 
-  modify $ #coreState % #deck .~ newDeck
+  modify $ #coreState . #deck .~ newDeck
   tell [DeckShuffled]
 
 deckCardTo
   :: (RandomGen g)
   => Lens' CoreCardState [CardInstance CoreCard] -> (CardInstance CoreCard -> GameEvent) -> GameM g ()
 deckCardTo dst gameLog = do
-  currentDeck <- use (#coreState % #deck)
+  currentDeck <- use (#coreState . #deck)
   case currentDeck of
     [] -> do
       performFatigueCycle
       deckCardTo dst gameLog
     (top : rest) -> do
-      modify $ #coreState % #deck .~ rest
-      modify $ #coreState % dst %~ (top :)
+      modify $ #coreState . #deck .~ rest
+      modify $ #coreState . dst %~ (top :)
       tell [gameLog top]
 
 drawCard :: (RandomGen g) => GameM g ()
@@ -87,47 +88,47 @@ drawCard = deckCardTo #hand CardDrawn
 
 flipCardToDefense :: (RandomGen g) => ActiveChallenge -> GameM g ()
 flipCardToDefense challenge = do
-  currentDeck <- use (#coreState % #deck)
+  currentDeck <- use (#coreState . #deck)
   case currentDeck of
     [] -> do
       performFatigueCycle
       flipCardToDefense challenge
     (top : rest) -> do
-      currentDefense <- use (#coreState % #defending)
+      currentDefense <- use (#coreState . #defending)
       case currentDefense of
         Nothing -> do
-          modify $ #coreState % #deck .~ rest
-          modify $ (#coreState % #defending) ?~ ActiveDefense challenge [top]
+          modify $ #coreState . #deck .~ rest
+          modify $ (#coreState . #defending) ?~ ActiveDefense challenge [top]
           tell [CardDefended challenge top]
         Just (ActiveDefense existingChallenge cards) ->
           Control.Monad.when (existingChallenge.id == challenge.id) $ do
-            modify $ #coreState % #deck .~ rest
-            modify $ (#coreState % #defending) ?~ ActiveDefense existingChallenge (top : cards)
+            modify $ #coreState . #deck .~ rest
+            modify $ (#coreState . #defending) ?~ ActiveDefense existingChallenge (top : cards)
             tell [CardDefended existingChallenge top]
 
 reshuffleDeck :: (RandomGen g) => GameM g ()
 reshuffleDeck = do
-  discarded <- use (#coreState % #discard)
-  currentDeck <- use (#coreState % #deck)
+  discarded <- use (#coreState . #discard)
+  currentDeck <- use (#coreState . #deck)
   newDeck <- GameM . lift $ shuffleListM (discarded ++ currentDeck)
-  modify $ #coreState % #discard .~ []
-  modify $ #coreState % #deck .~ newDeck
+  modify $ #coreState . #discard .~ []
+  modify $ #coreState . #deck .~ newDeck
   tell [DeckShuffled]
 
 discardCards :: [CardInstanceId] -> GameM g ()
 discardCards cids = do
-  currentHand <- use (#coreState % #hand)
+  currentHand <- use (#coreState . #hand)
   let (toDiscard, keep) = partition (\c -> c.id `elem` cids) currentHand
-  modify $ #coreState % #hand .~ keep
-  modify $ #coreState % #discard %~ (toDiscard ++)
+  modify $ #coreState . #hand .~ keep
+  modify $ #coreState . #discard %~ (toDiscard ++)
 
 returnCardsToDeck :: (RandomGen g) => [CardInstanceId] -> GameM g ()
 returnCardsToDeck cids = do
-  currentHand <- use (#coreState % #hand)
+  currentHand <- use (#coreState . #hand)
   let (toReturn, keep) = partition (\c -> c.id `elem` cids) currentHand
-  modify $ #coreState % #hand .~ keep
+  modify $ #coreState . #hand .~ keep
 
-  currentDeck <- use (#coreState % #deck)
+  currentDeck <- use (#coreState . #deck)
   newDeck <- GameM . lift $ shuffleListM (toReturn ++ currentDeck)
-  modify $ #coreState % #deck .~ newDeck
+  modify $ #coreState . #deck .~ newDeck
   tell [DeckShuffled]

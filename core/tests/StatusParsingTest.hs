@@ -3,12 +3,13 @@
 
 module StatusParsingTest where
 
+import Control.Lens ((^.))
 import Control.Monad qualified
 import Data.ByteString qualified as BS
+import Data.Generics.Labels ()
 import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
-import Optics ((^.))
 import Test.Tasty
 import Test.Tasty.HUnit
 
