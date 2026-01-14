@@ -95,21 +95,6 @@ executable server-devel
     , text
     , websockets
 
-executable server-reflex
-  import:         project-config
-  main-is:        ReflexMain.hs
-  hs-source-dirs: app
-  build-depends:
-    , aeson
-    , base               >=4.7 && <5
-    , core
-    , network
-    , postgresql-simple
-    , resource-pool
-    , server
-    , text
-    , websockets
-
 test-suite server-test
   import:         project-config
   type:           exitcode-stdio-1.0

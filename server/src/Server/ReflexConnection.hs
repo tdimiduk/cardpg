@@ -1,5 +1,4 @@
 {-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE LambdaCase #-}
 
 module Server.ReflexConnection where
 
@@ -42,9 +41,7 @@ import Server.DB (saveGame)
 import Server.Dispatch (processCommand)
 import Server.Session (initGame)
 import Server.Types
-  ( AdminCommand (..)
-  , Client (..)
-  , Command (..)
+  ( Client (..)
   , ConnectedSocket (..)
   , GameState (..)
   , ServerState (..)
@@ -145,31 +142,9 @@ broadcastReflex msg clients = do
 talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
 talk client socket state = forever $ do
   msgBytes <- receiveData (socket.socketConn)
-  -- Try to parse as TaggedRequest first, fall back to legacy if needed
   case decode msgBytes of
-    Just taggedReq@(TaggedRequest _ _) -> do
-      result <- mkTaggedResponse taggedReq $ \case
-        Req.Join name -> handleJoin client name state
-        Req.SendChat aid msg -> do
-          _ <- handleGameCommand client state (ChatIntent aid msg)
-          pure ()
-        Req.DrawCards aid -> handleGameCommand client state (DrawIntent aid)
-        Req.Defend aid cid -> handleGameCommand client state (DefendIntent aid cid)
-        Req.PlanMove aid x y -> handleGameCommand client state (PlanMove aid x y)
-        Req.PlanAction aid acid rcids -> handleGameCommand client state (PlanAction aid acid rcids)
-        Req.PlanNarrative aid cids col -> handleGameCommand client state (PlanNarrative aid cids col)
-        Req.CancelPlan aid -> handleGameCommand client state (CancelPlanIntent aid)
-        Req.StartResolution -> handleGameCommand client state StartResolutionIntent
-        Req.EndDefense aid -> handleGameCommand client state (EndDefenseIntent aid)
-        Req.Reshuffle aid -> handleGameCommand client state (ReshuffleIntent aid)
-        Req.AddStatus aid st dest -> handleGameCommand client state (AddStatusIntent aid st dest)
-        Req.DestroyStatus aid st mcid -> handleGameCommand client state (DestroyStatusIntent aid st mcid)
-        Req.AddConsequence aid sev -> handleGameCommand client state (AddConsequenceIntent aid sev)
-        Req.DestroyConsequence aid cid -> handleGameCommand client state (DestroyConsequenceIntent aid cid)
-        Req.DiscardCards aid cids -> handleGameCommand client state (DiscardCardsIntent aid cids)
-        Req.ReturnToDeck aid cids -> handleGameCommand client state (ReturnToDeckIntent aid cids)
-        Req.EndRound -> handleGameCommand client state EndRoundIntent
-        Req.Pass aid -> handleGameCommand client state (PassIntent aid)
+    Just taggedReq@(TaggedRequest _ req) -> do
+      result <- mkTaggedResponse taggedReq $ \r -> handleGameCommand client state r
       case result of
         Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
         Left err ->
@@ -189,42 +164,35 @@ handleJoin client name state = do
   T.putStrLn $ "Client renamed: " <> name
   pure (Right client.clientId)
 
-handleGameCommand :: Client -> MVar ServerState -> Command -> IO (Either Text [StateUpdate])
-handleGameCommand client state cmd = do
-  t <- getPOSIXTime
-  let ts = round (t * 1000) :: Int
+handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
+handleGameCommand client state cmd =
+  case cmd of
+    Req.Join name -> handleJoin client name state
+    _ -> do
+      t <- getPOSIXTime
+      let ts = round (t * 1000) :: Int
 
-  (updates, newLog) <- modifyMVar state $ \s -> do
-    let game = s.gameState
-    let rng = s.rng
-    let ((newGame, updates, _, newLog), newRng) = runState (processCommand cmd ts game) rng
+      (ret, newLog) <- modifyMVar state $ \s -> do
+        let game = s.gameState
+        let rng = s.rng
+        let ((newGame, ret, _, newLogs), newRng) = runState (processCommand cmd ts game) rng
 
-    let s' = s{gameState = newGame, rng = newRng}
-    return (s', (updates, newLog))
+        let s' = s{gameState = newGame, rng = newRng}
+        return (s', (ret, newLogs))
 
-  -- Broadcast updates to others
-  readMVar state >>= \s -> do
-    -- We'll just pass existing phase if it didn't change, but here we can just pass current phase
-    -- Actually PushUpdate takes Maybe Phase. We interpret this as "New Phase" (Change).
-    -- But for simplicity we can just pass Nothing if we don't want to signal a change, or
-    -- we can check if it changed.
-    -- However, handleGameCommand doesn't return the OLD game state easily to check diff.
-    -- Let's just always send the current phase for now if we want to be safe, OR we can accept
-    -- that the client updates its phase on receiving this.
-    -- Wait, PushUpdate takes Maybe Phase. If I send Just phase, client updates.
-    -- If I send Nothing, client keeps old.
-    -- Let's send Just (s.gameState.phase) to be sure synchronization is correct.
-    broadcastReflex
-      ( PushUpdate
-          (GameView{actors = s.gameState.actors})
-          (Just s.gameState.phase)
-      )
-      s.clients
+      -- Broadcast updates to others
+      readMVar state >>= \s -> do
+        broadcastReflex
+          ( PushUpdate
+              (GameView{actors = s.gameState.actors})
+              (Just s.gameState.phase)
+          )
+          s.clients
 
-  -- Broadcast new logs
-  unless (null newLog) $ do
-    readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
+      -- Broadcast new logs
+      unless (null newLog) $ do
+        readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
 
-  pure (Right updates)
+      pure ret
 
 handleGameCommand' = handleGameCommand

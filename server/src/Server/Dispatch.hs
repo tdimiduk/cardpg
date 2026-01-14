@@ -2,44 +2,36 @@ module Server.Dispatch
   ( processCommand
   ) where
 
-import Control.Monad (replicateM)
 import Control.Monad.State (State, state)
 import Data.Map.Strict qualified as Map
-import Data.Text (Text)
 import Data.Text qualified as T
 import System.Random (StdGen)
-import System.Random.Stateful (Uniform (..), uniform, uniformM)
+import System.Random.Stateful (Uniform (..), uniform)
 
 import Core.Logic.Deck qualified as Logic
 import Core.Logic.Planning qualified as Logic
 import Core.Logic.Status qualified as Logic
-import Core.Primitives
-  ( ActorId
-  , CardInstanceId
-  , CardLocation
-  , ChallengeId
-  )
+import Core.Primitives (ActorId)
 import Core.State
   ( ActiveChallenge (..)
   , ActorState (..)
   , ChallengeSource (..)
   , PlannedAction (PPass)
   )
-import Core.Stats (ResourceType (..))
 import Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
 import Server.Presenter (eventToLogs)
 import Server.Types
   ( ActorGameEvent (..)
-  , Command (..)
   , GameState (..)
   , LogEntry (..)
-  , LogId (..)
   , LogPayload (..)
   , LogSender (..)
   , Phase (..)
   , StateUpdate (..)
   )
+
+import Api.Request (ApiRequest (..))
 
 mkLogEntry :: Int -> LogSender -> LogPayload -> State StdGen LogEntry
 mkLogEntry ts sender payload = do
@@ -53,10 +45,13 @@ mkLogEntry ts sender payload = do
       }
 
 processCommand
-  :: Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
+  :: ApiRequest a
+  -> Int
+  -> GameState
+  -> State StdGen (GameState, a, [ActorGameEvent], [LogEntry])
 processCommand cmd ts game =
   case cmd of
-    StartResolutionIntent -> do
+    StartResolution -> do
       (newGame, events) <- revealPlannedActions game
       let newGameWithPhase = newGame{phase = Resolution}
       let payloads =
@@ -65,8 +60,8 @@ processCommand cmd ts game =
               events
       newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
-      return (finalGame, [], events, newLogs)
-    EndRoundIntent -> do
+      return (finalGame, Right [], events, newLogs)
+    EndRound -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
       let newGameWithPhase = gameWithPlan{phase = Planning}
@@ -76,8 +71,8 @@ processCommand cmd ts game =
               roundEvents
       newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
-      return (finalGame, updates, planEvents ++ roundEvents, newLogs)
-    ChatIntent maybeAid content -> do
+      return (finalGame, Right updates, planEvents ++ roundEvents, newLogs)
+    SendChat maybeAid content -> do
       case parseChatCommand content of
         CmdChallenge (ChallengeDetails color val name desc) -> do
           -- Generate ID for ad-hoc challenge
@@ -101,64 +96,61 @@ processCommand cmd ts game =
           logEntry <- mkLogEntry ts sender logPayload
 
           let newGame = game{phase = Resolution, history = game.history ++ [logEntry]}
-          return (newGame, [], [], [logEntry])
+          return (newGame, (), [], [logEntry])
         CmdText _ -> do
           -- Normal Chat
           let sender = resolveSender maybeAid game
           logEntry <- mkLogEntry ts sender (LogChat content)
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
-          return (finalGame, [], [], newLogs)
-    _ -> do
-      let (targetId, action) = case cmd of
-            DrawIntent tid -> (tid, Logic.drawCard)
-            DefendIntent tid cid ->
-              -- Lookup the challenge in history
-              let findChallenge [] = Nothing
-                  findChallenge (logEntry : rest) = case logEntry.payload of
-                    LogChallenge activeChallenge _ ->
-                      if activeChallenge.id == cid
-                        then Just activeChallenge
-                        else findChallenge rest
-                    _ -> findChallenge rest
+          return (finalGame, (), [], newLogs)
+    Join _ -> error "Join is handled by the connection layer" -- Should never be called here
+    DrawCards tid -> runStandard tid Logic.drawCard
+    Defend tid cid -> do
+      let findChallenge [] = Nothing
+          findChallenge (logEntry : rest) = case logEntry.payload of
+            LogChallenge activeChallenge _ ->
+              if activeChallenge.id == cid
+                then Just activeChallenge
+                else findChallenge rest
+            _ -> findChallenge rest
 
-                  maybeChallenge = findChallenge game.history
-               in case maybeChallenge of
-                    Just challenge -> (tid, Logic.flipCardToDefense challenge)
-                    Nothing -> (tid, return ()) -- If challenge not found, do nothing (client handles error via lack of response/log, or we could add explicit log)
-            EndDefenseIntent tid -> (tid, Logic.endDefense)
-            PlanMove tid x y -> (tid, Logic.planMove x y)
-            PlanAction tid actionId resourceIds ->
-              ( tid
-              , Logic.planAction
-                  actionId
-                  resourceIds
-              )
-            PlanNarrative tid cardIds color ->
-              ( tid
-              , Logic.planNarrative
-                  cardIds
-                  color
-              )
-            CancelPlanIntent tid -> (tid, Logic.cancelPlan)
-            ReshuffleIntent tid -> (tid, Logic.reshuffleDeck)
-            AddStatusIntent tid st dest -> (tid, Logic.addStatus st dest)
-            DestroyStatusIntent tid st cid -> (tid, Logic.destroyStatus st cid)
-            AddConsequenceIntent tid sev -> (tid, Logic.addConsequence sev)
-            DestroyConsequenceIntent tid cid -> (tid, Logic.destroyConsequence cid)
-            ReturnToDeckIntent tid cids -> (tid, Logic.returnCardsToDeck cids)
-            PassIntent tid -> (tid, Logic.passAction)
-            -- These should be matched above, but just in case or for completeness if we add more commands that didn't match
-            StartResolutionIntent -> error "Unreachable StartResolutionIntent"
-            EndRoundIntent -> error "Unreachable EndRoundIntent"
-            ChatIntent _ _ -> error "Unreachable ChatIntent"
-
+          maybeChallenge = findChallenge game.history
+      case maybeChallenge of
+        Just challenge -> runStandard tid (Logic.flipCardToDefense challenge)
+        Nothing -> runStandard tid (return ())
+    EndDefense tid -> runStandard tid Logic.endDefense
+    PlanMove tid x y -> runStandard tid (Logic.planMove x y)
+    PlanAction tid actionId resourceIds ->
+      runStandard
+        tid
+        ( Logic.planAction
+            actionId
+            resourceIds
+        )
+    PlanNarrative tid cardIds color ->
+      runStandard
+        tid
+        ( Logic.planNarrative
+            cardIds
+            color
+        )
+    CancelPlan tid -> runStandard tid Logic.cancelPlan
+    Reshuffle tid -> runStandard tid Logic.reshuffleDeck
+    AddStatus tid st dest -> runStandard tid (Logic.addStatus st dest)
+    DestroyStatus tid st cid -> runStandard tid (Logic.destroyStatus st cid)
+    AddConsequence tid sev -> runStandard tid (Logic.addConsequence sev)
+    DestroyConsequence tid cid -> runStandard tid (Logic.destroyConsequence cid)
+    ReturnToDeck tid cids -> runStandard tid (Logic.returnCardsToDeck cids)
+    Pass tid -> runStandard tid Logic.passAction
+    DiscardCards tid cids -> runStandard tid (Logic.discardCards cids)
+  where
+    runStandard targetId action = do
       (maybeEvents, newGame) <- runActorAction targetId action game
       case maybeEvents of
-        Nothing -> return (game, [], [], []) -- Actor missing or no action
+        Nothing -> return (game, Right [], [], []) -- Actor missing or no action
         Just events -> do
           let
-            -- Retrieve updated actor state safely
             updatedActorState = case Map.lookup targetId newGame.actors of
               Just a -> a
               Nothing -> error "Actor missing after update"
@@ -172,11 +164,11 @@ processCommand cmd ts game =
 
           let finalGame = newGame{history = game.history ++ newLogs}
 
-          return (finalGame, stateUpdates, actorEvents, newLogs)
+          return (finalGame, Right stateUpdates, actorEvents, newLogs)
 
 resolveSender :: Maybe ActorId -> GameState -> LogSender
-resolveSender Nothing _ = SenderGM -- Default to GM for null actor? Or SenderSystem? For generic game events it might be System.
+resolveSender Nothing _ = SenderGM -- Default to GM
 resolveSender (Just aid) game =
   case Map.lookup aid game.actors of
-    Just a -> SenderActor aid (a.name)
+    Just ActorState{name = n} -> SenderActor aid n
     Nothing -> SenderActor aid "Unknown"
