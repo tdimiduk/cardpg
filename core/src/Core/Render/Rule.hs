@@ -2,7 +2,6 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -50,17 +49,17 @@ instance
   )
   => RenderStrategy mode AttackDef m
   where
-  renderStrategy AttackDef{..} = do
+  renderStrategy def = do
     render cmdAttack
     renderSpace
-    render resistedBy
+    render def.resistedBy
     render sepColon
     renderSpace
     render kwStr
     renderSpace
     render ("= " :: Text)
-    render power
-    case effect of
+    render def.power
+    case def.effect of
       Nothing -> pure ()
       Just e -> do
         renderArrow
@@ -72,20 +71,20 @@ instance
   )
   => RenderStrategy mode GeneralDef m
   where
-  renderStrategy GeneralDef{..} = do
+  renderStrategy def = do
     render cmdAction
     renderSpace
-    render name
-    case cost of
+    render def.name
+    case def.cost of
       Nothing -> pure ()
       Just c -> do
         renderSpace
         renderParens (render c)
-    maybe (pure ()) (\d -> renderSpace >> render d) difficulty
+    maybe (pure ()) (\d -> renderSpace >> render d) def.difficulty
     renderSpace
     renderArrow
     renderSpace
-    render effect
+    render def.effect
 
 instance
   ( Monad m
@@ -93,14 +92,14 @@ instance
   )
   => RenderStrategy mode OngoingDef m
   where
-  renderStrategy OngoingDef{..} = do
+  renderStrategy def = do
     render cmdOngoing
     renderSpace
-    renderParens (render life)
+    renderParens (render def.life)
     renderSpace
     renderArrow
     renderSpace
-    render effect
+    render def.effect
 
 instance
   ( Monad m
@@ -108,11 +107,11 @@ instance
   )
   => RenderStrategy mode PassiveDef m
   where
-  renderStrategy PassiveDef{..} = do
+  renderStrategy def = do
     render cmdPassive
     renderSpace
-    render bonus
-    maybe (pure ()) (\c -> renderSpace >> render c) condition
+    render def.bonus
+    maybe (pure ()) (\c -> renderSpace >> render c) def.condition
 
 instance
   ( Monad m
@@ -120,15 +119,15 @@ instance
   )
   => RenderStrategy mode TaskDef m
   where
-  renderStrategy TaskDef{..} = do
+  renderStrategy def = do
     render cmdTask
     renderSpace
-    render name
+    render def.name
     let parts =
           catMaybes
-            [ fmap (\c -> (kwCheck, render c)) check
-            , fmap (\t -> (kwTime, render t)) time
-            , fmap (\c -> (kwCost, render c)) cost
+            [ fmap (\c -> (kwCheck, render c)) def.check
+            , fmap (\t -> (kwTime, render t)) def.time
+            , fmap (\c -> (kwCost, render c)) def.cost
             ]
 
     if null parts
@@ -141,7 +140,7 @@ instance
     renderSpace
     renderArrow
     renderSpace
-    render effect
+    render def.effect
     where
       renderParts :: [(Text, m ())] -> m ()
       renderParts [] = pure ()
@@ -163,11 +162,11 @@ instance
   )
   => RenderStrategy mode TriggerDef m
   where
-  renderStrategy TriggerDef{..} = do
+  renderStrategy def = do
     render cmdWhen
     renderSpace
-    render trigger
+    render def.trigger
     renderSpace
     renderArrow
     renderSpace
-    render effect
+    render def.effect

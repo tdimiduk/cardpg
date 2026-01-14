@@ -83,9 +83,9 @@ sidebarWidget selectionDyn actorsMapDyn = do
           selectClick <- listWithKey actorsMapDyn $ \aid actorDyn -> do
             e <- button
               def
-                { _buttonConfig_variant = constDyn VariantSecondary
-                , _buttonConfig_fullWidth = True
-                , _buttonConfig_classes = ["justify-start", "text-left"]
+                { variant = constDyn VariantSecondary
+                , fullWidth = True
+                , classes = ["justify-start", "text-left"]
                 }
               $ dyn_
               $ ffor actorDyn

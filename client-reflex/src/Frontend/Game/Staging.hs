@@ -152,25 +152,15 @@ stagingControls validation = do
   divStyle [flex, "gap-2", "w-full"] $ do
     -- Cancel Button (Secondary)
     cancelEvt <-
-      button
-        def
-          { _buttonConfig_variant = constDyn VariantSecondary
-          , _buttonConfig_classes = [flex1]
-          }
-        $ text "Cancel"
+      button def{variant = constDyn VariantSecondary, classes = [flex1]} $ text "Cancel"
 
     -- Commit Button (Primary, disabled if invalid)
     let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
         commitDisabled = not <$> validDyn
 
     commitEvt <-
-      button
-        def
-          { _buttonConfig_variant = constDyn VariantPrimary
-          , _buttonConfig_disabled = commitDisabled
-          , _buttonConfig_classes = [flex1]
-          }
-        $ text "Commit"
+      button def{variant = constDyn VariantPrimary, disabled = commitDisabled, classes = [flex1]} $
+        text "Commit"
 
     return (cancelEvt, commitEvt)
 

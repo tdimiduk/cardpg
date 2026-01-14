@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Frontend.UI.Button
   ( -- * Types
@@ -43,22 +42,22 @@ data ButtonSize
 
 -- | Configuration for the button widget
 data ButtonConfig t = ButtonConfig
-  { _buttonConfig_variant :: Dynamic t ButtonVariant
-  , _buttonConfig_size :: Dynamic t ButtonSize
-  , _buttonConfig_disabled :: Dynamic t Bool
-  , _buttonConfig_fullWidth :: Bool
-  , _buttonConfig_classes :: [CssClass]
+  { variant :: Dynamic t ButtonVariant
+  , size :: Dynamic t ButtonSize
+  , disabled :: Dynamic t Bool
+  , fullWidth :: Bool
+  , classes :: [CssClass]
   -- ^ Additional custom classes
   }
 
 instance (Reflex t) => Default (ButtonConfig t) where
   def =
     ButtonConfig
-      { _buttonConfig_variant = constDyn VariantPrimary
-      , _buttonConfig_size = constDyn SizeMedium
-      , _buttonConfig_disabled = constDyn False
-      , _buttonConfig_fullWidth = False
-      , _buttonConfig_classes = []
+      { variant = constDyn VariantPrimary
+      , size = constDyn SizeMedium
+      , disabled = constDyn False
+      , fullWidth = False
+      , classes = []
       }
 
 -- | A unified button widget
@@ -68,7 +67,7 @@ button
   -> m ()
   -- ^ Label content
   -> m (Event t ())
-button ButtonConfig{..} label = do
+button cfg label = do
   -- Base classes shared by all buttons
   let baseClasses =
         [ flex
@@ -82,16 +81,16 @@ button ButtonConfig{..} label = do
         ]
 
   -- Width handling
-  let widthClass = (["w-full" | _buttonConfig_fullWidth])
+  let widthClass = (["w-full" | cfg.fullWidth])
 
   -- Size classes
-  let sizeClasses = ffor _buttonConfig_size $ \case
+  let sizeClasses = ffor cfg.size $ \case
         SizeSmall -> ["px-2", "py-1", textXs]
         SizeMedium -> ["px-4", "py-2", textSm]
         SizeLarge -> ["px-6", "py-3", "text-base"]
 
   -- Variant classes (color schemes)
-  let variantClasses = ffor _buttonConfig_variant $ \case
+  let variantClasses = ffor cfg.variant $ \case
         VariantPrimary ->
           [ "bg-indigo-600"
           , "text-white"
@@ -141,24 +140,24 @@ button ButtonConfig{..} label = do
   let dynClasses = do
         sz <- sizeClasses
         var <- variantClasses
-        dis <- _buttonConfig_disabled
+        dis <- cfg.disabled
         let interaction = if dis then disabledClasses else [cursorPointer]
 
         return $
           baseClasses
             <> widthClass
-            <> _buttonConfig_classes
+            <> cfg.classes
             <> var
             <> interaction
             <> sz
 
   -- We use 'button' element.
   -- Note: Reflex 'button' helper is simple, but 'elDynAttr'' gives us more control.
-  let attrs = ffor ((,) <$> dynClasses <*> _buttonConfig_disabled) $ \(cls, dis) ->
+  let attrs = ffor ((,) <$> dynClasses <*> cfg.disabled) $ \(cls, dis) ->
         "class" =: classes cls
           <> if dis then "disabled" =: "true" else mempty
 
   (e, _) <- elDynAttr' "button" attrs label
 
   -- Gate the click event by the disabled state
-  return $ gate (not <$> current _buttonConfig_disabled) (domEvent Click e)
+  return $ gate (not <$> current cfg.disabled) (domEvent Click e)

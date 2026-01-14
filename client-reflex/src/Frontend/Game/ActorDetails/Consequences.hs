@@ -53,9 +53,9 @@ consequencesWidget actorId actorState = do
         btnClick <-
           button
             def
-              { _buttonConfig_variant = constDyn VariantGhost
-              , _buttonConfig_size = constDyn SizeSmall
-              , _buttonConfig_classes = ["px-1", "text-red-400", "hover:text-red-300"]
+              { variant = constDyn VariantGhost
+              , size = constDyn SizeSmall
+              , classes = ["px-1", "text-red-400", "hover:text-red-300"]
               }
             $ text "×"
 
@@ -66,10 +66,10 @@ consequencesWidget actorId actorState = do
     addClick <-
       button
         def
-          { _buttonConfig_variant = constDyn VariantDestructive
-          , _buttonConfig_fullWidth = True
-          , _buttonConfig_size = constDyn SizeSmall
-          , _buttonConfig_classes = ["mt-2"]
+          { variant = constDyn VariantDestructive
+          , fullWidth = True
+          , size = constDyn SizeSmall
+          , classes = ["mt-2"]
           }
         $ text "+ Add Consequence"
 

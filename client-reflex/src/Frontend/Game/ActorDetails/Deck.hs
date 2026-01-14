@@ -65,9 +65,9 @@ deckWidget actorId actorState = do
       let viewButton =
             button
               def
-                { _buttonConfig_variant = constDyn VariantGhost
-                , _buttonConfig_size = constDyn SizeSmall
-                , _buttonConfig_classes = ["absolute", "top-1", "right-1", "text-slate-600", "hover:text-indigo-400"]
+                { variant = constDyn VariantGhost
+                , size = constDyn SizeSmall
+                , classes = ["absolute", "top-1", "right-1", "text-slate-600", "hover:text-indigo-400"]
                 }
               (elClass "div" "w-5 h-5" iconDeck)
 
@@ -80,9 +80,9 @@ deckWidget actorId actorState = do
         drawClick <-
           button
             def
-              { _buttonConfig_variant = constDyn VariantSecondary
-              , _buttonConfig_size = constDyn SizeSmall
-              , _buttonConfig_fullWidth = True
+              { variant = constDyn VariantSecondary
+              , size = constDyn SizeSmall
+              , fullWidth = True
               }
             $ text "Draw 1"
         requesting_ $ Req.DrawCards actorId <$ drawClick
@@ -122,9 +122,9 @@ reshuffleButtonRequesting actorId = do
   reshuffleClick <-
     button
       def
-        { _buttonConfig_variant = constDyn VariantSecondary
-        , _buttonConfig_size = constDyn SizeSmall
-        , _buttonConfig_classes = ["gap-1"]
+        { variant = constDyn VariantSecondary
+        , size = constDyn SizeSmall
+        , classes = ["gap-1"]
         }
       $ do
         elClass "div" "w-4 h-4" iconRefresh

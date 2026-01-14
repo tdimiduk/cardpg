@@ -62,7 +62,7 @@ plannedActionWidget
   => Identified ActorId PlannedAction
   -> m ()
 plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
-  e <- button def{_buttonConfig_variant = constDyn VariantDestructive} $ text "↺ Revise"
+  e <- button def{variant = constDyn VariantDestructive} $ text "↺ Revise"
   _ <- requesting $ Req.CancelPlan actorId <$ e
   case planned of
     PStandard (ActionStack action res) -> do
