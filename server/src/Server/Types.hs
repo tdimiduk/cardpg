@@ -30,7 +30,7 @@ import Data.Aeson
   , genericToJSON
   )
 import Data.Aeson.TH (deriveJSON)
-import Data.Aeson.TypeScript.TH (TypeScript (..))
+
 import Data.IORef (IORef)
 import Data.Map (Map)
 import Data.Map qualified as Map

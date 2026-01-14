@@ -15,7 +15,6 @@ import Core.Logic.Combat (getAttackRule)
 import Core.Logic.Monad (GameM (..))
 import Core.Logic.Planning (passAction, planAction)
 import Core.RuleDefs (AttackDef (..))
-import Core.State (ActorState (..), CoreCardState (..))
 import Core.Stats (ResourceType (..), StackPower (..))
 
 planBestAvailableAction :: GameM g ()

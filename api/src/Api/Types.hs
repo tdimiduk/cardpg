@@ -16,7 +16,6 @@ module Api.Types
 
 import Data.Aeson (FromJSONKey, ToJSONKey)
 import Data.Aeson.TH (deriveJSON)
-import Data.Aeson.TypeScript.TH (TypeScript (..))
 import Data.Text (Text)
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
@@ -41,9 +40,6 @@ $(deriveJSON cardpgJsonDef ''LogId)
 
 instance Uniform LogId where
   uniformM g = LogId <$> uniformM g
-
-instance TypeScript LogId where
-  getTypeScriptType _ = "string"
 
 data LogPayload
   = LogInfo {content :: Text}
@@ -91,10 +87,3 @@ data StateUpdate = StateUpdate
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''StateUpdate)
-
-instance TypeScript ChallengeId where
-  getTypeScriptType _ = "string"
-
--- Orphan instance for UUID if not defined elsewhere or imported
-instance TypeScript UUID where
-  getTypeScriptType _ = "string"

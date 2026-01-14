@@ -47,7 +47,6 @@ library
   hs-source-dirs:  src
   build-depends:
     , aeson
-    , aeson-typescript
     , api
     , base                >=4.7 && <5
     , beam-automigrate

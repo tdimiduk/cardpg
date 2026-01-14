@@ -33,7 +33,6 @@ import Core.State
   ( ActionStack (..)
   , ActorState (..)
   , CoreCardState (..)
-  , GameEnv (..)
   , GameEvent (..)
   , PlannedAction (..)
   , TableState (..)

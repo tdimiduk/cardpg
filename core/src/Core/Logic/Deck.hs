@@ -21,19 +21,16 @@ import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import System.Random (RandomGen, uniform)
 
-import Core.Card (CardInstance, CoreCard, Identified (..), ItemCard (..))
+import Core.Card (CardInstance, CoreCard, Identified (..))
 import Core.Logic.Monad (GameM (..), liftRandom)
 import Core.Primitives (CardInstanceId)
 import Core.State
   ( ActiveChallenge (..)
   , ActiveDefense (..)
-  , ActorState (..)
   , AssetState (..)
   , CoreCardState (..)
-  , GameEnv (..)
   , GameEvent (..)
   , TableCard (..)
-  , TableState (..)
   )
 import Core.Util (shuffleListM)
 

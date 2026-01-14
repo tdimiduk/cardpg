@@ -1,8 +1,6 @@
 module Server.Config where
 
 import Data.Maybe (fromMaybe)
-import Data.Text (Text)
-import Data.Text qualified as T
 import System.Environment (lookupEnv)
 
 data DBConfig = DBConfig

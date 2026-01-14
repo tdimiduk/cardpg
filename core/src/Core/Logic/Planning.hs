@@ -35,7 +35,6 @@ import Core.Primitives (CardInstanceId (..))
 import Core.State
   ( ActionStack (..)
   , ActiveDefense (..)
-  , ActorState (..)
   , CoreCardState (..)
   , GameEvent (..)
   , IllegalActionDetails (..)

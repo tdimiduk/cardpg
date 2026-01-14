@@ -1,6 +1,5 @@
 module Api.Request where
 
-import Data.Aeson (Value)
 import Data.Aeson.GADT.TH (deriveJSONGADT)
 import Data.Constraint.Extras.TH (deriveArgDict)
 import Data.GADT.Compare.TH (deriveGCompare, deriveGEq)

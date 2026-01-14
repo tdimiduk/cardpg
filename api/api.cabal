@@ -38,7 +38,6 @@ library
   build-depends:
     , aeson
     , aeson-gadt-th
-    , aeson-typescript
     , base                    >=4.7 && <5
     , constraints-extras
     , containers

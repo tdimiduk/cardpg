@@ -125,7 +125,7 @@
                 buildInputs = [ pkgs.makeWrapper ];
               } ''
               mkdir -p $out/bin
-              cp ${self'.packages.cardpg-server-raw}/bin/cardpg-server $out/bin/
+              cp ${self'.packages.cardpg-server-raw}/bin/server $out/bin/cardpg-server
              
               wrapProgram $out/bin/cardpg-server \
                 --set CARDPG_CARDS_DIR "${self'.packages.game-data}/data/cards" \
@@ -193,14 +193,7 @@
               # Install pre-commit hooks
               ${config.pre-commit.settings.installationScript}
               
-              # npm install if needed for vtt-react
-              if [ -f vtt-react/package.json ]; then
-                if [ ! -d vtt-react/node_modules ] || \
-                   [ vtt-react/package.json -nt vtt-react/node_modules ]; then
-                  echo "Installing vtt-react dependencies..."
-                  (cd vtt-react && npm install)
-                fi
-              fi
+
 
               # npm install if needed for client-reflex (Tailwind)
               if [ -f client-reflex/package.json ]; then
