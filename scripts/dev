@@ -3,6 +3,11 @@ set -e
 
 # Run the development environment using process-compose
 # This handles both the server and the client with clean shutdown
+if pgrep -f "process-compose up" > /dev/null; then
+  echo "Dev server is already running."
+  exit 0
+fi
+
 if command -v process-compose &> /dev/null; then
   process-compose up -f process-compose.yaml "$@"
 else
