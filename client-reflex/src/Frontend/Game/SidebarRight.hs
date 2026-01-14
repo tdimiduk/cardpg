@@ -9,11 +9,13 @@ import Api.Request (ApiRequest (..))
 import Api.Types
   ( LogEntry (..)
   , LogPayload (..)
+  , LogSender (..)
   )
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState)
 import Core.Util (tshow)
 
+import Frontend.Game.PhaseDisplay (PhaseDisplayConfig, phaseDisplayWidget)
 import Frontend.Html (RenderHtml)
 import Frontend.Style hiding (hidden)
 import Frontend.Util
@@ -46,9 +48,13 @@ sidebarRightWidget
   => Dynamic t (Maybe (Identified ActorId ActorState))
   -> Dynamic t [LogEntry]
   -- ^ List of logs (newest first in list)
+  -> PhaseDisplayConfig t
   -> m ()
-sidebarRightWidget activeActor logsDyn = do
+sidebarRightWidget activeActor logsDyn phaseConfig = do
   divStyle sidebarRightContainer $ do
+    -- Phase Display
+    phaseDisplayWidget phaseConfig
+
     -- Header
     divStyle sidebarHeader $ do
       row $ do
@@ -122,7 +128,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
         $ text "Bot"
       divStyle ["flex-1"] $ do
         elStyle "div" ["text-[10px]", fontBold, "text-slate-500", "mb-0.5"] $
-          text l.sender
+          text (renderSender l.sender)
         divStyle [textSm, "text-slate-200"] $ text c
   LogInfo c -> do
     let (bg, border) = ("text-slate-500", "border-slate-800")
@@ -133,8 +139,15 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
     -- Placeholder for Challenge Logs
     divStyle ["bg-red-950/30", "border", "border-red-900/50", rounded, "p-3", "mb-2"] $ do
       divStyle ["text-xs", fontBold, "text-red-300"] $ text "Challenge Action"
-      divStyle [textXs, "text-slate-400"] $ text $ "By: " <> l.sender
+      divStyle [textXs, "text-slate-400"] $ text $ "By: " <> renderSender l.sender
   LogDefense{} -> do
     -- Placeholder for Defense Logs (if rendered independently)
     divStyle ["bg-blue-950/30", "border", "border-blue-900/50", rounded, "p-3", "mb-2"] $ do
       divStyle ["text-xs", fontBold, "text-blue-300"] $ text "Defense Action"
+
+renderSender :: LogSender -> T.Text
+renderSender SenderSystem = "System"
+renderSender SenderGame = "Game"
+renderSender SenderGM = "GM"
+renderSender SenderEnvironment = "Environment"
+renderSender (SenderActor _ name) = name

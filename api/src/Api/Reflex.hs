@@ -7,7 +7,7 @@ import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 
-import Api.Types (LogEntry)
+import Api.Types (LogEntry, Phase)
 import Core.Primitives (ActorId)
 import Core.State (ActorState)
 
@@ -23,9 +23,11 @@ data ServerPush
       { clientId :: UUID
       , game :: GameView
       , history :: [LogEntry]
+      , phase :: Phase
       }
   | PushUpdate
       { game :: GameView
+      , newPhase :: Maybe Phase
       }
   | PushNewLogs {logs :: [LogEntry]}
   | PushError ErrorMessage

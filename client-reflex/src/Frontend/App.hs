@@ -16,11 +16,12 @@ import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
-import Api.Types (LogEntry)
+import Api.Types (LogEntry, Phase (..))
 import Core.Primitives (ActorId, Identified (..))
-import Core.State (ActorState, identifiedLookup)
+import Core.State (ActorState, identifiedLookup, isActorPC, isActorReady)
 
 import Frontend.Game.Hand (handWidget)
+import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 import Frontend.Html (RenderHtml)
@@ -57,7 +58,8 @@ appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
-      (_, requests) <- runRequesterT (uiWidget Nothing actorsMapDyn logsDyn) responses
+      (_, requests) <-
+        runRequesterT (uiWidget Nothing actorsMapDyn logsDyn phaseDyn readyDyn totalDyn) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let sendEvt = fmap (map (BL.toStrict . encode)) taggedReqs
@@ -68,18 +70,27 @@ appWidget wsBaseUrl clientId = do
           pushEvt = fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
           taggedResps = fmapMaybe (\case WsMsgResponse r -> Just r; _ -> Nothing) wsMsg
 
-          updateActors (PushWelcome _ a _) _ = a.actors
-          updateActors (PushUpdate a) _ = a.actors
+          updateActors (PushWelcome{game = a}) _ = a.actors
+          updateActors (PushUpdate{game = a}) _ = a.actors
           updateActors _ old = old
 
       actorsMapDyn <- foldDyn updateActors (Map.empty :: Map.Map ActorId ActorState) pushEvt
 
       let updateLogs (PushNewLogs newLogs) logs = newLogs ++ logs
-          updateLogs (PushWelcome _ _ history) _ = reverse history
+          updateLogs (PushWelcome{history = h}) _ = reverse h
           updateLogs (PushError _) logs = logs -- Errors handled separately or should be?
           updateLogs _ logs = logs
 
       logsDyn <- foldDyn updateLogs ([] :: [LogEntry]) pushEvt
+
+      let updatePhase (PushWelcome{phase = p}) _ = p
+          updatePhase (PushUpdate{newPhase = Just p}) _ = p
+          updatePhase _ old = old
+
+      phaseDyn <- foldDyn updatePhase Planning pushEvt
+
+      let totalDyn = fmap (Map.size . Map.filter isActorPC) actorsMapDyn
+          readyDyn = fmap (Map.size . Map.filter (\a -> isActorPC a && isActorReady a)) actorsMapDyn
 
   pure ()
   where
@@ -100,9 +111,22 @@ uiWidget
   -- ^ Initial active actor
   -> Dynamic t (Map.Map ActorId ActorState)
   -> Dynamic t [LogEntry]
+  -> Dynamic t Phase
+  -> Dynamic t Int
+  -- ^ Ready Count
+  -> Dynamic t Int
+  -- ^ Total Count
   -> m ()
-uiWidget initialActorId actorsMapDyn logsDyn = divStyle appRoot $ do
-  rec selectedActorId <- holdDyn initialActorId activeActorChange
+uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = divStyle appRoot $ do
+  rec -- Construct config for Phase Display
+      let phaseConfig =
+            PhaseDisplayConfig
+              { phase = phaseDyn
+              , readyCount = readyDyn
+              , totalCount = totalDyn
+              }
+
+      selectedActorId <- holdDyn initialActorId activeActorChange
       let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)
       activeActorChange <- sidebarWidget activeActor actorsMapDyn
 
@@ -121,6 +145,6 @@ uiWidget initialActorId actorsMapDyn logsDyn = divStyle appRoot $ do
     return ()
 
   -- Right Sidebar
-  sidebarRightWidget activeActor logsDyn
+  sidebarRightWidget activeActor logsDyn phaseConfig
 
   pure ()

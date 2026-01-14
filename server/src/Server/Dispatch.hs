@@ -36,19 +36,19 @@ import Server.Types
   , LogEntry (..)
   , LogId (..)
   , LogPayload (..)
+  , LogSender (..)
   , Phase (..)
   , StateUpdate (..)
   )
 
-mkLogEntry :: Int -> Text -> Maybe ActorId -> LogPayload -> State StdGen LogEntry
-mkLogEntry ts senderName senderId payload = do
+mkLogEntry :: Int -> LogSender -> LogPayload -> State StdGen LogEntry
+mkLogEntry ts sender payload = do
   logId <- state uniform
   return $
     LogEntry
       { id = logId
       , timestamp = ts
-      , sender = senderName
-      , senderId = senderId
+      , sender = sender
       , payload = payload
       }
 
@@ -56,17 +56,17 @@ processCommand
   :: Command -> Int -> GameState -> State StdGen (GameState, [StateUpdate], [ActorGameEvent], [LogEntry])
 processCommand cmd ts game =
   case cmd of
-    StartResolutionIntent tid -> do
+    StartResolutionIntent -> do
       (newGame, events) <- revealPlannedActions game
       let newGameWithPhase = newGame{phase = Resolution}
       let payloads =
             concatMap
               (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGameWithPhase)
               events
-      newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
+      newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, [], events, newLogs)
-    EndRoundIntent _ -> do
+    EndRoundIntent -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
       let newGameWithPhase = gameWithPlan{phase = Planning}
@@ -74,7 +74,7 @@ processCommand cmd ts game =
             concatMap
               (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGame)
               roundEvents
-      newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
+      newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, updates, planEvents ++ roundEvents, newLogs)
     ChatIntent maybeAid content -> do
@@ -97,24 +97,15 @@ processCommand cmd ts game =
                   , plannedAction = PPass
                   }
 
-          let senderName = case maybeAid of
-                Just aid -> case Map.lookup aid game.actors of
-                  Just a -> a.name
-                  Nothing -> "Unknown"
-                Nothing -> "GM"
-
-          logEntry <- mkLogEntry ts senderName maybeAid logPayload
+          let sender = resolveSender maybeAid game
+          logEntry <- mkLogEntry ts sender logPayload
 
           let newGame = game{phase = Resolution, history = game.history ++ [logEntry]}
           return (newGame, [], [], [logEntry])
         CmdText _ -> do
           -- Normal Chat
-          let senderName = case maybeAid of
-                Just aid -> case Map.lookup aid game.actors of
-                  Just a -> a.name
-                  Nothing -> "Unknown"
-                Nothing -> "GM"
-          logEntry <- mkLogEntry ts senderName maybeAid (LogChat content)
+          let sender = resolveSender maybeAid game
+          logEntry <- mkLogEntry ts sender (LogChat content)
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, [], [], newLogs)
@@ -157,6 +148,10 @@ processCommand cmd ts game =
             DestroyConsequenceIntent tid cid -> (tid, Logic.destroyConsequence cid)
             ReturnToDeckIntent tid cids -> (tid, Logic.returnCardsToDeck cids)
             PassIntent tid -> (tid, Logic.passAction)
+            -- These should be matched above, but just in case or for completeness if we add more commands that didn't match
+            StartResolutionIntent -> error "Unreachable StartResolutionIntent"
+            EndRoundIntent -> error "Unreachable EndRoundIntent"
+            ChatIntent _ _ -> error "Unreachable ChatIntent"
 
       (maybeEvents, newGame) <- runActorAction targetId action game
       case maybeEvents of
@@ -173,8 +168,15 @@ processCommand cmd ts game =
 
             payloads = concatMap (\evt -> eventToLogs targetId evt newGame) events
 
-          newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
+          newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
 
           let finalGame = newGame{history = game.history ++ newLogs}
 
           return (finalGame, stateUpdates, actorEvents, newLogs)
+
+resolveSender :: Maybe ActorId -> GameState -> LogSender
+resolveSender Nothing _ = SenderGM -- Default to GM for null actor? Or SenderSystem? For generic game events it might be System.
+resolveSender (Just aid) game =
+  case Map.lookup aid game.actors of
+    Just a -> SenderActor aid (a.name)
+    Nothing -> SenderActor aid "Unknown"

@@ -115,7 +115,8 @@ application state pending = do
   (msgs, currentClients) <-
     readMVar state >>= \s -> do
       let view = GameView{actors = s.gameState.actors}
-      return ([PushWelcome finalClientId view s.gameState.history], s.clients)
+      let ph = s.gameState.phase
+      return ([PushWelcome finalClientId view s.gameState.history ph], s.clients)
 
   forM_ msgs $ \msg -> sendTextData conn (encode $ WsMsgPush msg)
 
@@ -158,7 +159,7 @@ talk client socket state = forever $ do
         Req.PlanAction aid acid rcids -> handleGameCommand client state (PlanAction aid acid rcids)
         Req.PlanNarrative aid cids col -> handleGameCommand client state (PlanNarrative aid cids col)
         Req.CancelPlan aid -> handleGameCommand client state (CancelPlanIntent aid)
-        Req.StartResolution aid -> handleGameCommand client state (StartResolutionIntent aid)
+        Req.StartResolution -> handleGameCommand client state StartResolutionIntent
         Req.EndDefense aid -> handleGameCommand client state (EndDefenseIntent aid)
         Req.Reshuffle aid -> handleGameCommand client state (ReshuffleIntent aid)
         Req.AddStatus aid st dest -> handleGameCommand client state (AddStatusIntent aid st dest)
@@ -167,7 +168,7 @@ talk client socket state = forever $ do
         Req.DestroyConsequence aid cid -> handleGameCommand client state (DestroyConsequenceIntent aid cid)
         Req.DiscardCards aid cids -> handleGameCommand client state (DiscardCardsIntent aid cids)
         Req.ReturnToDeck aid cids -> handleGameCommand client state (ReturnToDeckIntent aid cids)
-        Req.EndRound aid -> handleGameCommand client state (EndRoundIntent aid)
+        Req.EndRound -> handleGameCommand client state EndRoundIntent
         Req.Pass aid -> handleGameCommand client state (PassIntent aid)
       case result of
         Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
@@ -202,7 +203,23 @@ handleGameCommand client state cmd = do
     return (s', (updates, newLog))
 
   -- Broadcast updates to others
-  readMVar state >>= \s -> broadcastReflex (PushUpdate $ GameView{actors = s.gameState.actors}) s.clients
+  readMVar state >>= \s -> do
+    -- We'll just pass existing phase if it didn't change, but here we can just pass current phase
+    -- Actually PushUpdate takes Maybe Phase. We interpret this as "New Phase" (Change).
+    -- But for simplicity we can just pass Nothing if we don't want to signal a change, or
+    -- we can check if it changed.
+    -- However, handleGameCommand doesn't return the OLD game state easily to check diff.
+    -- Let's just always send the current phase for now if we want to be safe, OR we can accept
+    -- that the client updates its phase on receiving this.
+    -- Wait, PushUpdate takes Maybe Phase. If I send Just phase, client updates.
+    -- If I send Nothing, client keeps old.
+    -- Let's send Just (s.gameState.phase) to be sure synchronization is correct.
+    broadcastReflex
+      ( PushUpdate
+          (GameView{actors = s.gameState.actors})
+          (Just s.gameState.phase)
+      )
+      s.clients
 
   -- Broadcast new logs
   unless (null newLog) $ do
@@ -210,5 +227,4 @@ handleGameCommand client state cmd = do
 
   pure (Right updates)
 
-handleGameCommand' :: Client -> MVar ServerState -> Command -> IO (Either Text [StateUpdate])
 handleGameCommand' = handleGameCommand

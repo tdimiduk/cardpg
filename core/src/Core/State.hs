@@ -4,6 +4,7 @@ import Data.Aeson.TH (deriveJSON)
 import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as M
+import Data.Maybe (isJust)
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
@@ -203,6 +204,12 @@ data GameEnv = GameEnv
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEnv)
+
+isActorReady :: ActorState -> Bool
+isActorReady as = isJust as.coreState.planned
+
+isActorPC :: ActorState -> Bool
+isActorPC as = as.actorType == "PC"
 
 identifiedLookup :: (Ord id) => id -> Map id a -> Maybe (Identified id a)
 identifiedLookup key m = Identified key <$> M.lookup key m

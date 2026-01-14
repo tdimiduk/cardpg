@@ -24,7 +24,7 @@ data ApiRequest a where
   PlanNarrative
     :: ActorId -> [CardInstanceId] -> ResourceType -> ApiRequest (Either Text [StateUpdate])
   CancelPlan :: ActorId -> ApiRequest (Either Text [StateUpdate])
-  StartResolution :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  StartResolution :: ApiRequest (Either Text [StateUpdate])
   EndDefense :: ActorId -> ApiRequest (Either Text [StateUpdate])
   Reshuffle :: ActorId -> ApiRequest (Either Text [StateUpdate])
   AddStatus :: ActorId -> Text -> CardLocation -> ApiRequest (Either Text [StateUpdate])
@@ -33,7 +33,7 @@ data ApiRequest a where
   DestroyConsequence :: ActorId -> CardInstanceId -> ApiRequest (Either Text [StateUpdate])
   DiscardCards :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
   ReturnToDeck :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
-  EndRound :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  EndRound :: ApiRequest (Either Text [StateUpdate])
   Pass :: ActorId -> ApiRequest (Either Text [StateUpdate])
 
 deriveGShow ''ApiRequest

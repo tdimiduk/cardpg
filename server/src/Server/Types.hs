@@ -12,6 +12,7 @@ module Server.Types
   , LogEntry (..)
   , LogId (..)
   , LogPayload (..)
+  , LogSender (..)
   , Phase (..)
   , ConnectedSocket (..)
   , newServerState
@@ -47,6 +48,7 @@ import Api.Types
   , LogEntry (..)
   , LogId (..)
   , LogPayload (..)
+  , LogSender (..)
   , Phase (..)
   , StateUpdate (..)
   )
@@ -72,7 +74,7 @@ data Command
   | PlanAction {actorId :: ActorId, actionCardId :: CardInstanceId, resourceCardIds :: [CardInstanceId]}
   | PlanNarrative {actorId :: ActorId, cardIds :: [CardInstanceId], color :: ResourceType}
   | CancelPlanIntent {actorId :: ActorId}
-  | StartResolutionIntent {actorId :: ActorId}
+  | StartResolutionIntent
   | EndDefenseIntent {actorId :: ActorId}
   | ReshuffleIntent {actorId :: ActorId}
   | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: CardLocation}
@@ -81,7 +83,7 @@ data Command
   | DestroyConsequenceIntent {actorId :: ActorId, cardId :: CardInstanceId}
   | DiscardCardsIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
   | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
-  | EndRoundIntent {actorId :: ActorId}
+  | EndRoundIntent
   | PassIntent {actorId :: ActorId}
   | ChatIntent {chatSenderId :: Maybe ActorId, content :: Text}
   deriving (Show, Eq, Ord, Generic)

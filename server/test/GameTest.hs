@@ -50,6 +50,7 @@ import Server.Types
   , LogEntry (..)
   , LogId (..)
   , LogPayload (..)
+  , LogSender (..)
   , StateUpdate (..)
   )
 
@@ -133,7 +134,7 @@ test_game =
         -- We must inject a LogChallenge into history for the defense to work
         let challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 1 Red
         let logPayload = LogChallenge challenge PPass
-        let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) 1500 "Admin" Nothing logPayload
+        let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) 1500 SenderGM logPayload
 
         let game2WithHistory = game2{history = game2.history ++ [logEntry]}
 
@@ -270,7 +271,7 @@ test_game =
         let game1 = addActor npcId npcState game0
 
         -- Send EndRoundIntent to trigger auto-planning for next round
-        let ((game2, _, events, _logs), _) = runState (processCommand (EndRoundIntent npcId) 3000 game1) gen
+        let ((game2, _, events, _logs), _) = runState (processCommand EndRoundIntent 3000 game1) gen
 
         -- Expect ActionPlanned event (from auto-planning)
         let planEvents = [e | e <- events, case e.event of ActionPlanned _ -> True; _ -> False]

@@ -71,6 +71,7 @@ library
     Frontend.Game.ActorLogic
     Frontend.Game.Common
     Frontend.Game.Hand
+    Frontend.Game.PhaseDisplay
     Frontend.Game.PlannedAction
     Frontend.Game.Planning
     Frontend.Game.Sidebar

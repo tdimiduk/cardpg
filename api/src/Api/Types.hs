@@ -10,6 +10,7 @@ module Api.Types
   , LogId (..)
   , LogEntry (..)
   , LogPayload (..)
+  , LogSender (..)
 
     -- * Misc
   ) where
@@ -60,11 +61,20 @@ data LogPayload
 
 $(deriveJSON cardpgJsonDef ''LogPayload)
 
+data LogSender
+  = SenderSystem
+  | SenderGame
+  | SenderGM
+  | SenderEnvironment
+  | SenderActor ActorId Text
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''LogSender)
+
 data LogEntry = LogEntry
   { id :: LogId
   , timestamp :: Int
-  , sender :: Text
-  , senderId :: Maybe ActorId
+  , sender :: LogSender
   , payload :: LogPayload
   }
   deriving (Show, Eq, Generic)

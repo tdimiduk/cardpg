@@ -32,6 +32,7 @@ import System.FilePath (takeBaseName, (</>))
 import System.Process (callProcess)
 
 import Api.Reflex ()
+import Api.Types (Phase (..))
 import Core.Card (ActorDefinition (..))
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..))
@@ -247,7 +248,10 @@ mockGameWidget
 mockGameWidget initialActorId gameState = do
   let actorsMap = gameState.actors
   actorsDyn <- holdDyn actorsMap never
-  rec (_, _) <- runRequesterT (uiWidget initialActorId actorsDyn (constDyn [])) never
+  rec (_, _) <-
+        runRequesterT
+          (uiWidget initialActorId actorsDyn (constDyn []) (constDyn Planning) (constDyn 0) (constDyn 0))
+          never
   return ()
 
 deckWidget :: (DomBuilder t m, RenderHtml m) => ActorDefinition -> m ()
