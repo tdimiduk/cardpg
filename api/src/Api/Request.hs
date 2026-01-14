@@ -11,7 +11,7 @@ import Data.UUID (UUID)
 import Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
 import Core.Stats (ResourceType)
 
-import Api.Types (LogEntry, StateUpdate)
+import Api.Types (StateUpdate)
 
 data ApiRequest a where
   Join :: Text -> ApiRequest (Either Text UUID)

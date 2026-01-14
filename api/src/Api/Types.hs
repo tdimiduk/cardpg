@@ -11,11 +11,7 @@ module Api.Types
   , LogEntry (..)
   , LogPayload (..)
 
-    -- * Messages (Protocol)
-  , ServerMessage (..)
-
     -- * Misc
-  , Token (..)
   ) where
 
 import Data.Aeson (FromJSONKey, ToJSONKey)
@@ -28,9 +24,8 @@ import System.Random.Stateful (Uniform (..), uniformM)
 
 import Core.Card (CardInstance, CoreCard)
 import Core.Json (cardpgJsonDef)
-import Core.Primitives (ActorId, CardInstanceId, ChallengeId)
+import Core.Primitives (ActorId, ChallengeId)
 import Core.State (ActiveChallenge, ActorState, DefenseDetails, GameEvent, PlannedAction)
-import Core.Stats (ResourceType)
 
 -- | The authoritative state for a game session
 data Phase = Planning | Resolution
@@ -80,17 +75,6 @@ data LogEntry = LogEntry
 
 $(deriveJSON cardpgJsonDef ''LogEntry)
 
-data Token = Token
-  { id :: Text
-  , actorId :: Text
-  , x :: Int
-  , y :: Int
-  , size :: Int
-  }
-  deriving (Show, Eq, Generic)
-
-$(deriveJSON cardpgJsonDef ''Token)
-
 data ActorGameEvent = ActorGameEvent
   { actorId :: ActorId
   , event :: GameEvent
@@ -114,30 +98,3 @@ instance TypeScript ChallengeId where
 -- Orphan instance for UUID if not defined elsewhere or imported
 instance TypeScript UUID where
   getTypeScriptType _ = "string"
-
--- | Messages sent from Server to Client.
-data ServerMessage
-  = Welcome
-      { yourClientId :: UUID
-      , connectedClients :: [Text]
-      , initialActors :: [StateUpdate]
-      , phase :: Phase
-      , history :: [LogEntry]
-      , readyCount :: Int
-      , totalCount :: Int
-      }
-  | BroadcastMessage {fromClientId :: UUID, payload :: [ActorGameEvent]}
-  | ClientJoined {newClientName :: Text, newClientId :: UUID}
-  | ClientLeft {leftClientId :: UUID}
-  | ErrorMessage {error :: Text}
-  | MultiMessage {messages :: [ServerMessage]}
-  | GameStateUpdate
-      { updates :: [StateUpdate]
-      , newPhase :: Maybe Phase
-      , readyCount :: Int
-      , totalCount :: Int
-      }
-  | NewLogs {logs :: [LogEntry]}
-  deriving (Show, Generic)
-
-$(deriveJSON cardpgJsonDef ''ServerMessage)

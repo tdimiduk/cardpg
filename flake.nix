@@ -139,36 +139,7 @@
               cp -r ${./data}/cards/* $out/data/cards/
             '';
 
-            frontend = pkgs.buildNpmPackage {
-              pname = "cardpg-frontend";
-              version = "0.0.0";
-              src = ./vtt-react;
-              npmDepsHash = "sha256-4ngCSqVZZYHpWKG9S1WmeIE+oB2uECVuqQYb0eYvDNc=";
 
-              # Use the project's executable for codegen
-              nativeBuildInputs = [ project.api.components.exes.codegen ];
-
-              preBuild = ''
-                cp -r ${./design} design
-                chmod -R u+w design
-                substituteInPlace src/App.tsx --replace-fail "../../../design" "../design"
-              
-                echo "Generating types..."
-                mkdir -p src/generated
-                codegen $(pwd)/src/generated/types.ts
-                ./node_modules/.bin/ts-to-zod src/generated/types.ts src/generated/types.zod.ts --skipValidation
-              '';
-
-              installPhase = "mkdir -p $out && cp -r dist/* $out/";
-            };
-
-            bundle = pkgs.runCommand "cardpg-release" { } ''
-              mkdir -p $out/backend/bin
-              mkdir -p $out/frontend
-
-              cp ${self'.packages.default}/bin/cardpg-server $out/backend/bin/
-              cp -r ${self'.packages.frontend}/* $out/frontend/
-            '';
           };
 
           # Pre-commit hooks configuration

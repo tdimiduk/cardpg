@@ -3,14 +3,12 @@ module Api.Reflex where
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Map (Map)
 import Data.Text (Text)
-import Data.Time (UTCTime)
 import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 
 import Api.Types (LogEntry)
 import Core.Primitives (ActorId)
-import Core.RichText (RichText)
 import Core.State (ActorState)
 
 newtype GameView

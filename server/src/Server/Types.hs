@@ -2,10 +2,8 @@
 
 module Server.Types
   ( Client (..)
-  , ServerMessage (..)
   , AdminCommand (..)
   , ActorGameEvent (..)
-  , Token (..)
   , CardLibrary (..)
   , ServerState (..)
   , Command (..)
@@ -50,10 +48,9 @@ import Api.Types
   , LogId (..)
   , LogPayload (..)
   , Phase (..)
-  , ServerMessage (..)
   , StateUpdate (..)
-  , Token (..)
   )
+
 import Core.Card
   ( ActorDefinition
   , ConsequenceCard
