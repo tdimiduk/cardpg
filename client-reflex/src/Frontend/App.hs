@@ -11,7 +11,7 @@ import Data.Aeson (decode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
 import Data.Text qualified as T
-import Data.UUID (UUID)
+import Data.UUID.Types (UUID)
 import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 

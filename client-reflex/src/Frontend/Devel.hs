@@ -1,12 +1,13 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE MultilineStrings #-}
 {-# LANGUAGE RankNTypes #-}
 
 module Frontend.Devel where
 
+#if !defined(ghcjs_HOST_OS) && !defined(javascript_HOST_ARCH)
 import Control.Concurrent (forkIO, killThread)
 import Control.Exception (SomeException, catch)
-import Data.UUID.V4 qualified as UUID
 import Data.Word (Word32)
 import Foreign.Store (Store (..), lookupStore, readStore, writeStore)
 import Language.Javascript.JSaddle.WebSockets (jsaddleJs, jsaddleOr)
@@ -54,7 +55,8 @@ devMain = do
   stopServer
 
   putStrLn "Starting CardPG Reflex Client ..."
-  clientId <- UUID.nextRandom
+  -- Hardcoding something to avoid the UUID dependency
+  let clientId = read "00000000-0000-0000-0000-000000000001"
   port <- maybe 3003 read <$> lookupEnv "JSADDLE_WARP_PORT"
   putStrLn $ "Running jsaddle-warp server on port " <> show port
 
@@ -81,3 +83,10 @@ devMain = do
   -- Store the thread ID using foreign-store so it survives GHCi reloads
   writeStore (Store serverStoreIndex) tid
   putStrLn "Server started in background (ghciwatch dev mode)"
+
+#else
+
+devMain :: IO ()
+devMain = pure ()
+
+#endif

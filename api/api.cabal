@@ -49,4 +49,4 @@ library
     , some
     , text
     , time
-    , uuid
+    , uuid-types

@@ -3,7 +3,7 @@ module Api.Reflex where
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Map (Map)
 import Data.Text (Text)
-import Data.UUID (UUID)
+import Data.UUID.Types (UUID)
 import GHC.Generics (Generic)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 

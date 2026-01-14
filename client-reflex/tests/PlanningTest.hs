@@ -3,7 +3,7 @@
 module PlanningTest where
 
 import Data.Set qualified as Set
-import Data.UUID qualified as UUID
+import Data.UUID.Types qualified as UUID
 import Test.Tasty
 import Test.Tasty.HUnit
 

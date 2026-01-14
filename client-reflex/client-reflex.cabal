@@ -40,7 +40,6 @@ library
     , foreign-store
     , generic-lens
     , http-types
-    , jsaddle-warp
     , lens
     , random
     , reflex
@@ -48,13 +47,17 @@ library
     , reflex-dom-core
     , reflex-gadt-api
     , text
-    , uuid
+    , uuid-types
     , vector
-    , wai
-    , wai-app-static
-    , warp
-    , websockets
     , yaml
+
+  if (!impl(ghcjs) && !arch(javascript))
+    build-depends:
+      , jsaddle-warp
+      , wai
+      , wai-app-static
+      , warp
+      , websockets
 
   -- cabal-fmt: expand src
   exposed-modules:
@@ -95,11 +98,16 @@ executable client-reflex
   build-depends:
     , base
     , client-reflex
+    , reflex-dom-core
 
   hs-source-dirs: app
 
 executable cardpg-static
   import:         project-config
+
+  if (impl(ghcjs) || arch(javascript))
+    buildable: False
+
   main-is:        StaticMain.hs
   hs-source-dirs: app
   build-depends:
@@ -118,7 +126,7 @@ executable cardpg-static
     , reflex-dom-core
     , server
     , text
-    , uuid
+    , uuid-types
     , yaml
 
 test-suite client-reflex-test
@@ -139,4 +147,4 @@ test-suite client-reflex-test
     , tasty
     , tasty-hunit
     , text
-    , uuid
+    , uuid-types

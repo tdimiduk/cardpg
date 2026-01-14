@@ -5,7 +5,7 @@ import Data.Constraint.Extras.TH (deriveArgDict)
 import Data.GADT.Compare.TH (deriveGCompare, deriveGEq)
 import Data.GADT.Show.TH (deriveGShow)
 import Data.Text (Text)
-import Data.UUID (UUID)
+import Data.UUID.Types (UUID)
 
 import Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
 import Core.Stats (ResourceType)

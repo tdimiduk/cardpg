@@ -18,7 +18,7 @@ module Api.Types
 import Data.Aeson (FromJSONKey, ToJSONKey)
 import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
-import Data.UUID (UUID)
+import Data.UUID.Types (UUID)
 import GHC.Generics (Generic)
 import System.Random.Stateful (Uniform (..), uniformM)
 
