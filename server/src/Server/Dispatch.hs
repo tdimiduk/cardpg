@@ -10,7 +10,6 @@ import Data.Text qualified as T
 import System.Random (StdGen)
 import System.Random.Stateful (Uniform (..), uniform, uniformM)
 
-import Api.Frontend qualified as Frontend
 import Core.Logic.Deck qualified as Logic
 import Core.Logic.Planning qualified as Logic
 import Core.Logic.Status qualified as Logic
@@ -95,7 +94,7 @@ processCommand cmd ts game =
           let logPayload =
                 LogChallenge
                   { challenge = challenge
-                  , plannedAction = Frontend.PPass
+                  , plannedAction = PPass
                   }
 
           let senderName = case maybeAid of
@@ -169,10 +168,10 @@ processCommand cmd ts game =
               Just a -> a
               Nothing -> error "Actor missing after update"
 
-            actorEvents = map (ActorGameEvent targetId . Frontend.toGameEvent) events
-            stateUpdates = [StateUpdate targetId (Frontend.toActorState updatedActorState)]
+            actorEvents = map (ActorGameEvent targetId) events
+            stateUpdates = [StateUpdate targetId updatedActorState]
 
-            payloads = concatMap (\evt -> eventToLogs targetId (Frontend.toGameEvent evt) newGame) events
+            payloads = concatMap (\evt -> eventToLogs targetId evt newGame) events
 
           newLogs <- mapM (\(p, aid) -> mkLogEntry ts "System" aid p) payloads
 

@@ -32,7 +32,6 @@ library
   exposed-modules:
     Server.ChatParser
     Server.Config
-    Server.Connection
     Server.DB
     Server.Dispatch
     Server.Engine

@@ -130,4 +130,4 @@ reshuffleButtonRequesting actorId = do
         elClass "div" "w-4 h-4" iconRefresh
         text "Reshuffle"
 
-  requesting_ $ Req.ReshuffleDeck actorId <$ reshuffleClick
+  requesting_ $ Req.Reshuffle actorId <$ reshuffleClick

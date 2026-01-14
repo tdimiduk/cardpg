@@ -44,7 +44,6 @@ import Server.Session (initGame)
 import Server.Types
   ( AdminCommand (..)
   , Client (..)
-  , ClientMessage (..)
   , Command (..)
   , ConnectedSocket (..)
   , GameState (..)
@@ -153,11 +152,23 @@ talk client socket state = forever $ do
         Req.SendChat aid msg -> do
           _ <- handleGameCommand client state (ChatIntent aid msg)
           pure ()
-        Req.GameAction cmd -> handleGameCommand client state cmd
         Req.DrawCards aid -> handleGameCommand client state (DrawIntent aid)
-        Req.ReshuffleDeck aid -> handleGameCommand client state (ReshuffleIntent aid)
+        Req.Defend aid cid -> handleGameCommand client state (DefendIntent aid cid)
+        Req.PlanMove aid x y -> handleGameCommand client state (PlanMove aid x y)
+        Req.PlanAction aid acid rcids -> handleGameCommand client state (PlanAction aid acid rcids)
+        Req.PlanNarrative aid cids col -> handleGameCommand client state (PlanNarrative aid cids col)
+        Req.CancelPlan aid -> handleGameCommand client state (CancelPlanIntent aid)
+        Req.StartResolution aid -> handleGameCommand client state (StartResolutionIntent aid)
+        Req.EndDefense aid -> handleGameCommand client state (EndDefenseIntent aid)
+        Req.Reshuffle aid -> handleGameCommand client state (ReshuffleIntent aid)
+        Req.AddStatus aid st dest -> handleGameCommand client state (AddStatusIntent aid st dest)
+        Req.DestroyStatus aid st mcid -> handleGameCommand client state (DestroyStatusIntent aid st mcid)
         Req.AddConsequence aid sev -> handleGameCommand client state (AddConsequenceIntent aid sev)
-        Req.RemoveConsequence aid cid -> handleGameCommand client state (DestroyConsequenceIntent aid cid)
+        Req.DestroyConsequence aid cid -> handleGameCommand client state (DestroyConsequenceIntent aid cid)
+        Req.DiscardCards aid cids -> handleGameCommand client state (DiscardCardsIntent aid cids)
+        Req.ReturnToDeck aid cids -> handleGameCommand client state (ReturnToDeckIntent aid cids)
+        Req.EndRound aid -> handleGameCommand client state (EndRoundIntent aid)
+        Req.Pass aid -> handleGameCommand client state (PassIntent aid)
       case result of
         Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
         Left err ->
@@ -165,21 +176,9 @@ talk client socket state = forever $ do
             (socket.socketConn)
             (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack err) ErrorSystem))
     Nothing ->
-      case decode msgBytes of
-        Just (GameCommand cmd) -> do
-          _ <- handleGameCommand' client state cmd
-          pure ()
-        Just (Admin ResetGame) -> do
-          T.putStrLn "Admin: Resetting Game"
-          (newGs, _, clientsMap) <- modifyMVar state $ \s -> do
-            (gs, rng) <- initGame (s.dbPool) (s.config) (s.library) True
-            let s' = s{gameState = gs, rng = rng}
-            return (s', (gs, s.dbPool, s.clients))
-          broadcastReflex (PushUpdate $ GameView{actors = newGs.actors}) clientsMap
-        _ ->
-          sendTextData
-            (socket.socketConn)
-            (encode $ WsMsgPush $ PushError (ErrorMessage "Invalid message" ErrorValidation))
+      sendTextData
+        (socket.socketConn)
+        (encode $ WsMsgPush $ PushError (ErrorMessage "Invalid message" ErrorValidation))
 
 handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
 handleJoin client name state = do

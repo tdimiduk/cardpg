@@ -8,8 +8,9 @@ import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
-import Api.Request (ApiRequest (..))
-import Api.Types (Command (..))
+import Api.Request (ApiRequest)
+import Api.Request qualified as Req
+
 import Core.Card (Identified (..))
 import Core.Primitives (ActorId)
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
@@ -62,7 +63,7 @@ plannedActionWidget
   -> m ()
 plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
   e <- button def{_buttonConfig_variant = constDyn VariantDestructive} $ text "↺ Revise"
-  _ <- requesting $ GameAction (CancelPlanIntent actorId) <$ e
+  _ <- requesting $ Req.CancelPlan actorId <$ e
   case planned of
     PStandard (ActionStack action res) -> do
       void $

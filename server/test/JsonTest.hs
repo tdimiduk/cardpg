@@ -8,8 +8,8 @@ import Data.List qualified
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 
-import Api.Frontend qualified as Frontend
 import Core.Primitives (ActorId (..))
+import Core.State (GameEvent (..))
 import Server.Types (ActorGameEvent (..), ServerMessage (..))
 
 test_json :: TestTree
@@ -18,7 +18,7 @@ test_json =
     "JSON Serialization"
     [ testCase "MultiMessage Serialization" $ do
         let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
-        let evt = ActorGameEvent actorId Frontend.DeckShuffled
+        let evt = ActorGameEvent actorId DeckShuffled
         let msg1 = BroadcastMessage (read "00000000-0000-0000-0000-000000000001") [evt]
         let msg2 = ErrorMessage "Test Error"
         let batch = MultiMessage [msg1, msg2]

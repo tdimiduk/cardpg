@@ -41,7 +41,6 @@ import Core.State
 import Core.Stats (ResourceType (..), StackPower (..))
 import Data.List.NonEmpty (NonEmpty (..))
 
-import Api.Frontend qualified as Frontend
 import Server.Dispatch (processCommand)
 import Server.Engine (concludeRound, runActorAction)
 import Server.Game (GameState (..), addActor, emptyGame)
@@ -118,7 +117,7 @@ test_game =
         let evt = head actions
         evt.actorId @?= actorId
         case evt.event of
-          Frontend.CardDrawn c -> c.id @?= cid1
+          CardDrawn c -> c.id @?= cid1
           _ -> assertBool "Expected CardDrawn event" False
 
         let actorSt2 = game2 ^. #actors . at actorId
@@ -133,7 +132,7 @@ test_game =
 
         -- We must inject a LogChallenge into history for the defense to work
         let challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 1 Red
-        let logPayload = LogChallenge challenge Frontend.PPass
+        let logPayload = LogChallenge challenge PPass
         let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) 1500 "Admin" Nothing logPayload
 
         let game2WithHistory = game2{history = game2.history ++ [logEntry]}
@@ -144,7 +143,7 @@ test_game =
         let evt2 = head actions2
         evt2.actorId @?= actorId
         case evt2.event of
-          Frontend.CardDefended _ c -> c.id @?= cid2
+          CardDefended _ c -> c.id @?= cid2
           _ -> assertBool "Expected CardDefended event" False
 
         -- Verify Actor State in Game
@@ -274,7 +273,7 @@ test_game =
         let ((game2, _, events, _logs), _) = runState (processCommand (EndRoundIntent npcId) 3000 game1) gen
 
         -- Expect ActionPlanned event (from auto-planning)
-        let planEvents = [e | e <- events, case e.event of Frontend.ActionPlanned _ -> True; _ -> False]
+        let planEvents = [e | e <- events, case e.event of ActionPlanned _ -> True; _ -> False]
         length planEvents @?= 1
 
         -- Verify Plan
@@ -327,7 +326,7 @@ test_game =
 
         length actions @?= 1
         case head actions of
-          ActorGameEvent _ (Frontend.ActionPlanned (Frontend.PStandard stack)) -> do
+          ActorGameEvent _ (ActionPlanned (PStandard stack)) -> do
             stack.actionCard.id @?= actionCid
             (head stack.resources).id @?= resCid
           _ -> assertBool "Expected ActionPlanned event" False
@@ -336,11 +335,11 @@ test_game =
 -- Helpers
 
 -- Helper to match constructor names for easier assertion
-toConstr :: Frontend.GameEvent -> String
-toConstr (Frontend.CardsCreated{}) = "CardsCreated"
-toConstr (Frontend.DeckShuffled{}) = "DeckShuffled"
-toConstr (Frontend.CardDrawn{}) = "CardDrawn"
-toConstr (Frontend.CardDefended{}) = "CardDefended"
+toConstr :: GameEvent -> String
+toConstr (CardsCreated{}) = "CardsCreated"
+toConstr (DeckShuffled{}) = "DeckShuffled"
+toConstr (CardDrawn{}) = "CardDrawn"
+toConstr (CardDefended{}) = "CardDefended"
 toConstr _ = "Other"
 
 mockCard :: Text -> CoreCard

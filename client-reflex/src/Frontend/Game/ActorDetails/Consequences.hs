@@ -60,7 +60,7 @@ consequencesWidget actorId actorState = do
             $ text "×"
 
         return $
-          fmap (\c -> Req.RemoveConsequence actorId c.id) (current consequenceDyn) <@ btnClick
+          fmap (\c -> Req.DestroyConsequence actorId c.id) (current consequenceDyn) <@ btnClick
 
     -- Add Consequence Button
     addClick <-

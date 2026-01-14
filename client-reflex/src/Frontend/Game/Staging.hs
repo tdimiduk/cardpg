@@ -6,8 +6,9 @@ module Frontend.Game.Staging where
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
-import Api.Request (ApiRequest (..))
-import Api.Types (Command (..))
+import Api.Request (ApiRequest)
+import Api.Request qualified as Req
+
 import Core.Card (CoreCard (..), Identified (..))
 import Core.Logic.Planning (PlanValidation (..))
 import Core.Primitives (ActorId, CardInstanceId)
@@ -88,12 +89,7 @@ stagingWidget actorId actionStackDyn validation = do
       let planReq =
             attachWith
               ( \inputStack _ ->
-                  GameAction $
-                    PlanAction
-                      { actorId = actorId
-                      , actionCardId = inputStack.actionCard.id
-                      , resourceCardIds = map (.id) inputStack.resources
-                      }
+                  Req.PlanAction actorId inputStack.actionCard.id (map (.id) inputStack.resources)
               )
               (current actionStackDyn)
               commitClick

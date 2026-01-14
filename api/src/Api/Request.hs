@@ -8,18 +8,34 @@ import Data.GADT.Show.TH (deriveGShow)
 import Data.Text (Text)
 import Data.UUID (UUID)
 
-import Core.Primitives (ActorId, CardInstanceId)
+import Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
+import Core.Stats (ResourceType)
 
-import Api.Types (Command, LogEntry, StateUpdate)
+import Api.Types (LogEntry, StateUpdate)
 
 data ApiRequest a where
   Join :: Text -> ApiRequest (Either Text UUID)
   SendChat :: Maybe ActorId -> Text -> ApiRequest () -- We'll get the message we sent as a push
-  GameAction :: Command -> ApiRequest (Either Text [StateUpdate])
+  -- Game Actions (Mirrors Command enum)
   DrawCards :: ActorId -> ApiRequest (Either Text [StateUpdate])
-  ReshuffleDeck :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  Defend :: ActorId -> ChallengeId -> ApiRequest (Either Text [StateUpdate])
+  PlanMove :: ActorId -> Int -> Int -> ApiRequest (Either Text [StateUpdate])
+  PlanAction
+    :: ActorId -> CardInstanceId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
+  PlanNarrative
+    :: ActorId -> [CardInstanceId] -> ResourceType -> ApiRequest (Either Text [StateUpdate])
+  CancelPlan :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  StartResolution :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  EndDefense :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  Reshuffle :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  AddStatus :: ActorId -> Text -> CardLocation -> ApiRequest (Either Text [StateUpdate])
+  DestroyStatus :: ActorId -> Text -> Maybe CardInstanceId -> ApiRequest (Either Text [StateUpdate])
   AddConsequence :: ActorId -> Maybe Int -> ApiRequest (Either Text [StateUpdate])
-  RemoveConsequence :: ActorId -> CardInstanceId -> ApiRequest (Either Text [StateUpdate])
+  DestroyConsequence :: ActorId -> CardInstanceId -> ApiRequest (Either Text [StateUpdate])
+  DiscardCards :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
+  ReturnToDeck :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
+  EndRound :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  Pass :: ActorId -> ApiRequest (Either Text [StateUpdate])
 
 deriveGShow ''ApiRequest
 deriveGEq ''ApiRequest

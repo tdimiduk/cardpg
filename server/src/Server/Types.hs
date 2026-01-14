@@ -2,7 +2,6 @@
 
 module Server.Types
   ( Client (..)
-  , ClientMessage (..)
   , ServerMessage (..)
   , AdminCommand (..)
   , ActorGameEvent (..)
@@ -45,8 +44,16 @@ import GHC.Generics (Generic)
 import Network.WebSockets qualified as WS
 import System.Random (StdGen)
 
-import Api.Frontend qualified as Frontend
 import Api.Types
+  ( ActorGameEvent (..)
+  , LogEntry (..)
+  , LogId (..)
+  , LogPayload (..)
+  , Phase (..)
+  , ServerMessage (..)
+  , StateUpdate (..)
+  , Token (..)
+  )
 import Core.Card
   ( ActorDefinition
   , ConsequenceCard
@@ -54,10 +61,41 @@ import Core.Card
   , ItemCard
   , NatureCard
   )
-import Core.Json (cardpgJsonDef)
-import Core.Primitives (ActorId)
+import Core.Json (cardpgJsonDef, cardpgTaggedOptions)
+import Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
 import Core.State (ActorState, GameEnv)
+import Core.Stats (ResourceType)
 import Server.Config (Config)
+
+-- | Commands for game actions (Intents)
+data Command
+  = DrawIntent {actorId :: ActorId}
+  | DefendIntent {actorId :: ActorId, targetChallengeId :: ChallengeId}
+  | PlanMove {actorId :: ActorId, x :: Int, y :: Int}
+  | PlanAction {actorId :: ActorId, actionCardId :: CardInstanceId, resourceCardIds :: [CardInstanceId]}
+  | PlanNarrative {actorId :: ActorId, cardIds :: [CardInstanceId], color :: ResourceType}
+  | CancelPlanIntent {actorId :: ActorId}
+  | StartResolutionIntent {actorId :: ActorId}
+  | EndDefenseIntent {actorId :: ActorId}
+  | ReshuffleIntent {actorId :: ActorId}
+  | AddStatusIntent {actorId :: ActorId, statusType :: Text, destination :: CardLocation}
+  | DestroyStatusIntent {actorId :: ActorId, statusType :: Text, targetCardId :: Maybe CardInstanceId}
+  | AddConsequenceIntent {actorId :: ActorId, severity :: Maybe Int}
+  | DestroyConsequenceIntent {actorId :: ActorId, cardId :: CardInstanceId}
+  | DiscardCardsIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
+  | ReturnToDeckIntent {actorId :: ActorId, cardIds :: [CardInstanceId]}
+  | EndRoundIntent {actorId :: ActorId}
+  | PassIntent {actorId :: ActorId}
+  | ChatIntent {chatSenderId :: Maybe ActorId, content :: Text}
+  deriving (Show, Eq, Ord, Generic)
+
+$(deriveJSON cardpgJsonDef ''Command)
+
+data AdminCommand
+  = ResetGame
+  deriving (Show, Eq, Ord, Generic)
+
+$(deriveJSON (cardpgTaggedOptions "") ''AdminCommand)
 
 -- | GameState depends on Phase and LogEntry from Api.Types
 data GameState = GameState

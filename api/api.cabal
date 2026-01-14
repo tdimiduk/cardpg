@@ -31,7 +31,6 @@ library
 
   -- cabal-fmt: expand src
   exposed-modules:
-    Api.Frontend
     Api.Reflex
     Api.Request
     Api.Types
@@ -52,23 +51,3 @@ library
     , text
     , time
     , uuid
-
-executable codegen
-  import:         project-config
-  main-is:        Main.hs
-
-  -- cabal-fmt: expand app -Main
-  other-modules:
-    DeriveSpecialized
-    TypeScriptInstances
-
-  hs-source-dirs: app
-  build-depends:
-    , aeson
-    , aeson-typescript
-    , api
-    , base              >=4.7 && <5
-    , containers
-    , core
-    , template-haskell
-    , text
