@@ -1,3 +1,5 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecursiveDo #-}
 
@@ -25,6 +27,7 @@ import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
 import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
+import Frontend.Html (RenderHtml)
 import Frontend.Style hiding (stack)
 
 -- | Styles for hand card hover interactions
@@ -65,6 +68,7 @@ handWidget
      , MonadIO m
      , Requester t m
      , Request m ~ ApiRequest
+     , RenderHtml m
      )
   => Dynamic t (Identified ActorId ActorState)
   -> m ()
@@ -133,7 +137,7 @@ handWidget actorDyn = do
   return ()
 
 handCardsWidget
-  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
+  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, RenderHtml m)
   => Dynamic t ActorState
   -> Dynamic t (Maybe ActionStack)
   -- ^ Staging Stack (defines staging mode)

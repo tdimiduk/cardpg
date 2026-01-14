@@ -7,11 +7,9 @@ author:        Antigravity
 maintainer:    antigravity@example.com
 build-type:    Simple
 
-common warnings
-  ghc-options: -Wall
-
 common project-config
   default-language:   GHC2021
+  ghc-options:        -Wall
   default-extensions:
     DefaultSignatures
     DerivingStrategies
@@ -29,7 +27,6 @@ common project-config
     TypeFamilies
 
 library
-  import:          warnings
   import:          project-config
   build-depends:
     , aeson
@@ -59,6 +56,7 @@ library
     , websockets
     , yaml
 
+  -- cabal-fmt: expand src
   exposed-modules:
     Frontend.App
     Frontend.Card
@@ -76,6 +74,7 @@ library
     Frontend.Game.PlannedAction
     Frontend.Game.Planning
     Frontend.Game.Sidebar
+    Frontend.Game.SidebarRight
     Frontend.Game.Staging
     Frontend.Html
     Frontend.Icons
@@ -84,11 +83,11 @@ library
     Frontend.Svg.Path
     Frontend.UI.Button
     Frontend.UI.Scaler
+    Frontend.Util
 
   hs-source-dirs:  src
 
 executable client-reflex
-  import:         warnings
   import:         project-config
   ghc-options:    -threaded -rtsopts -with-rtsopts=-N -main-is ClientMain
   main-is:        Main.hs
@@ -99,7 +98,6 @@ executable client-reflex
   hs-source-dirs: app
 
 executable cardpg-static
-  import:         warnings
   import:         project-config
   main-is:        StaticMain.hs
   hs-source-dirs: app
@@ -123,7 +121,6 @@ executable cardpg-static
     , yaml
 
 test-suite client-reflex-test
-  import:         warnings
   import:         project-config
   type:           exitcode-stdio-1.0
   main-is:        Main.hs

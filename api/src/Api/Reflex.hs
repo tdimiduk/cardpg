@@ -8,6 +8,7 @@ import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 
+import Api.Types (LogEntry)
 import Core.Primitives (ActorId)
 import Core.RichText (RichText)
 import Core.State (ActorState)
@@ -23,39 +24,14 @@ data ServerPush
   = PushWelcome
       { clientId :: UUID
       , game :: GameView
+      , history :: [LogEntry]
       }
   | PushUpdate
       { game :: GameView
       }
-  | PushChat ChatMessage
-  | PushLog LogMessage
+  | PushNewLogs {logs :: [LogEntry]}
   | PushError ErrorMessage
   deriving (Show, Eq, Generic)
-
-data ChatMessage = ChatMessage
-  { content :: RichText
-  , sender :: Maybe Text
-  , timestamp :: UTCTime
-  }
-  deriving (Show, Eq, Generic)
-
-instance FromJSON ChatMessage
-instance ToJSON ChatMessage
-
-data LogLevel = LogInfo | LogWarn | LogError
-  deriving (Show, Eq, Generic, Enum)
-
-instance FromJSON LogLevel
-instance ToJSON LogLevel
-
-data LogMessage = LogMessage
-  { content :: RichText
-  , level :: LogLevel
-  }
-  deriving (Show, Eq, Generic)
-
-instance FromJSON LogMessage
-instance ToJSON LogMessage
 
 data ErrorType = ErrorValidation | ErrorSystem | ErrorCustom
   deriving (Show, Eq, Generic, Enum)

@@ -1,6 +1,10 @@
 {-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
@@ -23,8 +27,9 @@ import Core.Language
   , sepColon
   , sepSemi
   )
+
 import Core.NonEmptyText (NonEmptyText)
-import Core.Render
+import Core.Render (Render (..), RenderStrategy (..))
 import Core.Render.Util (renderArrow, renderParens, renderSpace)
 import Core.RichText (RichText)
 import Core.RuleDefs
@@ -43,9 +48,9 @@ instance
   ( Monad m
   , RuleRender m
   )
-  => Render AttackDef m
+  => RenderStrategy mode AttackDef m
   where
-  render AttackDef{..} = do
+  renderStrategy AttackDef{..} = do
     render cmdAttack
     renderSpace
     render resistedBy
@@ -65,9 +70,9 @@ instance
   ( Monad m
   , RuleRender m
   )
-  => Render GeneralDef m
+  => RenderStrategy mode GeneralDef m
   where
-  render GeneralDef{..} = do
+  renderStrategy GeneralDef{..} = do
     render cmdAction
     renderSpace
     render name
@@ -86,9 +91,9 @@ instance
   ( Monad m
   , RuleRender m
   )
-  => Render OngoingDef m
+  => RenderStrategy mode OngoingDef m
   where
-  render OngoingDef{..} = do
+  renderStrategy OngoingDef{..} = do
     render cmdOngoing
     renderSpace
     renderParens (render life)
@@ -101,9 +106,9 @@ instance
   ( Monad m
   , RuleRender m
   )
-  => Render PassiveDef m
+  => RenderStrategy mode PassiveDef m
   where
-  render PassiveDef{..} = do
+  renderStrategy PassiveDef{..} = do
     render cmdPassive
     renderSpace
     render bonus
@@ -113,22 +118,12 @@ instance
   ( Monad m
   , RuleRender m
   )
-  => Render TaskDef m
+  => RenderStrategy mode TaskDef m
   where
-  render TaskDef{..} = do
+  renderStrategy TaskDef{..} = do
     render cmdTask
     renderSpace
     render name
-    -- Complex logic from Printer:
-    -- parts = [checkStr, timeStr, costStr]
-    -- inner = T.intercalate "; " (catMaybes parts)
-    -- parensContent = if T.null inner then "" else " (" <> inner <> ")"
-    -- We need to replicate this structure with `Render`.
-    -- This is tricky because `intercalate` implies we have the rendered output.
-    -- But we are streaming.
-    -- We can just render them sequentially with separators?
-    -- Or we need "list intercalate" combinator for Render?
-
     let parts =
           catMaybes
             [ fmap (\c -> (kwCheck, render c)) check
@@ -148,6 +143,7 @@ instance
     renderSpace
     render effect
     where
+      renderParts :: [(Text, m ())] -> m ()
       renderParts [] = pure ()
       renderParts [(label, val)] = do
         render (label :: Text)
@@ -165,9 +161,9 @@ instance
   ( Monad m
   , RuleRender m
   )
-  => Render TriggerDef m
+  => RenderStrategy mode TriggerDef m
   where
-  render TriggerDef{..} = do
+  renderStrategy TriggerDef{..} = do
     render cmdWhen
     renderSpace
     render trigger

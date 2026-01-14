@@ -1,3 +1,4 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE MultilineStrings #-}
 {-# LANGUAGE RankNTypes #-}
@@ -37,7 +38,7 @@ import Core.State (ActorState (..))
 import Frontend.App (uiWidget)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Catalog (catalogWidget)
-import Frontend.Html (Render (..))
+import Frontend.Html (Render (..), RenderHtml)
 import Frontend.Style qualified as Style
 import Server.Game (GameState (..))
 import Server.Scenario (loadScenario)
@@ -238,6 +239,7 @@ mockGameWidget
      , Adjustable t m
      , MonadIO m
      , Prerender t m
+     , RenderHtml m
      )
   => Maybe ActorId
   -> GameState
@@ -245,10 +247,10 @@ mockGameWidget
 mockGameWidget initialActorId gameState = do
   let actorsMap = gameState.actors
   actorsDyn <- holdDyn actorsMap never
-  rec (_, _) <- runRequesterT (uiWidget initialActorId actorsDyn) never
+  rec (_, _) <- runRequesterT (uiWidget initialActorId actorsDyn (constDyn [])) never
   return ()
 
-deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
+deckWidget :: (DomBuilder t m, RenderHtml m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
   Style.divStyle Style.deckGrid $ do

@@ -23,6 +23,8 @@ common project-config
     TemplateHaskell
     TypeFamilies
 
+  ghc-options:        -Wall
+
 library
   import:          project-config
   hs-source-dirs:  src

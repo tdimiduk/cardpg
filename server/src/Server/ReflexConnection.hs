@@ -116,7 +116,7 @@ application state pending = do
   (msgs, currentClients) <-
     readMVar state >>= \s -> do
       let view = GameView{actors = s.gameState.actors}
-      return ([PushWelcome finalClientId view], s.clients)
+      return ([PushWelcome finalClientId view s.gameState.history], s.clients)
 
   forM_ msgs $ \msg -> sendTextData conn (encode $ WsMsgPush msg)
 
@@ -150,6 +150,9 @@ talk client socket state = forever $ do
     Just taggedReq@(TaggedRequest _ _) -> do
       result <- mkTaggedResponse taggedReq $ \case
         Req.Join name -> handleJoin client name state
+        Req.SendChat aid msg -> do
+          _ <- handleGameCommand client state (ChatIntent aid msg)
+          pure ()
         Req.GameAction cmd -> handleGameCommand client state cmd
         Req.DrawCards aid -> handleGameCommand client state (DrawIntent aid)
         Req.ReshuffleDeck aid -> handleGameCommand client state (ReshuffleIntent aid)
@@ -191,7 +194,7 @@ handleGameCommand client state cmd = do
   t <- getPOSIXTime
   let ts = round (t * 1000) :: Int
 
-  (updates, _newLog) <- modifyMVar state $ \s -> do
+  (updates, newLog) <- modifyMVar state $ \s -> do
     let game = s.gameState
     let rng = s.rng
     let ((newGame, updates, _, newLog), newRng) = runState (processCommand cmd ts game) rng
@@ -200,9 +203,12 @@ handleGameCommand client state cmd = do
     return (s', (updates, newLog))
 
   -- Broadcast updates to others
-  -- We should ideally only broadcast if there ARE updates causing state change for others.
-  -- But PushUpdate serves to keep everyone in sync.
-  readMVar state >>= \s -> broadcastReflex (PushUpdate $ GameView{actors = s.gameState.actors}) (s.clients)
+  readMVar state >>= \s -> broadcastReflex (PushUpdate $ GameView{actors = s.gameState.actors}) s.clients
+
+  -- Broadcast new logs
+  unless (null newLog) $ do
+    readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
+
   pure (Right updates)
 
 handleGameCommand' :: Client -> MVar ServerState -> Command -> IO (Either Text [StateUpdate])

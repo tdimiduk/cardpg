@@ -10,10 +10,11 @@ import Data.UUID (UUID)
 
 import Core.Primitives (ActorId, CardInstanceId)
 
-import Api.Types (Command, StateUpdate)
+import Api.Types (Command, LogEntry, StateUpdate)
 
 data ApiRequest a where
   Join :: Text -> ApiRequest (Either Text UUID)
+  SendChat :: Maybe ActorId -> Text -> ApiRequest () -- We'll get the message we sent as a push
   GameAction :: Command -> ApiRequest (Either Text [StateUpdate])
   DrawCards :: ActorId -> ApiRequest (Either Text [StateUpdate])
   ReshuffleDeck :: ActorId -> ApiRequest (Either Text [StateUpdate])

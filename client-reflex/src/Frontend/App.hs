@@ -16,13 +16,16 @@ import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
-import Api.Request (ApiRequest (..))
+import Api.Types (LogEntry)
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState, identifiedLookup)
 
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.Sidebar (sidebarWidget)
+import Frontend.Game.SidebarRight (sidebarRightWidget)
+import Frontend.Html (RenderHtml)
 import Frontend.Style
+import Frontend.Util
 
 -- | Root layout for the app (full-screen row)
 appRoot :: [CssClass]
@@ -54,7 +57,7 @@ appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
-      (_, requests) <- runRequesterT (uiWidget Nothing actorsMapDyn) responses
+      (_, requests) <- runRequesterT (uiWidget Nothing actorsMapDyn logsDyn) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let sendEvt = fmap (map (BL.toStrict . encode)) taggedReqs
@@ -65,13 +68,18 @@ appWidget wsBaseUrl clientId = do
           pushEvt = fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
           taggedResps = fmapMaybe (\case WsMsgResponse r -> Just r; _ -> Nothing) wsMsg
 
-          updateActors (PushWelcome _ a) _ = a.actors
+          updateActors (PushWelcome _ a _) _ = a.actors
           updateActors (PushUpdate a) _ = a.actors
-          updateActors (PushError _) old = old
-          updateActors (PushChat _) old = old
-          updateActors (PushLog _) old = old
+          updateActors _ old = old
 
       actorsMapDyn <- foldDyn updateActors (Map.empty :: Map.Map ActorId ActorState) pushEvt
+
+      let updateLogs (PushNewLogs newLogs) logs = newLogs ++ logs
+          updateLogs (PushWelcome _ _ history) _ = reverse history
+          updateLogs (PushError _) logs = logs -- Errors handled separately or should be?
+          updateLogs _ logs = logs
+
+      logsDyn <- foldDyn updateLogs ([] :: [LogEntry]) pushEvt
 
   pure ()
   where
@@ -84,15 +92,16 @@ uiWidget
      , MonadFix m
      , Adjustable t m
      , MonadIO m
-     , Requester t m
-     , Request m ~ ApiRequest
+     , ApiRequester t m
      , Prerender t m
+     , RenderHtml m
      )
   => Maybe ActorId
   -- ^ Initial active actor
   -> Dynamic t (Map.Map ActorId ActorState)
+  -> Dynamic t [LogEntry]
   -> m ()
-uiWidget initialActorId actorsMapDyn = divStyle appRoot $ do
+uiWidget initialActorId actorsMapDyn logsDyn = divStyle appRoot $ do
   rec selectedActorId <- holdDyn initialActorId activeActorChange
       let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)
       activeActorChange <- sidebarWidget activeActor actorsMapDyn
@@ -110,4 +119,8 @@ uiWidget initialActorId actorsMapDyn = divStyle appRoot $ do
       handWidget (Identified k <$> vDyn)
 
     return ()
+
+  -- Right Sidebar
+  sidebarRightWidget activeActor logsDyn
+
   pure ()

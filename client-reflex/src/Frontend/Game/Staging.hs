@@ -1,3 +1,4 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Frontend.Game.Staging where
@@ -23,6 +24,7 @@ import Frontend.Card
   , renderWith
   )
 import Frontend.Game.Common (cardStackWidget)
+import Frontend.Html (RenderHtml)
 import Frontend.Style
 import Frontend.UI.Button
 
@@ -35,7 +37,14 @@ data StagingEvents t = StagingEvents
 -- | The Staging Widget handles the UI for building a plan (ACTION + RESOURCE + TARGETS)
 -- It appears as an overlay when an action card is selected.
 stagingWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Requester t m, Request m ~ ApiRequest)
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Requester t m
+     , Request m ~ ApiRequest
+     , RenderHtml m
+     )
   => ActorId
   -> Dynamic t ActionStack
   -> Dynamic t PlanValidation
@@ -114,7 +123,7 @@ stagingStatusHeader validation = do
       _ -> blank
 
 stagedCardsRow
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, RenderHtml m)
   => Dynamic t ActionStack
   -> m (Event t (), Event t CardInstanceId)
 stagedCardsRow actionStackDyn = do
@@ -170,7 +179,7 @@ stagingControls validation = do
     return (cancelEvt, commitEvt)
 
 stagingStats
-  :: (DomBuilder t m, PostBuild t m)
+  :: (DomBuilder t m, PostBuild t m, RenderHtml m)
   => Dynamic t ActionStack
   -> m ()
 stagingStats stackDyn = do

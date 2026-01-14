@@ -1,10 +1,18 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Core.Render
   ( Render (..)
+  , RenderMode (..)
+  , ComputeRenderMode
+  , RenderStrategy (..)
   , IconMode (..)
   ) where
 
@@ -12,16 +20,39 @@ import Data.Default (Default (..))
 import Data.List.NonEmpty (NonEmpty)
 import Data.Vector (Vector)
 
-class (Monad m, Default (RenderConfig a)) => Render a m where
-  type RenderConfig a
-  type RenderConfig a = ()
+import Control.Monad.Writer (Writer, tell)
+import Data.Text (Text)
 
-  render :: (Default (RenderConfig a)) => a -> m ()
-  render = renderWith def
+data RenderMode = TextMode | HtmlMode
 
-  renderWith :: RenderConfig a -> a -> m ()
-  default renderWith :: (RenderConfig a ~ ()) => RenderConfig a -> a -> m ()
-  renderWith _ = render
+type family ComputeRenderMode m :: RenderMode where
+  ComputeRenderMode (Writer [Text]) = 'TextMode
+  ComputeRenderMode _ = 'HtmlMode
+
+class (Monad m) => RenderStrategy (mode :: RenderMode) a m where
+  type StrategyConfig mode a
+  type StrategyConfig mode a = ()
+
+  renderStrategy :: (Default (StrategyConfig mode a)) => a -> m ()
+  renderStrategy = renderStrategyWith @mode def
+
+  renderStrategyWith :: StrategyConfig mode a -> a -> m ()
+  default renderStrategyWith :: (StrategyConfig mode a ~ ()) => StrategyConfig mode a -> a -> m ()
+  renderStrategyWith _ = renderStrategy @mode
+
+class (Monad m) => Render a m where
+  render :: a -> m ()
+  renderWith
+    :: (RenderStrategy (ComputeRenderMode m) a m) => StrategyConfig (ComputeRenderMode m) a -> a -> m ()
+
+instance
+  (Monad m, mode ~ ComputeRenderMode m, RenderStrategy mode a m, Default (StrategyConfig mode a))
+  => Render a m
+  where
+  {-# INLINE render #-}
+  render = renderStrategy @mode
+  {-# INLINE renderWith #-}
+  renderWith = renderStrategyWith @mode
 
 data IconMode = IconInline | IconBlock | IconResponsive
   deriving (Eq, Show, Enum, Bounded)
@@ -29,27 +60,36 @@ data IconMode = IconInline | IconBlock | IconResponsive
 instance Default IconMode where
   def = IconInline
 
-instance (Render a m, Monad m) => Render (Maybe a) m where
-  type RenderConfig (Maybe a) = RenderConfig a
-  renderWith _ Nothing = pure ()
-  renderWith c (Just a) = renderWith c a
+-- Generic Instances (Polymorphic in Mode)
 
-instance (Render a m, Monad m) => Render (NonEmpty a) m where
-  type RenderConfig (NonEmpty a) = RenderConfig a
-  renderWith c = mapM_ (renderWith c)
+instance (RenderStrategy mode a m, Monad m) => RenderStrategy mode (Maybe a) m where
+  type StrategyConfig mode (Maybe a) = StrategyConfig mode a
+  renderStrategyWith _ Nothing = pure ()
+  renderStrategyWith c (Just a) = renderStrategyWith @mode c a
 
-instance {-# OVERLAPPABLE #-} (Render a m, Monad m) => Render [a] m where
-  type RenderConfig [a] = RenderConfig a
-  renderWith c = mapM_ (renderWith c)
+instance (RenderStrategy mode a m, Monad m) => RenderStrategy mode (NonEmpty a) m where
+  type StrategyConfig mode (NonEmpty a) = StrategyConfig mode a
+  renderStrategyWith c = mapM_ (renderStrategyWith @mode c)
 
-instance (Render a m, Monad m) => Render (Vector a) m where
-  type RenderConfig (Vector a) = RenderConfig a
-  renderWith c = mapM_ (renderWith c)
+instance {-# OVERLAPPABLE #-} (RenderStrategy mode a m, Monad m) => RenderStrategy mode [a] m where
+  type StrategyConfig mode [a] = StrategyConfig mode a
+  renderStrategyWith c = mapM_ (renderStrategyWith @mode c)
+
+instance (RenderStrategy mode a m, Monad m) => RenderStrategy mode (Vector a) m where
+  type StrategyConfig mode (Vector a) = StrategyConfig mode a
+  renderStrategyWith c = mapM_ (renderStrategyWith @mode c)
 
 instance
-  (Render a m, Render b m, Default (RenderConfig a), Default (RenderConfig b))
-  => Render (Either a b) m
+  ( RenderStrategy mode a m
+  , RenderStrategy mode b m
+  , Default (StrategyConfig mode a)
+  , Default (StrategyConfig mode b)
+  )
+  => RenderStrategy mode (Either a b) m
   where
-  type RenderConfig (Either a b) = (RenderConfig a, RenderConfig b)
-  renderWith (ca, _) (Left a) = renderWith ca a
-  renderWith (_, cb) (Right b) = renderWith cb b
+  type StrategyConfig mode (Either a b) = (StrategyConfig mode a, StrategyConfig mode b)
+  renderStrategyWith (ca, _) (Left a) = renderStrategyWith @mode ca a
+  renderStrategyWith (_, cb) (Right b) = renderStrategyWith @mode cb b
+
+instance RenderStrategy 'TextMode Text (Writer [Text]) where
+  renderStrategy t = tell [t]

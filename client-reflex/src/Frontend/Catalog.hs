@@ -1,3 +1,4 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Frontend.Catalog (catalogWidget) where
@@ -12,11 +13,13 @@ import Core.RichText (unsafeSimpleString)
 import Core.Stats
 
 -- Import the Render instance
+
+import Core.Render (Render (..))
 import Frontend.Card ()
-import Frontend.Html (Render (..))
+import Frontend.Html (RenderHtml)
 import Frontend.Style qualified as Style
 
-catalogWidget :: (DomBuilder t m) => m ()
+catalogWidget :: (DomBuilder t m, RenderHtml m) => m ()
 catalogWidget = do
   el "h1" $ text "Component Catalog"
 

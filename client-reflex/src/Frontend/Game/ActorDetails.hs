@@ -1,3 +1,5 @@
+{-# LANGUAGE DataKinds #-}
+
 module Frontend.Game.ActorDetails
   ( actorDetailsWidget
   ) where
@@ -14,6 +16,7 @@ import Frontend.Game.ActorDetails.Assets (equippedWidget, traitsWidget)
 import Frontend.Game.ActorDetails.Consequences (consequencesWidget)
 import Frontend.Game.ActorDetails.Deck (deckWidget)
 import Frontend.Game.ActorDetails.Stats (statsWidget)
+import Frontend.Html (RenderHtml)
 import Frontend.Style
 
 actorDetailsWidget
@@ -25,6 +28,7 @@ actorDetailsWidget
      , Requester t m
      , Request m ~ ApiRequest
      , Prerender t m
+     , RenderHtml m
      )
   => ActorId
   -> Dynamic t ActorState

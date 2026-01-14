@@ -1,7 +1,11 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OrPatterns #-}
 {-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 {-# OPTIONS_GHC -Wno-type-defaults #-}
@@ -18,7 +22,13 @@ import Data.Default (Default (..))
 import Reflex.Dom.Core
 
 import Core.Card
-import Core.Render (IconMode (..))
+import Core.Render
+  ( ComputeRenderMode
+  , IconMode (..)
+  , Render (..)
+  , RenderMode (..)
+  , RenderStrategy (..)
+  )
 
 import Core.Render.Rule ()
 import Core.Stats
@@ -27,7 +37,7 @@ import Core.Stats
   )
 import Core.Util (tshow)
 
-import Frontend.Html
+import Frontend.Html ()
 import Frontend.Style (CssClass, component, divStyle, row, spacer)
 import Frontend.Style qualified as Style
 import Frontend.Svg (renderHexagon)
@@ -90,40 +100,40 @@ textboxClasses settings = case settings.displayMode of
   CardPrint -> Style.textboxBase <> Style.textboxPrint
   CardRow -> [Style.hidden]
 
-instance (Monad m, DomBuilder t m) => Render CoreCard m where
-  type RenderConfig CoreCard = CardSettings
-  renderWith settings c = case settings.displayMode of
+instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStrategy 'HtmlMode CoreCard m where
+  type StrategyConfig 'HtmlMode CoreCard = CardSettings
+  renderStrategyWith settings c = case settings.displayMode of
     CardRow -> divStyle (cardClasses settings) $ do
-      component "name" (nameClasses settings) $ render c.name
+      component "name" (nameClasses settings) $ renderStrategy @'HtmlMode c.name
       maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) (c.cost)
       spacer
-      renderWith (StatsSettings StatsRow IconResponsive) c.stats
+      renderStrategyWith @'HtmlMode (StatsSettings StatsRow IconResponsive) c.stats
     CardFull -> scalable 63 88 $ divStyle (cardClasses settings) $ do
       row $ do
-        component "name" (nameClasses settings) $ render c.name
+        component "name" (nameClasses settings) $ renderStrategy @'HtmlMode c.name
         spacer
         maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) (c.cost)
       component "top" [Style.flex, Style.flexRow, "grow-0", "shrink-0", "h-2/5"] $ do
-        renderWith (StatsSettings StatsCol IconResponsive) c.stats
+        renderStrategyWith @'HtmlMode (StatsSettings StatsCol IconResponsive) c.stats
         component "art" (artClasses settings) blank
       component "rules" (textboxClasses settings) $ do
-        render c.rules
-        render c.flavor
+        renderStrategy @'HtmlMode c.rules
+        renderStrategy @'HtmlMode c.flavor
     CardPrint -> divStyle (cardClasses settings) $ do
       row $ do
-        component "name" (nameClasses settings) $ render c.name
+        component "name" (nameClasses settings) $ renderStrategy @'HtmlMode c.name
         spacer
         maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) (c.cost)
       component "top" [Style.flex, Style.flexRow, "grow-0", "shrink-0", "h-2/5"] $ do
-        renderWith (StatsSettings StatsCol IconResponsive) c.stats
+        renderStrategyWith @'HtmlMode (StatsSettings StatsCol IconResponsive) c.stats
         component "art" (artClasses settings) blank
       component "rules" (textboxClasses settings) $ do
-        render c.rules
-        render c.flavor
+        renderStrategy @'HtmlMode c.rules
+        renderStrategy @'HtmlMode c.flavor
 
-instance (Monad m, DomBuilder t m) => Render (Stats Int) m where
-  type RenderConfig (Stats Int) = StatsSettings
-  renderWith settings s =
+instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStrategy 'HtmlMode (Stats Int) m where
+  type StrategyConfig 'HtmlMode (Stats Int) = StatsSettings
+  renderStrategyWith settings s =
     let
       layoutClasses = case settings.statsLayout of
         StatsCol ->
@@ -140,37 +150,51 @@ instance (Monad m, DomBuilder t m) => Render (Stats Int) m where
         StatsRow -> [Style.flex, "gap-1"]
      in
       component "stats" layoutClasses $
-        mapM_ (renderWith settings.statsIconMode . flip getStatValue s) [Red, Yellow, Blue]
+        mapM_
+          (renderStrategyWith @'HtmlMode settings.statsIconMode . flip getStatValue s)
+          [Red, Yellow, Blue]
 
 -- Rules rendering to match legacy textbox style
-instance (Monad m, DomBuilder t m) => Render Rule m where
-  render rule = divClass "action" $ el "p" $ case rule of
-    RuleAttack x -> render x
-    RuleGeneral x -> render x
-    RuleTask x -> render x
-    RuleTrigger x -> render x
-    RuleOngoing x -> render x
-    RuleNarrative x -> render x
-    RulePassive x -> render x
+instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStrategy 'HtmlMode Rule m where
+  renderStrategy rule = divClass "action" $ el "p" $ case rule of
+    RuleAttack x -> renderStrategy @'HtmlMode x
+    RuleGeneral x -> renderStrategy @'HtmlMode x
+    RuleTask x -> renderStrategy @'HtmlMode x
+    RuleTrigger x -> renderStrategy @'HtmlMode x
+    RuleOngoing x -> renderStrategy @'HtmlMode x
+    RuleNarrative x -> renderStrategy @'HtmlMode x
+    RulePassive x -> renderStrategy @'HtmlMode x
 
-instance (Monad m, DomBuilder t m, Render a m) => Render (Identified id a) m where
-  type RenderConfig (Identified id a) = RenderConfig a
-  renderWith cfg (Identified _ content) = renderWith cfg content
+-- Identified instance remains using bridge if convenient, or switch.
+-- Identified wrapper usually proxies config. StrategyConfig 'HtmlMode (Identified id a) = StrategyConfig 'HtmlMode a.
+-- The generic instance in Core/Render.hs handles this? No, Core doesn't know Identified.
+-- Identified is in Core/Card.hs? No, Core/Identified.hs?
+-- Wait, the instance in Card.hs was: instance ... => Render (Identified id a) m.
+-- I changed it to RenderStrategy 'HtmlMode (Identified id a) m.
+-- It delegates to renderStrategyWith cfg content.
+-- This uses renderStrategyWith for 'HtmlMode. So clear.
 
-instance (Monad m, DomBuilder t m) => Render ItemCard m where
-  type RenderConfig ItemCard = CardSettings
-  renderWith settings c = divStyle (cardClasses settings) $ do
-    component "name" (nameClasses settings) $ render c.name
+instance
+  (Monad m, DomBuilder t m, RenderStrategy 'HtmlMode a m, ComputeRenderMode m ~ 'HtmlMode)
+  => RenderStrategy 'HtmlMode (Identified id a) m
+  where
+  type StrategyConfig 'HtmlMode (Identified id a) = StrategyConfig 'HtmlMode a
+  renderStrategyWith cfg (Identified _ content) = renderStrategyWith @'HtmlMode cfg content
+
+instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStrategy 'HtmlMode ItemCard m where
+  type StrategyConfig 'HtmlMode ItemCard = CardSettings
+  renderStrategyWith settings c = divStyle (cardClasses settings) $ do
+    component "name" (nameClasses settings) $ renderStrategy @'HtmlMode c.name
     divStyle (artClasses settings) blank
     component "rules" (textboxClasses settings) $ do
-      render c.passive
-      render c.flavor
+      renderStrategy @'HtmlMode c.passive
+      renderStrategy @'HtmlMode c.flavor
 
-instance (Monad m, DomBuilder t m) => Render NatureCard m where
-  type RenderConfig NatureCard = CardSettings
-  renderWith settings c = divStyle (cardClasses settings) $ do
-    component "name" (nameClasses settings) $ render c.name
+instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStrategy 'HtmlMode NatureCard m where
+  type StrategyConfig 'HtmlMode NatureCard = CardSettings
+  renderStrategyWith settings c = divStyle (cardClasses settings) $ do
+    component "name" (nameClasses settings) $ renderStrategy @'HtmlMode c.name
     divStyle (artClasses settings) blank
     component "rules" (textboxClasses settings) $ do
-      render c.passive
-      render c.flavor
+      renderStrategy @'HtmlMode c.passive
+      renderStrategy @'HtmlMode c.flavor

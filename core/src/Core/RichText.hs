@@ -1,3 +1,10 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 module Core.RichText
   ( TextStyle (..)
   , Inline (..)
@@ -20,18 +27,13 @@ import Data.Text qualified as T
 import GHC.Generics (Generic)
 
 import Core.Json
-import Core.Language (TextStyle (..))
+import Core.Language (TextStyle (..), styleDelimiter)
 import Core.NonEmptyText (NonEmptyText, getRawText, mkNonEmptyText, unsafeNonEmptyText)
-import Core.Stats (Difficulty, StackPower (..), StatValue)
 
--- | 1. The Token Stream
-
--------------------------------------------------------------------------------
-
--- | Payload for Color Values (Icons or Dynamic Values)
--- | We use inline records in Inline now, but keeping these for backward compat if needed
--- | or we can just remove them. The plan says remove them.
--- | Let's remove TextRunDef and ColorValueDef and put fields directly in Inline.
+import Control.Monad.Writer (Writer, tell)
+import Core.Render (RenderMode (..), RenderStrategy (..))
+import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
+import Core.Util (tshow)
 
 -- | The Main Inline Sum Type
 -- | Refactored to use inline records for standard JSON derivation.
@@ -51,9 +53,34 @@ data Inline
 
 $(deriveJSON cardpgJsonDef ''Inline)
 
--- | The Base Machine Type (Always an Array)
 newtype RichText = RichText {inlines :: NE.NonEmpty Inline}
   deriving stock (Eq, Show, Generic)
+
+instance (RenderStrategy mode Inline m, Monad m) => RenderStrategy mode RichText m where
+  type StrategyConfig mode RichText = StrategyConfig mode Inline
+  renderStrategyWith c rt = mapM_ (renderStrategyWith @mode c) (getInlines rt)
+
+-- Text Mode Implementation for Inline
+instance RenderStrategy 'TextMode Inline (Writer [Text]) where
+  renderStrategy (TextRun (Just style) content) = tell [wrapped (styleDelimiter style) $ getRawText content]
+  renderStrategy (TextRun Nothing content) = tell [getRawText content]
+  renderStrategy (ColorValue power) = tell [prettyStatValue power]
+  renderStrategy (DifficultyValue diff) = tell [prettyDifficulty diff]
+  renderStrategy Break = tell ["\n"]
+
+prettyStatValue :: StatValue -> Text
+prettyStatValue s = "{" <> tshow s.color <> ":" <> tshow s.value <> "}"
+
+prettyDifficulty :: Difficulty -> Text
+prettyDifficulty (Difficulty attr val) = prettyResource attr <> " " <> tshow val
+
+prettyResource :: ResourceType -> Text
+prettyResource Red = "{Red}"
+prettyResource Yellow = "{Yellow}"
+prettyResource Blue = "{Blue}"
+
+wrapped :: Text -> Text -> Text
+wrapped wrapper t = wrapper <> t <> wrapper
 
 getInlines :: RichText -> NE.NonEmpty Inline
 getInlines (RichText x) = x

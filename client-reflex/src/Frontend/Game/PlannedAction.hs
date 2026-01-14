@@ -1,3 +1,5 @@
+{-# LANGUAGE DataKinds #-}
+
 module Frontend.Game.PlannedAction
   ( plannedActionWidget
   ) where
@@ -14,7 +16,7 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Game.Common (cardStackWidget)
-import Frontend.Html (Render (..))
+import Frontend.Html (Render (..), RenderHtml)
 import Frontend.Style hiding (classes)
 import Frontend.UI.Button
 
@@ -48,7 +50,14 @@ narrativeCardHover =
   [relative, "z-10", "hover:z-20", "transform", "hover:-translate-y-2", "transition-transform"]
 
 plannedActionWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Requester t m, Request m ~ ApiRequest)
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Requester t m
+     , Request m ~ ApiRequest
+     , RenderHtml m
+     )
   => Identified ActorId PlannedAction
   -> m ()
 plannedActionWidget (Identified actorId planned) = colWith colStyle $ do

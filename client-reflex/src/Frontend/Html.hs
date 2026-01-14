@@ -1,30 +1,44 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Frontend.Html
   ( Render (..)
+  , RenderHtml
   , resourceSymbol -- Exporting helper if needed, though mostly used via Render
+  , renderInlineHtml
   ) where
 
 import Data.Text (Text)
 import Reflex.Dom.Core
 
-import Core.Render (IconMode (..), Render (..))
+import Core.Render
+  ( ComputeRenderMode
+  , IconMode (..)
+  , Render (..)
+  , RenderMode (..)
+  , RenderStrategy (..)
+  )
+
 import Core.Render.Rule ()
 import Core.Render.Stats ()
-import Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (..), getInlines)
+import Core.RichText (Block (..), Inline (..), TextStyle (..))
 import Core.Stats (Difficulty (..), ResourceType (..), StatValue (..))
 import Core.Util (tshow)
 
 import Frontend.Style qualified as Style
 import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
 
+-- | Constraint alias for Monads that render to HTML
+type RenderHtml m = ComputeRenderMode m ~ 'HtmlMode
+
 -- Base text instance
-instance {-# OVERLAPPING #-} (Monad m, DomBuilder t m) => Render Text m where
-  render = text
+instance (Monad m, DomBuilder t m) => RenderStrategy 'HtmlMode Text m where
+  renderStrategy = text
 
 -- Style helpers
 resourceSymbol :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
@@ -42,34 +56,34 @@ resourceSymbol mode r t = case r of
       IconBlock -> Style.iconBlock
       IconResponsive -> Style.iconResponsive
 
-instance (Monad m, DomBuilder t m) => Render ResourceType m where
-  type RenderConfig ResourceType = IconMode
-  renderWith mode r = resourceSymbol mode r Nothing
+instance (Monad m, DomBuilder t m) => RenderStrategy 'HtmlMode ResourceType m where
+  type StrategyConfig 'HtmlMode ResourceType = IconMode
+  renderStrategyWith mode r = resourceSymbol mode r Nothing
 
-instance (Monad m, DomBuilder t m) => Render RichText m where
-  render rt = mapM_ render (getInlines rt)
+instance (Monad m, DomBuilder t m) => RenderStrategy 'HtmlMode Inline m where
+  renderStrategy = renderInlineHtml
 
-instance (Monad m, DomBuilder t m) => Render Inline m where
-  render (TextRun style content) =
-    case style of
-      Nothing -> render content
-      Just Bold -> el "b" $ render content
-      Just Italic -> el "i" $ render content
-      Just GameKeyword -> el "strong" $ render content
-  render (ColorValue v) = render v
-  render (DifficultyValue d) = render d
-  render Break = el "br" $ pure ()
+renderInlineHtml :: (DomBuilder t m, Monad m) => Inline -> m ()
+renderInlineHtml (TextRun style content) =
+  case style of
+    Nothing -> renderStrategy @'HtmlMode content
+    Just Bold -> el "b" $ renderStrategy @'HtmlMode content
+    Just Italic -> el "i" $ renderStrategy @'HtmlMode content
+    Just GameKeyword -> el "strong" $ renderStrategy @'HtmlMode content
+renderInlineHtml (ColorValue v) = renderStrategy @'HtmlMode v
+renderInlineHtml (DifficultyValue d) = renderStrategy @'HtmlMode d
+renderInlineHtml Break = el "br" $ pure ()
 
-instance (Monad m, DomBuilder t m) => Render Block m where
-  render (Paragraph b) = el "p" $ render b
-  render Rule = el "hr" $ pure ()
-  render (Header t) = el "h3" $ render t
-  render (BulletList items) = el "ul" $ mapM_ (el "li" . render) items
+instance (Monad m, DomBuilder t m) => RenderStrategy 'HtmlMode Block m where
+  renderStrategy (Paragraph b) = el "p" $ renderStrategy @'HtmlMode b
+  renderStrategy Rule = el "hr" $ pure ()
+  renderStrategy (Header t) = el "h3" $ renderStrategyWith @'HtmlMode def t
+  renderStrategy (BulletList items) = el "ul" $ mapM_ (el "li" . renderStrategyWith @'HtmlMode def) items
 
-instance (Monad m, DomBuilder t m) => Render Difficulty m where
-  type RenderConfig Difficulty = IconMode
-  renderWith mode d = resourceSymbol mode (d.attribute) $ Just $ tshow (d.value)
+instance (Monad m, DomBuilder t m) => RenderStrategy 'HtmlMode Difficulty m where
+  type StrategyConfig 'HtmlMode Difficulty = IconMode
+  renderStrategyWith mode d = resourceSymbol mode (d.attribute) $ Just $ tshow (d.value)
 
-instance (Monad m, DomBuilder t m) => Render StatValue m where
-  type RenderConfig StatValue = IconMode
-  renderWith mode s = resourceSymbol mode (s.color) $ Just $ tshow (s.value)
+instance (Monad m, DomBuilder t m) => RenderStrategy 'HtmlMode StatValue m where
+  type StrategyConfig 'HtmlMode StatValue = IconMode
+  renderStrategyWith mode s = resourceSymbol mode (s.color) $ Just $ tshow (s.value)

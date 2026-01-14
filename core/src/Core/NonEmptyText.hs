@@ -1,5 +1,10 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Core.NonEmptyText
@@ -19,7 +24,7 @@ import Data.Text qualified as T
 import Data.Void (Void)
 import Text.Megaparsec (Parsec, Token, takeWhile1P)
 
-import Core.Render (Render (..))
+import Core.Render (RenderStrategy (..))
 
 -- | Parser for NonEmptyText using Megaparsec
 -- This wraps takeWhile1P to ensure the result is non-empty at the type level.
@@ -64,5 +69,6 @@ instance FromJSON NonEmptyText where
 -- | Allow string literals if they are non-empty (runtime check?)
 -- Ideally we avoid IsString to prevent runtime errors, but it's convenient.
 -- For now, let's NOT implement IsString to force explicit conversion.
-instance (Monad m, Render Text m) => Render NonEmptyText m where
-  render = render . getRawText
+instance (Monad m, RenderStrategy mode Text m) => RenderStrategy mode NonEmptyText m where
+  type StrategyConfig mode NonEmptyText = StrategyConfig mode Text
+  renderStrategyWith c = renderStrategyWith @mode c . getRawText
