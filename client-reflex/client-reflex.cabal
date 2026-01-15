@@ -97,8 +97,11 @@ executable client-reflex
   main-is:        Main.hs
   build-depends:
     , base
+    , bytestring
     , client-reflex
+    , jsaddle
     , reflex-dom-core
+    , text
 
   hs-source-dirs: app
 

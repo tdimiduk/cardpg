@@ -69,10 +69,10 @@
             inputMap = commonInputMap;
             modules = [{
               # Enable parallel compilation for all local packages
-              packages.core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
-              packages.api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings" "-fspecialise-aggressively"];
+              packages.api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings"];
               packages.server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
-              packages.client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+              packages.client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-O2" "-fexpose-all-unfoldings" "-fspecialise-aggressively" ];
             }];
           };
 
@@ -115,6 +115,33 @@
 
             # Reflex Client (JS) 
             reflex-client-js = projectJS.client-reflex.components.exes.client-reflex;
+
+            # Production bundle for Reflex Client (JS + CSS + HTML)
+            reflex-client-prod = pkgs.runCommand "reflex-client-prod" {
+              nativeBuildInputs = [ pkgs.nodejs pkgs.tailwindcss_4 ];
+            } ''
+              # 1. Build CSS (Tailwind)
+              mkdir -p styles static
+              cp ${./client-reflex/styles/input.css} styles/input.css
+              cp -r ${./client-reflex/src} src
+              cp -r ${./client-reflex/app} app
+              
+              # Build CSS using tailwindcss CLI
+              tailwindcss -i styles/input.css -o static/output.css
+              
+              mkdir -p $out
+              cp ${./client-reflex/deploy/index.html} $out/index.html
+              
+              # Copy JS and strip shebang
+              tail -n +2 ${self'.packages.reflex-client-js}/bin/client-reflex > $out/all.js
+              
+              # Copy static assets (including the newly generated CSS if it was in static, 
+              # but we generated it in the current dir's static folder)
+              cp static/output.css $out/output.css
+              
+              # Copy other static assets from source if they exist
+              cp -r ${./client-reflex/static}/* $out/ || true
+            '';
 
             # GHC JS cross-compiler - run `root-ghcjs` to protect from GC
             js-ghc = projectJS.pkg-set.config.ghc.package;
@@ -180,6 +207,7 @@
               pkgs.openssh
               pkgs.python3  # for run-client http server
               pkgs.ghciwatch
+              pkgs.caddy
               config.pre-commit.settings.package  # pre-commit hooks
             ];
 

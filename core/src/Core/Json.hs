@@ -29,6 +29,7 @@ cardpgJsonOptions prefixToStrip =
     , -- \| Unwrap single-field records so we don't get { "data": { "power": ... } }
       -- \| when { "power": ... } would suffice.
       unwrapUnaryRecords = False
+    , allNullaryToStringTag = False
     }
   where
     lowerFirst (x : xs) = toLower x : xs

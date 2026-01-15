@@ -11,6 +11,7 @@ import Data.Aeson (decode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
 import Data.Text qualified as T
+import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
 import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
@@ -62,12 +63,23 @@ appWidget wsBaseUrl clientId = do
         runRequesterT (uiWidget Nothing actorsMapDyn logsDyn phaseDyn readyDyn totalDyn) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
-      let sendEvt = fmap (map (BL.toStrict . encode)) taggedReqs
+      let reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
+      let sendEvt = traceEvent "WS Sending" reqsEncoded
 
-      ws <- webSocket wsUrl (def{_webSocketConfig_send = sendEvt})
+      let wsConfig =
+            def
+              { _webSocketConfig_send = sendEvt
+              }
 
-      let wsMsg = fmapMaybe (decode . BL.fromStrict) (_webSocket_recv ws)
-          pushEvt = fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
+      ws <- webSocket wsUrl wsConfig
+
+      performEvent_ $ return () <$ traceEvent "WS Opened" (_webSocket_open ws)
+      performEvent_ $ return () <$ traceEvent "WS Closed" (_webSocket_close ws)
+      performEvent_ $ return () <$ traceEvent "WS Error" (_webSocket_error ws)
+
+      let rawMsg = traceEvent "Raw WS" (_webSocket_recv ws)
+      let wsMsg = traceEvent "WS Msg" $ fmapMaybe (decode . BL.fromStrict) rawMsg
+          pushEvt = traceEvent "Push Evt" $ fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
           taggedResps = fmapMaybe (\case WsMsgResponse r -> Just r; _ -> Nothing) wsMsg
 
           updateActors (PushWelcome{game = a}) _ = a.actors

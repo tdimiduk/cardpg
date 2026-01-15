@@ -31,6 +31,7 @@ import Network.WebSockets
   , withPingThread
   )
 
+import Data.ByteString.Lazy.Char8 qualified as BSL
 import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), mkTaggedResponse)
 
 import Core.Card (CardInstance, CoreCard)
@@ -134,9 +135,13 @@ disconnect clientId socketId state = do
 broadcastReflex :: ServerPush -> Map.Map UUID Client -> IO ()
 broadcastReflex msg clients = do
   let msgBytes = encode (WsMsgPush msg)
+  T.putStrLn $ "Broadcasting: " <> T.pack (take 100 $ BSL.unpack msgBytes)
   forM_ (Map.elems clients) $ \client ->
     forM_ (client.clientConns) $ \socket -> do
-      _ <- try (sendTextData (socket.socketConn) msgBytes) :: IO (Either ConnectionException ())
+      result <- try (sendTextData (socket.socketConn) msgBytes) :: IO (Either ConnectionException ())
+      case result of
+        Left err -> T.putStrLn $ "Send failed: " <> T.pack (show err)
+        Right _ -> T.putStrLn "Send success"
       return ()
 
 talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
@@ -190,6 +195,7 @@ handleGameCommand client state cmd =
           s.clients
 
       -- Broadcast new logs
+      T.putStrLn $ "Processing " <> T.pack (show (length newLog)) <> " new logs."
       unless (null newLog) $ do
         readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
 
