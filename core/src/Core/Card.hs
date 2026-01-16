@@ -48,7 +48,7 @@ data CoreCard = CoreCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''CoreCard)
+$(deriveJSON cardpgJsonDef ''CoreCard)
 
 -- | Represents Items/Equipment that stay in play (Table Cards).
 data ItemCard = ItemCard
@@ -65,7 +65,7 @@ data ItemCard = ItemCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''ItemCard)
+$(deriveJSON cardpgJsonDef ''ItemCard)
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCard = NatureCard
@@ -80,7 +80,7 @@ data NatureCard = NatureCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''NatureCard)
+$(deriveJSON cardpgJsonDef ''NatureCard)
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
 data TalentCard = TalentCard
@@ -94,7 +94,7 @@ data TalentCard = TalentCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''TalentCard)
+$(deriveJSON cardpgJsonDef ''TalentCard)
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef
@@ -146,7 +146,7 @@ data ConsequenceCard = ConsequenceCard
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON (cardpgTaggedOptions "") ''ConsequenceCard)
+$(deriveJSON cardpgJsonDef ''ConsequenceCard)
 
 -- | Represents the *Static Definition* or "Character Sheet" of an Actor.
 -- | This is used for initialization and templates, not for running game state.

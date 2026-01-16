@@ -1,11 +1,10 @@
 module Core.Json
   ( cardpgJsonOptions
   , cardpgJsonDef
-  , cardpgTaggedOptions
   , stripEmpty
   ) where
 
-import Data.Aeson (Options (..), SumEncoding (..), Value (..), defaultOptions)
+import Data.Aeson (Options (..), Value (..), defaultOptions)
 import Data.Aeson.KeyMap qualified as KM
 import Data.Char (toLower)
 import Data.List (stripPrefix)
@@ -18,17 +17,7 @@ cardpgJsonOptions :: String -> Options
 cardpgJsonOptions prefixToStrip =
   defaultOptions
     { constructorTagModifier = lowerFirst . stripPrefix' prefixToStrip
-    , -- \| TS Discrimination: { "type": "attack", ... }
-      sumEncoding =
-        TaggedObject
-          { tagFieldName = "type"
-          , contentsFieldName = "data"
-          }
-    , -- \| TS Optionality: { "cost": 2 } vs {} (instead of { "cost": null })
-      omitNothingFields = True
-    , -- \| Unwrap single-field records so we don't get { "data": { "power": ... } }
-      -- \| when { "power": ... } would suffice.
-      unwrapUnaryRecords = False
+    , omitNothingFields = True
     }
   where
     lowerFirst (x : xs) = toLower x : xs
@@ -38,14 +27,6 @@ cardpgJsonOptions prefixToStrip =
 
 cardpgJsonDef :: Options
 cardpgJsonDef = cardpgJsonOptions ""
-
--- | Options that force a "type" tag even for single constructors.
--- | Useful for CoreCard/ItemCard to be discriminated unions.
-cardpgTaggedOptions :: String -> Options
-cardpgTaggedOptions prefixToStrip =
-  (cardpgJsonOptions prefixToStrip)
-    { tagSingleConstructors = True
-    }
 
 -- | Recursively strip empty arrays and nulls from JSON Values
 stripEmpty :: Value -> Value

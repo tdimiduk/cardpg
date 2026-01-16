@@ -104,7 +104,6 @@ test-suite server-test
   other-modules:
     GameTest
     InMemoryTest
-    JsonTest
     ScenarioTest
 
   hs-source-dirs: test
