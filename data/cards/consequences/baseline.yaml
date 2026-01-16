@@ -8,7 +8,6 @@
   tags:
   - Combat
   - Condition
-  type: consequenceCard
 - name: Rattled Guard
   notes: Increases the risk from future attacks
   passive: Impact of Defense +1
@@ -19,7 +18,6 @@
   tags:
   - Combat
   - Condition
-  type: consequenceCard
 - effects:
   - Put 2 Injury cards on top of your deck.
   name: Minor Trauma
@@ -31,7 +29,6 @@
   tags:
   - General
   - Status_Effect
-  type: consequenceCard
 - name: Compromised Leverage
   notes: A severe penalty to offense.
   passive: When calculating Attack Strength, treat the highest value card in your
@@ -43,7 +40,6 @@
   tags:
   - Combat
   - Condition
-  type: consequenceCard
 - name: Breached Guard
   notes: A severe penalty to defense.
   passive: When calculating Defense Strength, treat the highest value card in your
@@ -57,7 +53,6 @@
   tags:
   - Combat
   - Condition
-  type: consequenceCard
 - effects:
   - Expend 4 cards from hand and replace them with Injury cards. For each card you
     cannot expend, put the Injury on top of your deck instead.
@@ -71,9 +66,7 @@
   tags:
   - General
   - Status_Effect
-  type: consequenceCard
 - effects:
   - You are unconsious or dying and on longer a meaningful participant in this fight
   name: Taken Out
   severity: 3
-  type: consequenceCard

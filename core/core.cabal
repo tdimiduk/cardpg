@@ -86,7 +86,6 @@ test-suite core-test
     PlanningTests
     ReadmeExamplesTest
     ResolutionTests
-    RuleJsonTest
     StateTests
     StatusParsingTest
 
