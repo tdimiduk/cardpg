@@ -98,7 +98,7 @@ chatInputRequesting activeActor = do
 
       let clickSend = current (value input) <@ domEvent Click btn
 
-      let msgEvt = traceEvent "Chat Send Click" $ leftmost [send, clickSend]
+      let msgEvt = leftmost [send, clickSend]
       r <- requesting $ attachWith (\a t -> SendChat ((.id) <$> a) t) (current activeActor) msgEvt
       let (err, success) = fanEither r
   widgetHold_ blank $ text . tshow <$> err

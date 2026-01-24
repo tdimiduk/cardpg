@@ -33,23 +33,21 @@ import Server.Types
 
 import Api.Request (ApiRequest (..))
 
-mkLogEntry :: Int -> LogSender -> LogPayload -> State StdGen LogEntry
-mkLogEntry ts sender payload = do
+mkLogEntry :: LogSender -> LogPayload -> State StdGen LogEntry
+mkLogEntry sender payload = do
   logId <- state uniform
   return $
     LogEntry
       { id = logId
-      , timestamp = ts
       , sender = sender
       , payload = payload
       }
 
 processCommand
   :: ApiRequest a
-  -> Int
   -> GameState
   -> State StdGen (GameState, a, [ActorGameEvent], [LogEntry])
-processCommand cmd ts game =
+processCommand cmd game =
   case cmd of
     StartResolution -> do
       (newGame, events) <- revealPlannedActions game
@@ -58,7 +56,7 @@ processCommand cmd ts game =
             concatMap
               (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGameWithPhase)
               events
-      newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
+      newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, Right [], events, newLogs)
     EndRound -> do
@@ -69,7 +67,7 @@ processCommand cmd ts game =
             concatMap
               (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGame)
               roundEvents
-      newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
+      newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
       return (finalGame, Right updates, planEvents ++ roundEvents, newLogs)
     SendChat maybeAid content -> do
@@ -93,14 +91,14 @@ processCommand cmd ts game =
                   }
 
           let sender = resolveSender maybeAid game
-          logEntry <- mkLogEntry ts sender logPayload
+          logEntry <- mkLogEntry sender logPayload
 
           let newGame = game{phase = Resolution, history = game.history ++ [logEntry]}
           return (newGame, (), [], [logEntry])
         CmdText _ -> do
           -- Normal Chat
           let sender = resolveSender maybeAid game
-          logEntry <- mkLogEntry ts sender (LogChat content)
+          logEntry <- mkLogEntry sender (LogChat content)
           let newLogs = [logEntry]
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, (), [], newLogs)
@@ -160,7 +158,7 @@ processCommand cmd ts game =
 
             payloads = concatMap (\evt -> eventToLogs targetId evt newGame) events
 
-          newLogs <- mapM (\(p, aid) -> mkLogEntry ts (resolveSender aid game) p) payloads
+          newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
 
           let finalGame = newGame{history = game.history ++ newLogs}
 

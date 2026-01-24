@@ -6,8 +6,8 @@
 module Frontend.App where
 
 import Control.Monad.Fix (MonadFix)
-import Control.Monad.IO.Class (MonadIO)
-import Data.Aeson (decode, encode)
+import Control.Monad.IO.Class (MonadIO, liftIO)
+import Data.Aeson (eitherDecode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
 import Data.Text qualified as T
@@ -64,25 +64,27 @@ appWidget wsBaseUrl clientId = do
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
-      let sendEvt = traceEvent "WS Sending" reqsEncoded
 
       let wsConfig =
             def
-              { _webSocketConfig_send = sendEvt
+              { _webSocketConfig_send = reqsEncoded
               }
 
       ws <- webSocket wsUrl wsConfig
 
-      performEvent_ $ return () <$ traceEvent "WS Opened" (_webSocket_open ws)
-      performEvent_ $ return () <$ traceEvent "WS Closed" (_webSocket_close ws)
-      performEvent_ $ return () <$ traceEvent "WS Error" (_webSocket_error ws)
-
-      let rawMsg = traceEvent "Raw WS" (_webSocket_recv ws)
-      let wsMsg = traceEvent "WS Msg" $ fmapMaybe (decode . BL.fromStrict) rawMsg
-          pushEvt = traceEvent "Push Evt" $ fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
+      -- Decode incoming messages, logging any parse failures
+      let rawMsg = _webSocket_recv ws
+          decodeResult = eitherDecode . BL.fromStrict <$> rawMsg
+          wsMsg = fmapMaybe (either (const Nothing) Just) decodeResult
+          decodeErrors = fmapMaybe (either Just (const Nothing)) decodeResult
+          pushEvt = fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
           taggedResps = fmapMaybe (\case WsMsgResponse r -> Just r; _ -> Nothing) wsMsg
 
-          updateActors (PushWelcome{game = a}) _ = a.actors
+      -- Log decode errors to console (visible in browser dev tools)
+      performEvent_ $ ffor decodeErrors $ \err ->
+        liftIO $ putStrLn $ "WS Decode Error: " <> err
+
+      let updateActors (PushWelcome{game = a}) _ = a.actors
           updateActors (PushUpdate{game = a}) _ = a.actors
           updateActors _ old = old
 

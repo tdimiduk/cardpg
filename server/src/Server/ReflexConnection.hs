@@ -19,6 +19,7 @@ import Data.Time.Clock.POSIX (getPOSIXTime)
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
+import Data.Word (Word64)
 import GHC.Generics (Generic)
 import Network.WebSockets
   ( ConnectionException
@@ -174,13 +175,10 @@ handleGameCommand client state cmd =
   case cmd of
     Req.Join name -> handleJoin client name state
     _ -> do
-      t <- getPOSIXTime
-      let ts = round (t * 1000) :: Int
-
       (ret, newLog) <- modifyMVar state $ \s -> do
         let game = s.gameState
         let rng = s.rng
-        let ((newGame, ret, _, newLogs), newRng) = runState (processCommand cmd ts game) rng
+        let ((newGame, ret, _, newLogs), newRng) = runState (processCommand cmd game) rng
 
         let s' = s{gameState = newGame, rng = newRng}
         return (s', (ret, newLogs))

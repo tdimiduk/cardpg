@@ -73,7 +73,6 @@ $(deriveJSON cardpgJsonDef ''LogSender)
 
 data LogEntry = LogEntry
   { id :: LogId
-  , timestamp :: Int
   , sender :: LogSender
   , payload :: LogPayload
   }
