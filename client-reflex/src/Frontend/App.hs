@@ -131,7 +131,7 @@ uiWidget
   -> Dynamic t Int
   -- ^ Total Count
   -> m ()
-uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = divStyle appRoot $ do
+uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = component "app-container" appRoot $ do
   rec -- Construct config for Phase Display
       let phaseConfig =
             PhaseDisplayConfig
@@ -145,9 +145,9 @@ uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = divSty
       activeActorChange <- sidebarWidget activeActor actorsMapDyn
 
   -- Main Content Area (Right)
-  divStyle mainContent $ do
+  component "main-content" mainContent $ do
     -- Top Bar / Game Board Area (Placeholder)
-    divStyle gameBoardPlaceholder $ text "Game Board Area"
+    component "game-board" gameBoardPlaceholder $ text "Game Board Area"
 
     let activeActorMap = ffor activeActor $ \case
           Nothing -> Map.empty

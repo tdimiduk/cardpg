@@ -209,6 +209,7 @@
               pkgs.ghciwatch
               pkgs.caddy
               config.pre-commit.settings.package  # pre-commit hooks
+              pkgs.playwright-test
             ];
 
             # Development shell setup
@@ -243,6 +244,10 @@
 
               echo ""
               echo "Available commands: gen-types, deploy-prod, run-client, root-ghcjs"
+
+              # Playwright Configuration
+              export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
+              export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
             '';
           };
         };

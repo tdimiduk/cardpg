@@ -1,0 +1,46 @@
+version: "0.5"
+log_location: ./scratch/logs/e2e-test.log
+
+processes:
+  server:
+    command: cabal run exe:server
+    environment:
+      - PORT=3001
+    shutdown:
+      signal: 2
+      parent_only: false
+      timeout_seconds: 5
+    availability:
+      restart: "no"
+    ready_log_line: "Starting CardPG Server on port 3001"
+
+  caddy:
+    command: caddy run
+    depends_on:
+      server:
+        condition: process_log_ready
+    shutdown:
+      signal: 15
+      timeout_seconds: 5
+    availability:
+      restart: "no"
+    readiness_probe:
+      http_get:
+        host: 127.0.0.1
+        port: 3000
+        path: /
+      initial_delay_seconds: 1
+      period_seconds: 1
+      timeout_seconds: 2
+      failure_threshold: 10
+
+  playwright:
+    command: bash -c "cd tests/e2e && playwright test"
+    depends_on:
+      caddy:
+        condition: process_healthy
+    availability:
+      restart: "no"
+      exit_on_end: true
+    # Exit the whole compose when tests finish
+    is_tty: true

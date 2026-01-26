@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+# Ensure we are in the project root
+cd "$(dirname "$0")/.."
+
+MANAGE_SERVERS=true
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --no-server|-n)
+      MANAGE_SERVERS=false
+      shift
+      ;;
+    *)
+      # Pass remaining args to playwright
+      break
+      ;;
+  esac
+done
+
+if $MANAGE_SERVERS; then
+  echo "Starting E2E test stack with process-compose..."
+  # Run process-compose, exit when playwright finishes
+  exec process-compose up -f tests/e2e/process-compose.yaml -t=false
+else
+  echo "Running Playwright tests (expecting servers already running)..."
+  cd tests/e2e
+  playwright test "$@"
+fi

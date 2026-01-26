@@ -78,3 +78,7 @@ client-dist
 
 # pre-commit
 .pre-commit-config.yaml
+
+# Playwright E2E
+tests/e2e/playwright-report/
+tests/e2e/test-results/
