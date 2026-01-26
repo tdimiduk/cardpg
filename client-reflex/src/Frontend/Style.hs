@@ -214,9 +214,9 @@ elStyle'
   :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
 elStyle' tag cls = elClass' tag (classes cls)
 
--- | Create a semantic div with data-component attribute for testing/inspection.
+-- | Create a semantic div with data-component and data-testid attributes for testing/inspection.
 component :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m a
-component name cls = elAttr "div" ("class" =: classes cls <> "data-component" =: name)
+component name cls = elAttr "div" ("class" =: classes cls <> "data-testid" =: name)
 
 --------------------------------------------------------------------------------
 

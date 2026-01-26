@@ -9,7 +9,6 @@ export default defineConfig({
   reporter: "html",
   use: {
     baseURL: "http://localhost:3000",
-    testIdAttribute: "data-component",
     trace: "on-first-retry",
   },
   projects: [

@@ -142,8 +142,7 @@ broadcastReflex msg clients = do
       result <- try (sendTextData (socket.socketConn) msgBytes) :: IO (Either ConnectionException ())
       case result of
         Left err -> T.putStrLn $ "Send failed: " <> T.pack (show err)
-        Right _ -> T.putStrLn "Send success"
-      return ()
+        Right _ -> return ()
 
 talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
 talk client socket state = forever $ do
