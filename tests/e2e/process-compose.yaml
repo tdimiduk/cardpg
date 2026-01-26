@@ -1,3 +1,5 @@
+# Port configuration: see config.ts for documentation
+# Ports used: 3000 (Caddy/app), 3001 (backend server)
 version: "0.5"
 log_location: ./scratch/logs/e2e-test.log
 

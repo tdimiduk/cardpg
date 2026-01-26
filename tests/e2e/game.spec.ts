@@ -1,19 +1,13 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
-test("can select Wolf actor and revise action", async ({ page }) => {
-  await page.goto("/");
-
-  // Wait for app
-  const app = page.getByTestId("app-container");
-  await expect(app).toBeVisible({ timeout: 10000 });
-
+test("can select Wolf actor and revise action", async ({ loadedPage }) => {
   // Select Wolf actor
-  const wolfSelector = page.getByTestId("select-actor-Wolf");
+  const wolfSelector = loadedPage.getByTestId("select-actor-Wolf");
   await expect(wolfSelector).toBeVisible();
   await wolfSelector.click();
 
   // Confirm planned action exists (Revise button is a good proxy)
-  const reviseButton = page.getByTestId("revise-action");
+  const reviseButton = loadedPage.getByTestId("revise-action");
   await expect(reviseButton).toBeVisible();
 
   // Click Revise
@@ -25,24 +19,18 @@ test("can select Wolf actor and revise action", async ({ page }) => {
   // Confirm hand size is 4 (Wolf starts with 5 cards, 1 was planned, now 4?
   // Wait, if it returns to hand, hand size should match initial state.
   // User prompt said "hand size should be 4". I will respect that expectation.
-  const cardNames = page.getByTestId("name");
+  const cardNames = loadedPage.getByTestId("name");
   await expect(cardNames).toHaveCount(4);
 });
 
-test("can select Vallhach actor and plan an action", async ({ page }) => {
-  await page.goto("/");
-
-  // Wait for app
-  const app = page.getByTestId("app-container");
-  await expect(app).toBeVisible({ timeout: 10000 });
-
+test("can select Vallhach actor and plan an action", async ({ loadedPage }) => {
   // Select Vallhach actor
-  const vallhachSelector = page.getByTestId("select-actor-Vallhach");
+  const vallhachSelector = loadedPage.getByTestId("select-actor-Vallhach");
   await expect(vallhachSelector).toBeVisible();
   await vallhachSelector.click();
 
   // Confirm no planned action
-  const reviseButton = page.getByTestId("revise-action");
+  const reviseButton = loadedPage.getByTestId("revise-action");
   await expect(reviseButton).not.toBeVisible();
 
   // With deterministic seed 123, Vallhach has:
@@ -54,7 +42,7 @@ test("can select Vallhach actor and plan an action", async ({ page }) => {
     "Magical Abilities",
   ];
 
-  const cardNames = page.getByTestId("name");
+  const cardNames = loadedPage.getByTestId("name");
   await expect(cardNames).toHaveCount(expectedCards.length);
   // Verify we see expected cards (sanity check)
   for (let i = 0; i < expectedCards.length; i++) {
@@ -77,7 +65,7 @@ test("can select Vallhach actor and plan an action", async ({ page }) => {
   await cardNames.filter({ hasText: "Overheated" }).click();
   await cardNames.filter({ hasText: "Chain Lightning" }).click();
 
-  const commitButton = page.getByTestId("staging-commit");
+  const commitButton = loadedPage.getByTestId("staging-commit");
   // Should be ready now
   await expect(commitButton).toBeEnabled();
 
@@ -85,5 +73,5 @@ test("can select Vallhach actor and plan an action", async ({ page }) => {
   await commitButton.click();
 
   // Confirm planned action appears
-  await expect(page.getByTestId("planned-action-card")).toBeVisible();
+  await expect(loadedPage.getByTestId("planned-action-card")).toBeVisible();
 });

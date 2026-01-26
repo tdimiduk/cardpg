@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test("has title", async ({ page }) => {
   await page.goto("/");
@@ -7,10 +7,8 @@ test("has title", async ({ page }) => {
   await expect(page).toHaveTitle(/CardPG/);
 });
 
-test("can verify game interface", async ({ page }) => {
-  await page.goto("/");
-
-  // Wait for the app to load
-  const app = page.getByTestId("app-container");
-  await expect(app).toBeVisible({ timeout: 10000 });
+test("can verify game interface", async ({ loadedPage }) => {
+  // loadedPage already waited for app-container to be visible
+  const app = loadedPage.getByTestId("app-container");
+  await expect(app).toBeVisible();
 });

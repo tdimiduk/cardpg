@@ -54,8 +54,25 @@ If you already have the dev server running (`./scripts/dev`), you can run tests 
 - Test specs: `tests/e2e/*.spec.ts`
 - Playwright config: `tests/e2e/playwright.config.ts`
 - Process Compose config: `tests/e2e/process-compose.yaml`
+- **Shared fixtures**: `tests/e2e/fixtures.ts` - Provides `loadedPage` fixture with pre-loaded app
+- **Config**: `tests/e2e/config.ts` - Centralized port configuration
 
 ## Common Test Patterns
+
+### Using the Shared Fixture
+
+Import from `fixtures.ts` instead of `@playwright/test` to get the `loadedPage` fixture:
+
+```typescript
+import { test, expect } from "./fixtures";
+
+test("my test", async ({ loadedPage }) => {
+  // loadedPage already has: page.goto("/") + wait for app-container visible
+  const element = loadedPage.getByTestId("my-element");
+});
+```
+
+Use `{ page }` for tests that don't need the full app loaded (e.g., just checking title).
 
 ### Finding Elements
 
