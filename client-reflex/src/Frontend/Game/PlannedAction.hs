@@ -18,7 +18,7 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 import Frontend.Card (CardDisplayMode (..), CardSettings (..))
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Html (Render (..), RenderHtml)
-import Frontend.Style hiding (classes)
+import Frontend.Style
 import Frontend.UI.Button
 
 -- | "PLANNED" badge styling
@@ -62,7 +62,10 @@ plannedActionWidget
   => Identified ActorId PlannedAction
   -> m ()
 plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
-  e <- button def{variant = constDyn VariantDestructive} $ text "↺ Revise"
+  e <-
+    button
+      def{variant = constDyn VariantDestructive, attributes = constDyn ("data-testid" =: "revise-action")}
+      $ text "↺ Revise"
   _ <- requesting $ Req.CancelPlan actorId <$ e
   case planned of
     PStandard (ActionStack action res) -> do
@@ -76,9 +79,16 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
               return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
           )
           ( \aDyn -> do
-              (eAct, _) <- elStyle' "div" ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover) $ do
-                dyn_ $ fmap render aDyn
-                divStyle plannedBadge $ text "PLANNED"
+              (eAct, _) <- elDynAttr'
+                "div"
+                ( constDyn
+                    ( "class" =: classes ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover)
+                        <> "data-testid" =: "planned-action-card"
+                    )
+                )
+                $ do
+                  dyn_ $ fmap render aDyn
+                  divStyle plannedBadge $ text "PLANNED"
               return (domEvent Click eAct)
           )
           (constDyn res)

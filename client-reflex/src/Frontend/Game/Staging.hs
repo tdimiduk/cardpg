@@ -55,7 +55,7 @@ stagingWidget actorId actionStackDyn validation = do
   component
     "action-staging"
     [ absolute
-    , "bottom-72"
+    , "bottom-80"
     , "left-1/2"
     , "-translate-x-1/2"
     , pointerEventsAuto
@@ -110,13 +110,12 @@ stagingStatusHeader
   -> m ()
 stagingStatusHeader validation = do
   divStyle [flex, flexCol, itemsCenter, "gap-2"] $ do
-    text "Preparing Action"
-    dyn_ $ ffor validation $ \case
-      PlanIncomplete cost provided ->
-        text $ " Need " <> tshow (cost - provided) <> " more resource(s)"
-      PlanValid _ ->
-        text " Ready to Commit"
-      _ -> blank
+    elAttr "div" ("data-testid" =: "staging-status") $ do
+      text "Preparing Action"
+      dyn_ $ ffor validation $ \case
+        PlanIncomplete cost provided -> text $ " " <> tshow provided <> "/" <> tshow cost
+        PlanValid _ -> text " ✅"
+        _ -> blank
 
 stagedCardsRow
   :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, RenderHtml m)
@@ -131,13 +130,19 @@ stagedCardsRow actionStackDyn = do
     (clickResource, clickAction) <-
       cardStackWidget
         ( \rDyn -> do
-            (eRes, _) <- elStyle' "div" stagedResourceCard $ do
-              dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
+            (eRes, _) <- elDynAttr'
+              "div"
+              (constDyn ("class" =: classes stagedResourceCard <> "data-testid" =: "staged-resource"))
+              $ do
+                dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
             return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
         )
         ( \aDyn -> do
-            (eAct, _) <- elStyle' "div" stagedActionCard $ do
-              dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
+            (eAct, _) <- elDynAttr'
+              "div"
+              (constDyn ("class" =: classes stagedActionCard <> "data-testid" =: "staged-action"))
+              $ do
+                dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
             return (domEvent Click eAct)
         )
         stagedResourcesDyn
@@ -150,17 +155,19 @@ stagingControls
   -> m (Event t (), Event t ())
 stagingControls validation = do
   divStyle [flex, "gap-2", "w-full"] $ do
+    let cfg = def{classes = [flex1], size = constDyn SizeSmall}
     -- Cancel Button (Secondary)
     cancelEvt <-
-      button def{variant = constDyn VariantSecondary, classes = [flex1]} $ text "Cancel"
+      button cfg{variant = constDyn VariantSecondary, testId = Just "staging-cancel"} $ text "Cancel"
 
     -- Commit Button (Primary, disabled if invalid)
     let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
         commitDisabled = not <$> validDyn
 
     commitEvt <-
-      button def{variant = constDyn VariantPrimary, disabled = commitDisabled, classes = [flex1]} $
-        text "Commit"
+      button
+        cfg{variant = constDyn VariantPrimary, disabled = commitDisabled, testId = Just "staging-commit"}
+        $ text "Commit"
 
     return (cancelEvt, commitEvt)
 

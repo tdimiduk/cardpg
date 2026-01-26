@@ -46,6 +46,9 @@ test("can send chat message with Enter key", async ({ page }) => {
   // Type a unique test message and press Enter
   const testMessage = `Enter key test ${Date.now()}`;
   await chatInput.fill(testMessage);
+  // to force waiting until the text is actually there. It looks like maybe enter can be too fast leading to flakyness
+  // Is there a cleaner way to do this?
+  await chatInput.selectText(testMessage);
   await chatInput.press("Enter");
 
   // Wait for the message to appear - using first() to handle duplicates

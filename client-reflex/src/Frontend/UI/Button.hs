@@ -11,6 +11,8 @@ module Frontend.UI.Button
   ) where
 
 import Data.Default (Default (..))
+import Data.Map qualified as Map
+import Data.Text qualified as T
 
 import Reflex.Dom.Core hiding (button)
 
@@ -46,8 +48,12 @@ data ButtonConfig t = ButtonConfig
   , size :: Dynamic t ButtonSize
   , disabled :: Dynamic t Bool
   , fullWidth :: Bool
+  , testId :: Maybe T.Text
+  -- ^ Optional test ID for automation
   , classes :: [CssClass]
   -- ^ Additional custom classes
+  , attributes :: Dynamic t (Map.Map T.Text T.Text)
+  -- ^ Arbitrary HTML attributes
   }
 
 instance (Reflex t) => Default (ButtonConfig t) where
@@ -57,7 +63,9 @@ instance (Reflex t) => Default (ButtonConfig t) where
       , size = constDyn SizeMedium
       , disabled = constDyn False
       , fullWidth = False
+      , testId = Nothing
       , classes = []
+      , attributes = constDyn mempty
       }
 
 -- | A unified button widget
@@ -136,14 +144,13 @@ button cfg label = do
         , "hover:bg-none" -- Reset hover effects if possible (imperfect in tailwind without group-hover logic, but opacity helps)
         ]
 
-  -- Combine all dynamic classes
   let dynClasses = do
         sz <- sizeClasses
         var <- variantClasses
         dis <- cfg.disabled
         let interaction = if dis then disabledClasses else [cursorPointer]
 
-        return $
+        pure $
           baseClasses
             <> widthClass
             <> cfg.classes
@@ -151,11 +158,14 @@ button cfg label = do
             <> interaction
             <> sz
 
-  -- We use 'button' element.
-  -- Note: Reflex 'button' helper is simple, but 'elDynAttr'' gives us more control.
-  let attrs = ffor ((,) <$> dynClasses <*> cfg.disabled) $ \(cls, dis) ->
+  let attrs = ffor3 dynClasses cfg.disabled cfg.attributes $ \cls dis attrs' ->
         "class" =: classes cls
-          <> if dis then "disabled" =: "true" else mempty
+          <> if dis
+            then "disabled" =: "true"
+            else
+              mempty
+                <> maybe mempty (\tid -> "data-testid" =: tid) cfg.testId
+                <> attrs'
 
   (e, _) <- elDynAttr' "button" attrs label
 

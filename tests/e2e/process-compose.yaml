@@ -7,7 +7,7 @@ processes:
     environment:
       - PORT=3001
       - CARDPG_USE_IN_MEMORY_DB=true
-      - CARDPG_SEED=42
+      - CARDPG_SEED=123
     shutdown:
       signal: 2
       parent_only: false
@@ -37,7 +37,7 @@ processes:
       failure_threshold: 10
 
   playwright:
-    command: bash -c "cd tests/e2e && playwright test"
+    command: bash -c "cd tests/e2e && playwright test $PLAYWRIGHT_ARGS"
     depends_on:
       caddy:
         condition: process_healthy
