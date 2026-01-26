@@ -28,7 +28,7 @@ import Data.Text qualified as T
 import Data.Yaml (decodeFileThrow)
 import GHC.Generics (Generic)
 import System.FilePath (takeDirectory, (</>))
-import System.Random (StdGen, getStdGen, newStdGen, uniform)
+import System.Random (StdGen, getStdGen, mkStdGen, newStdGen, uniform)
 import System.Random.Stateful (Uniform (..), uniformM)
 
 import Core.Card
@@ -79,10 +79,12 @@ instance FromJSON Scenario
 
 -- | Load a scenario from a YAML file.
 -- This initializes the game state, loads all actors, and generates UUIDs.
-loadScenario :: FilePath -> IO (GameState, StdGen)
-loadScenario path = do
+loadScenario :: FilePath -> Maybe Int -> IO (GameState, StdGen)
+loadScenario path maybeSeed = do
   scenario :: Scenario <- decodeFileThrow path
-  rng <- newStdGen
+  rng <- case maybeSeed of
+    Just seed -> return $ mkStdGen seed
+    Nothing -> newStdGen
 
   let env =
         GameEnv

@@ -17,6 +17,7 @@ data Config = Config
   , cardsDir :: FilePath
   , scenarioFile :: FilePath
   , useInMemoryDB :: Bool
+  , seed :: Maybe Int
   }
   deriving (Show, Eq)
 
@@ -47,6 +48,10 @@ loadConfig = do
         Just "true" -> True
         _ -> False
 
+  -- Seed Config
+  seedStr <- lookupEnv "CARDPG_SEED"
+  let seedVal = read <$> seedStr
+
   pure
     Config
       { dbConfig = dbConfig
@@ -54,4 +59,5 @@ loadConfig = do
       , cardsDir = cDir
       , scenarioFile = sFile
       , useInMemoryDB = useInMem
+      , seed = seedVal
       }

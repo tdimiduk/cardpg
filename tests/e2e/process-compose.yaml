@@ -7,6 +7,7 @@ processes:
     environment:
       - PORT=3001
       - CARDPG_USE_IN_MEMORY_DB=true
+      - CARDPG_SEED=42
     shutdown:
       signal: 2
       parent_only: false

@@ -112,7 +112,7 @@ test_game =
         let game1 = addActor actorId actorState game0
 
         -- 1. Draw Command
-        let ((game2, _, actions, _), gen2) = runState (processCommand (Req.DrawCards actorId) 1000 game1) gen
+        let ((game2, _, actions, _), gen2) = runState (processCommand (Req.DrawCards actorId) game1) gen
 
         length actions @?= 1
         let evt = head actions
@@ -134,11 +134,11 @@ test_game =
         -- We must inject a LogChallenge into history for the defense to work
         let challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 1 Red
         let logPayload = LogChallenge challenge PPass
-        let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) 1500 SenderGM logPayload
+        let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) SenderGM logPayload
 
         let game2WithHistory = game2{history = game2.history ++ [logEntry]}
 
-        let ((game3, _, actions2, _), _) = runState (processCommand (Req.Defend actorId cid) 2000 game2WithHistory) gen2
+        let ((game3, _, actions2, _), _) = runState (processCommand (Req.Defend actorId cid) game2WithHistory) gen2
 
         length actions2 @?= 1
         let evt2 = head actions2
@@ -172,7 +172,7 @@ test_game =
         let actorState = emptyActorState -- Empty deck, empty discard
         let game1 = addActor actorId actorState game0
 
-        let ((game2, _, actions, _), _) = runState (processCommand (Req.DrawCards actorId) 1000 game1) gen
+        let ((game2, _, actions, _), _) = runState (processCommand (Req.DrawCards actorId) game1) gen
 
         let actionTypes = map (toConstr . (.event)) actions
         actionTypes @?= ["CardsCreated", "DeckShuffled", "CardDrawn"]
@@ -222,7 +222,7 @@ test_game =
         let game1 = addActor actorId actorState game0
 
         -- Run concludeRound
-        let ((game2, updatesResult, _, _), _) = runState (processCommand Req.EndRound 3000 game1) gen
+        let ((game2, updatesResult, _, _), _) = runState (processCommand Req.EndRound game1) gen
 
         -- Verify Updates
         let updates = case updatesResult of
@@ -274,7 +274,7 @@ test_game =
         let game1 = addActor npcId npcState game0
 
         -- Send EndRoundIntent to trigger auto-planning for next round
-        let ((game2, _, events, _), _) = runState (processCommand Req.EndRound 3000 game1) gen
+        let ((game2, _, events, _), _) = runState (processCommand Req.EndRound game1) gen
 
         -- Expect ActionPlanned event (from auto-planning)
         let planEvents = [e | e <- events, case e.event of ActionPlanned _ -> True; _ -> False]
@@ -325,7 +325,7 @@ test_game =
                 actionCid
                 [resCid]
 
-        let ((game2, _, actions, _), _) = runState (processCommand cmd 4000 game1) gen
+        let ((game2, _, actions, _), _) = runState (processCommand cmd game1) gen
 
         length actions @?= 1
         case head actions of

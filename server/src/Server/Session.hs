@@ -10,7 +10,7 @@ import Data.Pool (Pool)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Database.PostgreSQL.Simple qualified as Pg
-import System.Random (StdGen, newStdGen)
+import System.Random (StdGen, mkStdGen, newStdGen)
 
 import Core.Card (ConsequenceCard (..), CoreCard (..))
 import Core.NonEmptyText (getRawText)
@@ -41,11 +41,13 @@ initGame backend config lib forceReset = do
   case maybeLoaded of
     Just loadedGs -> do
       T.putStrLn "Loaded persisted game state."
-      rng <- newStdGen
+      rng <- case config.seed of
+        Just s -> return $ mkStdGen s
+        Nothing -> newStdGen
       return (hydrate loadedGs, rng)
     Nothing -> do
       T.putStrLn $ "Loading starter scenario from " <> T.pack config.scenarioFile <> "..."
-      (initialGs, rng) <- loadScenario config.scenarioFile
+      (initialGs, rng) <- loadScenario config.scenarioFile config.seed
 
       let newGs = hydrate initialGs
 
