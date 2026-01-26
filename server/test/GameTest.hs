@@ -9,15 +9,14 @@ import Control.Monad.State (runState)
 import Data.Generics.Labels ()
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromJust)
-import Data.Text (Text, pack)
+import Data.Text (Text)
 import System.Random (mkStdGen)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase, (@?=))
-import Text.Read (readMaybe)
 
-import Core.Card (CardInstance, CoreCard (..), Identified (..), Stats (..))
+import Core.Card (CoreCard (..), Identified (..), Stats (..))
 import Core.Logic.Deck (drawCard)
-import Core.NonEmptyText (NonEmptyText, mkNonEmptyText)
+import Core.NonEmptyText (mkNonEmptyText)
 import Core.Primitives
   ( ActorId (..)
   , CardInstanceId (..)
@@ -31,7 +30,6 @@ import Core.State
   , ActorState (..)
   , ChallengeSource (..)
   , CoreCardState (..)
-  , CorePlayState (..)
   , GameEnv (..)
   , GameEvent (..)
   , PlannedAction (..)
@@ -43,7 +41,7 @@ import Data.List.NonEmpty (NonEmpty (..))
 
 import Api.Request qualified as Req
 import Server.Dispatch (processCommand)
-import Server.Engine (concludeRound, runActorAction)
+import Server.Engine (runActorAction)
 import Server.Game (GameState (..), addActor, emptyGame)
 import Server.Types
   ( ActorGameEvent (..)
@@ -114,12 +112,13 @@ test_game =
         -- 1. Draw Command
         let ((game2, _, actions, _), gen2) = runState (processCommand (Req.DrawCards actorId) game1) gen
 
-        length actions @?= 1
-        let evt = head actions
-        evt.actorId @?= actorId
-        case evt.event of
-          CardDrawn c -> c.id @?= cid1
-          _ -> assertBool "Expected CardDrawn event" False
+        case actions of
+          [evt] -> do
+            evt.actorId @?= actorId
+            case evt.event of
+              CardDrawn c -> c.id @?= cid1
+              _ -> assertBool "Expected CardDrawn event" False
+          _ -> assertBool "Expected exactly one action" False
 
         let actorSt2 = game2 ^. #actors . at actorId
         case actorSt2 of
@@ -140,12 +139,13 @@ test_game =
 
         let ((game3, _, actions2, _), _) = runState (processCommand (Req.Defend actorId cid) game2WithHistory) gen2
 
-        length actions2 @?= 1
-        let evt2 = head actions2
-        evt2.actorId @?= actorId
-        case evt2.event of
-          CardDefended _ c -> c.id @?= cid2
-          _ -> assertBool "Expected CardDefended event" False
+        case actions2 of
+          [evt2] -> do
+            evt2.actorId @?= actorId
+            case evt2.event of
+              CardDefended _ c -> c.id @?= cid2
+              _ -> assertBool "Expected CardDefended event" False
+          _ -> assertBool "Expected exactly one action" False
 
         -- Verify Actor State in Game
         let actorSt3 = game3 ^. #actors . at actorId
@@ -228,9 +228,9 @@ test_game =
         let updates = case updatesResult of
               Right u -> u
               Left _ -> []
-        length updates @?= 1
-        let StateUpdate{updateActorId = uid} = head updates
-        uid @?= actorId
+        case updates of
+          [StateUpdate{updateActorId = uid}] -> uid @?= actorId
+          _ -> assertBool "Expected exactly one update" False
 
         -- Verify Actor State in Game
         let actorSt' = game2 ^. #actors . at actorId
@@ -289,7 +289,9 @@ test_game =
               Just (PStandard stack) -> do
                 stack.actionCard.id @?= actionCid
                 length stack.resources @?= 1
-                (head stack.resources).id @?= resCid
+                case stack.resources of
+                  [res] -> res.id @?= resCid
+                  _ -> assertBool "Expected one resource" False
               _ -> assertBool "Expected Standard Plan" False
     , testCase "Explicit Plan Action Command" $ do
         let env =
@@ -325,14 +327,15 @@ test_game =
                 actionCid
                 [resCid]
 
-        let ((game2, _, actions, _), _) = runState (processCommand cmd game1) gen
+        let ((_game2, _, actions, _), _) = runState (processCommand cmd game1) gen
 
-        length actions @?= 1
-        case head actions of
-          ActorGameEvent _ (ActionPlanned (PStandard stack)) -> do
+        case actions of
+          [ActorGameEvent _ (ActionPlanned (PStandard stack))] -> do
             stack.actionCard.id @?= actionCid
-            (head stack.resources).id @?= resCid
-          _ -> assertBool "Expected ActionPlanned event" False
+            case stack.resources of
+              [res] -> res.id @?= resCid
+              _ -> assertBool "Expected one resource" False
+          _ -> assertBool "Expected ActionPlanned event with one action" False
     ]
 
 -- Helpers
@@ -357,7 +360,7 @@ mockCard name' =
     }
 
 mockAttackCard :: Text -> ResourceType -> Int -> CoreCard
-mockAttackCard name' color cost' =
+mockAttackCard _name' color cost' =
   CoreCard
     { name = undefined
     , cost = Just cost'
@@ -371,7 +374,7 @@ mockAttackCard name' color cost' =
     }
 
 mockResCard :: Text -> CoreCard
-mockResCard name' =
+mockResCard _name' =
   CoreCard
     { name = undefined
     , cost = Nothing

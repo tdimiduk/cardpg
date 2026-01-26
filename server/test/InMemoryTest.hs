@@ -2,17 +2,16 @@
 
 module InMemoryTest where
 
-import Data.IORef (readIORef)
 import Data.Map qualified as Map
 import Data.Text (Text)
 import Test.Tasty (TestTree, testGroup)
-import Test.Tasty.HUnit (assertBool, testCase, (@?=))
+import Test.Tasty.HUnit (assertBool, testCase)
 
 import Core.Card (CoreCard (..), Stats (..))
 import Core.State (GameEnv (..))
 import Server.DB (initInMemoryDB, loadGame, saveGame)
 import Server.Game (emptyGame)
-import Server.Types (GameState (..), StorageBackend (..))
+import Server.Types (GameState (..))
 
 -- Mock GameState for testing
 mockGameState :: GameState
@@ -26,7 +25,7 @@ mockGameState =
    in emptyGame env
 
 mockCard :: Text -> CoreCard
-mockCard name' =
+mockCard _name' =
   CoreCard
     { name = undefined
     , cost = Nothing
