@@ -106,7 +106,7 @@ component "my-component" [styles] $ do
 Or add directly to elements:
 
 ```haskell
-elAttr "div" ("class" =: classes styles <> "data-testid" =: "my-element") $ ...
+elAttr "div" ("class" =: classes styles <> testId "my-element") $ ...
 ```
 
 ## Troubleshooting

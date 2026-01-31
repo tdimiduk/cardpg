@@ -4,7 +4,6 @@ deck:
     blue: 4
     red: 4
     yellow: 3
-  type: coreCard
 - name: Gymnastics
   rules:
   - If you spend this as a resource you can move 1 extra meter in your "free" move
@@ -13,7 +12,6 @@ deck:
     blue: 1
     red: 3
     yellow: 5
-  type: coreCard
 - cost: 1
   name: Tales of Heroics
   rules:
@@ -22,22 +20,18 @@ deck:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
 - name: Patter
   stats:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 2→basic wound'
+  cost: 1
   name: Reliable Attack
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 2 -> basic wound'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
 - name: Make Opportunity
   rules:
   - 'defend: you may use this as a resource to attack next turn'
@@ -45,35 +39,29 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 1
   name: Quick Attack
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 0
   name: Flashing blade
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
 - name: Not there anymore
   rules:
-  - 'Defend |x|: strength |y|
-
-    you can use this whole defense against any number of attacks this round'
+  - |-
+    Defend |x|: strength |y|
+    you can use this whole defense against any number of attacks this round
   stats:
     blue: 3
     red: 2
     yellow: 4
-  type: coreCard
 - cost: 1
   name: I've got a plan
   rules:
@@ -82,17 +70,14 @@ deck:
     blue: 5
     red: 3
     yellow: 1
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow}  (+ 3 if target is attacking you this turn)→basic
+    wound'
+  cost: 1
   name: Stop Thrust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 0 (+ 3 if target is attacking you this
-    turn) -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
 - cost: 1
   name: Bouy Spirits
   rules:
@@ -101,27 +86,25 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 2
   name: Efficient Attack
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   - reclaim 1 resourse from this attack to hand
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: |-
+    {Yellow}: Str = {Yellow} + 3→Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 1
   name: Trip
-  rules:
-  - "Attack {Yellow}: Strength = {Yellow} + 3 -> Minor: knockdown\n Major: knockdown\
-    \ + stun 2\nCritical: knockdown + stun 6"
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
 - name: Athletics
   rules:
   - 'Action: Move 8, recover this to your hand'
@@ -129,7 +112,6 @@ deck:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
 - name: Parry
   rules:
   - 'defend |x| or |y|: strength |y| + 1'
@@ -137,30 +119,24 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Yellow}: Str = {Yellow}→ignore 1 armor
+    basic wound
+  cost: 2
   name: Precise Strike
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> ignore 1 armor
-
-    basic wound'
   stats:
     blue: 3
     red: 1
     yellow: 4
-  type: coreCard
-- cost: 0
+- attack: |-
+    {Blue}: Str = {Yellow} + 1→ignore armor
+    Target must expend 1/2/4 cards to attack next turn, you draw a card if they do not
+  cost: 0
   name: Trick
-  rules:
-  - 'Attack {Blue}: Strength = {Yellow} + 1 -> ignore armor
-
-    Target must expend 1/2/4 cards to attack next turn, you draw a card if they do
-    not'
   stats:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
 - cost: 0
   name: Inspire
   rules:
@@ -169,37 +145,31 @@ deck:
     blue: 1
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: |-
+    {Blue}: Str = {Blue} + 3→ignore armor
+    Discard 1 /3/All cards
+  cost: 1
   name: Mind Games
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} + 3 -> ignore armor
-
-    Discard 1 /3/All cards'
   stats:
     blue: 3
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 2
   name: Fence
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   - you may apply this and it's resources to any defense this round
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow} + 5→Minor: Stun 2 recover resources spent'
+  cost: 2
   name: False Charge
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 5 -> Minor: Stun 2 recover resources spent'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: Footwork
   rules:
   - When spent on attack can also spend to defend one attack
@@ -207,45 +177,40 @@ deck:
     blue: 1
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 4→Target must expend 1/2/4 cards to defend against
+    you next turn'
+  cost: 1
   name: Feint
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> Target must expend 1/2/4 cards to
-    defend against you next turn'
   stats:
     blue: 3
     red: 1
     yellow: 3
-  type: coreCard
-id: swashbuckler
 items:
 - name: Throwing Knives
   passive: Expend 1 use to make any |y| attack at range 5m; if you can recover the
     knife you regain the use
+  tags:
+  - Equipped
   traits:
   - pierce
   - thrown
   - 3 uses
-  tags: [Equipped]
-  type: itemCard
 - name: Rapier
+  tags:
+  - Equipped
   traits:
   - pierce
-  tags: [Equipped]
-  type: itemCard
 - burden: 1
   defense: 3
   name: Leather Armor
+  tags:
+  - Equipped
   traits:
   - armored
-  tags: [Equipped]
-  type: itemCard
 name: swashbuckler
 nature:
 - defense: 2
   name: Hero
   resilience: 3
-  type: natureCard
 tags:
 - pc

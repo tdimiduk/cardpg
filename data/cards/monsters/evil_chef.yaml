@@ -1,76 +1,60 @@
 deck:
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Toss salad
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 3
     red: 1
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Toss salad
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 3
     red: 1
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Toss salad
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 3
     red: 1
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Toss salad
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 3
     red: 1
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 1
   name: Peel
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 1
   name: Peel
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 1
   name: Peel
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 1
   name: Peel
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
 - name: Pan shield
   rules:
   - When flipped + defence
@@ -78,7 +62,6 @@ deck:
     blue: 3
     red: 4
     yellow: 1
-  type: coreCard
 - name: Pan shield
   rules:
   - When flipped + defence
@@ -86,7 +69,6 @@ deck:
     blue: 3
     red: 4
     yellow: 1
-  type: coreCard
 - name: Pan shield
   rules:
   - When flipped + defence
@@ -94,7 +76,6 @@ deck:
     blue: 3
     red: 4
     yellow: 1
-  type: coreCard
 - name: Pan shield
   rules:
   - When flipped + defence
@@ -102,7 +83,6 @@ deck:
     blue: 3
     red: 4
     yellow: 1
-  type: coreCard
 - name: Duck behind counter
   rules:
   - When flipped defend completely
@@ -110,7 +90,6 @@ deck:
     blue: 0
     red: 4
     yellow: 4
-  type: coreCard
 - name: Duck behind counter
   rules:
   - When flipped defend completely
@@ -118,7 +97,6 @@ deck:
     blue: 0
     red: 4
     yellow: 4
-  type: coreCard
 - name: Duck behind counter
   rules:
   - When flipped defend completely
@@ -126,7 +104,6 @@ deck:
     blue: 0
     red: 4
     yellow: 4
-  type: coreCard
 - name: Duck behind counter
   rules:
   - When flipped defend completely
@@ -134,86 +111,67 @@ deck:
     blue: 0
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 3
   name: Clang
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 3
   name: Clang
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 3
   name: Clang
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 3
   name: Clang
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Chop vegetables
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Chop vegetables
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Chop vegetables
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Chop vegetables
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-id: evil-chef
 items: []
 name: Evil Chef
 nature:
 - defense: 2
   name: Evil Chef
   resilience: 2
-  type: natureCard
 tags:
 - monster

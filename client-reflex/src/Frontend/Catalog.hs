@@ -44,7 +44,8 @@ exampleAttack =
     , tags = Just $ "Melee" :| ["Attack"]
     , stats = Stats{red = 3, yellow = 3, blue = 1}
     , cost = Just 1
-    , rules = Just $ RuleAttack attackDef :| []
+    , attack = Just attackDef
+    , rules = Nothing
     , flavor = Nothing
     }
   where
@@ -62,6 +63,7 @@ exampleSkill =
     , tags = Just $ "Skill" :| []
     , stats = Stats{red = 0, yellow = 0, blue = 2}
     , cost = Nothing
+    , attack = Nothing
     , rules = Just $ RuleGeneral generalDef :| []
     , flavor = Just $ unsafeSimpleString "Calm your mind."
     }
@@ -81,6 +83,7 @@ exampleHeavyText =
     , tags = Just $ "Item" :| ["Lore"]
     , stats = Stats{red = 0, yellow = 1, blue = 1}
     , cost = Just 2
+    , attack = Nothing
     , rules = Just $ RulePassive passiveDef :| [RuleTrigger triggerDef]
     , flavor =
         Just $ unsafeSimpleString "The pages crumble at your touch, yet the words burn into your mind."

@@ -22,6 +22,7 @@ import Data.Default (Default (..))
 import Reflex.Dom.Core
 
 import Core.Card
+import Core.Language (cmdAttack)
 import Core.Render
   ( ComputeRenderMode
   , IconMode (..)
@@ -117,6 +118,10 @@ instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStr
         renderStrategyWith @'HtmlMode (StatsSettings StatsCol IconResponsive) c.stats
         component "art" (artClasses settings) blank
       component "rules" (textboxClasses settings) $ do
+        maybe
+          blank
+          (\atk -> divClass "action" $ el "p" $ render cmdAttack >> text " " >> renderStrategy @'HtmlMode atk)
+          c.attack
         renderStrategy @'HtmlMode c.rules
         renderStrategy @'HtmlMode c.flavor
     CardPrint -> divStyle (cardClasses settings) $ do
@@ -128,6 +133,10 @@ instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStr
         renderStrategyWith @'HtmlMode (StatsSettings StatsCol IconResponsive) c.stats
         component "art" (artClasses settings) blank
       component "rules" (textboxClasses settings) $ do
+        maybe
+          blank
+          (\atk -> divClass "action" $ el "p" $ render cmdAttack >> text " " >> renderStrategy @'HtmlMode atk)
+          c.attack
         renderStrategy @'HtmlMode c.rules
         renderStrategy @'HtmlMode c.flavor
 
@@ -157,7 +166,6 @@ instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStr
 -- Rules rendering to match legacy textbox style
 instance (Monad m, DomBuilder t m, ComputeRenderMode m ~ 'HtmlMode) => RenderStrategy 'HtmlMode Rule m where
   renderStrategy rule = divClass "action" $ el "p" $ case rule of
-    RuleAttack x -> renderStrategy @'HtmlMode x
     RuleGeneral x -> renderStrategy @'HtmlMode x
     RuleTask x -> renderStrategy @'HtmlMode x
     RuleTrigger x -> renderStrategy @'HtmlMode x

@@ -1,14 +1,13 @@
 deck:
-- cost: 2
+- attack: '{Red}: Str = {Blue}'
+  cost: 2
   name: Sunburn
   rules:
-  - 'Attack {Red}: Strength = {Blue}'
   - Debuffs monster
   stats:
     blue: 4
     red: 4
     yellow: 1
-  type: coreCard
 - name: Lightning Dodge
   rules:
   - Use {yellow} + {red} for {Red} defense
@@ -16,7 +15,6 @@ deck:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
 - name: Blinding Sun
   rules:
   - The next 2 attacks against you, ignore the resource number on the top card
@@ -24,7 +22,6 @@ deck:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
 - name: Elvish Footsteps
   rules:
   - Super good at sneaking in a forest
@@ -32,38 +29,33 @@ deck:
     blue: 5
     red: 1
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 2
   name: Melt Weapon
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 2'
   - Heat up a weapon so much it melts, hurts the one holding it
   stats:
     blue: 3
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Blue} - 1→Atacks everyone in area first round, then for 5
+    rounds anyone in area takes same attack'
+  cost: 5
   name: The Floor is Lava
   rules:
-  - 'Attack {Red}: Strength = {Blue} - 1 -> Atacks everyone in area first round, then
-    for 5 rounds anyone in area takes same attack'
   - Makes an area of ground that is lava
   stats:
     blue: 3
     red: 3
     yellow: 1
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Blue}→Attacks each round removing one card from stack each
+    turn until empty'
+  cost: 3
   name: Magma Missile
-  rules:
-  - 'Attack {Red}: Strength = {Blue} -> Attacks each round removing one card from
-    stack each turn until empty'
   stats:
     blue: 4
     red: 2
     yellow: 1
-  type: coreCard
 - cost: 3
   name: Haste
   rules:
@@ -73,15 +65,14 @@ deck:
     blue: 2
     red: 1
     yellow: 5
-  type: coreCard
 - name: Supercharged
   rules:
-  - 'Action: Put in play. Attack {red:10} anyone who attacks you. Resolve (end): expend the attack the attack triggered, otherwise recover to hand'
+  - 'Action: Put in play. Attack {Red:10}anyone who attacks you. Resolve (end): expend
+    the attack the attack triggered, otherwise recover to hand'
   stats:
     blue: 1
     red: 2
     yellow: 5
-  type: coreCard
 - name: Sunlight
   rules:
   - Causes the character to glow
@@ -89,7 +80,6 @@ deck:
     blue: 4
     red: 2
     yellow: 4
-  type: coreCard
 - name: Light On Fire
   rules:
   - Ignites nonliving burnable things on fire
@@ -97,34 +87,28 @@ deck:
     blue: 4
     red: 4
     yellow: 2
-  type: coreCard
 - name: Overheated
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
 - name: Lightning Speed
   stats:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
 - name: Magical Abilities
   stats:
     blue: 6
     red: 1
     yellow: 1
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Blue} + 5'
+  cost: 4
   name: Fire Blast
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 5'
   stats:
     blue: 4
     red: 3
     yellow: 2
-  type: coreCard
 - cost: 1
   name: Heat Up
   rules:
@@ -133,26 +117,22 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 4'
+  cost: 2
   name: Fire Bolt
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 4'
   stats:
     blue: 4
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 5
   name: Fireball
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 2'
   - Affects all monsters
   stats:
     blue: 4
     red: 3
     yellow: 1
-  type: coreCard
 - name: Sunny Day
   rules:
   - All sleeping (unconscious/stunned) characters are woken up
@@ -160,80 +140,69 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 1
   name: Light Blast
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 2'
   stats:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 6'
+  cost: 2
   name: Banish Darkness
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 6'
   - Only affects dark-related monsters
   stats:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Blue} + 3'
+  cost: 4
   name: Chain Lightning
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 3'
   - Attacks 1 monster for full strength next for 1/2 and next for 1/4 strength
   stats:
     blue: 3
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Blue} + 4'
+  cost: 3
   name: Lightning Bolt
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 4'
   stats:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 6
+- attack: '{Red}: Str = {Blue} - 3'
+  cost: 6
   name: Thunderstorm
   rules:
-  - 'Attack {Red}: Strength = {Blue} - 3'
   - Summons a cloud that zaps monsters randomly for 3 rounds
   stats:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
-id: vallhach
 items:
 - name: Elven Staff
-  tags: [Equipped]
-  type: itemCard
+  tags:
+  - Equipped
 - name: Sun Belt
+  tags:
+  - Equipped
   traits:
   - Sun
-  tags: [Equipped]
-  type: itemCard
 - name: Lightning Earrings
+  tags:
+  - Equipped
   traits:
   - Lightning
-  tags: [Equipped]
-  type: itemCard
 name: Vallhach
 nature:
 - defense: 2
   name: Hero
   resilience: 3
-  type: natureCard
 - name: Vallhach
   passive: An elf mage
   traits:
   - Fire
-  type: natureCard
 tags:
 - pc

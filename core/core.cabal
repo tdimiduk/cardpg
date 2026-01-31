@@ -81,6 +81,7 @@ test-suite core-test
   -- cabal-fmt: expand tests -Main
   other-modules:
     ArbitraryInstances
+    CardParsingTest
     ConsequenceParsingTest
     Core.LogicTest
     PlanningTests
@@ -100,6 +101,8 @@ test-suite core-test
     , bytestring
     , containers
     , core
+    , directory
+    , filepath
     , generic-lens
     , generic-random
     , lens

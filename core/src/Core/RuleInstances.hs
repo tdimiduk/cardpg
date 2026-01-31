@@ -4,10 +4,10 @@ module Core.RuleInstances () where
 
 import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON)
 
-import Core.DSL.Printer (prettyRule)
-import Core.DSL.RuleParser (parseRule)
+import Core.DSL.Printer (prettyAttack, prettyRule)
+import Core.DSL.RuleParser (parseAttack, parseRule)
 import Core.Json (cardpgJsonOptions)
-import Core.RuleDefs (Rule)
+import Core.RuleDefs (AttackDef, Rule)
 
 instance ToJSON Rule where
   toJSON = String . prettyRule
@@ -17,3 +17,12 @@ instance FromJSON Rule where
     Right r -> pure r
     Left err -> fail $ "DSL parse failed: " ++ err
   parseJSON v = genericParseJSON (cardpgJsonOptions "Rule") v
+
+instance ToJSON AttackDef where
+  toJSON = String . prettyAttack
+
+instance FromJSON AttackDef where
+  parseJSON (String t) = case parseAttack t of
+    Right r -> pure r
+    Left err -> fail $ "Attack DSL parse failed: " ++ err
+  parseJSON v = genericParseJSON (cardpgJsonOptions "AttackDef") v

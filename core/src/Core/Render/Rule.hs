@@ -50,8 +50,6 @@ instance
   => RenderStrategy mode AttackDef m
   where
   renderStrategy def = do
-    render cmdAttack
-    renderSpace
     render def.resistedBy
     render sepColon
     renderSpace

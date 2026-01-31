@@ -160,14 +160,15 @@ button cfg label = do
 
   let attrs = ffor3 dynClasses cfg.disabled cfg.attributes $ \cls dis attrs' ->
         "class" =: classes cls
-          <> if dis
-            then "disabled" =: "true"
-            else
-              mempty
-                <> maybe mempty (\tid -> "data-testid" =: tid) cfg.testId
-                <> attrs'
+          <> mkDisabledAttr dis
+          <> maybe mempty testId cfg.testId
+          <> attrs'
 
   (e, _) <- elDynAttr' "button" attrs label
 
   -- Gate the click event by the disabled state
   return $ gate (not <$> current cfg.disabled) (domEvent Click e)
+
+mkDisabledAttr :: Bool -> Map.Map T.Text T.Text
+mkDisabledAttr True = "disabled" =: "true"
+mkDisabledAttr False = mempty

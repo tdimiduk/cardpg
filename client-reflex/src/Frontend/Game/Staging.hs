@@ -110,7 +110,7 @@ stagingStatusHeader
   -> m ()
 stagingStatusHeader validation = do
   divStyle [flex, flexCol, itemsCenter, "gap-2"] $ do
-    elAttr "div" ("data-testid" =: "staging-status") $ do
+    elAttr "div" (testId "staging-status") $ do
       text "Preparing Action"
       dyn_ $ ffor validation $ \case
         PlanIncomplete cost provided -> text $ " " <> tshow provided <> "/" <> tshow cost
@@ -132,7 +132,7 @@ stagedCardsRow actionStackDyn = do
         ( \rDyn -> do
             (eRes, _) <- elDynAttr'
               "div"
-              (constDyn ("class" =: classes stagedResourceCard <> "data-testid" =: "staged-resource"))
+              (constDyn ("class" =: classes stagedResourceCard <> testId "staged-resource"))
               $ do
                 dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
             return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
@@ -140,7 +140,7 @@ stagedCardsRow actionStackDyn = do
         ( \aDyn -> do
             (eAct, _) <- elDynAttr'
               "div"
-              (constDyn ("class" =: classes stagedActionCard <> "data-testid" =: "staged-action"))
+              (constDyn ("class" =: classes stagedActionCard <> testId "staged-action"))
               $ do
                 dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
             return (domEvent Click eAct)

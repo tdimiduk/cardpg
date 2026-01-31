@@ -17,6 +17,7 @@ fatigueCard =
     , tags = Just ("Status" :| ["Fatigue", "Physical"])
     , stats = Stats 1 1 1
     , cost = Nothing
+    , attack = Nothing
     , rules =
         Just $
           RuleTask

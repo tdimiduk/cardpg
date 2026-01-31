@@ -6,7 +6,6 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
 - name: Healing Hands
   rules:
   - 'Action: remove a 1 consequence from creature touched'
@@ -16,7 +15,6 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
 - name: Nobility
   rules:
   - Use this card to invoke your noble privileges
@@ -24,7 +22,6 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
 - name: Chivalry
   rules:
   - '|z| + 3 when defending from anywhere'
@@ -32,7 +29,6 @@ deck:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
 - cost: 0
   name: Inspire
   rules:
@@ -41,38 +37,34 @@ deck:
     blue: 1
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Red}: Str = {Red} + 2→ignore 1 armor
+    Armor damage (on any success)
+  cost: 2
   name: Sunder Armor
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> ignore 1 armor
-
-    Armor damage (on any success)'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red}→basic wound'
+  cost: 1
   name: Rebound
   rules:
-  - 'Attack {Red}: Strength = {Red} -> basic wound'
   - If this does not deliver a wound, recover it's resource
   stats:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Red}: Str = {Red} + 2→Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 2
   name: Knockdown
-  rules:
-  - "Attack {Red}: Strength = {Red} + 2 -> Minor: knockdown\n Major: knockdown + stun\
-    \ 2\nCritical: knockdown + stun 6"
   stats:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
 - name: Make Opportunity
   rules:
   - 'defend: you may use this as a resource to attack next turn'
@@ -80,37 +72,32 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  cost: 1
   name: Gauntlet Punch
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 0
+- attack: |-
+    {Red}: Str = {Red} + 3→Minor: daze 1
+     Major: Minor wound
+    Critical: major wound
+  cost: 0
   name: Opportunistic Kick
-  rules:
-  - "Attack {Red}: Strength = {Red} + 3 -> Minor: daze 1\n Major: Minor wound\nCritical:\
-    \ major wound"
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: |-
+    {Red}: Str = {Red} + 2→non |x| defends at -2
+    crushing wound
+  cost: 3
   name: Crush through
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> non |x| defends at -2
-
-    crushing wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: Endure
   rules:
   - strength +2 when used to defend from anywhere
@@ -118,7 +105,6 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
 - cost: 0
   name: Wind up
   rules:
@@ -127,26 +113,22 @@ deck:
     blue: 3
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Power Attack
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 1
   name: Backswing
   rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   - You must have attacked last turn to play backswing
   stats:
     blue: 1
     red: 3
     yellow: 2
-  type: coreCard
 - name: Sweeping defense
   rules:
   - 'defend |x| or |y|: strength = |x|+1'
@@ -155,7 +137,6 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
 - name: Athletics
   rules:
   - 'Action: Move 8'
@@ -164,38 +145,31 @@ deck:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: |-
+    {Red}: Str = {Red}→ignore armor
+    stun 2/5/10
+  cost: 1
   name: Ring the Bell
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> ignore armor
-
-    stun 2/5/10'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Attack
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Red}: Str = {Red} + 1→ignore one armor
+    basic wound
+  cost: 2
   name: Crushing blow
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> ignore one armor
-
-    basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
 - name: Armor Deflect
   rules:
   - '|x| or |y| +2 defense from anywhere if you have deflecting armor'
@@ -203,56 +177,50 @@ deck:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Power Attack
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Rattling blow
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - If defender adds cards with armor, stun 1
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-id: squire
 items:
 - name: Waterskin
   passive: 'Action (10 minutes): Consume 1 use, reshuffle your expended into your
     deck'
+  tags:
+  - Equipped
   traits:
   - 4 uses
-  tags: [Equipped]
-  type: itemCard
 - name: Great Hammer
+  tags:
+  - Equipped
   traits:
   - impact
   - pierce
   - large weapon
-  tags: [Equipped]
-  type: itemCard
 - burden: 2
   defense: 5
   name: Breastplate and Mail
+  tags:
+  - Equipped
   traits:
   - armored
   - heavy
   - deflecting
-  tags: [Equipped]
-  type: itemCard
 name: squire
 nature:
 - defense: 2
   name: Hero
   resilience: 3
-  type: natureCard
 tags:
 - pc

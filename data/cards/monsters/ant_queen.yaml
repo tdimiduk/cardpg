@@ -1,13 +1,11 @@
 deck:
-- cost: 4
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
 - cost: 1
   name: Itchy
   rules:
@@ -16,52 +14,41 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+  cost: 4
   name: Acid Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Attacks again next round'
   stats:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+  cost: 5
   name: Acid Spray
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks all opponents, Attacks again next round'
   stats:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
 - cost: 1
   name: Itchy
   rules:
@@ -70,52 +57,41 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+  cost: 4
   name: Acid Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Attacks again next round'
   stats:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+  cost: 5
   name: Acid Spray
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks all opponents, Attacks again next round'
   stats:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
 - cost: 1
   name: Itchy
   rules:
@@ -124,52 +100,41 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+  cost: 4
   name: Acid Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Attacks again next round'
   stats:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+  cost: 5
   name: Acid Spray
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks all opponents, Attacks again next round'
   stats:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
 - cost: 1
   name: Itchy
   rules:
@@ -178,50 +143,39 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+  cost: 4
   name: Acid Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Attacks again next round'
   stats:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+  cost: 5
   name: Acid Spray
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks all opponents, Attacks again next round'
   stats:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-id: ant-queen
 items: []
 name: Ant Queen
 nature:
 - defense: 2
   name: Ant Queen
   resilience: 2
-  type: natureCard
 tags:
 - monster

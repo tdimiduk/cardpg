@@ -66,7 +66,7 @@ sidebarRightWidget activeActor logsDyn phaseConfig = do
             fmap (T.pack . show . length) logsDyn
 
     -- Logs
-    _ <- elAttr "div" ("class" =: classes logArea <> "data-testid" =: "game-log") $ do
+    _ <- elAttr "div" ("class" =: classes logArea <> testId "game-log") $ do
       -- Reverse to show oldest at top, newest at bottom (standard chat log)
       simpleList (fmap reverse logsDyn) renderLogEntry
 
@@ -84,7 +84,7 @@ chatInputRequesting activeActor = do
             .~ mconcat
               [ "placeholder" =: "Type a message..."
               , "class" =: classes classList
-              , "data-testid" =: "chat-input"
+              , testId "chat-input"
               ]
             & inputElementConfig_setValue
             .~ ("" <$ success)
@@ -97,7 +97,7 @@ chatInputRequesting activeActor = do
         elAttr'
           "button"
           ( "class" =: classes ["bg-indigo-600", "hover:bg-indigo-500", "text-white", "p-1.5", rounded]
-              <> "data-testid" =: "chat-send"
+              <> testId "chat-send"
           )
           $ text ">"
 
@@ -129,7 +129,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
     elAttr
       "div"
       ( "class" =: classes ["bg-slate-800/50", rounded, "p-2", "animate-fade-in", flex, "gap-2"]
-          <> "data-testid" =: "log-entry-chat"
+          <> testId "log-entry-chat"
       )
       $ do
         elStyle
@@ -139,7 +139,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
         divStyle ["flex-1"] $ do
           elStyle "div" ["text-[10px]", fontBold, "text-slate-500", "mb-0.5"] $
             text (renderSender l.sender)
-          elAttr "div" ("class" =: classes [textSm, "text-slate-200"] <> "data-testid" =: "log-entry-message") $
+          elAttr "div" ("class" =: classes [textSm, "text-slate-200"] <> testId "log-entry-message") $
             text c
   LogInfo c -> do
     let (bg, border) = ("text-slate-500", "border-slate-800")

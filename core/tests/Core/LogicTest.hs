@@ -119,8 +119,8 @@ test_plannedActions =
       c2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       c3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
 
-      dummyCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing
-      dummyActionCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing
+      dummyCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing
+      dummyActionCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing Nothing
 
       card1 = Identified c1 dummyActionCard
       card2 = Identified c2 dummyCard
@@ -261,7 +261,7 @@ test_statusLogic =
                 , statusCardTemplates =
                     Map.singleton
                       statusName
-                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing)
+                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing)
                 , consequenceCardTemplates = Map.empty
                 }
         let state = mkActorState []
@@ -277,7 +277,7 @@ test_statusLogic =
                 , statusCardTemplates =
                     Map.singleton
                       statusName
-                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing)
+                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing)
                 , consequenceCardTemplates = Map.empty
                 }
         let state0 = mkActorState []
@@ -299,7 +299,7 @@ test_defenseLogic =
   let
     cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
     challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 3 Red
-    fatigueCard = CoreCard (unsafeNonEmptyText "Fatigue") Nothing (Stats 0 0 0) Nothing Nothing Nothing
+    fatigueCard = CoreCard (unsafeNonEmptyText "Fatigue") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing
    in
     testGroup
       "Defense Logic"

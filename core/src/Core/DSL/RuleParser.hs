@@ -1,4 +1,4 @@
-module Core.DSL.RuleParser (parseRule) where
+module Core.DSL.RuleParser (parseRule, parseAttack, attackParser) where
 
 import Control.Applicative (optional, some, (<|>))
 import Control.Monad (void)
@@ -64,6 +64,9 @@ import Core.Stats
   )
 import Core.Util (tshow)
 
+parseAttack :: Text -> Either String AttackDef
+parseAttack = basicParse attackParser
+
 parseRule :: Text -> Either String Rule
 parseRule = basicParse ruleParser
 
@@ -71,8 +74,7 @@ ruleParser :: Parser Rule
 ruleParser =
   tryChoice $
     (<* eof)
-      <$> [ attackParser
-          , ongoingParser
+      <$> [ ongoingParser
           , passiveParser
           , taskParser
           , triggerParser
@@ -88,10 +90,11 @@ effectArrow :: Parser Text
 effectArrow = string sepArrow <|> string "->"
 
 -- Attack
-attackParser :: Parser Rule
+attackParser :: Parser AttackDef
 attackParser = do
-  _ <- string' cmdAttack
-  _ <- space1
+  _ <- optional $ try $ do
+    string' cmdAttack
+    space1
   resistedBy <- resourceSymbol
   _ <- space
   _ <- optional (string sepColon)
@@ -99,7 +102,7 @@ attackParser = do
   power <- stackPowerParser
   _ <- separatorParser
   extra <- optional richTextParser
-  pure $ RuleAttack $ AttackDef power resistedBy extra
+  pure $ AttackDef power resistedBy extra
 
 -- Ongoing (Life) -> Effect
 ongoingParser :: Parser Rule

@@ -39,6 +39,7 @@ data CoreCard = CoreCard
   , cost :: Maybe Int
   -- ^ Play Cost (Cards to discard to initiate stack).
   --   | Nothing = Status/Resource (cannot be played).
+  , attack :: Maybe AttackDef
   , rules :: Maybe (NonEmpty Rule)
   -- ^ The Source of Truth.
   --   | VTT Renderer: Iterates this list to draw the text box.

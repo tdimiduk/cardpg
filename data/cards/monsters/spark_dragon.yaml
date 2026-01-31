@@ -4,218 +4,177 @@ deck:
     blue: 5
     red: 9
     yellow: 7
-  type: coreCard
 - name: Zoom
   stats:
     blue: 5
     red: 7
     yellow: 9
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 1
   name: Electrified
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   - when used in defense can be played as an attack next round
   stats:
     blue: 3
     red: 4
     yellow: 6
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red}→basic wound'
+  cost: 1
   name: Too hot to touch
   rules:
-  - 'Attack {Red}: Strength = {Red} -> basic wound'
   - when used in defense can be played as an attack next round
   stats:
     blue: 3
     red: 6
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} - 4→basic wound'
+  cost: 3
   name: Shock bite
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} - 4 -> basic wound'
   - 'also attack |x|: strength = |x| - 6'
   stats:
     blue: 3
     red: 5
     yellow: 6
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 2→basic wound'
+  cost: 2
   name: Dive Bomb
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 2 -> basic wound'
   stats:
     blue: 0
     red: 0
     yellow: 10
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 8→basic wound'
+  cost: 3
   name: Pounce
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 8 -> basic wound'
   - Can be used as a resourse for a claw attack next round
   stats:
     blue: 3
     red: 3
     yellow: 6
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 8→basic wound'
+  cost: 3
   name: Pounce
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 8 -> basic wound'
   - Can be used as a resourse for a claw attack next round
   stats:
     blue: 3
     red: 3
     yellow: 6
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Fire spray
   rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   - affects all enemies
   stats:
     blue: 3
     red: 5
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Burn
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 3
     red: 8
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Burn
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 3
     red: 8
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Burn
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 3
     red: 8
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 3
     red: 6
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 3
     red: 6
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 3
     red: 6
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 1
   name: Zap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 1
   name: Zap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 1
   name: Zap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
-id: spark-dragon
 items: []
 name: Spark Dragon
 nature:
@@ -228,6 +187,5 @@ nature:
   - Teeth
   - Claws
   - Wings
-  type: natureCard
 tags:
 - monster

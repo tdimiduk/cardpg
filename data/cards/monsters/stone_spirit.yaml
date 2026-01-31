@@ -1,24 +1,22 @@
 deck:
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1→Knock down'
+  cost: 1
   name: earthquake
   rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Knock down'
   - Affects multiple enemies
   stats:
     blue: 3
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1→Knock down'
+  cost: 1
   name: earthquake
   rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Knock down'
   - Affects multiple enemies
   stats:
     blue: 3
     red: 4
     yellow: 4
-  type: coreCard
 - name: Hard Rock
   rules:
   - Gets +4 when defending
@@ -26,7 +24,6 @@ deck:
     blue: 4
     red: 7
     yellow: 4
-  type: coreCard
 - name: Hard Rock
   rules:
   - Gets +4 when defending
@@ -34,7 +31,6 @@ deck:
     blue: 4
     red: 7
     yellow: 4
-  type: coreCard
 - name: Hard Rock
   rules:
   - Gets +4 when defending
@@ -42,176 +38,142 @@ deck:
     blue: 4
     red: 7
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 4
   name: Boulder roll
   rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   - Knocks target off boulder, they must spend 2 turns actions getting back up
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 4
   name: Boulder roll
   rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   - Knocks target off boulder, they must spend 2 turns actions getting back up
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 4
   name: Boulder roll
   rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   - Knocks target off boulder, they must spend 2 turns actions getting back up
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Stomp
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 1
     red: 5
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Stomp
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 1
     red: 5
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Stomp
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 1
     red: 5
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Stomp
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 1
     red: 5
     yellow: 3
-  type: coreCard
 - name: Really Strong
   stats:
     blue: 1
     red: 8
     yellow: 1
-  type: coreCard
 - name: Really Strong
   stats:
     blue: 1
     red: 8
     yellow: 1
-  type: coreCard
 - name: Really Strong
   stats:
     blue: 1
     red: 8
     yellow: 1
-  type: coreCard
 - name: Really Strong
   stats:
     blue: 1
     red: 8
     yellow: 1
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 3
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 1
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 3
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 1
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 3
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 1
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 3
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 1
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Punch
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 1
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Punch
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 1
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Punch
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 1
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Punch
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 1
     red: 4
     yellow: 3
-  type: coreCard
-id: stone-spirit
 items: []
 name: Stone spirit
 nature:
 - defense: 2
   name: Stone spirit
   resilience: 2
-  type: natureCard
 tags:
 - monster

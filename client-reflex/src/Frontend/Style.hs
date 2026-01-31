@@ -34,6 +34,7 @@ module Frontend.Style
   , elStyle
   , elStyle'
   , component
+  , testId
 
     -- * Layout Combinators
   , row
@@ -152,6 +153,7 @@ module Frontend.Style
 
 import Data.Coerce (coerce)
 import Data.List.NonEmpty (toList)
+import Data.Map (Map)
 import Data.Semigroup (Semigroup (..))
 import Data.String (IsString (..))
 import Data.Text (Text)
@@ -216,7 +218,10 @@ elStyle' tag cls = elClass' tag (classes cls)
 
 -- | Create a semantic div with data-component and data-testid attributes for testing/inspection.
 component :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m a
-component name cls = elAttr "div" ("class" =: classes cls <> "data-testid" =: name)
+component name cls = elAttr "div" ("class" =: classes cls <> testId name)
+
+testId :: (IsString s, Ord s) => Text -> Map s Text
+testId name = "data-testid" =: name
 
 --------------------------------------------------------------------------------
 

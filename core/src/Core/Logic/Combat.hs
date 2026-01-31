@@ -29,7 +29,7 @@ import Core.Card
   )
 import Core.Logic.Monad (GameM (..))
 import Core.Primitives (ChallengeId)
-import Core.RuleDefs (AttackDef (..), Rule (RuleAttack))
+import Core.RuleDefs (AttackDef (..))
 import Core.State
   ( ActionStack (..)
   , ActiveChallenge (..)
@@ -47,12 +47,9 @@ import Core.State
 import Core.Stats (ResourceType (..), StackPower (..), Stats (..), getStat)
 
 getAttackRule :: CoreCard -> Either Text AttackDef
-getAttackRule card = case card.rules of
+getAttackRule card = case card.attack of
   Nothing -> Left "no attack rule"
-  Just rules -> case [r | RuleAttack r <- toList rules] of
-    [] -> Left "no attack rule"
-    [r] -> Right r
-    _ -> Left "cards with multiple attack rules are not implemented yet"
+  Just attack -> Right attack
 
 stackPower :: ActionStack -> StackPower -> Int
 stackPower stack power =

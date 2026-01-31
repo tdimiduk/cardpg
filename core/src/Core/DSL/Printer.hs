@@ -4,7 +4,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Core.DSL.Printer (prettyRule, richToString, prettyModifier) where
+module Core.DSL.Printer (prettyRule, prettyAttack, richToString, prettyModifier) where
 
 import Control.Monad.Writer (Writer, execWriter, tell)
 import Data.Text (Text)
@@ -15,7 +15,7 @@ import Core.Render.Rule ()
 import Core.Render.Stats ()
 import Core.Render.Util (renderSpace)
 import Core.RichText (RichText)
-import Core.RuleDefs (Rule (..))
+import Core.RuleDefs (AttackDef, Rule (..))
 import Core.Stats (Difficulty (..), ResourceType (..), prettyModifier)
 import Core.Util (tshow)
 
@@ -34,9 +34,7 @@ instance RenderStrategy 'TextMode Difficulty PrinterM where
     render attr
     renderSpace
     render (tshow val)
-
 instance RenderStrategy 'TextMode Rule PrinterM where
-  renderStrategy (RuleAttack def) = render def
   renderStrategy (RuleGeneral def) = render def
   renderStrategy (RuleOngoing def) = render def
   renderStrategy (RulePassive def) = render def
@@ -46,6 +44,9 @@ instance RenderStrategy 'TextMode Rule PrinterM where
 
 prettyRule :: Rule -> Text
 prettyRule rule = T.concat $ execWriter (render rule)
+
+prettyAttack :: AttackDef -> Text
+prettyAttack def = T.concat $ execWriter (render def)
 
 richToString :: RichText -> Text
 richToString rt = T.concat $ execWriter (render rt)

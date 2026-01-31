@@ -4,88 +4,70 @@ deck:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
 - name: Wind's speed
   stats:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
 - name: Wind's speed
   stats:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
 - name: Wind's speed
   stats:
     blue: 3
     red: 3
     yellow: 8
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 0
   name: Wind Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 1
     red: 3
     yellow: 5
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 0
   name: Wind Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 1
     red: 3
     yellow: 5
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 0
   name: Wind Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 1
     red: 3
     yellow: 5
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 0
   name: Wind Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 1
     red: 3
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 5'
+  cost: 2
   name: Super Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5'
   stats:
     blue: 4
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 5'
+  cost: 2
   name: Super Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5'
   stats:
     blue: 4
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 5'
+  cost: 2
   name: Super Gust
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 5'
   stats:
     blue: 4
     red: 4
     yellow: 5
-  type: coreCard
 - cost: 1
   name: Incorporeal
   rules:
@@ -94,7 +76,6 @@ deck:
     blue: 7
     red: 1
     yellow: 3
-  type: coreCard
 - cost: 1
   name: Incorporeal
   rules:
@@ -103,7 +84,6 @@ deck:
     blue: 7
     red: 1
     yellow: 3
-  type: coreCard
 - cost: 1
   name: Incorporeal
   rules:
@@ -112,7 +92,6 @@ deck:
     blue: 7
     red: 1
     yellow: 3
-  type: coreCard
 - cost: 1
   name: Fly inbetween
   rules:
@@ -122,7 +101,6 @@ deck:
     blue: 5
     red: 2
     yellow: 5
-  type: coreCard
 - cost: 1
   name: Fly inbetween
   rules:
@@ -132,7 +110,6 @@ deck:
     blue: 5
     red: 2
     yellow: 5
-  type: coreCard
 - cost: 1
   name: Fly inbetween
   rules:
@@ -142,7 +119,6 @@ deck:
     blue: 5
     red: 2
     yellow: 5
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| +1
@@ -150,7 +126,6 @@ deck:
     blue: 2
     red: 4
     yellow: 5
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| +1
@@ -158,7 +133,6 @@ deck:
     blue: 2
     red: 4
     yellow: 5
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| +1
@@ -166,7 +140,6 @@ deck:
     blue: 2
     red: 4
     yellow: 5
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| +1
@@ -174,44 +147,38 @@ deck:
     blue: 2
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 1→Stun 2, 4, 10'
+  cost: 2
   name: Blow through
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> Stun 2, 4, 10'
   - Ignore physical |x| and |y| attacks this turn
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 1→Stun 2, 4, 10'
+  cost: 2
   name: Blow through
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> Stun 2, 4, 10'
   - Ignore physical |x| and |y| attacks this turn
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 1→Stun 2, 4, 10'
+  cost: 2
   name: Blow through
   rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> Stun 2, 4, 10'
   - Ignore physical |x| and |y| attacks this turn
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-id: wind-spirit
 items: []
 name: Wind spirit
 nature:
 - defense: 2
   name: Wind spirit
   resilience: 2
-  type: natureCard
 tags:
 - monster

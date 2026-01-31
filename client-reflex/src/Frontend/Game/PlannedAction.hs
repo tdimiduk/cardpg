@@ -64,7 +64,7 @@ plannedActionWidget
 plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
   e <-
     button
-      def{variant = constDyn VariantDestructive, attributes = constDyn ("data-testid" =: "revise-action")}
+      def{variant = constDyn VariantDestructive, attributes = constDyn (testId "revise-action")}
       $ text "↺ Revise"
   _ <- requesting $ Req.CancelPlan actorId <$ e
   case planned of
@@ -83,7 +83,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
                 "div"
                 ( constDyn
                     ( "class" =: classes ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover)
-                        <> "data-testid" =: "planned-action-card"
+                        <> testId "planned-action-card"
                     )
                 )
                 $ do

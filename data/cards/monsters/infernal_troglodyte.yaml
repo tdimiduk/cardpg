@@ -4,7 +4,6 @@ deck:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: blindsight
   rules:
   - get +2 to defend against light based attacks
@@ -12,46 +11,37 @@ deck:
     blue: 5
     red: 1
     yellow: 1
-  type: coreCard
 - name: skitter
   stats:
     blue: 3
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 2
   name: rake
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 1
   name: claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
 - name: Trogle
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: blindsight
   rules:
   - get +2 to defend against light based attacks
@@ -59,46 +49,37 @@ deck:
     blue: 5
     red: 1
     yellow: 1
-  type: coreCard
 - name: skitter
   stats:
     blue: 3
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 2
   name: rake
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 1
   name: claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
 - name: Trogle
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: blindsight
   rules:
   - get +2 to defend against light based attacks
@@ -106,46 +87,37 @@ deck:
     blue: 5
     red: 1
     yellow: 1
-  type: coreCard
 - name: skitter
   stats:
     blue: 3
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 2
   name: rake
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 1
   name: claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
 - name: Trogle
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: blindsight
   rules:
   - get +2 to defend against light based attacks
@@ -153,41 +125,32 @@ deck:
     blue: 5
     red: 1
     yellow: 1
-  type: coreCard
 - name: skitter
   stats:
     blue: 3
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 2
   name: rake
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 1
   name: claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-id: infernal-troglodyte
 items: []
 name: Infernal Troglodyte
 nature:
@@ -198,6 +161,5 @@ nature:
   - claws
   - teeth
   - blindsight
-  type: natureCard
 tags:
 - monster

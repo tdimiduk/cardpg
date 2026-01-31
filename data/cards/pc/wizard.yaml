@@ -4,90 +4,77 @@ deck:
     blue: 5
     red: 4
     yellow: 2
-  type: coreCard
 - name: Book Learning
   stats:
     blue: 6
     red: 1
     yellow: 1
-  type: coreCard
 - name: Elven Patience
   stats:
     blue: 4
     red: 3
     yellow: 4
-  type: coreCard
 - name: Elven Lore
   stats:
     blue: 5
     red: 2
     yellow: 3
-  type: coreCard
-- name: Overwhelm Essense
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 2 -> range 8m'
+- attack: '{Red}: Str = {Blue} + 2→range 8m'
+  name: Overwhelm Essense
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Red}: Str = {Blue}→range 5m, leave this as state (without it's resources)
+    Minor: Jinx 1 or Hex 1 (caster picks)
+     Major: Curse 1
+    Grave: You're a newt
+  cost: 2
   name: Incremental Polymorph
   rules:
-  - "Attack {Red}: Strength = {Blue} -> range 5m, leave this as state (without it's\
-    \ resources)\nMinor: Jinx 1 or Hex 1 (caster picks)\n Major: Curse 1\nGrave: You're\
-    \ a newt"
   - 'Planning: Expend this or spend your action to add a +1 on top and repeat the
     attack using your draw for this turn as resources'
   stats:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: |-
+    {Blue}: Str = {Blue} + 2→range 20m
+    Curse 1/3/5
+  cost: 1
   name: Hex bolt
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} + 2 -> range 20m
-
-    Curse 1/3/5'
   stats:
     blue: 4
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: |-
+    {Blue}: Str = {Blue} + 4→range 5m
+    Basic death wound
+  cost: 4
   name: Rend Spirit
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} + 4 -> range 5m
-
-    Basic death wound'
   stats:
     blue: 4
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 5
+- attack: |-
+    {Red}: Str = {Red} + 4→range 25m, 5m radius
+    basic fire wound
+  cost: 5
   name: Fireball
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> range 25m, 5m radius
-
-    basic fire wound'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Red}: Str = {Blue} + 2→range 20m
+    basic wound
+  cost: 2
   name: Force Dart
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 2 -> range 20m
-
-    basic wound'
   stats:
     blue: 3
     red: 2
     yellow: 3
-  type: coreCard
 - cost: 2
   name: Ogre Strength
   rules:
@@ -97,7 +84,6 @@ deck:
     blue: 3
     red: 5
     yellow: 1
-  type: coreCard
 - cost: 2
   name: Haste
   rules:
@@ -107,7 +93,6 @@ deck:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
 - name: Shield of Force
   rules:
   - When you defend with this, recover to hand all other cards used in the defense
@@ -115,17 +100,17 @@ deck:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: |-
+    {Red}: Str = {Blue} + 2→range 2m
+    Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 1
   name: Telekenetic Shove
-  rules:
-  - "Attack {Red}: Strength = {Blue} + 2 -> range 2m\nMinor: knockdown\n Major: knockdown\
-    \ + stun 2\nCritical: knockdown + stun 6"
   stats:
     blue: 3
     red: 5
     yellow: 2
-  type: coreCard
 - name: Flicker
   rules:
   - 'defend |x|, |y|, |z|: strength = |z|'
@@ -134,7 +119,6 @@ deck:
     blue: 5
     red: 1
     yellow: 3
-  type: coreCard
 - name: Ghostform
   rules:
   - Action play as state
@@ -144,19 +128,17 @@ deck:
     blue: 2
     red: 1
     yellow: 3
-  type: coreCard
-- cost: 5
+- attack: |-
+    {Blue}: Str = {Blue}→ignore armor, range 10m
+    Minor: Target's next attack is expended without effect
+     Major: caster picks next attack's target (no self, but can target "nothing")
+    Grave: Caster picks who target attacks until removed
+  cost: 5
   name: Dominate
-  rules:
-  - "Attack {Blue}: Strength = {Blue} -> ignore armor, range 10m\nMinor: Target's\
-    \ next attack is expended without effect\n Major: caster picks next attack's target\
-    \ (no self, but can target \"nothing\")\nGrave: Caster picks who target attacks\
-    \ until removed"
   stats:
     blue: 5
     red: 1
     yellow: 1
-  type: coreCard
 - cost: 2
   name: Mirror Image
   rules:
@@ -168,99 +150,89 @@ deck:
     blue: 3
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: |-
+    {Blue}: Str = {Blue}→ignore armor, range 8m
+    basic mind wound
+  cost: 4
   name: Mind Crush
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} -> ignore armor, range 8m
-
-    basic mind wound'
   stats:
     blue: 4
     red: 1
     yellow: 1
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Yellow}: Str = {Blue} + 2→range 10m
+    Slow 2/5/10
+  cost: 2
   name: Slow ray
-  rules:
-  - 'Attack {Yellow}: Strength = {Blue} + 2 -> range 10m
-
-    Slow 2/5/10'
   stats:
     blue: 3
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: |-
+    {Blue}: Str = {Blue} + 3→ignore armor, range 5m
+    Any Success: Target discards their hand
+  cost: 1
   name: Make sneeze
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} + 3 -> ignore armor, range 5m
-
-    Any Success: Target discards their hand'
   stats:
     blue: 3
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 4
-  name: Blinding Beams
-  rules:
-  - 'Attack {Yellow}: Strength = {Blue} + 2 -> attack up to 3 targets within 10m
-
+- attack: |-
+    {Yellow}: Str = {Blue} + 2→attack up to 3 targets within 10m
     Minor: Dazzle
-
-    Major: Blind'
+    Major: Blind
+  cost: 4
+  name: Blinding Beams
   stats:
     blue: 3
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: |-
+    {Yellow}: Str = {Blue}→ignore armor, range 10m, 2 meter radius
+    Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 3
   name: Grease
-  rules:
-  - "Attack {Yellow}: Strength = {Blue} -> ignore armor, range 10m, 2 meter radius\n\
-    Minor: knockdown\n Major: knockdown + stun 2\nCritical: knockdown + stun 6"
   stats:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: |-
+    {Blue}: Str = {Blue} + 1→range 3m
+    Minor: Stun 2
+     Major: Impose the Sleep Trance condition
+    Critical: Impose the Sleeping condition
+  cost: 3
   name: Sleep Powder Spray
-  rules:
-  - "Attack {Blue}: Strength = {Blue} + 1 -> range 3m\nMinor: Stun 2\n Major: Impose\
-    \ the Sleep Trance condition\nCritical: Impose the Sleeping condition"
   stats:
     blue: 4
     red: 2
     yellow: 2
-  type: coreCard
-id: wizard
 items:
 - name: Waterskin
   passive: 'Action (10 minutes): Consume 1 use, reshuffle your expended into your
     deck'
+  tags:
+  - Equipped
   traits:
   - 4 uses
-  tags: [Equipped]
-  type: itemCard
 - name: Quarterstaff
+  tags:
+  - Equipped
   traits:
   - weapon
   - impact
-  tags: [Equipped]
-  type: itemCard
 - name: Arcane Training
   passive: You can cast arcane spells as long as you are not wearing armor
+  tags:
+  - Equipped
   traits:
   - arcane
-  tags: [Equipped]
-  type: itemCard
 name: wizard
 nature:
 - defense: 2
   name: Hero
   resilience: 3
-  type: natureCard
 tags:
 - pc

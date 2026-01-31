@@ -1,225 +1,176 @@
 deck:
-- cost: 4
+- attack: |-
+    {Red}: Str = {Red} + 3→ignore armor
+    basic wound
+  cost: 4
   name: Life Leech
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> ignore armor
-
-    basic wound'
   stats:
     blue: 0
     red: 6
     yellow: 0
-  type: coreCard
-- cost: 4
+- attack: |-
+    {Red}: Str = {Red} + 3→ignore armor
+    basic wound
+  cost: 4
   name: Life Leech
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> ignore armor
-
-    basic wound'
   stats:
     blue: 0
     red: 5
     yellow: 0
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→basic wound + Stun 2'
+  cost: 3
   name: Howling Wind Strike
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound + Stun 2'
   stats:
     blue: 0
     red: 5
     yellow: 0
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→basic wound + Stun 2'
+  cost: 3
   name: Howling Wind Strike
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound + Stun 2'
   stats:
     blue: 0
     red: 5
     yellow: 0
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→basic wound + Stun 2'
+  cost: 3
   name: Howling Wind Strike
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound + Stun 2'
   stats:
     blue: 0
     red: 5
     yellow: 0
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→basic wound + Stun 2'
+  cost: 3
   name: Howling Wind Strike
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound + Stun 2'
   stats:
     blue: 0
     red: 5
     yellow: 0
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→basic wound + Stun 2'
+  cost: 3
   name: Howling Wind Strike
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound + Stun 2'
   stats:
     blue: 0
     red: 5
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 4
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 3
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 3
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 3
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 3
     yellow: 0
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 0
     red: 3
     yellow: 0
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Swat
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 0
     red: 2
     yellow: 0
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Swat
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 0
     red: 2
     yellow: 0
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Swat
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 0
     red: 2
     yellow: 0
-  type: coreCard
-id: sky-zombie
 items: []
 name: Sky Zombie
 nature:
@@ -227,6 +178,5 @@ nature:
   name: Sky Zombie
   passive: Always attacks or blocks if possible, defends every attack with red
   resilience: 2
-  type: natureCard
 tags:
 - monster

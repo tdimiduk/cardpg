@@ -1,227 +1,177 @@
 deck:
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
   name: Sting
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 1
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 1
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 1
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 1
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 1
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
   name: Ram
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3'
   stats:
     blue: 1
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red}→Attacks again next round'
+  cost: 4
   name: Acid Spit
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks again next round'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red}→Attacks again next round'
+  cost: 4
   name: Acid Spit
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks again next round'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red}→Attacks again next round'
+  cost: 4
   name: Acid Spit
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks again next round'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red}→Attacks again next round'
+  cost: 4
   name: Acid Spit
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks again next round'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red}→Attacks again next round'
+  cost: 4
   name: Acid Spit
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks again next round'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Red}→Attacks again next round'
+  cost: 4
   name: Acid Spit
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> Attacks again next round'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-id: ant-soldier
 items: []
 name: Ant Soldier
 nature:
 - defense: 2
   name: Ant Soldier
   resilience: 2
-  type: natureCard
 tags:
 - monster

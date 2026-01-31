@@ -22,7 +22,7 @@ import Core.Primitives
   , CardInstanceId (..)
   , ChallengeId (..)
   )
-import Core.RuleDefs (AttackDef (..), Rule (..))
+import Core.RuleDefs (AttackDef (..))
 import Core.State
   ( ActionStack (..)
   , ActiveChallenge (..)
@@ -37,7 +37,6 @@ import Core.State
   , TableState (..)
   )
 import Core.Stats (ResourceType (..), StackPower (..))
-import Data.List.NonEmpty (NonEmpty (..))
 
 import Api.Request qualified as Req
 import Server.Dispatch (processCommand)
@@ -354,6 +353,7 @@ mockCard name' =
     { name = fromJust (mkNonEmptyText name')
     , cost = Nothing
     , tags = Nothing
+    , attack = Nothing
     , stats = Stats 0 0 0
     , rules = Nothing
     , flavor = Nothing
@@ -366,10 +366,8 @@ mockAttackCard _name' color cost' =
     , cost = Just cost'
     , tags = Nothing
     , stats = Stats 1 1 1
-    , rules =
-        Just $
-          RuleAttack (AttackDef{power = StackPower color 0 Nothing, resistedBy = color, effect = Nothing})
-            :| []
+    , attack = Just (AttackDef{power = StackPower color 0 Nothing, resistedBy = color, effect = Nothing})
+    , rules = Nothing
     , flavor = Nothing
     }
 
@@ -380,6 +378,7 @@ mockResCard _name' =
     , cost = Nothing
     , tags = Nothing
     , stats = Stats 5 5 5
+    , attack = Nothing
     , rules = Nothing
     , flavor = Nothing
     }

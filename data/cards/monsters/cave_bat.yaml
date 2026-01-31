@@ -1,37 +1,30 @@
 deck:
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 2
   name: Dive Bomb
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 0
   name: Wing slap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 1
   name: Bite
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
 - name: bat's speed
   stats:
     blue: 3
     red: 3
     yellow: 6
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| from anywhere
@@ -39,13 +32,11 @@ deck:
     blue: 2
     red: 3
     yellow: 5
-  type: coreCard
 - name: Flit
   stats:
     blue: 4
     red: 2
     yellow: 5
-  type: coreCard
 - name: Fly into the shadows
   rules:
   - 'Action: Defend |x| or |y| with |y| + 3'
@@ -53,40 +44,32 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 2
   name: Dive Bomb
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 0
   name: Wing slap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 1
   name: Bite
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
 - name: bat's speed
   stats:
     blue: 3
     red: 3
     yellow: 6
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| from anywhere
@@ -94,13 +77,11 @@ deck:
     blue: 2
     red: 3
     yellow: 5
-  type: coreCard
 - name: Flit
   stats:
     blue: 4
     red: 2
     yellow: 5
-  type: coreCard
 - name: Fly into the shadows
   rules:
   - 'Action: Defend |x| or |y| with |y| + 3'
@@ -108,40 +89,32 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 2
   name: Dive Bomb
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 0
   name: Wing slap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 1
   name: Bite
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
 - name: bat's speed
   stats:
     blue: 3
     red: 3
     yellow: 6
-  type: coreCard
 - name: Dodge
   rules:
   - Defend |x| or |y| with |y| from anywhere
@@ -149,13 +122,11 @@ deck:
     blue: 2
     red: 3
     yellow: 5
-  type: coreCard
 - name: Flit
   stats:
     blue: 4
     red: 2
     yellow: 5
-  type: coreCard
 - name: Fly into the shadows
   rules:
   - 'Action: Defend |x| or |y| with |y| + 3'
@@ -163,41 +134,32 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+  cost: 2
   name: Dive Bomb
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 4 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: '{Yellow}: Str = {Yellow}→basic wound'
+  cost: 0
   name: Wing slap
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+  cost: 1
   name: Bite
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
-id: cave-bat
 items: []
 name: Cave Bat
 nature:
 - defense: 2
   name: Cave Bat
   resilience: 2
-  type: natureCard
 tags:
 - monster

@@ -203,7 +203,7 @@ generateDeck opts path skipSnapshot = do
 generateGame :: Options -> FilePath -> Bool -> IO ()
 generateGame opts path skipSnapshot = do
   unless opts.quiet $ putStrLn $ "Generating game view for " <> path
-  (gameState, _) <- loadScenario path
+  (gameState, _) <- loadScenario path Nothing
 
   -- Helper to generate snapshot for a specific state
   let gen nameSuffix mActorId = do

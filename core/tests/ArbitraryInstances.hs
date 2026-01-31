@@ -155,8 +155,7 @@ instance Arbitrary TaskDef where
 instance Arbitrary Rule where
   arbitrary =
     oneof
-      [ RuleAttack <$> arbitrary
-      , RuleGeneral <$> arbitrary
+      [ RuleGeneral <$> arbitrary
       , RuleTask <$> arbitrary
       , RuleTrigger <$> arbitrary
       , RuleOngoing <$> arbitrary

@@ -1,230 +1,190 @@
 deck:
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Pack attack
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - Other wolves attacking this round +1
   stats:
     blue: 2
     red: 6
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Pack attack
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - Other wolves attacking this round +1
   stats:
     blue: 2
     red: 5
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Pack attack
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - Other wolves attacking this round +1
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Pack attack
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - Other wolves attacking this round +1
   stats:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 3
   name: Pounce
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 5
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 3
   name: Pounce
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 3
   name: Pounce
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 3
   name: Pounce
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 3
   name: Pounce
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 1
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Claw
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - 2 + when spent to defend
   stats:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Claw
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - 2 + when spent to defend
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Claw
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - 2 + when spent to defend
   stats:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Claw
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - 2 + when spent to defend
   stats:
     blue: 2
     red: 1
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Claw
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - 2 + when spent to defend
   stats:
     blue: 2
     red: 1
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 2
     red: 1
     yellow: 2
-  type: coreCard
-id: wolf
 items: []
 name: Wolf
 nature:
@@ -233,6 +193,5 @@ nature:
   resilience: 2
   traits:
   - Teeth Claws
-  type: natureCard
 tags:
 - monster

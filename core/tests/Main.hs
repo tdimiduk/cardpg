@@ -15,6 +15,7 @@ import Core.DSL.RuleParser (parseRule)
 import Core.LogicTest (test_logic)
 
 import ArbitraryInstances ()
+import CardParsingTest (test_cardParsing)
 import ConsequenceParsingTest (test_consequenceParsing)
 import PlanningTests (test_planningLogic)
 import ReadmeExamplesTest (test_readmeExamples)
@@ -23,10 +24,12 @@ import StateTests (test_stateTests)
 import StatusParsingTest (test_statusParsing)
 
 main :: IO ()
-main = defaultMain tests
+main = do
+  cardTests <- test_cardParsing
+  defaultMain (tests cardTests)
 
-tests :: TestTree
-tests =
+tests :: TestTree -> TestTree
+tests cardTests =
   testGroup
     "Tests"
     [ testProperty "CoreCard Roundtrip" $ prop_jsonRoundtrip @CoreCard
@@ -43,6 +46,7 @@ tests =
     , test_resolutionCycle
     , test_logic
     , test_planningLogic
+    , cardTests
     ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

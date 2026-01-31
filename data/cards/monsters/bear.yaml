@@ -1,224 +1,181 @@
 deck:
-- cost: 0
+- attack: |-
+    {Blue}: Str = {Red}→ignore armor
+    Discard 1/2/4 cards
+  cost: 0
   name: Roar
   rules:
-  - 'Attack {Blue}: Strength = {Red} -> ignore armor
-
-    Discard 1/2/4 cards'
   - Affects all enemies
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: |-
+    {Blue}: Str = {Red}→ignore armor
+    Discard 1/2/4 cards
+  cost: 0
   name: Roar
   rules:
-  - 'Attack {Blue}: Strength = {Red} -> ignore armor
-
-    Discard 1/2/4 cards'
   - Affects all enemies
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: |-
+    {Blue}: Str = {Red}→ignore armor
+    Discard 1/2/4 cards
+  cost: 0
   name: Roar
   rules:
-  - 'Attack {Blue}: Strength = {Red} -> ignore armor
-
-    Discard 1/2/4 cards'
   - Affects all enemies
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 8→basic wound'
+  cost: 3
   name: Rend
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 8 -> basic wound'
   stats:
     blue: 4
     red: 8
     yellow: 5
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 8→basic wound'
+  cost: 3
   name: Rend
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 8 -> basic wound'
   stats:
     blue: 4
     red: 8
     yellow: 5
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 8→basic wound'
+  cost: 3
   name: Rend
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 8 -> basic wound'
   stats:
     blue: 4
     red: 8
     yellow: 5
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 8→basic wound'
+  cost: 3
   name: Rend
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 8 -> basic wound'
   stats:
     blue: 4
     red: 8
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 10→basic wound'
+  cost: 1
   name: Knock down
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 10 -> basic wound'
   stats:
     blue: 5
     red: 7
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 10→basic wound'
+  cost: 1
   name: Knock down
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 10 -> basic wound'
   stats:
     blue: 5
     red: 7
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 10→basic wound'
+  cost: 1
   name: Knock down
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 10 -> basic wound'
   stats:
     blue: 5
     red: 7
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 10→basic wound'
+  cost: 1
   name: Knock down
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 10 -> basic wound'
   stats:
     blue: 5
     red: 7
     yellow: 5
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 4
     red: 6
     yellow: 6
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 4
     red: 6
     yellow: 6
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 4
     red: 6
     yellow: 6
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 4
     red: 6
     yellow: 6
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  cost: 1
   name: Claw
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
   stats:
     blue: 4
     red: 6
     yellow: 6
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 6→basic wound'
+  cost: 2
   name: Bite
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 6 -> basic wound'
   stats:
     blue: 2
     red: 7
     yellow: 4
-  type: coreCard
 - name: Bears Strength
   stats:
     blue: 3
     red: 10
     yellow: 4
-  type: coreCard
 - name: Bears Strength
   stats:
     blue: 3
     red: 10
     yellow: 4
-  type: coreCard
 - name: Bears Strength
   stats:
     blue: 3
     red: 10
     yellow: 4
-  type: coreCard
 - name: Bears Strength
   stats:
     blue: 3
     red: 10
     yellow: 4
-  type: coreCard
-id: bear
 items: []
 name: Bear
 nature:
 - defense: 3
   name: Bear
   resilience: 2
-  type: natureCard
 tags:
 - monster

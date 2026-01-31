@@ -6,7 +6,6 @@ deck:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
 - name: Strong lattice
   rules:
   - get + 3 when defending from anywhere
@@ -14,7 +13,6 @@ deck:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
 - name: Strong lattice
   rules:
   - get + 3 when defending from anywhere
@@ -22,31 +20,24 @@ deck:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- name: Shard poke
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  name: Shard poke
   stats:
     blue: 3
     red: 3
     yellow: 5
-  type: coreCard
-- name: Shard poke
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  name: Shard poke
   stats:
     blue: 3
     red: 3
     yellow: 5
-  type: coreCard
-- name: Shard poke
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  name: Shard poke
   stats:
     blue: 3
     red: 3
     yellow: 5
-  type: coreCard
 - name: Reflect attack
   rules:
   - When flipped as armor ignore attack and put it back on random enemy
@@ -54,138 +45,107 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-  type: coreCard
 - name: Magical nature
   stats:
     blue: 6
     red: 3
     yellow: 3
-  type: coreCard
 - name: Magical nature
   stats:
     blue: 6
     red: 3
     yellow: 3
-  type: coreCard
 - name: Crystal strength
   stats:
     blue: 2
     red: 6
     yellow: 2
-  type: coreCard
 - name: Crystal strength
   stats:
     blue: 2
     red: 6
     yellow: 2
-  type: coreCard
 - name: Crystal strength
   stats:
     blue: 2
     red: 6
     yellow: 2
-  type: coreCard
 - name: Crystal strength
   stats:
     blue: 2
     red: 6
     yellow: 2
-  type: coreCard
-- name: Crystal smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
-- name: Crystal smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
-- name: Crystal smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
-- name: Crystal smash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
-- name: Crystal slice
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- name: Crystal slice
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- name: Crystal slice
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- name: Crystal slice
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-  type: coreCard
-- name: Crystal crash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  name: Crystal crash
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
-- name: Crystal crash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  name: Crystal crash
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
-- name: Crystal crash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 4 -> basic wound'
+- attack: '{Red}: Str = {Red} + 4→basic wound'
+  name: Crystal crash
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
-id: crystal-shard
 items: []
 name: Crystal Shard
 nature:
 - defense: 4
   name: Crystal Shard
   resilience: 2
-  type: natureCard
 tags:
 - monster

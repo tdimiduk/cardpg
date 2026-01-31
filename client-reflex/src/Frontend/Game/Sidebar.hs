@@ -86,7 +86,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
                 { variant = constDyn VariantSecondary
                 , fullWidth = True
                 , classes = ["justify-start", "text-left"]
-                , attributes = ffor actorDyn $ \a -> "data-testid" =: ("select-actor-" <> a.name)
+                , attributes = ffor actorDyn $ \a -> testId ("select-actor-" <> a.name)
                 }
               $ dyn_
               $ ffor actorDyn

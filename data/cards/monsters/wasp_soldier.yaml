@@ -1,227 +1,177 @@
 deck:
-- cost: 4
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
   name: Flyby
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
   name: Flyby
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
   name: Flyby
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
   name: Flyby
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
   name: Flyby
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
   name: Flyby
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 3
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow}'
   stats:
     blue: 1
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow}'
   stats:
     blue: 1
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow}'
   stats:
     blue: 1
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow}'
   stats:
     blue: 1
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow}'
   stats:
     blue: 1
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow}'
   stats:
     blue: 1
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 1'
   stats:
     blue: 1
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
   name: Wingbeat
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
   name: Wingbeat
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
   name: Wingbeat
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
   name: Wingbeat
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
   name: Wingbeat
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
   name: Wingbeat
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 2'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-id: wasp-soldier
 items: []
 name: Wasp Soldier
 nature:
 - defense: 2
   name: Wasp Soldier
   resilience: 2
-  type: natureCard
 tags:
 - monster

@@ -1,21 +1,18 @@
 deck:
-- cost: 1
+- attack: |-
+    {Blue}: Str = {Red} + 3→no armor
+    Target discards 1/3/All cards
+  cost: 1
   name: Demoralize
-  rules:
-  - 'Attack {Blue}: Strength = {Red} + 3 -> no armor
-
-    Target discards 1/3/All cards'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: Conditioning
   stats:
     blue: 3
     red: 4
     yellow: 3
-  type: coreCard
 - name: Shielded Stance
   rules:
   - 'action: play as state'
@@ -26,7 +23,6 @@ deck:
     blue: 2
     red: 2
     yellow: 2
-  type: coreCard
 - name: Bravery
   rules:
   - '|z| + 3 when used to defend from anywhere'
@@ -34,63 +30,54 @@ deck:
     blue: 4
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 5→basic wound'
+  cost: 3
   name: Unstoppable chop
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 5 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: |-
+    {Red}: Str = {Red} + 2→ignore 1 armor
+    Armor damage (on any success)
+  cost: 2
   name: Sunder Armor
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> ignore 1 armor
-
-    Armor damage (on any success)'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  cost: 1
   name: Shielded Strike
   rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
   - you may apply this card to defense this round
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red}→basic wound'
+  cost: 1
   name: Box in
   rules:
-  - 'Attack {Red}: Strength = {Red} -> basic wound'
   - target must expend a card to attack next roud
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
 - name: Athletics
   stats:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  cost: 2
   name: Warding Strike
   rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
   - your team gets +2 strength to defend against an attack from target this round
   stats:
     blue: 3
     red: 3
     yellow: 4
-  type: coreCard
 - name: Shield Sacrifice
   rules:
   - 'defend |x| or |y|: strength = |x|'
@@ -100,17 +87,15 @@ deck:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 1→basic wound'
+  cost: 2
   name: Lead with the Shield
   rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> basic wound'
   - you may apply this and it's resources to any defense this round
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
 - name: Make Opportunity
   rules:
   - 'defend: you may use this as a resource to attack next turn'
@@ -118,27 +103,24 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Consistent Attack
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - 'Option: recover to hand then expend your first draw'
   stats:
     blue: 3
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red}→basic wound'
+  cost: 1
   name: Pressing Attack
   rules:
-  - 'Attack {Red}: Strength = {Red} -> basic wound'
   - can spend this on an attack next turn
   stats:
     blue: 1
     red: 4
     yellow: 2
-  type: coreCard
 - name: Endure
   rules:
   - strength +4 when used to defend from anywhere
@@ -146,7 +128,6 @@ deck:
     blue: 0
     red: 1
     yellow: 0
-  type: coreCard
 - name: Opportune Shield Placement
   rules:
   - '|x| and |y| +3 when used to defend from anywhere if you have a shield'
@@ -154,7 +135,6 @@ deck:
     blue: 2
     red: 2
     yellow: 2
-  type: coreCard
 - name: Hide behind shield
   rules:
   - 'defend |x| or |y|: strength |x|+3, use this (with different resources) against
@@ -163,25 +143,20 @@ deck:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Attack
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: '{Red}: Str = {Red} + 2→cannot inflict more than a minor wound'
+  cost: 0
   name: Shield Bash
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> cannot inflict more than a minor wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
 - name: Shield Deflect
   rules:
   - 'defend |x| or |y|: strength = |x| '
@@ -190,16 +165,13 @@ deck:
     blue: 2
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 2
   name: Power Attack
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
 - name: Shield Block
   rules:
   - 'defend |x| or |y|: strength = |x| '
@@ -208,40 +180,36 @@ deck:
     blue: 3
     red: 3
     yellow: 2
-  type: coreCard
 - name: Power
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
-id: shield-fighter
 items:
 - name: Battleaxe
+  tags:
+  - Equipped
   traits:
   - weapon
   - cutting
   - axe
   - heavy weapon
-  tags: [Equipped]
-  type: itemCard
 - name: Kite Shield
+  tags:
+  - Equipped
   traits:
   - shield
-  tags: [Equipped]
-  type: itemCard
 - burden: 1
   defense: 3
   name: Light Mail
+  tags:
+  - Equipped
   traits:
   - armored
-  tags: [Equipped]
-  type: itemCard
 name: shield-fighter
 nature:
 - defense: 2
   name: Hero
   resilience: 3
-  type: natureCard
 tags:
 - pc

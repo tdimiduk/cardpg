@@ -24,10 +24,11 @@ import Core.Render
   , RenderStrategy (..)
   )
 
+import Core.NonEmptyText (NonEmptyText (..), getRawText)
 import Core.Render.Rule ()
 import Core.Render.Stats ()
 import Core.RichText (Block (..), Inline (..), TextStyle (..))
-import Core.Stats (Difficulty (..), ResourceType (..), StatValue (..))
+import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
 import Core.Util (tshow)
 
 import Frontend.Style qualified as Style

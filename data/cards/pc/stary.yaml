@@ -1,35 +1,30 @@
 deck:
-- cost: 10
+- attack: '{Red}: Str = {Blue} + 15→basic wound x2'
+  cost: 10
   name: Supernova
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 15 -> basic wound x2'
   - Affects all enemies in the area
   stats:
     blue: 8
     red: 5
     yellow: 3
-  type: coreCard
-- cost: 2
-  name: Starry night
-  rules:
-  - |-
-    Attack {Blue}: Strength = {Blue} + 3 -> ignore armor, ranged
+- attack: |-
+    {Blue}: Str = {Blue} + 3→ignore armor, ranged
     Minor: Stun 2
      Major: cannot attack or draw until attacked or someone uses an action discard
     Critical: unconsious
+  cost: 2
+  name: Starry night
   stats:
     blue: 4
     red: 2
     yellow: 2
-  type: coreCard
-- name: Constelation sneeze
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} + 2 -> separately for each card in this attack'
+- attack: '{Blue}: Str = {Blue} + 2→separately for each card in this attack'
+  name: Constelation sneeze
   stats:
     blue: 4
     red: 3
     yellow: 3
-  type: coreCard
 - name: Shield Wings
   rules:
   - get + 3 to defend from anywhere
@@ -37,148 +32,121 @@ deck:
     blue: 2
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red}→basic wound'
+  cost: 2
   name: Scale slap
   rules:
-  - 'Attack {Red}: Strength = {Red} -> basic wound'
   - you may apply this and it's resources to any defense this round
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Blue}→basic wound'
+  cost: 1
   name: Star blast
-  rules:
-  - 'Attack {Red}: Strength = {Blue} -> basic wound'
   stats:
     blue: 4
     red: 1
     yellow: 3
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Flyby attack
   rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   - Can also move this turn
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 3
+- attack: '{Blue}: Str = {Blue}→Next 1,2,4 attacks also attack a random monster'
+  cost: 3
   name: Dragon Star
-  rules:
-  - 'Attack {Blue}: Strength = {Blue} -> Next 1,2,4 attacks also attack a random monster'
   stats:
     blue: 4
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 1→basic wound'
+  cost: 2
   name: Star beam
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 1 -> basic wound'
   - Used at range, hits up to 3 monsters
   stats:
     blue: 3
     red: 1
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Blue}: Str = {Red}→All cards red values get -1, -2, -4'
+  cost: 2
   name: Dragon shrink
-  rules:
-  - 'Attack {Blue}: Strength = {Red} -> All cards red values get -1, -2, -4'
   stats:
     blue: 4
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Blue} + 3'
+  cost: 3
   name: Sky star
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 3'
   stats:
     blue: 5
     red: 2
     yellow: 2
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Blue} + 4→attack all within medium area'
+  cost: 5
   name: Star storm
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 4 -> attack all within medium area'
   - Hits area
   stats:
     blue: 4
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 2→minor: stun 2, major: stun 4, stun 10'
+  cost: 2
   name: Star lock
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 2 -> minor: stun 2, major: stun 4, stun 10'
   stats:
     blue: 4
     red: 3
     yellow: 1
-  type: coreCard
-- cost: 0
+- attack: '{Red}: Str = {Blue}→basic wound'
+  cost: 0
   name: Sharp star
-  rules:
-  - 'Attack {Red}: Strength = {Blue} -> basic wound'
   stats:
     blue: 3
     red: 1
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red}→minor: knockdown, major: knock down skip 2 turns, paralyze'
+  cost: 2
   name: Dragon stomp
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> minor: knockdown, major: knock down skip 2
-    turns, paralyze'
   stats:
     blue: 3
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 1→Cant act or draw cards for 1,2,5'
+  cost: 1
   name: Tail Grab
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 1 -> Cant act or draw cards for 1,2,5'
   stats:
     blue: 2
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→basic wound'
+  cost: 3
   name: Tail Whack
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> basic wound'
   stats:
     blue: 2
     red: 4
     yellow: 2
-  type: coreCard
-- cost: 0
+- attack: '{Red}: Str = {Red}→basic wound'
+  cost: 0
   name: Dragon flap
-  rules:
-  - 'Attack {Red}: Strength = {Red} -> basic wound'
   stats:
     blue: 1
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Blue}→basic wound'
+  cost: 3
   name: Triple stars
   rules:
-  - 'Attack {Red}: Strength = {Blue} -> basic wound'
   - Used at range, hits up to 3 monsters
   stats:
     blue: 3
     red: 1
     yellow: 3
-  type: coreCard
 - name: Star scales
   rules:
   - 'Action: put out to defend'
@@ -187,26 +155,22 @@ deck:
     blue: 2
     red: 4
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 2→basic wound'
+  cost: 2
   name: Shooting star
   rules:
-  - 'Attack {Red}: Strength = {Blue} + 2 -> basic wound'
   - Used at range
   stats:
     blue: 3
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Blue} + 2→basic wound'
+  cost: 2
   name: Star sword
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 2 -> basic wound'
   stats:
     blue: 4
     red: 3
     yellow: 1
-  type: coreCard
 - name: Dragon scale
   rules:
   - get + 2 to defend from anywhere
@@ -214,49 +178,39 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 2
   name: Dragon chomp
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 3
     red: 4
     yellow: 1
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Red} + 2→basic wound'
+  cost: 1
   name: Dragon grab
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 2 -> basic wound'
   stats:
     blue: 2
     red: 3
     yellow: 2
-  type: coreCard
-- cost: 1
+- attack: '{Red}: Str = {Blue} + 1→basic wound'
+  cost: 1
   name: Star dagger
-  rules:
-  - 'Attack {Red}: Strength = {Blue} + 1 -> basic wound'
   stats:
     blue: 3
     red: 2
     yellow: 3
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Red} + 3→minor: stun 2, major: stun 4, stun 10'
+  cost: 3
   name: Dragon roar
-  rules:
-  - 'Attack {Red}: Strength = {Red} + 3 -> minor: stun 2, major: stun 4, stun 10'
   stats:
     blue: 2
     red: 5
     yellow: 2
-  type: coreCard
-id: stary
 items:
 - name: Ryan
   passive: A star dragon
-  tags: [Equipped]
-  type: itemCard
+  tags:
+  - Equipped
 name: Stary
 nature: []
 tags:

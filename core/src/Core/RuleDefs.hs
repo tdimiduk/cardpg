@@ -83,8 +83,7 @@ data TriggerDef = TriggerDef
 
 -- | The Top-Level Rule Sum Type
 data Rule
-  = RuleAttack AttackDef
-  | RuleGeneral GeneralDef
+  = RuleGeneral GeneralDef
   | RuleTask TaskDef
   | RuleTrigger TriggerDef
   | RuleOngoing OngoingDef
@@ -102,7 +101,6 @@ $( do
        <$> traverse
          (deriveJSON cardpgJsonDef)
          [ ''PassiveDef
-         , ''AttackDef
          , ''GeneralDef
          , ''TaskDef
          , ''TriggerDef

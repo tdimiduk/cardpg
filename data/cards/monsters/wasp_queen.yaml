@@ -1,219 +1,177 @@
 deck:
-- cost: 5
+- attack: '{Red}: Str = {Yellow} + 4'
+  cost: 5
   name: Dive bomb
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 4'
   stats:
     blue: 1
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Yellow} + 4'
+  cost: 5
   name: Dive bomb
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 4'
   stats:
     blue: 1
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Yellow} + 4'
+  cost: 5
   name: Dive bomb
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 4'
   stats:
     blue: 1
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 5
+- attack: '{Red}: Str = {Yellow} + 4'
+  cost: 5
   name: Dive bomb
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 4'
   stats:
     blue: 1
     red: 4
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow} + 1'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow} + 1'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow} + 1'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 2
+- attack: '{Red}: Str = {Yellow} + 1'
+  cost: 2
   name: Jab
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 1'
   stats:
     blue: 2
     red: 2
     yellow: 5
-  type: coreCard
-- cost: 4
+- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+  cost: 4
   name: Rot breath
   rules:
-  - 'Attack {Blue}: Strength = {Blue} + 1 -> stun 1 per hit'
   - Affects all enemies
   stats:
     blue: 6
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+  cost: 4
   name: Rot breath
   rules:
-  - 'Attack {Blue}: Strength = {Blue} + 1 -> stun 1 per hit'
   - Affects all enemies
   stats:
     blue: 6
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+  cost: 4
   name: Rot breath
   rules:
-  - 'Attack {Blue}: Strength = {Blue} + 1 -> stun 1 per hit'
   - Affects all enemies
   stats:
     blue: 6
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 4
+- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+  cost: 4
   name: Rot breath
   rules:
-  - 'Attack {Blue}: Strength = {Blue} + 1 -> stun 1 per hit'
   - Affects all enemies
   stats:
     blue: 6
     red: 2
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 2'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 2'
   stats:
     blue: 4
     red: 3
     yellow: 6
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 2'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 2'
   stats:
     blue: 4
     red: 3
     yellow: 6
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 2'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 2'
   stats:
     blue: 4
     red: 3
     yellow: 6
-  type: coreCard
-- cost: 3
+- attack: '{Yellow}: Str = {Yellow} + 2'
+  cost: 3
   name: Sting
-  rules:
-  - 'Attack {Yellow}: Strength = {Yellow} + 2'
   stats:
     blue: 4
     red: 3
     yellow: 6
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 3
   name: Wing slice
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 3
   name: Wing slice
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 3
   name: Wing slice
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
-- cost: 3
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 3
   name: Wing slice
-  rules:
-  - 'Attack {Red}: Strength = {Yellow} + 3'
   stats:
     blue: 2
     red: 4
     yellow: 4
-  type: coreCard
 - name: Yellow jacket
   stats:
     blue: 5
     red: 5
     yellow: 5
-  type: coreCard
 - name: Yellow jacket
   stats:
     blue: 5
     red: 5
     yellow: 5
-  type: coreCard
 - name: Yellow jacket
   stats:
     blue: 5
     red: 5
     yellow: 5
-  type: coreCard
 - name: Yellow jacket
   stats:
     blue: 5
     red: 5
     yellow: 5
-  type: coreCard
-id: wasp-queen
 items: []
 name: Wasp Queen
 nature:
 - defense: 2
   name: Wasp Queen
   resilience: 2
-  type: natureCard
 tags:
 - monster
