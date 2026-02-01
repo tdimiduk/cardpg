@@ -18,13 +18,7 @@ import Data.Text (Text)
 import Reflex.Dom.Core hiding (Space)
 
 import Core.Language
-  ( cmdAction
-  , cmdAttack
-  , cmdOngoing
-  , cmdPassive
-  , cmdTask
-  , cmdWhen
-  , kwCheck
+  ( kwCheck
   , kwCost
   , kwStr
   , kwTime
@@ -50,7 +44,6 @@ import Core.RuleDefs
   , TaskDef (..)
   , TriggerDef (..)
   )
-import Core.RuleDefs hiding (Rule (..))
 import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
 import Core.Util (tshow)
 import Frontend.Render.Common (IconMode (..), renderNonEmptyText, renderResourceType)

@@ -12,7 +12,6 @@ module Core.Layout
   , layoutTriggerDef
   , layoutStackPower
   , layoutDifficulty
-  , layoutStatValue
   ) where
 
 import Data.Maybe (catMaybes)
@@ -48,7 +47,6 @@ import Core.Stats
   ( Difficulty (..)
   , ResourceType (..)
   , StackPower (..)
-  , StatValue (..)
   , prettyModifier
   )
 import Core.Util (tshow)
@@ -116,10 +114,8 @@ layoutOngoingDef def =
   [ Keyword cmdOngoing
   , Space
   , Group (layoutWrapper [RichContent def.life])
-  , Literal sepArrow -- Missing in original TextRep but maybe intended? TextRep uses "->".
-  , -- Actually TextRep uses cmdOngoing <> " (" <> life <> ") -> "
-    -- So we need the arrow.
-    Space
+  , Literal sepArrow
+  , Space
   , RichContent def.effect
   ]
 
@@ -177,11 +173,6 @@ layoutStackPower (StackPower base modifier conditional) =
 
 layoutDifficulty :: Difficulty -> [LayoutItem]
 layoutDifficulty (Difficulty base val) = [Symbol base (Just $ tshow val)]
-
-layoutStatValue :: StatValue -> [LayoutItem]
-layoutStatValue s =
-  [ Literal $ "{" <> tshow s.color <> sepColon <> " " <> tshow s.value <> "}"
-  ]
 
 --------------------------------------------------------------------------------
 -- Helpers

@@ -30,14 +30,13 @@ import Core.DSL.RuleParser
   , stackPowerParser
   )
 
-import Core.Language (styleDelimiter)
+import Core.Language (sepColon, styleDelimiter)
 import Core.Layout
   ( LayoutItem (..)
   , layoutAttackDef
   , layoutDifficulty
   , layoutRule
   , layoutStackPower
-  , layoutStatValue
   )
 import Core.NonEmptyText (getRawText)
 import Core.Parser (Parser, basicParse)
@@ -125,6 +124,11 @@ renderLayoutItem (Symbol r (Just t)) = toTextResourceType r <> " " <> t
 renderLayoutItem (RichContent rt) = toTextRichText rt
 renderLayoutItem (Group items) = "(" <> renderLayoutText items <> ")"
 renderLayoutItem Space = " "
+
+layoutStatValue :: StatValue -> [LayoutItem]
+layoutStatValue s =
+  [ Literal $ "{" <> tshow s.color <> sepColon <> " " <> tshow s.value <> "}"
+  ]
 
 toTextResourceType :: ResourceType -> Text
 toTextResourceType Red = "{Red}"
