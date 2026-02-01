@@ -15,7 +15,9 @@ import Core.Card (CoreCard)
 import Core.Util (tshow)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Icons (iconClose)
-import Frontend.Style
+import Frontend.Style (cardPrint)
+import Frontend.Style.Common
+import Frontend.Style.Layout (cardGrid)
 import Frontend.UI.Button
 
 data DeckViewData = DeckViewData

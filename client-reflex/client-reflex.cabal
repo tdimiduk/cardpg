@@ -84,6 +84,8 @@ library
     Frontend.Render.Common
     Frontend.Render.Rules
     Frontend.Style
+    Frontend.Style.Common
+    Frontend.Style.Layout
     Frontend.Svg
     Frontend.Svg.Path
     Frontend.UI.Button

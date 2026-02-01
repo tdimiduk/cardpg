@@ -10,6 +10,7 @@ import Reflex.Dom.Core hiding (button)
 
 import Api.Request (ApiRequest)
 import Api.Request qualified as Req
+import Data.Map qualified as Map
 
 import Core.Card (Identified (..))
 import Core.Primitives (ActorId)
@@ -17,7 +18,9 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
 import Frontend.Game.Common (cardStackWidget)
-import Frontend.Style
+import Frontend.Style (cardHandWidth, plannedCardOverlap)
+import Frontend.Style.Common
+import Frontend.Style.Layout
 import Frontend.UI.Button
 
 -- | "PLANNED" badge styling
@@ -71,19 +74,16 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
         cardStackWidget
           ( \rDyn -> do
               (eRes, _) <-
-                elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
+                elStyle' "div" (cardHandWidth <> ["shrink-0", "transition-all", "hover:z-10"]) Map.empty $
                   dyn_ $
                     fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
               return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
           )
           ( \aDyn -> do
-              (eAct, _) <- elDynAttr'
+              (eAct, _) <- elStyle'
                 "div"
-                ( constDyn
-                    ( "class" =: classes ([relative, cardHandWidth, "shrink-0"] ++ actionCardHover)
-                        <> testId "planned-action-card"
-                    )
-                )
+                ((relative : cardHandWidth) ++ ["shrink-0"] ++ actionCardHover)
+                (testId "planned-action-card")
                 $ do
                   dyn_ $ fmap (renderCoreCard . (.content)) aDyn
                   divStyle plannedBadge $ text "PLANNED"

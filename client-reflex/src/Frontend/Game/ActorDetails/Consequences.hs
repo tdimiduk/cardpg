@@ -16,7 +16,8 @@ import Core.Primitives (ActorId)
 import Core.State (ActorState (..), TableState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorLogic (actorNextSeverity)
-import Frontend.Style
+import Frontend.Style.Common
+import Frontend.Style.Layout
 import Frontend.UI.Button
 
 consequencesWidget

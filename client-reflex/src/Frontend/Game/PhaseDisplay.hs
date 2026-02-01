@@ -14,7 +14,7 @@ import Api.Request qualified as Req
 import Api.Types (Phase (..))
 import Core.Util (tshow)
 
-import Frontend.Style
+import Frontend.Style.Common
 import Frontend.UI.Button
 import Frontend.Util (ApiRequester)
 

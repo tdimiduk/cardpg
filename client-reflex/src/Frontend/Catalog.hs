@@ -12,14 +12,16 @@ import Core.RichText (unsafeSimpleString)
 import Core.Stats
 
 import Frontend.Card (renderCoreCard)
-import Frontend.Style qualified as Style
+
+import Frontend.Style.Common hiding (classes)
+import Frontend.Style.Layout (cardPrintGrid)
 
 catalogWidget :: (DomBuilder t m) => m ()
 catalogWidget = do
   el "h1" $ text "Component Catalog"
 
   el "h2" $ text "Core Cards"
-  Style.divStyle Style.cardPrintGrid $ do
+  divStyle cardPrintGrid $ do
     renderCoreCard exampleAttack
     renderCoreCard exampleSkill
     renderCoreCard exampleHeavyText

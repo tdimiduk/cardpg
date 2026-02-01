@@ -18,7 +18,8 @@ import Core.Util (tshow)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
 
 import Frontend.Icons (iconDeck, iconRefresh)
-import Frontend.Style
+import Frontend.Style.Common
+import Frontend.Style.Layout
 import Frontend.UI.Button
 
 deckWidget

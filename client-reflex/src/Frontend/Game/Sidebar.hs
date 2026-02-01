@@ -11,7 +11,7 @@ import Reflex.Dom.Core hiding (button)
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..))
 
-import Frontend.Style hiding (classes)
+import Frontend.Style.Common hiding (classes)
 
 import Api.Request (ApiRequest)
 import Data.Maybe (fromMaybe)
@@ -96,7 +96,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
       Just (Identified aid actorState) -> do
         -- Selection: Show Details
         -- Header (Click anywhere to deselect)
-        (minHeader, _) <- elStyle' "div" ("cursor-pointer" : "hover:bg-slate-800" : activeActorHeader) $ do
+        (minHeader, _) <- elStyle' "div" ("cursor-pointer" : "hover:bg-slate-800" : activeActorHeader) Map.empty $ do
           divStyle avatar $ text $ T.take 1 actorState.name
 
           divStyle ["flex-1", "overflow-hidden"] $ do

@@ -2,6 +2,7 @@ module Frontend.Game.SidebarRight where
 
 import Control.Monad.Fix (MonadFix)
 
+import Data.Map qualified as Map
 import Data.Text qualified as T
 import Reflex.Dom.Core
 
@@ -16,7 +17,8 @@ import Core.State (ActorState)
 import Core.Util (tshow)
 
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig, phaseDisplayWidget)
-import Frontend.Style hiding (hidden)
+import Frontend.Style.Common hiding (hidden)
+import Frontend.Style.Layout
 import Frontend.Util
 
 -- | Sidebar container (Right)
@@ -82,7 +84,7 @@ chatInputRequesting activeActor = do
             .~ mconcat
               [ "placeholder" =: "Type a message..."
               , "class" =: classes classList
-              , testId "chat-input"
+              , Map.mapKeys (AttributeName Nothing) (testId "chat-input")
               ]
             & inputElementConfig_setValue
             .~ ("" <$ success)

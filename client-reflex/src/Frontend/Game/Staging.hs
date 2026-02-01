@@ -25,7 +25,9 @@ import Frontend.Card
   )
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Render.Common (IconMode (..))
-import Frontend.Style
+import Frontend.Style (stagedActionCard, stagedResourceCard)
+import Frontend.Style.Common
+
 import Frontend.UI.Button
 
 data StagingEvents t = StagingEvents

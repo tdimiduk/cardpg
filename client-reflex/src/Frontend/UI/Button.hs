@@ -16,7 +16,7 @@ import Data.Text qualified as T
 
 import Reflex.Dom.Core hiding (button)
 
-import Frontend.Style
+import Frontend.Style.Common
 
 -- | Visual variants for the button
 data ButtonVariant

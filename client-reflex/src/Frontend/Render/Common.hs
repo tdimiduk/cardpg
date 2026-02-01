@@ -11,9 +11,8 @@ import Reflex.Dom.Core
 
 import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.Stats (ResourceType (..))
-import Core.Util (tshow)
 
-import Frontend.Style qualified as Style
+import Frontend.Style.Common qualified as CommonStyle
 import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
 
 -- | Icon display mode for resource symbols and stat values
@@ -31,13 +30,13 @@ renderResourceType mode r t = case r of
   Blue -> renderDiamond (color <> style) t
   where
     color = case r of
-      Red -> [Style.textRed500]
-      Yellow -> [Style.textYellow400]
-      Blue -> [Style.textBlue500]
+      Red -> [CommonStyle.textRed500]
+      Yellow -> [CommonStyle.textYellow400]
+      Blue -> [CommonStyle.textBlue500]
     style = case mode of
-      IconInline -> Style.iconInline
-      IconBlock -> Style.iconBlock
-      IconResponsive -> Style.iconResponsive
+      IconInline -> CommonStyle.iconInline
+      IconBlock -> CommonStyle.iconBlock
+      IconResponsive -> CommonStyle.iconResponsive
 
 -- | Render a NonEmptyText as plain text
 renderNonEmptyText :: (DomBuilder t m) => NonEmptyText -> m ()

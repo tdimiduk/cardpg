@@ -9,7 +9,8 @@ import Prelude hiding (filter, id, map, (.))
 import Core.State (ActorState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorLogic (actorDefense, actorResilience)
-import Frontend.Style
+import Frontend.Style.Common
+import Frontend.Style.Layout
 
 statsWidget :: (DomBuilder t m, PostBuild t m) => Dynamic t ActorState -> m ()
 statsWidget actorState =

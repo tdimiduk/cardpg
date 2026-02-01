@@ -26,7 +26,8 @@ import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 
-import Frontend.Style
+import Frontend.Style.Common
+
 import Frontend.Util
 
 -- | Root layout for the app (full-screen row)

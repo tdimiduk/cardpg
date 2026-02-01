@@ -45,7 +45,9 @@ import Frontend.Card
   , renderNatureCardWith
   )
 import Frontend.Catalog (catalogWidget)
-import Frontend.Style qualified as Style
+
+import Frontend.Style.Common
+import Frontend.Style.Layout
 import Server.Game (GameState (..))
 import Server.Scenario (loadScenario)
 
@@ -261,7 +263,7 @@ mockGameWidget initialActorId gameState = do
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
-  Style.divStyle Style.deckGrid $ do
+  divStyle deckGrid $ do
     mapM_ (renderNatureCardWith printSettings) actor.nature
     mapM_ (renderItemCardWith printSettings) actor.items
     mapM_ (renderCoreCardWith printSettings) actor.deck

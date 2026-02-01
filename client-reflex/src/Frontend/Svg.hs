@@ -14,8 +14,8 @@ import Data.Map qualified as Map
 import Data.Text (Text)
 import Reflex.Dom.Core
 
-import Frontend.Style (CssClass)
-import Frontend.Style qualified as Style
+import Frontend.Style.Common (CssClass)
+import Frontend.Style.Common qualified as CommonStyle
 
 type ElAttrs = Map.Map Text Text
 
@@ -57,7 +57,7 @@ renderLabel (Just t) =
         <> "font-family" =: "sans-serif"
         <> "font-weight" =: "bold"
         <> "fill" =: "currentColor"
-        <> "class" =: Style.classes (Style.resourceTextBase <> Style.resourceTextPrint)
+        <> "class" =: CommonStyle.classes (CommonStyle.resourceTextBase <> CommonStyle.resourceTextPrint)
         <> "stroke" =: "none"
     )
     $ text t
@@ -67,7 +67,9 @@ renderSquare :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
 renderSquare extraClasses mLabel =
   svgEl
     "svg"
-    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    ( "viewBox" =: "0 0 100 100"
+        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+    )
     $ do
       svgEl
         "rect"
@@ -90,7 +92,9 @@ renderCircle :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
 renderCircle extraClasses mLabel =
   svgEl
     "svg"
-    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    ( "viewBox" =: "0 0 100 100"
+        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+    )
     $ do
       svgEl
         "circle"
@@ -110,7 +114,9 @@ renderDiamond :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
 renderDiamond extraClasses mLabel =
   svgEl
     "svg"
-    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    ( "viewBox" =: "0 0 100 100"
+        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+    )
     $ do
       svgEl
         "rect"
@@ -134,7 +140,9 @@ renderHexagon :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
 renderHexagon extraClasses mLabel =
   svgEl
     "svg"
-    ("viewBox" =: "0 0 100 100" <> "class" =: Style.classes (Style.resourceIcon <> extraClasses))
+    ( "viewBox" =: "0 0 100 100"
+        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+    )
     $ do
       svgEl
         "polygon"

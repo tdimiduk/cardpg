@@ -28,7 +28,10 @@ import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
 
+import Frontend.Style (cardHandWidth, cardNotPlayable, cardPlayable)
 import Frontend.Style hiding (stack)
+import Frontend.Style.Common
+import Frontend.Style.Layout
 
 -- | Styles for hand card hover interactions
 cardHover :: [CssClass]
@@ -171,7 +174,7 @@ handCardsWidget actor stagingStack plannedAction = do
                     | playable = cardPlayable
                     | otherwise = cardNotPlayable
                  in
-                  classes ([relative, pointerEventsAuto, group, cardHandWidth] ++ baseStyle ++ extraStyle)
+                  classes (relative : (cardHandWidth ++ extraStyle ++ baseStyle ++ [pointerEventsAuto, group]))
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderCoreCardWith (CardSettings CardFull) . (.content)

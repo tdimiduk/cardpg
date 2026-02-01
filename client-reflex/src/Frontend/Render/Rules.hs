@@ -14,8 +14,6 @@ module Frontend.Render.Rules
   , renderBlock
   ) where
 
-import Data.Maybe (catMaybes)
-import Data.Text (Text)
 import Reflex.Dom.Core hiding (Space)
 
 import Core.Language
@@ -32,24 +30,13 @@ import Core.Layout
   , layoutAttackDef
   , layoutRule
   )
-import Core.NonEmptyText (NonEmptyText, getRawText)
+
+import Core.NonEmptyText (getRawText)
 import Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (..), getInlines)
-
--- Import types but avoid Render.Rules exporting Rule again if not needed, or just import types
-import Core.RuleDefs
-  ( AttackDef (..)
-  , GeneralDef (..)
-  , OngoingDef (..)
-  , PassiveDef (..)
-  , Rule (..)
-  , TaskDef (..)
-  , TriggerDef (..)
-  )
-import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
+import Core.RuleDefs (AttackDef (..), Rule (..))
+import Core.Stats (Difficulty (..), StatValue (..))
 import Core.Util (tshow)
-import Frontend.Render.Common (IconMode (..), renderNonEmptyText, renderResourceType)
-
-import Frontend.Style qualified as Style
+import Frontend.Render.Common (IconMode (..), renderResourceType)
 
 --------------------------------------------------------------------------------
 -- Core Rendering Primitives

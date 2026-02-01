@@ -5,7 +5,9 @@ module Frontend.Game.Common where
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
 
-import Frontend.Style hiding (classes)
+import Frontend.Style (plannedCardOverlap)
+import Frontend.Style.Common hiding (classes)
+import Frontend.Style.Layout
 
 -- | Reusable widget for rendering a stack of cards (Resources behind Action)
 -- Uses the same layout logic as PlannedAction to ensure visual consistency.
@@ -22,7 +24,7 @@ cardStackWidget
   -> m (Event t a, Event t b)
   -- ^ (Resource Click Event, Action Click Event)
 cardStackWidget renderResource renderAction resources action = do
-  rowWith ["items-stretch", plannedCardOverlap] $ do
+  rowWith ("items-stretch" : plannedCardOverlap) $ do
     -- Resources (vertical strips)
     -- simpleList efficiently handles list updates
     resourceEvts <- simpleList resources renderResource

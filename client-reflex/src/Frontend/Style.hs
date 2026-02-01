@@ -2,140 +2,44 @@
 
 -- | Centralized styling utilities for the client-reflex frontend.
 --
--- This module provides:
+-- This module acts as an aggregate for domain-specific styles.
+-- Generic styling and layout have been moved to:
 --
--- * 'CssClass' newtype for type-safe Tailwind class composition
--- * Layout combinators ('row', 'col', 'between', etc.) for common patterns
--- * Semantic style groups for cards and UI components
+-- * 'Frontend.Style.Common' (basic types and atoms)
+-- * 'Frontend.Style.Layout' (layout combinators)
 --
--- == Usage
---
--- Prefer combinators for common layouts:
---
--- @
--- row $ do
---   component "name" nameClasses $ text cardName
---   spacer
---   renderCost cost
--- @
---
--- Use 'divStyle' with class lists for custom layouts. Mix atoms and strings:
---
--- @
--- divStyle [flex, "gap-4", "p-2"] $ ...
--- @
+-- This module retains component-specific style groups.
 module Frontend.Style
-  ( -- * Core Types
-    CssClass (..)
-  , classes
-
-    -- * Element Helpers
-  , divStyle
-  , elStyle
-  , elStyle'
-  , component
-  , testId
-
-    -- * Layout Combinators
-  , row
-  , rowGap
-  , rowWith
-  , col
-  , colGap
-  , colWith
-  , centered
-  , between
-  , spacer
-  , stack
-  , overlay
-  , overlayBottom
-  , overlayBottomWith
-
-    -- * Shared Atoms
-
-  --
-  -- These are commonly used across multiple files. For one-off classes,
-  -- use string literals directly: @"gap-4"@, @"text-slate-500"@, etc.
-
-    -- ** Layout
-  , flex
-  , flexCol
-  , flexRow
-  , flex1
-  , itemsCenter
-  , itemsEnd
-  , justifyCenter
-  , justifyBetween
-  , justifyEnd
-  , relative
-  , absolute
-  , bottom0
-  , left0
-  , right0
-  , z40
-  , grow
-
-    -- ** Interaction
-  , cursorPointer
-  , pointerEventsNone
-  , pointerEventsAuto
-  , group
-
-    -- ** Appearance
-  , hidden
-  , truncateText
-  , clipText
-  , fontBold
-  , textSm
-  , textXs
-  , rounded
-  , shadowXl
-  , shadow
-  , backdropBlur
-  , uppercase
-  , trackingWider
-
-    -- * Card Style Groups (Screen)
-  , cardBase
+  ( -- * Card Style Groups
+    cardBase
   , cardScreen
-  , artBase
-  , artScreen
-  , nameBase
-  , nameScreen
-  , costBase
-  , costScreen
-  , textboxBase
-  , textboxScreen
-
-    -- * Card Sizes
-  , plannedCardOverlap
+  , cardPrint
+  , cardRow
   , cardHandWidth
   , standardCardSize
   , standardCardAspectRatio
+  , plannedCardOverlap
 
-    -- * Card Style Groups (Print)
-  , cardPrint
+    -- * Art Style Groups
+  , artBase
+  , artScreen
   , artPrint
-  , namePrint
-  , costPrint
-  , textboxPrint
 
-    -- * Card Compact Variants
-  , cardRow
+    -- * Name Style Groups
+  , nameBase
+  , nameScreen
+  , namePrint
+
+    -- * Cost Style Groups
+  , costBase
+  , costScreen
+  , costPrint
   , costRow
 
-    -- * Icon Style Groups
-  , resourceIcon
-  , resourceTextBase
-  , resourceTextPrint
-  , iconInline
-  , iconBlock
-  , iconResponsive
-
-    -- * Resource Colors
-  , textRed500
-  , textYellow400
-  , textBlue500
+    -- * Textbox Style Groups
+  , textboxBase
+  , textboxScreen
+  , textboxPrint
 
     -- * Interactables
   , cardPlayable
@@ -144,296 +48,9 @@ module Frontend.Style
     -- * Staging Styles
   , stagedActionCard
   , stagedResourceCard
-
-    -- * Layout Grids
-  , cardPrintGrid
-  , cardGrid
-  , deckGrid
   ) where
 
-import Data.Coerce (coerce)
-import Data.List.NonEmpty (toList)
-import Data.Map (Map)
-import Data.Semigroup (Semigroup (..))
-import Data.String (IsString (..))
-import Data.Text (Text)
-import Data.Text qualified as T
-import Reflex.Dom.Core
-  ( DomBuilder
-  , DomBuilderSpace
-  , Element
-  , EventResult
-  , blank
-  , divClass
-  , elAttr
-  , elClass
-  , elClass'
-  , (=:)
-  )
-
---------------------------------------------------------------------------------
-
--- * Core Types
-
---------------------------------------------------------------------------------
-
--- | A newtype wrapper for a single Tailwind class (or a small group of classes
--- that always go together). Use 'IsString' for convenient string literals.
-newtype CssClass = CssClass {unCssClass :: Text}
-  deriving (Eq, Show, Ord)
-
-instance IsString CssClass where
-  fromString = CssClass . T.pack
-
-instance Semigroup CssClass where
-  (CssClass a) <> (CssClass b) = CssClass (a <> " " <> b)
-  sconcat = CssClass . T.intercalate " " . coerce . toList
-
-instance Monoid CssClass where
-  mempty = CssClass ""
-  mconcat = CssClass . T.intercalate " " . coerce
-
--- | Convert a list of classes to a space-separated Text for use in DOM attributes.
-classes :: [CssClass] -> Text
-classes = coerce . mconcat
-
---------------------------------------------------------------------------------
-
--- * Element Helpers
-
---------------------------------------------------------------------------------
-
--- | Helper to create a div with a list of typed classes.
-divStyle :: (DomBuilder t m) => [CssClass] -> m a -> m a
-divStyle cls = divClass (classes cls)
-
--- | Helper to create an element with a list of typed classes.
-elStyle :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m a
-elStyle tag cls = elClass tag (classes cls)
-
--- | Helper to create an element with a list of typed classes, returning the element and result.
-elStyle'
-  :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
-elStyle' tag cls = elClass' tag (classes cls)
-
--- | Create a semantic div with data-component and data-testid attributes for testing/inspection.
-component :: (DomBuilder t m) => Text -> [CssClass] -> m a -> m a
-component name cls = elAttr "div" ("class" =: classes cls <> testId name)
-
-testId :: (IsString s, Ord s) => Text -> Map s Text
-testId name = "data-testid" =: name
-
---------------------------------------------------------------------------------
-
--- * Layout Combinators
-
---------------------------------------------------------------------------------
-
--- | A horizontal flex container.
-row :: (DomBuilder t m) => m a -> m a
-row = divStyle [flex, flexRow]
-
--- | A horizontal flex container with a gap.
-rowGap :: (DomBuilder t m) => CssClass -> m a -> m a
-rowGap gap = divStyle [flex, flexRow, gap]
-
--- | A horizontal flex container with arbitrary classes.
-rowWith :: (DomBuilder t m) => [CssClass] -> m a -> m a
-rowWith cls = divStyle ([flex, flexRow] <> cls)
-
--- | A vertical flex container.
-col :: (DomBuilder t m) => m a -> m a
-col = divStyle [flex, flexCol]
-
--- | A vertical flex container with a gap.
-colGap :: (DomBuilder t m) => CssClass -> m a -> m a
-colGap gap = divStyle [flex, flexCol, gap]
-
--- | A vertical flex container with arbitrary classes.
-colWith :: (DomBuilder t m) => [CssClass] -> m a -> m a
-colWith cls = divStyle ([flex, flexCol] <> cls)
-
--- | Flex container centered both axes.
-centered :: (DomBuilder t m) => m a -> m a
-centered = divStyle [flex, itemsCenter, justifyCenter]
-
--- | Row with items pushed to opposite ends.
-between :: (DomBuilder t m) => m a -> m a
-between = divStyle [flex, flexRow, justifyBetween, itemsCenter]
-
--- | Spacer that pushes siblings apart (grows to fill available space).
-spacer :: (DomBuilder t m) => m ()
-spacer = divStyle [grow] blank
-
--- | Creates a relative positioning context (for absolutely positioned children).
-stack :: (DomBuilder t m) => m a -> m a
-stack = divStyle [relative]
-
--- | An absolute overlay that fills its parent.
-overlay :: (DomBuilder t m) => m a -> m a
-overlay = divStyle [absolute, "inset-0"]
-
--- | Bottom-anchored overlay (for hand/action areas).
-overlayBottom :: (DomBuilder t m) => m a -> m a
-overlayBottom = divStyle [absolute, "bottom-0", "left-0", "right-0"]
-
--- | Bottom-anchored overlay with additional classes.
-overlayBottomWith :: (DomBuilder t m) => [CssClass] -> m a -> m a
-overlayBottomWith cls = divStyle ([absolute, "bottom-0", "left-0", "right-0"] <> cls)
-
---------------------------------------------------------------------------------
-
--- * Shared Atoms
-
---
--- These are exported because they're used across multiple files. For one-off
--- values like "gap-4", "p-2", "w-72", use string literals directly.
---------------------------------------------------------------------------------
-
--- ** Layout
-
-flex :: CssClass
-flex = "flex"
-
-flexCol :: CssClass
-flexCol = "flex-col"
-
-flexRow :: CssClass
-flexRow = "flex-row"
-
-flex1 :: CssClass
-flex1 = "flex-1"
-
-itemsCenter :: CssClass
-itemsCenter = "items-center"
-
-itemsEnd :: CssClass
-itemsEnd = "items-end"
-
-justifyCenter :: CssClass
-justifyCenter = "justify-center"
-
-justifyBetween :: CssClass
-justifyBetween = "justify-between"
-
-justifyEnd :: CssClass
-justifyEnd = "justify-end"
-
-relative :: CssClass
-relative = "relative"
-
-absolute :: CssClass
-absolute = "absolute"
-
-bottom0 :: CssClass
-bottom0 = "bottom-0"
-
-left0 :: CssClass
-left0 = "left-0"
-
-right0 :: CssClass
-right0 = "right-0"
-
-z40 :: CssClass
-z40 = "z-40"
-
-grow :: CssClass
-grow = "grow"
-
--- ** Interaction
-
-cursorPointer :: CssClass
-cursorPointer = "cursor-pointer"
-
-pointerEventsNone :: CssClass
-pointerEventsNone = "pointer-events-none"
-
-pointerEventsAuto :: CssClass
-pointerEventsAuto = "pointer-events-auto"
-
-group :: CssClass
-group = "group"
-
--- ** Appearance
-
-hidden :: CssClass
-hidden = "hidden"
-
-truncateText :: CssClass
-truncateText = "truncate"
-
-clipText :: [CssClass]
-clipText = ["overflow-hidden", "whitespace-nowrap"]
-
-fontBold :: CssClass
-fontBold = "font-bold"
-
-textSm :: CssClass
-textSm = "text-sm"
-
-textXs :: CssClass
-textXs = "text-xs"
-
-rounded :: CssClass
-rounded = "rounded"
-
-uppercase :: CssClass
-uppercase = "uppercase"
-
-trackingWider :: CssClass
-trackingWider = "tracking-wider"
-
-shadowXl :: CssClass
-shadowXl = "shadow-xl"
-
-shadow :: Text -> CssClass
-shadow s = CssClass $ "shadow-" <> s
-
-backdropBlur :: Text -> CssClass
-backdropBlur s = CssClass $ "backdrop-blur-" <> s
-
---------------------------------------------------------------------------------
-
--- * Icon Style Groups
-
---------------------------------------------------------------------------------
-
-resourceIcon :: [CssClass]
-resourceIcon = ["inline-block"]
-
-resourceTextBase :: [CssClass]
-resourceTextBase = ["fill-slate-200", "font-sans", fontBold]
-
-resourceTextPrint :: [CssClass]
-resourceTextPrint = ["print:fill-black"]
-
-iconInline :: [CssClass]
-iconInline =
-  [ "w-[1em]"
-  , "h-[1em]"
-  , "ml-[-0.15em]"
-  , "mr-[-0.05em]"
-  , "align-middle"
-  , "inline-block"
-  , "transform"
-  , "translate-y-[-0.1em]"
-  ]
-
-iconBlock :: [CssClass]
-iconBlock = ["w-10", "h-10", fontBold, "text-xl"]
-
-iconResponsive :: [CssClass]
-iconResponsive = ["h-[30%]", "w-auto", "aspect-square", fontBold]
-
--- Resource colors (used in Html.hs for icon coloring)
-textRed500 :: CssClass
-textRed500 = "text-red-500"
-
-textYellow400 :: CssClass
-textYellow400 = "text-yellow-400"
-
-textBlue500 :: CssClass
-textBlue500 = "text-blue-500"
+import Frontend.Style.Common
 
 --------------------------------------------------------------------------------
 
@@ -441,62 +58,18 @@ textBlue500 = "text-blue-500"
 
 --------------------------------------------------------------------------------
 
--- ** Base (shared between screen and print)
-
-cardCanonicalWidth :: CssClass
-cardCanonicalWidth = "w-[63mm]"
-
-cardCanonicalHeight :: CssClass
-cardCanonicalHeight = "h-[88mm]"
-
--- | Width for cards in the hand/planned action area (approx 160px)
-cardHandWidth :: CssClass
-cardHandWidth = "w-52"
-
--- | Overlap for stacked cards in planned actions (-128px)
-plannedCardOverlap :: CssClass
-plannedCardOverlap = "[&>*:not(:first-child)]:-ml-32"
-
-standardCardSize :: CssClass
-standardCardSize = cardCanonicalWidth <> cardCanonicalHeight
-
-standardCardAspectRatio :: CssClass
-standardCardAspectRatio = "aspect-[63/88]"
-
+-- | Base classes for the card container.
 cardBase :: [CssClass]
 cardBase =
   [ flex
   , flexCol
-  , standardCardSize
-  , "break-inside-avoid"
   , relative
+  , "p-[2.5mm]" -- Padding around the card content within the border
   , "overflow-hidden"
-  ]
-
-artBase :: [CssClass]
-artBase = []
-
-nameBase :: [CssClass]
-nameBase = [fontBold]
-
-costBase :: [CssClass]
-costBase = ["w-[1.4em]", "h-[1.4em]", "-my-[0.1em]"]
-
-textboxBase :: [CssClass]
-textboxBase =
-  [ "flex-1"
-  , textXs
-  , "border-[0.2mm]"
-  , "p-[2mm]"
-  , grow
-  , "[&_p]:mt-0"
-  , "[&_p]:mb-[0.1em]"
-  , "[&_p]:leading-tight"
   ]
 
 -- ** Screen Styles
 
---
 -- Shared visuals used by both full cards and spines/strips
 cardScreenVisuals :: [CssClass]
 cardScreenVisuals =
@@ -509,48 +82,20 @@ cardScreenVisuals =
   ]
 
 cardScreen :: [CssClass]
-cardScreen = cardScreenVisuals <> ["p-1.5"]
-
-artScreen :: [CssClass]
-artScreen = [grow, "h-full", "rounded-sm", "bg-slate-800"]
-
-nameScreen :: [CssClass]
-nameScreen = [textSm, "text-slate-200"]
-
-costScreen :: [CssClass]
-costScreen = ["text-slate-200"]
-
-textboxScreen :: [CssClass]
-textboxScreen = [rounded, "bg-slate-800/50", "border-slate-600"]
+cardScreen = cardScreenVisuals
 
 -- ** Print Styles
 
 cardPrint :: [CssClass]
 cardPrint =
-  [ "aspect-auto" -- Override for fixed dimensions
-  , "p-[2mm]"
-  , "m-0"
-  , "w-[56mm]"
-  , "h-[80mm]" -- Slightly smaller for cutting margin
-  , "border-[0.2mm]"
-  , "rounded-none"
+  [ "w-[63mm]"
+  , "h-[88mm]"
   , "bg-white"
   , "text-black"
-  , "shadow-none"
+  , "border"
   , "border-black"
+  , "rounded-[3mm]"
   ]
-
-artPrint :: [CssClass]
-artPrint = ["h-[33mm]", "rounded-none", "bg-transparent"]
-
-namePrint :: [CssClass]
-namePrint = [textSm, "text-black"]
-
-costPrint :: [CssClass]
-costPrint = ["text-black"]
-
-textboxPrint :: [CssClass]
-textboxPrint = ["rounded-none", "bg-transparent", "border-black"]
 
 -- ** Compact Variants
 
@@ -571,38 +116,105 @@ cardRow =
   , rounded
   ]
 
+standardCardSize :: [CssClass]
+standardCardSize = ["w-[63mm]", "h-[88mm]"]
+
+standardCardAspectRatio :: [CssClass]
+standardCardAspectRatio = ["aspect-[63/88]"]
+
+cardHandWidth :: [CssClass]
+cardHandWidth = ["w-[16vh]"]
+
+plannedCardOverlap :: [CssClass]
+plannedCardOverlap = ["-ml-[12vh]"]
+
 --------------------------------------------------------------------------------
 
--- * Layout Grids
+-- * Element Style Groups
 
 --------------------------------------------------------------------------------
 
-cardPrintGrid :: [CssClass]
-cardPrintGrid =
-  [ "grid"
-  , "grid-cols-[repeat(auto-fill,minmax(240px,1fr))]"
-  , "p-4"
-  , "print:gap-0"
-  , "print:p-0"
-  , "print:block"
+-- ** Art
+
+artBase :: [CssClass]
+artBase =
+  [ "w-full"
+  , "aspect-[4/3]"
+  , "mb-[2mm]"
+  , "bg-gray-300"
+  , "rounded-[1mm]"
+  , "overflow-hidden"
   ]
 
-cardGrid :: [CssClass]
-cardGrid =
-  [ "grid"
-  , "grid-cols-[repeat(auto-fill,minmax(200px,1fr))]"
-  , "content-start"
-  , "gap-2"
-  , "p-2"
+artScreen :: [CssClass]
+artScreen = ["border", "border-slate-700"]
+
+artPrint :: [CssClass]
+artPrint = ["border", "border-black", "grayscale"]
+
+-- ** Name
+
+nameBase :: [CssClass]
+nameBase =
+  [ fontBold
+  , "text-sm"
+  , "leading-tight"
+  , "mb-[2mm]"
   ]
 
-deckGrid :: [CssClass]
-deckGrid =
-  [ "grid"
-  , "gap-[3mm]"
-  , "justify-start"
-  , "grid-cols-[repeat(3,56mm)]"
+nameScreen :: [CssClass]
+nameScreen = ["text-slate-100"]
+
+namePrint :: [CssClass]
+namePrint = ["text-black"]
+
+-- ** Cost
+
+costBase :: [CssClass]
+costBase =
+  [ absolute
+  , "top-[2mm]"
+  , "right-[2mm]"
+  , "w-[8mm]"
+  , "h-[8mm]"
+  , "z-10"
+  , flex
+  , itemsCenter
+  , justifyCenter
+  , fontBold
   ]
+
+costScreen :: [CssClass]
+costScreen = ["text-slate-200"]
+
+costPrint :: [CssClass]
+costPrint = ["text-black"]
+
+-- ** Textbox
+
+textboxBase :: [CssClass]
+textboxBase =
+  [ "flex-1"
+  , textXs
+  , "border-[0.2mm]"
+  , "p-[2mm]"
+  , grow
+  , "[&_p]:mt-0"
+  , "[&_p]:mb-[0.1em]"
+  , "[&_p]:leading-tight"
+  ]
+
+textboxScreen :: [CssClass]
+textboxScreen = ["bg-slate-800", "border-slate-600", "rounded-[2mm]", "text-slate-300"]
+
+textboxPrint :: [CssClass]
+textboxPrint = ["rounded-none", "bg-transparent", "border-black"]
+
+--------------------------------------------------------------------------------
+
+-- * Icon Style Groups
+
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 
@@ -610,13 +222,21 @@ deckGrid =
 
 --------------------------------------------------------------------------------
 
--- | Style for cards that can be played (valid cost)
 cardPlayable :: [CssClass]
-cardPlayable = ["ring-2", "ring-indigo-400", "ring-offset-1"]
+cardPlayable =
+  [ "hover:-translate-y-4"
+  , "hover:scale-105"
+  , "transition-all"
+  , "duration-200"
+  , "cursor-pointer"
+  , "shadow-lg"
+  , "ring-2"
+  , "ring-blue-400"
+  , "z-20"
+  ]
 
--- | Style for cards that cannot be played (invalid cost)
 cardNotPlayable :: [CssClass]
-cardNotPlayable = ["opacity-75"]
+cardNotPlayable = ["opacity-75", "grayscale-[50%]", "cursor-not-allowed"]
 
 --------------------------------------------------------------------------------
 
