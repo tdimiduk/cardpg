@@ -53,6 +53,7 @@ library
     Core.Hardcoded
     Core.Json
     Core.Language
+    Core.Layout
     Core.Logic.Bot
     Core.Logic.Combat
     Core.Logic.Deck

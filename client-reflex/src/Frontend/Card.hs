@@ -30,7 +30,6 @@ import Core.Card
   , NatureCard (..)
   , Stats (..)
   )
-import Core.Language (cmdAttack)
 import Core.Stats (ResourceType (..), getStatValue)
 import Core.Util (tshow)
 
@@ -157,10 +156,7 @@ renderCoreCardWith settings c = case settings.displayMode of
       renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
       component "art" (artClasses settings) blank
     component "rules" (textboxClasses settings) $ do
-      maybe
-        blank
-        (\atk -> divClass "action" $ el "p" $ text cmdAttack >> text " " >> renderAttackDef atk)
-        c.attack
+      maybe blank (divClass "action" . el "p" . renderAttackDef) c.attack
       mapM_ (mapM_ (divClass "action" . el "p" . renderRule)) c.rules
       mapM_ renderRichText c.flavor
   CardPrint -> divStyle (cardClasses settings) $ do
@@ -172,10 +168,7 @@ renderCoreCardWith settings c = case settings.displayMode of
       renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
       component "art" (artClasses settings) blank
     component "rules" (textboxClasses settings) $ do
-      maybe
-        blank
-        (\atk -> divClass "action" $ el "p" $ text cmdAttack >> text " " >> renderAttackDef atk)
-        c.attack
+      maybe blank (divClass "action" . el "p" . renderAttackDef) c.attack
       mapM_ (mapM_ (divClass "action" . el "p" . renderRule)) c.rules
       mapM_ renderRichText c.flavor
 

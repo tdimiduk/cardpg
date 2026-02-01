@@ -68,7 +68,7 @@ stripBoundaryWhitespace :: [Inline] -> [Inline]
 stripBoundaryWhitespace [] = []
 stripBoundaryWhitespace inlines =
   let withoutLeading = stripStart inlines
-      withoutTrailing = reverse (stripStart (reverse withoutLeading))
+      withoutTrailing = stripEnd withoutLeading
    in withoutTrailing
   where
     stripStart [] = []
@@ -78,6 +78,19 @@ stripBoundaryWhitespace inlines =
             Nothing -> stripStart xs
             Just c' -> TextRun s c' : xs
     stripStart xs = xs
+
+    stripEnd xs =
+      let rev = reverse xs
+          strippedRev = stripEndRev rev
+       in reverse strippedRev
+
+    stripEndRev [] = []
+    stripEndRev (TextRun s c : xs) =
+      let strippedText = T.stripEnd (getRawText c)
+       in case mkNonEmptyText strippedText of
+            Nothing -> stripEndRev xs
+            Just c' -> TextRun s c' : xs
+    stripEndRev xs = xs
 
 -- | Unsafe constructor for literals.
 -- | Assumes the text is non-empty and does not require stripping/merging.

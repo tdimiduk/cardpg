@@ -67,7 +67,7 @@ deck:
     yellow: 5
 - name: Supercharged
   rules:
-  - 'Action: Put in play. Attack {Red:10}anyone who attacks you. Resolve (end): expend
+  - 'Action: Put in play. Attack {Red} 10 anyone who attacks you. Resolve (end): expend
     the attack the attack triggered, otherwise recover to hand'
   stats:
     blue: 1

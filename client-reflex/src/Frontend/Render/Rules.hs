@@ -21,10 +21,11 @@ module Frontend.Render.Rules
 
 import Data.Maybe (catMaybes)
 import Data.Text (Text)
-import Reflex.Dom.Core
+import Reflex.Dom.Core hiding (Space)
 
 import Core.Language
   ( cmdAction
+  , cmdAttack
   , cmdOngoing
   , cmdPassive
   , cmdTask
@@ -37,8 +38,15 @@ import Core.Language
   , sepSemi
   )
 
+import Core.Layout
+  ( LayoutItem (..)
+  , layoutAttackDef
+  , layoutRule
+  )
 import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.RichText (Inline (..), RichText (..), TextStyle (..), getInlines)
+
+-- Import types but avoid Render.Rules exporting Rule again if not needed, or just import types
 import Core.RuleDefs
   ( AttackDef (..)
   , GeneralDef (..)
@@ -48,38 +56,16 @@ import Core.RuleDefs
   , TaskDef (..)
   , TriggerDef (..)
   )
-import Core.Stats
-  ( Difficulty (..)
-  , ResourceType (..)
-  , StackPower (..)
-  , StatValue (..)
-  , prettyModifier
-  )
+import Core.RuleDefs hiding (Rule (..))
+import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
 import Core.Util (tshow)
-import Frontend.Render.Common (IconMode (..))
+import Frontend.Render.Common (IconMode (..), renderNonEmptyText, renderResourceType)
 
 import Frontend.Style qualified as Style
-import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
 
 --------------------------------------------------------------------------------
 -- Core Rendering Primitives
 --------------------------------------------------------------------------------
-
--- | Render a ResourceType as an SVG icon
-renderResourceType :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
-renderResourceType mode r t = case r of
-  Red -> renderSquare (color <> style) t
-  Yellow -> renderCircle (color <> style) t
-  Blue -> renderDiamond (color <> style) t
-  where
-    color = case r of
-      Red -> [Style.textRed500]
-      Yellow -> [Style.textYellow400]
-      Blue -> [Style.textBlue500]
-    style = case mode of
-      IconInline -> Style.iconInline
-      IconBlock -> Style.iconBlock
-      IconResponsive -> Style.iconResponsive
 
 -- | Render a StatValue as an icon with a number
 renderStatValue :: (DomBuilder t m) => IconMode -> StatValue -> m ()
@@ -91,16 +77,7 @@ renderDifficulty mode d = renderResourceType mode d.attribute $ Just $ tshow d.v
 
 -- | Render a StackPower
 renderStackPower :: (DomBuilder t m) => IconMode -> StackPower -> m ()
-renderStackPower mode (StackPower base 0 Nothing) = renderResourceType mode base Nothing
-renderStackPower mode (StackPower base modifier conditional) = do
-  renderResourceType mode base Nothing
-  text " "
-  text (prettyModifier modifier)
-  case conditional of
-    Nothing -> pure ()
-    Just a -> do
-      text " "
-      text a
+renderStackPower = undefined -- Replaced by Layout-based rendering, keeping for export compatibility if needed until full cleanup
 
 --------------------------------------------------------------------------------
 -- Inline and RichText Rendering
@@ -123,129 +100,55 @@ renderRichText :: (DomBuilder t m) => RichText -> m ()
 renderRichText rt = mapM_ renderInline (getInlines rt)
 
 --------------------------------------------------------------------------------
+-- Layout Rendering
+--------------------------------------------------------------------------------
+
+renderLayoutItem :: (DomBuilder t m) => LayoutItem -> m ()
+renderLayoutItem (Keyword t) = el "strong" $ text t
+renderLayoutItem (Symbol r t) = renderResourceType IconInline r t
+renderLayoutItem (Literal t) = text t
+renderLayoutItem (RichContent rt) = renderRichText rt
+renderLayoutItem (Group items) = do
+  text "("
+  mapM_ renderLayoutItem items
+  text ")"
+renderLayoutItem Space = text " "
+
+renderLayout :: (DomBuilder t m) => [LayoutItem] -> m ()
+renderLayout = mapM_ renderLayoutItem
+
+--------------------------------------------------------------------------------
 -- Rule Definition Rendering
 --------------------------------------------------------------------------------
 
--- | Render a NonEmptyText as plain text
-renderNonEmptyText :: (DomBuilder t m) => NonEmptyText -> m ()
-renderNonEmptyText = text . getRawText
-
--- | Render an arrow (→)
-renderArrow :: (DomBuilder t m) => m ()
-renderArrow = text " → "
-
--- | Render content in parentheses
-renderParens :: (DomBuilder t m) => m () -> m ()
-renderParens inner = do
-  text "("
-  inner
-  text ")"
-
--- | Render an AttackDef
+-- | Render an AttackDef using Layout
+-- "Attack" keyword is now handled in the layout
 renderAttackDef :: (DomBuilder t m) => AttackDef -> m ()
 renderAttackDef def = do
-  renderResourceType IconInline def.resistedBy Nothing
-  text sepColon
+  el "strong" $ text cmdAttack
   text " "
-  text kwStr
-  text " = "
-  renderStackPower IconInline def.power
-  case def.effect of
-    Nothing -> pure ()
-    Just e -> do
-      renderArrow
-      renderRichText e
+  renderLayout (layoutAttackDef def)
 
--- | Render a GeneralDef (Action)
-renderGeneralDef :: (DomBuilder t m) => GeneralDef -> m ()
-renderGeneralDef def = do
-  text cmdAction
-  text " "
-  renderNonEmptyText def.name
-  case def.cost of
-    Nothing -> pure ()
-    Just c -> do
-      text " "
-      renderParens (renderRichText c)
-  case def.difficulty of
-    Nothing -> pure ()
-    Just d -> do
-      text " "
-      renderDifficulty IconInline d
-  renderArrow
-  renderRichText def.effect
-
--- | Render an OngoingDef
-renderOngoingDef :: (DomBuilder t m) => OngoingDef -> m ()
-renderOngoingDef def = do
-  text cmdOngoing
-  text " "
-  renderParens (renderRichText def.life)
-  renderArrow
-  renderRichText def.effect
-
--- | Render a PassiveDef
-renderPassiveDef :: (DomBuilder t m) => PassiveDef -> m ()
-renderPassiveDef def = do
-  text cmdPassive
-  text " "
-  renderStackPower IconInline def.bonus
-  case def.condition of
-    Nothing -> pure ()
-    Just c -> do
-      text " "
-      renderNonEmptyText c
-
--- | Render a TaskDef
-renderTaskDef :: (DomBuilder t m) => TaskDef -> m ()
-renderTaskDef def = do
-  text cmdTask
-  text " "
-  renderNonEmptyText def.name
-  let parts =
-        catMaybes
-          [ fmap (\c -> (kwCheck, renderDifficulty IconInline c)) def.check
-          , fmap (\t -> (kwTime, renderRichText t)) def.time
-          , fmap (\c -> (kwCost, renderRichText c)) def.cost
-          ]
-
-  if null parts
-    then pure ()
-    else do
-      text " "
-      renderParens $ renderParts parts
-
-  renderArrow
-  renderRichText def.effect
-  where
-    renderParts :: (DomBuilder t m) => [(Text, m ())] -> m ()
-    renderParts [] = pure ()
-    renderParts [(label, val)] = do
-      text label
-      text " "
-      val
-    renderParts ((label, val) : rest) = do
-      text label
-      text " "
-      val
-      text sepSemi
-      text " "
-      renderParts rest
-
--- | Render a TriggerDef
-renderTriggerDef :: (DomBuilder t m) => TriggerDef -> m ()
-renderTriggerDef def = do
-  text cmdWhen
-  text " "
-  renderNonEmptyText def.trigger
-  renderArrow
-  renderRichText def.effect
-
--- | Render any Rule variant
+-- | Render any Rule variant using Layout
 renderRule :: (DomBuilder t m) => Rule -> m ()
-renderRule (RuleGeneral def) = renderGeneralDef def
-renderRule (RuleOngoing def) = renderOngoingDef def
-renderRule (RulePassive def) = renderPassiveDef def
-renderRule (RuleTask def) = renderTaskDef def
-renderRule (RuleTrigger def) = renderTriggerDef def
-renderRule (RuleNarrative rt) = renderRichText rt
+renderRule rule = renderLayout (layoutRule rule)
+
+-- | Deprecated specific renderers (redirect to generic rule render if possible, or undefined if unused)
+-- We keep the exports but implemented via generic layout if easy, or remove if unused.
+-- The previous exports were used in `Frontend.Render.Rules`, so let's check usages.
+-- Currently only renderRule and renderAttackDef are used externally commonly.
+-- Stubs for compatibility:
+renderGeneralDef :: (DomBuilder t m) => GeneralDef -> m ()
+renderGeneralDef def = renderRule (RuleGeneral def)
+
+renderOngoingDef :: (DomBuilder t m) => OngoingDef -> m ()
+renderOngoingDef def = renderRule (RuleOngoing def)
+
+renderPassiveDef :: (DomBuilder t m) => PassiveDef -> m ()
+renderPassiveDef def = renderRule (RulePassive def)
+
+renderTaskDef :: (DomBuilder t m) => TaskDef -> m ()
+renderTaskDef def = renderRule (RuleTask def)
+
+renderTriggerDef :: (DomBuilder t m) => TriggerDef -> m ()
+renderTriggerDef def = renderRule (RuleTrigger def)

@@ -159,7 +159,7 @@ deck:
     yellow: 2
 - name: Shield Deflect
   rules:
-  - 'defend |x| or |y|: strength = |x| '
+  - 'defend |x| or |y|: strength = |x|'
   - you can save 1 resource from this and use it on attack next turn
   stats:
     blue: 2
@@ -174,7 +174,7 @@ deck:
     yellow: 2
 - name: Shield Block
   rules:
-  - 'defend |x| or |y|: strength = |x| '
+  - 'defend |x| or |y|: strength = |x|'
   - recover 1 resource to hand
   stats:
     blue: 3

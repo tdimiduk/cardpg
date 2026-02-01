@@ -8,6 +8,7 @@ import Data.ByteString qualified as BS
 import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
+import System.Directory (doesFileExist)
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -17,7 +18,9 @@ import Core.RuleInstances ()
 
 test_consequenceParsing :: TestTree
 test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
-  let path = "../data/cards/consequences/baseline.yaml"
+  let basePath = "data/cards/consequences/baseline.yaml"
+  exists <- doesFileExist basePath
+  let path = if exists then basePath else "../" ++ basePath
   result <- decodeFileEither path :: IO (Either ParseException [ConsequenceCard])
   case result of
     Left err -> assertFailure $ "Failed to parse consequence cards: " ++ show err

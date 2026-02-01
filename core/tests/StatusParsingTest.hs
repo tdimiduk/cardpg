@@ -10,6 +10,7 @@ import Data.Generics.Labels ()
 import Data.List.NonEmpty qualified as NE
 import Data.Maybe (fromMaybe)
 import Data.Yaml (ParseException, decodeFileEither, encode)
+import System.Directory (doesFileExist)
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -19,7 +20,9 @@ import Core.RuleInstances ()
 
 test_statusParsing :: TestTree
 test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do
-  let path = "../data/cards/status/core.yaml"
+  let basePath = "data/cards/status/core.yaml"
+  exists <- doesFileExist basePath
+  let path = if exists then basePath else "../" ++ basePath
   result <- decodeFileEither path :: IO (Either ParseException [CoreCard])
   case result of
     Left err -> assertFailure $ "Failed to parse status cards: " ++ show err

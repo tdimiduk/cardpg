@@ -14,30 +14,13 @@ import Core.RichText (Block (..))
 import Core.Stats (ResourceType (..))
 import Core.Util (tshow)
 
-import Frontend.Render.Common (IconMode (..))
+import Frontend.Render.Common (IconMode (..), renderNonEmptyText, renderResourceType)
 import Frontend.Render.Rules (renderRichText)
 import Frontend.Style qualified as Style
-import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
 
 -- | Render a ResourceType as an SVG shape icon
 resourceSymbol :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
-resourceSymbol mode r t = case r of
-  Red -> renderSquare (color <> style) t
-  Yellow -> renderCircle (color <> style) t
-  Blue -> renderDiamond (color <> style) t
-  where
-    color = case r of
-      Red -> [Style.textRed500]
-      Yellow -> [Style.textYellow400]
-      Blue -> [Style.textBlue500]
-    style = case mode of
-      IconInline -> Style.iconInline
-      IconBlock -> Style.iconBlock
-      IconResponsive -> Style.iconResponsive
-
--- | Render NonEmptyText as plain text
-renderNonEmptyText :: (DomBuilder t m) => NonEmptyText -> m ()
-renderNonEmptyText = text . getRawText
+resourceSymbol = renderResourceType
 
 -- | Render a Block element
 renderBlock :: (DomBuilder t m) => Block -> m ()

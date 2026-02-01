@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | TextRep typeclass for DSL round-tripping.
@@ -19,26 +18,28 @@ module Core.DSL.TextRep
 where
 
 import Data.List.NonEmpty qualified as NE
-import Data.Maybe (catMaybes)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Text.Megaparsec (eof)
 
-import Core.Language
-  ( cmdAction
-  , cmdOngoing
-  , cmdPassive
-  , cmdTask
-  , cmdWhen
-  , kwCheck
-  , kwCost
-  , kwStr
-  , kwTime
-  , sepColon
-  , sepSemi
-  , styleDelimiter
+import Core.DSL.RuleParser
+  ( attackParser
+  , difficultyParser
+  , richTextParser
+  , ruleParser
+  , stackPowerParser
   )
-import Core.NonEmptyText (NonEmptyText, getRawText)
+
+import Core.Language (styleDelimiter)
+import Core.Layout
+  ( LayoutItem (..)
+  , layoutAttackDef
+  , layoutDifficulty
+  , layoutRule
+  , layoutStackPower
+  , layoutStatValue
+  )
+import Core.NonEmptyText (getRawText)
 import Core.Parser (Parser, basicParse)
 import Core.RichText
   ( Inline (..)
@@ -47,12 +48,7 @@ import Core.RichText
   )
 import Core.RuleDefs
   ( AttackDef (..)
-  , GeneralDef (..)
-  , OngoingDef (..)
-  , PassiveDef (..)
   , Rule (..)
-  , TaskDef (..)
-  , TriggerDef (..)
   )
 import Core.Stats
   ( Difficulty (..)
@@ -60,19 +56,9 @@ import Core.Stats
   , StackPower (..)
   , StatValue (..)
   , parseStatValue
-  , prettyModifier
   , resourceTypeParser
   )
 import Core.Util (tshow)
-
--- Import parsers from RuleParser
-import Core.DSL.RuleParser
-  ( attackParser
-  , difficultyParser
-  , richTextParser
-  , ruleParser
-  , stackPowerParser
-  )
 
 -- | Typeclass for DSL round-tripping.
 -- | Invariant: parseText . toText === Right
@@ -85,25 +71,14 @@ parseText :: (TextRep a) => Text -> Either String a
 parseText = basicParse (textParser <* eof)
 
 -- Rule (top-level, fully roundtrippable)
+-- Rule (top-level, fully roundtrippable)
 instance TextRep Rule where
-  toText (RuleGeneral def) = toTextGeneralDef def
-  toText (RuleOngoing def) = toTextOngoingDef def
-  toText (RulePassive def) = toTextPassiveDef def
-  toText (RuleTask def) = toTextTaskDef def
-  toText (RuleTrigger def) = toTextTriggerDef def
-  toText (RuleNarrative rt) = toTextRichText rt
+  toText = renderLayoutText . layoutRule
   textParser = ruleParser
 
 -- AttackDef
 instance TextRep AttackDef where
-  toText def =
-    toTextResourceType def.resistedBy
-      <> sepColon
-      <> " "
-      <> kwStr
-      <> " = "
-      <> toTextStackPower def.power
-      <> maybe "" (\e -> " → " <> toTextRichText e) def.effect
+  toText = renderLayoutText . layoutAttackDef
   textParser = attackParser
 
 -- RichText
@@ -113,12 +88,12 @@ instance TextRep RichText where
 
 -- StackPower
 instance TextRep StackPower where
-  toText = toTextStackPower
+  toText = renderLayoutText . layoutStackPower
   textParser = stackPowerParser
 
 -- Difficulty
 instance TextRep Difficulty where
-  toText = toTextDifficulty
+  toText = renderLayoutText . layoutDifficulty
   textParser = difficultyParser
 
 -- ResourceType
@@ -128,98 +103,39 @@ instance TextRep ResourceType where
 
 -- StatValue
 instance TextRep StatValue where
-  toText = toTextStatValue
+  toText = renderLayoutText . layoutStatValue
   textParser = parseStatValue
 
 --------------------------------------------------------------------------------
--- Helper functions for toText serialization
--- These are used internally and by types that don't need full TextRep instances
+-- Helpers
 --------------------------------------------------------------------------------
+
+renderLayoutText :: [LayoutItem] -> Text
+renderLayoutText items = T.concat $ map renderLayoutItem items
+
+renderLayoutItem :: LayoutItem -> Text
+renderLayoutItem (Keyword t) = t
+renderLayoutItem (Literal t) = t
+renderLayoutItem (Symbol r Nothing) = toTextResourceType r
+renderLayoutItem (Symbol r (Just t)) = toTextResourceType r <> " " <> t
+renderLayoutItem (RichContent rt) = toTextRichText rt
+renderLayoutItem (Group items) = "(" <> renderLayoutText items <> ")"
+renderLayoutItem Space = " "
 
 toTextResourceType :: ResourceType -> Text
 toTextResourceType Red = "{Red}"
 toTextResourceType Yellow = "{Yellow}"
 toTextResourceType Blue = "{Blue}"
 
-toTextDifficulty :: Difficulty -> Text
-toTextDifficulty (Difficulty attr val) = toTextResourceType attr <> " " <> tshow val
-
-toTextStackPower :: StackPower -> Text
-toTextStackPower (StackPower base 0 Nothing) = toTextResourceType base
-toTextStackPower (StackPower base modifier conditional) =
-  toTextResourceType base
-    <> " "
-    <> prettyModifier modifier
-    <> maybe "" (" " <>) conditional
-
 toTextInline :: Inline -> Text
 toTextInline (TextRun (Just style) content) = wrapped (styleDelimiter style) $ getRawText content
 toTextInline (TextRun Nothing content) = getRawText content
-toTextInline (ColorValue power) = toTextStatValue power
-toTextInline (DifficultyValue diff) = toTextDifficulty diff
+toTextInline (ColorValue power) = renderLayoutText $ layoutStatValue power
+toTextInline (DifficultyValue diff) = renderLayoutText $ layoutDifficulty diff
 toTextInline Break = "\n"
-
-toTextStatValue :: StatValue -> Text
-toTextStatValue s = "{" <> tshow s.color <> ":" <> tshow s.value <> "}"
 
 wrapped :: Text -> Text -> Text
 wrapped wrapper t = wrapper <> t <> wrapper
 
 toTextRichText :: RichText -> Text
 toTextRichText rt = T.concat $ toTextInline <$> NE.toList (getInlines rt)
-
-toTextNonEmptyText :: NonEmptyText -> Text
-toTextNonEmptyText = getRawText
-
-toTextGeneralDef :: GeneralDef -> Text
-toTextGeneralDef def =
-  cmdAction
-    <> " "
-    <> toTextNonEmptyText def.name
-    <> maybe "" (\c -> " (" <> toTextRichText c <> ")") def.cost
-    <> maybe "" (\d -> " " <> toTextDifficulty d) def.difficulty
-    <> " → "
-    <> toTextRichText def.effect
-
-toTextOngoingDef :: OngoingDef -> Text
-toTextOngoingDef def =
-  cmdOngoing
-    <> " ("
-    <> toTextRichText def.life
-    <> ") → "
-    <> toTextRichText def.effect
-
-toTextPassiveDef :: PassiveDef -> Text
-toTextPassiveDef def =
-  cmdPassive
-    <> " "
-    <> toTextStackPower def.bonus
-    <> maybe "" (\c -> " " <> toTextNonEmptyText c) def.condition
-
-toTextTaskDef :: TaskDef -> Text
-toTextTaskDef def =
-  cmdTask
-    <> " "
-    <> toTextNonEmptyText def.name
-    <> renderTaskParts def
-    <> " → "
-    <> toTextRichText def.effect
-  where
-    renderTaskParts d =
-      let parts =
-            catMaybes
-              [ fmap (\c -> kwCheck <> " " <> toTextDifficulty c) d.check
-              , fmap (\t -> kwTime <> " " <> toTextRichText t) d.time
-              , fmap (\c -> kwCost <> " " <> toTextRichText c) d.cost
-              ]
-       in if null parts
-            then ""
-            else " (" <> T.intercalate (sepSemi <> " ") parts <> ")"
-
-toTextTriggerDef :: TriggerDef -> Text
-toTextTriggerDef def =
-  cmdWhen
-    <> " "
-    <> toTextNonEmptyText def.trigger
-    <> " → "
-    <> toTextRichText def.effect
