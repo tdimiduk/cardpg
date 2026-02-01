@@ -38,8 +38,8 @@ deck:
     blue: 3
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Blue} - 1→Atacks everyone in area first round, then for 5
-    rounds anyone in area takes same attack'
+- attack: '{Red}: Str = {Blue} - 1 → Atacks everyone in area first round, then for
+    5 rounds anyone in area takes same attack'
   cost: 5
   name: The Floor is Lava
   rules:
@@ -48,7 +48,7 @@ deck:
     blue: 3
     red: 3
     yellow: 1
-- attack: '{Red}: Str = {Blue}→Attacks each round removing one card from stack each
+- attack: '{Red}: Str = {Blue} → Attacks each round removing one card from stack each
     turn until empty'
   cost: 3
   name: Magma Missile

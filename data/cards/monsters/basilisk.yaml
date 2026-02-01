@@ -27,14 +27,14 @@ deck:
     blue: 5
     red: 8
     yellow: 2
-- attack: '{Blue}: Str = {Blue}→slow 3/skip 3 turns/stone statue'
+- attack: '{Blue}: Str = {Blue} → slow 3/skip 3 turns/stone statue'
   cost: 1
   name: Stone Gaze
   stats:
     blue: 6
     red: 4
     yellow: 6
-- attack: '{Blue}: Str = {Blue}→slow 3/skip 3 turns/stone statue'
+- attack: '{Blue}: Str = {Blue} → slow 3/skip 3 turns/stone statue'
   cost: 1
   name: Stone Gaze
   stats:

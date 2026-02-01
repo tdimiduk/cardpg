@@ -66,91 +66,91 @@ deck:
     blue: 1
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Chop
   stats:
     blue: 1
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Chop
   stats:
     blue: 1
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Chop
   stats:
     blue: 1
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 5→basic wound'
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
   cost: 3
   name: Hack
   stats:
     blue: 1
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→basic wound'
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
   cost: 3
   name: Hack
   stats:
     blue: 1
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Power Attack
   stats:
     blue: 2
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Power Attack
   stats:
     blue: 2
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 0
   name: Bite
   stats:
     blue: 1
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 0
   name: Bite
   stats:
     blue: 1
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Slash
   stats:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Slash
   stats:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Slash
   stats:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Slash
   stats:

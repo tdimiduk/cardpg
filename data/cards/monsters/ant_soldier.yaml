@@ -125,42 +125,42 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red}→Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks again next round'
   cost: 4
   name: Acid Spit
   stats:
     blue: 3
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Red}→Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks again next round'
   cost: 4
   name: Acid Spit
   stats:
     blue: 3
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Red}→Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks again next round'
   cost: 4
   name: Acid Spit
   stats:
     blue: 3
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Red}→Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks again next round'
   cost: 4
   name: Acid Spit
   stats:
     blue: 3
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Red}→Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks again next round'
   cost: 4
   name: Acid Spit
   stats:
     blue: 3
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Red}→Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks again next round'
   cost: 4
   name: Acid Spit
   stats:

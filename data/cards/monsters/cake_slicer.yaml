@@ -27,28 +27,28 @@ deck:
     blue: 2
     red: 2
     yellow: 4
-- attack: '{Red}: Str = {Red}→Attacks all characters'
+- attack: '{Red}: Str = {Red} → Attacks all characters'
   cost: 4
   name: Spread frosting
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all characters'
+- attack: '{Red}: Str = {Red} → Attacks all characters'
   cost: 4
   name: Spread frosting
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all characters'
+- attack: '{Red}: Str = {Red} → Attacks all characters'
   cost: 4
   name: Spread frosting
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all characters'
+- attack: '{Red}: Str = {Red} → Attacks all characters'
   cost: 4
   name: Spread frosting
   stats:

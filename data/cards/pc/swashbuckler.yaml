@@ -25,7 +25,7 @@ deck:
     blue: 2
     red: 2
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 2→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 2 → basic wound'
   cost: 1
   name: Reliable Attack
   stats:
@@ -39,14 +39,14 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
   cost: 1
   name: Quick Attack
   stats:
     blue: 2
     red: 2
     yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
   cost: 0
   name: Flashing blade
   stats:
@@ -70,8 +70,8 @@ deck:
     blue: 5
     red: 3
     yellow: 1
-- attack: '{Yellow}: Str = {Yellow}  (+ 3 if target is attacking you this turn)→basic
-    wound'
+- attack: '{Yellow}: Str = {Yellow}  (+ 3 if target is attacking you this turn) →
+    basic wound'
   cost: 1
   name: Stop Thrust
   stats:
@@ -86,7 +86,7 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Yellow}: Str = {Yellow}→basic wound'
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
   cost: 2
   name: Efficient Attack
   rules:
@@ -96,7 +96,7 @@ deck:
     red: 2
     yellow: 3
 - attack: |-
-    {Yellow}: Str = {Yellow} + 3→Minor: knockdown
+    {Yellow}: Str = {Yellow} + 3 → Minor: knockdown
      Major: knockdown + stun 2
     Critical: knockdown + stun 6
   cost: 1
@@ -120,7 +120,7 @@ deck:
     red: 3
     yellow: 4
 - attack: |-
-    {Yellow}: Str = {Yellow}→ignore 1 armor
+    {Yellow}: Str = {Yellow} → ignore 1 armor
     basic wound
   cost: 2
   name: Precise Strike
@@ -129,7 +129,7 @@ deck:
     red: 1
     yellow: 4
 - attack: |-
-    {Blue}: Str = {Yellow} + 1→ignore armor
+    {Blue}: Str = {Yellow} + 1 → ignore armor
     Target must expend 1/2/4 cards to attack next turn, you draw a card if they do not
   cost: 0
   name: Trick
@@ -146,7 +146,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 3→ignore armor
+    {Blue}: Str = {Blue} + 3 → ignore armor
     Discard 1 /3/All cards
   cost: 1
   name: Mind Games
@@ -154,7 +154,7 @@ deck:
     blue: 3
     red: 2
     yellow: 4
-- attack: '{Yellow}: Str = {Yellow}→basic wound'
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
   cost: 2
   name: Fence
   rules:
@@ -163,7 +163,7 @@ deck:
     blue: 2
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Yellow} + 5→Minor: Stun 2 recover resources spent'
+- attack: '{Red}: Str = {Yellow} + 5 → Minor: Stun 2 recover resources spent'
   cost: 2
   name: False Charge
   stats:
@@ -177,8 +177,8 @@ deck:
     blue: 1
     red: 3
     yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 4→Target must expend 1/2/4 cards to defend against
-    you next turn'
+- attack: '{Yellow}: Str = {Yellow} + 4 → Target must expend 1/2/4 cards to defend
+    against you next turn'
   cost: 1
   name: Feint
   stats:

@@ -1,5 +1,5 @@
 deck:
-- attack: '{Red}: Str = {Blue} + 3→Fire wound'
+- attack: '{Red}: Str = {Blue} + 3 → Fire wound'
   cost: 3
   name: Double flame
   rules:
@@ -32,7 +32,7 @@ deck:
     red: 2
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 3→ignore armor
+    {Blue}: Str = {Blue} + 3 → ignore armor
     Minor discard their hand
   cost: 1
   name: Make sneeze
@@ -41,7 +41,7 @@ deck:
     red: 2
     yellow: 4
 - attack: |-
-    {Yellow}: Str = {Blue} + 4→attack all within small area
+    {Yellow}: Str = {Blue} + 4 → attack all within small area
     minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun 2
   cost: 3
   name: Wave
@@ -50,7 +50,7 @@ deck:
     red: 3
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 4→Minor magic attacks at half strength
+    {Blue}: Str = {Blue} + 4 → Minor magic attacks at half strength
     major magic attacks at 0 strength
   cost: 4
   name: Crystal crush
@@ -59,7 +59,7 @@ deck:
     red: 3
     yellow: 2
 - attack: |-
-    {Red}: Str = {Blue} + 2→ignore armor
+    {Red}: Str = {Blue} + 2 → ignore armor
     minor: slow 2, major: slow 5, slow 24
   cost: 2
   name: Plant trap
@@ -83,7 +83,7 @@ deck:
     blue: 2
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Blue} + 3→Poison wound'
+- attack: '{Red}: Str = {Blue} + 3 → Poison wound'
   cost: 3
   name: Poison bolt
   stats:
@@ -98,14 +98,14 @@ deck:
     blue: 3
     red: 4
     yellow: 4
-- attack: '{Blue}: Str = {Blue} + 1→basic wound'
+- attack: '{Blue}: Str = {Blue} + 1 → basic wound'
   cost: 1
   name: Black beam
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Blue}→Slow 2, stun 2 slow 5, stun 5 slow 10'
+- attack: '{Red}: Str = {Blue} → Slow 2, stun 2 slow 5, stun 5 slow 10'
   cost: 4
   name: Snow storm
   rules:
@@ -123,7 +123,7 @@ deck:
     blue: 2
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Blue} + 3→minor: stun 2, major: stun 4, stun 10'
+- attack: '{Red}: Str = {Blue} + 3 → minor: stun 2, major: stun 4, stun 10'
   cost: 3
   name: Tornado
   stats:
@@ -147,7 +147,7 @@ deck:
     blue: 1
     red: 2
     yellow: 2
-- attack: '{Blue}: Str = {Blue} + 2→minor: stun 2, major: stun 4, stun 10'
+- attack: '{Blue}: Str = {Blue} + 2 → minor: stun 2, major: stun 4, stun 10'
   cost: 2
   name: Shining sun
   rules:
@@ -164,7 +164,7 @@ deck:
     blue: 2
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Blue}→basic wound'
+- attack: '{Red}: Str = {Blue} → basic wound'
   cost: 3
   name: Triple lightning
   rules:
@@ -189,7 +189,7 @@ deck:
     red: 1
     yellow: 4
 - attack: |-
-    {Red}: Str = {Red} + 4→attack all within medium area
+    {Red}: Str = {Red} + 4 → attack all within medium area
     basic fire wound
   cost: 5
   name: Fireball
@@ -199,7 +199,7 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Blue} + 3→basic wound'
+- attack: '{Red}: Str = {Blue} + 3 → basic wound'
   cost: 2
   name: Stone blast
   stats:

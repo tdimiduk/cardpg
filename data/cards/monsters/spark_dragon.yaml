@@ -9,7 +9,7 @@ deck:
     blue: 5
     red: 7
     yellow: 9
-- attack: '{Yellow}: Str = {Yellow}→basic wound'
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
   cost: 1
   name: Electrified
   rules:
@@ -18,7 +18,7 @@ deck:
     blue: 3
     red: 4
     yellow: 6
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Too hot to touch
   rules:
@@ -27,7 +27,7 @@ deck:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Yellow}: Str = {Yellow} - 4→basic wound'
+- attack: '{Yellow}: Str = {Yellow} - 4 → basic wound'
   cost: 3
   name: Shock bite
   rules:
@@ -36,14 +36,14 @@ deck:
     blue: 3
     red: 5
     yellow: 6
-- attack: '{Yellow}: Str = {Yellow} + 2→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 2 → basic wound'
   cost: 2
   name: Dive Bomb
   stats:
     blue: 0
     red: 0
     yellow: 10
-- attack: '{Yellow}: Str = {Yellow} + 8→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 8 → basic wound'
   cost: 3
   name: Pounce
   rules:
@@ -52,7 +52,7 @@ deck:
     blue: 3
     red: 3
     yellow: 6
-- attack: '{Yellow}: Str = {Yellow} + 8→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 8 → basic wound'
   cost: 3
   name: Pounce
   rules:
@@ -61,7 +61,7 @@ deck:
     blue: 3
     red: 3
     yellow: 6
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Fire spray
   rules:
@@ -70,105 +70,105 @@ deck:
     blue: 3
     red: 5
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Burn
   stats:
     blue: 3
     red: 8
     yellow: 3
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Burn
   stats:
     blue: 3
     red: 8
     yellow: 3
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Burn
   stats:
     blue: 3
     red: 8
     yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 3
     red: 4
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 3
     red: 4
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 3
     red: 4
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 3
     red: 4
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 3
     red: 4
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 3
     red: 4
     yellow: 5
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
   cost: 1
   name: Zap
   stats:
     blue: 3
     red: 3
     yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
   cost: 1
   name: Zap
   stats:
     blue: 3
     red: 3
     yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 4→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
   cost: 1
   name: Zap
   stats:

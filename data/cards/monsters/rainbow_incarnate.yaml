@@ -27,7 +27,7 @@ deck:
     blue: 6
     red: 4
     yellow: 5
-- attack: '{Blue}: Str = {Blue}→slow 2, 10, 24'
+- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
   name: Blue
   rules:
   - Ignore armor
@@ -35,7 +35,7 @@ deck:
     blue: 8
     red: 2
     yellow: 2
-- attack: '{Blue}: Str = {Blue}→slow 2, 10, 24'
+- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
   name: Blue
   rules:
   - Ignore armor
@@ -43,7 +43,7 @@ deck:
     blue: 8
     red: 2
     yellow: 2
-- attack: '{Blue}: Str = {Blue}→slow 2, 10, 24'
+- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
   name: Blue
   rules:
   - Ignore armor
@@ -51,7 +51,7 @@ deck:
     blue: 8
     red: 2
     yellow: 2
-- attack: '{Blue}: Str = {Blue}→slow 2, 10, 24'
+- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
   name: Blue
   rules:
   - Ignore armor
@@ -79,28 +79,28 @@ deck:
     blue: 7
     red: 7
     yellow: 7
-- attack: '{Yellow}: Str = {Yellow} + 2→stun 2, 6, paralyze'
+- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
   cost: 2
   name: Yellow
   stats:
     blue: 2
     red: 2
     yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 2→stun 2, 6, paralyze'
+- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
   cost: 2
   name: Yellow
   stats:
     blue: 2
     red: 2
     yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 2→stun 2, 6, paralyze'
+- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
   cost: 2
   name: Yellow
   stats:
     blue: 2
     red: 2
     yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 2→stun 2, 6, paralyze'
+- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
   cost: 2
   name: Yellow
   stats:
@@ -108,7 +108,7 @@ deck:
     red: 2
     yellow: 8
 - attack: |-
-    {Red}: Str = {Red}→or |y|
+    {Red}: Str = {Red} → or |y|
     basic wound
   cost: 1
   name: Orange
@@ -117,7 +117,7 @@ deck:
     red: 6
     yellow: 5
 - attack: |-
-    {Red}: Str = {Red}→or |y|
+    {Red}: Str = {Red} → or |y|
     basic wound
   cost: 1
   name: Orange
@@ -126,7 +126,7 @@ deck:
     red: 6
     yellow: 5
 - attack: |-
-    {Red}: Str = {Red}→or |y|
+    {Red}: Str = {Red} → or |y|
     basic wound
   cost: 1
   name: Orange
@@ -135,7 +135,7 @@ deck:
     red: 6
     yellow: 5
 - attack: |-
-    {Red}: Str = {Red}→or |y|
+    {Red}: Str = {Red} → or |y|
     basic wound
   cost: 1
   name: Orange
@@ -143,28 +143,28 @@ deck:
     blue: 4
     red: 6
     yellow: 5
-- attack: '{Red}: Str = {Red} + 2→fire wound'
+- attack: '{Red}: Str = {Red} + 2 → fire wound'
   cost: 2
   name: Red
   stats:
     blue: 2
     red: 8
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→fire wound'
+- attack: '{Red}: Str = {Red} + 2 → fire wound'
   cost: 2
   name: Red
   stats:
     blue: 2
     red: 8
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→fire wound'
+- attack: '{Red}: Str = {Red} + 2 → fire wound'
   cost: 2
   name: Red
   stats:
     blue: 2
     red: 8
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→fire wound'
+- attack: '{Red}: Str = {Red} + 2 → fire wound'
   cost: 2
   name: Red
   stats:

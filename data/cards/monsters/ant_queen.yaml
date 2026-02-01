@@ -14,14 +14,14 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
   cost: 4
   name: Acid Bite
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
   cost: 5
   name: Acid Spray
   stats:
@@ -57,14 +57,14 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
   cost: 4
   name: Acid Bite
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
   cost: 5
   name: Acid Spray
   stats:
@@ -100,14 +100,14 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
   cost: 4
   name: Acid Bite
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
   cost: 5
   name: Acid Spray
   stats:
@@ -143,14 +143,14 @@ deck:
     blue: 4
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 1→Attacks again next round'
+- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
   cost: 4
   name: Acid Bite
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→Attacks all opponents, Attacks again next round'
+- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
   cost: 5
   name: Acid Spray
   stats:

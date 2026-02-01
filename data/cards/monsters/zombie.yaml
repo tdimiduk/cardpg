@@ -1,166 +1,166 @@
 deck:
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 6
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 5
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 5
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 5
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 5
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 5
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 5
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 4
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 3
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 3
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 3
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 3
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 3
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 2
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:
     blue: 0
     red: 2
     yellow: 0
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Shamble at
   stats:

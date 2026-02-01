@@ -1,6 +1,6 @@
 deck:
 - attack: |-
-    {Blue}: Str = {Red}→ignore armor
+    {Blue}: Str = {Red} → ignore armor
     Discard 1/2/4 cards
   cost: 0
   name: Roar
@@ -11,7 +11,7 @@ deck:
     red: 4
     yellow: 2
 - attack: |-
-    {Blue}: Str = {Red}→ignore armor
+    {Blue}: Str = {Red} → ignore armor
     Discard 1/2/4 cards
   cost: 0
   name: Roar
@@ -22,7 +22,7 @@ deck:
     red: 4
     yellow: 2
 - attack: |-
-    {Blue}: Str = {Red}→ignore armor
+    {Blue}: Str = {Red} → ignore armor
     Discard 1/2/4 cards
   cost: 0
   name: Roar
@@ -32,119 +32,119 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 8→basic wound'
+- attack: '{Red}: Str = {Red} + 8 → basic wound'
   cost: 3
   name: Rend
   stats:
     blue: 4
     red: 8
     yellow: 5
-- attack: '{Red}: Str = {Red} + 8→basic wound'
+- attack: '{Red}: Str = {Red} + 8 → basic wound'
   cost: 3
   name: Rend
   stats:
     blue: 4
     red: 8
     yellow: 5
-- attack: '{Red}: Str = {Red} + 8→basic wound'
+- attack: '{Red}: Str = {Red} + 8 → basic wound'
   cost: 3
   name: Rend
   stats:
     blue: 4
     red: 8
     yellow: 5
-- attack: '{Red}: Str = {Red} + 8→basic wound'
+- attack: '{Red}: Str = {Red} + 8 → basic wound'
   cost: 3
   name: Rend
   stats:
     blue: 4
     red: 8
     yellow: 5
-- attack: '{Red}: Str = {Red} + 10→basic wound'
+- attack: '{Red}: Str = {Red} + 10 → basic wound'
   cost: 1
   name: Knock down
   stats:
     blue: 5
     red: 7
     yellow: 5
-- attack: '{Red}: Str = {Red} + 10→basic wound'
+- attack: '{Red}: Str = {Red} + 10 → basic wound'
   cost: 1
   name: Knock down
   stats:
     blue: 5
     red: 7
     yellow: 5
-- attack: '{Red}: Str = {Red} + 10→basic wound'
+- attack: '{Red}: Str = {Red} + 10 → basic wound'
   cost: 1
   name: Knock down
   stats:
     blue: 5
     red: 7
     yellow: 5
-- attack: '{Red}: Str = {Red} + 10→basic wound'
+- attack: '{Red}: Str = {Red} + 10 → basic wound'
   cost: 1
   name: Knock down
   stats:
     blue: 5
     red: 7
     yellow: 5
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 4
     red: 6
     yellow: 6
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 4
     red: 6
     yellow: 6
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 4
     red: 6
     yellow: 6
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 4
     red: 6
     yellow: 6
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Claw
   stats:
     blue: 4
     red: 6
     yellow: 6
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 2
     red: 7
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 2
     red: 7
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 2
     red: 7
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 2
   name: Bite
   stats:

@@ -7,7 +7,7 @@ deck:
     blue: 3
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→Minor: daze 1, Major: Minor wound, Critical: major
+- attack: '{Red}: Str = {Red} + 2 → Minor: daze 1, Major: Minor wound, Critical: major
     wound'
   cost: 0
   name: Opportunistic Kick
@@ -55,14 +55,14 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 1→upgraded wound'
+- attack: '{Red}: Str = {Red} + 1 → upgraded wound'
   cost: 2
   name: Mighty Blow
   stats:
     blue: 2
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→Minor: No Effect, Major or Critical: Kill target'
+- attack: '{Red}: Str = {Red} + 2 → Minor: No Effect, Major or Critical: Kill target'
   cost: 2
   name: Deathblow
   stats:
@@ -108,7 +108,7 @@ deck:
     blue: 1
     red: 3
     yellow: 1
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Bully
   rules:
@@ -122,13 +122,13 @@ deck:
     blue: 2
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   name: Backswing
   stats:
     blue: 1
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Clumsy Attack
   stats:
@@ -142,7 +142,7 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   name: Pressing Attack
   rules:
   - can spend this on an attack next turn
@@ -157,14 +157,14 @@ deck:
     blue: 0
     red: 1
     yellow: 0
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Attack
   stats:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Power Attack
   stats:

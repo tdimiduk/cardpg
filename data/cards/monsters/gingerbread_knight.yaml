@@ -24,35 +24,35 @@ deck:
     blue: 3
     red: 8
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Slash
   stats:
     blue: 3
     red: 5
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Slash
   stats:
     blue: 3
     red: 5
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Slash
   stats:
     blue: 3
     red: 5
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Slash
   stats:
     blue: 3
     red: 5
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Slash
   stats:
@@ -84,35 +84,35 @@ deck:
     blue: 2
     red: 5
     yellow: 7
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stab
   stats:

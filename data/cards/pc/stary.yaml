@@ -1,5 +1,5 @@
 deck:
-- attack: '{Red}: Str = {Blue} + 15→basic wound x2'
+- attack: '{Red}: Str = {Blue} + 15 → basic wound x2'
   cost: 10
   name: Supernova
   rules:
@@ -9,7 +9,7 @@ deck:
     red: 5
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 3→ignore armor, ranged
+    {Blue}: Str = {Blue} + 3 → ignore armor, ranged
     Minor: Stun 2
      Major: cannot attack or draw until attacked or someone uses an action discard
     Critical: unconsious
@@ -19,7 +19,7 @@ deck:
     blue: 4
     red: 2
     yellow: 2
-- attack: '{Blue}: Str = {Blue} + 2→separately for each card in this attack'
+- attack: '{Blue}: Str = {Blue} + 2 → separately for each card in this attack'
   name: Constelation sneeze
   stats:
     blue: 4
@@ -32,7 +32,7 @@ deck:
     blue: 2
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 2
   name: Scale slap
   rules:
@@ -41,14 +41,14 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Blue}→basic wound'
+- attack: '{Red}: Str = {Blue} → basic wound'
   cost: 1
   name: Star blast
   stats:
     blue: 4
     red: 1
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Flyby attack
   rules:
@@ -57,14 +57,14 @@ deck:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Blue}: Str = {Blue}→Next 1,2,4 attacks also attack a random monster'
+- attack: '{Blue}: Str = {Blue} → Next 1,2,4 attacks also attack a random monster'
   cost: 3
   name: Dragon Star
   stats:
     blue: 4
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Blue} + 1→basic wound'
+- attack: '{Red}: Str = {Blue} + 1 → basic wound'
   cost: 2
   name: Star beam
   rules:
@@ -73,7 +73,7 @@ deck:
     blue: 3
     red: 1
     yellow: 3
-- attack: '{Blue}: Str = {Red}→All cards red values get -1, -2, -4'
+- attack: '{Blue}: Str = {Red} → All cards red values get -1, -2, -4'
   cost: 2
   name: Dragon shrink
   stats:
@@ -87,7 +87,7 @@ deck:
     blue: 5
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Blue} + 4→attack all within medium area'
+- attack: '{Red}: Str = {Blue} + 4 → attack all within medium area'
   cost: 5
   name: Star storm
   rules:
@@ -96,49 +96,50 @@ deck:
     blue: 4
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Blue} + 2→minor: stun 2, major: stun 4, stun 10'
+- attack: '{Red}: Str = {Blue} + 2 → minor: stun 2, major: stun 4, stun 10'
   cost: 2
   name: Star lock
   stats:
     blue: 4
     red: 3
     yellow: 1
-- attack: '{Red}: Str = {Blue}→basic wound'
+- attack: '{Red}: Str = {Blue} → basic wound'
   cost: 0
   name: Sharp star
   stats:
     blue: 3
     red: 1
     yellow: 3
-- attack: '{Red}: Str = {Red}→minor: knockdown, major: knock down skip 2 turns, paralyze'
+- attack: '{Red}: Str = {Red} → minor: knockdown, major: knock down skip 2 turns,
+    paralyze'
   cost: 2
   name: Dragon stomp
   stats:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 1→Cant act or draw cards for 1,2,5'
+- attack: '{Red}: Str = {Red} + 1 → Cant act or draw cards for 1,2,5'
   cost: 1
   name: Tail Grab
   stats:
     blue: 2
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 3
   name: Tail Whack
   stats:
     blue: 2
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 0
   name: Dragon flap
   stats:
     blue: 1
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Blue}→basic wound'
+- attack: '{Red}: Str = {Blue} → basic wound'
   cost: 3
   name: Triple stars
   rules:
@@ -155,7 +156,7 @@ deck:
     blue: 2
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Blue} + 2→basic wound'
+- attack: '{Red}: Str = {Blue} + 2 → basic wound'
   cost: 2
   name: Shooting star
   rules:
@@ -164,7 +165,7 @@ deck:
     blue: 3
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Blue} + 2→basic wound'
+- attack: '{Red}: Str = {Blue} + 2 → basic wound'
   cost: 2
   name: Star sword
   stats:
@@ -178,28 +179,28 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Dragon chomp
   stats:
     blue: 3
     red: 4
     yellow: 1
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Dragon grab
   stats:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Blue} + 1→basic wound'
+- attack: '{Red}: Str = {Blue} + 1 → basic wound'
   cost: 1
   name: Star dagger
   stats:
     blue: 3
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→minor: stun 2, major: stun 4, stun 10'
+- attack: '{Red}: Str = {Red} + 3 → minor: stun 2, major: stun 4, stun 10'
   cost: 3
   name: Dragon roar
   stats:

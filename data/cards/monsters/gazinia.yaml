@@ -15,7 +15,7 @@ deck:
     blue: 6
     red: 2
     yellow: 2
-- attack: '{Blue}: Str = {Red} + 4→basic wound'
+- attack: '{Blue}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Water breath
   rules:
@@ -24,7 +24,7 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-- attack: '{Blue}: Str = {Red} + 4→basic wound'
+- attack: '{Blue}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Water breath
   rules:
@@ -33,7 +33,7 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-- attack: '{Blue}: Str = {Red} + 4→basic wound'
+- attack: '{Blue}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Water breath
   rules:
@@ -77,84 +77,84 @@ deck:
     blue: 2
     red: 8
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound, skip next turn'
+- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
   cost: 2
   name: Claw grab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound, skip next turn'
+- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
   cost: 2
   name: Claw grab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound, skip next turn'
+- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
   cost: 2
   name: Claw grab
   stats:
     blue: 3
     red: 6
     yellow: 4
-- attack: '{Blue}: Str = {Red} + 5→basic wound'
+- attack: '{Blue}: Str = {Red} + 5 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 2
     red: 5
     yellow: 3
-- attack: '{Blue}: Str = {Red} + 5→basic wound'
+- attack: '{Blue}: Str = {Red} + 5 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 2
     red: 5
     yellow: 3
-- attack: '{Blue}: Str = {Red} + 5→basic wound'
+- attack: '{Blue}: Str = {Red} + 5 → basic wound'
   cost: 2
   name: Bite
   stats:
     blue: 2
     red: 5
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Rend
   stats:
     blue: 3
     red: 5
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Rend
   stats:
     blue: 3
     red: 5
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Rend
   stats:
     blue: 3
     red: 5
     yellow: 2
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 3
   name: Claw
   stats:
     blue: 2
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 3
   name: Claw
   stats:
     blue: 2
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 3
   name: Claw
   stats:

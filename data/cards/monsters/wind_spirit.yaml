@@ -19,28 +19,28 @@ deck:
     blue: 3
     red: 3
     yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
   cost: 0
   name: Wind Gust
   stats:
     blue: 1
     red: 3
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
   cost: 0
   name: Wind Gust
   stats:
     blue: 1
     red: 3
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
   cost: 0
   name: Wind Gust
   stats:
     blue: 1
     red: 3
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1→basic wound'
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
   cost: 0
   name: Wind Gust
   stats:
@@ -147,7 +147,7 @@ deck:
     blue: 2
     red: 4
     yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1→Stun 2, 4, 10'
+- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
   cost: 2
   name: Blow through
   rules:
@@ -156,7 +156,7 @@ deck:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 1→Stun 2, 4, 10'
+- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
   cost: 2
   name: Blow through
   rules:
@@ -165,7 +165,7 @@ deck:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 1→Stun 2, 4, 10'
+- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
   cost: 2
   name: Blow through
   rules:

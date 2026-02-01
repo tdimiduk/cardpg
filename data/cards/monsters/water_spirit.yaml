@@ -55,7 +55,7 @@ deck:
     blue: 3
     red: 3
     yellow: 5
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Spray
   rules:
@@ -64,7 +64,7 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Spray
   rules:
@@ -73,7 +73,7 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Spray
   rules:
@@ -82,7 +82,7 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Spray
   rules:
@@ -91,70 +91,70 @@ deck:
     blue: 3
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Splash
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Splash
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Splash
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Splash
   stats:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 5→Knockdown'
+- attack: '{Red}: Str = {Red} + 5 → Knockdown'
   cost: 1
   name: Make waves
   stats:
     blue: 1
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→Knockdown'
+- attack: '{Red}: Str = {Red} + 5 → Knockdown'
   cost: 1
   name: Make waves
   stats:
     blue: 1
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→Knockdown'
+- attack: '{Red}: Str = {Red} + 5 → Knockdown'
   cost: 1
   name: Make waves
   stats:
     blue: 1
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 7→Stun 4, stun 8, kill'
+- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
   cost: 4
   name: Drown
   stats:
     blue: 3
     red: 5
     yellow: 3
-- attack: '{Red}: Str = {Red} + 7→Stun 4, stun 8, kill'
+- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
   cost: 4
   name: Drown
   stats:
     blue: 3
     red: 5
     yellow: 3
-- attack: '{Red}: Str = {Red} + 7→Stun 4, stun 8, kill'
+- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
   cost: 4
   name: Drown
   stats:

@@ -1,6 +1,6 @@
 deck:
 - attack: |-
-    {Blue}: Str = {Red} + 3→no armor
+    {Blue}: Str = {Red} + 3 → no armor
     Target discards 1/3/All cards
   cost: 1
   name: Demoralize
@@ -30,7 +30,7 @@ deck:
     blue: 4
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→basic wound'
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
   cost: 3
   name: Unstoppable chop
   stats:
@@ -38,7 +38,7 @@ deck:
     red: 4
     yellow: 2
 - attack: |-
-    {Red}: Str = {Red} + 2→ignore 1 armor
+    {Red}: Str = {Red} + 2 → ignore 1 armor
     Armor damage (on any success)
   cost: 2
   name: Sunder Armor
@@ -46,7 +46,7 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 1→basic wound'
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
   cost: 1
   name: Shielded Strike
   rules:
@@ -55,7 +55,7 @@ deck:
     blue: 2
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Box in
   rules:
@@ -69,7 +69,7 @@ deck:
     blue: 2
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 1→basic wound'
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
   cost: 2
   name: Warding Strike
   rules:
@@ -87,7 +87,7 @@ deck:
     blue: 4
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 1→basic wound'
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
   cost: 2
   name: Lead with the Shield
   rules:
@@ -103,7 +103,7 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Consistent Attack
   rules:
@@ -112,7 +112,7 @@ deck:
     blue: 3
     red: 2
     yellow: 2
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 1
   name: Pressing Attack
   rules:
@@ -143,14 +143,14 @@ deck:
     blue: 2
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 1
   name: Attack
   stats:
     blue: 2
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→cannot inflict more than a minor wound'
+- attack: '{Red}: Str = {Red} + 2 → cannot inflict more than a minor wound'
   cost: 0
   name: Shield Bash
   stats:
@@ -165,7 +165,7 @@ deck:
     blue: 2
     red: 2
     yellow: 4
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Power Attack
   stats:

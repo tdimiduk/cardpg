@@ -10,8 +10,7 @@ import Test.Tasty
 import Test.Tasty.QuickCheck
 
 import Core.Card
-import Core.DSL.Printer (prettyRule)
-import Core.DSL.RuleParser (parseRule)
+import Core.DSL.TextRep (TextRep (..), parseText)
 import Core.LogicTest (test_logic)
 
 import ArbitraryInstances ()
@@ -57,8 +56,8 @@ prop_jsonRoundtrip x =
 
 prop_dslRoundtrip :: Rule -> Property
 prop_dslRoundtrip r =
-  let printed = prettyRule r
-      parsed = parseRule printed
+  let printed = toText r
+      parsed = parseText printed
    in counterexample
         ("Original: " ++ show r ++ "\nPrinted: " ++ show printed ++ "\nParsed: " ++ show parsed)
         $ parsed === Right r

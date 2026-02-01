@@ -48,7 +48,7 @@ deck:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red} + 10→Stun 2 self'
+- attack: '{Red}: Str = {Red} + 10 → Stun 2 self'
   cost: 6
   name: Timber
   stats:
@@ -86,7 +86,7 @@ deck:
     blue: 5
     red: 4
     yellow: 1
-- attack: '{Red}: Str = {Red}→Up to 4 melee targets'
+- attack: '{Red}: Str = {Red} → Up to 4 melee targets'
   cost: 4
   name: Thrashing branches
   rules:
@@ -149,7 +149,7 @@ deck:
     blue: 3
     red: 3
     yellow: 2
-- attack: '{Red}: Str = {Red} + 2→ranged'
+- attack: '{Red}: Str = {Red} + 2 → ranged'
   cost: 3
   name: Launch rotten fruit
   stats:

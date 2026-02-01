@@ -24,35 +24,35 @@ deck:
     blue: 2
     red: 6
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 2
   name: Swat
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 2
   name: Swat
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 2
   name: Swat
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 2
   name: Swat
   stats:
     blue: 3
     red: 3
     yellow: 3
-- attack: '{Red}: Str = {Red}→basic wound'
+- attack: '{Red}: Str = {Red} → basic wound'
   cost: 2
   name: Swat
   stats:
@@ -84,35 +84,35 @@ deck:
     blue: 1
     red: 3
     yellow: 6
-- attack: '{Red}: Str = {Red}→Stun 2/4/6'
+- attack: '{Red}: Str = {Red} → Stun 2/4/6'
   cost: 1
   name: Bump
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red}→Stun 2/4/6'
+- attack: '{Red}: Str = {Red} → Stun 2/4/6'
   cost: 1
   name: Bump
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red}→Stun 2/4/6'
+- attack: '{Red}: Str = {Red} → Stun 2/4/6'
   cost: 1
   name: Bump
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red}→Stun 2/4/6'
+- attack: '{Red}: Str = {Red} → Stun 2/4/6'
   cost: 1
   name: Bump
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red}→Stun 2/4/6'
+- attack: '{Red}: Str = {Red} → Stun 2/4/6'
   cost: 1
   name: Bump
   stats:

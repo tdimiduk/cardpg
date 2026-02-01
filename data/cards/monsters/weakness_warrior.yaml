@@ -1,6 +1,6 @@
 deck:
 - attack: |-
-    {Red}: Str = {Red}→ignore armor
+    {Red}: Str = {Red} → ignore armor
     -1,-2,-4 to red on all cards
   cost: 2
   name: Weakening whack
@@ -9,7 +9,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Red}: Str = {Red}→ignore armor
+    {Red}: Str = {Red} → ignore armor
     -1,-2,-4 to red on all cards
   cost: 0
   name: weakening poke
@@ -27,7 +27,7 @@ deck:
     blue: 3
     red: 6
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→Basic wound + -2,-4, paralyzed to red on all cards'
+- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
   cost: 3
   name: Paralyzing Slash
   stats:
@@ -42,7 +42,7 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→Basic wound + -1,-2,-4 to red on all cards'
+- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
   cost: 2
   name: Weakness Slash
   stats:
@@ -57,7 +57,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Red}: Str = {Red}→ignore armor
+    {Red}: Str = {Red} → ignore armor
     -1,-2,-4 to red on all cards
   cost: 2
   name: Weakening whack
@@ -66,7 +66,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Red}: Str = {Red}→ignore armor
+    {Red}: Str = {Red} → ignore armor
     -1,-2,-4 to red on all cards
   cost: 0
   name: weakening poke
@@ -84,7 +84,7 @@ deck:
     blue: 3
     red: 6
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→Basic wound + -2,-4, paralyzed to red on all cards'
+- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
   cost: 3
   name: Paralyzing Slash
   stats:
@@ -99,7 +99,7 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→Basic wound + -1,-2,-4 to red on all cards'
+- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
   cost: 2
   name: Weakness Slash
   stats:
@@ -114,7 +114,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Red}: Str = {Red}→ignore armor
+    {Red}: Str = {Red} → ignore armor
     -1,-2,-4 to red on all cards
   cost: 2
   name: Weakening whack
@@ -123,7 +123,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Red}: Str = {Red}→ignore armor
+    {Red}: Str = {Red} → ignore armor
     -1,-2,-4 to red on all cards
   cost: 0
   name: weakening poke
@@ -141,7 +141,7 @@ deck:
     blue: 3
     red: 6
     yellow: 2
-- attack: '{Red}: Str = {Red} + 5→Basic wound + -2,-4, paralyzed to red on all cards'
+- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
   cost: 3
   name: Paralyzing Slash
   stats:
@@ -156,7 +156,7 @@ deck:
     blue: 3
     red: 4
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→Basic wound + -1,-2,-4 to red on all cards'
+- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
   cost: 2
   name: Weakness Slash
   stats:

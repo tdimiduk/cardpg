@@ -3,6 +3,7 @@ module Core.Stats
   , getStatValue
   , parseCanonicalResourceName
   , parseStatValue
+  , resourceTypeParser
   , ResourceType (..)
   , StatValue (..)
   , Stats (..)
@@ -59,6 +60,10 @@ instance (Monoid a) => Monoid (Stats a) where
 
 parseCanonicalResourceName :: Parser ResourceType
 parseCanonicalResourceName = mkEnumParser tshow
+
+-- | Parses the canonical {Red}/{Yellow}/{Blue} format
+resourceTypeParser :: Parser ResourceType
+resourceTypeParser = between (char '{') (char '}') parseCanonicalResourceName
 
 parseStatValue :: Parser StatValue
 parseStatValue = between (char '{') (char '}') $ do

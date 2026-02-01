@@ -1,4 +1,13 @@
-module Core.DSL.RuleParser (parseRule, parseAttack, attackParser) where
+module Core.DSL.RuleParser
+  ( parseRule
+  , parseAttack
+  , ruleParser
+  , attackParser
+  , richTextParser
+  , stackPowerParser
+  , difficultyParser
+  )
+where
 
 import Control.Applicative (optional, some, (<|>))
 import Control.Monad (void)

@@ -1,26 +1,26 @@
 deck:
-- attack: '{Red}: Str = {Red} + 5→basic wound'
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
   cost: 2
   name: Gore
   stats:
     blue: 2
     red: 7
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 0
   name: Horn poke
   stats:
     blue: 4
     red: 4
     yellow: 6
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Slash
   stats:
     blue: 2
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Slash
   stats:
@@ -52,21 +52,21 @@ deck:
     blue: 8
     red: 4
     yellow: 5
-- attack: '{Blue}: Str = {Blue} + 8→Stun 1,4,10'
+- attack: '{Blue}: Str = {Blue} + 8 → Stun 1,4,10'
   cost: 0
   name: Lose in a labyrinth
   stats:
     blue: 8
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 0
   name: Horn poke
   stats:
     blue: 4
     red: 4
     yellow: 6
-- attack: '{Red}: Str = {Red} + 7→basic wound'
+- attack: '{Red}: Str = {Red} + 7 → basic wound'
   cost: 5
   name: Die
   rules:
@@ -75,21 +75,21 @@ deck:
     blue: 6
     red: 9
     yellow: 1
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Slash
   stats:
     blue: 2
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 5→basic wound'
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
   cost: 2
   name: Gore
   stats:
     blue: 2
     red: 7
     yellow: 2
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 3
   name: Chop
   stats:
@@ -113,21 +113,21 @@ deck:
     blue: 8
     red: 4
     yellow: 5
-- attack: '{Blue}: Str = {Blue} + 8→Stun 1,4,10'
+- attack: '{Blue}: Str = {Blue} + 8 → Stun 1,4,10'
   cost: 0
   name: Lose in a labyrinth
   stats:
     blue: 8
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 0
   name: Horn poke
   stats:
     blue: 4
     red: 4
     yellow: 6
-- attack: '{Red}: Str = {Red} + 7→basic wound'
+- attack: '{Red}: Str = {Red} + 7 → basic wound'
   cost: 5
   name: Die
   rules:
@@ -136,21 +136,21 @@ deck:
     blue: 6
     red: 9
     yellow: 1
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 1
   name: Slash
   stats:
     blue: 2
     red: 6
     yellow: 4
-- attack: '{Red}: Str = {Red} + 5→basic wound'
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
   cost: 2
   name: Gore
   stats:
     blue: 2
     red: 7
     yellow: 2
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 3
   name: Chop
   stats:

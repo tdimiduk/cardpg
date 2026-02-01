@@ -19,14 +19,14 @@ deck:
     blue: 5
     red: 2
     yellow: 3
-- attack: '{Red}: Str = {Blue} + 2→range 8m'
+- attack: '{Red}: Str = {Blue} + 2 → range 8m'
   name: Overwhelm Essense
   stats:
     blue: 3
     red: 4
     yellow: 2
 - attack: |-
-    {Red}: Str = {Blue}→range 5m, leave this as state (without it's resources)
+    {Red}: Str = {Blue} → range 5m, leave this as state (without it's resources)
     Minor: Jinx 1 or Hex 1 (caster picks)
      Major: Curse 1
     Grave: You're a newt
@@ -40,7 +40,7 @@ deck:
     red: 3
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 2→range 20m
+    {Blue}: Str = {Blue} + 2 → range 20m
     Curse 1/3/5
   cost: 1
   name: Hex bolt
@@ -49,7 +49,7 @@ deck:
     red: 2
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 4→range 5m
+    {Blue}: Str = {Blue} + 4 → range 5m
     Basic death wound
   cost: 4
   name: Rend Spirit
@@ -58,7 +58,7 @@ deck:
     red: 2
     yellow: 2
 - attack: |-
-    {Red}: Str = {Red} + 4→range 25m, 5m radius
+    {Red}: Str = {Red} + 4 → range 25m, 5m radius
     basic fire wound
   cost: 5
   name: Fireball
@@ -67,7 +67,7 @@ deck:
     red: 4
     yellow: 2
 - attack: |-
-    {Red}: Str = {Blue} + 2→range 20m
+    {Red}: Str = {Blue} + 2 → range 20m
     basic wound
   cost: 2
   name: Force Dart
@@ -101,7 +101,7 @@ deck:
     red: 4
     yellow: 3
 - attack: |-
-    {Red}: Str = {Blue} + 2→range 2m
+    {Red}: Str = {Blue} + 2 → range 2m
     Minor: knockdown
      Major: knockdown + stun 2
     Critical: knockdown + stun 6
@@ -129,7 +129,7 @@ deck:
     red: 1
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue}→ignore armor, range 10m
+    {Blue}: Str = {Blue} → ignore armor, range 10m
     Minor: Target's next attack is expended without effect
      Major: caster picks next attack's target (no self, but can target "nothing")
     Grave: Caster picks who target attacks until removed
@@ -151,7 +151,7 @@ deck:
     red: 2
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue}→ignore armor, range 8m
+    {Blue}: Str = {Blue} → ignore armor, range 8m
     basic mind wound
   cost: 4
   name: Mind Crush
@@ -160,7 +160,7 @@ deck:
     red: 1
     yellow: 1
 - attack: |-
-    {Yellow}: Str = {Blue} + 2→range 10m
+    {Yellow}: Str = {Blue} + 2 → range 10m
     Slow 2/5/10
   cost: 2
   name: Slow ray
@@ -169,7 +169,7 @@ deck:
     red: 2
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 3→ignore armor, range 5m
+    {Blue}: Str = {Blue} + 3 → ignore armor, range 5m
     Any Success: Target discards their hand
   cost: 1
   name: Make sneeze
@@ -178,7 +178,7 @@ deck:
     red: 2
     yellow: 4
 - attack: |-
-    {Yellow}: Str = {Blue} + 2→attack up to 3 targets within 10m
+    {Yellow}: Str = {Blue} + 2 → attack up to 3 targets within 10m
     Minor: Dazzle
     Major: Blind
   cost: 4
@@ -188,7 +188,7 @@ deck:
     red: 2
     yellow: 4
 - attack: |-
-    {Yellow}: Str = {Blue}→ignore armor, range 10m, 2 meter radius
+    {Yellow}: Str = {Blue} → ignore armor, range 10m, 2 meter radius
     Minor: knockdown
      Major: knockdown + stun 2
     Critical: knockdown + stun 6
@@ -199,7 +199,7 @@ deck:
     red: 3
     yellow: 3
 - attack: |-
-    {Blue}: Str = {Blue} + 1→range 3m
+    {Blue}: Str = {Blue} + 1 → range 3m
     Minor: Stun 2
      Major: Impose the Sleep Trance condition
     Critical: Impose the Sleeping condition

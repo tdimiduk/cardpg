@@ -48,8 +48,8 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Core.Card
-    Core.DSL.Printer
     Core.DSL.RuleParser
+    Core.DSL.TextRep
     Core.Hardcoded
     Core.Json
     Core.Language

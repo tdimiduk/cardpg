@@ -20,19 +20,19 @@ deck:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 1→basic wound'
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
   name: Shard poke
   stats:
     blue: 3
     red: 3
     yellow: 5
-- attack: '{Red}: Str = {Red} + 1→basic wound'
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
   name: Shard poke
   stats:
     blue: 3
     red: 3
     yellow: 5
-- attack: '{Red}: Str = {Red} + 1→basic wound'
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
   name: Shard poke
   stats:
     blue: 3
@@ -75,67 +75,67 @@ deck:
     blue: 2
     red: 6
     yellow: 2
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   name: Crystal smash
   stats:
     blue: 3
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   name: Crystal slice
   stats:
     blue: 4
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   name: Crystal crash
   stats:
     blue: 2
     red: 5
     yellow: 2
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   name: Crystal crash
   stats:
     blue: 2
     red: 5
     yellow: 2
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   name: Crystal crash
   stats:
     blue: 2

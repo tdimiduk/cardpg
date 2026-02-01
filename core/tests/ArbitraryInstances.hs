@@ -15,7 +15,7 @@ import Generic.Random
 import Test.Tasty.QuickCheck
 
 import Core.Card
-import Core.DSL.Printer (richToString)
+import Core.DSL.TextRep (TextRep (toText))
 import Core.Language
   ( cmdAction
   , cmdAttack
@@ -98,7 +98,7 @@ instance Arbitrary RichText where
       Nothing -> arbitrary
       Just rs -> do
         -- Ensure it doesn't start with a keyword
-        let t = richToString rs
+        let t = toText rs
         if any (`T.isPrefixOf` t) keywords
           then arbitrary
           else return rs

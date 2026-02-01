@@ -55,7 +55,7 @@ deck:
     blue: 2
     red: 2
     yellow: 5
-- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+- attack: '{Blue}: Str = {Blue} + 1 → stun 1 per hit'
   cost: 4
   name: Rot breath
   rules:
@@ -64,7 +64,7 @@ deck:
     blue: 6
     red: 2
     yellow: 4
-- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+- attack: '{Blue}: Str = {Blue} + 1 → stun 1 per hit'
   cost: 4
   name: Rot breath
   rules:
@@ -73,7 +73,7 @@ deck:
     blue: 6
     red: 2
     yellow: 4
-- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+- attack: '{Blue}: Str = {Blue} + 1 → stun 1 per hit'
   cost: 4
   name: Rot breath
   rules:
@@ -82,7 +82,7 @@ deck:
     blue: 6
     red: 2
     yellow: 4
-- attack: '{Blue}: Str = {Blue} + 1→stun 1 per hit'
+- attack: '{Blue}: Str = {Blue} + 1 → stun 1 per hit'
   cost: 4
   name: Rot breath
   rules:

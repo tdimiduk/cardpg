@@ -1,5 +1,5 @@
 deck:
-- attack: '{Red}: Str = {Red} + 1→Knock down'
+- attack: '{Red}: Str = {Red} + 1 → Knock down'
   cost: 1
   name: earthquake
   rules:
@@ -8,7 +8,7 @@ deck:
     blue: 3
     red: 4
     yellow: 4
-- attack: '{Red}: Str = {Red} + 1→Knock down'
+- attack: '{Red}: Str = {Red} + 1 → Knock down'
   cost: 1
   name: earthquake
   rules:
@@ -38,7 +38,7 @@ deck:
     blue: 4
     red: 7
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 4
   name: Boulder roll
   rules:
@@ -47,7 +47,7 @@ deck:
     blue: 2
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 4
   name: Boulder roll
   rules:
@@ -56,7 +56,7 @@ deck:
     blue: 2
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red} + 6→basic wound'
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
   cost: 4
   name: Boulder roll
   rules:
@@ -65,28 +65,28 @@ deck:
     blue: 2
     red: 3
     yellow: 4
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stomp
   stats:
     blue: 1
     red: 5
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stomp
   stats:
     blue: 1
     red: 5
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stomp
   stats:
     blue: 1
     red: 5
     yellow: 3
-- attack: '{Red}: Str = {Red} + 2→basic wound'
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
   cost: 2
   name: Stomp
   stats:
@@ -113,56 +113,56 @@ deck:
     blue: 1
     red: 8
     yellow: 1
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Smash
   stats:
     blue: 2
     red: 7
     yellow: 1
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Smash
   stats:
     blue: 2
     red: 7
     yellow: 1
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Smash
   stats:
     blue: 2
     red: 7
     yellow: 1
-- attack: '{Red}: Str = {Red} + 4→basic wound'
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
   cost: 3
   name: Smash
   stats:
     blue: 2
     red: 7
     yellow: 1
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Punch
   stats:
     blue: 1
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Punch
   stats:
     blue: 1
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Punch
   stats:
     blue: 1
     red: 4
     yellow: 3
-- attack: '{Red}: Str = {Red} + 3→basic wound'
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
   cost: 2
   name: Punch
   stats:
