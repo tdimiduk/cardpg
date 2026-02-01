@@ -80,7 +80,6 @@ library
     Frontend.Game.Sidebar
     Frontend.Game.SidebarRight
     Frontend.Game.Staging
-    Frontend.Html
     Frontend.Icons
     Frontend.Render.Common
     Frontend.Render.Rules

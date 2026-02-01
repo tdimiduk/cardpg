@@ -33,8 +33,7 @@ import Core.Card
 import Core.Stats (ResourceType (..), getStatValue)
 import Core.Util (tshow)
 
-import Frontend.Html (renderNonEmptyText, resourceSymbol)
-import Frontend.Render.Common (IconMode (..))
+import Frontend.Render.Common (IconMode (..), renderNonEmptyText, renderResourceType)
 import Frontend.Render.Rules (renderAttackDef, renderRichText, renderRule, renderStatValue)
 import Frontend.Style (CssClass, component, divStyle, row, spacer)
 import Frontend.Style qualified as Style

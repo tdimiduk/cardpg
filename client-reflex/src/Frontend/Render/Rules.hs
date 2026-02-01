@@ -11,6 +11,7 @@ module Frontend.Render.Rules
   , renderDifficulty
   , renderStatValue
   , renderResourceType
+  , renderBlock
   ) where
 
 import Data.Maybe (catMaybes)
@@ -32,7 +33,7 @@ import Core.Layout
   , layoutRule
   )
 import Core.NonEmptyText (NonEmptyText, getRawText)
-import Core.RichText (Inline (..), RichText (..), TextStyle (..), getInlines)
+import Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (..), getInlines)
 
 -- Import types but avoid Render.Rules exporting Rule again if not needed, or just import types
 import Core.RuleDefs
@@ -112,3 +113,14 @@ renderAttackDef = renderLayout . layoutAttackDef
 -- | Render any Rule variant using Layout
 renderRule :: (DomBuilder t m) => Rule -> m ()
 renderRule rule = renderLayout (layoutRule rule)
+
+--------------------------------------------------------------------------------
+-- Block Rendering
+--------------------------------------------------------------------------------
+
+-- | Render a Block element
+renderBlock :: (DomBuilder t m) => Block -> m ()
+renderBlock (Paragraph rt) = el "p" $ renderRichText rt
+renderBlock Rule = el "hr" $ pure ()
+renderBlock (Header rt) = el "h3" $ renderRichText rt
+renderBlock (BulletList items) = el "ul" $ mapM_ (el "li" . renderRichText) items
