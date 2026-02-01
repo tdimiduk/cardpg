@@ -78,7 +78,11 @@ instance TextRep Rule where
 
 -- AttackDef
 instance TextRep AttackDef where
-  toText = renderLayoutText . layoutAttackDef
+  -- Drop the first two items: "Attack" keyword and space since they are redundant in the YAML context
+  -- (the key is already "attack"). The parser supports optional "Attack" keyword, so this remains safe.
+  -- TODO: have this only happen for CoreCard YAML (we'd probably like the attack keyword if we ever use
+  -- this in a different context where don't have a yaml key right there)
+  toText = renderLayoutText . drop 2 . layoutAttackDef
   textParser = attackParser
 
 -- RichText

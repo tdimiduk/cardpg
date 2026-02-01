@@ -8,12 +8,6 @@ module Frontend.Render.Rules
   , renderRichText
   , renderInline
   , renderAttackDef
-  , renderGeneralDef
-  , renderOngoingDef
-  , renderPassiveDef
-  , renderTaskDef
-  , renderTriggerDef
-  , renderStackPower
   , renderDifficulty
   , renderStatValue
   , renderResourceType
@@ -75,10 +69,6 @@ renderStatValue mode s = renderResourceType mode s.color $ Just $ tshow s.value
 renderDifficulty :: (DomBuilder t m) => IconMode -> Difficulty -> m ()
 renderDifficulty mode d = renderResourceType mode d.attribute $ Just $ tshow d.value
 
--- | Render a StackPower
-renderStackPower :: (DomBuilder t m) => IconMode -> StackPower -> m ()
-renderStackPower = undefined -- Replaced by Layout-based rendering, keeping for export compatibility if needed until full cleanup
-
 --------------------------------------------------------------------------------
 -- Inline and RichText Rendering
 --------------------------------------------------------------------------------
@@ -124,31 +114,8 @@ renderLayout = mapM_ renderLayoutItem
 -- | Render an AttackDef using Layout
 -- "Attack" keyword is now handled in the layout
 renderAttackDef :: (DomBuilder t m) => AttackDef -> m ()
-renderAttackDef def = do
-  el "strong" $ text cmdAttack
-  text " "
-  renderLayout (layoutAttackDef def)
+renderAttackDef = renderLayout . layoutAttackDef
 
 -- | Render any Rule variant using Layout
 renderRule :: (DomBuilder t m) => Rule -> m ()
 renderRule rule = renderLayout (layoutRule rule)
-
--- | Deprecated specific renderers (redirect to generic rule render if possible, or undefined if unused)
--- We keep the exports but implemented via generic layout if easy, or remove if unused.
--- The previous exports were used in `Frontend.Render.Rules`, so let's check usages.
--- Currently only renderRule and renderAttackDef are used externally commonly.
--- Stubs for compatibility:
-renderGeneralDef :: (DomBuilder t m) => GeneralDef -> m ()
-renderGeneralDef def = renderRule (RuleGeneral def)
-
-renderOngoingDef :: (DomBuilder t m) => OngoingDef -> m ()
-renderOngoingDef def = renderRule (RuleOngoing def)
-
-renderPassiveDef :: (DomBuilder t m) => PassiveDef -> m ()
-renderPassiveDef def = renderRule (RulePassive def)
-
-renderTaskDef :: (DomBuilder t m) => TaskDef -> m ()
-renderTaskDef def = renderRule (RuleTask def)
-
-renderTriggerDef :: (DomBuilder t m) => TriggerDef -> m ()
-renderTriggerDef def = renderRule (RuleTrigger def)

@@ -20,6 +20,7 @@ import Data.Text (Text)
 
 import Core.Language
   ( cmdAction
+  , cmdAttack
   , cmdOngoing
   , cmdPassive
   , cmdTask
@@ -82,7 +83,9 @@ layoutRule (RuleNarrative rt) = [RichContent rt]
 
 layoutAttackDef :: AttackDef -> [LayoutItem]
 layoutAttackDef def =
-  [ Symbol def.resistedBy Nothing
+  [ Keyword cmdAttack
+  , Space
+  , Symbol def.resistedBy Nothing
   , Literal sepColon
   , Space
   , Keyword kwStr
