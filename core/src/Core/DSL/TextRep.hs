@@ -30,6 +30,7 @@ import Core.DSL.RuleParser
   , stackPowerParser
   )
 
+import Core.DSL (Parser, basicParse)
 import Core.Language (sepColon, styleDelimiter)
 import Core.Layout
   ( LayoutItem (..)
@@ -39,7 +40,6 @@ import Core.Layout
   , layoutStackPower
   )
 import Core.NonEmptyText (getRawText)
-import Core.Parser (Parser, basicParse)
 import Core.RichText
   ( Inline (..)
   , RichText (..)

@@ -30,8 +30,8 @@ import Text.Megaparsec
 import Text.Megaparsec.Char (char, space, string)
 import Text.Megaparsec.Char.Lexer (decimal)
 
+import Core.DSL (Parser, basicParse, mkEnumParser)
 import Core.Json (cardpgJsonDef)
-import Core.Parser (Parser, basicParse, mkEnumParser)
 import Core.Util (tshow)
 
 data ResourceType = Red | Yellow | Blue

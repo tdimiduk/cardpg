@@ -1,4 +1,4 @@
-module Core.Parser (Parser, hspace, hspace1, basicParse, choiceEnum, mkEnumParser, tryChoice) where
+module Core.DSL (Parser, hspace, hspace1, basicParse, choiceEnum, mkEnumParser, tryChoice) where
 
 import Control.Monad (void)
 import Data.Text (Text)

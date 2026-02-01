@@ -48,6 +48,7 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Core.Card
+    Core.DSL
     Core.DSL.RuleParser
     Core.DSL.TextRep
     Core.Hardcoded
@@ -61,7 +62,6 @@ library
     Core.Logic.Planning
     Core.Logic.Status
     Core.NonEmptyText
-    Core.Parser
     Core.Primitives
     Core.RichText
     Core.RuleDefs

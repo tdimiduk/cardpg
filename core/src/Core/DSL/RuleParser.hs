@@ -28,6 +28,7 @@ import Text.Megaparsec
 import Text.Megaparsec.Char (char, space, space1, string, string')
 import Text.Megaparsec.Char.Lexer (decimal)
 
+import Core.DSL (Parser, basicParse, choiceEnum, hspace, hspace1, mkEnumParser, tryChoice)
 import Core.Language
   ( cmdAction
   , cmdAttack
@@ -54,7 +55,6 @@ import Core.NonEmptyText
   , takeWhilePNonEmptyStripped
   , unsafeNonEmptyText
   )
-import Core.Parser (Parser, basicParse, choiceEnum, hspace, hspace1, mkEnumParser, tryChoice)
 import Core.RichText (Inline (..), RichText, StackPower (..), TextStyle (..), mkRichText)
 import Core.RuleDefs
   ( AttackDef (..)
@@ -102,7 +102,7 @@ effectArrow = string sepArrow <|> string "->"
 attackParser :: Parser AttackDef
 attackParser = do
   _ <- optional $ try $ do
-    string' cmdAttack
+    _ <- string' cmdAttack
     space1
   resistedBy <- resourceSymbol
   _ <- space
