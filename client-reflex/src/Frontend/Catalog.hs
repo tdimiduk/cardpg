@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Frontend.Catalog (catalogWidget) where
@@ -12,22 +11,18 @@ import Core.NonEmptyText (NonEmptyText, unsafeNonEmptyText)
 import Core.RichText (unsafeSimpleString)
 import Core.Stats
 
--- Import the Render instance
-
-import Core.Render (Render (..))
-import Frontend.Card ()
-import Frontend.Html (RenderHtml)
+import Frontend.Card (renderCoreCard)
 import Frontend.Style qualified as Style
 
-catalogWidget :: (DomBuilder t m, RenderHtml m) => m ()
+catalogWidget :: (DomBuilder t m) => m ()
 catalogWidget = do
   el "h1" $ text "Component Catalog"
 
   el "h2" $ text "Core Cards"
   Style.divStyle Style.cardPrintGrid $ do
-    render exampleAttack
-    render exampleSkill
-    render exampleHeavyText
+    renderCoreCard exampleAttack
+    renderCoreCard exampleSkill
+    renderCoreCard exampleHeavyText
 
   el "h2" $ text "Card Elements"
   -- We can also render individual parts if needed, but rendering full cards is best for now

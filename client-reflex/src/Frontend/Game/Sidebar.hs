@@ -16,7 +16,7 @@ import Frontend.Style hiding (classes)
 import Api.Request (ApiRequest)
 import Data.Maybe (fromMaybe)
 import Frontend.Game.ActorDetails (actorDetailsWidget)
-import Frontend.Html (RenderHtml)
+
 import Frontend.Icons (iconClose)
 import Frontend.UI.Button
 
@@ -61,7 +61,6 @@ sidebarWidget
      , Requester t m
      , Request m ~ ApiRequest
      , Prerender t m
-     , RenderHtml m
      )
   => Dynamic t (Maybe (Identified ActorId ActorState))
   -> Dynamic t (Map.Map ActorId ActorState)

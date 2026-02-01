@@ -16,7 +16,7 @@ import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..), CoreCardState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
-import Frontend.Html (RenderHtml)
+
 import Frontend.Icons (iconDeck, iconRefresh)
 import Frontend.Style
 import Frontend.UI.Button
@@ -29,7 +29,6 @@ deckWidget
      , MonadFix m
      , Requester t m
      , Request m ~ ApiRequest
-     , RenderHtml m
      )
   => ActorId
   -> Dynamic t ActorState

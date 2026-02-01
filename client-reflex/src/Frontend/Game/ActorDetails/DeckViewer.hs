@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE RecursiveDo #-}
 
@@ -14,8 +13,7 @@ import Prelude hiding (filter, id, map)
 
 import Core.Card (CoreCard)
 import Core.Util (tshow)
-import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
-import Frontend.Html (RenderHtml)
+import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Icons (iconClose)
 import Frontend.Style
 import Frontend.UI.Button
@@ -30,7 +28,6 @@ deckViewerModal
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , RenderHtml m
      )
   => Event t (Maybe DeckViewData)
   -> m ()
@@ -55,7 +52,6 @@ renderModal
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
-     , RenderHtml m
      )
   => DeckViewData
   -> m (Event t ())
@@ -78,8 +74,8 @@ renderModal deckView = do
           button def{variant = constDyn VariantGhost, size = constDyn SizeSmall} $
             elClass "div" "w-8 h-8" iconClose
 
-        let settings = def{displayMode = CardFull}
+        let settings = CardSettings CardFull
         divStyle (cardGrid <> [flex1, "overflow-y-auto", "min-h-0", "w-full"]) $
-          mapM_ (renderWith settings) deckView.cards
+          mapM_ (renderCoreCardWith settings) deckView.cards
 
         return closeClick

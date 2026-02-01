@@ -62,10 +62,6 @@ library
     Core.NonEmptyText
     Core.Parser
     Core.Primitives
-    Core.Render
-    Core.Render.Rule
-    Core.Render.Stats
-    Core.Render.Util
     Core.RichText
     Core.RuleDefs
     Core.RuleInstances

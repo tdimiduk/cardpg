@@ -23,11 +23,11 @@ import Core.State
   , PlannedAction (..)
   , plannedActionCards
   )
-import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderWith)
+import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
-import Frontend.Html (RenderHtml)
+
 import Frontend.Style hiding (stack)
 
 -- | Styles for hand card hover interactions
@@ -68,7 +68,6 @@ handWidget
      , MonadIO m
      , Requester t m
      , Request m ~ ApiRequest
-     , RenderHtml m
      )
   => Dynamic t (Identified ActorId ActorState)
   -> m ()
@@ -137,7 +136,7 @@ handWidget actorDyn = do
   return ()
 
 handCardsWidget
-  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, RenderHtml m)
+  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
   => Dynamic t ActorState
   -> Dynamic t (Maybe ActionStack)
   -- ^ Staging Stack (defines staging mode)
@@ -175,7 +174,7 @@ handCardsWidget actor stagingStack plannedAction = do
                   classes ([relative, pointerEventsAuto, group, cardHandWidth] ++ baseStyle ++ extraStyle)
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
-          dyn_ $ ffor cardDyn $ renderWith (CardSettings CardFull)
+          dyn_ $ ffor cardDyn $ renderCoreCardWith (CardSettings CardFull) . (.content)
 
         -- Only allow clicking if playable (or if in staging mode)
         let clickEnabled = ffor ((,) <$> isPlayableDyn <*> stagingStack) $ \(p, stk) -> isJust stk || p

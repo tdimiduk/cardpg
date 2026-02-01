@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Frontend.Game.Staging where
@@ -12,7 +11,6 @@ import Api.Request qualified as Req
 import Core.Card (CoreCard (..), Identified (..))
 import Core.Logic.Planning (PlanValidation (..))
 import Core.Primitives (ActorId, CardInstanceId)
-import Core.Render (IconMode (..))
 import Core.State (ActionStack (..))
 import Core.Util (tshow)
 
@@ -22,10 +20,11 @@ import Frontend.Card
   , CardSettings (..)
   , StatsDisplayMode (..)
   , StatsSettings (..)
-  , renderWith
+  , renderCoreCardWith
+  , renderStatsWith
   )
 import Frontend.Game.Common (cardStackWidget)
-import Frontend.Html (RenderHtml)
+import Frontend.Render.Common (IconMode (..))
 import Frontend.Style
 import Frontend.UI.Button
 
@@ -44,7 +43,6 @@ stagingWidget
      , MonadFix m
      , Requester t m
      , Request m ~ ApiRequest
-     , RenderHtml m
      )
   => ActorId
   -> Dynamic t ActionStack
@@ -118,7 +116,7 @@ stagingStatusHeader validation = do
         _ -> blank
 
 stagedCardsRow
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, RenderHtml m)
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
   => Dynamic t ActionStack
   -> m (Event t (), Event t CardInstanceId)
 stagedCardsRow actionStackDyn = do
@@ -134,7 +132,7 @@ stagedCardsRow actionStackDyn = do
               "div"
               (constDyn ("class" =: classes stagedResourceCard <> testId "staged-resource"))
               $ do
-                dyn_ $ fmap (renderWith (CardSettings CardFull)) rDyn
+                dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
             return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
         )
         ( \aDyn -> do
@@ -142,7 +140,7 @@ stagedCardsRow actionStackDyn = do
               "div"
               (constDyn ("class" =: classes stagedActionCard <> testId "staged-action"))
               $ do
-                dyn_ $ fmap (renderWith (CardSettings CardFull)) aDyn
+                dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) aDyn
             return (domEvent Click eAct)
         )
         stagedResourcesDyn
@@ -172,7 +170,7 @@ stagingControls validation = do
     return (cancelEvt, commitEvt)
 
 stagingStats
-  :: (DomBuilder t m, PostBuild t m, RenderHtml m)
+  :: (DomBuilder t m, PostBuild t m)
   => Dynamic t ActionStack
   -> m ()
 stagingStats stackDyn = do
@@ -185,4 +183,4 @@ stagingStats stackDyn = do
 
   divStyle [flex, "gap-2", itemsCenter, "text-white"] $ do
     dyn_ $ ffor totalStats $ \s ->
-      renderWith (StatsSettings StatsRow IconBlock) s
+      renderStatsWith (StatsSettings StatsRow IconBlock) s

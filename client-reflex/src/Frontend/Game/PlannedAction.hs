@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 
 module Frontend.Game.PlannedAction
   ( plannedActionWidget
@@ -15,9 +15,8 @@ import Core.Card (Identified (..))
 import Core.Primitives (ActorId)
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
-import Frontend.Card (CardDisplayMode (..), CardSettings (..))
+import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
 import Frontend.Game.Common (cardStackWidget)
-import Frontend.Html (Render (..), RenderHtml)
 import Frontend.Style
 import Frontend.UI.Button
 
@@ -57,7 +56,6 @@ plannedActionWidget
      , MonadFix m
      , Requester t m
      , Request m ~ ApiRequest
-     , RenderHtml m
      )
   => Identified ActorId PlannedAction
   -> m ()
@@ -75,7 +73,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
               (eRes, _) <-
                 elStyle' "div" [cardHandWidth, "shrink-0", "transition-all", "hover:z-10"] $
                   dyn_ $
-                    fmap (renderWith (CardSettings CardFull)) rDyn
+                    fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
               return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
           )
           ( \aDyn -> do
@@ -87,7 +85,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
                     )
                 )
                 $ do
-                  dyn_ $ fmap render aDyn
+                  dyn_ $ fmap (renderCoreCard . (.content)) aDyn
                   divStyle plannedBadge $ text "PLANNED"
               return (domEvent Click eAct)
           )
@@ -95,7 +93,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
           (constDyn action)
     PNarrative (NarrativeStack cards _color) -> do
       rowGap "-space-x-8" $
-        mapM_ (divStyle narrativeCardHover . render) cards
+        mapM_ (divStyle narrativeCardHover . renderCoreCard . (.content)) cards
     PPass -> do
       divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
   where

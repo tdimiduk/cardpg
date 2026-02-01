@@ -25,7 +25,7 @@ import Frontend.Game.Hand (handWidget)
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
-import Frontend.Html (RenderHtml)
+
 import Frontend.Style
 import Frontend.Util
 
@@ -119,7 +119,6 @@ uiWidget
      , MonadIO m
      , ApiRequester t m
      , Prerender t m
-     , RenderHtml m
      )
   => Maybe ActorId
   -- ^ Initial active actor

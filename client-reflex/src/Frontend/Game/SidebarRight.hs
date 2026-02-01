@@ -16,7 +16,6 @@ import Core.State (ActorState)
 import Core.Util (tshow)
 
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig, phaseDisplayWidget)
-import Frontend.Html (RenderHtml)
 import Frontend.Style hiding (hidden)
 import Frontend.Util
 
@@ -42,7 +41,6 @@ sidebarRightWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , RenderHtml m
      , ApiRequester t m
      )
   => Dynamic t (Maybe (Identified ActorId ActorState))
@@ -74,7 +72,7 @@ sidebarRightWidget activeActor logsDyn phaseConfig = do
     pure ()
 
 chatInputRequesting
-  :: (DomBuilder t m, PostBuild t m, RenderHtml m, MonadFix m, MonadHold t m, ApiRequester t m)
+  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, ApiRequester t m)
   => Dynamic t (Maybe (Identified ActorId ActorState)) -> m ()
 chatInputRequesting activeActor = do
   rec input <-
@@ -123,7 +121,7 @@ chatInputRequesting activeActor = do
       , "focus:border-indigo-500"
       ]
 
-renderLogEntry :: (DomBuilder t m, PostBuild t m, RenderHtml m) => Dynamic t LogEntry -> m ()
+renderLogEntry :: (DomBuilder t m, PostBuild t m) => Dynamic t LogEntry -> m ()
 renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
   LogChat c -> do
     elAttr

@@ -82,6 +82,8 @@ library
     Frontend.Game.Staging
     Frontend.Html
     Frontend.Icons
+    Frontend.Render.Common
+    Frontend.Render.Rules
     Frontend.Style
     Frontend.Svg
     Frontend.Svg.Path

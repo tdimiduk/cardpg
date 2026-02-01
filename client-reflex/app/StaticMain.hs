@@ -37,9 +37,14 @@ import Core.Card (ActorDefinition (..))
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..))
 import Frontend.App (uiWidget)
-import Frontend.Card (CardDisplayMode (..), CardSettings (..))
+import Frontend.Card
+  ( CardDisplayMode (..)
+  , CardSettings (..)
+  , renderCoreCardWith
+  , renderItemCardWith
+  , renderNatureCardWith
+  )
 import Frontend.Catalog (catalogWidget)
-import Frontend.Html (Render (..), RenderHtml)
 import Frontend.Style qualified as Style
 import Server.Game (GameState (..))
 import Server.Scenario (loadScenario)
@@ -240,7 +245,6 @@ mockGameWidget
      , Adjustable t m
      , MonadIO m
      , Prerender t m
-     , RenderHtml m
      )
   => Maybe ActorId
   -> GameState
@@ -254,13 +258,13 @@ mockGameWidget initialActorId gameState = do
           never
   return ()
 
-deckWidget :: (DomBuilder t m, RenderHtml m) => ActorDefinition -> m ()
+deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
   Style.divStyle Style.deckGrid $ do
-    mapM_ (renderWith printSettings) actor.nature
-    mapM_ (renderWith printSettings) actor.items
-    mapM_ (renderWith printSettings) actor.deck
+    mapM_ (renderNatureCardWith printSettings) actor.nature
+    mapM_ (renderItemCardWith printSettings) actor.items
+    mapM_ (renderCoreCardWith printSettings) actor.deck
 
 wrapHtml :: Text -> BS.ByteString -> BL.ByteString
 wrapHtml title body =
