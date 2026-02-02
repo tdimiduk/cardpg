@@ -3,12 +3,10 @@ module Core.Json
   , cardpgJsonDef
   ) where
 
-import Data.Aeson (Options (..), Value (..), defaultOptions)
-import Data.Aeson.KeyMap qualified as KM
+import Data.Aeson (Options (..), defaultOptions)
 import Data.Char (toLower)
 import Data.List (stripPrefix)
 import Data.Maybe (fromMaybe)
-import Data.Vector qualified as V
 
 -- | Standard JSON Options for the CardPG Engine.
 -- | Goal: Producing clean, idiomatic JSON for TypeScript clients.
@@ -25,4 +23,4 @@ cardpgJsonOptions prefixToStrip =
     stripPrefix' pre s = fromMaybe s (stripPrefix pre s)
 
 cardpgJsonDef :: Options
-ardpgJsonDef = cardpgJsonOptions ""
+cardpgJsonDef = cardpgJsonOptions ""

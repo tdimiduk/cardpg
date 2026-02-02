@@ -7,7 +7,6 @@ module Server.Engine
   , autoPlanForNPCs
   ) where
 
-import Control.Lens ((%~), (&))
 import Control.Monad (foldM)
 import Control.Monad.RWS (runRWST)
 import Control.Monad.State (State, get, put, runState)

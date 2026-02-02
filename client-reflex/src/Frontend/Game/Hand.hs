@@ -28,10 +28,8 @@ import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
 
-import Frontend.Style (cardHandWidth, cardNotPlayable, cardPlayable)
-import Frontend.Style hiding (stack)
+import Frontend.Style
 import Frontend.Style.Common
-import Frontend.Style.Layout
 
 -- | Styles for hand card hover interactions
 cardHover :: [CssClass]

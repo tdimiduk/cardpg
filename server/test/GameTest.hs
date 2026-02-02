@@ -22,7 +22,7 @@ import Core.Primitives
   , CardInstanceId (..)
   , ChallengeId (..)
   )
-import Core.RuleDefs (AttackDef (..))
+import Core.Rules (AttackDef (..))
 import Core.State
   ( ActionStack (..)
   , ActiveChallenge (..)

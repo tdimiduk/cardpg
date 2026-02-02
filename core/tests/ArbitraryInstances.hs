@@ -15,9 +15,10 @@ import Generic.Random
 import Test.Tasty.QuickCheck
 
 import Core.Card
-import Core.DSL.TextRep (TextRep (toText))
+import Core.DSL (TextRep (toText))
 import Core.Language
-  ( cmdAction
+  ( TextStyle (..)
+  , cmdAction
   , cmdAttack
   , cmdGeneral
   , cmdOngoing
@@ -31,7 +32,6 @@ import Core.RichText
   ( Block (..)
   , Inline (..)
   , RichText (..)
-  , TextStyle (..)
   , getInlines
   , mkRichText
   )

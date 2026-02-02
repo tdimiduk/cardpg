@@ -4,15 +4,22 @@ module Core.Stats
   , parseCanonicalResourceName
   , parseStatValue
   , resourceTypeParser
+  , resourceSymbol
+  , stackPowerParser
+  , difficultyParser
   , ResourceType (..)
   , StatValue (..)
   , Stats (..)
   , StackPower (..)
   , Difficulty (..)
   , prettyModifier
+  , toTextResourceType
   ) where
 
-import Core.Language (sepColon)
+import Core.Language (kwCheck, kwStrength, sepColon)
+
+import Control.Applicative (optional, (<|>))
+import Data.Maybe (fromMaybe)
 
 import Data.Aeson
   ( FromJSON (..)
@@ -23,14 +30,26 @@ import Data.Aeson
   )
 import Data.Aeson.TH (deriveJSON)
 import Data.Text (Text)
+import Data.Text qualified as T
 import GHC.Generics (Generic)
 import Text.Megaparsec
   ( between
+  , notFollowedBy
+  , takeWhileP
+  , try
   )
-import Text.Megaparsec.Char (char, space, string)
+import Text.Megaparsec.Char (char, space, string, string')
 import Text.Megaparsec.Char.Lexer (decimal)
 
-import Core.DSL (Parser, basicParse, mkEnumParser)
+import Core.DSL
+  ( Parser
+  , TextRep (..)
+  , hspace
+  , hspace1
+  , mkEnumParser
+  , parseText
+  , tryChoice
+  )
 import Core.Json (cardpgJsonDef)
 import Core.Util (tshow)
 
@@ -87,13 +106,17 @@ data StatValue = StatValue
   }
   deriving stock (Eq, Show, Generic)
 
+instance TextRep StatValue where
+  toText s = "{" <> tshow s.color <> sepColon <> " " <> tshow s.value <> "}"
+  textParser = parseStatValue
+
 instance ToJSON StatValue where
-  toJSON v = String $ "{" <> tshow v.color <> ":" <> tshow v.value <> "}"
+  toJSON = String . toText
 
 instance FromJSON StatValue where
-  parseJSON (String t) = case basicParse parseStatValue t of
+  parseJSON (String t) = case parseText t of
     Right r -> pure r
-    Left err -> fail $ "DSL parse failed: " ++ err
+    Left err -> fail $ "StatValue DSL parse failed: " ++ err
   parseJSON v = genericParseJSON cardpgJsonDef v
 
 data StackPower = StackPower
@@ -103,18 +126,103 @@ data StackPower = StackPower
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''StackPower)
+instance TextRep StackPower where
+  toText (StackPower s m c) =
+    let base = "Strength " <> toTextResourceType s
+        modTxt = if m /= 0 then " " <> prettyModifier m else ""
+        condTxt = maybe "" (" " <>) c
+     in base <> modTxt <> condTxt
+  textParser = stackPowerParser
 
-data Difficulty = Difficulty
-  { attribute :: ResourceType
-  , value :: Int
-  }
-  deriving stock (Eq, Show, Generic)
+instance ToJSON StackPower where
+  toJSON = String . toText
 
-$(deriveJSON cardpgJsonDef ''Difficulty)
+instance FromJSON StackPower where
+  parseJSON (String t) = case parseText t of
+    Right r -> pure r
+    Left err -> fail $ "StackPower DSL parse failed: " ++ err
+  parseJSON v = genericParseJSON cardpgJsonDef v
 
 prettyModifier :: Int -> Text
 prettyModifier n
   | n == 0 = ""
   | n >= 0 = "+ " <> tshow n
   | otherwise = "- " <> tshow (abs n)
+data Difficulty = Difficulty
+  { attribute :: ResourceType
+  , value :: Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance TextRep Difficulty where
+  toText (Difficulty a v) = "Check " <> toTextResourceType a <> " " <> tshow v
+  textParser = difficultyParser
+
+instance ToJSON Difficulty where
+  toJSON = String . toText
+
+instance FromJSON Difficulty where
+  parseJSON (String t) = case parseText t of
+    Right r -> pure r
+    Left err -> fail $ "Difficulty DSL parse failed: " ++ err
+  parseJSON v = genericParseJSON cardpgJsonDef v
+
+toTextResourceType :: ResourceType -> Text
+toTextResourceType Red = "{Red}"
+toTextResourceType Yellow = "{Yellow}"
+toTextResourceType Blue = "{Blue}"
+
+-- Parsers moved from RuleParser.hs
+
+between' :: Parser a -> Parser b -> Parser b
+between' p = between p p
+
+resourceSymbol :: Parser ResourceType
+resourceSymbol = tryChoice [canonicalResource, shorthandResource, legacyResource]
+
+canonicalResource :: Parser ResourceType
+canonicalResource = between (char '{') (char '}') parseCanonicalResourceName
+
+shorthandResource :: Parser ResourceType
+shorthandResource = mkEnumParser (T.take 1 . tshow)
+
+legacyResource :: Parser ResourceType
+legacyResource = between' (char '|') $ mkEnumParser toLegacy
+  where
+    toLegacy Red = "x"
+    toLegacy Yellow = "y"
+    toLegacy Blue = "z"
+
+stackPowerParser :: Parser StackPower
+stackPowerParser = do
+  _ <- optional $ try $ do
+    _ <- string' kwStrength <|> string' "str"
+    _ <- hspace1
+    _ <- optional (char '=')
+    hspace
+  base <- resourceSymbol
+  _ <- hspace
+  modVal <- optional $ try $ do
+    sign <- (id <$ char '+') <|> (negate <$ char '-')
+    _ <- hspace
+    sign <$> decimal
+  _ <- hspace
+  conditional <- optional $ try $ do
+    _ <- char '('
+    notFollowedBy (string "Cost:")
+    content <- takeWhileP Nothing (/= ')')
+    _ <- char ')'
+    pure $ "(" <> content <> ")"
+  _ <- hspace -- Consume trailing hspace
+  pure $ StackPower base (fromMaybe 0 modVal) conditional
+
+difficultyParser :: Parser Difficulty
+difficultyParser = do
+  _ <- optional $ try $ do
+    _ <- string' kwCheck <|> string' "Diff"
+    _ <- hspace1
+    _ <- optional (char '=')
+    hspace
+  base <- resourceSymbol
+  _ <- hspace
+  Difficulty base <$> decimal

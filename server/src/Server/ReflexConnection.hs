@@ -4,23 +4,18 @@ module Server.ReflexConnection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
 import Control.Exception (finally, try)
-import Control.Monad (forM_, forever, unless, when)
+import Control.Monad (forM_, forever, unless)
 import Control.Monad.State (runState)
-import Data.Aeson (ToJSON, decode, encode, genericToJSON)
-import Data.Aeson.TH (deriveJSON)
-import Data.Map (Map)
+import Data.Aeson (decode, encode)
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe, isJust)
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.Encoding qualified as T
 import Data.Text.IO qualified as T
-import Data.Time.Clock.POSIX (getPOSIXTime)
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
-import Data.Word (Word64)
-import GHC.Generics (Generic)
 import Network.WebSockets
   ( ConnectionException
   , ServerApp
@@ -35,19 +30,12 @@ import Network.WebSockets
 import Data.ByteString.Lazy.Char8 qualified as BSL
 import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), mkTaggedResponse)
 
-import Core.Card (CardInstance, CoreCard)
-import Core.Json (cardpgJsonDef)
-import Core.Primitives (ActorId)
-import Core.State (ActorState (..), CoreCardState (..))
-import Server.DB (saveGame)
 import Server.Dispatch (processCommand)
-import Server.Session (initGame)
 import Server.Types
   ( Client (..)
   , ConnectedSocket (..)
   , GameState (..)
   , ServerState (..)
-  , StateUpdate (..)
   , addClient
   , clientExists
   , removeClient
@@ -60,7 +48,6 @@ import Api.Reflex
   , ServerPush (..)
   , WsMessage (..)
   )
-import Api.Request (ApiRequest)
 import Api.Request qualified as Req
 
 application :: MVar ServerState -> ServerApp
@@ -111,7 +98,7 @@ application state pending = do
     return (s', (c, isNew))
 
   -- Send Welcome
-  (msgs, currentClients) <-
+  (msgs, _) <-
     readMVar state >>= \s -> do
       let view = GameView{actors = s.gameState.actors}
       let ph = s.gameState.phase
@@ -148,7 +135,7 @@ talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
 talk client socket state = forever $ do
   msgBytes <- receiveData (socket.socketConn)
   case decode msgBytes of
-    Just taggedReq@(TaggedRequest _ req) -> do
+    Just taggedReq@(TaggedRequest _ _) -> do
       result <- mkTaggedResponse taggedReq $ \r -> handleGameCommand client state r
       case result of
         Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
@@ -197,5 +184,3 @@ handleGameCommand client state cmd =
         readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
 
       pure ret
-
-handleGameCommand' = handleGameCommand

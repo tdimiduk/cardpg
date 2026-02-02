@@ -49,8 +49,6 @@ library
   exposed-modules:
     Core.Card
     Core.DSL
-    Core.DSL.RuleParser
-    Core.DSL.TextRep
     Core.Hardcoded
     Core.Json
     Core.Language
@@ -64,8 +62,14 @@ library
     Core.NonEmptyText
     Core.Primitives
     Core.RichText
-    Core.RuleDefs
-    Core.RuleInstances
+    Core.Rules
+    Core.Rules.Attack
+    Core.Rules.Common
+    Core.Rules.General
+    Core.Rules.Ongoing
+    Core.Rules.Passive
+    Core.Rules.Task
+    Core.Rules.Trigger
     Core.State
     Core.Stats
     Core.Util

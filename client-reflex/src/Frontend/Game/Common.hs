@@ -6,7 +6,6 @@ import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
 
 import Frontend.Style (plannedCardOverlap)
-import Frontend.Style.Common hiding (classes)
 import Frontend.Style.Layout
 
 -- | Reusable widget for rendering a stack of cards (Resources behind Action)

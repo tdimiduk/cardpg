@@ -4,9 +4,8 @@ module Server.Dispatch
 
 import Control.Monad.State (State, state)
 import Data.Map.Strict qualified as Map
-import Data.Text qualified as T
 import System.Random (StdGen)
-import System.Random.Stateful (Uniform (..), uniform)
+import System.Random.Stateful (uniform)
 
 import Core.Logic.Deck qualified as Logic
 import Core.Logic.Planning qualified as Logic

@@ -31,6 +31,7 @@ mockCard _name' =
     , cost = Nothing
     , tags = Nothing
     , stats = Stats 0 0 0
+    , attack = Nothing
     , rules = Nothing
     , flavor = Nothing
     }

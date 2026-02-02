@@ -5,7 +5,10 @@ import Data.List.NonEmpty (NonEmpty (..))
 import Core.Card (CoreCard (..), Stats (..))
 import Core.NonEmptyText (unsafeNonEmptyText)
 import Core.RichText (unsafeSimpleString)
-import Core.RuleDefs (Rule (RuleTask), TaskDef (..))
+import Core.Rules
+  ( Rule (..)
+  , TaskDef (..)
+  )
 
 -- | The canonical Fatigue Card
 -- Hardcoded here as a fundamental mechanic of the engine.

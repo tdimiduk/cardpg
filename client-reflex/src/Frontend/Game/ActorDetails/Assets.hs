@@ -18,7 +18,6 @@ import Core.Primitives (EquipSlot (..), Identified (..))
 import Core.State (ActorState (..), AssetState (..), TableCard (..), TableState (..))
 import Core.Util (tshow)
 import Frontend.Style.Common
-import Frontend.Style.Layout
 
 equippedWidget
   :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m)

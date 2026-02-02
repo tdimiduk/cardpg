@@ -1,6 +1,4 @@
-- flavor:
-  - content: Fatigue is setting in ...
-    tag: textRun
+- flavor: Fatigue is setting in ...
   name: Fatigue
   rules:
   - 'Task: Sleep (Time 2 Hours) → Remove this card.'
@@ -13,9 +11,7 @@
   - Status
   - Fatigue
   - Physical
-- flavor:
-  - content: A minor injury. The pain is distracting.
-    tag: textRun
+- flavor: A minor injury. The pain is distracting.
   name: Injury
   rules:
   - If this card is in your hand at the end of the Resolve Step, expend it.

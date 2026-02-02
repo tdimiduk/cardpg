@@ -18,7 +18,7 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
 import Frontend.Game.Common (cardStackWidget)
-import Frontend.Style (cardHandWidth, plannedCardOverlap)
+import Frontend.Style (cardHandWidth)
 import Frontend.Style.Common
 import Frontend.Style.Layout
 import Frontend.UI.Button

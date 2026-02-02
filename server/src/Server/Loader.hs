@@ -1,10 +1,8 @@
 module Server.Loader (loadLibrary) where
 
-import Control.Monad (filterM, foldM, forM)
+import Control.Monad (foldM, forM)
 import Data.Aeson (FromJSON, Result (..), Value (..), fromJSON)
-import Data.Either (lefts, rights)
-import Data.List (isInfixOf, isSuffixOf)
-import Data.Text (Text)
+import Data.List (isInfixOf)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Data.Yaml (ParseException, decodeFileEither)

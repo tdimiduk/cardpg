@@ -4,14 +4,10 @@
 
 module Server.Scenario where
 
-import Control.Lens (at, set, (&), (.~), (?~))
-import Control.Monad (forM, forM_)
+import Control.Monad (forM_)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.State
-  ( State
-  , StateT
-  , evalStateT
-  , execStateT
+  ( StateT
   , get
   , lift
   , put
@@ -24,24 +20,20 @@ import Data.List.NonEmpty (toList)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
-import Data.Text qualified as T
 import Data.Yaml (decodeFileThrow)
 import GHC.Generics (Generic)
 import System.FilePath (takeDirectory, (</>))
-import System.Random (StdGen, getStdGen, mkStdGen, newStdGen, uniform)
-import System.Random.Stateful (Uniform (..), uniformM)
+import System.Random (StdGen, mkStdGen, newStdGen, uniform)
+import System.Random.Stateful (Uniform (..))
 
 import Core.Card
   ( ActorDefinition
-  , CoreCard
   , Identified (..)
   , ItemCard
-  , NatureCard
-  , TalentCard
   )
 import Core.Card qualified as Card
 import Core.Hardcoded (fatigueCard)
-import Core.Primitives (ActorId, CardInstanceId, EquipSlot (..), TargetId)
+import Core.Primitives (ActorId, CardInstanceId, EquipSlot (..))
 import Core.State
   ( ActorState (..)
   , AssetState (..)

@@ -18,7 +18,6 @@ import Frontend.Game.ActorDetails.Deck (deckWidget)
 import Frontend.Game.ActorDetails.Stats (statsWidget)
 
 import Frontend.Style.Common
-import Frontend.Style.Layout
 
 actorDetailsWidget
   :: ( DomBuilder t m

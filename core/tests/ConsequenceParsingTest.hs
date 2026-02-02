@@ -13,8 +13,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import Core.Card (ConsequenceCard (..))
-import Core.RuleDefs (Rule (..))
-import Core.RuleInstances ()
+import Core.Rules (Rule (..))
 
 test_consequenceParsing :: TestTree
 test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do

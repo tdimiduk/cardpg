@@ -5,11 +5,8 @@
 module Server.Session where
 
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe)
-import Data.Pool (Pool)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
-import Database.PostgreSQL.Simple qualified as Pg
 import System.Random (StdGen, mkStdGen, newStdGen)
 
 import Core.Card (ConsequenceCard (..), CoreCard (..))

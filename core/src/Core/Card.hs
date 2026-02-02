@@ -1,5 +1,5 @@
 module Core.Card
-  ( module Core.RuleDefs
+  ( module Core.Rules
   , Stats (..)
   , SpecialDefend
   , CoreCard (..)
@@ -23,9 +23,9 @@ import GHC.Generics (Generic)
 import Core.Json
 import Core.NonEmptyText (NonEmptyText)
 import Core.Primitives (CardInstanceId, Identified (..))
-import Core.RichText
-import Core.RuleDefs
-import Core.RuleInstances ()
+import Core.RichText (RichText)
+import Core.Rules
+
 import Core.Stats (ResourceType (..), Stats (..))
 
 type CardInstance a = Identified CardInstanceId a

@@ -9,7 +9,7 @@ import Test.Tasty
 import Test.Tasty.QuickCheck
 
 import Core.Card
-import Core.DSL.TextRep (TextRep (..), parseText)
+import Core.DSL (TextRep (..), parseText)
 import Core.LogicTest (test_logic)
 
 import ArbitraryInstances ()

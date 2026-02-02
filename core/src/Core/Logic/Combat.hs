@@ -29,7 +29,7 @@ import Core.Card
   )
 import Core.Logic.Monad (GameM (..))
 import Core.Primitives (ChallengeId)
-import Core.RuleDefs (AttackDef (..))
+import Core.Rules (AttackDef (..))
 import Core.State
   ( ActionStack (..)
   , ActiveChallenge (..)

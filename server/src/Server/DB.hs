@@ -4,10 +4,10 @@
 
 module Server.DB where
 
-import Data.Aeson (FromJSON, Result (..), ToJSON, Value (..), fromJSON, toJSON)
-import Data.IORef (IORef, modifyIORef', newIORef, readIORef)
+import Data.Aeson (Result (..), Value (..), fromJSON, toJSON)
+import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Map qualified as Map
-import Data.Pool (Pool, defaultPoolConfig, newPool, withResource)
+import Data.Pool (defaultPoolConfig, newPool, withResource)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
@@ -15,11 +15,8 @@ import Data.Time (UTCTime, getCurrentTime)
 import Database.Beam
 import Database.Beam.AutoMigrate (AnnotatedDatabaseSettings, defaultAnnotatedDbSettings)
 import Database.Beam.AutoMigrate qualified as BA
-import Database.Beam.Backend.SQL.SQL92 (IsSql92DataTypeSyntax (..))
-import Database.Beam.Migrate
 import Database.Beam.Postgres
 import Database.PostgreSQL.Simple qualified as Pg
-import GHC.Generics (Generic)
 
 import Server.Config (DBConfig (..))
 import Server.Types (GameState, StorageBackend (..))

@@ -5,15 +5,9 @@ module Server.Presenter
   ) where
 
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe)
-import Data.Text (Text)
 import Data.Text qualified as T
-import Data.UUID (toText)
 
-import Core.Card (CardInstance, CoreCard, Identified (..))
-import Core.Card qualified as CoreCard
 import Core.Logic.Combat (computeDefenseDetails)
-import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId (..))
 import Core.State
   ( ActiveChallenge (..)
@@ -22,13 +16,10 @@ import Core.State
   , CoreCardState (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
-  , PlannedAction (..)
   , RevealedEffect (..)
   )
-import Core.Stats (ResourceType (..), Stats (..))
 import Server.Types
   ( GameState (..)
-  , LogEntry (..)
   , LogPayload (..)
   )
 

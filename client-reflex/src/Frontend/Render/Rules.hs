@@ -16,26 +16,14 @@ module Frontend.Render.Rules
 
 import Reflex.Dom.Core hiding (Space)
 
-import Core.Language
-  ( kwCheck
-  , kwCost
-  , kwStr
-  , kwTime
-  , sepColon
-  , sepSemi
-  )
-
-import Core.Layout
-  ( LayoutItem (..)
-  , layoutAttackDef
-  , layoutRule
-  )
-
+import Core.Language (TextStyle (..))
+import Core.Layout hiding (renderLayoutItem)
 import Core.NonEmptyText (getRawText)
-import Core.RichText (Block (..), Inline (..), RichText (..), TextStyle (..), getInlines)
-import Core.RuleDefs (AttackDef (..), Rule (..))
+import Core.RichText (Block (..), Inline (..), RichText (..), getInlines)
+import Core.Rules (AttackDef (..), Rule (..), layoutAttackDef, layoutRule)
 import Core.Stats (Difficulty (..), StatValue (..))
 import Core.Util (tshow)
+
 import Frontend.Render.Common (IconMode (..), renderResourceType)
 
 --------------------------------------------------------------------------------

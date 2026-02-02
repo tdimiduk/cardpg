@@ -33,27 +33,8 @@ import Core.Card
 import Core.Stats (ResourceType (..), getStatValue)
 import Core.Util (tshow)
 
-import Frontend.Render.Common (IconMode (..), renderNonEmptyText, renderResourceType)
+import Frontend.Render.Common (IconMode (..), renderNonEmptyText)
 import Frontend.Render.Rules (renderAttackDef, renderRichText, renderRule, renderStatValue)
-import Frontend.Style
-  ( artBase
-  , artPrint
-  , artScreen
-  , cardBase
-  , cardPrint
-  , cardRow
-  , cardScreen
-  , costBase
-  , costPrint
-  , costRow
-  , costScreen
-  , nameBase
-  , namePrint
-  , nameScreen
-  , textboxBase
-  , textboxPrint
-  , textboxScreen
-  )
 import Frontend.Style qualified as Style
   ( artBase
   , artPrint
@@ -77,15 +58,6 @@ import Frontend.Style.Common
   ( CssClass
   , component
   , divStyle
-  , flex
-  , flexCol
-  , fontBold
-  , grow
-  , hidden
-  , itemsCenter
-  , justifyBetween
-  , rounded
-  , truncateText
   )
 import Frontend.Style.Common qualified as Style
 import Frontend.Style.Layout (row, spacer)

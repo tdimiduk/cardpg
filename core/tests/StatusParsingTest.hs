@@ -15,8 +15,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import Core.Card (CoreCard (..))
-import Core.RuleDefs (Rule (..))
-import Core.RuleInstances ()
+import Core.Rules (Rule (..))
 
 test_statusParsing :: TestTree
 test_statusParsing = testCase "Status Card Parsing & Roundtrip" $ do

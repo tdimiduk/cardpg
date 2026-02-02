@@ -14,7 +14,7 @@ import Core.Card (CoreCard (..), Identified (..), Stats (..))
 import Core.Logic.Combat (getAttackRule)
 import Core.Logic.Monad (GameM (..))
 import Core.Logic.Planning (passAction, planAction)
-import Core.RuleDefs (AttackDef (..))
+import Core.Rules (AttackDef (..))
 import Core.Stats (ResourceType (..), StackPower (..))
 
 planBestAvailableAction :: GameM g ()

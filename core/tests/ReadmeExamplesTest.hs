@@ -8,7 +8,8 @@ import System.Directory (doesFileExist)
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import Core.DSL.RuleParser (parseRule)
+import Core.DSL (parseText)
+import Core.Rules (Rule)
 
 test_readmeExamples :: TestTree
 test_readmeExamples = testCase "README Syntax Examples" $ do
@@ -37,7 +38,8 @@ test_readmeExamples = testCase "README Syntax Examples" $ do
 
 checkExample :: T.Text -> Assertion
 checkExample ex = do
-  let result = parseRule ex
+  let result :: Either String Rule
+      result = parseText ex
   case result of
     Left err -> assertFailure $ "Failed to parse example: " ++ T.unpack ex ++ "\nError: " ++ err
     Right _ -> return ()
