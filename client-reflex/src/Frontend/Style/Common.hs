@@ -67,7 +67,7 @@ import Data.Coerce (coerce)
 import Data.Map (Map)
 
 import Data.String (IsString (..))
-import Data.Text (Text)
+import Data.Text (Text, unwords)
 import Reflex.Dom.Core
 
 --------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ newtype CssClass = CssClass {unCssClass :: Text}
   deriving newtype (Semigroup, Monoid)
 
 classes :: [CssClass] -> Text
-classes = coerce . mconcat
+classes = unwords . coerce
 
 --------------------------------------------------------------------------------
 
