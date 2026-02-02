@@ -6,47 +6,14 @@ roots = [
   # Main executables
   "^Main.main$",
   "server:exe:server",
-  "codegen:exe:codegen",
+  "server:exe:server-devel",
+  "client-reflex:exe:client-reflex",
+  "client-reflex:exe:cardpg-static",
 
   # Tests are entry points
   "core:test:core-test",
+  "server:test:server-test",
+  "client-reflex:test:client-reflex-test",
 ]
 
 type-class-roots = true
-
-# False positives due to Template Haskell or test usage not correctly tracked
-[[unused]]
-module = "Core.Json"
-symbol = "cardpgTaggedOptions"
-
-[[unused]]
-module = "Core.RichText"
-symbol = "unsafeSimpleString"
-
-# Ignore generated record fields in TypeScriptInstances and others
-[[unused]]
-module = "TypeScriptInstances"
-symbol = "^_.*"
-
-# Ignore DeriveSpecialized exports due to Template Haskell usage
-[[unused]]
-module = "DeriveSpecialized"
-symbol = ".*"
-
-# Ignore generated/utility fields in CardCompiler.Parser
-[[unused]]
-module = "Core.Parser"
-symbol = "compareParsedCard"
-
-[[unused]]
-module = "Core.Parser"
-symbol = "toInt"
-
-# Ignore unused Main exports
-[[unused]]
-module = "Main"
-symbol = "numClients"
-
-[[unused]]
-module = "Main"
-symbol = "clientExists"

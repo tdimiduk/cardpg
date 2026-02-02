@@ -2,3 +2,4 @@
 set -e
 # Run hlint on source directories
 hlint api client-reflex core server tools
+weeder

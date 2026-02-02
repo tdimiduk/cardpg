@@ -1,7 +1,6 @@
 module Core.Json
   ( cardpgJsonOptions
   , cardpgJsonDef
-  , stripEmpty
   ) where
 
 import Data.Aeson (Options (..), Value (..), defaultOptions)
@@ -26,15 +25,4 @@ cardpgJsonOptions prefixToStrip =
     stripPrefix' pre s = fromMaybe s (stripPrefix pre s)
 
 cardpgJsonDef :: Options
-cardpgJsonDef = cardpgJsonOptions ""
-
--- | Recursively strip empty arrays and nulls from JSON Values
-stripEmpty :: Value -> Value
-stripEmpty (Object m) = Object $ KM.map stripEmpty $ KM.filter (not . isEmpty) m
-  where
-    isEmpty (Array v) = V.null v
-    isEmpty (String s) = s == ""
-    isEmpty Null = True
-    isEmpty _ = False
-stripEmpty (Array v) = Array $ V.map stripEmpty v
-stripEmpty v = v
+ardpgJsonDef = cardpgJsonOptions ""

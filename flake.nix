@@ -195,6 +195,7 @@
               fourmolu = "latest";
               ghcid = "latest";
               apply-refact = "latest";
+              weeder = "latest";
             };
 
             # Additional packages from nixpkgs (not GHC-dependent)

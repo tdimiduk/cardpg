@@ -1,7 +1,5 @@
 module Core.DSL.RuleParser
-  ( parseRule
-  , parseAttack
-  , ruleParser
+  ( ruleParser
   , attackParser
   , richTextParser
   , stackPowerParser
@@ -72,12 +70,6 @@ import Core.Stats
   , parseStatValue
   )
 import Core.Util (tshow)
-
-parseAttack :: Text -> Either String AttackDef
-parseAttack = basicParse attackParser
-
-parseRule :: Text -> Either String Rule
-parseRule = basicParse ruleParser
 
 ruleParser :: Parser Rule
 ruleParser =

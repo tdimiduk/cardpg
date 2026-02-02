@@ -1,8 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 
--- | TextRep typeclass for DSL round-tripping.
--- | Invariant: parseText . toText === Right
 module Core.DSL.TextRep
   ( TextRep (..)
   , parseText
@@ -69,7 +67,6 @@ class TextRep a where
 parseText :: (TextRep a) => Text -> Either String a
 parseText = basicParse (textParser <* eof)
 
--- Rule (top-level, fully roundtrippable)
 -- Rule (top-level, fully roundtrippable)
 instance TextRep Rule where
   toText = renderLayoutText . layoutRule
