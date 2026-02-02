@@ -1,5 +1,9 @@
 # CardPG
 
-## design
+A card-based RPG platform with real-time multiplayer support.
 
-The rules of the game, plus backing research, design philosophy and various things.
+## Documentation
+
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — Project structure and development setup
+- [CODING_STANDARDS.md](./CODING_STANDARDS.md) — Coding conventions and safety rules
+- [design/](./design/) — Game design documents and research

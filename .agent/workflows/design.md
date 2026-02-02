@@ -1,0 +1,37 @@
+---
+description: Game design work using the Artificer persona (discuss, audit, create, refactor, or write)
+---
+
+# Design Workflow
+
+This unified workflow handles all game design tasks. The user's prompt determines the mode.
+
+## 1. Load Context
+
+- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
+- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/personas/artificer.md`
+
+Adopt the **Lead Systems Designer** persona.
+
+## 2. Determine Mode from User Request
+
+| Mode         | Trigger Keywords                       | Behavior                                                                                                                                                                               |
+| ------------ | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discuss**  | "discuss", "explore", "what if"        | Open-ended conversation. Do NOT propose file edits yet. Challenge assumptions. Ask clarifying questions. Only transition to concrete changes when user says "finalize" or "implement". |
+| **Audit**    | "audit", "review", "check consistency" | Cross-reference `design/rules/` against `design/philosophy/` and `design/research/`. Produce a Consistency Report highlighting ludonarrative dissonance.                               |
+| **Create**   | "new mechanic", "design", "model"      | Consult `design/research/synthesis/` for factual grounding. Apply Core Design Patterns. Provide 2 options with Design Notes if open-ended.                                             |
+| **Refactor** | "update", "refactor", "fix rule"       | Locate the rule in `design/rules/`. Propose a targeted diff (Old → New) that reconciles with new facts.                                                                                |
+| **Write**    | "write", "draft", "player-facing"      | Draft prose for players/GMs. Identify tone from context. Enclose final draft in code block.                                                                                            |
+
+## 3. Locate Relevant Context
+
+- Check `design/manifest.yaml` for files with matching tags.
+- For physical mechanics (combat, movement, injury), consult `design/research/synthesis/` or `design/research/reports/`.
+
+## 4. Execute Per Mode
+
+Follow the behavior for the determined mode above.
+
+## 5. If Mode Unclear
+
+Ask: "What mode should I work in—discuss, audit, create, refactor, or write?"
