@@ -37,3 +37,15 @@ jobs: $ncpus
 package *
   -- Enable parallel module compilation and optimize GC for many cores
   ghc-options: +RTS -A128m -n4m -RTS
+
+package core
+  ghc-options: -fwrite-ide-info
+
+package server
+  ghc-options: -fwrite-ide-info
+
+package api
+  ghc-options: -fwrite-ide-info
+
+package client-reflex
+  ghc-options: -fwrite-ide-info
