@@ -13,10 +13,11 @@ import Api.Types
   , LogSender (..)
   )
 import Core.Primitives (ActorId, Identified (..))
-import Core.State (ActorState)
+import Core.State (ActiveChallenge (..), ActorState)
 import Core.Util (tshow)
 
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig, phaseDisplayWidget)
+import Frontend.Render.Common (IconMode (..), renderResourceType)
 import Frontend.Style.Common hiding (hidden)
 import Frontend.Style.Layout
 import Frontend.Util
@@ -146,11 +147,22 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
     divStyle [textXs, bg, "italic", "p-2", "border-b", border] $ text c
   LogError c -> do
     divStyle [textXs, "text-red-500", fontBold, "p-2", "border-b", "border-red-900"] $ text c
-  LogChallenge _ _ -> do
-    -- Placeholder for Challenge Logs
-    divStyle ["bg-red-950/30", "border", "border-red-900/50", rounded, "p-3", "mb-2"] $ do
-      divStyle ["text-xs", fontBold, "text-red-300"] $ text "Challenge Action"
-      divStyle [textXs, "text-slate-400"] $ text $ "By: " <> renderSender l.sender
+  LogChallenge challenge _plannedAction -> do
+    -- Red-themed container for attack/challenge (matching vtt-react)
+    divStyle ["bg-red-950/30", "border", "border-red-900/50", rounded, "p-3", "mb-2", "animate-fade-in"] $ do
+      -- Header
+      divStyle [textXs, fontBold, "text-red-300", flex, itemsCenter, "gap-1"] $
+        text "Challenge Action"
+      -- Attacker
+      divStyle [textXs, "text-slate-400", "mt-1"] $
+        text $
+          "By: " <> renderSender l.sender
+      -- Power display with color icon
+      divStyle [flex, itemsCenter, "gap-2", textSm, "bg-black/40", rounded, "p-1", "mt-2"] $ do
+        elStyle "span" [fontBold, "text-red-400"] $
+          text $
+            "Power: " <> tshow challenge.challengeStrength
+        renderResourceType IconInline challenge.challengeColor Nothing
   LogDefense{} -> do
     -- Placeholder for Defense Logs (if rendered independently)
     divStyle ["bg-blue-950/30", "border", "border-blue-900/50", rounded, "p-3", "mb-2"] $ do
