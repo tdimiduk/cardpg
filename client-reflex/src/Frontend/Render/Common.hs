@@ -32,7 +32,7 @@ renderResourceType mode r t = case r of
     color = case r of
       Red -> [CommonStyle.textRed500]
       Yellow -> [CommonStyle.textYellow400]
-      Blue -> [CommonStyle.textBlue500]
+      Blue -> [CommonStyle.textBlue5]
     style = case mode of
       IconInline -> CommonStyle.iconInline
       IconBlock -> CommonStyle.iconBlock

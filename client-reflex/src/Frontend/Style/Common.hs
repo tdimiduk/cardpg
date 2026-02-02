@@ -53,6 +53,7 @@ module Frontend.Style.Common
   , textRed500
   , textYellow400
   , textBlue500
+  , textBlue5 -- New atomic style
   , flex1
   , shadow
   , backdropBlur
@@ -69,6 +70,8 @@ import Data.Map (Map)
 import Data.String (IsString (..))
 import Data.Text (Text, unwords)
 import Reflex.Dom.Core
+
+import Prelude hiding (unwords)
 
 --------------------------------------------------------------------------------
 
@@ -207,6 +210,9 @@ textYellow400 = "text-yellow-400"
 
 textBlue500 :: CssClass
 textBlue500 = "text-blue-500"
+
+textBlue5 :: CssClass
+textBlue5 = "text-blue-5"
 
 uppercase :: CssClass
 uppercase = "uppercase"
