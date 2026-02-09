@@ -15,8 +15,12 @@ import Data.Map qualified as Map
 import Data.Text qualified as T
 
 import Reflex.Dom.Core hiding (button)
+import Web.Atomic.Types (CSS (..), Rule)
+import Web.Atomic.Types qualified as Atomic (ClassName (..), Rule (..))
 
-import Frontend.Style.Common
+import Frontend.Style.Class (MonadStyle (..), registerEnumStyles)
+import Frontend.Style.Common (Style)
+import Frontend.Style.DSL
 
 -- | Visual variants for the button
 data ButtonVariant
@@ -30,7 +34,7 @@ data ButtonVariant
     VariantGhost
   | -- | Transparent with border
     VariantOutline
-  deriving (Eq, Show)
+  deriving (Eq, Show, Enum, Bounded)
 
 -- | Size presets
 data ButtonSize
@@ -40,7 +44,7 @@ data ButtonSize
     SizeMedium
   | -- | Prominent/Large touch target
     SizeLarge
-  deriving (Eq, Show)
+  deriving (Eq, Show, Enum, Bounded)
 
 -- | Configuration for the button widget
 data ButtonConfig t = ButtonConfig
@@ -50,8 +54,8 @@ data ButtonConfig t = ButtonConfig
   , fullWidth :: Bool
   , testId :: Maybe T.Text
   -- ^ Optional test ID for automation
-  , classes :: [CssClass]
-  -- ^ Additional custom classes
+  , extraStyle :: Style
+  -- ^ Additional custom styles
   , attributes :: Dynamic t (Map.Map T.Text T.Text)
   -- ^ Arbitrary HTML attributes
   }
@@ -64,110 +68,109 @@ instance (Reflex t) => Default (ButtonConfig t) where
       , disabled = constDyn False
       , fullWidth = False
       , testId = Nothing
-      , classes = []
+      , extraStyle = id
       , attributes = constDyn mempty
       }
 
+sizeStyle :: ButtonSize -> Style
+sizeStyle = \case
+  SizeSmall -> px2 . py1 . textXs
+  SizeMedium -> px4 . py2 . textSm
+  SizeLarge -> px6 . py3 . textBase
+
+variantStyle :: ButtonVariant -> Style
+variantStyle = \case
+  VariantPrimary ->
+    bgIndigo600
+      . textWhite
+      . shadowSm
+  VariantSecondary ->
+    bgSlate800
+      . textSlate200
+      . border
+      . borderSlate600
+  VariantDestructive ->
+    bgRed900_50
+      . textRed200
+      . border
+      . borderRed800
+  VariantGhost ->
+    bgTransparent
+      . textSlate400
+  VariantOutline ->
+    bgTransparent
+      . textSlate200
+      . border
+      . borderSlate600
+
+-- | Base styles shared by all buttons
+baseStyle :: Style
+baseStyle =
+  flex
+    . itemsCenter
+    . justifyCenter
+    . rounded
+    . fontBold
+    . transitionColors
+    . duration200
+    . selectNone
+
+-- | Disabled state styling
+disabledStyle :: Style
+disabledStyle = opacity50 . cursorNotAllowed
+
+-- | Extract the class name from a Rule.
+ruleClassName :: Rule -> T.Text
+ruleClassName (Atomic.Rule c _ _ _) = case c of
+  Atomic.ClassName t -> t
+
+-- | Convert a Style to a class string
+styleToClassText :: Style -> T.Text
+styleToClassText style =
+  let CSS rules = style mempty
+   in T.unwords $ map ruleClassName rules
+
 -- | A unified button widget
 button
-  :: (DomBuilder t m, PostBuild t m)
+  :: (DomBuilder t m, PostBuild t m, MonadStyle m)
   => ButtonConfig t
   -> m ()
   -- ^ Label content
   -> m (Event t ())
 button cfg label = do
-  -- Base classes shared by all buttons
-  let baseClasses =
-        [ flex
-        , itemsCenter
-        , justifyCenter
-        , rounded
-        , fontBold
-        , "transition-colors"
-        , "duration-200"
-        , "select-none"
-        ]
-
   -- Width handling
-  let widthClass = (["w-full" | cfg.fullWidth])
+  let widthStyle = if cfg.fullWidth then wFull else id
 
-  -- Size classes
-  let sizeClasses = ffor cfg.size $ \case
-        SizeSmall -> ["px-2", "py-1", textXs]
-        SizeMedium -> ["px-4", "py-2", textSm]
-        SizeLarge -> ["px-6", "py-3", "text-base"]
+  -- Register all static styles for CSS generation
+  registerStyles $ baseStyle mempty
+  registerStyles $ widthStyle mempty
+  registerStyles $ disabledStyle mempty
+  registerStyles $ cursorPointer mempty
+  registerStyles $ cfg.extraStyle mempty
+  registerEnumStyles (\v -> variantStyle v mempty)
+  registerEnumStyles (\s -> sizeStyle s mempty)
 
-  -- Variant classes (color schemes)
-  let variantClasses = ffor cfg.variant $ \case
-        VariantPrimary ->
-          [ "bg-indigo-600"
-          , "text-white"
-          , "hover:bg-indigo-500"
-          , "active:bg-indigo-700"
-          , "shadow-sm"
-          ]
-        VariantSecondary ->
-          [ "bg-slate-800"
-          , "text-slate-200"
-          , "border"
-          , "border-slate-600"
-          , "hover:bg-slate-700"
-          , "active:bg-slate-600"
-          ]
-        VariantDestructive ->
-          [ "bg-red-900/50"
-          , "text-red-200"
-          , "border"
-          , "border-red-800"
-          , "hover:bg-red-800/50"
-          , "hover:text-red-100"
-          ]
-        VariantGhost ->
-          [ "bg-transparent"
-          , "text-slate-400"
-          , "hover:bg-slate-800/50"
-          , "hover:text-slate-200"
-          ]
-        VariantOutline ->
-          [ "bg-transparent"
-          , "text-slate-200"
-          , "border"
-          , "border-slate-600"
-          , "hover:border-slate-500"
-          , "hover:text-white"
-          ]
-
-  -- Disabled state styling
-  let disabledClasses =
-        [ "opacity-50"
-        , "cursor-not-allowed"
-        , "hover:bg-none" -- Reset hover effects if possible (imperfect in tailwind without group-hover logic, but opacity helps)
-        ]
-
-  let dynClasses = do
-        sz <- sizeClasses
-        var <- variantClasses
+  let dynClassText = do
+        sz <- ffor cfg.size sizeStyle
+        var <- ffor cfg.variant variantStyle
         dis <- cfg.disabled
-        let interaction = if dis then disabledClasses else [cursorPointer]
+        let interaction = if dis then disabledStyle else cursorPointer
+        let fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
+        pure $ styleToClassText fullStyle
 
-        pure $
-          baseClasses
-            <> widthClass
-            <> cfg.classes
-            <> var
-            <> interaction
-            <> sz
-
-  let attrs = ffor3 dynClasses cfg.disabled cfg.attributes $ \cls dis attrs' ->
-        "class" =: classes cls
+  let attrs = ffor3 dynClassText cfg.disabled cfg.attributes $ \clsText dis attrs' ->
+        "class" =: clsText
           <> mkDisabledAttr dis
-          <> maybe mempty testId cfg.testId
+          <> maybe mempty testIdAttr cfg.testId
           <> attrs'
 
   (e, _) <- elDynAttr' "button" attrs label
 
   -- Gate the click event by the disabled state
   return $ gate (not <$> current cfg.disabled) (domEvent Click e)
+
+testIdAttr :: T.Text -> Map.Map T.Text T.Text
+testIdAttr = ("data-testid" =:)
 
 mkDisabledAttr :: Bool -> Map.Map T.Text T.Text
 mkDisabledAttr True = "disabled" =: "true"

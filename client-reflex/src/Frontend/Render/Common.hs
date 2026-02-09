@@ -12,7 +12,10 @@ import Reflex.Dom.Core
 import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.Stats (ResourceType (..))
 
+import Frontend.Style.Class (MonadStyle)
+import Frontend.Style.Common (Style)
 import Frontend.Style.Common qualified as CommonStyle
+import Frontend.Style.DSL qualified as S
 import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
 
 -- | Icon display mode for resource symbols and stat values
@@ -23,16 +26,19 @@ instance Default IconMode where
   def = IconInline
 
 -- | Render a ResourceType as an SVG icon
-renderResourceType :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
+renderResourceType
+  :: (DomBuilder t m, MonadStyle m) => IconMode -> ResourceType -> Maybe Text -> m ()
 renderResourceType mode r t = case r of
-  Red -> renderSquare (color <> style) t
-  Yellow -> renderCircle (color <> style) t
-  Blue -> renderDiamond (color <> style) t
+  Red -> renderSquare (color . style) t
+  Yellow -> renderCircle (color . style) t
+  Blue -> renderDiamond (color . style) t
   where
+    color :: Style
     color = case r of
-      Red -> [CommonStyle.textRed500]
-      Yellow -> [CommonStyle.textYellow400]
-      Blue -> [CommonStyle.textBlue5]
+      Red -> S.textRed500
+      Yellow -> S.textYellow400
+      Blue -> S.textBlue5
+    style :: Style
     style = case mode of
       IconInline -> CommonStyle.iconInline
       IconBlock -> CommonStyle.iconBlock

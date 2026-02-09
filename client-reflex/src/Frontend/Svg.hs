@@ -13,8 +13,10 @@ module Frontend.Svg
 import Data.Map qualified as Map
 import Data.Text (Text)
 import Reflex.Dom.Core
+import Web.Atomic.Types (CSS, Rule)
 
-import Frontend.Style.Common (CssClass)
+import Frontend.Style.Class (MonadStyle)
+import Frontend.Style.Common (Style, classes)
 import Frontend.Style.Common qualified as CommonStyle
 
 type ElAttrs = Map.Map Text Text
@@ -44,9 +46,10 @@ svgPath :: (DomBuilder t m) => Text -> m ()
 svgPath d = svgEl "path" ("d" =: d) blank
 
 -- | Renders text centered in the SVG.
-renderLabel :: (DomBuilder t m) => Maybe Text -> m ()
+renderLabel :: (DomBuilder t m, MonadStyle m) => Maybe Text -> m ()
 renderLabel Nothing = blank
-renderLabel (Just t) =
+renderLabel (Just t) = do
+  cls <- classes $ (CommonStyle.resourceTextBase . CommonStyle.resourceTextPrint) mempty
   svgEl
     "text"
     ( "x" =: "50"
@@ -57,18 +60,19 @@ renderLabel (Just t) =
         <> "font-family" =: "sans-serif"
         <> "font-weight" =: "bold"
         <> "fill" =: "currentColor"
-        <> "class" =: CommonStyle.classes (CommonStyle.resourceTextBase <> CommonStyle.resourceTextPrint)
+        <> "class" =: cls
         <> "stroke" =: "none"
     )
     $ text t
 
 -- | Renders a square icon.
-renderSquare :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
-renderSquare extraClasses mLabel =
+renderSquare :: (DomBuilder t m, MonadStyle m) => Style -> Maybe Text -> m ()
+renderSquare extraStyle mLabel = do
+  cls <- classes $ (CommonStyle.resourceIcon . extraStyle) mempty
   svgEl
     "svg"
     ( "viewBox" =: "0 0 100 100"
-        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+        <> "class" =: cls
     )
     $ do
       svgEl
@@ -88,12 +92,13 @@ renderSquare extraClasses mLabel =
       renderLabel mLabel
 
 -- | Renders a circle icon.
-renderCircle :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
-renderCircle extraClasses mLabel =
+renderCircle :: (DomBuilder t m, MonadStyle m) => Style -> Maybe Text -> m ()
+renderCircle extraStyle mLabel = do
+  cls <- classes $ (CommonStyle.resourceIcon . extraStyle) mempty
   svgEl
     "svg"
     ( "viewBox" =: "0 0 100 100"
-        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+        <> "class" =: cls
     )
     $ do
       svgEl
@@ -110,12 +115,13 @@ renderCircle extraClasses mLabel =
       renderLabel mLabel
 
 -- | Renders a diamond icon.
-renderDiamond :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
-renderDiamond extraClasses mLabel =
+renderDiamond :: (DomBuilder t m, MonadStyle m) => Style -> Maybe Text -> m ()
+renderDiamond extraStyle mLabel = do
+  cls <- classes $ (CommonStyle.resourceIcon . extraStyle) mempty
   svgEl
     "svg"
     ( "viewBox" =: "0 0 100 100"
-        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+        <> "class" =: cls
     )
     $ do
       svgEl
@@ -136,12 +142,13 @@ renderDiamond extraClasses mLabel =
       renderLabel mLabel
 
 -- | Renders a hexagon icon.
-renderHexagon :: (DomBuilder t m) => [CssClass] -> Maybe Text -> m ()
-renderHexagon extraClasses mLabel =
+renderHexagon :: (DomBuilder t m, MonadStyle m) => CSS [Rule] -> Maybe Text -> m ()
+renderHexagon extraClasses mLabel = do
+  cls <- classes $ CommonStyle.resourceIcon mempty <> extraClasses
   svgEl
     "svg"
     ( "viewBox" =: "0 0 100 100"
-        <> "class" =: CommonStyle.classes (CommonStyle.resourceIcon <> extraClasses)
+        <> "class" =: cls
     )
     $ do
       svgEl

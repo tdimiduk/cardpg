@@ -18,16 +18,18 @@ import Core.Util (tshow)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
 
 import Frontend.Icons (iconDeck, iconRefresh)
+import Frontend.Style.Class (MonadStyle, StyledDomBuilder)
 import Frontend.Style.Common
-import Frontend.Style.Layout
+import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
 
 deckWidget
-  :: ( DomBuilder t m
+  :: ( StyledDomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , Prerender t m
      , MonadFix m
+     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -35,31 +37,24 @@ deckWidget
   -> Dynamic t ActorState
   -> m ()
 deckWidget actorId actorState = do
-  colWith ["gap-2", "p-2", "bg-slate-950", rounded, "text-slate-100"] $ do
-    -- Header Row
-    rowWith [justifyBetween, itemsCenter, "mb-2"] $ do
-      divStyle [flex, itemsCenter, "gap-2", textSm, fontBold, uppercase, "text-slate-400", trackingWider] $ do
-        elClass "div" "w-5 h-5" iconDeck
-        text "Deck"
-
+  divT (S.flexCol . S.gap2 . S.p2 . S.bgSlate950 . S.rounded . S.textSlate100) $ do
     let cs = fmap (.coreState) actorState
 
     -- Cards Row
-    (viewDeck, viewDiscard) <- rowGap "gap-2" $ do
+    (viewDeck, viewDiscard) <- divT (S.flex . S.wFull . S.gap2) $ do
       let deckBox =
-            [ flex1
-            , "relative"
-            , "border"
-            , "border-slate-800"
-            , "bg-slate-900"
-            , rounded
-            , "p-3"
-            , flex
-            , flexCol
-            , "gap-2"
-            ]
-      let labelStyle = ["text-slate-400", textXs]
-      let countStyle = ["text-2xl", fontBold, "text-white"]
+            S.flexCol
+              . S.flex
+              . S.flex1
+              . S.relative
+              . S.border
+              . S.borderSlate800
+              . S.bgSlate900
+              . S.rounded
+              . S.p3
+              . S.gap2
+      let labelStyle = S.textSlate400 . S.textXs
+      let countStyle = S.text2Xl . S.fontBold . S.textWhite
 
       -- Helper for view button
       let viewButton =
@@ -67,16 +62,15 @@ deckWidget actorId actorState = do
               def
                 { variant = constDyn VariantGhost
                 , size = constDyn SizeSmall
-                , classes = ["absolute", "top-1", "right-1", "text-slate-600", "hover:text-indigo-400"]
+                , extraStyle = S.absolute . S.top1 . S.right1 . S.textSlate600 . S.hover S.textIndigo400
                 }
               (elClass "div" "w-5 h-5" iconDeck)
 
       -- Draw Pile Box
-      viewDeckClick <- divStyle deckBox $ do
+      viewDeckClick <- divT deckBox $ do
         viewDeckClick' <- viewButton
-        row $ do
-          divStyle ([flex, flexRow, itemsCenter, "gap-2"] <> labelStyle) $ text "Draw Pile"
-        elStyle "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
+        divT (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Draw Pile"
+        elT "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
         drawClick <-
           button
             def
@@ -89,12 +83,11 @@ deckWidget actorId actorState = do
         pure viewDeckClick'
 
       -- Discard Box
-      viewDiscardClick <- divStyle deckBox $ do
+      viewDiscardClick <- divT deckBox $ do
         viewDiscardClick' <- viewButton
-        row $ do
-          divStyle ([flex, flexRow, itemsCenter, "gap-2"] <> labelStyle) $ text "Discard"
+        divT (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Discard"
 
-        elStyle "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
+        elT "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
 
         widgetHold_ buttonSpacer $ ffor (updated cs) $ \s -> case s.discard of
           [] -> buttonSpacer
@@ -113,18 +106,19 @@ deckWidget actorId actorState = do
 
     deckViewerModal (leftmost [viewDeckReq, viewDiscardReq])
 
-buttonSpacer :: (DomBuilder t m) => m ()
-buttonSpacer = elStyle "div" ["h-[26px]"] blank
+buttonSpacer :: (DomBuilder t m, MonadStyle m) => m ()
+buttonSpacer = elT "div" (S.atom "h-[26px]" "height" "26px") blank
 
 reshuffleButtonRequesting
-  :: (Request m ~ ApiRequest, DomBuilder t m, PostBuild t m, Requester t m) => ActorId -> m ()
+  :: (Request m ~ ApiRequest, DomBuilder t m, PostBuild t m, MonadStyle m, Requester t m)
+  => ActorId -> m ()
 reshuffleButtonRequesting actorId = do
   reshuffleClick <-
     button
       def
         { variant = constDyn VariantSecondary
         , size = constDyn SizeSmall
-        , classes = ["gap-1"]
+        , extraStyle = S.gap1
         }
       $ do
         elClass "div" "w-4 h-4" iconRefresh

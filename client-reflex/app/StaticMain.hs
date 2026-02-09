@@ -46,6 +46,7 @@ import Frontend.Card
   )
 import Frontend.Catalog (catalogWidget)
 
+import Frontend.Style.Class (StyledDomBuilder)
 import Frontend.Style.Common
 import Frontend.Style.Layout
 import Server.Game (GameState (..))
@@ -240,7 +241,7 @@ generateGame opts path skipSnapshot = do
 
 -- | Widgets (Copied/Adapted)
 mockGameWidget
-  :: ( DomBuilder t m
+  :: ( StyledDomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
@@ -260,10 +261,10 @@ mockGameWidget initialActorId gameState = do
           never
   return ()
 
-deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
+deckWidget :: (StyledDomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
-  divStyle deckGrid $ do
+  divT deckGrid $ do
     mapM_ (renderNatureCardWith printSettings) actor.nature
     mapM_ (renderItemCardWith printSettings) actor.items
     mapM_ (renderCoreCardWith printSettings) actor.deck

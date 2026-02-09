@@ -13,15 +13,16 @@ import Core.Stats
 
 import Frontend.Card (renderCoreCard)
 
+import Frontend.Style.Class (StyledDomBuilder)
 import Frontend.Style.Common hiding (classes)
 import Frontend.Style.Layout (cardPrintGrid)
 
-catalogWidget :: (DomBuilder t m) => m ()
+catalogWidget :: (StyledDomBuilder t m) => m ()
 catalogWidget = do
   el "h1" $ text "Component Catalog"
 
   el "h2" $ text "Core Cards"
-  divStyle cardPrintGrid $ do
+  divT cardPrintGrid $ do
     renderCoreCard exampleAttack
     renderCoreCard exampleSkill
     renderCoreCard exampleHeavyText

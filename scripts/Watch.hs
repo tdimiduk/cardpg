@@ -21,10 +21,10 @@ runWatch mode = callProcess "ghciwatch" (getGhciWatchArgs mode)
 getGhciWatchArgs :: Mode -> [String]
 getGhciWatchArgs mode =
   case mode of
-    Client -> mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain"
-    Server -> mkArgs "server" "exe:server-devel" "Main.main"
+    Client -> mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" []
+    Server -> mkArgs "server" "exe:server-devel" "Main.main" ["server/app"]
   where
-    mkArgs folder component mainModule =
+    mkArgs folder component mainModule extraWatches =
       [ "--command"
       , "cabal repl " <> component
       , "--test-ghci"
@@ -33,9 +33,8 @@ getGhciWatchArgs mode =
       , folder <> "/" <> folder <> ".cabal"
       , "--watch"
       , folder <> "/src"
-      , "--watch"
-      , folder <> "/app"
       ]
+        ++ concatMap (\p -> ["--watch", p]) extraWatches
         ++ commonArgs
 
     commonArgs =

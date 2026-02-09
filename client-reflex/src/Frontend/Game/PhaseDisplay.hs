@@ -9,12 +9,15 @@ module Frontend.Game.PhaseDisplay
 
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
+import Web.Atomic.CSS.Layout (flexCol)
 
 import Api.Request qualified as Req
 import Api.Types (Phase (..))
 import Core.Util (tshow)
 
+import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
+import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
 import Frontend.Util (ApiRequester)
 
@@ -30,39 +33,35 @@ phaseDisplayWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
+     , MonadStyle m
      , ApiRequester t m
      )
   => PhaseDisplayConfig t
   -> m ()
 phaseDisplayWidget config = do
-  divStyle
-    [ "w-full"
-    , "p-4"
-    , "border-b"
-    , "border-slate-800"
-    , "bg-slate-900"
-    ]
+  divT
+    ( S.wFull
+        . S.p4
+        . S.borderB
+        . S.borderSlate800
+        . S.bgSlate900
+    )
     $ do
-      divStyle
-        [ "flex"
-        , "flex-col"
-        , "gap-2"
-        ]
-        $ do
-          -- Phase Text
-          divStyle [flex, itemsCenter, justifyBetween, "w-full"] $ do
-            divStyle [flex, itemsCenter, "gap-2"] $ do
-              text "Phase:"
-              dyn_ $ ffor config.phase $ \p -> do
-                let color = case p of
-                      Planning -> "text-blue-400"
-                      Resolution -> "text-red-400"
-                elClass "span" ("font-bold " <> color) $ text (tshow p)
+      divT (S.flexCol . S.gap2) $ do
+        -- Phase Text
+        divT (S.flex . S.itemsCenter . S.justifyBetween . S.wFull) $ do
+          divT (S.flex . S.itemsCenter . S.gap2) $ do
+            text "Phase:"
+            dyn_ $ ffor config.phase $ \p -> do
+              let colorStyle = case p of
+                    Planning -> S.textBlue400
+                    Resolution -> S.textRed400
+              elT "span" (S.fontBold . colorStyle) $ text (tshow p)
 
-          -- Phase Controls / Status
-          dyn_ $ ffor config.phase $ \case
-            Planning -> planningControls config
-            Resolution -> resolutionControls config
+        -- Phase Controls / Status
+        dyn_ $ ffor config.phase $ \case
+          Planning -> planningControls config
+          Resolution -> resolutionControls config
 
 planningControls
   :: forall t m
@@ -70,15 +69,16 @@ planningControls
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
+     , MonadStyle m
      , ApiRequester t m
      )
   => PhaseDisplayConfig t
   -> m ()
 planningControls config = do
-  divStyle [flex, itemsCenter, "gap-2"] $ do
+  divT (S.flex . S.itemsCenter . S.gap2) $ do
     btnClick <- button (def :: ButtonConfig t){size = constDyn SizeSmall} $ text "Start Resolution"
     -- Ready Count
-    divStyle ["text-slate-500"] $ do
+    divT S.textSlate400 $ do
       text "Ready: "
       dynText $ (\r t -> tshow r <> "/" <> tshow t) <$> config.readyCount <*> config.totalCount
 
@@ -89,10 +89,10 @@ planningControls config = do
 
 resolutionControls
   :: forall t m
-   . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, ApiRequester t m)
+   . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadStyle m, ApiRequester t m)
   => PhaseDisplayConfig t -> m ()
 resolutionControls _ = do
-  divStyle [flex, itemsCenter, "gap-2"] $ do
+  divT (S.flex . S.itemsCenter . S.gap2) $ do
     btnClick <-
       button
         (def :: ButtonConfig t)

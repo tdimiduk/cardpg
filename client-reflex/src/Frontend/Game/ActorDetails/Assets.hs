@@ -17,10 +17,12 @@ import Core.NonEmptyText (getRawText)
 import Core.Primitives (EquipSlot (..), Identified (..))
 import Core.State (ActorState (..), AssetState (..), TableCard (..), TableState (..))
 import Core.Util (tshow)
+import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
+import Frontend.Style.DSL qualified as S
 
 equippedWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m)
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m, MonadStyle m)
   => Dynamic t ActorState
   -> m ()
 equippedWidget actorState = do
@@ -32,7 +34,7 @@ equippedWidget actorState = do
         _ -> text (tshow slot)
 
 traitsWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m)
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m, MonadStyle m)
   => Dynamic t ActorState
   -> m ()
 traitsWidget actorState = do
@@ -41,7 +43,7 @@ traitsWidget actorState = do
     dynText $ fmap (cardType . fst) itemDyn
 
 assetSectionWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m, Eq a)
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m, MonadStyle m, Eq a)
   => Text
   -> Dynamic t [(TableCard, a)]
   -> (Dynamic t (TableCard, a) -> m ())
@@ -54,14 +56,14 @@ assetSectionWidget headerText itemsDyn renderDetail = do
     if not showItems
       then blank
       else do
-        divStyle ["flex", "flex-col", "gap-2", "p-2", "bg-slate-800", rounded, "text-slate-100", "mt-2"] $ do
-          elStyle "h2" [textSm, fontBold, uppercase, "text-slate-400"] $ text headerText
+        divT (S.flexCol . S.gap2 . S.p2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt2) $ do
+          elT "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text headerText
 
           void $ simpleList itemsDyn $ \itemDyn -> do
-            divStyle ["flex", "flex-row", justifyBetween, itemsCenter, "bg-slate-700", "p-1", rounded, "mb-1"] $ do
+            divT (S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p1 . S.rounded . S.mb1) $ do
               -- Display Name
               let nameDyn = fmap fst itemDyn
-              divStyle [textXs, "px-1"] $
+              divT (S.textXs . S.px1) $
                 dynText $
                   fmap
                     ( \case
@@ -72,7 +74,7 @@ assetSectionWidget headerText itemsDyn renderDetail = do
                     nameDyn
 
               -- Display Detail (Slot or Type)
-              divStyle [textXs, "text-slate-400", "italic"] $
+              divT (S.textXs . S.textSlate400 . S.atom "italic" "font-style" "italic") $
                 renderDetail itemDyn
 
 getEquippedItems :: ActorState -> [(TableCard, EquipSlot)]

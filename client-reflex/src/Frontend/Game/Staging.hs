@@ -26,7 +26,9 @@ import Frontend.Card
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Render.Common (IconMode (..))
 import Frontend.Style (stagedActionCard, stagedResourceCard)
+import Frontend.Style.Class (MonadStyle, StyledDomBuilder)
 import Frontend.Style.Common
+import Frontend.Style.DSL qualified as S
 
 import Frontend.UI.Button
 
@@ -43,6 +45,7 @@ stagingWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
+     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -52,26 +55,29 @@ stagingWidget
   -> m (StagingEvents t)
 stagingWidget actorId actionStackDyn validation = do
   -- Staging UI Container
-  component
+  componentT
     "action-staging"
-    [ absolute
-    , "bottom-80"
-    , "left-1/2"
-    , "-translate-x-1/2"
-    , pointerEventsAuto
-    , flex
-    , flexCol
-    , itemsCenter
-    , "gap-3"
-    , "min-w-[320px]"
-    , "bg-slate-900/90"
-    , backdropBlur "md"
-    , "border"
-    , "border-slate-700"
-    , "rounded-3xl"
-    , "p-4"
-    , shadow "2xl"
-    ]
+    ( S.flexCol
+        . S.absolute
+        . S.atom "bottom-80" "bottom" "20rem"
+        . S.atom "left-1/2" "left" "50%"
+        . S.atom "-translate-x-1/2" "transform" "translateX(-50%)"
+        . S.pointerEventsAuto
+        . S.itemsCenter
+        . S.gap2 -- gap-3 doesn't exist? Using gap2 or atom "gap-3" "gap" "0.75rem"
+        -- DSL2 has gap2 (0.5rem), gap4 (1rem). gap-3 is 0.75rem.
+        -- I'll use S.atom "gap-3" "gap" "0.75rem" or stick to gap2/gap4.
+        -- Original was "gap-3".
+        . S.atom "gap-3" "gap" "0.75rem"
+        . S.atom "min-w-[320px]" "min-width" "320px"
+        . S.atom "bg-slate-900/90" "background-color" "rgb(15 23 42 / 0.9)"
+        . S.backdropBlurMd
+        . S.border
+        . S.borderSlate700
+        . S.rounded3Xl
+        . S.p4
+        . S.shadow2Xl
+    )
     $ do
       -- Header / Status
       stagingStatusHeader validation
@@ -105,11 +111,11 @@ stagingWidget actorId actionStackDyn validation = do
           }
 
 stagingStatusHeader
-  :: (DomBuilder t m, PostBuild t m)
+  :: (DomBuilder t m, PostBuild t m, MonadStyle m)
   => Dynamic t PlanValidation
   -> m ()
 stagingStatusHeader validation = do
-  divStyle [flex, flexCol, itemsCenter, "gap-2"] $ do
+  divT (S.flexCol . S.itemsCenter . S.gap2) $ do
     elAttr "div" (testId "staging-status") $ do
       text "Preparing Action"
       dyn_ $ ffor validation $ \case
@@ -118,11 +124,11 @@ stagingStatusHeader validation = do
         _ -> blank
 
 stagedCardsRow
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadStyle m)
   => Dynamic t ActionStack
   -> m (Event t (), Event t CardInstanceId)
 stagedCardsRow actionStackDyn = do
-  divStyle [flex, justifyCenter] $ do
+  divT (S.flex . S.justifyCenter) $ do
     -- Extract resources and action from the ActionStack dynamic
     let stagedResourcesDyn = fmap (.resources) actionStackDyn
         stagedActionDyn = fmap (.actionCard) actionStackDyn
@@ -130,17 +136,19 @@ stagedCardsRow actionStackDyn = do
     (clickResource, clickAction) <-
       cardStackWidget
         ( \rDyn -> do
+            stagedResourceCls <- classes (stagedResourceCard mempty)
             (eRes, _) <- elDynAttr'
               "div"
-              (constDyn ("class" =: classes stagedResourceCard <> testId "staged-resource"))
+              (constDyn ("class" =: stagedResourceCls <> testId "staged-resource"))
               $ do
                 dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
             return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
         )
         ( \aDyn -> do
+            stagedActionCls <- classes (stagedActionCard mempty)
             (eAct, _) <- elDynAttr'
               "div"
-              (constDyn ("class" =: classes stagedActionCard <> testId "staged-action"))
+              (constDyn ("class" =: stagedActionCls <> testId "staged-action"))
               $ do
                 dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) aDyn
             return (domEvent Click eAct)
@@ -150,12 +158,12 @@ stagedCardsRow actionStackDyn = do
     return (clickAction, clickResource)
 
 stagingControls
-  :: (DomBuilder t m, PostBuild t m)
+  :: (DomBuilder t m, PostBuild t m, MonadStyle m)
   => Dynamic t PlanValidation
   -> m (Event t (), Event t ())
 stagingControls validation = do
-  divStyle [flex, "gap-2", "w-full"] $ do
-    let cfg = def{classes = [flex1], size = constDyn SizeSmall}
+  divT (S.flex . S.gap2 . S.wFull) $ do
+    let cfg = def{extraStyle = S.flex1, size = constDyn SizeSmall}
     -- Cancel Button (Secondary)
     cancelEvt <-
       button cfg{variant = constDyn VariantSecondary, testId = Just "staging-cancel"} $ text "Cancel"
@@ -172,7 +180,7 @@ stagingControls validation = do
     return (cancelEvt, commitEvt)
 
 stagingStats
-  :: (DomBuilder t m, PostBuild t m)
+  :: (DomBuilder t m, PostBuild t m, MonadStyle m)
   => Dynamic t ActionStack
   -> m ()
 stagingStats stackDyn = do
@@ -183,6 +191,6 @@ stagingStats stackDyn = do
             resStats = mconcat $ map (toSum . (.content.stats)) planStack.resources
          in fromSum (actionStats <> resStats)
 
-  divStyle [flex, "gap-2", itemsCenter, "text-white"] $ do
+  divT (S.flex . S.gap2 . S.itemsCenter . S.textWhite) $ do
     dyn_ $ ffor totalStats $ \s ->
       renderStatsWith (StatsSettings StatsRow IconBlock) s

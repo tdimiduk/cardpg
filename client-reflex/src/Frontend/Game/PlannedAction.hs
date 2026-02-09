@@ -19,44 +19,45 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
 import Frontend.Game.Common (cardStackWidget)
 import Frontend.Style (cardHandWidth)
-import Frontend.Style.Common
+import Frontend.Style.Class (MonadStyle)
+import Frontend.Style.Common (Style, classes, divT, elT, elT', testId)
+import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 import Frontend.UI.Button
 
 -- | "PLANNED" badge styling
-plannedBadge :: [CssClass]
+plannedBadge :: Style
 plannedBadge =
-  [ absolute
-  , "-top-3"
-  , "left-1/2"
-  , "-translate-x-1/2"
-  , "bg-indigo-600"
-  , "text-white"
-  , "text-[10px]"
-  , "uppercase"
-  , fontBold
-  , "px-2"
-  , "py-0.5"
-  , rounded
-  , shadowXl
-  , "z-50"
-  ]
+  S.absolute
+    . S.atom "-top-3" "top" "-0.75rem"
+    . S.atom "left-1/2" "left" "50%"
+    . S.atom "-translate-x-1/2" "transform" "translateX(-50%)"
+    . S.bgIndigo600
+    . S.textWhite
+    . S.atom "text-[10px]" "font-size" "10px"
+    . S.uppercase
+    . S.fontBold
+    . S.px2
+    . S.atom "py-0.5" "padding-block" "0.125rem"
+    . S.rounded
+    . S.shadowXl
+    . S.atom "z-50" "z-index" "50"
 
 -- | Action card hover effect
-actionCardHover :: [CssClass]
+actionCardHover :: Style
 actionCardHover =
-  ["z-20", "shadow-2xl", "hover:scale-105", "transition-transform"]
+  S.z20 . S.shadow2Xl . S.scale105 . S.transitionTransform
 
 -- | Card hover for narrative stacks
-narrativeCardHover :: [CssClass]
-narrativeCardHover =
-  [relative, "z-10", "hover:z-20", "transform", "hover:-translate-y-2", "transition-transform"]
+narrativeCardHover :: Style
+narrativeCardHover = S.relative . S.z10 . S.transitionTransform
 
 plannedActionWidget
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
+     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -74,27 +75,27 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
         cardStackWidget
           ( \rDyn -> do
               (eRes, _) <-
-                elStyle' "div" (cardHandWidth <> ["shrink-0", "transition-all", "hover:z-10"]) Map.empty $
+                elT' "div" (cardHandWidth . S.shrink0 . S.transitionAll) Map.empty $
                   dyn_ $
                     fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
               return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
           )
           ( \aDyn -> do
-              (eAct, _) <- elStyle'
+              (eAct, _) <- elT'
                 "div"
-                ((relative : cardHandWidth) ++ ["shrink-0"] ++ actionCardHover)
+                ((S.relative . cardHandWidth . S.shrink0) . actionCardHover)
                 (testId "planned-action-card")
                 $ do
                   dyn_ $ fmap (renderCoreCard . (.content)) aDyn
-                  divStyle plannedBadge $ text "PLANNED"
+                  divT plannedBadge $ text "PLANNED"
               return (domEvent Click eAct)
           )
           (constDyn res)
           (constDyn action)
     PNarrative (NarrativeStack cards _color) -> do
-      rowGap "-space-x-8" $
-        mapM_ (divStyle narrativeCardHover . renderCoreCard . (.content)) cards
+      rowGap (S.atom "-space-x-8" "margin-left" "-2rem") $
+        mapM_ (divT narrativeCardHover . renderCoreCard . (.content)) cards
     PPass -> do
-      divStyle ["text-slate-500", "italic", textSm] $ text "Passed turn"
+      divT (S.textSlate400 . S.atom "italic" "font-style" "italic" . S.textSm) $ text "Passed turn"
   where
-    colStyle = ["gap-5", itemsCenter, pointerEventsAuto]
+    colStyle = S.gap4 . S.itemsCenter . S.pointerEventsAuto

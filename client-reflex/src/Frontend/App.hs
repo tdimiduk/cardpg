@@ -13,6 +13,7 @@ import Data.Map qualified as Map
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
+import Frontend.Style.DSL qualified as S
 import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
@@ -26,37 +27,25 @@ import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 
-import Frontend.Style.Common
+import Frontend.Style.Class (MonadStyle)
+import Frontend.Style.Common (Style, componentT)
+import Frontend.Style.DSL qualified as S
 
 import Frontend.Util
 
 -- | Root layout for the app (full-screen row)
-appRoot :: [CssClass]
-appRoot =
-  [ flex
-  , flexRow
-  , "h-screen"
-  , "bg-slate-950"
-  , "text-slate-100"
-  , "overflow-hidden"
-  ]
+appRoot :: Style
+appRoot = S.flexRow . S.hScreen . S.bgSlate950 . S.textSlate100 . S.overflowHidden
 
 -- | Main content area (right of sidebar)
-mainContent :: [CssClass]
-mainContent =
-  [ "flex-1"
-  , relative
-  , "bg-slate-900"
-  , "overflow-hidden"
-  , flex
-  , flexCol
-  ]
+mainContent :: Style
+mainContent = S.flexCol . S.flex1 . S.relative . S.bgSlate900 . S.overflowHidden
 
 -- | Placeholder for game board
-gameBoardPlaceholder :: [CssClass]
-gameBoardPlaceholder = ["flex-1", flex, itemsCenter, justifyCenter, "text-slate-700"]
+gameBoardPlaceholder :: Style
+gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . S.textSlate700
 
-appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
+appWidget :: (MonadWidget t m, MonadStyle m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
@@ -118,6 +107,7 @@ uiWidget
      , MonadFix m
      , Adjustable t m
      , MonadIO m
+     , MonadStyle m
      , ApiRequester t m
      , Prerender t m
      )
@@ -131,7 +121,7 @@ uiWidget
   -> Dynamic t Int
   -- ^ Total Count
   -> m ()
-uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = component "app-container" appRoot $ do
+uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = componentT "app-container" appRoot $ do
   rec -- Construct config for Phase Display
       let phaseConfig =
             PhaseDisplayConfig
@@ -145,9 +135,9 @@ uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = compon
       activeActorChange <- sidebarWidget activeActor actorsMapDyn
 
   -- Main Content Area (Right)
-  component "main-content" mainContent $ do
+  componentT "main-content" mainContent $ do
     -- Top Bar / Game Board Area (Placeholder)
-    component "game-board" gameBoardPlaceholder $ text "Game Board Area"
+    componentT "game-board" gameBoardPlaceholder $ text "Game Board Area"
 
     let activeActorMap = ffor activeActor $ \case
           Nothing -> Map.empty

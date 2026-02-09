@@ -15,7 +15,9 @@ import Core.Card (CoreCard)
 import Core.Util (tshow)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Icons (iconClose)
+import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
+import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (cardGrid)
 import Frontend.UI.Button
 
@@ -29,6 +31,7 @@ deckViewerModal
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
+     , MonadStyle m
      )
   => Event t (Maybe DeckViewData)
   -> m ()
@@ -53,30 +56,49 @@ renderModal
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
+     , MonadStyle m
      )
   => DeckViewData
   -> m (Event t ())
 renderModal deckView = do
   -- Overlay background
   -- Non-modal Overlay (Positioned to reveal hand and sidebar)
-  elClass "div" "fixed top-6 bottom-96 left-80 right-6 z-30" $ do
+  let fixedPos = S.fixed . S.z30 . top6 . bottom96 . left80 . right6
+      top6 = S.atom "top-6" "top" "1.5rem"
+      bottom96 = S.atom "bottom-96" "bottom" "24rem"
+      left80 = S.atom "left-80" "left" "20rem"
+      right6 = S.atom "right-6" "right" "1.5rem"
+
+  divT fixedPos $ do
     -- Container
-    elClass
-      "div"
-      "bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full h-full flex flex-col overflow-hidden"
+    divT
+      ( S.bgSlate900
+          . S.border
+          . S.borderSlate700
+          . S.roundedXl
+          . S.shadow2Xl
+          . S.wFull
+          . S.hFull
+          . S.flexCol
+          . S.overflowHidden
+      )
       $ do
         -- Header
-        closeClick <- divClass "p-4 border-b border-slate-700 flex justify-between items-center bg-slate-950" $ do
-          elClass "h2" "text-xl font-bold text-slate-100 flex items-center gap-2" $ do
-            -- Using text for the icon for now as per plan, or maybe I should use an icon.
-            -- Plan said "Title bar with 'Deck Viewer (N cards)'".
-            text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"
+        closeClick <- divT
+          (S.p4 . S.borderB . S.borderSlate700 . S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate950)
+          $ do
+            elT "h2" (S.textXl . S.fontBold . S.textSlate100 . S.flex . S.itemsCenter . S.gap2) $ do
+              -- Using text for the icon for now as per plan, or maybe I should use an icon.
+              -- Plan said "Title bar with 'Deck Viewer (N cards)'".
+              text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"
 
-          button def{variant = constDyn VariantGhost, size = constDyn SizeSmall} $
-            elClass "div" "w-8 h-8" iconClose
+            button def{variant = constDyn VariantGhost, size = constDyn SizeSmall} $
+              divT (S.w8 . S.h8) iconClose
 
         let settings = CardSettings CardFull
-        divStyle (cardGrid <> [flex1, "overflow-y-auto", "min-h-0", "w-full"]) $
+        divT (cardGrid . S.flex1 . S.overflowYAuto . minH0 . S.wFull) $
           mapM_ (renderCoreCardWith settings) deckView.cards
 
         return closeClick
+  where
+    minH0 = S.atom "min-h-0" "min-height" "0"

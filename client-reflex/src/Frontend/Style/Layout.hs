@@ -22,7 +22,12 @@ module Frontend.Style.Layout
 
 import Reflex.Dom.Core
 
+import Frontend.Style.Class (StyledDomBuilder)
 import Frontend.Style.Common
+  ( Style
+  , divT
+  )
+import Frontend.Style.DSL qualified as S
 
 --------------------------------------------------------------------------------
 
@@ -31,44 +36,45 @@ import Frontend.Style.Common
 --------------------------------------------------------------------------------
 
 -- | A horizontal flex container.
-row :: (DomBuilder t m) => m a -> m a
-row = divStyle [flex, flexRow]
+-- | A horizontal flex container.
+row :: (StyledDomBuilder t m) => m a -> m a
+row = divT S.flexRow
 
 -- | A horizontal flex container with a gap.
-rowGap :: (DomBuilder t m) => CssClass -> m a -> m a
-rowGap gap = divStyle [flex, flexRow, gap]
+rowGap :: (StyledDomBuilder t m) => Style -> m a -> m a
+rowGap gap = divT (S.flexRow . gap)
 
--- | A horizontal flex container with arbitrary classes.
-rowWith :: (DomBuilder t m) => [CssClass] -> m a -> m a
-rowWith cls = divStyle ([flex, flexRow] <> cls)
+-- | A horizontal flex container with arbitrary styles.
+rowWith :: (StyledDomBuilder t m) => Style -> m a -> m a
+rowWith s = divT (S.flexRow . s)
 
 -- | A vertical flex container.
-col :: (DomBuilder t m) => m a -> m a
-col = divStyle [flex, flexCol]
+col :: (StyledDomBuilder t m) => m a -> m a
+col = divT S.flexCol
 
 -- | A vertical flex container with a gap.
-colGap :: (DomBuilder t m) => CssClass -> m a -> m a
-colGap gap = divStyle [flex, flexCol, gap]
+colGap :: (StyledDomBuilder t m) => Style -> m a -> m a
+colGap gap = divT (S.flexCol . gap)
 
--- | A vertical flex container with arbitrary classes.
-colWith :: (DomBuilder t m) => [CssClass] -> m a -> m a
-colWith cls = divStyle ([flex, flexCol] <> cls)
+-- | A vertical flex container with arbitrary styles.
+colWith :: (StyledDomBuilder t m) => Style -> m a -> m a
+colWith s = divT (S.flexCol . s)
 
 -- | A growing spacer element.
-spacer :: (DomBuilder t m) => m ()
-spacer = divStyle [grow] blank
+spacer :: (StyledDomBuilder t m) => m ()
+spacer = divT S.grow blank
 
 -- | Full-size overlay container.
-overlay :: (DomBuilder t m) => m a -> m a
-overlay = divStyle [absolute, "inset-0"]
+overlay :: (StyledDomBuilder t m) => m a -> m a
+overlay = divT (S.absolute . S.inset0)
 
 -- | Bottom-anchored overlay.
-overlayBottom :: (DomBuilder t m) => m a -> m a
-overlayBottom = divStyle [absolute, "bottom-0", "left-0", "right-0"]
+overlayBottom :: (StyledDomBuilder t m) => m a -> m a
+overlayBottom = divT (S.absolute . S.bottom0 . S.left0 . S.right0)
 
--- | Bottom-anchored overlay with additional classes.
-overlayBottomWith :: (DomBuilder t m) => [CssClass] -> m a -> m a
-overlayBottomWith cls = divStyle ([absolute, "bottom-0", "left-0", "right-0"] <> cls)
+-- | Bottom-anchored overlay with additional styles.
+overlayBottomWith :: (StyledDomBuilder t m) => Style -> m a -> m a
+overlayBottomWith s = divT (S.absolute . S.bottom0 . S.left0 . S.right0 . s)
 
 --------------------------------------------------------------------------------
 
@@ -77,13 +83,13 @@ overlayBottomWith cls = divStyle ([absolute, "bottom-0", "left-0", "right-0"] <>
 --------------------------------------------------------------------------------
 
 -- | Grid for printable cards (3x3 on standard paper).
-cardPrintGrid :: [CssClass]
-cardPrintGrid = [flex, "flex-wrap", "gap-0"]
+cardPrintGrid :: Style
+cardPrintGrid = S.flex . S.flexWrap . S.gap0
 
 -- | Responsive grid for card display.
-cardGrid :: [CssClass]
-cardGrid = [flex, "flex-wrap", "gap-[4mm]"]
+cardGrid :: Style
+cardGrid = S.flex . S.flexWrap . S.gap4mm
 
 -- | Grid for deck viewing.
-deckGrid :: [CssClass]
-deckGrid = [flex, "flex-wrap", "gap-4", "content-start"]
+deckGrid :: Style
+deckGrid = S.flex . S.flexWrap . S.gap4 . S.contentStart

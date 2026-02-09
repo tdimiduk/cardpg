@@ -37,17 +37,20 @@ library
     , containers
     , core
     , data-default
+    , dependent-map
     , dependent-sum
     , foreign-store
     , generic-lens
     , http-types
     , lens
     , random
+    , ref-tf
     , reflex
     , reflex-dom
     , reflex-dom-core
     , reflex-gadt-api
     , text
+    , transformers
     , uuid-types
     , vector
     , yaml
@@ -85,9 +88,11 @@ library
     Frontend.Render.Common
     Frontend.Render.Rules
     Frontend.Style
-    Frontend.Style.Atomic
+    Frontend.Style.Class
     Frontend.Style.Common
+    Frontend.Style.DSL
     Frontend.Style.Layout
+    Frontend.Style.T
     Frontend.Svg
     Frontend.Svg.Path
     Frontend.UI.Button
@@ -131,6 +136,7 @@ executable cardpg-static
     , optparse-applicative
     , process
     , random
+    , reflex
     , reflex-dom-core
     , server
     , text
@@ -164,5 +170,12 @@ executable gen-css
   build-depends:
     , atomic-css
     , base
+    , bytestring
     , client-reflex
+    , directory
+    , filepath
+    , megaparsec
+    , mtl
+    , reflex
+    , reflex-dom-core
     , text

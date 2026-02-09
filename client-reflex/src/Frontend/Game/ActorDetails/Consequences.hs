@@ -16,7 +16,9 @@ import Core.Primitives (ActorId)
 import Core.State (ActorState (..), TableState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorLogic (actorNextSeverity)
+import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
+import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 import Frontend.UI.Button
 
@@ -26,6 +28,7 @@ consequencesWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
+     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -33,12 +36,12 @@ consequencesWidget
   -> Dynamic t ActorState
   -> m ()
 consequencesWidget actorId actorState = do
-  colWith ["gap-2", "p-2", "bg-slate-800", rounded, "text-slate-100", "mt-2"] $ do
-    rowWith [justifyBetween, itemsCenter] $ do
-      elStyle "h2" [textSm, fontBold, uppercase, "text-slate-400"] $ text "Consequences"
+  colWith (S.gap2 . S.p2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt2) $ do
+    rowWith (S.justifyBetween . S.itemsCenter) $ do
+      elT "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text "Consequences"
 
       -- Next Severity
-      divStyle [textXs, "text-slate-500"] $ do
+      divT (S.textXs . S.textSlate500) $ do
         text "Next Severity: "
         dynText $ fmap tshow (actorNextSeverity actorState)
 
@@ -46,17 +49,17 @@ consequencesWidget actorId actorState = do
     let consequencesDyn = fmap (\as -> as.tableState.consequences) actorState
 
     removeEvents <- simpleList consequencesDyn $ \consequenceDyn -> do
-      rowWith [justifyBetween, itemsCenter, "bg-slate-700", "p-1", rounded, "mb-1"] $ do
+      rowWith (S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p1 . S.rounded . S.mb1) $ do
         let nameDyn = fmap (\(Identified _ c) -> getRawText c.name) consequenceDyn
 
-        divStyle [textXs, "px-1"] $ dynText nameDyn
+        divT (S.textXs . S.px1) $ dynText nameDyn
 
         btnClick <-
           button
             def
               { variant = constDyn VariantGhost
               , size = constDyn SizeSmall
-              , classes = ["px-1", "text-red-400", "hover:text-red-300"]
+              , extraStyle = S.px1 . S.textRed400 . S.hover S.textRed300
               }
             $ text "×"
 
@@ -70,7 +73,7 @@ consequencesWidget actorId actorState = do
           { variant = constDyn VariantDestructive
           , fullWidth = True
           , size = constDyn SizeSmall
-          , classes = ["mt-2"]
+          , extraStyle = S.mt2
           }
         $ text "+ Add Consequence"
 

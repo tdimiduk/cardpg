@@ -10,6 +10,7 @@ import Control.Monad.IO.Class (MonadIO)
 import Data.List (find)
 import Data.Maybe (isJust)
 import Data.Set qualified as Set
+import Data.Text qualified as T
 import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))
@@ -28,29 +29,30 @@ import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
 
-import Frontend.Style
-import Frontend.Style.Common
+import Frontend.Style qualified as FS
+import Frontend.Style.Class (MonadStyle)
+import Frontend.Style.Common (Style, classes, divT, toClassName)
+import Frontend.Style.DSL as S
+import Web.Atomic.Types (CSS (..))
 
--- | Styles for hand card hover interactions
-cardHover :: [CssClass]
-cardHover =
-  [ "transition-transform"
-  , "duration-200"
-  , "ease-out"
-  , "origin-bottom"
-  , "hover:-translate-y-8"
-  , "hover:z-40"
-  , cursorPointer
-  ]
+-- | Styles for hand card hover interactions (transformer style)
+cardHoverStyle :: Style
+cardHoverStyle =
+  S.transitionTransform
+    . S.duration200
+    . S.easeOut
+    . S.originBottom
+    . S.hover S.translateYNeg8
+    . S.hover S.z40
+    . S.cursorPointer
 
 -- | Styles for cards in staging mode (resource candidates)
-resourceCandidate :: [CssClass]
-resourceCandidate =
-  [ "hover:-translate-y-4"
-  , "hover:ring-2"
-  , "hover:ring-amber-400"
-  , cursorPointer
-  ]
+resourceCandidateStyle :: Style
+resourceCandidateStyle =
+  S.hover S.translateYNeg4
+    . S.hover S.ring2
+    . S.hover S.ringAmber400
+    . S.cursorPointer
 
 -- | Safely build the ActionStack for staging mode
 -- Returns Nothing if the staged action card is not in hand
@@ -67,6 +69,7 @@ handWidget
      , MonadHold t m
      , MonadFix m
      , MonadIO m
+     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -84,25 +87,25 @@ handWidget actorDyn = do
 
       -- Render UI
       (selectEvt, toggleEvt, clearEvt) <-
-        divStyle
-          [ absolute
-          , bottom0
-          , left0
-          , right0
-          , pointerEventsNone
-          , z40
-          , flex
-          , justifyBetween
-          , itemsEnd
-          , "w-full"
-          , "px-8"
-          , "pb-4"
-          ]
+        divT
+          ( S.absolute
+              . S.bottom0
+              . S.left0
+              . S.right0
+              . S.pointerEventsNone
+              . S.z40
+              . S.flex
+              . S.justifyBetween
+              . S.itemsEnd
+              . S.wFull
+              . S.px8
+              . pb4
+          )
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
             (sel, tog) <- do
               -- Left: Planned Action
-              divStyle [flex1, flex, "justify-start"] $ do
+              divT (S.flex1 . S.flex . S.justifyStart) $ do
                 dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
                   (aid, Just plan) -> plannedActionWidget (Identified aid plan)
                   _ -> blank
@@ -112,7 +115,7 @@ handWidget actorDyn = do
                 handCardsWidget safeActor stagingStackDyn plannedActionDyn
 
               -- Right: Spacer
-              divStyle [flex1] blank
+              divT S.flex1 blank
 
               return (s, t)
 
@@ -136,8 +139,18 @@ handWidget actorDyn = do
 
   return ()
 
+-- Additional atoms needed that weren't in DSL2
+px8 :: Style
+px8 = S.atom "px-8" "padding-left" "0.5rem" . S.atom "px-8-r" "padding-right" "0.5rem"
+
+pb4 :: Style
+pb4 = S.atom "pb-4" "padding-bottom" "1rem"
+
+justifyStart :: Style
+justifyStart = S.atom "justify-start" "justify-content" "flex-start"
+
 handCardsWidget
-  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
+  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, MonadStyle m)
   => Dynamic t ActorState
   -> Dynamic t (Maybe ActionStack)
   -- ^ Staging Stack (defines staging mode)
@@ -145,7 +158,24 @@ handCardsWidget
   -- ^ Planned Action (defines hidden cards)
   -> m (Event t CardInstanceId, Event t CardInstanceId)
 handCardsWidget actor stagingStack plannedAction = do
-  divStyle [flex, justifyCenter, itemsEnd, "px-8", pointerEventsAuto] $ do
+  -- Pre-register all possible classes for static CSS generation
+  let allPossibleStyles =
+        ( S.relative
+            . cardHandWidth
+            . cardPlayable
+            . cardNotPlayable
+            . resourceCandidateStyle
+            . cardHoverStyle
+            . S.pointerEventsAuto
+            . S.group
+            . S.ring2
+            . S.ringIndigo400
+            . S.ringOffset2
+        )
+          mempty
+  _ <- classes allPossibleStyles
+
+  divT (S.flex . S.justifyCenter . S.itemsEnd . S.px4 . S.pointerEventsAuto) $ do
     let visibleHand =
           (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
             <$> actor
@@ -154,7 +184,7 @@ handCardsWidget actor stagingStack plannedAction = do
 
     let handSizeDyn = length . (.coreState.hand) <$> actor
 
-    cardClicks <- divStyle [flex, itemsEnd, "transition-opacity", "duration-300"] $ do
+    cardClicks <- divT (S.flex . S.itemsEnd . transitionOpacity . S.duration200) $ do
       simpleList visibleHand $ \cardDyn -> do
         let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
             isSelected = zipDynWith checkIsSelected stagingStack cardDyn
@@ -164,15 +194,16 @@ handCardsWidget actor stagingStack plannedAction = do
               ffor ((,,,) <$> isCandidate <*> isSelected <*> isPlayableDyn <*> stagingStack) $ \(cand, sel, playable, stk) ->
                 let
                   inStaging = isJust stk
-                  baseStyle = if cand then resourceCandidate else cardHover
+                  baseStyle = if cand then resourceCandidateStyle else cardHoverStyle
 
                   -- Interaction highlights
                   extraStyle
-                    | inStaging = if sel then ["ring-2", "ring-indigo-400", "ring-offset-2"] else []
+                    | inStaging = if sel then S.ring2 . S.ringIndigo400 . S.ringOffset2 else id
                     | playable = cardPlayable
                     | otherwise = cardNotPlayable
                  in
-                  classes (relative : (cardHandWidth ++ extraStyle ++ baseStyle ++ [pointerEventsAuto, group]))
+                  -- Build final class string from composed styles
+                  classText $ S.relative . cardHandWidth . extraStyle . baseStyle . S.pointerEventsAuto . S.group
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderCoreCardWith (CardSettings CardFull) . (.content)
@@ -201,6 +232,26 @@ handCardsWidget actor stagingStack plannedAction = do
             flatClickId
 
     return (selectEvent, toggleEvent)
+
+-- | Convert a Style transformer to a class text string
+classText :: Style -> T.Text
+classText style =
+  let (CSS rules) = style mempty
+   in T.unwords $ map toClassName rules
+
+-- Additional atoms needed
+transitionOpacity :: Style
+transitionOpacity = S.atom "transition-opacity" "transition-property" "opacity"
+
+-- Re-export styles from Frontend.Style as transformers
+cardHandWidth :: Style
+cardHandWidth = FS.cardHandWidth
+
+cardPlayable :: Style
+cardPlayable = FS.cardPlayable
+
+cardNotPlayable :: Style
+cardNotPlayable = FS.cardNotPlayable
 
 isCardVisible :: Maybe ActionStack -> Maybe PlannedAction -> CardInstance CoreCard -> Bool
 isCardVisible stagingStack plannedAction c =
