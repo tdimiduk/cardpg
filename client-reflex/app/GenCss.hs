@@ -1,5 +1,8 @@
 {-# LANGUAGE FieldSelectors #-}
+{-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE RecursiveDo #-}
 
 -- | CSS Generator
 -- This executable generates the static CSS file from the atomic classes
@@ -26,17 +29,42 @@ import Text.Megaparsec.Char.Lexer qualified as L
 import Web.Atomic (utility)
 import Web.Atomic.Types (ClassName (..), Rule (..))
 import Web.Atomic.Types.Selector (Media (..))
-import Web.Atomic.Types.Style (Declaration (..), Property (..), Style (..))
+import Web.Atomic.Types.Style (Declaration (..), Property (..))
+import Web.Atomic.Types.Style qualified as AWStyle
 import Web.Atomic.Types.Styleable (CSS (..))
 
+import Reflex (PostBuildT, runPostBuildT)
 import Reflex.Dom.Builder.Static (StaticDomBuilderEnv (..))
-import Reflex.Dom.Core (StaticDomBuilderT, runStaticDomBuilderT)
+import Reflex.Dom.Core (StaticDomBuilderT, blank, elAttr, runStaticDomBuilderT, (=:))
 import Reflex.PerformEvent.Base (PerformEventT, hostPerformEventT)
 import Reflex.Spider (Spider)
 import Reflex.Spider.Internal (Global, SpiderHost, runSpiderHost)
 
+import Frontend.App (uiWidget)
 import Frontend.Catalog (catalogWidget)
+import Frontend.MockData qualified as Mock
 import Frontend.Style.T (StyleWriterT, runStyleWriterT)
+
+import Api.Types (Phase (..))
+import Control.Monad.Fix (MonadFix)
+import Control.Monad.IO.Class (MonadIO)
+import Core.Primitives (ActorId)
+import Data.Map.Strict qualified as Map
+import Frontend.Style (stagedActionCard, stagedResourceCard)
+import Frontend.Style.Class (StyledDomBuilder)
+import Frontend.Style.Common (Style, classes)
+import Reflex.Dom.Core
+  ( Adjustable
+  , MonadHold
+  , PostBuild
+  , Prerender
+  , Requester
+  , constDyn
+  , holdDyn
+  , never
+  , runRequesterT
+  )
+import Reflex.Requester.Base (RequesterT)
 
 type Parser = Parsec Void Text
 
@@ -62,18 +90,64 @@ main = do
 
   let widget =
         catalogWidget
-          :: StaticDomBuilderT Spider (StyleWriterT (PerformEventT Spider (SpiderHost Global))) ()
+          :: StaticDomBuilderT
+               Spider
+               (StyleWriterT (PostBuildT Spider (PerformEventT Spider (SpiderHost Global))))
+               ()
   let runner = runStaticDomBuilderT widget env
   let pRunner = runStyleWriterT runner
 
   ((_, _), collectedRules) <- runSpiderHost $ do
-    (res, _events) <- hostPerformEventT pRunner
+    (res, _events) <- hostPerformEventT $ runPostBuildT pRunner never
     return res
 
   putStrLn $ "Collected " <> show (length collectedRules) <> " rules from Catalog."
 
-  -- 3. Combine
-  let allRules = foundRules ++ collectedRules
+  -- 3. Also run mock game widget (with staging state) to capture parameterized styles
+  gameReplaceKeyRef <- newIORef 0
+  let gameEnv = StaticDomBuilderEnv True Nothing gameReplaceKeyRef
+
+  let gameWidget =
+        mockGameWidget Planning (Just Mock.mockActorId)
+          :: StaticDomBuilderT
+               Spider
+               (StyleWriterT (PostBuildT Spider (PerformEventT Spider (SpiderHost Global))))
+               ()
+  let gameRunner = runStaticDomBuilderT gameWidget gameEnv
+  let gamePRunner = runStyleWriterT gameRunner
+
+  ((_, _), gameRules) <- runSpiderHost $ do
+    (res, _events) <- hostPerformEventT $ runPostBuildT gamePRunner never
+    return res
+
+  putStrLn $ "Collected " <> show (length gameRules) <> " rules from single MockGameWidget run."
+
+  -- 3. Also run mock game widget (with staging state) to capture parameterized styles
+  gameReplaceKeyRef <- newIORef 0
+  let gameEnv = StaticDomBuilderEnv True Nothing gameReplaceKeyRef
+
+  -- We need to encompass both phases to get all styles
+  let phases = [Planning, Resolution]
+
+  gameRules <- fmap concat $ forM phases $ \p -> do
+    let gameWidget =
+          mockGameWidget p (Just Mock.mockActorId)
+            :: StaticDomBuilderT
+                 Spider
+                 (StyleWriterT (PostBuildT Spider (PerformEventT Spider (SpiderHost Global))))
+                 ()
+    let gameRunner = runStaticDomBuilderT gameWidget gameEnv
+    let gamePRunner = runStyleWriterT gameRunner
+
+    ((_, _), rules) <- runSpiderHost $ do
+      (res, _events) <- hostPerformEventT $ runPostBuildT gamePRunner never
+      return res
+    return rules
+
+  putStrLn $ "Collected " <> show (length gameRules) <> " rules from MockGameWidget."
+
+  -- 4. Combine
+  let allRules = foundRules ++ collectedRules ++ gameRules
       uniqueRules = List.nub allRules
       cssOutput = renderCssList uniqueRules
 
@@ -108,7 +182,7 @@ parseAtom = do
   val <- stringLiteral
 
   -- Create the rule
-  let (CSS rs) = utility (ClassName name) [Property prop :. Style (T.unpack val)] mempty :: CSS [Rule]
+  let (CSS rs) = utility (ClassName name) [Property prop :. AWStyle.Style (T.unpack val)] mempty :: CSS [Rule]
   return rs
 
 -- | Parse a string literal (quoted)
@@ -149,7 +223,7 @@ renderProps :: [Declaration] -> T.Text
 renderProps ds = T.intercalate " " $ map renderDecl ds
 
 renderDecl :: Declaration -> T.Text
-renderDecl (Property p :. Style s) = p <> ": " <> T.pack s <> ";"
+renderDecl (Property p :. AWStyle.Style s) = p <> ": " <> T.pack s <> ";"
 
 -- | Render media queries
 renderMedia :: [Media] -> T.Text
@@ -166,3 +240,31 @@ escapeCssClass = T.concatMap escapeChar
     escapeChar c
       | c `elem` ("!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~" :: String) = "\\" <> T.singleton c
       | otherwise = T.singleton c
+
+-- | Mock game widget that exercises staging and log UI for CSS collection
+-- Uses the full uiWidget with mock data to capture all styles
+mockGameWidget
+  :: ( StyledDomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     )
+  => Phase
+  -> Maybe ActorId
+  -> m ()
+mockGameWidget phase agentId = do
+  -- Use mock actors with staged actions
+  let actorsDyn = constDyn Mock.mockActorsMap
+      logsDyn = constDyn Mock.mockLogs
+      phaseDyn = constDyn phase
+
+  -- We don't care about the return values/events for CSS generation
+  -- Run with mock inputs
+  rec (_, _) <-
+        runRequesterT
+          (uiWidget agentId actorsDyn logsDyn phaseDyn (constDyn 1) (constDyn 1))
+          never
+  return ()

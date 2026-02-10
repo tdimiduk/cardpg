@@ -32,7 +32,7 @@ import System.FilePath (takeBaseName, (</>))
 import System.Process (callProcess)
 
 import Api.Reflex ()
-import Api.Types (Phase (..))
+import Api.Types (LogEntry, Phase (..))
 import Core.Card (ActorDefinition (..))
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..))
@@ -45,6 +45,7 @@ import Frontend.Card
   , renderNatureCardWith
   )
 import Frontend.Catalog (catalogWidget)
+import Frontend.MockData qualified as Mock
 
 import Frontend.Style.Class (StyledDomBuilder)
 import Frontend.Style.Common
@@ -214,12 +215,15 @@ generateGame opts path skipSnapshot = do
   (gameState, _) <- loadScenario path Nothing
 
   -- Helper to generate snapshot for a specific state
-  let gen nameSuffix mActorId = do
+  let gen nameSuffix mActorId phase = do
         let baseName = "game_" <> nameSuffix
             outHtml = opts.outputDir </> baseName <> ".html"
             outPng = opts.outputDir </> baseName <> ".png"
 
-        writeStaticPage outHtml ("CardPG Game - " <> T.pack nameSuffix) (mockGameWidget mActorId gameState)
+        writeStaticPage
+          outHtml
+          ("CardPG Game - " <> T.pack nameSuffix)
+          (mockGameWidget mActorId gameState phase)
 
         unless skipSnapshot $ do
           unless opts.quiet $ putStrLn $ "Taking screenshot for " <> nameSuffix <> "..."
@@ -228,8 +232,13 @@ generateGame opts path skipSnapshot = do
           takeScreenshot absHtml outPng 1920 1080
           unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
 
-  -- 1. No Actor Selected
-  gen "none" Nothing
+  -- 3. Explicitly generate Mock Game state as well (to match GenCss coverage)
+  gen "MockHero_planning" (Just Mock.mockActorId) Planning
+  gen "MockHero_resolution" (Just Mock.mockActorId) Resolution
+
+  -- 1. No Actor Selected (both phases)
+  gen "none_planning" Nothing Planning
+  gen "none_resolution" Nothing Resolution
 
   -- 2. Each Actor Selected
   let actors = Map.toList gameState.actors
@@ -237,7 +246,8 @@ generateGame opts path skipSnapshot = do
     let rawName = T.unpack actorState.name
         safeName = filter isAlphaNum rawName
     unless (null safeName) $ do
-      gen safeName (Just aid)
+      gen (safeName <> "_planning") (Just aid) Planning
+      gen (safeName <> "_resolution") (Just aid) Resolution
 
 -- | Widgets (Copied/Adapted)
 mockGameWidget
@@ -251,13 +261,20 @@ mockGameWidget
      )
   => Maybe ActorId
   -> GameState
+  -> Phase
   -> m ()
-mockGameWidget initialActorId gameState = do
-  let actorsMap = gameState.actors
+mockGameWidget initialActorId gameState phaseSetting = do
+  -- Use mock actors with staged actions if available, otherwise fall back to gameState
+  let baseActors = gameState.actors
+      -- Merge mock actor data to exercise staging styles
+      actorsWithStaging = Map.union Mock.mockActorsMap baseActors
+      -- Use whichever map has data
+      actorsMap = if Map.null baseActors then actorsWithStaging else baseActors
   actorsDyn <- holdDyn actorsMap never
+  let logsDyn = constDyn Mock.mockLogs
   rec (_, _) <-
         runRequesterT
-          (uiWidget initialActorId actorsDyn (constDyn []) (constDyn Planning) (constDyn 0) (constDyn 0))
+          (uiWidget initialActorId actorsDyn logsDyn (constDyn phaseSetting) (constDyn 1) (constDyn 1))
           never
   return ()
 

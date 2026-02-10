@@ -241,6 +241,8 @@ module Frontend.Style.DSL
 import Data.Text (Text)
 import Data.Text qualified as T
 import Web.Atomic qualified hiding (active, hover, media, truncate)
+import Web.Atomic.CSS.Layout (flexCol, flexRow, grow)
+import Web.Atomic.CSS.Layout qualified as Layout
 import Web.Atomic.CSS.Select (active, hover, media, pseudo)
 import Web.Atomic.Types (ClassName (..), Rule, Styleable)
 import Web.Atomic.Types.Styleable (CSS (..))
@@ -265,12 +267,6 @@ atom name prop val =
 flex :: Style
 flex = atom "flex" "display" "flex"
 
-flexRow :: Style
-flexRow = flex . atom "row" "flex-direction" "row"
-
-flexCol :: Style
-flexCol = flex . atom "col" "flex-direction" "column"
-
 itemsCenter :: Style
 itemsCenter = atom "items-center" "align-items" "center"
 
@@ -291,9 +287,6 @@ justifyBetween = atom "justify-between" "justify-content" "space-between"
 
 justifyAround :: Style
 justifyAround = atom "justify-around" "justify-content" "space-around"
-
-grow :: Style
-grow = atom "grow" "flex-grow" "1"
 
 grow0 :: Style
 grow0 = atom "grow-0" "flex-grow" "0"
