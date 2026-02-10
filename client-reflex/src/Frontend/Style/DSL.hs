@@ -241,10 +241,19 @@ module Frontend.Style.DSL
 import Data.Text (Text)
 import Data.Text qualified as T
 import Web.Atomic qualified hiding (active, hover, media, truncate)
-import Web.Atomic.CSS.Layout (flexCol, flexRow, grow)
+import Web.Atomic.CSS.Box qualified as Box
 import Web.Atomic.CSS.Layout qualified as Layout
 import Web.Atomic.CSS.Select (active, hover, media, pseudo)
-import Web.Atomic.Types (ClassName (..), Rule, Styleable)
+import Web.Atomic.CSS.Text qualified as Text
+import Web.Atomic.Types
+  ( Auto (..)
+  , ClassName (..)
+  , Length (..)
+  , None (..)
+  , Rule
+  , Sides (..)
+  , Styleable
+  )
 import Web.Atomic.Types.Styleable (CSS (..))
 
 -- | Style transformer type (library pattern)
@@ -265,7 +274,16 @@ atom name prop val =
 --------------------------------------------------------------------------------
 
 flex :: Style
-flex = atom "flex" "display" "flex"
+flex = Layout.display Layout.Flex
+
+flexCol :: Style
+flexCol = Layout.flexCol
+
+flexRow :: Style
+flexRow = Layout.flexRow
+
+grow :: Style
+grow = Layout.grow
 
 itemsCenter :: Style
 itemsCenter = atom "items-center" "align-items" "center"
@@ -295,34 +313,34 @@ shrink0 :: Style
 shrink0 = atom "shrink-0" "flex-shrink" "0"
 
 absolute :: Style
-absolute = atom "absolute" "position" "absolute"
+absolute = Layout.position Layout.Absolute
 
 relative :: Style
-relative = atom "relative" "position" "relative"
+relative = Layout.position Layout.Relative
 
 fixed :: Style
-fixed = atom "fixed" "position" "fixed"
+fixed = Layout.position Layout.Fixed
 
 hidden :: Style
-hidden = atom "hidden" "display" "none"
+hidden = Layout.display None
 
 overflowHidden :: Style
-overflowHidden = atom "overflow-hidden" "overflow" "hidden"
+overflowHidden = Layout.overflow Layout.Hidden
 
 overflowYAuto :: Style
 overflowYAuto = atom "overflow-y-auto" "overflow-y" "auto"
 
 z10 :: Style
-z10 = atom "z-10" "z-index" "10"
+z10 = Layout.zIndex 10
 
 z20 :: Style
-z20 = atom "z-20" "z-index" "20"
+z20 = Layout.zIndex 20
 
 z30 :: Style
-z30 = atom "z-30" "z-index" "30"
+z30 = Layout.zIndex 30
 
 z40 :: Style
-z40 = atom "z-40" "z-index" "40"
+z40 = Layout.zIndex 40
 
 cursorPointer :: Style
 cursorPointer = atom "cursor-pointer" "cursor" "pointer"
@@ -356,46 +374,46 @@ contentStart = atom "content-start" "align-content" "flex-start"
 --------------------------------------------------------------------------------
 
 wFull :: Style
-wFull = atom "w-full" "width" "100%"
+wFull = Layout.width (Pct 1.0)
 
 hFull :: Style
-hFull = atom "h-full" "height" "100%"
+hFull = Layout.height (Pct 1.0)
 
 wFit :: Style
 wFit = atom "w-fit" "width" "fit-content"
 
 w4 :: Style
-w4 = atom "w-4" "width" "1rem"
+w4 = Layout.width 16
 
 h4 :: Style
-h4 = atom "h-4" "height" "1rem"
+h4 = Layout.height 16
 
 w6 :: Style
-w6 = atom "w-6" "width" "1.5rem"
+w6 = Layout.width 24
 
 h6 :: Style
-h6 = atom "h-6" "height" "1.5rem"
+h6 = Layout.height 24
 
 w8 :: Style
-w8 = atom "w-8" "width" "2rem"
+w8 = Layout.width 32
 
 h8 :: Style
-h8 = atom "h-8" "height" "2rem"
+h8 = Layout.height 32
 
 w10 :: Style
-w10 = atom "w-10" "width" "2.5rem"
+w10 = Layout.width 40
 
 h10 :: Style
-h10 = atom "h-10" "height" "2.5rem"
+h10 = Layout.height 40
 
 w40 :: Style
-w40 = atom "w-40" "width" "10rem"
+w40 = Layout.width 160
 
 w72 :: Style
-w72 = atom "w-72" "width" "18rem"
+w72 = Layout.width 288
 
 w80 :: Style
-w80 = atom "w-80" "width" "20rem"
+w80 = Layout.width 320
 
 wCard :: Style
 wCard = atom "w-[63mm]" "width" "63mm"
@@ -420,7 +438,7 @@ h2_5 = atom "h-2/5" "height" "40%"
 --------------------------------------------------------------------------------
 
 p1 :: Style
-p1 = atom "p-1" "padding" "0.25rem"
+p1 = Box.pad (All 4)
 
 p2mm :: Style
 p2mm = atom "p-[2mm]" "padding" "2mm"
@@ -429,19 +447,19 @@ p2_5mm :: Style
 p2_5mm = atom "p-[2.5mm]" "padding" "2.5mm"
 
 p4 :: Style
-p4 = atom "p-4" "padding" "1rem"
+p4 = Box.pad (All 16)
 
 p2 :: Style
-p2 = atom "p-2" "padding" "0.5rem"
+p2 = Box.pad (All 8)
 
 p1_5 :: Style
-p1_5 = atom "p-1.5" "padding" "0.375rem"
+p1_5 = Box.pad (All 6)
 
 pb1 :: Style
-pb1 = atom "pb-1" "padding-bottom" "0.25rem"
+pb1 = Box.pad (B 4)
 
 px1 :: Style
-px1 = atom "px-1" "padding-left" "0.25rem"
+px1 = Box.pad (X 4)
 
 top1 :: Style
 top1 = atom "top-1" "top" "0.25rem"
@@ -450,46 +468,46 @@ right1 :: Style
 right1 = atom "right-1" "right" "0.25rem"
 
 pr1 :: Style
-pr1 = atom "pr-1" "padding-right" "0.25rem"
+pr1 = Box.pad (R 4)
 
 px2 :: Style
-px2 = atom "px-2" "padding-left" "0.5rem"
+px2 = Box.pad (X 8)
 
 py1 :: Style
-py1 = atom "py-1" "padding-top" "0.25rem"
+py1 = Box.pad (Y 4)
 
 px4 :: Style
-px4 = atom "px-4" "padding-left" "1rem"
+px4 = Box.pad (X 16)
 
 py2 :: Style
-py2 = atom "py-2" "padding-top" "0.5rem"
+py2 = Box.pad (Y 8)
 
 px6 :: Style
-px6 = atom "px-6" "padding-left" "1.5rem"
+px6 = Box.pad (X 24)
 
 px8 :: Style
-px8 = atom "px-8" "padding-left" "2rem"
+px8 = Box.pad (X 32)
 
 py3 :: Style
-py3 = atom "py-3" "padding-top" "0.75rem"
+py3 = Box.pad (Y 12)
 
 p3 :: Style
-p3 = atom "p-3" "padding" "0.75rem"
+p3 = Box.pad (All 12)
 
 mb2mm :: Style
 mb2mm = atom "mb-[2mm]" "margin-bottom" "2mm"
 
 mt2 :: Style
-mt2 = atom "mt-2" "margin-top" "0.5rem"
+mt2 = Box.margin (T 8)
 
 mt1 :: Style
-mt1 = atom "mt-1" "margin-top" "0.25rem"
+mt1 = Box.margin (T 4)
 
 mb1 :: Style
-mb1 = atom "mb-1" "margin-bottom" "0.25rem"
+mb1 = Box.margin (B 4)
 
 mb2 :: Style
-mb2 = atom "mb-2" "margin-bottom" "0.5rem"
+mb2 = Box.margin (B 8)
 
 top2mm :: Style
 top2mm = atom "top-[2mm]" "top" "2mm"
@@ -498,16 +516,16 @@ right2mm :: Style
 right2mm = atom "right-[2mm]" "right" "2mm"
 
 gap0 :: Style
-gap0 = atom "gap-0" "gap" "0"
+gap0 = Box.gap 0
 
 gap1 :: Style
-gap1 = atom "gap-1" "gap" "0.25rem"
+gap1 = Box.gap 4
 
 gap2 :: Style
-gap2 = atom "gap-2" "gap" "0.5rem"
+gap2 = Box.gap 8
 
 gap4 :: Style
-gap4 = atom "gap-4" "gap" "1rem"
+gap4 = Box.gap 16
 
 gap4mm :: Style
 gap4mm = atom "gap-[4mm]" "gap" "4mm"
@@ -656,13 +674,13 @@ borderRed800 = atom "border-red-800" "border-color" "#991b1b"
 --------------------------------------------------------------------------------
 
 border :: Style
-border = atom "border" "border-width" "1px"
+border = Box.border 1
 
 border0 :: Style
-border0 = atom "border-0" "border-width" "0px"
+border0 = Box.border 0
 
 border2 :: Style
-border2 = atom "border-2" "border-width" "2px"
+border2 = Box.border 2
 
 borderB :: Style
 borderB = atom "border-b" "border-bottom-width" "1px"
@@ -708,31 +726,31 @@ rounded1mm = atom "rounded-[1mm]" "border-radius" "1mm"
 --------------------------------------------------------------------------------
 
 fontBold :: Style
-fontBold = atom "font-bold" "font-weight" "700"
+fontBold = Text.bold
 
 textSm :: Style
-textSm = atom "text-sm" "font-size" "0.875rem"
+textSm = Text.fontSize 14
 
 textXs :: Style
-textXs = atom "text-xs" "font-size" "0.75rem"
+textXs = Text.fontSize 12
 
 textXl :: Style
-textXl = atom "text-xl" "font-size" "1.25rem"
+textXl = Text.fontSize 20
 
 text2Xl :: Style
-text2Xl = atom "text-2xl" "font-size" "1.5rem"
+text2Xl = Text.fontSize 24
 
 textLg :: Style
-textLg = atom "text-lg" "font-size" "1.125rem"
+textLg = Text.fontSize 18
 
 textBase :: Style
-textBase = atom "text-base" "font-size" "1rem"
+textBase = Text.fontSize 16
 
 leadingTight :: Style
 leadingTight = atom "leading-tight" "line-height" "1.25"
 
 textCenter :: Style
-textCenter = atom "text-center" "text-align" "center"
+textCenter = Text.textAlign Text.AlignCenter
 
 uppercase :: Style
 uppercase = atom "uppercase" "text-transform" "uppercase"
@@ -747,7 +765,7 @@ textTruncate :: Style
 textTruncate = atom "truncate" "text-overflow" "ellipsis"
 
 textLeft :: Style
-textLeft = atom "text-left" "text-align" "left"
+textLeft = Text.textAlign Text.AlignLeft
 
 --------------------------------------------------------------------------------
 -- Effects
@@ -774,13 +792,13 @@ grayscale50 :: Style
 grayscale50 = atom "grayscale-[50%]" "filter" "grayscale(50%)"
 
 opacity75 :: Style
-opacity75 = atom "opacity-75" "opacity" "0.75"
+opacity75 = Box.opacity 0.75
 
 backdropBlurMd :: Style
 backdropBlurMd = atom "backdrop-blur-md" "backdrop-filter" "blur(12px)"
 
 opacity50 :: Style
-opacity50 = atom "opacity-50" "opacity" "0.5"
+opacity50 = Box.opacity 0.5
 
 --------------------------------------------------------------------------------
 -- Aspect Ratios

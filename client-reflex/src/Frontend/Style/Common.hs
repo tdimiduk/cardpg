@@ -39,7 +39,8 @@ import Data.Map (Map)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Reflex.Dom.Core
-import Web.Atomic.Types (CSS (..), Rule)
+import Web.Atomic.CSS.Layout qualified as Layout
+import Web.Atomic.Types (CSS (..), Length (Pct), Rule)
 import Web.Atomic.Types qualified as Atomic (ClassName (..), Rule (..))
 
 import Frontend.Style.Class (MonadStyle (..), StyledDomBuilder)
@@ -139,7 +140,7 @@ iconBlock = w10 . h10 . fontBold . textXl
 
 -- | Responsive icon (percentage height)
 iconResponsive :: Style
-iconResponsive = atom "h-[30%]" "height" "30%" . wFit . aspectSquare . fontBold
+iconResponsive = Layout.height (Pct 0.3) . wFit . aspectSquare . fontBold
 
 -- | Inline icon (fits text line height)
 iconInline :: Style
