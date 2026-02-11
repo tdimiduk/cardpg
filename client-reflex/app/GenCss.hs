@@ -49,6 +49,7 @@ import Api.Types (Phase (..))
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
 import Core.Primitives (ActorId)
+import Core.State (ActorState)
 import Data.Map.Strict qualified as Map
 import Frontend.Style (stagedActionCard, stagedResourceCard)
 import Frontend.Style.Class (StyledDomBuilder)
@@ -65,6 +66,8 @@ import Reflex.Dom.Core
   , runRequesterT
   )
 import Reflex.Requester.Base (RequesterT)
+import Server.Game (GameState (..))
+import Server.Scenario (loadScenario)
 
 type Parser = Parsec Void Text
 
@@ -103,48 +106,41 @@ main = do
 
   putStrLn $ "Collected " <> show (length collectedRules) <> " rules from Catalog."
 
-  -- 3. Also run mock game widget (with staging state) to capture parameterized styles
+  -- 3. Load Scenario and run mock game widget for each actor/phase
   gameReplaceKeyRef <- newIORef 0
   let gameEnv = StaticDomBuilderEnv True Nothing gameReplaceKeyRef
 
-  let gameWidget =
-        mockGameWidget Planning (Just Mock.mockActorId)
-          :: StaticDomBuilderT
-               Spider
-               (StyleWriterT (PostBuildT Spider (PerformEventT Spider (SpiderHost Global))))
-               ()
-  let gameRunner = runStaticDomBuilderT gameWidget gameEnv
-  let gamePRunner = runStyleWriterT gameRunner
+  -- Load the starter scenario to get real actor data
+  putStrLn "Loading scenario data/scenarios/starter.yaml..."
+  (gameState, _) <- loadScenario "data/scenarios/starter.yaml" Nothing
+  let actorsMap = gameState.actors :: Map.Map ActorId ActorState
+  let actorIds = Map.keys actorsMap
 
-  ((_, _), gameRules) <- runSpiderHost $ do
-    (res, _events) <- hostPerformEventT $ runPostBuildT gamePRunner never
-    return res
-
-  putStrLn $ "Collected " <> show (length gameRules) <> " rules from single MockGameWidget run."
-
-  -- 3. Also run mock game widget (with staging state) to capture parameterized styles
-  gameReplaceKeyRef <- newIORef 0
-  let gameEnv = StaticDomBuilderEnv True Nothing gameReplaceKeyRef
+  putStrLn $ "Loaded " <> show (length actorIds) <> " actors."
 
   -- We need to encompass both phases to get all styles
   let phases = [Planning, Resolution]
 
-  gameRules <- fmap concat $ forM phases $ \p -> do
-    let gameWidget =
-          mockGameWidget p (Just Mock.mockActorId)
-            :: StaticDomBuilderT
-                 Spider
-                 (StyleWriterT (PostBuildT Spider (PerformEventT Spider (SpiderHost Global))))
-                 ()
-    let gameRunner = runStaticDomBuilderT gameWidget gameEnv
-    let gamePRunner = runStyleWriterT gameRunner
+  -- Iterate over Phases AND Actors to ensure coverage
+  gameRulesNested <- forM phases $ \p -> do
+    forM actorIds $ \aid -> do
+      let gameWidget =
+            mockGameWidget p (Just aid) actorsMap
+              :: StaticDomBuilderT
+                   Spider
+                   (StyleWriterT (PostBuildT Spider (PerformEventT Spider (SpiderHost Global))))
+                   ()
+      let gameRunner = runStaticDomBuilderT gameWidget gameEnv
+      let gamePRunner = runStyleWriterT gameRunner
 
-    ((_, _), rules) <- runSpiderHost $ do
-      (res, _events) <- hostPerformEventT $ runPostBuildT gamePRunner never
-      return res
-    return rules
+      ((_, _), rules) <- runSpiderHost $ do
+        (res, _events) <- hostPerformEventT $ runPostBuildT gamePRunner never
+        return res
+      return rules
 
-  putStrLn $ "Collected " <> show (length gameRules) <> " rules from MockGameWidget."
+  let gameRules = concat (concat gameRulesNested)
+
+  putStrLn $ "Collected " <> show (length gameRules) <> " rules from MockGameWidget (Scenario-based)."
 
   -- 4. Combine
   let allRules = foundRules ++ collectedRules ++ gameRules
@@ -254,10 +250,11 @@ mockGameWidget
      )
   => Phase
   -> Maybe ActorId
+  -> Map.Map ActorId ActorState
   -> m ()
-mockGameWidget phase agentId = do
+mockGameWidget phase agentId actorsMap = do
   -- Use mock actors with staged actions
-  let actorsDyn = constDyn Mock.mockActorsMap
+  let actorsDyn = constDyn actorsMap
       logsDyn = constDyn Mock.mockLogs
       phaseDyn = constDyn phase
 

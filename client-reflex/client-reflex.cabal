@@ -180,6 +180,9 @@ executable gen-css
     , filepath
     , megaparsec
     , mtl
+    , random
     , reflex
     , reflex-dom-core
+    , server
     , text
+    , yaml
