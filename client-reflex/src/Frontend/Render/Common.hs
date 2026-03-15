@@ -12,7 +12,6 @@ import Reflex.Dom.Core
 import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.Stats (ResourceType (..))
 
-import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common (Style)
 import Frontend.Style.Common qualified as CommonStyle
 import Frontend.Style.DSL qualified as S
@@ -27,7 +26,7 @@ instance Default IconMode where
 
 -- | Render a ResourceType as an SVG icon
 renderResourceType
-  :: (DomBuilder t m, MonadStyle m) => IconMode -> ResourceType -> Maybe Text -> m ()
+  :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
 renderResourceType mode r t = case r of
   Red -> renderSquare (color . style) t
   Yellow -> renderCircle (color . style) t

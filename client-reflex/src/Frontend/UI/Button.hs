@@ -15,11 +15,8 @@ import Data.Map qualified as Map
 import Data.Text qualified as T
 
 import Reflex.Dom.Core hiding (button)
-import Web.Atomic.Types (CSS (..), Rule)
-import Web.Atomic.Types qualified as Atomic (ClassName (..), Rule (..))
 
-import Frontend.Style.Class (MonadStyle (..), registerEnumStyles)
-import Frontend.Style.Common (Style)
+import Frontend.Style.Common (Style, classNames)
 import Frontend.Style.DSL
 
 -- | Visual variants for the button
@@ -119,20 +116,9 @@ baseStyle =
 disabledStyle :: Style
 disabledStyle = opacity50 . cursorNotAllowed
 
--- | Extract the class name from a Rule.
-ruleClassName :: Rule -> T.Text
-ruleClassName (Atomic.Rule c _ _ _) = case c of
-  Atomic.ClassName t -> t
-
--- | Convert a Style to a class string
-styleToClassText :: Style -> T.Text
-styleToClassText style =
-  let CSS rules = style mempty
-   in T.unwords $ map ruleClassName rules
-
 -- | A unified button widget
 button
-  :: (DomBuilder t m, PostBuild t m, MonadStyle m)
+  :: (DomBuilder t m, PostBuild t m)
   => ButtonConfig t
   -> m ()
   -- ^ Label content
@@ -141,22 +127,13 @@ button cfg label = do
   -- Width handling
   let widthStyle = if cfg.fullWidth then wFull else id
 
-  -- Register all static styles for CSS generation
-  registerStyles $ baseStyle mempty
-  registerStyles $ widthStyle mempty
-  registerStyles $ disabledStyle mempty
-  registerStyles $ cursorPointer mempty
-  registerStyles $ cfg.extraStyle mempty
-  registerEnumStyles (\v -> variantStyle v mempty)
-  registerEnumStyles (\s -> sizeStyle s mempty)
-
   let dynClassText = do
         sz <- ffor cfg.size sizeStyle
         var <- ffor cfg.variant variantStyle
         dis <- cfg.disabled
         let interaction = if dis then disabledStyle else cursorPointer
         let fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
-        pure $ styleToClassText fullStyle
+        pure $ classNames fullStyle
 
   let attrs = ffor3 dynClassText cfg.disabled cfg.attributes $ \clsText dis attrs' ->
         "class" =: clsText

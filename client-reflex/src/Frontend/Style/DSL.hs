@@ -1,24 +1,29 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Transformer-style CSS atoms.
+-- | CSS utility DSL for CardPG.
 --
--- This module provides CSS utilities as style transformers (CSS h -> CSS h)
--- following the atomic-css library's native pattern. Compose with (.) and
--- apply to mempty or other CSS values.
+-- This module provides CSS utilities as composable style functions.
+-- Compose with (.) and apply to [] or use with divS/elS helpers.
 --
 -- @
 -- cardHover :: Style
 -- cardHover = transitionTransform . duration200 . hover translateYNeg8
 -- @
 module Frontend.Style.DSL
-  ( -- * Selector Modifiers
-    hover
-  , active
-  , pseudo
-  , media
+  ( -- * Re-exports from Core
+    Style
+  , css
+  , css'
 
-    -- * Atom helper
-  , atom
+    -- * Modifiers
+  , hover
+  , hoverProp
+  , active
+  , activeProp
+  , pseudo
+  , pseudoProp
+  , media
+  , mediaProp
 
     -- * Layout
   , flex
@@ -29,7 +34,6 @@ module Frontend.Style.DSL
   , itemsStretch
   , justifyStart
   , justifyCenter
-  , justifyBetween
   , justifyBetween
   , justifyAround
   , grow
@@ -96,7 +100,6 @@ module Frontend.Style.DSL
   , top1
   , right1
   , py3
-  , p3
   , p3
   , mb2mm
   , mt2
@@ -233,6 +236,14 @@ module Frontend.Style.DSL
   , ringIndigo400
   , ringOffset2
 
+    -- * Parameterized Styles
+  , gap
+  , pad
+  , fontSize
+  , zIndex
+  , opacity
+  , borderRadius
+
     -- * Compound Styles
   , flex1
   , full
@@ -240,656 +251,652 @@ module Frontend.Style.DSL
 
 import Data.Text (Text)
 import Data.Text qualified as T
-import Web.Atomic qualified hiding (active, hover, media, truncate)
-import Web.Atomic.CSS.Box qualified as Box
-import Web.Atomic.CSS.Layout qualified as Layout
-import Web.Atomic.CSS.Select (active, hover, media, pseudo)
-import Web.Atomic.CSS.Text qualified as Text
-import Web.Atomic.Types
-  ( Auto (..)
-  , ClassName (..)
-  , Length (..)
-  , None (..)
-  , Rule
-  , Sides (..)
-  , Styleable
-  )
-import Web.Atomic.Types.Styleable (CSS (..))
-
--- | Style transformer type (library pattern)
-type Style = CSS [Rule] -> CSS [Rule]
-
--- | Helper to define an atomic style transformer
-atom :: Text -> Text -> String -> Style
-atom name prop val =
-  ( Web.Atomic.utility
-      (ClassName name)
-      [Web.Atomic.Property prop Web.Atomic.:. Web.Atomic.Style val]
-      mempty
-      <>
-  )
+import Frontend.Style.Core
 
 --------------------------------------------------------------------------------
 -- Layout
 --------------------------------------------------------------------------------
 
 flex :: Style
-flex = Layout.display Layout.Flex
+flex = css "flex" "display" "flex"
 
 flexCol :: Style
-flexCol = Layout.flexCol
+flexCol = css' "flex-col" [("display", "flex"), ("flex-direction", "column")]
 
 flexRow :: Style
-flexRow = Layout.flexRow
+flexRow = css' "flex-row" [("display", "flex"), ("flex-direction", "row")]
 
 grow :: Style
-grow = Layout.grow
+grow = css "grow" "flex-grow" "1"
 
 itemsCenter :: Style
-itemsCenter = atom "items-center" "align-items" "center"
+itemsCenter = css "items-center" "align-items" "center"
 
 itemsEnd :: Style
-itemsEnd = atom "items-end" "align-items" "end"
+itemsEnd = css "items-end" "align-items" "end"
 
 itemsStretch :: Style
-itemsStretch = atom "items-stretch" "align-items" "stretch"
+itemsStretch = css "items-stretch" "align-items" "stretch"
 
 justifyStart :: Style
-justifyStart = atom "justify-start" "justify-content" "flex-start"
+justifyStart = css "justify-start" "justify-content" "flex-start"
 
 justifyCenter :: Style
-justifyCenter = atom "justify-center" "justify-content" "center"
+justifyCenter = css "justify-center" "justify-content" "center"
 
 justifyBetween :: Style
-justifyBetween = atom "justify-between" "justify-content" "space-between"
+justifyBetween = css "justify-between" "justify-content" "space-between"
 
 justifyAround :: Style
-justifyAround = atom "justify-around" "justify-content" "space-around"
+justifyAround = css "justify-around" "justify-content" "space-around"
 
 grow0 :: Style
-grow0 = atom "grow-0" "flex-grow" "0"
+grow0 = css "grow-0" "flex-grow" "0"
 
 shrink0 :: Style
-shrink0 = atom "shrink-0" "flex-shrink" "0"
+shrink0 = css "shrink-0" "flex-shrink" "0"
 
 absolute :: Style
-absolute = Layout.position Layout.Absolute
+absolute = css "absolute" "position" "absolute"
 
 relative :: Style
-relative = Layout.position Layout.Relative
+relative = css "relative" "position" "relative"
 
 fixed :: Style
-fixed = Layout.position Layout.Fixed
+fixed = css "fixed" "position" "fixed"
 
 hidden :: Style
-hidden = Layout.display None
+hidden = css "hidden" "display" "none"
 
 overflowHidden :: Style
-overflowHidden = Layout.overflow Layout.Hidden
+overflowHidden = css "overflow-hidden" "overflow" "hidden"
 
 overflowYAuto :: Style
-overflowYAuto = atom "overflow-y-auto" "overflow-y" "auto"
+overflowYAuto = css "overflow-y-auto" "overflow-y" "auto"
 
 z10 :: Style
-z10 = Layout.zIndex 10
+z10 = css "z-10" "z-index" "10"
 
 z20 :: Style
-z20 = Layout.zIndex 20
+z20 = css "z-20" "z-index" "20"
 
 z30 :: Style
-z30 = Layout.zIndex 30
+z30 = css "z-30" "z-index" "30"
 
 z40 :: Style
-z40 = Layout.zIndex 40
+z40 = css "z-40" "z-index" "40"
 
 cursorPointer :: Style
-cursorPointer = atom "cursor-pointer" "cursor" "pointer"
+cursorPointer = css "cursor-pointer" "cursor" "pointer"
 
 cursorNotAllowed :: Style
-cursorNotAllowed = atom "cursor-not-allowed" "cursor" "not-allowed"
+cursorNotAllowed = css "cursor-not-allowed" "cursor" "not-allowed"
 
 pointerEventsNone :: Style
-pointerEventsNone = atom "pointer-events-none" "pointer-events" "none"
+pointerEventsNone = css "pointer-events-none" "pointer-events" "none"
 
 pointerEventsAuto :: Style
-pointerEventsAuto = atom "pointer-events-auto" "pointer-events" "auto"
+pointerEventsAuto = css "pointer-events-auto" "pointer-events" "auto"
 
 group :: Style
-group = atom "group" "content" "\"\""
+group = css "group" "content" "\"\""
 
 inlineBlock :: Style
-inlineBlock = atom "inline-block" "display" "inline-block"
+inlineBlock = css "inline-block" "display" "inline-block"
 
 alignTextBottom :: Style
-alignTextBottom = atom "align-text-bottom" "vertical-align" "text-bottom"
+alignTextBottom = css "align-text-bottom" "vertical-align" "text-bottom"
 
 flexWrap :: Style
-flexWrap = atom "flex-wrap" "flex-wrap" "wrap"
+flexWrap = css "flex-wrap" "flex-wrap" "wrap"
 
 contentStart :: Style
-contentStart = atom "content-start" "align-content" "flex-start"
+contentStart = css "content-start" "align-content" "flex-start"
 
 --------------------------------------------------------------------------------
 -- Sizing
 --------------------------------------------------------------------------------
 
 wFull :: Style
-wFull = Layout.width (Pct 1.0)
+wFull = css "w-full" "width" "100%"
 
 hFull :: Style
-hFull = Layout.height (Pct 1.0)
+hFull = css "h-full" "height" "100%"
 
 wFit :: Style
-wFit = atom "w-fit" "width" "fit-content"
+wFit = css "w-fit" "width" "fit-content"
 
 w4 :: Style
-w4 = Layout.width 16
+w4 = css "w-4" "width" "1rem"
 
 h4 :: Style
-h4 = Layout.height 16
+h4 = css "h-4" "height" "1rem"
 
 w6 :: Style
-w6 = Layout.width 24
+w6 = css "w-6" "width" "1.5rem"
 
 h6 :: Style
-h6 = Layout.height 24
+h6 = css "h-6" "height" "1.5rem"
 
 w8 :: Style
-w8 = Layout.width 32
+w8 = css "w-8" "width" "2rem"
 
 h8 :: Style
-h8 = Layout.height 32
+h8 = css "h-8" "height" "2rem"
 
 w10 :: Style
-w10 = Layout.width 40
+w10 = css "w-10" "width" "2.5rem"
 
 h10 :: Style
-h10 = Layout.height 40
+h10 = css "h-10" "height" "2.5rem"
 
 w40 :: Style
-w40 = Layout.width 160
+w40 = css "w-40" "width" "10rem"
 
 w72 :: Style
-w72 = Layout.width 288
+w72 = css "w-72" "width" "18rem"
 
 w80 :: Style
-w80 = Layout.width 320
+w80 = css "w-80" "width" "20rem"
 
 wCard :: Style
-wCard = atom "w-[63mm]" "width" "63mm"
+wCard = css "w-card" "width" "63mm"
 
 hCard :: Style
-hCard = atom "h-[88mm]" "height" "88mm"
+hCard = css "h-card" "height" "88mm"
 
 w8mm :: Style
-w8mm = atom "w-[8mm]" "width" "8mm"
+w8mm = css "w-8mm" "width" "8mm"
 
 h8mm :: Style
-h8mm = atom "h-[8mm]" "height" "8mm"
+h8mm = css "h-8mm" "height" "8mm"
 
 hScreen :: Style
-hScreen = atom "h-screen" "height" "100vh"
+hScreen = css "h-screen" "height" "100vh"
 
 h2_5 :: Style
-h2_5 = atom "h-2/5" "height" "40%"
+h2_5 = css "h-2/5" "height" "40%"
 
 --------------------------------------------------------------------------------
 -- Spacing
 --------------------------------------------------------------------------------
 
 p1 :: Style
-p1 = Box.pad (All 4)
+p1 = css "p-1" "padding" "0.25rem"
 
 p2mm :: Style
-p2mm = atom "p-[2mm]" "padding" "2mm"
+p2mm = css "p-2mm" "padding" "2mm"
 
 p2_5mm :: Style
-p2_5mm = atom "p-[2.5mm]" "padding" "2.5mm"
+p2_5mm = css "p-2.5mm" "padding" "2.5mm"
 
 p4 :: Style
-p4 = Box.pad (All 16)
+p4 = css "p-4" "padding" "1rem"
 
 p2 :: Style
-p2 = Box.pad (All 8)
+p2 = css "p-2" "padding" "0.5rem"
 
 p1_5 :: Style
-p1_5 = Box.pad (All 6)
+p1_5 = css "p-1.5" "padding" "0.375rem"
 
 pb1 :: Style
-pb1 = Box.pad (B 4)
+pb1 = css "pb-1" "padding-bottom" "0.25rem"
 
 px1 :: Style
-px1 = Box.pad (X 4)
+px1 = css' "px-1" [("padding-left", "0.25rem"), ("padding-right", "0.25rem")]
 
 top1 :: Style
-top1 = atom "top-1" "top" "0.25rem"
+top1 = css "top-1" "top" "0.25rem"
 
 right1 :: Style
-right1 = atom "right-1" "right" "0.25rem"
+right1 = css "right-1" "right" "0.25rem"
 
 pr1 :: Style
-pr1 = Box.pad (R 4)
+pr1 = css "pr-1" "padding-right" "0.25rem"
 
 px2 :: Style
-px2 = Box.pad (X 8)
+px2 = css' "px-2" [("padding-left", "0.5rem"), ("padding-right", "0.5rem")]
 
 py1 :: Style
-py1 = Box.pad (Y 4)
+py1 = css' "py-1" [("padding-top", "0.25rem"), ("padding-bottom", "0.25rem")]
 
 px4 :: Style
-px4 = Box.pad (X 16)
+px4 = css' "px-4" [("padding-left", "1rem"), ("padding-right", "1rem")]
 
 py2 :: Style
-py2 = Box.pad (Y 8)
+py2 = css' "py-2" [("padding-top", "0.5rem"), ("padding-bottom", "0.5rem")]
 
 px6 :: Style
-px6 = Box.pad (X 24)
+px6 = css' "px-6" [("padding-left", "1.5rem"), ("padding-right", "1.5rem")]
 
 px8 :: Style
-px8 = Box.pad (X 32)
+px8 = css' "px-8" [("padding-left", "2rem"), ("padding-right", "2rem")]
 
 py3 :: Style
-py3 = Box.pad (Y 12)
+py3 = css' "py-3" [("padding-top", "0.75rem"), ("padding-bottom", "0.75rem")]
 
 p3 :: Style
-p3 = Box.pad (All 12)
+p3 = css "p-3" "padding" "0.75rem"
 
 mb2mm :: Style
-mb2mm = atom "mb-[2mm]" "margin-bottom" "2mm"
+mb2mm = css "mb-2mm" "margin-bottom" "2mm"
 
 mt2 :: Style
-mt2 = Box.margin (T 8)
+mt2 = css "mt-2" "margin-top" "0.5rem"
 
 mt1 :: Style
-mt1 = Box.margin (T 4)
+mt1 = css "mt-1" "margin-top" "0.25rem"
 
 mb1 :: Style
-mb1 = Box.margin (B 4)
+mb1 = css "mb-1" "margin-bottom" "0.25rem"
 
 mb2 :: Style
-mb2 = Box.margin (B 8)
+mb2 = css "mb-2" "margin-bottom" "0.5rem"
 
 top2mm :: Style
-top2mm = atom "top-[2mm]" "top" "2mm"
+top2mm = css "top-2mm" "top" "2mm"
 
 right2mm :: Style
-right2mm = atom "right-[2mm]" "right" "2mm"
+right2mm = css "right-2mm" "right" "2mm"
 
 gap0 :: Style
-gap0 = Box.gap 0
+gap0 = css "gap-0" "gap" "0"
 
 gap1 :: Style
-gap1 = Box.gap 4
+gap1 = css "gap-1" "gap" "0.25rem"
 
 gap2 :: Style
-gap2 = Box.gap 8
+gap2 = css "gap-2" "gap" "0.5rem"
 
 gap4 :: Style
-gap4 = Box.gap 16
+gap4 = css "gap-4" "gap" "1rem"
 
 gap4mm :: Style
-gap4mm = atom "gap-[4mm]" "gap" "4mm"
+gap4mm = css "gap-4mm" "gap" "4mm"
 
 bottom0 :: Style
-bottom0 = atom "bottom-0" "bottom" "0"
+bottom0 = css "bottom-0" "bottom" "0"
 
 left0 :: Style
-left0 = atom "left-0" "left" "0"
+left0 = css "left-0" "left" "0"
 
 right0 :: Style
-right0 = atom "right-0" "right" "0"
+right0 = css "right-0" "right" "0"
 
 inset0 :: Style
-inset0 = atom "inset-0" "inset" "0"
+inset0 = css "inset-0" "inset" "0"
 
 --------------------------------------------------------------------------------
 -- Colors
 --------------------------------------------------------------------------------
 
 bgSlate900 :: Style
-bgSlate900 = atom "bg-slate-900" "background-color" "#0f172a"
+bgSlate900 = css "bg-slate-900" "background-color" "#0f172a"
 
 bgSlate800 :: Style
-bgSlate800 = atom "bg-slate-800" "background-color" "#1e293b"
+bgSlate800 = css "bg-slate-800" "background-color" "#1e293b"
 
 bgSlate700 :: Style
-bgSlate700 = atom "bg-slate-700" "background-color" "#334155"
+bgSlate700 = css "bg-slate-700" "background-color" "#334155"
 
 bgSlate600 :: Style
-bgSlate600 = atom "bg-slate-600" "background-color" "#475569"
+bgSlate600 = css "bg-slate-600" "background-color" "#475569"
 
 bgSlate950 :: Style
-bgSlate950 = atom "bg-slate-950" "background-color" "#020617"
+bgSlate950 = css "bg-slate-950" "background-color" "#020617"
 
 bgSlate800_50 :: Style
-bgSlate800_50 = atom "bg-slate-800/50" "background-color" "rgb(30 41 59 / 0.5)"
+bgSlate800_50 = css "bg-slate-800/50" "background-color" "rgb(30 41 59 / 0.5)"
 
 bgGray300 :: Style
-bgGray300 = atom "bg-gray-300" "background-color" "#d1d5db"
+bgGray300 = css "bg-gray-300" "background-color" "#d1d5db"
 
 bgWhite :: Style
-bgWhite = atom "bg-white" "background-color" "white"
+bgWhite = css "bg-white" "background-color" "white"
 
 bgTransparent :: Style
-bgTransparent = atom "bg-transparent" "background-color" "transparent"
+bgTransparent = css "bg-transparent" "background-color" "transparent"
 
 bgIndigo600 :: Style
-bgIndigo600 = atom "bg-indigo-600" "background-color" "#4f46e5"
+bgIndigo600 = css "bg-indigo-600" "background-color" "#4f46e5"
 
 bgIndigo500 :: Style
-bgIndigo500 = atom "bg-indigo-500" "background-color" "#6366f1"
+bgIndigo500 = css "bg-indigo-500" "background-color" "#6366f1"
 
 bgIndigo700 :: Style
-bgIndigo700 = atom "bg-indigo-700" "background-color" "#4338ca"
+bgIndigo700 = css "bg-indigo-700" "background-color" "#4338ca"
 
 bgRed900_50 :: Style
-bgRed900_50 = atom "bg-red-900/50" "background-color" "rgb(127 29 29 / 0.5)"
+bgRed900_50 = css "bg-red-900/50" "background-color" "rgb(127 29 29 / 0.5)"
 
 bgRed800_50 :: Style
-bgRed800_50 = atom "bg-red-800/50" "background-color" "rgb(153 27 27 / 0.5)"
+bgRed800_50 = css "bg-red-800/50" "background-color" "rgb(153 27 27 / 0.5)"
 
 textSlate100 :: Style
-textSlate100 = atom "text-slate-100" "color" "#f1f5f9"
+textSlate100 = css "text-slate-100" "color" "#f1f5f9"
 
 textSlate200 :: Style
-textSlate200 = atom "text-slate-200" "color" "#e2e8f0"
+textSlate200 = css "text-slate-200" "color" "#e2e8f0"
 
 textSlate300 :: Style
-textSlate300 = atom "text-slate-300" "color" "#cbd5e1"
+textSlate300 = css "text-slate-300" "color" "#cbd5e1"
 
 textBlue300 :: Style
-textBlue300 = atom "text-blue-300" "color" "#93c5fd"
+textBlue300 = css "text-blue-300" "color" "#93c5fd"
 
 textBlue400 :: Style
-textBlue400 = atom "text-blue-400" "color" "#60a5fa"
+textBlue400 = css "text-blue-400" "color" "#60a5fa"
 
 textSlate400 :: Style
-textSlate400 = atom "text-slate-400" "color" "#94a3b8"
+textSlate400 = css "text-slate-400" "color" "#94a3b8"
 
 textSlate500 :: Style
-textSlate500 = atom "text-slate-500" "color" "#64748b"
+textSlate500 = css "text-slate-500" "color" "#64748b"
 
 textSlate600 :: Style
-textSlate600 = atom "text-slate-600" "color" "#475569"
+textSlate600 = css "text-slate-600" "color" "#475569"
 
 textSlate700 :: Style
-textSlate700 = atom "text-slate-700" "color" "#334155"
+textSlate700 = css "text-slate-700" "color" "#334155"
 
 textBlack :: Style
-textBlack = atom "text-black" "color" "black"
+textBlack = css "text-black" "color" "black"
 
 textWhite :: Style
-textWhite = atom "text-white" "color" "white"
+textWhite = css "text-white" "color" "white"
 
 textRed500 :: Style
-textRed500 = atom "text-red-500" "color" "#ef4444"
+textRed500 = css "text-red-500" "color" "#ef4444"
 
 textRed200 :: Style
-textRed200 = atom "text-red-200" "color" "#fecaca"
+textRed200 = css "text-red-200" "color" "#fecaca"
 
 textRed100 :: Style
-textRed100 = atom "text-red-100" "color" "#fee2e2"
+textRed100 = css "text-red-100" "color" "#fee2e2"
 
 textRed300 :: Style
-textRed300 = atom "text-red-300" "color" "#fca5a5"
+textRed300 = css "text-red-300" "color" "#fca5a5"
 
 textRed400 :: Style
-textRed400 = atom "text-red-400" "color" "#f87171"
+textRed400 = css "text-red-400" "color" "#f87171"
 
 textIndigo400 :: Style
-textIndigo400 = atom "text-indigo-400" "color" "#818cf8"
+textIndigo400 = css "text-indigo-400" "color" "#818cf8"
 
 textYellow400 :: Style
-textYellow400 = atom "text-yellow-400" "color" "#facc15"
+textYellow400 = css "text-yellow-400" "color" "#facc15"
 
 textBlue500 :: Style
-textBlue500 = atom "text-blue-500" "color" "#3b82f6"
+textBlue500 = css "text-blue-500" "color" "#3b82f6"
 
 textBlue5 :: Style
-textBlue5 = atom "text-blue-5" "color" "var(--blue-5)"
+textBlue5 = css "text-blue-5" "color" "var(--blue-5)"
 
 borderSlate500 :: Style
-borderSlate500 = atom "border-slate-500" "border-color" "#64748b"
+borderSlate500 = css "border-slate-500" "border-color" "#64748b"
 
 borderSlate600 :: Style
-borderSlate600 = atom "border-slate-600" "border-color" "#475569"
+borderSlate600 = css "border-slate-600" "border-color" "#475569"
 
 borderSlate700 :: Style
-borderSlate700 = atom "border-slate-700" "border-color" "#334155"
+borderSlate700 = css "border-slate-700" "border-color" "#334155"
 
 borderSlate800 :: Style
-borderSlate800 = atom "border-slate-800" "border-color" "#1e293b"
+borderSlate800 = css "border-slate-800" "border-color" "#1e293b"
 
 borderBlack :: Style
-borderBlack = atom "border-black" "border-color" "black"
+borderBlack = css "border-black" "border-color" "black"
 
 borderTransparent :: Style
-borderTransparent = atom "border-transparent" "border-color" "transparent"
+borderTransparent = css "border-transparent" "border-color" "transparent"
 
 borderRed800 :: Style
-borderRed800 = atom "border-red-800" "border-color" "#991b1b"
+borderRed800 = css "border-red-800" "border-color" "#991b1b"
 
 --------------------------------------------------------------------------------
 -- Borders
 --------------------------------------------------------------------------------
 
 border :: Style
-border = Box.border 1
+border = css "border" "border-width" "1px"
 
 border0 :: Style
-border0 = Box.border 0
+border0 = css "border-0" "border-width" "0"
 
 border2 :: Style
-border2 = Box.border 2
+border2 = css "border-2" "border-width" "2px"
 
 borderB :: Style
-borderB = atom "border-b" "border-bottom-width" "1px"
+borderB = css "border-b" "border-bottom-width" "1px"
 
 borderT :: Style
-borderT = atom "border-t" "border-top-width" "1px"
+borderT = css "border-t" "border-top-width" "1px"
 
 borderL :: Style
-borderL = atom "border-l" "border-left-width" "1px"
+borderL = css "border-l" "border-left-width" "1px"
 
 borderR :: Style
-borderR = atom "border-r" "border-right-width" "1px"
+borderR = css "border-r" "border-right-width" "1px"
 
 border02mm :: Style
-border02mm = atom "border-[0.2mm]" "border-width" "0.2mm"
+border02mm = css "border-0.2mm" "border-width" "0.2mm"
 
 rounded :: Style
-rounded = atom "rounded" "border-radius" "0.25rem"
+rounded = css "rounded" "border-radius" "0.25rem"
 
 roundedNone :: Style
-roundedNone = atom "rounded-none" "border-radius" "0"
+roundedNone = css "rounded-none" "border-radius" "0"
 
 roundedXl :: Style
-roundedXl = atom "rounded-xl" "border-radius" "0.75rem"
+roundedXl = css "rounded-xl" "border-radius" "0.75rem"
 
 rounded3Xl :: Style
-rounded3Xl = atom "rounded-3xl" "border-radius" "1.5rem"
+rounded3Xl = css "rounded-3xl" "border-radius" "1.5rem"
 
 roundedFull :: Style
-roundedFull = atom "rounded-full" "border-radius" "9999px"
+roundedFull = css "rounded-full" "border-radius" "9999px"
 
 rounded3mm :: Style
-rounded3mm = atom "rounded-[3mm]" "border-radius" "3mm"
+rounded3mm = css "rounded-3mm" "border-radius" "3mm"
 
 rounded2mm :: Style
-rounded2mm = atom "rounded-[2mm]" "border-radius" "2mm"
+rounded2mm = css "rounded-2mm" "border-radius" "2mm"
 
 rounded1mm :: Style
-rounded1mm = atom "rounded-[1mm]" "border-radius" "1mm"
+rounded1mm = css "rounded-1mm" "border-radius" "1mm"
 
 --------------------------------------------------------------------------------
 -- Typography
 --------------------------------------------------------------------------------
 
 fontBold :: Style
-fontBold = Text.bold
+fontBold = css "font-bold" "font-weight" "bold"
 
 textSm :: Style
-textSm = Text.fontSize 14
+textSm = css "text-sm" "font-size" "0.875rem"
 
 textXs :: Style
-textXs = Text.fontSize 12
+textXs = css "text-xs" "font-size" "0.75rem"
 
 textXl :: Style
-textXl = Text.fontSize 20
+textXl = css "text-xl" "font-size" "1.25rem"
 
 text2Xl :: Style
-text2Xl = Text.fontSize 24
+text2Xl = css "text-2xl" "font-size" "1.5rem"
 
 textLg :: Style
-textLg = Text.fontSize 18
+textLg = css "text-lg" "font-size" "1.125rem"
 
 textBase :: Style
-textBase = Text.fontSize 16
+textBase = css "text-base" "font-size" "1rem"
 
 leadingTight :: Style
-leadingTight = atom "leading-tight" "line-height" "1.25"
+leadingTight = css "leading-tight" "line-height" "1.25"
 
 textCenter :: Style
-textCenter = Text.textAlign Text.AlignCenter
+textCenter = css "text-center" "text-align" "center"
 
 uppercase :: Style
-uppercase = atom "uppercase" "text-transform" "uppercase"
+uppercase = css "uppercase" "text-transform" "uppercase"
 
 trackingWider :: Style
-trackingWider = atom "tracking-wider" "letter-spacing" "0.05em"
+trackingWider = css "tracking-wider" "letter-spacing" "0.05em"
 
 whitespaceNowrap :: Style
-whitespaceNowrap = atom "whitespace-nowrap" "white-space" "nowrap"
+whitespaceNowrap = css "whitespace-nowrap" "white-space" "nowrap"
 
 textTruncate :: Style
-textTruncate = atom "truncate" "text-overflow" "ellipsis"
+textTruncate = css "truncate" "text-overflow" "ellipsis"
 
 textLeft :: Style
-textLeft = Text.textAlign Text.AlignLeft
+textLeft = css "text-left" "text-align" "left"
 
 --------------------------------------------------------------------------------
 -- Effects
 --------------------------------------------------------------------------------
 
 shadow2Xl :: Style
-shadow2Xl = atom "shadow-2xl" "box-shadow" "0 25px 50px -12px rgb(0 0 0 / 0.25)"
+shadow2Xl = css "shadow-2xl" "box-shadow" "0 25px 50px -12px rgb(0 0 0 / 0.25)"
 
 shadowXl :: Style
 shadowXl =
-  atom "shadow-xl" "box-shadow" "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+  css "shadow-xl" "box-shadow" "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
 
 shadowLg :: Style
 shadowLg =
-  atom "shadow-lg" "box-shadow" "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+  css "shadow-lg" "box-shadow" "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
 
 shadowSm :: Style
-shadowSm = atom "shadow-sm" "box-shadow" "0 1px 2px 0 rgb(0 0 0 / 0.05)"
+shadowSm = css "shadow-sm" "box-shadow" "0 1px 2px 0 rgb(0 0 0 / 0.05)"
 
 grayscale :: Style
-grayscale = atom "grayscale" "filter" "grayscale(100%)"
+grayscale = css "grayscale" "filter" "grayscale(100%)"
 
 grayscale50 :: Style
-grayscale50 = atom "grayscale-[50%]" "filter" "grayscale(50%)"
+grayscale50 = css "grayscale-50" "filter" "grayscale(50%)"
 
 opacity75 :: Style
-opacity75 = Box.opacity 0.75
+opacity75 = css "opacity-75" "opacity" "0.75"
 
 backdropBlurMd :: Style
-backdropBlurMd = atom "backdrop-blur-md" "backdrop-filter" "blur(12px)"
+backdropBlurMd = css "backdrop-blur-md" "backdrop-filter" "blur(12px)"
 
 opacity50 :: Style
-opacity50 = Box.opacity 0.5
+opacity50 = css "opacity-50" "opacity" "0.5"
 
 --------------------------------------------------------------------------------
 -- Aspect Ratios
 --------------------------------------------------------------------------------
 
 aspect43 :: Style
-aspect43 = atom "aspect-[4/3]" "aspect-ratio" "4/3"
+aspect43 = css "aspect-4/3" "aspect-ratio" "4/3"
 
 aspectCard :: Style
-aspectCard = atom "aspect-[63/88]" "aspect-ratio" "63/88"
+aspectCard = css "aspect-card" "aspect-ratio" "63/88"
 
 aspectSquare :: Style
-aspectSquare = atom "aspect-square" "aspect-ratio" "1/1"
+aspectSquare = css "aspect-square" "aspect-ratio" "1/1"
 
 --------------------------------------------------------------------------------
 -- Card Layout
 --------------------------------------------------------------------------------
 
 wCardHand :: Style
-wCardHand = atom "w-[16vh]" "width" "16vh"
+wCardHand = css "w-card-hand" "width" "16vh"
 
 mlCardOverlap :: Style
-mlCardOverlap = atom "-ml-[12vh]" "margin-left" "-12vh"
+mlCardOverlap = css "-ml-card-overlap" "margin-left" "-12vh"
 
 originBottom :: Style
-originBottom = atom "origin-bottom" "transform-origin" "bottom"
+originBottom = css "origin-bottom" "transform-origin" "bottom"
 
 translateYNeg4 :: Style
-translateYNeg4 = atom "-translate-y-4" "transform" "translateY(-1rem)"
+translateYNeg4 = css "-translate-y-4" "transform" "translateY(-1rem)"
 
 translateYNeg8 :: Style
-translateYNeg8 = atom "-translate-y-8" "transform" "translateY(-2rem)"
+translateYNeg8 = css "-translate-y-8" "transform" "translateY(-2rem)"
 
 scale105 :: Style
-scale105 = atom "scale-105" "transform" "scale(1.05)"
+scale105 = css "scale-105" "transform" "scale(1.05)"
 
 --------------------------------------------------------------------------------
 -- Transitions
 --------------------------------------------------------------------------------
 
 transitionAll :: Style
-transitionAll = atom "transition-all" "transition-property" "all"
+transitionAll = css "transition-all" "transition-property" "all"
 
 transitionTransform :: Style
-transitionTransform = atom "transition-transform" "transition-property" "transform"
+transitionTransform = css "transition-transform" "transition-property" "transform"
 
 transitionColors :: Style
 transitionColors =
-  atom
+  css
     "transition-colors"
     "transition-property"
     "color, background-color, border-color, text-decoration-color, fill, stroke"
 
 duration200 :: Style
-duration200 = atom "duration-200" "transition-duration" "200ms"
+duration200 = css "duration-200" "transition-duration" "200ms"
 
 easeOut :: Style
-easeOut = atom "ease-out" "transition-timing-function" "ease-out"
+easeOut = css "ease-out" "transition-timing-function" "ease-out"
 
 --------------------------------------------------------------------------------
 -- Interactions
 --------------------------------------------------------------------------------
 
 selectNone :: Style
-selectNone = atom "select-none" "user-select" "none"
+selectNone = css "select-none" "user-select" "none"
 
 --------------------------------------------------------------------------------
 -- Ring/Outline
 --------------------------------------------------------------------------------
 
 ring2 :: Style
-ring2 = atom "ring-2" "box-shadow" "0 0 0 2px var(--tw-ring-color)"
+ring2 = css "ring-2" "box-shadow" "0 0 0 2px var(--tw-ring-color)"
 
 ringBlue400 :: Style
-ringBlue400 = atom "ring-blue-400" "--tw-ring-color" "#60a5fa"
+ringBlue400 = css "ring-blue-400" "--tw-ring-color" "#60a5fa"
 
 ringAmber400 :: Style
-ringAmber400 = atom "ring-amber-400" "--tw-ring-color" "#fbbf24"
+ringAmber400 = css "ring-amber-400" "--tw-ring-color" "#fbbf24"
 
 ringIndigo400 :: Style
-ringIndigo400 = atom "ring-indigo-400" "--tw-ring-color" "#818cf8"
+ringIndigo400 = css "ring-indigo-400" "--tw-ring-color" "#818cf8"
 
 ringOffset2 :: Style
-ringOffset2 = atom "ring-offset-2" "--tw-ring-offset-width" "2px"
+ringOffset2 = css "ring-offset-2" "--tw-ring-offset-width" "2px"
 
 --------------------------------------------------------------------------------
 -- Compound Styles
 --------------------------------------------------------------------------------
 
 flex1 :: Style
-flex1 = atom "flex-1" "flex" "1 1 0%"
+flex1 = css "flex-1" "flex" "1 1 0%"
 
 full :: Style
 full = wFull . hFull
+
+--------------------------------------------------------------------------------
+-- Parameterized Styles
+--------------------------------------------------------------------------------
+
+gap :: Int -> Style
+gap 0 = css "gap-0" "gap" "0"
+gap n = css ("gap-" <> tshow n) "gap" (tshow n <> "px")
+
+pad :: Int -> Style
+pad n = css ("p-" <> tshow n) "padding" (tshow (n * 4) <> "px")
+
+fontSize :: Int -> Style
+fontSize n = css ("text-" <> tshow n) "font-size" (tshow n <> "px")
+
+zIndex :: Int -> Style
+zIndex n = css ("z-" <> tshow n) "z-index" (tshow n)
+
+opacity :: Double -> Style
+opacity v = css ("opacity-" <> tshow (round (v * 100) :: Int)) "opacity" (tshow v)
+
+borderRadius :: Int -> Style
+borderRadius n = css ("rounded-" <> tshow n) "border-radius" (tshow n <> "px")

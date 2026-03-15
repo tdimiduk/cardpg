@@ -16,7 +16,6 @@ import Core.Primitives (ActorId)
 import Core.State (ActorState (..), TableState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorLogic (actorNextSeverity)
-import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
@@ -28,7 +27,6 @@ consequencesWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
-     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -38,10 +36,10 @@ consequencesWidget
 consequencesWidget actorId actorState = do
   colWith (S.gap2 . S.p2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt2) $ do
     rowWith (S.justifyBetween . S.itemsCenter) $ do
-      elT "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text "Consequences"
+      elS "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text "Consequences"
 
       -- Next Severity
-      divT (S.textXs . S.textSlate500) $ do
+      divS (S.textXs . S.textSlate500) $ do
         text "Next Severity: "
         dynText $ fmap tshow (actorNextSeverity actorState)
 
@@ -52,7 +50,7 @@ consequencesWidget actorId actorState = do
       rowWith (S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p1 . S.rounded . S.mb1) $ do
         let nameDyn = fmap (\(Identified _ c) -> getRawText c.name) consequenceDyn
 
-        divT (S.textXs . S.px1) $ dynText nameDyn
+        divS (S.textXs . S.px1) $ dynText nameDyn
 
         btnClick <-
           button

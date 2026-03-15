@@ -15,13 +15,9 @@ import Api.Types
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActiveChallenge (..), ActorState)
 import Core.Util (tshow)
-import Web.Atomic.CSS.Layout (flexCol)
-import Web.Atomic.Types (CSS, Rule)
-
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig, phaseDisplayWidget)
 import Frontend.Render.Common (IconMode (..), renderResourceType)
-import Frontend.Style.Class (MonadStyle, StyledDomBuilder)
-import Frontend.Style.Common (Style, classes, divT, elT, testId)
+import Frontend.Style.Common (Style, classNames, divS, elS, testId)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 import Frontend.Util
@@ -40,19 +36,18 @@ logArea =
   S.flex1
     . S.overflowYAuto
     . S.p4
-    . S.atom "space-y-2" "margin-top" "> * + *"
-    . S.atom "custom-scrollbar" "scrollbar-width" "thin"
+    . S.css "space-y-2" "margin-top" "> * + *"
+    . S.css "custom-scrollbar" "scrollbar-width" "thin"
 
 -- | Chat Input Area
 chatArea :: Style
 chatArea = S.p3 . S.bgSlate950 . S.borderT . S.borderSlate800 . S.shrink0 . S.flex . S.gap2
 
 sidebarRightWidget
-  :: ( StyledDomBuilder t m
+  :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , MonadStyle m
      , ApiRequester t m
      )
   => Dynamic t (Maybe (Identified ActorId ActorState))
@@ -61,39 +56,39 @@ sidebarRightWidget
   -> PhaseDisplayConfig t
   -> m ()
 sidebarRightWidget activeActor logsDyn phaseConfig = do
-  divT sidebarRightContainer $ do
+  divS sidebarRightContainer $ do
     -- Phase Display
     phaseDisplayWidget phaseConfig
 
     -- Header
-    divT sidebarHeader $ do
+    divS sidebarHeader $ do
       row $ do
-        elT "h2" (S.textXs . S.fontBold . S.textSlate500 . S.uppercase . S.trackingWider) $ text "Game Log"
+        elS "h2" (S.textXs . S.fontBold . S.textSlate500 . S.uppercase . S.trackingWider) $ text "Game Log"
         spacer
         -- Count
-        elT
+        elS
           "div"
-          ( S.atom "text-[10px]" "font-size" "10px"
-              . S.atom "text-slate-600" "color" "#475569"
-              . S.atom "font-mono" "font-family" "monospace"
+          ( S.css "text-[10px]" "font-size" "10px"
+              . S.css "text-slate-600" "color" "#475569"
+              . S.css "font-mono" "font-family" "monospace"
           )
           $ dynText
           $ fmap (T.pack . show . length) logsDyn
 
     -- Logs
-    logAreaCls <- classes (logArea mempty)
+    let logAreaCls = classNames logArea
     _ <- elAttr "div" ("class" =: logAreaCls <> testId "game-log") $ do
       -- Reverse to show oldest at top, newest at bottom (standard chat log)
       simpleList (fmap reverse logsDyn) renderLogEntry
 
-    divT chatArea $ chatInputRequesting activeActor
+    divS chatArea $ chatInputRequesting activeActor
     pure ()
 
 chatInputRequesting
-  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, MonadStyle m, ApiRequester t m)
+  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, ApiRequester t m)
   => Dynamic t (Maybe (Identified ActorId ActorState)) -> m ()
 chatInputRequesting activeActor = do
-  classListCls <- classes (classList mempty)
+  let classListCls = classNames classList
   rec input <-
         inputElement $
           def
@@ -110,7 +105,7 @@ chatInputRequesting activeActor = do
       let send = current (value input) <@ submit
 
       -- Send Button
-      btnCls <- classes (btnStyle mempty)
+      let btnCls = classNames btnStyle
       (btn, _) <-
         elAttr'
           "button"
@@ -133,100 +128,100 @@ chatInputRequesting activeActor = do
         . S.border
         . S.borderSlate700
         . S.rounded
-        . S.atom "px-3" "padding-left" "0.75rem"
-        . S.atom "px-3" "padding-right" "0.75rem"
+        . S.css "px-3" "padding-left" "0.75rem"
+        . S.css "px-3" "padding-right" "0.75rem"
         . S.p1_5
         . S.textXs
         . S.textWhite
-        . S.atom "focus:outline-none" "outline" "none"
-        . S.atom "focus:border-indigo-500" "border-color" "#6366f1"
+        . S.css "focus:outline-none" "outline" "none"
+        . S.css "focus:border-indigo-500" "border-color" "#6366f1"
 
     btnStyle = S.bgIndigo600 . S.hover S.bgIndigo500 . S.textWhite . S.p1_5 . S.rounded
 
-renderLogEntry :: (DomBuilder t m, PostBuild t m, MonadStyle m) => Dynamic t LogEntry -> m ()
+renderLogEntry :: (DomBuilder t m, PostBuild t m) => Dynamic t LogEntry -> m ()
 renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
   LogChat c -> do
     let chatStyle =
           S.bgSlate800_50
             . S.rounded
             . S.p2
-            . S.atom "animate-fade-in" "animation" "fadeIn 0.2s"
+            . S.css "animate-fade-in" "animation" "fadeIn 0.2s"
             . S.flex
             . S.gap2
-    chatCls <- classes (chatStyle mempty)
+    let chatCls = classNames chatStyle
     elAttr
       "div"
       ( "class" =: chatCls
           <> testId "log-entry-chat"
       )
       $ do
-        elT
+        elS
           "div"
           (S.w6 . S.h6 . S.roundedFull . S.bgSlate700 . S.flex . S.itemsCenter . S.justifyCenter . S.shrink0)
           $ text "Bot"
-        divT S.flex1 $ do
-          elT
+        divS S.flex1 $ do
+          elS
             "div"
-            ( S.atom "text-[10px]" "font-size" "10px"
+            ( S.css "text-[10px]" "font-size" "10px"
                 . S.fontBold
                 . S.textSlate500
-                . S.atom "mb-0.5" "margin-bottom" "0.125rem"
+                . S.css "mb-0.5" "margin-bottom" "0.125rem"
             )
             $ text (renderSender l.sender)
-          msgCls <- classes (S.textSm . S.textSlate200 $ mempty)
+          let msgCls = classNames (S.textSm . S.textSlate200)
           elAttr "div" ("class" =: msgCls <> testId "log-entry-message") $
             text c
   LogInfo c -> do
     let (bg, border) = (S.textSlate500, S.borderSlate800)
-    divT (S.textXs . bg . S.atom "italic" "font-style" "italic" . S.p2 . S.borderB . border) $ text c
+    divS (S.textXs . bg . S.css "italic" "font-style" "italic" . S.p2 . S.borderB . border) $ text c
   LogError c -> do
-    divT (S.textXs . S.textWhite . S.bgRed900_50 . S.fontBold . S.p2 . S.borderB . S.borderRed800) $
+    divS (S.textXs . S.textWhite . S.bgRed900_50 . S.fontBold . S.p2 . S.borderB . S.borderRed800) $
       text c
   LogChallenge challenge _plannedAction -> do
     -- Red-themed container for attack/challenge (matching vtt-react)
     let challengeStyle =
-          S.atom "bg-red-950/30" "background-color" "rgb(69 10 10 / 0.3)"
+          S.css "bg-red-950/30" "background-color" "rgb(69 10 10 / 0.3)"
             . S.border
-            . S.atom "border-red-900/50" "border-color" "rgb(127 29 29 / 0.5)"
+            . S.css "border-red-900/50" "border-color" "rgb(127 29 29 / 0.5)"
             . S.rounded
             . S.p3
             . S.mb2
-            . S.atom "animate-fade-in" "animation" "fadeIn 0.2s"
-    divT challengeStyle $ do
+            . S.css "animate-fade-in" "animation" "fadeIn 0.2s"
+    divS challengeStyle $ do
       -- Header
-      divT (S.textXs . S.fontBold . S.textRed300 . S.flex . S.itemsCenter . S.gap1) $
+      divS (S.textXs . S.fontBold . S.textRed300 . S.flex . S.itemsCenter . S.gap1) $
         text "Challenge Action"
       -- Attacker
-      divT (S.textXs . S.textSlate400 . S.mt1) $
+      divS (S.textXs . S.textSlate400 . S.mt1) $
         text $
           "By: " <> renderSender l.sender
       -- Power display with color icon
-      divT
+      divS
         ( S.flex
             . S.itemsCenter
             . S.gap2
             . S.textSm
-            . S.atom "bg-black/40" "background-color" "rgb(0 0 0 / 0.4)"
+            . S.css "bg-black/40" "background-color" "rgb(0 0 0 / 0.4)"
             . S.rounded
             . S.p1
             . S.mt2
         )
         $ do
-          elT "span" (S.fontBold . S.textRed400) $
+          elS "span" (S.fontBold . S.textRed400) $
             text $
               "Power: " <> tshow challenge.challengeStrength
           renderResourceType IconInline challenge.challengeColor Nothing
   LogDefense{} -> do
     -- Placeholder for Defense Logs (if rendered independently)
     let defenseStyle =
-          S.atom "bg-blue-950/30" "background-color" "rgb(23 37 84 / 0.3)"
+          S.css "bg-blue-950/30" "background-color" "rgb(23 37 84 / 0.3)"
             . S.border
-            . S.atom "border-blue-900/50" "border-color" "rgb(30 58 138 / 0.5)"
+            . S.css "border-blue-900/50" "border-color" "rgb(30 58 138 / 0.5)"
             . S.rounded
             . S.p3
             . S.mb2
-    divT defenseStyle $ do
-      divT (S.textXs . S.fontBold . S.textBlue300) $ text "Defense Action"
+    divS defenseStyle $ do
+      divS (S.textXs . S.fontBold . S.textBlue300) $ text "Defense Action"
 
 renderSender :: LogSender -> T.Text
 renderSender SenderSystem = "System"

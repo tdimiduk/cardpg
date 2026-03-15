@@ -27,8 +27,7 @@ import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 
-import Frontend.Style.Class (MonadStyle)
-import Frontend.Style.Common (Style, componentT)
+import Frontend.Style.Common (Style, componentS)
 import Frontend.Style.DSL qualified as S
 
 import Frontend.Util
@@ -39,13 +38,13 @@ appRoot = S.flexRow . S.hScreen . S.bgSlate950 . S.textSlate100 . S.overflowHidd
 
 -- | Main content area (right of sidebar)
 mainContent :: Style
-mainContent = S.flexCol . S.flex1 . S.relative . S.bgSlate900 . S.overflowHidden
+mainContent = S.flexCol . S.flex1 . S.relative . S.bgSlate900
 
 -- | Placeholder for game board
 gameBoardPlaceholder :: Style
 gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . S.textSlate700
 
-appWidget :: (MonadWidget t m, MonadStyle m, Prerender t m) => T.Text -> UUID -> m ()
+appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
@@ -107,7 +106,6 @@ uiWidget
      , MonadFix m
      , Adjustable t m
      , MonadIO m
-     , MonadStyle m
      , ApiRequester t m
      , Prerender t m
      )
@@ -121,7 +119,7 @@ uiWidget
   -> Dynamic t Int
   -- ^ Total Count
   -> m ()
-uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = componentT "app-container" appRoot $ do
+uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = componentS "app-container" appRoot $ do
   rec -- Construct config for Phase Display
       let phaseConfig =
             PhaseDisplayConfig
@@ -135,9 +133,9 @@ uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = compon
       activeActorChange <- sidebarWidget activeActor actorsMapDyn
 
   -- Main Content Area (Right)
-  componentT "main-content" mainContent $ do
+  componentS "main-content" mainContent $ do
     -- Top Bar / Game Board Area (Placeholder)
-    componentT "game-board" gameBoardPlaceholder $ text "Game Board Area"
+    componentS "game-board" gameBoardPlaceholder $ text "Game Board Area"
 
     let activeActorMap = ffor activeActor $ \case
           Nothing -> Map.empty

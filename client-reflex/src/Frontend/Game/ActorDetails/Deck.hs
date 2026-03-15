@@ -18,18 +18,16 @@ import Core.Util (tshow)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
 
 import Frontend.Icons (iconDeck, iconRefresh)
-import Frontend.Style.Class (MonadStyle, StyledDomBuilder)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
 
 deckWidget
-  :: ( StyledDomBuilder t m
+  :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , Prerender t m
      , MonadFix m
-     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      )
@@ -37,11 +35,11 @@ deckWidget
   -> Dynamic t ActorState
   -> m ()
 deckWidget actorId actorState = do
-  divT (S.flexCol . S.gap2 . S.p2 . S.bgSlate950 . S.rounded . S.textSlate100) $ do
+  divS (S.flexCol . S.gap2 . S.p2 . S.bgSlate950 . S.rounded . S.textSlate100) $ do
     let cs = fmap (.coreState) actorState
 
     -- Cards Row
-    (viewDeck, viewDiscard) <- divT (S.flex . S.wFull . S.gap2) $ do
+    (viewDeck, viewDiscard) <- divS (S.flex . S.wFull . S.gap2) $ do
       let deckBox =
             S.flexCol
               . S.flex
@@ -67,10 +65,10 @@ deckWidget actorId actorState = do
               (elClass "div" "w-5 h-5" iconDeck)
 
       -- Draw Pile Box
-      viewDeckClick <- divT deckBox $ do
+      viewDeckClick <- divS deckBox $ do
         viewDeckClick' <- viewButton
-        divT (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Draw Pile"
-        elT "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
+        divS (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Draw Pile"
+        elS "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
         drawClick <-
           button
             def
@@ -83,11 +81,11 @@ deckWidget actorId actorState = do
         pure viewDeckClick'
 
       -- Discard Box
-      viewDiscardClick <- divT deckBox $ do
+      viewDiscardClick <- divS deckBox $ do
         viewDiscardClick' <- viewButton
-        divT (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Discard"
+        divS (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Discard"
 
-        elT "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
+        elS "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
 
         widgetHold_ buttonSpacer $ ffor (updated cs) $ \s -> case s.discard of
           [] -> buttonSpacer
@@ -106,11 +104,11 @@ deckWidget actorId actorState = do
 
     deckViewerModal (leftmost [viewDeckReq, viewDiscardReq])
 
-buttonSpacer :: (DomBuilder t m, MonadStyle m) => m ()
-buttonSpacer = elT "div" (S.atom "h-[26px]" "height" "26px") blank
+buttonSpacer :: (DomBuilder t m) => m ()
+buttonSpacer = elS "div" (S.css "h-[26px]" "height" "26px") blank
 
 reshuffleButtonRequesting
-  :: (Request m ~ ApiRequest, DomBuilder t m, PostBuild t m, MonadStyle m, Requester t m)
+  :: (Request m ~ ApiRequest, DomBuilder t m, PostBuild t m, Requester t m)
   => ActorId -> m ()
 reshuffleButtonRequesting actorId = do
   reshuffleClick <-

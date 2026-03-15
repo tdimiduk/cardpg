@@ -47,7 +47,6 @@ import Frontend.Card
 import Frontend.Catalog (catalogWidget)
 import Frontend.MockData qualified as Mock
 
-import Frontend.Style.Class (StyledDomBuilder)
 import Frontend.Style.Common
 import Frontend.Style.Layout
 import Server.Game (GameState (..))
@@ -251,7 +250,7 @@ generateGame opts path skipSnapshot = do
 
 -- | Widgets (Copied/Adapted)
 mockGameWidget
-  :: ( StyledDomBuilder t m
+  :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
@@ -278,10 +277,10 @@ mockGameWidget initialActorId gameState phaseSetting = do
           never
   return ()
 
-deckWidget :: (StyledDomBuilder t m) => ActorDefinition -> m ()
+deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
-  divT deckGrid $ do
+  divS deckGrid $ do
     mapM_ (renderNatureCardWith printSettings) actor.nature
     mapM_ (renderItemCardWith printSettings) actor.items
     mapM_ (renderCoreCardWith printSettings) actor.deck
@@ -290,7 +289,9 @@ wrapHtml :: Text -> BS.ByteString -> BL.ByteString
 wrapHtml title body =
   "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
     <> BL.fromStrict (encodeUtf8 title)
-    <> "</title><link rel='stylesheet' href='client-reflex/static/output.css'></head><body>"
+    <> "</title><link rel='stylesheet' href='https://unpkg.com/open-props'/>"
+    <> "<link rel='stylesheet' href='client-reflex/static/output.css'>"
+    <> "<link rel='stylesheet' href='client-reflex/static/atomic.css'></head><body>"
     <> BL.fromStrict body
     <> "</body></html>"
 

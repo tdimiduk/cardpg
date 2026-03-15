@@ -5,8 +5,8 @@
 -- 1. Static HTML generation (StaticMain.hs)
 -- 2. CSS generation (GenCss.hs)
 --
--- This ensures the StyleWriterT captures all parameterized styles
--- by exercising all UI code paths.
+-- This ensures we capture parameterized styles
+-- by exercising all UI code paths during static/gen-css runs.
 module Frontend.MockData
   ( -- * Mock Actors
     mockActorState

@@ -22,11 +22,7 @@ module Frontend.Style.Layout
 
 import Reflex.Dom.Core
 
-import Frontend.Style.Class (StyledDomBuilder)
-import Frontend.Style.Common
-  ( Style
-  , divT
-  )
+import Frontend.Style.Common (Style, divS)
 import Frontend.Style.DSL qualified as S
 
 --------------------------------------------------------------------------------
@@ -36,45 +32,44 @@ import Frontend.Style.DSL qualified as S
 --------------------------------------------------------------------------------
 
 -- | A horizontal flex container.
--- | A horizontal flex container.
-row :: (StyledDomBuilder t m) => m a -> m a
-row = divT S.flexRow
+row :: (DomBuilder t m) => m a -> m a
+row = divS S.flexRow
 
 -- | A horizontal flex container with a gap.
-rowGap :: (StyledDomBuilder t m) => Style -> m a -> m a
-rowGap gap = divT (S.flexRow . gap)
+rowGap :: (DomBuilder t m) => Style -> m a -> m a
+rowGap gap = divS (S.flexRow . gap)
 
 -- | A horizontal flex container with arbitrary styles.
-rowWith :: (StyledDomBuilder t m) => Style -> m a -> m a
-rowWith s = divT (S.flexRow . s)
+rowWith :: (DomBuilder t m) => Style -> m a -> m a
+rowWith s = divS (S.flexRow . s)
 
 -- | A vertical flex container.
-col :: (StyledDomBuilder t m) => m a -> m a
-col = divT S.flexCol
+col :: (DomBuilder t m) => m a -> m a
+col = divS S.flexCol
 
 -- | A vertical flex container with a gap.
-colGap :: (StyledDomBuilder t m) => Style -> m a -> m a
-colGap gap = divT (S.flexCol . gap)
+colGap :: (DomBuilder t m) => Style -> m a -> m a
+colGap gap = divS (S.flexCol . gap)
 
 -- | A vertical flex container with arbitrary styles.
-colWith :: (StyledDomBuilder t m) => Style -> m a -> m a
-colWith s = divT (S.flexCol . s)
+colWith :: (DomBuilder t m) => Style -> m a -> m a
+colWith s = divS (S.flexCol . s)
 
 -- | A growing spacer element.
-spacer :: (StyledDomBuilder t m) => m ()
-spacer = divT S.grow blank
+spacer :: (DomBuilder t m) => m ()
+spacer = divS S.grow blank
 
 -- | Full-size overlay container.
-overlay :: (StyledDomBuilder t m) => m a -> m a
-overlay = divT (S.absolute . S.inset0)
+overlay :: (DomBuilder t m) => m a -> m a
+overlay = divS (S.absolute . S.inset0)
 
 -- | Bottom-anchored overlay.
-overlayBottom :: (StyledDomBuilder t m) => m a -> m a
-overlayBottom = divT (S.absolute . S.bottom0 . S.left0 . S.right0)
+overlayBottom :: (DomBuilder t m) => m a -> m a
+overlayBottom = divS (S.absolute . S.bottom0 . S.left0 . S.right0)
 
 -- | Bottom-anchored overlay with additional styles.
-overlayBottomWith :: (StyledDomBuilder t m) => Style -> m a -> m a
-overlayBottomWith s = divT (S.absolute . S.bottom0 . S.left0 . S.right0 . s)
+overlayBottomWith :: (DomBuilder t m) => Style -> m a -> m a
+overlayBottomWith s = divS (S.absolute . S.bottom0 . S.left0 . S.right0 . s)
 
 --------------------------------------------------------------------------------
 

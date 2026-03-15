@@ -1,28 +1,24 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Common styling atoms and element helpers.
+-- | Common styling infrastructure and element helpers.
 --
--- This module provides the core infrastructure for building styled elements
--- using the transformer-style CSS pattern.
+-- This module provides the core element helpers for building styled
+-- Reflex DOM elements using the composable Style system.
 module Frontend.Style.Common
-  ( -- * Core Types
+  ( -- * Core re-exports
     Style
-  , classes
-  , toClassName
+  , Prop (..)
+  , css
+  , css'
+  , cls
+  , classNames
 
     -- * Element Helpers
   , divS
   , elS
   , elS'
-  , component
+  , componentS
   , testId
-
-    -- * Transformer-style Element Helpers
-  , divT
-  , elT
-  , elT'
-  , componentT
-  , toStyle
 
     -- * Composite Styles (multi-atom combinations)
   , iconBlock
@@ -37,98 +33,37 @@ module Frontend.Style.Common
 
 import Data.Map (Map)
 import Data.Text (Text)
-import Data.Text qualified as T
 import Reflex.Dom.Core
-import Web.Atomic.CSS.Layout qualified as Layout
-import Web.Atomic.Types (CSS (..), Length (Pct), Rule)
-import Web.Atomic.Types qualified as Atomic (ClassName (..), Rule (..))
 
-import Frontend.Style.Class (MonadStyle (..), StyledDomBuilder)
+import Frontend.Style.Core (Prop (..), Style, classNames, cls, css, css')
 import Frontend.Style.DSL
-
---------------------------------------------------------------------------------
--- Core Types
---------------------------------------------------------------------------------
-
--- | A style transformer that composes CSS rules.
--- Use (.) to compose styles: @flex . justifyCenter . gap4@
-type Style = CSS [Rule] -> CSS [Rule]
-
--- | Registers the CSS rules and returns the class string for the DOM.
-classes :: (MonadStyle m) => CSS [Rule] -> m Text
-classes css@(CSS rules) = do
-  registerStyles css
-  pure $ T.unwords $ map toClassName rules
-
--- | Extract the class name from a Rule.
-toClassName :: Rule -> Text
-toClassName (Atomic.Rule c _ _ _) = case c of
-  Atomic.ClassName t -> t
 
 --------------------------------------------------------------------------------
 -- Element Helpers
 --------------------------------------------------------------------------------
 
--- | Helper to create a div with CSS styles.
-divS :: (StyledDomBuilder t m) => CSS [Rule] -> m a -> m a
-divS css child = do
-  clsText <- classes css
-  divClass clsText child
+-- | Create a styled div.
+divS :: (DomBuilder t m) => Style -> m a -> m a
+divS style = divClass (classNames style)
 
--- | A named component div (useful for debugging/structure).
-component :: (StyledDomBuilder t m) => Text -> CSS [Rule] -> m a -> m a
-component name css child = do
-  clsText <- classes css
-  elAttr "div" ("class" =: clsText <> testId name) child
+-- | Create a styled element.
+elS :: (DomBuilder t m) => Text -> Style -> m a -> m a
+elS tagName style = elClass tagName (classNames style)
 
--- | Helper to create an element with CSS styles.
-elS :: (StyledDomBuilder t m) => Text -> CSS [Rule] -> m a -> m a
-elS tagName css child = do
-  clsText <- classes css
-  elClass tagName clsText child
-
--- | Helper to create an element with CSS styles and attributes.
+-- | Create a styled element with additional attributes.
 elS'
-  :: (StyledDomBuilder t m)
-  => Text -> CSS [Rule] -> Map Text Text -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
-elS' tagName css attrs child = do
-  clsText <- classes css
-  elAttr' tagName (("class" =: clsText) <> attrs) child
+  :: (DomBuilder t m)
+  => Text -> Style -> Map Text Text -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
+elS' tagName style attrs = elAttr' tagName (("class" =: classNames style) <> attrs)
+
+-- | A named component div (adds data-testid for testing/debugging).
+componentS :: (DomBuilder t m) => Text -> Style -> m a -> m a
+componentS name style child =
+  elAttr "div" ("class" =: classNames style <> testId name) child
 
 -- | Add a data-testid attribute for testing.
 testId :: Text -> Map Text Text
 testId = ("data-testid" =:)
-
---------------------------------------------------------------------------------
--- Transformer-style Element Helpers
---------------------------------------------------------------------------------
-
--- | Create a div using transformer-style CSS.
--- @
--- divT (flex . justifyCenter . hover bgSlate700) child
--- @
-divT :: (StyledDomBuilder t m) => Style -> m a -> m a
-divT style = divS (style mempty)
-
--- | Create an element using transformer-style CSS.
-elT :: (StyledDomBuilder t m) => Text -> Style -> m a -> m a
-elT tagName style = elS tagName (style mempty)
-
--- | Create an element using transformer-style CSS with attributes.
-elT'
-  :: (StyledDomBuilder t m)
-  => Text -> Style -> Map Text Text -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
-elT' tagName style = elS' tagName (style mempty)
-
--- | A named component div using transformer-style CSS.
-componentT :: (StyledDomBuilder t m) => Text -> Style -> m a -> m a
-componentT name style child = do
-  clsText <- classes (style mempty)
-  elAttr "div" ("class" =: clsText <> testId name) child
-
--- | Convert a raw CSS value to a Style transformer.
-toStyle :: CSS [Rule] -> Style
-toStyle css = (css <>)
 
 --------------------------------------------------------------------------------
 -- Composite Styles (multi-atom combinations)
@@ -140,11 +75,19 @@ iconBlock = w10 . h10 . fontBold . textXl
 
 -- | Responsive icon (percentage height)
 iconResponsive :: Style
-iconResponsive = Layout.height (Pct 0.3) . wFit . aspectSquare . fontBold
+iconResponsive =
+  css "h-30pct" "height" "30%"
+    . css "w-auto" "width" "auto"
+    . aspectSquare
+    . fontBold
 
 -- | Inline icon (fits text line height)
 iconInline :: Style
-iconInline = inlineBlock . atom "h-[0.8em]" "height" "0.8em" . atom "w-auto" "width" "auto" . alignTextBottom
+iconInline =
+  inlineBlock
+    . css "h-0.8em" "height" "0.8em"
+    . css "w-auto" "width" "auto"
+    . alignTextBottom
 
 -- | Resource icon size
 resourceIcon :: Style
@@ -160,8 +103,8 @@ resourceTextPrint = textBlack
 
 -- | Helper for dynamic shadows (takes size suffix like "md", "lg", "xl")
 shadow :: Text -> Style
-shadow size = atom ("shadow-" <> size) "box-shadow" ""
+shadow size = css ("shadow-" <> size) "box-shadow" ""
 
 -- | Helper for dynamic backdrop blur
 backdropBlur :: Text -> Style
-backdropBlur size = atom ("backdrop-blur-" <> size) "backdrop-filter" (T.unpack $ "blur(" <> size <> ")")
+backdropBlur size = css ("backdrop-blur-" <> size) "backdrop-filter" ("blur(" <> size <> ")")

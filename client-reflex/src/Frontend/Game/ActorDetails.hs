@@ -17,7 +17,6 @@ import Frontend.Game.ActorDetails.Consequences (consequencesWidget)
 import Frontend.Game.ActorDetails.Deck (deckWidget)
 import Frontend.Game.ActorDetails.Stats (statsWidget)
 
-import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 
@@ -27,7 +26,6 @@ actorDetailsWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
-     , MonadStyle m
      , Requester t m
      , Request m ~ ApiRequest
      , Prerender t m
@@ -35,7 +33,7 @@ actorDetailsWidget
   => ActorId
   -> Dynamic t ActorState
   -> m ()
-actorDetailsWidget actorId actorState = componentT "actor-details" (S.flexCol . S.gap2 . S.wFull) $ do
+actorDetailsWidget actorId actorState = componentS "actor-details" (S.flexCol . S.gap2 . S.wFull) $ do
   deckWidget actorId actorState
 
   statsWidget actorState

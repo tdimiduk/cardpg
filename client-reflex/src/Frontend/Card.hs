@@ -22,8 +22,6 @@ module Frontend.Card
 
 import Data.Default (Default (..))
 import Reflex.Dom.Core
-import Web.Atomic.CSS.Layout (flexCol, flexRow)
-import Web.Atomic.Types (CSS, Rule)
 
 import Core.Card
   ( CoreCard (..)
@@ -56,15 +54,11 @@ import Frontend.Style qualified as Style
   , textboxPrint
   , textboxScreen
   )
-import Frontend.Style.Class (MonadStyle, StyledDomBuilder)
 import Frontend.Style.Common
   ( Style
-  , component
-  , componentT
-  , divT
-  , toStyle
+  , componentS
+  , divS
   )
-import Frontend.Style.Common qualified as Style
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (row, spacer)
 import Frontend.Svg (renderHexagon)
@@ -136,11 +130,11 @@ textboxClasses settings = case settings.displayMode of
 --------------------------------------------------------------------------------
 
 -- | Render stats with default settings (column layout, responsive icons)
-renderStats :: (DomBuilder t m, MonadStyle m) => Stats Int -> m ()
+renderStats :: (DomBuilder t m) => Stats Int -> m ()
 renderStats = renderStatsWith def
 
 -- | Render stats with custom settings
-renderStatsWith :: (StyledDomBuilder t m, MonadStyle m) => StatsSettings -> Stats Int -> m ()
+renderStatsWith :: (DomBuilder t m) => StatsSettings -> Stats Int -> m ()
 renderStatsWith settings s =
   let layoutStyle = case settings.statsLayout of
         StatsCol ->
@@ -153,7 +147,7 @@ renderStatsWith settings s =
             . S.pb1
             . S.itemsCenter
         StatsRow -> S.flex . S.gap1
-   in componentT "stats" layoutStyle $
+   in componentS "stats" layoutStyle $
         mapM_
           (renderStatValue settings.statsIconMode . flip getStatValue s)
           [Red, Yellow, Blue]
@@ -163,38 +157,38 @@ renderStatsWith settings s =
 --------------------------------------------------------------------------------
 
 -- | Render a CoreCard with default settings
-renderCoreCard :: (DomBuilder t m, MonadStyle m) => CoreCard -> m ()
+renderCoreCard :: (DomBuilder t m) => CoreCard -> m ()
 renderCoreCard = renderCoreCardWith def
 
 -- | Render a CoreCard with custom settings
-renderCoreCardWith :: (DomBuilder t m, MonadStyle m) => CardSettings -> CoreCard -> m ()
+renderCoreCardWith :: (DomBuilder t m) => CardSettings -> CoreCard -> m ()
 renderCoreCardWith settings c = case settings.displayMode of
-  CardRow -> divT (cardClasses settings) $ do
-    componentT "name" (nameClasses settings) $ renderNonEmptyText c.name
-    maybe blank (\c' -> renderHexagon (costClasses settings mempty) (Just $ tshow c')) c.cost
+  CardRow -> divS (cardClasses settings) $ do
+    componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
+    maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
     spacer
     renderStatsWith (StatsSettings StatsRow IconResponsive) c.stats
-  CardFull -> scalable 63 88 $ divT (cardClasses settings) $ do
+  CardFull -> scalable 63 88 $ divS (cardClasses settings) $ do
     row $ do
-      componentT "name" (nameClasses settings) $ renderNonEmptyText c.name
+      componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
       spacer
-      maybe blank (\c' -> renderHexagon (costClasses settings mempty) (Just $ tshow c')) c.cost
-    componentT "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
+      maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
+    componentS "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
       renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
-      componentT "art" (artClasses settings) blank
-    componentT "rules" (textboxClasses settings) $ do
+      componentS "art" (artClasses settings) blank
+    componentS "rules" (textboxClasses settings) $ do
       maybe blank (divClass "action" . el "p" . renderAttackDef) c.attack
       mapM_ (mapM_ (divClass "action" . el "p" . renderRule)) c.rules
       mapM_ renderRichText c.flavor
-  CardPrint -> divT (cardClasses settings) $ do
+  CardPrint -> divS (cardClasses settings) $ do
     row $ do
-      componentT "name" (nameClasses settings) $ renderNonEmptyText c.name
+      componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
       spacer
-      maybe blank (\c' -> renderHexagon (costClasses settings mempty) (Just $ tshow c')) c.cost
-    componentT "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
+      maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
+    componentS "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
       renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
-      componentT "art" (artClasses settings) blank
-    componentT "rules" (textboxClasses settings) $ do
+      componentS "art" (artClasses settings) blank
+    componentS "rules" (textboxClasses settings) $ do
       maybe blank (divClass "action" . el "p" . renderAttackDef) c.attack
       mapM_ (mapM_ (divClass "action" . el "p" . renderRule)) c.rules
       mapM_ renderRichText c.flavor
@@ -204,15 +198,15 @@ renderCoreCardWith settings c = case settings.displayMode of
 --------------------------------------------------------------------------------
 
 -- | Render an ItemCard with default settings
-renderItemCard :: (DomBuilder t m, MonadStyle m) => ItemCard -> m ()
+renderItemCard :: (DomBuilder t m) => ItemCard -> m ()
 renderItemCard = renderItemCardWith def
 
 -- | Render an ItemCard with custom settings
-renderItemCardWith :: (DomBuilder t m, MonadStyle m) => CardSettings -> ItemCard -> m ()
-renderItemCardWith settings c = divT (cardClasses settings) $ do
-  componentT "name" (nameClasses settings) $ renderNonEmptyText c.name
-  divT (artClasses settings) blank
-  componentT "rules" (textboxClasses settings) $ do
+renderItemCardWith :: (DomBuilder t m) => CardSettings -> ItemCard -> m ()
+renderItemCardWith settings c = divS (cardClasses settings) $ do
+  componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
+  divS (artClasses settings) blank
+  componentS "rules" (textboxClasses settings) $ do
     mapM_ (el "p" . text) c.passive
     mapM_ renderRichText c.flavor
 
@@ -221,15 +215,15 @@ renderItemCardWith settings c = divT (cardClasses settings) $ do
 --------------------------------------------------------------------------------
 
 -- | Render a NatureCard with default settings
-renderNatureCard :: (DomBuilder t m, MonadStyle m) => NatureCard -> m ()
+renderNatureCard :: (DomBuilder t m) => NatureCard -> m ()
 renderNatureCard = renderNatureCardWith def
 
 -- | Render a NatureCard with custom settings
-renderNatureCardWith :: (DomBuilder t m, MonadStyle m) => CardSettings -> NatureCard -> m ()
-renderNatureCardWith settings c = divT (cardClasses settings) $ do
-  componentT "name" (nameClasses settings) $ renderNonEmptyText c.name
-  divT (artClasses settings) blank
-  componentT "rules" (textboxClasses settings) $ do
+renderNatureCardWith :: (DomBuilder t m) => CardSettings -> NatureCard -> m ()
+renderNatureCardWith settings c = divS (cardClasses settings) $ do
+  componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
+  divS (artClasses settings) blank
+  componentS "rules" (textboxClasses settings) $ do
     mapM_ (el "p" . text) c.passive
     mapM_ renderRichText c.flavor
 

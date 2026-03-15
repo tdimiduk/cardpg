@@ -50,7 +50,7 @@ module Frontend.Style
   , stagedResourceCard
   ) where
 
-import Frontend.Style.Common (Style)
+import Frontend.Style.Core (Style, css)
 import Frontend.Style.DSL
 
 --------------------------------------------------------------------------------
@@ -66,6 +66,7 @@ cardBase =
     . relative
     . p2_5mm -- Padding around the card content within the border
     . overflowHidden
+    . standardCardSize
 
 -- ** Screen Styles
 
@@ -132,19 +133,13 @@ plannedCardOverlap = mlCardOverlap
 -- ** Art
 
 artBase :: Style
-artBase =
-  wFull
-    . aspect43
-    . mb2mm
-    . bgGray300
-    . rounded1mm
-    . overflowHidden
+artBase = id
 
 artScreen :: Style
-artScreen = border . borderSlate700
+artScreen = grow . hFull . rounded2mm . bgSlate800 . border . borderSlate700
 
 artPrint :: Style
-artPrint = border . borderBlack . grayscale
+artPrint = css "h-33mm" "height" "33mm" . border . borderBlack . grayscale . roundedNone . bgTransparent
 
 -- ** Name
 
@@ -165,11 +160,10 @@ namePrint = textBlack
 
 costBase :: Style
 costBase =
-  absolute
-    . top2mm
-    . right2mm
-    . w8mm
-    . h8mm
+  css "w-1.4em" "width" "1.4em"
+    . css "h-1.4em" "height" "1.4em"
+    . css "-mt-0.1em" "margin-top" "-0.1em"
+    . css "-mb-0.1em" "margin-bottom" "-0.1em"
     . z10
     . flex
     . itemsCenter

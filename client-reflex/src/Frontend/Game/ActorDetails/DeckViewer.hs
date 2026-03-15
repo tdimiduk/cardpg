@@ -15,7 +15,6 @@ import Core.Card (CoreCard)
 import Core.Util (tshow)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Icons (iconClose)
-import Frontend.Style.Class (MonadStyle)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (cardGrid)
@@ -31,7 +30,6 @@ deckViewerModal
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , MonadStyle m
      )
   => Event t (Maybe DeckViewData)
   -> m ()
@@ -56,7 +54,6 @@ renderModal
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
-     , MonadStyle m
      )
   => DeckViewData
   -> m (Event t ())
@@ -64,14 +61,14 @@ renderModal deckView = do
   -- Overlay background
   -- Non-modal Overlay (Positioned to reveal hand and sidebar)
   let fixedPos = S.fixed . S.z30 . top6 . bottom96 . left80 . right6
-      top6 = S.atom "top-6" "top" "1.5rem"
-      bottom96 = S.atom "bottom-96" "bottom" "24rem"
-      left80 = S.atom "left-80" "left" "20rem"
-      right6 = S.atom "right-6" "right" "1.5rem"
+      top6 = S.css "top-6" "top" "1.5rem"
+      bottom96 = S.css "bottom-96" "bottom" "24rem"
+      left80 = S.css "left-80" "left" "20rem"
+      right6 = S.css "right-6" "right" "1.5rem"
 
-  divT fixedPos $ do
+  divS fixedPos $ do
     -- Container
-    divT
+    divS
       ( S.bgSlate900
           . S.border
           . S.borderSlate700
@@ -84,21 +81,21 @@ renderModal deckView = do
       )
       $ do
         -- Header
-        closeClick <- divT
+        closeClick <- divS
           (S.p4 . S.borderB . S.borderSlate700 . S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate950)
           $ do
-            elT "h2" (S.textXl . S.fontBold . S.textSlate100 . S.flex . S.itemsCenter . S.gap2) $ do
+            elS "h2" (S.textXl . S.fontBold . S.textSlate100 . S.flex . S.itemsCenter . S.gap2) $ do
               -- Using text for the icon for now as per plan, or maybe I should use an icon.
               -- Plan said "Title bar with 'Deck Viewer (N cards)'".
               text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"
 
             button def{variant = constDyn VariantGhost, size = constDyn SizeSmall} $
-              divT (S.w8 . S.h8) iconClose
+              divS (S.w8 . S.h8) iconClose
 
         let settings = CardSettings CardFull
-        divT (cardGrid . S.flex1 . S.overflowYAuto . minH0 . S.wFull) $
+        divS (cardGrid . S.flex1 . S.overflowYAuto . minH0 . S.wFull) $
           mapM_ (renderCoreCardWith settings) deckView.cards
 
         return closeClick
   where
-    minH0 = S.atom "min-h-0" "min-height" "0"
+    minH0 = S.css "min-h-0" "min-height" "0"
