@@ -232,6 +232,7 @@ staticStyles =
     , S.aspectSquare
     , S.wCardHand
     , S.mlCardOverlap
+    , S.spaceXActionStackOverlap
     , S.originBottom
     , S.translateYNeg4
     , S.translateYNeg8

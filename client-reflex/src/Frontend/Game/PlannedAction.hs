@@ -17,7 +17,7 @@ import Core.Primitives (ActorId)
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
-import Frontend.Game.Common (cardStackWidget)
+import Frontend.Game.Common (staticActionStackWidget)
 import Frontend.Style (cardHandWidth)
 import Frontend.Style.Common (Style, classNames, divS, elS, elS', testId)
 import Frontend.Style.DSL qualified as S
@@ -68,28 +68,27 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
       $ text "↺ Revise"
   _ <- requesting $ Req.CancelPlan actorId <$ e
   case planned of
-    PStandard (ActionStack action res) -> do
+    PStandard (ActionStack action resources) -> do
       void $
-        cardStackWidget
-          ( \rDyn -> do
+        staticActionStackWidget
+          ( \r -> do
               (eRes, _) <-
                 elS' "div" (cardHandWidth . S.shrink0 . S.transitionAll) Map.empty $
-                  dyn_ $
-                    fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
-              return (tag (current (fmap (.id) rDyn)) (domEvent Click eRes))
+                  renderCoreCardWith (CardSettings CardFull) r.content
+              return (tag (constant r.id) (domEvent Click eRes))
           )
-          ( \aDyn -> do
+          ( \a -> do
               (eAct, _) <- elS'
                 "div"
                 ((S.relative . cardHandWidth . S.shrink0) . actionCardHover)
                 (testId "planned-action-card")
                 $ do
-                  dyn_ $ fmap (renderCoreCard . (.content)) aDyn
+                  renderCoreCard a.content
                   divS plannedBadge $ text "PLANNED"
               return (domEvent Click eAct)
           )
-          (constDyn res)
-          (constDyn action)
+          resources
+          action
     PNarrative (NarrativeStack cards _color) -> do
       rowGap (S.css "-space-x-8" "margin-left" "-2rem") $
         mapM_ (divS narrativeCardHover . renderCoreCard . (.content)) cards

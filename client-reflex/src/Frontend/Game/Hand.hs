@@ -162,10 +162,9 @@ handCardsWidget actor stagingStack plannedAction = do
       simpleList visibleHand $ \cardDyn -> do
         let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
             isSelected = zipDynWith checkIsSelected stagingStack cardDyn
-            isPlayableDyn = zipDynWith (\size c -> isPlayable size c.content) handSizeDyn cardDyn
 
         let finalClassDyn =
-              ffor ((,,,) <$> isCandidate <*> isSelected <*> isPlayableDyn <*> stagingStack) $ \(cand, sel, playable, stk) ->
+              ffor ((,,) <$> isCandidate <*> isSelected <*> stagingStack) $ \(cand, sel, stk) ->
                 let
                   inStaging = isJust stk
                   baseStyle = if cand then resourceCandidateStyle else cardHoverStyle
@@ -173,8 +172,7 @@ handCardsWidget actor stagingStack plannedAction = do
                   -- Interaction highlights
                   extraStyle
                     | inStaging = if sel then S.ring2 . S.ringIndigo400 . S.ringOffset2 else id
-                    | playable = cardPlayable
-                    | otherwise = cardNotPlayable
+                    | otherwise = id
                  in
                   -- Build final class string from composed styles
                   classNames $ S.relative . cardHandWidth . extraStyle . baseStyle . S.pointerEventsAuto . S.group
@@ -182,9 +180,7 @@ handCardsWidget actor stagingStack plannedAction = do
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderCoreCardWith (CardSettings CardFull) . (.content)
 
-        -- Only allow clicking if playable (or if in staging mode)
-        let clickEnabled = ffor ((,) <$> isPlayableDyn <*> stagingStack) $ \(p, stk) -> isJust stk || p
-            effectiveClick = gate (current clickEnabled) (domEvent Click e)
+        let effectiveClick = domEvent Click e
 
         return (effectiveClick, cardDyn)
 
@@ -215,12 +211,6 @@ transitionOpacity = S.css "transition-opacity" "transition-property" "opacity"
 cardHandWidth :: Style
 cardHandWidth = FS.cardHandWidth
 
-cardPlayable :: Style
-cardPlayable = FS.cardPlayable
-
-cardNotPlayable :: Style
-cardNotPlayable = FS.cardNotPlayable
-
 isCardVisible :: Maybe ActionStack -> Maybe PlannedAction -> CardInstance CoreCard -> Bool
 isCardVisible stagingStack plannedAction c =
   let hiddenInPlan = case plannedAction of
@@ -241,11 +231,4 @@ checkResourceCandidate stk c = case stk of
 checkIsSelected :: Maybe ActionStack -> CardInstance CoreCard -> Bool
 checkIsSelected stk c = case stk of
   Just s -> any (\r -> r.id == c.id) s.resources
-  Nothing -> False
-
--- | Check if a card can be played as an action
--- Must have a cost, and cost must be <= available resources (hand size - 1)
-isPlayable :: Int -> CoreCard -> Bool
-isPlayable handSize CoreCard{cost} = case cost of
-  Just c -> c <= handSize - 1
   Nothing -> False

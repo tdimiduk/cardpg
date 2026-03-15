@@ -41,10 +41,6 @@ module Frontend.Style
   , textboxScreen
   , textboxPrint
 
-    -- * Interactables
-  , cardPlayable
-  , cardNotPlayable
-
     -- * Staging Styles
   , stagedActionCard
   , stagedResourceCard
@@ -122,7 +118,7 @@ cardHandWidth :: Style
 cardHandWidth = wCardHand
 
 plannedCardOverlap :: Style
-plannedCardOverlap = mlCardOverlap
+plannedCardOverlap = spaceXActionStackOverlap
 
 --------------------------------------------------------------------------------
 
@@ -203,29 +199,6 @@ textboxPrint = roundedNone . bgTransparent . borderBlack
 
 --------------------------------------------------------------------------------
 
--- * Interactables
-
---------------------------------------------------------------------------------
-
-cardPlayable :: Style
-cardPlayable =
-  translateYNeg4
-    . scale105
-    . transitionAll
-    . duration200
-    . cursorPointer
-    . shadowLg
-    . ring2
-    . ringBlue400
-    . z20
-
--- Note: hover: variants need special handling - these are the applied states
-
-cardNotPlayable :: Style
-cardNotPlayable = opacity75 . grayscale50 . cursorNotAllowed
-
---------------------------------------------------------------------------------
-
 -- * Staging Styles
 
 --------------------------------------------------------------------------------
@@ -237,7 +210,7 @@ stagedActionCard =
     . group
     . cursorPointer
     . originBottom
-    . w40
+    . cardHandWidth
     . shrink0
     . z10
     . transitionTransform
@@ -251,7 +224,7 @@ stagedResourceCard =
     . group
     . cursorPointer
     . originBottom
-    . w40
+    . cardHandWidth
     . shrink0
     . transitionAll
     . duration200

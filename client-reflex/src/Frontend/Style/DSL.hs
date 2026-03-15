@@ -214,6 +214,7 @@ module Frontend.Style.DSL
     -- * Card Layout
   , wCardHand
   , mlCardOverlap
+  , spaceXActionStackOverlap
   , originBottom
   , translateYNeg4
   , translateYNeg8
@@ -252,6 +253,16 @@ module Frontend.Style.DSL
 import Data.Text (Text)
 import Data.Text qualified as T
 import Frontend.Style.Core
+
+----------------------------------------------------------------------------------
+
+spaceXActionStackOverlap :: Style
+spaceXActionStackOverlap = \rest ->
+  Prop
+    "space-x-action-stack-overlap"
+    ".space-x-action-stack-overlap > * + *"
+    [("margin-left", "-12vh")]
+    : rest
 
 --------------------------------------------------------------------------------
 -- Layout
