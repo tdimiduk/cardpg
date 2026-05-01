@@ -9,11 +9,13 @@ This skill outlines how to use the project's static generation infrastructure to
 
 ## Overview
 
-The `cardpg-static` tool (defined in `client-reflex/app/StaticMain.hs`) generates static snapshots of the game. It uses the SAME mock data as the CSS generator (`GenCss.hs`), making it the perfect way to:
+The `cardpg-static` tool (defined in `client-reflex/app/StaticMain.hs`) generates static snapshots of the game. It uses mock data from `Frontend.MockData.hs` to populate the UI, making it the perfect way to:
 
-1.  Verify that your `MockData.hs` changes actually look correct.
-2.  Iterate on styling (atomic CSS) with a fast feedback loop.
-3.  Ensure your new UI states are being "seen" by the CSS generation machinery.
+1.  Verify that styling changes look correct without launching a browser.
+2.  Iterate on the atomic CSS system with a fast feedback loop.
+3.  Ensure new UI states are being rendered correctly.
+
+Since `gen-css` runs before each ghciwatch reload (and you can run it manually), the generated `atomic.css` will include styles for any code path that uses the `css`/`css'` functions or named DSL atoms.
 
 ## Workflow
 
@@ -25,45 +27,74 @@ Edit `client-reflex/src/Frontend/MockData.hs` to include the state you want to v
 - Add a specific `CoreCard` or `CardInstance` if you are styling cards.
 - Add a new `Phase` or `ActorState` configuration if testing game flow.
 
-### 2. Run the Static Generator
+### 2. Regenerate CSS (if needed)
 
-Run the `cardpg-static` executable. You usually want the `game` mode, which renders the game board.
+If you've added new styles, regenerate the CSS first:
+
+```bash
+cabal run gen-css
+```
+
+(This happens automatically during `dev` mode via ghciwatch hooks.)
+
+### 3. Run the Static Generator
+
+Run the `cardpg-static` executable. The `game` mode renders the full game board:
 
 ```bash
 cabal run cardpg-static -- game data/scenarios/starter.yaml
 ```
 
-- **Note**: `data/scenarios/starter.yaml` is a real scenario file that satisfies the CLI; the tool _also_ explicitly generates views based on `MockData.hs` (e.g., `game_MockHero_planning.html`).
+- This generates views for all actors in the scenario file.
+- It **also** explicitly generates views based on `MockData.hs` (e.g., `game_MockHero_planning.html`).
 
-### 3. Inspect Output
+Other modes:
 
-Check the `output/` directory (created in the root).
+```bash
+# Card catalog (all cards)
+cabal run cardpg-static -- catalog
 
-- **Images**: `output/game_MockHero_planning.png` (and `_resolution.png`). Open these to see exactly what the UI looks like.
-- **Html**: `output/game_MockHero_planning.html`. Useful for inspecting structure if needed.
+# Single actor's deck
+cabal run cardpg-static -- deck data/cards/some_actor.yaml
+```
 
-### 4. Iterate
+### 4. Inspect Output
 
-1.  Make a change to `MockData.hs` or your component styling.
-2.  Rerun the command.
-3.  Check the PNG.
+Check the `output/` directory (created in the project root).
 
-## Connection to Atomic CSS
+- **PNGs**: `output/game_MockHero_planning.png` — Open to see what the UI looks like.
+- **HTML**: `output/game_MockHero_planning.html` — Inspect structure in a browser's dev tools.
+- **PDFs**: Generated for deck mode (for print-ready card sheets).
 
-If you see your component in the `output/game_*.png` screenshots, congratulations! This guarantees that `GenCss` (which runs the same `mockGameWidget`) has also "seen" your component and generated the necessary atomic CSS rules for it.
+### 5. Iterate
 
-If your component is missing from the screenshots, it is likely missing from the CSS generation too.
+1. Make a change to `MockData.hs`, your widget code, or DSL styles.
+2. Run `cabal run gen-css` (or let ghciwatch do it).
+3. Run `cabal run cardpg-static -- game data/scenarios/starter.yaml`.
+4. Check the PNG.
+
+## Connection to CSS Generation
+
+The static snapshots load `atomic.css` (and currently `output.css` for base styles). If your component appears correctly in the `output/game_*.png` screenshots, your styles are being generated correctly.
+
+If your component is missing or unstyled:
+
+- Check that any new named atoms are in the `staticStyles` list in `GenCss.hs`
+- Check that inline `css "..." "..." "..."` calls are being found by the Megaparsec scanner
 
 ## Troubleshooting
 
 **Problem**: "I don't see my specific mock state in the output."
 
-- **Check**: `StaticMain.hs` processes `Mock.mockActorId` in both `Planning` and `Resolution` phases.
+- **Check**: `StaticMain.hs` processes `Mock.mockActorId` in both `Planning` and `Resolution` phases:
   ```haskell
   gen "MockHero_planning" (Just Mock.mockActorId) Planning
   gen "MockHero_resolution" (Just Mock.mockActorId) Resolution
   ```
-- **Fix**: If you added a new `Phase` (e.g., `Freeform`), you might need to modify `StaticMain.hs` to explicitly generate a snapshot for it:
-  ```haskell
-  gen "MockHero_freeform" (Just Mock.mockActorId) Freeform
-  ```
+- **Fix**: If you added a new `Phase`, modify `StaticMain.hs` to generate a snapshot for it.
+
+**Problem**: "My styles look wrong in the snapshot."
+
+- **Check**: Run `cabal run gen-css` first to ensure `atomic.css` is up-to-date.
+- **Check**: Look at the HTML source — verify the class names are what you expect.
+- **Check**: Search `client-reflex/static/atomic.css` for your class name to confirm the CSS rule exists and has the right values.

@@ -5,7 +5,7 @@ description: Create a new Reflex widget module following project best practices
 
 # Skill: scaffold_reflex
 
-This skill provides a standardized way to create new Reflex UI widgets in the `client-reflex` project. It ensures adherence to best practices like avoiding `promptly` functions and proper `Render` instance setup.
+This skill provides a standardized way to create new Reflex UI widgets in the `client-reflex` project. It ensures adherence to best practices including the atomic CSS system and proper widget signatures.
 
 ## Instructions
 
@@ -18,8 +18,6 @@ When creating a new UI component, follow these steps:
 ### Template
 
 ```haskell
-{-# LANGUAGE FlexibleContexts #-}
-
 module Frontend.Game.ModuleName
   ( WidgetNameConfig (..)
   , widgetName
@@ -28,12 +26,20 @@ module Frontend.Game.ModuleName
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
 
+-- Import styling system
+import Frontend.Style.Common (Style, componentS, divS)
+import Frontend.Style.DSL qualified as S
+
 -- Import Core types if needed
--- import Core.Game (Game)
+-- import Core.State (ActorState)
 
 data WidgetNameConfig t = WidgetNameConfig
   { initialState :: Dynamic t Int -- Example field
   }
+
+-- | Style for the widget container
+widgetContainer :: Style
+widgetContainer = S.flexCol . S.gap2 . S.p4 . S.bgSlate800 . S.roundedXl
 
 widgetName
   :: ( DomBuilder t m
@@ -42,22 +48,24 @@ widgetName
      , MonadFix m
      )
   => WidgetNameConfig t
-  -> m (Event t ()) -- Return type (e.g., clicks, or generic Event t ())
-widgetName config = do
-  elClass "div" "widget-name-container" $ do
-    text "New Widget"
+  -> m (Event t ()) -- Return type
+widgetName config = componentS "widget-name" widgetContainer $ do
+  divS (S.fontBold . S.textSlate200) $ text "New Widget"
 
-    -- Example: Button that returns an event
-    (e, _) <- elAttr' "button" ("class" =: "btn-primary") $ text "Click Me"
-    return $ domEvent Click e
+  -- Example: Button that returns an event
+  (e, _) <- elAttr' "button" ("class" =: "btn-primary") $ text "Click Me"
+  return $ domEvent Click e
 ```
 
 ## Best Practices Checklist
 
-- [ ] **LANGUAGE Pragmas**: Only add non-default extensions (e.g. `FlexibleContexts`).
-- [ ] **Imports**: Import `Reflex.Dom.Core` and `Control.Monad.Fix`.
+- [ ] **Imports**: Import `Reflex.Dom.Core`, `Frontend.Style.Common`, and `Frontend.Style.DSL qualified as S`.
+- [ ] **Styling**: Use `divS`, `elS`, or `componentS` with composed styles — **never** raw `elClass` with string class names.
 - [ ] **Config Pattern**: Use a `Config` record for inputs if there's more than one argument.
 - [ ] **Record Fields**: Use `DuplicateRecordFields` style (no prefixes).
 - [ ] **Constraint correctness**: Use `DomBuilder t m`, `PostBuild t m`, etc., instead of concrete monads.
 - [ ] **No `Promptly`**: Do NOT use `attachPromptlyDyn` or similar. Use `attach` or `tag` with `current`.
 - [ ] **`widgetHold`**: Use `widgetHold` for dynamic switching of content.
+- [ ] **Test IDs**: Use `componentS "descriptive-name"` for top-level widget containers.
+- [ ] **Named styles**: Extract reusable style definitions (e.g., `widgetContainer :: Style`) rather than inlining long chains.
+- [ ] **Module registration**: Add the new module to `exposed-modules` in `client-reflex.cabal`.

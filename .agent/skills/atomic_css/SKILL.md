@@ -3,90 +3,146 @@ name: atomic_css
 description: Understanding and using the atomic CSS system in the CardPG project.
 ---
 
-# Atomic CSS Implementation
+# Atomic CSS System
 
-This skill provides context and workflows for working with the atomic CSS system in CardPG. The goal is to move towards using `atomic-css` for type-safe and ergonomic handling of styles everywhere.
+This skill provides context and workflows for working with the Haskell-native atomic CSS system in CardPG.
 
 ## Overview
 
-The project uses a hybrid approach to generate the static `atomic.css` file:
+The project uses a purpose-built CSS system defined entirely in Haskell. Styles are composable functions of type `Style = [Prop] -> [Prop]` that compose with `(.)` and produce atomic CSS class names at runtime.
 
-1.  **Static Source Scanning**: Scans `.hs` files for implicit `atom "name" "prop" "val"` usage.
-2.  **Runtime Collection (The Preferred Way)**: Executes the UI code with mock data to capture all styles actually used.
+CSS rules are generated at **build time** by the `gen-css` executable, which:
 
-We are migrating towards **Runtime Collection** as the standard. This means any style you add using the `Frontend.Style.DSL` must be reachable by the mock execution to be generated.
+1. Enumerates all static style atoms from `Frontend.Style.DSL`
+2. Scans `.hs` source files for parameterized `css "name" "prop" "val"` calls
+3. Writes `client-reflex/static/atomic.css`
 
 > [!NOTE]
-> When we say "Runtime Collection", we mean the runtime of the _build tool_ (`GenCss`), not the browser runtime. In the actual browser application, style registration is a no-op, and the app uses the pre-generated static `atomic.css` file.
+> In the browser, the style system is purely a class-name generator — it reads `Prop` values and produces space-separated class name strings. All actual CSS comes from the pre-generated `atomic.css` file.
 
-## The Machinery
+## Key Modules
 
-The system relies on three key components working together:
+| Module                  | Role                                                                                                                       |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `Frontend.Style.Core`   | Core types (`Prop`, `Style`), rendering (`classNames`, `renderAll`), modifiers (`hover`, `active`, `pseudo`, `media`)      |
+| `Frontend.Style.DSL`    | ~200 named atoms (`flexCol`, `bgSlate800`, `p4`, etc.) + parameterized functions (`gap`, `pad`, `fontSize`, `css`, `css'`) |
+| `Frontend.Style.Common` | Element helpers (`divS`, `elS`, `elS'`, `componentS`) and composite styles                                                 |
+| `Frontend.Style.Layout` | Layout combinators (`row`, `col`, `rowGap`, `colGap`, `spacer`, `overlay`)                                                 |
+| `Frontend.Style`        | Component-level style groups (`cardBase`, `cardScreen`, `artBase`, `costBase`, etc.)                                       |
 
-### 1. The Collector: `Frontend.Style.T`
+## Usage
 
-This module defines `StyleWriterT`, a monad transformer that wraps `ReaderT (IORef CollectedRules) m`.
+### Creating Styled Elements
 
-- It implements the `MonadStyle` typeclass.
-- The `registerStyles` function adds rules to the `IORef`.
-- This is the "bucket" that catches all styles during execution.
+Use the helpers from `Frontend.Style.Common`:
 
-### 2. The Triggers: `Frontend.Style.Common`
+```haskell
+import Frontend.Style.Common (divS, elS, componentS)
+import Frontend.Style.DSL (flexCol, bgSlate800, p4, gap2, textSlate200)
 
-This module provides the helper functions used in widget code.
+myWidget :: (DomBuilder t m) => m ()
+myWidget = componentS "my-widget" (flexCol . bgSlate800 . p4 . gap2) $ do
+  divS textSlate200 $ text "Hello!"
+```
 
-- `classes`: The core function that calls `registerStyles`.
-- `elT`, `divT`, `componentT`: Use these helpers! They automatically call `classes` with your styles.
-- **Workflow**: When you use `divT (flex . p4) child`, the `flex` and `p4` styles are registered _during the GenCss run_.
+- `divS style child` — Creates a `<div>` with the given style
+- `elS tag style child` — Creates an element with the given tag and style
+- `componentS name style child` — Like `divS` but adds a `data-testid` attribute
 
-### 3. The Generator: `client-reflex/app/GenCss.hs`
+### Composing Styles
 
-This is the executable that produces the CSS file.
+Styles compose with regular function composition `(.)`:
 
-- It runs `mockGameWidget` inside `StyleWriterT`.
-- It iterates through game phases `[Planning, Resolution]` to capture styles specific to each phase.
-- It uses data from `Frontend.MockData.hs` to populate the state.
-- **Crucial**: Any code path _not_ exercised by `mockGameWidget` during this run will **not** have its styles generated (unless found by the static scanner fallback).
+```haskell
+cardStyle :: Style
+cardStyle = flexCol . relative . p2_5mm . overflowHidden . wCard . hCard
+```
 
-## Workflow: Adding Styled Components
+### Using Modifiers
 
-When adding new UI components or styles, follow this workflow to ensure your styles are generated:
+```haskell
+-- Hover effect
+hoverStyle = hover bgSlate700
 
-1.  **Use the DSL**: Import atoms from `Frontend.Style.DSL` (e.g., `flex`, `p4`, `textRed500`).
-2.  **Use Transformer Helpers**: Use `divT`, `elT`, or compose your own styles with `toStyle`.
+-- Active effect
+activeStyle = active (bgSlate600 . scale105)
 
-    ```haskell
-    import Frontend.Style.Common (divT, elT)
-    import Frontend.Style.DSL (flex, gap4, textXl)
+-- Pseudo-class
+focusStyle = pseudo "focus-visible" (ringBlue400 . ring2)
 
-    myWidget :: (MonadWidget t m) => m ()
-    myWidget = do
-      divT (flex . gap4) $ do
-        elT "span" textXl $ text "Hello!"
-    ```
+-- Media query
+printStyle = media "print" (textBlack . bgWhite)
+```
 
-3.  **Ensure Coverage**:
-    - Verify that your new widget is reachable from `mockGameWidget` in `GenCss.hs`.
-    - If your component appears only in a specific game state (e.g., "Freeform"), ensure `GenCss.hs` iterates over that state or `MockData.hs` provides it.
-    - If you add a new `Phase` to `mockGameWidget`, make sure it's included in the traversal list (currently `[Planning, Resolution]`).
+### Custom One-off Styles
+
+For values not in the DSL, use `css` or `css'`:
+
+```haskell
+-- Single property
+myHeight = css "h-33mm" "height" "33mm"
+
+-- Multiple properties
+myPadding = css' "custom-pad" [("padding-left", "1.5rem"), ("padding-right", "1.5rem")]
+```
+
+## CSS Generation
+
+### Automatic (Development)
+
+During development, `gen-css` runs automatically via `ghciwatch` hooks (before startup, reload, and restart). You don't need to run it manually.
+
+### Manual
+
+```bash
+cabal run gen-css
+```
+
+This writes to `client-reflex/static/atomic.css`.
+
+### How GenCss Works
+
+1. **Static enumeration**: All named atoms from `Frontend.Style.DSL` are listed in `GenCss.hs`'s `staticStyles` array
+2. **Source scanning**: A Megaparsec parser scans all `.hs` files under `client-reflex/src/` for parameterized calls like `css "name" "prop" "val"` and `css' "name" [("p","v")]`
+3. **Variant generation**: For each unique atom, hover and active variants are generated
+4. **Deduplication**: Props are deduplicated by class name
+5. **Output**: The final CSS is written to `client-reflex/static/atomic.css`
+
+## Adding New Styles
+
+When you need a style that doesn't exist in the DSL:
+
+### Option A: Named Atom (Reusable)
+
+Add it to `Frontend.Style.DSL`:
+
+```haskell
+-- In DSL.hs
+myNewStyle :: Style
+myNewStyle = css "my-new-style" "some-property" "some-value"
+```
+
+Then add it to the export list and to the `staticStyles` list in `GenCss.hs`.
+
+### Option B: Inline Custom (One-off)
+
+Use `css` directly in your widget code:
+
+```haskell
+divS (css "h-custom" "height" "42px" . flexCol) $ text "Hello"
+```
+
+The Megaparsec scanner in `GenCss.hs` will find this and include it in the generated CSS.
 
 ## Troubleshooting
 
-**Problem**: My styles are missing in the generated CSS (elements look unstyled).
+**Problem**: My styles are missing (elements look unstyled).
 
-- **Check**: Is the widget actually being run by `gen-css`?
-- **Debug**:
-  1.  Look at `client-reflex/app/GenCss.hs`.
-  2.  Trace `mockGameWidget` -> `uiWidget` -> your component.
-  3.  If your component is behind a `case` expression or `if`, ensure the mock data in `Frontend.MockData.hs` triggers that branch.
+- **Check 1**: Did you run `gen-css`? If using `dev`, it runs automatically.
+- **Check 2**: Is your atom in the `staticStyles` list in `GenCss.hs`? (Named atoms only)
+- **Check 3**: For inline `css "..."` calls, does the scanner find them? Check `atomic.css` for your class name.
+- **Debug**: Run `cabal run gen-css` and grep the output file for your class name.
 
-**Problem**: I need a dynamic style (e.g., `gap n` where `n` changes) or my style depends on state not always active in mocks.
+**Problem**: Hover/active states aren't working.
 
-- **Solution**: You can explicitly register styles that might not be active during the mock run but are needed for the full app.
-- **Pattern**: See `Frontend.UI.Button.hs` for a robust example. You can register styles eagerly:
-  ```haskell
-  -- In your widget code
-  registerStyles $ myPossibleStyle mempty
-  registerEnumStyles (\variant -> variantStyle variant mempty)
-  ```
-  This ensures `gen-css` picks up `VariantDestructive` styles even if the mock only ever renders `VariantPrimary`.
+- **Check**: The current system generates hover/active variants for all atoms. If you're using a custom selector pattern (like `> * + *`), it may need special handling — see `spaceXActionStackOverlap` in `DSL.hs` for an example.
