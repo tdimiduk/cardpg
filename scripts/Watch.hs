@@ -21,7 +21,15 @@ runWatch mode = callProcess "ghciwatch" (getGhciWatchArgs mode)
 getGhciWatchArgs :: Mode -> [String]
 getGhciWatchArgs mode =
   case mode of
-    Client -> mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" []
+    Client ->
+      mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" []
+        ++ [ "--before-startup-shell"
+           , "cabal run client-reflex:gen-css"
+           , "--before-reload-shell"
+           , "cabal run client-reflex:gen-css"
+           , "--before-restart-shell"
+           , "cabal run client-reflex:gen-css"
+           ]
     Server -> mkArgs "server" "exe:server-devel" "Main.main" ["server/app"]
   where
     mkArgs folder component mainModule extraWatches =
