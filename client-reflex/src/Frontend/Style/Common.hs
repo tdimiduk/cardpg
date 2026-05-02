@@ -37,6 +37,7 @@ import Reflex.Dom.Core
 
 import Frontend.Style.Core (Prop (..), Style, classNames, cls, css, css')
 import Frontend.Style.DSL
+import Frontend.Style.DSL qualified as S
 
 --------------------------------------------------------------------------------
 -- Element Helpers
@@ -93,13 +94,13 @@ iconInline =
 resourceIcon :: Style
 resourceIcon = w 4 . h 4
 
--- | Resource text base (bold)
+-- | Resource text base (bold, light gray for screen)
 resourceTextBase :: Style
-resourceTextBase = fontBold
+resourceTextBase = fontBold . S.text S.Gray 2
 
--- | Resource text for print (black)
+-- | Resource text for print (black/dark gray)
 resourceTextPrint :: Style
-resourceTextPrint = textBlack
+resourceTextPrint = media "print" textBlack
 
 -- | Helper for dynamic shadows (takes size suffix like "md", "lg", "xl")
 shadow :: Text -> Style

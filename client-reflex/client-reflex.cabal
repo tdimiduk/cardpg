@@ -95,7 +95,6 @@ library
     Frontend.Svg
     Frontend.Svg.Path
     Frontend.UI.Button
-    Frontend.UI.Scaler
     Frontend.Util
 
   hs-source-dirs:  src

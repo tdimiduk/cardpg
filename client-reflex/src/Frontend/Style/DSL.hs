@@ -469,10 +469,10 @@ bgTransparent :: Style
 bgTransparent = css "bg-transparent" "background-color" "transparent"
 
 textBlack :: Style
-textBlack = css "text-black" "color" "black"
+textBlack = text Gray 12
 
 textWhite :: Style
-textWhite = css "text-white" "color" "white"
+textWhite = text Gray 0
 
 borderBlack :: Style
 borderBlack = css "border-black" "border-color" "black"
