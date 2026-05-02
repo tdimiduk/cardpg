@@ -21,13 +21,15 @@ import System.Environment (lookupEnv)
 import WaiAppStatic.Types (ssIndices, unsafeToPiece)
 
 import Api.Reflex ()
-import Frontend.App (appWidget)
+import Frontend.App (appWidget, headWidget)
 
--- | Middleware that serves /jsaddle.js, falling back to another app for all other routes.
--- Unlike jsaddleAppWithJsOr, this does NOT intercept the root "/" path.
-serveJsaddleJs :: Application -> Application
-serveJsaddleJs fallback req sendResponse =
+-- | Middleware that serves the HTML skeleton and /jsaddle.js, falling back to static files.
+serveRoot :: Application -> Application
+serveRoot fallback req sendResponse =
   case (requestMethod req, pathInfo req) of
+    ("GET", []) ->
+      sendResponse $ responseLBS status200 [("Content-Type", "text/html")] 
+        "<!DOCTYPE html><html><head></head><body><script src=\"/jsaddle.js\"></script></body></html>"
     ("GET", ["jsaddle.js"]) ->
       sendResponse $ responseLBS status200 [("Content-Type", "application/javascript")] (jsaddleJs False)
     _ ->
@@ -61,20 +63,16 @@ devMain = do
   putStrLn $ "Running jsaddle-warp server on port " <> show port
 
   -- Static app settings: serve from "static" directory
-  let staticSettings =
-        (defaultWebAppSettings "static")
-          { ssIndices = [unsafeToPiece "index.html"]
-          }
+  let staticSettings = defaultWebAppSettings "static"
 
   -- Build the jsaddle application with websocket support
-  -- serveJsaddleJs serves /jsaddle.js, falling back to staticApp for other routes
-  -- (Unlike jsaddleAppWithJsOr, this doesn't hijack the root "/" path)
+  -- serveRoot serves / and /jsaddle.js, falling back to staticApp for other routes
   -- The appWidget connects to localhost:3004/api for the backend
   jsaddleApplication <-
     jsaddleOr
       defaultConnectionOptions
-      (mainWidgetInElementById "app" (appWidget "ws://localhost:3004/api" clientId))
-      (serveJsaddleJs (staticApp staticSettings))
+      (mainWidgetWithHead headWidget (appWidget "ws://localhost:3004/api" clientId))
+      (serveRoot (staticApp staticSettings))
 
   -- Run in a background thread so main returns immediately,
   -- allowing ghciwatch to process reloads while the server runs

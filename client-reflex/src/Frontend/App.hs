@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecursiveDo #-}
 
-module Frontend.App where
+module Frontend.App (appWidget, headWidget) where
 
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO, liftIO)
@@ -150,3 +150,12 @@ uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = compon
   sidebarRightWidget activeActor logsDyn phaseConfig
 
   pure ()
+
+headWidget :: (DomBuilder t m) => m ()
+headWidget = do
+  elAttr "meta" ("charset" =: "utf-8") blank
+  elAttr "meta" ("name" =: "viewport" <> "content" =: "width=device-width, initial-scale=1") blank
+  el "title" $ text "CardPG"
+  elAttr "link" ("rel" =: "stylesheet" <> "href" =: "https://unpkg.com/open-props") blank
+  elAttr "link" ("href" =: "base.css" <> "rel" =: "stylesheet") blank
+  elAttr "link" ("href" =: "atomic.css" <> "rel" =: "stylesheet") blank

@@ -36,7 +36,7 @@ import Api.Types (LogEntry, Phase (..))
 import Core.Card (ActorDefinition (..))
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..))
-import Frontend.App (uiWidget)
+import Frontend.App (headWidget, uiWidget)
 import Frontend.Card
   ( CardDisplayMode (..)
   , CardSettings (..)
@@ -126,15 +126,17 @@ main = do
 setupOutputDir :: FilePath -> IO ()
 setupOutputDir outDir = do
   createDirectoryIfMissing True outDir
-  let linkName = "client-reflex"
-      target = ".." </> "client-reflex"
-      linkPath = outDir </> linkName
 
-  -- Check and recreate symlink if needed
-  isSym <- pathIsSymbolicLink linkPath `catch` (\(_ :: SomeException) -> return False)
-  exists <- doesPathExist linkPath
-  when (isSym || exists) $ removePathForcibly linkPath
-  createFileLink target linkPath
+  let linkFile name = do
+        let target = ".." </> "client-reflex" </> "static" </> name
+            linkPath = outDir </> name
+        isSym <- pathIsSymbolicLink linkPath `catch` (\(_ :: SomeException) -> return False)
+        exists <- doesPathExist linkPath
+        when (isSym || exists) $ removePathForcibly linkPath
+        createFileLink target linkPath
+
+  linkFile "base.css"
+  linkFile "atomic.css"
 
 -- | Snapshot Helpers
 takeScreenshot :: FilePath -> FilePath -> Int -> Int -> IO ()
@@ -174,7 +176,7 @@ printPdf srcHtml outPdf = do
 generateCatalog :: Options -> Bool -> IO ()
 generateCatalog opts skipSnapshot = do
   let outName = opts.outputDir </> "catalog.html"
-  writeStaticPage outName "CardPG Catalog" catalogWidget
+  writeStaticPage outName catalogWidget
   unless skipSnapshot $ do
     unless opts.quiet $ putStrLn "Taking screenshot..."
     currentDir <- getCurrentDirectory
@@ -192,7 +194,7 @@ generateDeck opts path skipSnapshot = do
     Right (actorDef :: ActorDefinition) -> do
       let baseName = takeBaseName path
           outName = opts.outputDir </> baseName <> ".html"
-      writeStaticPage outName actorDef.name (deckWidget actorDef)
+      writeStaticPage outName (deckWidget actorDef)
 
       unless skipSnapshot $ do
         currentDir <- getCurrentDirectory
@@ -221,7 +223,6 @@ generateGame opts path skipSnapshot = do
 
         writeStaticPage
           outHtml
-          ("CardPG Game - " <> T.pack nameSuffix)
           (mockGameWidget mActorId gameState phase)
 
         unless skipSnapshot $ do
@@ -285,20 +286,19 @@ deckWidget actor = do
     mapM_ (renderItemCardWith printSettings) actor.items
     mapM_ (renderCoreCardWith printSettings) actor.deck
 
-wrapHtml :: Text -> BS.ByteString -> BL.ByteString
-wrapHtml title body =
-  "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
-    <> BL.fromStrict (encodeUtf8 title)
-    <> "</title><link rel='stylesheet' href='https://unpkg.com/open-props'/>"
-    <> "<link rel='stylesheet' href='client-reflex/static/base.css'>"
-    <> "<link rel='stylesheet' href='client-reflex/static/atomic.css'></head><body>"
+wrapHtml :: BS.ByteString -> BS.ByteString -> BL.ByteString
+wrapHtml headHtml body =
+  "<!DOCTYPE html><html><head>"
+    <> BL.fromStrict headHtml
+    <> "</head><body>"
     <> BL.fromStrict body
     <> "</body></html>"
 
-writeStaticPage :: FilePath -> Text -> (forall x. StaticWidget x ()) -> IO ()
-writeStaticPage outPath title widget = do
+writeStaticPage :: FilePath -> (forall x. StaticWidget x ()) -> IO ()
+writeStaticPage outPath widget = do
   putStrLn $ "Rendering to " <> outPath
   (_, body) <- renderStatic widget
-  let html = wrapHtml title body
+  (_, headHtml) <- renderStatic headWidget
+  let html = wrapHtml headHtml body
   BL.writeFile outPath html
   putStrLn "Done."

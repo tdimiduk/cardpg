@@ -9,9 +9,9 @@ import Frontend.Devel (devMain)
 #if defined(ghcjs_HOST_OS) || defined(javascript_HOST_ARCH)
 import Language.Javascript.JSaddle (eval, valToText, liftJSM)
 
-import Reflex.Dom.Core (mainWidgetInElementById)
+import Reflex.Dom.Core (mainWidgetWithHead)
 
-import Frontend.App (appWidget)
+import Frontend.App (appWidget, headWidget)
 #endif
 
 main :: IO ()
@@ -20,7 +20,7 @@ main = do
   -- Hardcoding something to avoid the UUID dependency
   let clientId = read "00000000-0000-0000-0000-000000000001"
 
-  mainWidgetInElementById "app" $ do
+  mainWidgetWithHead headWidget $ do
     protocol <- liftJSM $ valToText =<< eval "window.location.protocol"
     host <- liftJSM $ valToText =<< eval "window.location.host"
     let wsProtocol = if protocol == "https:" then "wss:" else "ws:"
