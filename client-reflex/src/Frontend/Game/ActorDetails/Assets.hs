@@ -55,11 +55,11 @@ assetSectionWidget headerText itemsDyn renderDetail = do
     if not showItems
       then blank
       else do
-        divS (S.flexCol . S.gap 2 . S.p 2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt 2) $ do
-          elS "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text headerText
+        divS (S.flexCol . S.gap 2 . S.p 2 . (S.bg S.Gray 10) . S.rounded . (S.text S.Gray 1) . S.mt 2) $ do
+          elS "h2" (S.textSm . S.fontBold . S.uppercase . (S.text S.Gray 4)) $ text headerText
 
           void $ simpleList itemsDyn $ \itemDyn -> do
-            divS (S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p 1 . S.rounded . S.mb 1) $ do
+            divS (S.flex . S.justifyBetween . S.itemsCenter . (S.bg S.Gray 9) . S.p 1 . S.rounded . S.mb 1) $ do
               -- Display Name
               let nameDyn = fmap fst itemDyn
               divS (S.textXs . S.px 1) $
@@ -73,7 +73,7 @@ assetSectionWidget headerText itemsDyn renderDetail = do
                     nameDyn
 
               -- Display Detail (Slot or Type)
-              divS (S.textXs . S.textSlate400 . S.css "italic" "font-style" "italic") $
+              divS (S.textXs . (S.text S.Gray 4) . S.css "italic" "font-style" "italic") $
                 renderDetail itemDyn
 
 getEquippedItems :: ActorState -> [(TableCard, EquipSlot)]

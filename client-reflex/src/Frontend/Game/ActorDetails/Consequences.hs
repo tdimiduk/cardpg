@@ -34,12 +34,12 @@ consequencesWidget
   -> Dynamic t ActorState
   -> m ()
 consequencesWidget actorId actorState = do
-  colWith (S.gap 2 . S.p 2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt 2) $ do
+  colWith (S.gap 2 . S.p 2 . (S.bg S.Gray 10) . S.rounded . (S.text S.Gray 1) . S.mt 2) $ do
     rowWith (S.justifyBetween . S.itemsCenter) $ do
-      elS "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text "Consequences"
+      elS "h2" (S.textSm . S.fontBold . S.uppercase . (S.text S.Gray 4)) $ text "Consequences"
 
       -- Next Severity
-      divS (S.textXs . S.textSlate500) $ do
+      divS (S.textXs . (S.text S.Gray 5)) $ do
         text "Next Severity: "
         dynText $ fmap tshow (actorNextSeverity actorState)
 
@@ -47,7 +47,7 @@ consequencesWidget actorId actorState = do
     let consequencesDyn = fmap (\as -> as.tableState.consequences) actorState
 
     removeEvents <- simpleList consequencesDyn $ \consequenceDyn -> do
-      rowWith (S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p 1 . S.rounded . S.mb 1) $ do
+      rowWith (S.justifyBetween . S.itemsCenter . (S.bg S.Gray 9) . S.p 1 . S.rounded . S.mb 1) $ do
         let nameDyn = fmap (\(Identified _ c) -> getRawText c.name) consequenceDyn
 
         divS (S.textXs . S.px 1) $ dynText nameDyn
@@ -57,7 +57,7 @@ consequencesWidget actorId actorState = do
             def
               { variant = constDyn VariantGhost
               , size = constDyn SizeSmall
-              , extraStyle = S.px 1 . S.textRed400 . S.hover S.textRed300
+              , extraStyle = S.px 1 . (S.text S.Red 5) . S.hover (S.text S.Red 4)
               }
             $ text "×"
 

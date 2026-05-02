@@ -25,5 +25,5 @@ derivedStatDisplay
 derivedStatDisplay icon label valDyn =
   rowWith (S.itemsCenter . S.gap 2) $ do
     elS "span" S.textLg $ text icon
-    divS (S.textSm . S.fontBold . S.textBlue300) $ text $ label <> ":"
+    divS (S.textSm . S.fontBold . (S.text S.Blue 4)) $ text $ label <> ":"
     divS (S.textLg . S.fontBold . S.textWhite) $ dynText (fmap tshow valDyn)

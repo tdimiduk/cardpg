@@ -35,7 +35,7 @@ deckWidget
   -> Dynamic t ActorState
   -> m ()
 deckWidget actorId actorState = do
-  divS (S.flexCol . S.gap 2 . S.p 2 . S.bgSlate950 . S.rounded . S.textSlate100) $ do
+  divS (S.flexCol . S.gap 2 . S.p 2 . (S.bg S.Gray 12) . S.rounded . (S.text S.Gray 1)) $ do
     let cs = fmap (.coreState) actorState
 
     -- Cards Row
@@ -45,13 +45,13 @@ deckWidget actorId actorState = do
               . S.flex
               . S.flex1
               . S.relative
-              . S.border
-              . S.borderSlate800
-              . S.bgSlate900
+              . S.border1
+              . (S.border S.Gray 10)
+              . (S.bg S.Gray 11)
               . S.rounded
               . S.p 3
               . S.gap 2
-      let labelStyle = S.textSlate400 . S.textXs
+      let labelStyle = (S.text S.Gray 4) . S.textXs
       let countStyle = S.text2Xl . S.fontBold . S.textWhite
 
       -- Helper for view button
@@ -60,7 +60,7 @@ deckWidget actorId actorState = do
               def
                 { variant = constDyn VariantGhost
                 , size = constDyn SizeSmall
-                , extraStyle = S.absolute . S.top1 . S.right1 . S.textSlate600 . S.hover S.textIndigo400
+                , extraStyle = S.absolute . S.top1 . S.right1 . (S.text S.Gray 6) . S.hover (S.text S.Indigo 5)
                 }
               (divS (S.w 5 . S.h 5) iconDeck)
 

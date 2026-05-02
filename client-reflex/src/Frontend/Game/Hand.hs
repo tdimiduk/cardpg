@@ -49,7 +49,7 @@ resourceCandidateStyle :: Style
 resourceCandidateStyle =
   S.hover S.translateYNeg4
     . S.hover S.ring2
-    . S.hover S.ringAmber400
+    . S.hover (S.ring S.Amber 5)
     . S.cursorPointer
 
 -- | Safely build the ActionStack for staging mode
@@ -171,7 +171,7 @@ handCardsWidget actor stagingStack plannedAction = do
 
                   -- Interaction highlights
                   extraStyle
-                    | inStaging = if sel then S.ring2 . S.ringIndigo400 . S.ringOffset2 else id
+                    | inStaging = if sel then S.ring2 . (S.ring S.Indigo 5) . S.ringOffset2 else id
                     | otherwise = id
                  in
                   -- Build final class string from composed styles

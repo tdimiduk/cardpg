@@ -40,8 +40,8 @@ phaseDisplayWidget config = do
     ( S.wFull
         . S.p 4
         . S.borderB
-        . S.borderSlate800
-        . S.bgSlate900
+        . (S.border S.Gray 10)
+        . (S.bg S.Gray 11)
     )
     $ do
       divS (S.flexCol . S.gap 2) $ do
@@ -51,8 +51,8 @@ phaseDisplayWidget config = do
             text "Phase:"
             dyn_ $ ffor config.phase $ \p -> do
               let colorStyle = case p of
-                    Planning -> S.textBlue400
-                    Resolution -> S.textRed400
+                    Planning -> (S.text S.Blue 5)
+                    Resolution -> (S.text S.Red 5)
               elS "span" (S.fontBold . colorStyle) $ text (tshow p)
 
         -- Phase Controls / Status
@@ -74,7 +74,7 @@ planningControls config = do
   divS (S.flex . S.itemsCenter . S.gap 2) $ do
     btnClick <- button (def :: ButtonConfig t){size = constDyn SizeSmall} $ text "Start Resolution"
     -- Ready Count
-    divS S.textSlate400 $ do
+    divS (S.text S.Gray 4) $ do
       text "Ready: "
       dynText $ (\r t -> tshow r <> "/" <> tshow t) <$> config.readyCount <*> config.totalCount
 

@@ -34,9 +34,9 @@ renderResourceType mode r t = case r of
   where
     color :: Style
     color = case r of
-      Red -> S.textRed500
-      Yellow -> S.textYellow400
-      Blue -> S.textBlue5
+      Red -> (S.text S.Red 6)
+      Yellow -> (S.text S.Yellow 5)
+      Blue -> (S.text S.Blue 5)
     style :: Style
     style = case mode of
       IconInline -> CommonStyle.iconInline

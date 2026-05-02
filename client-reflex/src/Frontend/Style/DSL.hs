@@ -93,50 +93,21 @@ module Frontend.Style.DSL
   , inset0
 
     -- * Colors
-  , bgSlate900
-  , bgSlate800
-  , bgSlate700
-  , bgSlate600
-  , bgSlate950
-  , bgSlate800_50
-  , bgGray300
+  , Color (..)
+  , bg
+  , bgAlpha
+  , text
+  , border
+  , ring
   , bgWhite
   , bgTransparent
-  , bgIndigo600
-  , bgIndigo500
-  , bgIndigo700
-  , textIndigo400
-  , bgRed900_50
-  , bgRed800_50
-  , textSlate100
-  , textSlate200
-  , textSlate300
-  , textBlue300
-  , textBlue400
-  , textSlate400
-  , textSlate500
-  , textSlate600
-  , textSlate700
   , textBlack
   , textWhite
-  , textRed500
-  , textRed200
-  , textRed100
-  , textRed300
-  , textRed400
-  , textYellow400
-  , textBlue500
-  , textBlue5
-  , borderSlate500
-  , borderSlate600
-  , borderSlate700
-  , borderSlate800
   , borderBlack
   , borderTransparent
-  , borderRed800
 
     -- * Borders
-  , border
+  , border1
   , border0
   , border2
   , borderB
@@ -207,9 +178,6 @@ module Frontend.Style.DSL
 
     -- * Ring/Outline
   , ring2
-  , ringBlue400
-  , ringAmber400
-  , ringIndigo400
   , ringOffset2
 
     -- * Parameterized Styles
@@ -453,26 +421,46 @@ inset0 = css "inset-0" "inset" "0"
 -- Colors
 --------------------------------------------------------------------------------
 
-bgSlate900 :: Style
-bgSlate900 = css "bg-slate-900" "background-color" "var(--gray-11)"
+data Color = Gray | Red | Blue | Indigo | Yellow | Amber | White | Black | Transparent
+  deriving (Show, Eq, Enum, Bounded)
 
-bgSlate800 :: Style
-bgSlate800 = css "bg-slate-800" "background-color" "var(--gray-10)"
+colorName :: Color -> Text
+colorName c = T.toLower (tshow c)
 
-bgSlate700 :: Style
-bgSlate700 = css "bg-slate-700" "background-color" "var(--gray-9)"
+bg :: Color -> Int -> Style
+bg c n =
+  css
+    ("bg-" <> colorName c <> "-" <> tshow n)
+    "background-color"
+    ("var(--" <> colorName c <> "-" <> tshow n <> ")")
 
-bgSlate600 :: Style
-bgSlate600 = css "bg-slate-600" "background-color" "var(--gray-8)"
+bgAlpha :: Color -> Int -> Int -> Style
+bgAlpha c n a =
+  css
+    ("bg-" <> colorName c <> "-" <> tshow n <> "/" <> tshow a)
+    "background-color"
+    ("color-mix(in srgb, var(--" <> colorName c <> "-" <> tshow n <> ") " <> tshow a <> "%, transparent)")
 
-bgSlate950 :: Style
-bgSlate950 = css "bg-slate-950" "background-color" "var(--gray-12)"
+text :: Color -> Int -> Style
+text c n =
+  css
+    ("text-" <> colorName c <> "-" <> tshow n)
+    "color"
+    ("var(--" <> colorName c <> "-" <> tshow n <> ")")
 
-bgSlate800_50 :: Style
-bgSlate800_50 = css "bg-slate-800/50" "background-color" "color-mix(in srgb, var(--gray-10) 50%, transparent)"
+border :: Color -> Int -> Style
+border c n =
+  css
+    ("border-" <> colorName c <> "-" <> tshow n)
+    "border-color"
+    ("var(--" <> colorName c <> "-" <> tshow n <> ")")
 
-bgGray300 :: Style
-bgGray300 = css "bg-gray-300" "background-color" "var(--gray-3)"
+ring :: Color -> Int -> Style
+ring c n =
+  css
+    ("ring-" <> colorName c <> "-" <> tshow n)
+    "--ring-color"
+    ("var(--" <> colorName c <> "-" <> tshow n <> ")")
 
 bgWhite :: Style
 bgWhite = css "bg-white" "background-color" "white"
@@ -480,92 +468,11 @@ bgWhite = css "bg-white" "background-color" "white"
 bgTransparent :: Style
 bgTransparent = css "bg-transparent" "background-color" "transparent"
 
-bgIndigo600 :: Style
-bgIndigo600 = css "bg-indigo-600" "background-color" "var(--indigo-8)"
-
-bgIndigo500 :: Style
-bgIndigo500 = css "bg-indigo-500" "background-color" "var(--indigo-7)"
-
-bgIndigo700 :: Style
-bgIndigo700 = css "bg-indigo-700" "background-color" "var(--indigo-9)"
-
-bgRed900_50 :: Style
-bgRed900_50 = css "bg-red-900/50" "background-color" "color-mix(in srgb, var(--red-11) 50%, transparent)"
-
-bgRed800_50 :: Style
-bgRed800_50 = css "bg-red-800/50" "background-color" "color-mix(in srgb, var(--red-10) 50%, transparent)"
-
-textSlate100 :: Style
-textSlate100 = css "text-slate-100" "color" "var(--gray-1)"
-
-textSlate200 :: Style
-textSlate200 = css "text-slate-200" "color" "var(--gray-2)"
-
-textSlate300 :: Style
-textSlate300 = css "text-slate-300" "color" "var(--gray-3)"
-
-textBlue300 :: Style
-textBlue300 = css "text-blue-300" "color" "var(--blue-4)"
-
-textBlue400 :: Style
-textBlue400 = css "text-blue-400" "color" "var(--blue-5)"
-
-textSlate400 :: Style
-textSlate400 = css "text-slate-400" "color" "var(--gray-4)"
-
-textSlate500 :: Style
-textSlate500 = css "text-slate-500" "color" "var(--gray-5)"
-
-textSlate600 :: Style
-textSlate600 = css "text-slate-600" "color" "var(--gray-6)"
-
-textSlate700 :: Style
-textSlate700 = css "text-slate-700" "color" "var(--gray-7)"
-
 textBlack :: Style
 textBlack = css "text-black" "color" "black"
 
 textWhite :: Style
 textWhite = css "text-white" "color" "white"
-
-textRed500 :: Style
-textRed500 = css "text-red-500" "color" "var(--red-6)"
-
-textRed200 :: Style
-textRed200 = css "text-red-200" "color" "var(--red-3)"
-
-textRed100 :: Style
-textRed100 = css "text-red-100" "color" "var(--red-2)"
-
-textRed300 :: Style
-textRed300 = css "text-red-300" "color" "var(--red-4)"
-
-textRed400 :: Style
-textRed400 = css "text-red-400" "color" "var(--red-5)"
-
-textIndigo400 :: Style
-textIndigo400 = css "text-indigo-400" "color" "var(--indigo-5)"
-
-textYellow400 :: Style
-textYellow400 = css "text-yellow-400" "color" "var(--yellow-5)"
-
-textBlue500 :: Style
-textBlue500 = css "text-blue-500" "color" "var(--blue-6)"
-
-textBlue5 :: Style
-textBlue5 = css "text-blue-5" "color" "var(--blue-5)"
-
-borderSlate500 :: Style
-borderSlate500 = css "border-slate-500" "border-color" "var(--gray-7)"
-
-borderSlate600 :: Style
-borderSlate600 = css "border-slate-600" "border-color" "var(--gray-8)"
-
-borderSlate700 :: Style
-borderSlate700 = css "border-slate-700" "border-color" "var(--gray-9)"
-
-borderSlate800 :: Style
-borderSlate800 = css "border-slate-800" "border-color" "var(--gray-10)"
 
 borderBlack :: Style
 borderBlack = css "border-black" "border-color" "black"
@@ -573,15 +480,12 @@ borderBlack = css "border-black" "border-color" "black"
 borderTransparent :: Style
 borderTransparent = css "border-transparent" "border-color" "transparent"
 
-borderRed800 :: Style
-borderRed800 = css "border-red-800" "border-color" "var(--red-10)"
-
 --------------------------------------------------------------------------------
 -- Borders
 --------------------------------------------------------------------------------
 
-border :: Style
-border = css "border" "border-width" "1px"
+border1 :: Style
+border1 = css "border" "border-width" "1px"
 
 border0 :: Style
 border0 = css "border-0" "border-width" "0"
@@ -776,15 +680,6 @@ selectNone = css "select-none" "user-select" "none"
 
 ring2 :: Style
 ring2 = css "ring-2" "box-shadow" "0 0 0 2px var(--ring-color, #60a5fa)"
-
-ringBlue400 :: Style
-ringBlue400 = css "ring-blue-400" "--ring-color" "#60a5fa"
-
-ringAmber400 :: Style
-ringAmber400 = css "ring-amber-400" "--ring-color" "#fbbf24"
-
-ringIndigo400 :: Style
-ringIndigo400 = css "ring-indigo-400" "--ring-color" "#818cf8"
 
 ringOffset2 :: Style
 ringOffset2 = css "ring-offset-2" "--ring-offset-width" "2px"

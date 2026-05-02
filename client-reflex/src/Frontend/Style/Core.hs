@@ -7,7 +7,7 @@
 --
 -- @
 -- cardStyle :: Style
--- cardStyle = flexCol . bgSlate800 . roundedXl . shadowXl
+-- cardStyle = flexCol . (S.bg S.Gray 10) . roundedXl . shadowXl
 --
 -- widget = divS cardStyle $ text "Hello"
 -- @
@@ -63,7 +63,7 @@ data Prop = Prop
 -- | A composable style transformer. Compose with (.) and apply to []:
 --
 -- @
--- myStyle = flexCol . gap 4 . bgSlate800
+-- myStyle = flexCol . gap 4 . (S.bg S.Gray 10)
 -- classes = classNames myStyle   -- "flex-col gap-4 bg-slate-800"
 -- @
 type Style = [Prop] -> [Prop]
@@ -76,7 +76,7 @@ type Style = [Prop] -> [Prop]
 --
 -- @
 -- flexCol = css' "flex-col" [("display","flex"), ("flex-direction","column")]
--- bgSlate800 = css "bg-slate-800" "background-color" "#1e293b"
+-- (S.bg S.Gray 10) = css "bg-slate-800" "background-color" "#1e293b"
 -- @
 css :: Text -> Text -> Text -> Style
 css name property value = (Prop name ("." <> escapeCss name) [(property, value)] :)
@@ -97,7 +97,7 @@ cls name = (Prop name ("." <> name) [] :)
 -- | Apply a style only on :hover.
 --
 -- @
--- cardHover = hover bgSlate700
+-- cardHover = hover (S.bg S.Gray 9)
 -- @
 hover :: Style -> Style
 hover inner = \rest -> map hoverProp (inner []) ++ rest
@@ -125,7 +125,7 @@ activeProp p =
 -- | Apply a style with a custom pseudo-class.
 --
 -- @
--- focusVisible = pseudo "focus-visible" (ringBlue400 . ring2)
+-- focusVisible = pseudo "focus-visible" ((S.ring S.Blue 5) . ring2)
 -- @
 pseudo :: Text -> Style -> Style
 pseudo pseudoClass inner = \rest -> map (pseudoProp pseudoClass) (inner []) ++ rest

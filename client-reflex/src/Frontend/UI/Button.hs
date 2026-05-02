@@ -18,6 +18,7 @@ import Reflex.Dom.Core hiding (button)
 
 import Frontend.Style.Common (Style, classNames)
 import Frontend.Style.DSL
+import Frontend.Style.DSL qualified as S
 
 -- | Visual variants for the button
 data ButtonVariant
@@ -29,7 +30,7 @@ data ButtonVariant
     VariantDestructive
   | -- | Minimalist, hover effect only
     VariantGhost
-  | -- | Transparent with border
+  | -- | Transparent with S.border1
     VariantOutline
   deriving (Eq, Show, Enum, Bounded)
 
@@ -78,30 +79,30 @@ sizeStyle = \case
 variantStyle :: ButtonVariant -> Style
 variantStyle = \case
   VariantPrimary ->
-    bgIndigo600
+    (S.bg S.Indigo 8)
       . textWhite
       . shadowSm
-      . hover bgIndigo500
+      . hover (S.bg S.Indigo 7)
   VariantSecondary ->
-    bgSlate800
-      . textSlate400
-      . border
-      . borderSlate700
-      . hover bgSlate700
-      . hover textSlate200
+    (S.bg S.Gray 10)
+      . (S.text S.Gray 4)
+      . S.border1
+      . (S.border S.Gray 9)
+      . hover (S.bg S.Gray 9)
+      . hover (S.text S.Gray 2)
   VariantDestructive ->
-    bgRed900_50
-      . textRed200
-      . border
-      . borderRed800
+    (S.bgAlpha S.Red 11 50)
+      . (S.text S.Red 3)
+      . S.border1
+      . (S.border S.Red 10)
   VariantGhost ->
     bgTransparent
-      . textSlate400
+      . (S.text S.Gray 4)
   VariantOutline ->
     bgTransparent
-      . textSlate200
-      . border
-      . borderSlate600
+      . (S.text S.Gray 2)
+      . S.border1
+      . (S.border S.Gray 8)
 
 -- | Base styles shared by all buttons
 baseStyle :: Style

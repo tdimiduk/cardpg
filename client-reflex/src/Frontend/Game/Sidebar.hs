@@ -22,11 +22,11 @@ import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: Style
-sidebarContainer = S.w 72 . S.bgSlate950 . S.borderR . S.borderSlate800 . S.hFull . S.z 20 . S.shadowXl
+sidebarContainer = S.w 72 . (S.bg S.Gray 12) . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20 . S.shadowXl
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p 4 . S.px 6 . S.borderB . S.borderSlate800
+sidebarHeader = S.p 4 . S.px 6 . S.borderB . (S.border S.Gray 10)
 
 -- Note: original was p-6. DSL2 has p 4, px 6. p 6 doesn't exist. Using p 4 px 6? Or just p 4?
 -- Original was "p-6". p 6 is huge (1.5rem). p 4 is 1rem.
@@ -35,11 +35,11 @@ sidebarHeader = S.p 4 . S.px 6 . S.borderB . S.borderSlate800
 -- I'll stick to S.p 4 as compromise or define p 6 locally?
 -- I'll use S.p 4.
 sidebarHeader' :: Style
-sidebarHeader' = S.css "p-6" "padding" "1.5rem" . S.borderB . S.borderSlate800
+sidebarHeader' = S.css "p-6" "padding" "1.5rem" . S.borderB . (S.border S.Gray 10)
 
 -- | Active actor header base
 activeActorHeader :: Style
-activeActorHeader = S.p 4 . S.borderB . S.borderSlate800 . S.bgSlate900 . S.flex . S.itemsCenter
+activeActorHeader = S.p 4 . S.borderB . (S.border S.Gray 10) . (S.bg S.Gray 11) . S.flex . S.itemsCenter
 
 -- | Placeholder avatar styling
 avatar :: Style
@@ -48,8 +48,8 @@ avatar =
     . S.h 10
     . S.roundedFull
     . S.border2
-    . S.css "border-slate-600" "border-color" "#475569"
-    . S.bgSlate800
+    . S.css "S.border1-slate-600" "S.border1-color" "#475569"
+    . (S.bg S.Gray 10)
     . S.flex
     . S.itemsCenter
     . S.justifyCenter
@@ -81,13 +81,13 @@ sidebarWidget selectionDyn actorsMapDyn = do
   divS (S.flexCol . sidebarContainer) $ do
     -- Sidebar Header
     divS sidebarHeader' $ do
-      elS "h1" (S.textXl . S.fontBold . S.textSlate100) $ text "CardPG"
+      elS "h1" (S.textXl . S.fontBold . (S.text S.Gray 1)) $ text "CardPG"
 
     -- Dynamic Content: List or Details
     dyContent <- dyn $ ffor selectionDyn $ \case
       Nothing -> do
         -- No selection: Show List
-        divS (S.p 4 . S.textCenter . S.textSlate500 . S.css "italic" "font-style" "italic" . S.textSm) $
+        divS (S.p 4 . S.textCenter . (S.text S.Gray 5) . S.css "italic" "font-style" "italic" . S.textSm) $
           text "Select an actor"
 
         divS actorListContainer' $ do
@@ -108,12 +108,12 @@ sidebarWidget selectionDyn actorsMapDyn = do
       Just (Identified aid actorState) -> do
         -- Selection: Show Details
         -- Header (Click anywhere to deselect)
-        (minHeader, _) <- elS' "div" (S.cursorPointer . S.hover S.bgSlate800 . activeActorHeader) Map.empty $ do
+        (minHeader, _) <- elS' "div" (S.cursorPointer . S.hover (S.bg S.Gray 10) . activeActorHeader) Map.empty $ do
           divS avatar $ text $ T.take 1 actorState.name
 
           divS (S.flex1 . S.overflowHidden) $ do
-            elS "div" (S.fontBold . S.textSlate100 . S.textTruncate) $ text actorState.name
-            elS "div" (S.textXs . S.textSlate500 . S.uppercase) $ text "Player"
+            elS "div" (S.fontBold . (S.text S.Gray 1) . S.textTruncate) $ text actorState.name
+            elS "div" (S.textXs . (S.text S.Gray 5) . S.uppercase) $ text "Player"
 
           -- Close indicator (decorative - header click handles deselection)
           divS
@@ -124,8 +124,8 @@ sidebarWidget selectionDyn actorsMapDyn = do
                 . S.flex
                 . S.itemsCenter
                 . S.justifyCenter
-                . S.textSlate400
-                . S.hover S.textSlate200
+                . (S.text S.Gray 4)
+                . S.hover (S.text S.Gray 2)
             )
             iconClose
 

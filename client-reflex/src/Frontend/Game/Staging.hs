@@ -70,8 +70,8 @@ stagingWidget actorId actionStackDyn validation = do
         . S.css "min-w-[320px]" "min-width" "320px"
         . S.css "bg-slate-900/90" "background-color" "rgb(15 23 42 / 0.9)"
         . S.backdropBlurMd
-        . S.border
-        . S.borderSlate700
+        . S.border1
+        . (S.border S.Gray 9)
         . S.rounded3Xl
         . S.p 4
         . S.shadow2Xl

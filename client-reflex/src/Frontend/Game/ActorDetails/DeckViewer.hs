@@ -69,9 +69,9 @@ renderModal deckView = do
   divS fixedPos $ do
     -- Container
     divS
-      ( S.bgSlate900
-          . S.border
-          . S.borderSlate700
+      ( (S.bg S.Gray 11)
+          . S.border1
+          . (S.border S.Gray 9)
           . S.roundedXl
           . S.shadow2Xl
           . S.wFull
@@ -82,9 +82,16 @@ renderModal deckView = do
       $ do
         -- Header
         closeClick <- divS
-          (S.p 4 . S.borderB . S.borderSlate700 . S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate950)
+          ( S.p 4
+              . S.borderB
+              . (S.border S.Gray 9)
+              . S.flex
+              . S.justifyBetween
+              . S.itemsCenter
+              . (S.bg S.Gray 12)
+          )
           $ do
-            elS "h2" (S.textXl . S.fontBold . S.textSlate100 . S.flex . S.itemsCenter . S.gap 2) $ do
+            elS "h2" (S.textXl . S.fontBold . (S.text S.Gray 1) . S.flex . S.itemsCenter . S.gap 2) $ do
               -- Using text for the icon for now as per plan, or maybe I should use an icon.
               -- Plan said "Title bar with 'Deck Viewer (N cards)'".
               text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"

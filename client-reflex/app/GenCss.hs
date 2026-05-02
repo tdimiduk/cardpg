@@ -123,48 +123,13 @@ staticStyles =
   , ("left0", S.left0 [])
   , ("right0", S.right0 [])
   , ("inset0", S.inset0 [])
-  , ("bgSlate900", S.bgSlate900 [])
-  , ("bgSlate800", S.bgSlate800 [])
-  , ("bgSlate700", S.bgSlate700 [])
-  , ("bgSlate600", S.bgSlate600 [])
-  , ("bgSlate950", S.bgSlate950 [])
-  , ("bgSlate800_50", S.bgSlate800_50 [])
-  , ("bgGray300", S.bgGray300 [])
   , ("bgWhite", S.bgWhite [])
   , ("bgTransparent", S.bgTransparent [])
-  , ("bgIndigo600", S.bgIndigo600 [])
-  , ("bgIndigo500", S.bgIndigo500 [])
-  , ("bgIndigo700", S.bgIndigo700 [])
-  , ("textIndigo400", S.textIndigo400 [])
-  , ("bgRed900_50", S.bgRed900_50 [])
-  , ("bgRed800_50", S.bgRed800_50 [])
-  , ("textSlate100", S.textSlate100 [])
-  , ("textSlate200", S.textSlate200 [])
-  , ("textSlate300", S.textSlate300 [])
-  , ("textBlue300", S.textBlue300 [])
-  , ("textBlue400", S.textBlue400 [])
-  , ("textSlate400", S.textSlate400 [])
-  , ("textSlate500", S.textSlate500 [])
-  , ("textSlate600", S.textSlate600 [])
-  , ("textSlate700", S.textSlate700 [])
   , ("textBlack", S.textBlack [])
   , ("textWhite", S.textWhite [])
-  , ("textRed500", S.textRed500 [])
-  , ("textRed200", S.textRed200 [])
-  , ("textRed100", S.textRed100 [])
-  , ("textRed300", S.textRed300 [])
-  , ("textRed400", S.textRed400 [])
-  , ("textYellow400", S.textYellow400 [])
-  , ("textBlue500", S.textBlue500 [])
-  , ("textBlue5", S.textBlue5 [])
-  , ("borderSlate500", S.borderSlate500 [])
-  , ("borderSlate600", S.borderSlate600 [])
-  , ("borderSlate700", S.borderSlate700 [])
-  , ("borderSlate800", S.borderSlate800 [])
   , ("borderBlack", S.borderBlack [])
   , ("borderTransparent", S.borderTransparent [])
-  , ("borderRed800", S.borderRed800 [])
-  , ("border", S.border [])
+  , ("border1", S.border1 [])
   , ("border0", S.border0 [])
   , ("border2", S.border2 [])
   , ("borderB", S.borderB [])
@@ -221,9 +186,6 @@ staticStyles =
   , ("easeOut", S.easeOut [])
   , ("selectNone", S.selectNone [])
   , ("ring2", S.ring2 [])
-  , ("ringBlue400", S.ringBlue400 [])
-  , ("ringAmber400", S.ringAmber400 [])
-  , ("ringIndigo400", S.ringIndigo400 [])
   , ("ringOffset2", S.ringOffset2 [])
   , ("flex1", S.flex1 [])
   , ("full", S.full [])
@@ -252,6 +214,11 @@ knownParams =
   , ParamFn "borderRadius" parseInt (\n -> S.borderRadius n [])
   , ParamFn "css" parseThreeStrings (\(n, p, v) -> S.css n p v [])
   , ParamFn "css'" parseNameAndDecls (\(n, ds) -> S.css' n ds [])
+  , ParamFn "bg" parseColorAndTone (\(c, n) -> S.bg c n [])
+  , ParamFn "bgAlpha" parseColorToneAlpha (\(c, n, a) -> S.bgAlpha c n a [])
+  , ParamFn "text" parseColorAndTone (\(c, n) -> S.text c n [])
+  , ParamFn "border" parseColorAndTone (\(c, n) -> S.border c n [])
+  , ParamFn "ring" parseColorAndTone (\(c, n) -> S.ring c n [])
   ]
 
 scanContent :: Text -> [Prop]
@@ -290,6 +257,41 @@ scanContent content = case parse (many parseAny) "" content of
 -- | Parsers
 parseInt :: Parser Int
 parseInt = L.signed space L.decimal
+
+parseNumber :: Parser Int
+parseNumber = L.decimal
+
+parseColor :: Parser S.Color
+parseColor =
+  choice
+    [ S.Gray <$ chunk "Gray"
+    , S.Red <$ chunk "Red"
+    , S.Blue <$ chunk "Blue"
+    , S.Indigo <$ chunk "Indigo"
+    , S.Yellow <$ chunk "Yellow"
+    , S.Amber <$ chunk "Amber"
+    , S.White <$ chunk "White"
+    , S.Black <$ chunk "Black"
+    , S.Transparent <$ chunk "Transparent"
+    ]
+
+parseColorAndTone :: Parser (S.Color, Int)
+parseColorAndTone = do
+  _ <- optional (chunk "S.")
+  c <- parseColor
+  space1
+  n <- parseNumber
+  return (c, n)
+
+parseColorToneAlpha :: Parser (S.Color, Int, Int)
+parseColorToneAlpha = do
+  _ <- optional (chunk "S.")
+  c <- parseColor
+  space1
+  n <- parseNumber
+  space1
+  a <- parseNumber
+  return (c, n, a)
 
 parseFloat :: Parser Double
 parseFloat = L.signed space L.float <|> (fromIntegral <$> parseInt)

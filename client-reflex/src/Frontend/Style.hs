@@ -48,6 +48,7 @@ module Frontend.Style
 
 import Frontend.Style.Core (Style, css)
 import Frontend.Style.DSL
+import Frontend.Style.DSL qualified as S
 
 --------------------------------------------------------------------------------
 
@@ -60,7 +61,7 @@ cardBase :: Style
 cardBase =
   flexCol
     . relative
-    . p2_5mm -- Padding around the card content within the border
+    . p2_5mm -- Padding around the card content within the S.border1
     . overflowHidden
     . standardCardSize
 
@@ -69,10 +70,10 @@ cardBase =
 -- Shared visuals used by both full cards and spines/strips
 cardScreenVisuals :: Style
 cardScreenVisuals =
-  bgSlate900
-    . textSlate200
+  (S.bg S.Gray 11)
+    . (S.text S.Gray 2)
     . border2
-    . borderSlate600
+    . (S.border S.Gray 8)
     . rounded3mm
     . shadowXl
 
@@ -87,7 +88,7 @@ cardPrint =
     . hCard
     . bgWhite
     . textBlack
-    . border
+    . S.border1
     . borderBlack
     . rounded3mm
 
@@ -95,7 +96,7 @@ cardPrint =
 
 -- | Cost hexagon styling for CardRow (explicit small size)
 costRow :: Style
-costRow = w 4 . h 4 . textSlate200
+costRow = w 4 . h 4 . (S.text S.Gray 2)
 
 cardRow :: Style
 cardRow =
@@ -103,9 +104,9 @@ cardRow =
     . itemsCenter
     . gap 1
     . p 1
-    . bgSlate900
-    . border
-    . borderSlate700
+    . (S.bg S.Gray 11)
+    . S.border1
+    . (S.border S.Gray 9)
     . rounded
 
 standardCardSize :: Style
@@ -132,10 +133,10 @@ artBase :: Style
 artBase = id
 
 artScreen :: Style
-artScreen = grow . hFull . rounded2mm . bgSlate800 . border . borderSlate700
+artScreen = grow . hFull . rounded2mm . (S.bg S.Gray 10) . S.border1 . (S.border S.Gray 9)
 
 artPrint :: Style
-artPrint = css "h-33mm" "height" "33mm" . border . borderBlack . grayscale . roundedNone . bgTransparent
+artPrint = css "h-33mm" "height" "33mm" . S.border1 . borderBlack . grayscale . roundedNone . bgTransparent
 
 -- ** Name
 
@@ -147,7 +148,7 @@ nameBase =
     . mb2mm
 
 nameScreen :: Style
-nameScreen = textSlate100
+nameScreen = (S.text S.Gray 1)
 
 namePrint :: Style
 namePrint = textBlack
@@ -167,7 +168,7 @@ costBase =
     . fontBold
 
 costScreen :: Style
-costScreen = textSlate200
+costScreen = (S.text S.Gray 2)
 
 costPrint :: Style
 costPrint = textBlack
@@ -186,7 +187,7 @@ textboxBase =
 -- They require custom CSS rules which we'll handle separately or inline.
 
 textboxScreen :: Style
-textboxScreen = bgSlate800 . borderSlate600 . rounded2mm . textSlate300
+textboxScreen = (S.bg S.Gray 10) . (S.border S.Gray 8) . rounded2mm . (S.text S.Gray 3)
 
 textboxPrint :: Style
 textboxPrint = roundedNone . bgTransparent . borderBlack
