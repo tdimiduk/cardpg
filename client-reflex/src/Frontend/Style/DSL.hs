@@ -213,7 +213,7 @@ spaceXActionStackOverlap = \rest ->
 
 spaceY2 :: Style
 spaceY2 = \rest ->
-  Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "0.5rem")]
+  Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")]
     : rest
 
 --------------------------------------------------------------------------------
@@ -325,17 +325,33 @@ wFit = css "w-fit" "width" "fit-content"
 w :: Int -> Style
 w n = css ("w-" <> tshow n) "width" (remValue n)
 
--- | Height in Tailwind spacing units (n * 0.25rem).
--- e.g. @h 4@ = 1rem, @h 8@ = 2rem, @h 10@ = 2.5rem
 h :: Int -> Style
 h n = css ("h-" <> tshow n) "height" (remValue n)
 
--- | Convert a Tailwind spacing unit to a rem value string.
--- Produces clean output: 1rem, 1.25rem, 2.5rem (no trailing .0)
+-- | Convert a Tailwind spacing unit to an Open Props size variable.
+-- Maps the linear 0.25rem grid to the nearest Open Props size token.
 remValue :: Int -> Text
-remValue n
-  | n `mod` 4 == 0 = tshow (n `div` 4) <> "rem"
-  | otherwise = tshow (fromIntegral n * 0.25 :: Double) <> "rem"
+remValue n =
+  case n of
+    0 -> "0"
+    1 -> "var(--size-1)"
+    2 -> "var(--size-2)"
+    3 -> "var(--size-3)"
+    4 -> "var(--size-4)"
+    5 -> "var(--size-5)"
+    6 -> "var(--size-6)"
+    7 -> "var(--size-7)"
+    8 -> "var(--size-8)"
+    12 -> "var(--size-9)"
+    16 -> "var(--size-10)"
+    20 -> "var(--size-11)"
+    24 -> "var(--size-12)"
+    28 -> "var(--size-13)"
+    32 -> "var(--size-14)"
+    36 -> "var(--size-15)"
+    _
+      | n `mod` 4 == 0 -> tshow (n `div` 4) <> "rem"
+      | otherwise -> tshow (fromIntegral n * 0.25 :: Double) <> "rem"
 
 wCard :: Style
 wCard = css "w-card" "width" "63mm"
@@ -385,19 +401,19 @@ p2_5mm :: Style
 p2_5mm = css "p-2.5mm" "padding" "2.5mm"
 
 p1_5 :: Style
-p1_5 = css "p-1.5" "padding" "0.375rem"
+p1_5 = css "p-1.5" "padding" "var(--size-2)"
 
 pb1 :: Style
-pb1 = css "pb-1" "padding-bottom" "0.25rem"
+pb1 = css "pb-1" "padding-bottom" "var(--size-1)"
 
 top1 :: Style
-top1 = css "top-1" "top" "0.25rem"
+top1 = css "top-1" "top" "var(--size-1)"
 
 right1 :: Style
-right1 = css "right-1" "right" "0.25rem"
+right1 = css "right-1" "right" "var(--size-1)"
 
 pr1 :: Style
-pr1 = css "pr-1" "padding-right" "0.25rem"
+pr1 = css "pr-1" "padding-right" "var(--size-1)"
 
 mb2mm :: Style
 mb2mm = css "mb-2mm" "margin-bottom" "2mm"
@@ -676,10 +692,10 @@ originBottom :: Style
 originBottom = css "origin-bottom" "transform-origin" "bottom"
 
 translateYNeg4 :: Style
-translateYNeg4 = css "-translate-y-4" "transform" "translateY(-1rem)"
+translateYNeg4 = css "-translate-y-4" "transform" "translateY(calc(var(--size-4) * -1))"
 
 translateYNeg8 :: Style
-translateYNeg8 = css "-translate-y-8" "transform" "translateY(-2rem)"
+translateYNeg8 = css "-translate-y-8" "transform" "translateY(calc(var(--size-8) * -1))"
 
 scale105 :: Style
 scale105 = css "scale-105" "transform" "scale(1.05)"
