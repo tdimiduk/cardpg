@@ -6,7 +6,7 @@ CardPG is a card-based RPG platform with real-time multiplayer support.
 
 - **Language:** Haskell (GHC 9.12)
 - **Frontend:** Reflex-DOM (FRP)
-- **CSS:** Haskell-native atomic CSS system (`Frontend.Style.*`) with build-time generation
+- **CSS:** Haskell-native styling DSL (`Frontend.Style.*`) with build-time generation
 - **Design Tokens:** [Open Props](https://open-props.style/) — CSS custom properties for colors, sizes, shadows, easings
 - **Build System:**
   - **Dev:** cabal + ghciwatch + process-compose
@@ -27,7 +27,7 @@ cardpg/
 │   └── src/Server/     # Connection handling, game hosting
 ├── client-reflex/      # cardpg-client-reflex: Haskell/Reflex-DOM frontend
 │   ├── src/Frontend/
-│   │   ├── Style/      # Atomic CSS system (Core, DSL, Common, Layout)
+│   │   ├── Style/      # Styling DSL system (Core, DSL, Common, Layout)
 │   │   ├── Game/       # Game UI widgets (Hand, Sidebar, Staging, Planning)
 │   │   ├── Render/     # Rendering helpers (cards, rules text)
 │   │   ├── UI/         # Reusable UI components (Button, Scaler)
@@ -65,7 +65,7 @@ cardpg/
 | --------------- | -------------------------------------------- |
 | `client-reflex` | Main frontend (runs via jsaddle-warp in dev) |
 | `cardpg-static` | Static HTML/PNG/PDF snapshot generator       |
-| `gen-css`       | Atomic CSS generation (run at build time)    |
+| `gen-css`       | CSS generation tool (run at build time)      |
 
 ## Key Patterns
 
@@ -73,13 +73,13 @@ cardpg/
 - **Command pattern** — Game actions are strictly typed `Command` enums with typed payloads
 - **Strong typing** — Use `newtype` for IDs, never stringly-typed identifiers
 - **FRP UI** — Reflex `Dynamic t a` for state, `Event t a` for actions
-- **Composable atomic CSS** — Styles compose with `(.)` as `[Prop] -> [Prop]` functions
+- **Composable styling DSL** — Styles compose with `(.)` as `[Prop] -> [Prop]` functions
 
 See [CODING_STANDARDS.md](./CODING_STANDARDS.md) for detailed conventions.
 
-## CSS System
+## Styling System
 
-The project uses a **homegrown atomic CSS system** defined entirely in Haskell. This replaces an earlier Tailwind CSS setup.
+The project uses a **homegrown styling DSL** defined entirely in Haskell. This replaces an earlier Tailwind CSS setup.
 
 ### Architecture
 
