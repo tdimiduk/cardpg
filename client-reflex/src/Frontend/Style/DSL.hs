@@ -556,25 +556,25 @@ inset0 = css "inset-0" "inset" "0"
 --------------------------------------------------------------------------------
 
 bgSlate900 :: Style
-bgSlate900 = css "bg-slate-900" "background-color" "#0f172a"
+bgSlate900 = css "bg-slate-900" "background-color" "var(--gray-11)"
 
 bgSlate800 :: Style
-bgSlate800 = css "bg-slate-800" "background-color" "#1e293b"
+bgSlate800 = css "bg-slate-800" "background-color" "var(--gray-10)"
 
 bgSlate700 :: Style
-bgSlate700 = css "bg-slate-700" "background-color" "#334155"
+bgSlate700 = css "bg-slate-700" "background-color" "var(--gray-9)"
 
 bgSlate600 :: Style
-bgSlate600 = css "bg-slate-600" "background-color" "#475569"
+bgSlate600 = css "bg-slate-600" "background-color" "var(--gray-8)"
 
 bgSlate950 :: Style
-bgSlate950 = css "bg-slate-950" "background-color" "#020617"
+bgSlate950 = css "bg-slate-950" "background-color" "var(--gray-12)"
 
 bgSlate800_50 :: Style
-bgSlate800_50 = css "bg-slate-800/50" "background-color" "rgb(30 41 59 / 0.5)"
+bgSlate800_50 = css "bg-slate-800/50" "background-color" "color-mix(in srgb, var(--gray-10) 50%, transparent)"
 
 bgGray300 :: Style
-bgGray300 = css "bg-gray-300" "background-color" "#d1d5db"
+bgGray300 = css "bg-gray-300" "background-color" "var(--gray-3)"
 
 bgWhite :: Style
 bgWhite = css "bg-white" "background-color" "white"
@@ -583,46 +583,46 @@ bgTransparent :: Style
 bgTransparent = css "bg-transparent" "background-color" "transparent"
 
 bgIndigo600 :: Style
-bgIndigo600 = css "bg-indigo-600" "background-color" "#4f46e5"
+bgIndigo600 = css "bg-indigo-600" "background-color" "var(--indigo-8)"
 
 bgIndigo500 :: Style
-bgIndigo500 = css "bg-indigo-500" "background-color" "#6366f1"
+bgIndigo500 = css "bg-indigo-500" "background-color" "var(--indigo-7)"
 
 bgIndigo700 :: Style
-bgIndigo700 = css "bg-indigo-700" "background-color" "#4338ca"
+bgIndigo700 = css "bg-indigo-700" "background-color" "var(--indigo-9)"
 
 bgRed900_50 :: Style
-bgRed900_50 = css "bg-red-900/50" "background-color" "rgb(127 29 29 / 0.5)"
+bgRed900_50 = css "bg-red-900/50" "background-color" "color-mix(in srgb, var(--red-11) 50%, transparent)"
 
 bgRed800_50 :: Style
-bgRed800_50 = css "bg-red-800/50" "background-color" "rgb(153 27 27 / 0.5)"
+bgRed800_50 = css "bg-red-800/50" "background-color" "color-mix(in srgb, var(--red-10) 50%, transparent)"
 
 textSlate100 :: Style
-textSlate100 = css "text-slate-100" "color" "#f1f5f9"
+textSlate100 = css "text-slate-100" "color" "var(--gray-1)"
 
 textSlate200 :: Style
-textSlate200 = css "text-slate-200" "color" "#e2e8f0"
+textSlate200 = css "text-slate-200" "color" "var(--gray-2)"
 
 textSlate300 :: Style
-textSlate300 = css "text-slate-300" "color" "#cbd5e1"
+textSlate300 = css "text-slate-300" "color" "var(--gray-3)"
 
 textBlue300 :: Style
-textBlue300 = css "text-blue-300" "color" "#93c5fd"
+textBlue300 = css "text-blue-300" "color" "var(--blue-4)"
 
 textBlue400 :: Style
-textBlue400 = css "text-blue-400" "color" "#60a5fa"
+textBlue400 = css "text-blue-400" "color" "var(--blue-5)"
 
 textSlate400 :: Style
-textSlate400 = css "text-slate-400" "color" "#94a3b8"
+textSlate400 = css "text-slate-400" "color" "var(--gray-4)"
 
 textSlate500 :: Style
-textSlate500 = css "text-slate-500" "color" "#64748b"
+textSlate500 = css "text-slate-500" "color" "var(--gray-5)"
 
 textSlate600 :: Style
-textSlate600 = css "text-slate-600" "color" "#475569"
+textSlate600 = css "text-slate-600" "color" "var(--gray-6)"
 
 textSlate700 :: Style
-textSlate700 = css "text-slate-700" "color" "#334155"
+textSlate700 = css "text-slate-700" "color" "var(--gray-7)"
 
 textBlack :: Style
 textBlack = css "text-black" "color" "black"
@@ -631,43 +631,43 @@ textWhite :: Style
 textWhite = css "text-white" "color" "white"
 
 textRed500 :: Style
-textRed500 = css "text-red-500" "color" "#ef4444"
+textRed500 = css "text-red-500" "color" "var(--red-6)"
 
 textRed200 :: Style
-textRed200 = css "text-red-200" "color" "#fecaca"
+textRed200 = css "text-red-200" "color" "var(--red-3)"
 
 textRed100 :: Style
-textRed100 = css "text-red-100" "color" "#fee2e2"
+textRed100 = css "text-red-100" "color" "var(--red-2)"
 
 textRed300 :: Style
-textRed300 = css "text-red-300" "color" "#fca5a5"
+textRed300 = css "text-red-300" "color" "var(--red-4)"
 
 textRed400 :: Style
-textRed400 = css "text-red-400" "color" "#f87171"
+textRed400 = css "text-red-400" "color" "var(--red-5)"
 
 textIndigo400 :: Style
-textIndigo400 = css "text-indigo-400" "color" "#818cf8"
+textIndigo400 = css "text-indigo-400" "color" "var(--indigo-5)"
 
 textYellow400 :: Style
-textYellow400 = css "text-yellow-400" "color" "#facc15"
+textYellow400 = css "text-yellow-400" "color" "var(--yellow-5)"
 
 textBlue500 :: Style
-textBlue500 = css "text-blue-500" "color" "#3b82f6"
+textBlue500 = css "text-blue-500" "color" "var(--blue-6)"
 
 textBlue5 :: Style
 textBlue5 = css "text-blue-5" "color" "var(--blue-5)"
 
 borderSlate500 :: Style
-borderSlate500 = css "border-slate-500" "border-color" "#64748b"
+borderSlate500 = css "border-slate-500" "border-color" "var(--gray-7)"
 
 borderSlate600 :: Style
-borderSlate600 = css "border-slate-600" "border-color" "#475569"
+borderSlate600 = css "border-slate-600" "border-color" "var(--gray-8)"
 
 borderSlate700 :: Style
-borderSlate700 = css "border-slate-700" "border-color" "#334155"
+borderSlate700 = css "border-slate-700" "border-color" "var(--gray-9)"
 
 borderSlate800 :: Style
-borderSlate800 = css "border-slate-800" "border-color" "#1e293b"
+borderSlate800 = css "border-slate-800" "border-color" "var(--gray-10)"
 
 borderBlack :: Style
 borderBlack = css "border-black" "border-color" "black"
@@ -676,7 +676,7 @@ borderTransparent :: Style
 borderTransparent = css "border-transparent" "border-color" "transparent"
 
 borderRed800 :: Style
-borderRed800 = css "border-red-800" "border-color" "#991b1b"
+borderRed800 = css "border-red-800" "border-color" "var(--red-10)"
 
 --------------------------------------------------------------------------------
 -- Borders

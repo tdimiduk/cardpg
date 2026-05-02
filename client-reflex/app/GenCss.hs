@@ -29,13 +29,25 @@ main = do
   files <- findHaskellFiles "client-reflex/src"
   putStrLn $ "Scanning " <> show (length files) <> " files..."
 
-  scanned <- fmap concat $ forM files $ \file -> do
-    content <- T.readFile file
-    return $ scanContent content
+  allContents <- forM files T.readFile
+  let scanned = concatMap scanContent allContents
 
-  let allProps = concat staticStyles ++ scanned
+  let allContentsText = T.concat allContents
+      usedIn name variant =
+        (variant <> " " <> name) `T.isInfixOf` allContentsText
+          || (variant <> " S." <> name) `T.isInfixOf` allContentsText
+
+  let baseStaticProps = concatMap snd staticStyles
+      allProps = baseStaticProps ++ scanned
       uniqueBase = List.nubBy ((==) `on` (.propClassName)) allProps
-      withVariants = concatMap (\p -> [p, S.hoverProp p, S.activeProp p]) uniqueBase
+
+      staticHoverProps = concat [[S.hoverProp p] | (name, props) <- staticStyles, usedIn name "hover", p <- props]
+      staticActiveProps = concat [[S.activeProp p] | (name, props) <- staticStyles, usedIn name "active", p <- props]
+
+      scannedHoverProps = map S.hoverProp scanned
+      scannedActiveProps = map S.activeProp scanned
+
+      withVariants = uniqueBase ++ staticHoverProps ++ staticActiveProps ++ scannedHoverProps ++ scannedActiveProps
       unique = List.nubBy ((==) `on` (.propClassName)) withVariants
 
   let header =
@@ -56,204 +68,202 @@ findHaskellFiles top = do
       return [top | takeExtension top == ".hs"]
 
 -- | Static styles that don't take parameters
-staticStyles :: [[Prop]]
+staticStyles :: [(Text, [Prop])]
 staticStyles =
-  map
-    ($ [])
-    [ S.flex
-    , S.flexRow
-    , S.flexCol
-    , S.itemsCenter
-    , S.itemsEnd
-    , S.itemsStretch
-    , S.justifyStart
-    , S.justifyCenter
-    , S.justifyBetween
-    , S.justifyAround
-    , S.grow
-    , S.grow0
-    , S.shrink0
-    , S.absolute
-    , S.relative
-    , S.fixed
-    , S.hidden
-    , S.overflowHidden
-    , S.overflowYAuto
-    , S.z10
-    , S.z20
-    , S.z30
-    , S.z40
-    , S.cursorPointer
-    , S.cursorNotAllowed
-    , S.pointerEventsNone
-    , S.pointerEventsAuto
-    , S.group
-    , S.inlineBlock
-    , S.alignTextBottom
-    , S.flexWrap
-    , S.contentStart
-    , S.wFull
-    , S.hFull
-    , S.wFit
-    , S.w4
-    , S.h4
-    , S.w6
-    , S.h6
-    , S.w8
-    , S.h8
-    , S.w10
-    , S.h10
-    , S.w5
-    , S.h5
-    , S.w40
-    , S.w72
-    , S.w80
-    , S.wCard
-    , S.hCard
-    , S.w8mm
-    , S.h8mm
-    , S.hScreen
-    , S.h2_5
-    , S.p1
-    , S.p2mm
-    , S.p2_5mm
-    , S.p4
-    , S.p1_5
-    , S.pb1
-    , S.pr1
-    , S.px1
-    , S.px2
-    , S.py1
-    , S.px4
-    , S.py2
-    , S.p2
-    , S.px6
-    , S.px8
-    , S.top1
-    , S.right1
-    , S.py3
-    , S.p3
-    , S.mb2mm
-    , S.mt2
-    , S.mt1
-    , S.mb1
-    , S.mb2
-    , S.top2mm
-    , S.right2mm
-    , S.gap0
-    , S.gap1
-    , S.gap2
-    , S.gap4
-    , S.gap4mm
-    , S.bottom0
-    , S.left0
-    , S.right0
-    , S.inset0
-    , S.bgSlate900
-    , S.bgSlate800
-    , S.bgSlate700
-    , S.bgSlate600
-    , S.bgSlate950
-    , S.bgSlate800_50
-    , S.bgGray300
-    , S.bgWhite
-    , S.bgTransparent
-    , S.bgIndigo600
-    , S.bgIndigo500
-    , S.bgIndigo700
-    , S.textIndigo400
-    , S.bgRed900_50
-    , S.bgRed800_50
-    , S.textSlate100
-    , S.textSlate200
-    , S.textSlate300
-    , S.textBlue300
-    , S.textBlue400
-    , S.textSlate400
-    , S.textSlate500
-    , S.textSlate600
-    , S.textSlate700
-    , S.textBlack
-    , S.textWhite
-    , S.textRed500
-    , S.textRed200
-    , S.textRed100
-    , S.textRed300
-    , S.textRed400
-    , S.textYellow400
-    , S.textBlue500
-    , S.textBlue5
-    , S.borderSlate500
-    , S.borderSlate600
-    , S.borderSlate700
-    , S.borderSlate800
-    , S.borderBlack
-    , S.borderTransparent
-    , S.borderRed800
-    , S.border
-    , S.border0
-    , S.border2
-    , S.borderB
-    , S.borderT
-    , S.borderL
-    , S.borderR
-    , S.border02mm
-    , S.rounded
-    , S.roundedNone
-    , S.roundedXl
-    , S.rounded3Xl
-    , S.roundedFull
-    , S.rounded3mm
-    , S.rounded2mm
-    , S.rounded1mm
-    , S.fontBold
-    , S.textSm
-    , S.textXs
-    , S.textXl
-    , S.text2Xl
-    , S.textLg
-    , S.textBase
-    , S.textCenter
-    , S.leadingTight
-    , S.uppercase
-    , S.trackingWider
-    , S.whitespaceNowrap
-    , S.textTruncate
-    , S.textLeft
-    , S.shadow2Xl
-    , S.shadowXl
-    , S.shadowLg
-    , S.shadowSm
-    , S.grayscale
-    , S.grayscale50
-    , S.opacity75
-    , S.opacity50
-    , S.backdropBlurMd
-    , S.aspect43
-    , S.aspectCard
-    , S.aspectSquare
-    , S.wCardHand
-    , S.mlCardOverlap
-    , S.spaceXActionStackOverlap
-    , S.spaceY2
-    , S.originBottom
-    , S.translateYNeg4
-    , S.translateYNeg8
-    , S.scale105
-    , S.transitionAll
-    , S.transitionTransform
-    , S.transitionColors
-    , S.duration200
-    , S.easeOut
-    , S.selectNone
-    , S.ring2
-    , S.ringBlue400
-    , S.ringAmber400
-    , S.ringIndigo400
-    , S.ringOffset2
-    , S.flex1
-    , S.full
-    ]
+  [ ("flex", S.flex [])
+  , ("flexRow", S.flexRow [])
+  , ("flexCol", S.flexCol [])
+  , ("itemsCenter", S.itemsCenter [])
+  , ("itemsEnd", S.itemsEnd [])
+  , ("itemsStretch", S.itemsStretch [])
+  , ("justifyStart", S.justifyStart [])
+  , ("justifyCenter", S.justifyCenter [])
+  , ("justifyBetween", S.justifyBetween [])
+  , ("justifyAround", S.justifyAround [])
+  , ("grow", S.grow [])
+  , ("grow0", S.grow0 [])
+  , ("shrink0", S.shrink0 [])
+  , ("absolute", S.absolute [])
+  , ("relative", S.relative [])
+  , ("fixed", S.fixed [])
+  , ("hidden", S.hidden [])
+  , ("overflowHidden", S.overflowHidden [])
+  , ("overflowYAuto", S.overflowYAuto [])
+  , ("z10", S.z10 [])
+  , ("z20", S.z20 [])
+  , ("z30", S.z30 [])
+  , ("z40", S.z40 [])
+  , ("cursorPointer", S.cursorPointer [])
+  , ("cursorNotAllowed", S.cursorNotAllowed [])
+  , ("pointerEventsNone", S.pointerEventsNone [])
+  , ("pointerEventsAuto", S.pointerEventsAuto [])
+  , ("group", S.group [])
+  , ("inlineBlock", S.inlineBlock [])
+  , ("alignTextBottom", S.alignTextBottom [])
+  , ("flexWrap", S.flexWrap [])
+  , ("contentStart", S.contentStart [])
+  , ("wFull", S.wFull [])
+  , ("hFull", S.hFull [])
+  , ("wFit", S.wFit [])
+  , ("w4", S.w4 [])
+  , ("h4", S.h4 [])
+  , ("w6", S.w6 [])
+  , ("h6", S.h6 [])
+  , ("w8", S.w8 [])
+  , ("h8", S.h8 [])
+  , ("w10", S.w10 [])
+  , ("h10", S.h10 [])
+  , ("w5", S.w5 [])
+  , ("h5", S.h5 [])
+  , ("w40", S.w40 [])
+  , ("w72", S.w72 [])
+  , ("w80", S.w80 [])
+  , ("wCard", S.wCard [])
+  , ("hCard", S.hCard [])
+  , ("w8mm", S.w8mm [])
+  , ("h8mm", S.h8mm [])
+  , ("hScreen", S.hScreen [])
+  , ("h2_5", S.h2_5 [])
+  , ("p1", S.p1 [])
+  , ("p2mm", S.p2mm [])
+  , ("p2_5mm", S.p2_5mm [])
+  , ("p4", S.p4 [])
+  , ("p1_5", S.p1_5 [])
+  , ("pb1", S.pb1 [])
+  , ("pr1", S.pr1 [])
+  , ("px1", S.px1 [])
+  , ("px2", S.px2 [])
+  , ("py1", S.py1 [])
+  , ("px4", S.px4 [])
+  , ("py2", S.py2 [])
+  , ("p2", S.p2 [])
+  , ("px6", S.px6 [])
+  , ("px8", S.px8 [])
+  , ("top1", S.top1 [])
+  , ("right1", S.right1 [])
+  , ("py3", S.py3 [])
+  , ("p3", S.p3 [])
+  , ("mb2mm", S.mb2mm [])
+  , ("mt2", S.mt2 [])
+  , ("mt1", S.mt1 [])
+  , ("mb1", S.mb1 [])
+  , ("mb2", S.mb2 [])
+  , ("top2mm", S.top2mm [])
+  , ("right2mm", S.right2mm [])
+  , ("gap0", S.gap0 [])
+  , ("gap1", S.gap1 [])
+  , ("gap2", S.gap2 [])
+  , ("gap4", S.gap4 [])
+  , ("gap4mm", S.gap4mm [])
+  , ("bottom0", S.bottom0 [])
+  , ("left0", S.left0 [])
+  , ("right0", S.right0 [])
+  , ("inset0", S.inset0 [])
+  , ("bgSlate900", S.bgSlate900 [])
+  , ("bgSlate800", S.bgSlate800 [])
+  , ("bgSlate700", S.bgSlate700 [])
+  , ("bgSlate600", S.bgSlate600 [])
+  , ("bgSlate950", S.bgSlate950 [])
+  , ("bgSlate800_50", S.bgSlate800_50 [])
+  , ("bgGray300", S.bgGray300 [])
+  , ("bgWhite", S.bgWhite [])
+  , ("bgTransparent", S.bgTransparent [])
+  , ("bgIndigo600", S.bgIndigo600 [])
+  , ("bgIndigo500", S.bgIndigo500 [])
+  , ("bgIndigo700", S.bgIndigo700 [])
+  , ("textIndigo400", S.textIndigo400 [])
+  , ("bgRed900_50", S.bgRed900_50 [])
+  , ("bgRed800_50", S.bgRed800_50 [])
+  , ("textSlate100", S.textSlate100 [])
+  , ("textSlate200", S.textSlate200 [])
+  , ("textSlate300", S.textSlate300 [])
+  , ("textBlue300", S.textBlue300 [])
+  , ("textBlue400", S.textBlue400 [])
+  , ("textSlate400", S.textSlate400 [])
+  , ("textSlate500", S.textSlate500 [])
+  , ("textSlate600", S.textSlate600 [])
+  , ("textSlate700", S.textSlate700 [])
+  , ("textBlack", S.textBlack [])
+  , ("textWhite", S.textWhite [])
+  , ("textRed500", S.textRed500 [])
+  , ("textRed200", S.textRed200 [])
+  , ("textRed100", S.textRed100 [])
+  , ("textRed300", S.textRed300 [])
+  , ("textRed400", S.textRed400 [])
+  , ("textYellow400", S.textYellow400 [])
+  , ("textBlue500", S.textBlue500 [])
+  , ("textBlue5", S.textBlue5 [])
+  , ("borderSlate500", S.borderSlate500 [])
+  , ("borderSlate600", S.borderSlate600 [])
+  , ("borderSlate700", S.borderSlate700 [])
+  , ("borderSlate800", S.borderSlate800 [])
+  , ("borderBlack", S.borderBlack [])
+  , ("borderTransparent", S.borderTransparent [])
+  , ("borderRed800", S.borderRed800 [])
+  , ("border", S.border [])
+  , ("border0", S.border0 [])
+  , ("border2", S.border2 [])
+  , ("borderB", S.borderB [])
+  , ("borderT", S.borderT [])
+  , ("borderL", S.borderL [])
+  , ("borderR", S.borderR [])
+  , ("border02mm", S.border02mm [])
+  , ("rounded", S.rounded [])
+  , ("roundedNone", S.roundedNone [])
+  , ("roundedXl", S.roundedXl [])
+  , ("rounded3Xl", S.rounded3Xl [])
+  , ("roundedFull", S.roundedFull [])
+  , ("rounded3mm", S.rounded3mm [])
+  , ("rounded2mm", S.rounded2mm [])
+  , ("rounded1mm", S.rounded1mm [])
+  , ("fontBold", S.fontBold [])
+  , ("textSm", S.textSm [])
+  , ("textXs", S.textXs [])
+  , ("textXl", S.textXl [])
+  , ("text2Xl", S.text2Xl [])
+  , ("textLg", S.textLg [])
+  , ("textBase", S.textBase [])
+  , ("textCenter", S.textCenter [])
+  , ("leadingTight", S.leadingTight [])
+  , ("uppercase", S.uppercase [])
+  , ("trackingWider", S.trackingWider [])
+  , ("whitespaceNowrap", S.whitespaceNowrap [])
+  , ("textTruncate", S.textTruncate [])
+  , ("textLeft", S.textLeft [])
+  , ("shadow2Xl", S.shadow2Xl [])
+  , ("shadowXl", S.shadowXl [])
+  , ("shadowLg", S.shadowLg [])
+  , ("shadowSm", S.shadowSm [])
+  , ("grayscale", S.grayscale [])
+  , ("grayscale50", S.grayscale50 [])
+  , ("opacity75", S.opacity75 [])
+  , ("opacity50", S.opacity50 [])
+  , ("backdropBlurMd", S.backdropBlurMd [])
+  , ("aspect43", S.aspect43 [])
+  , ("aspectCard", S.aspectCard [])
+  , ("aspectSquare", S.aspectSquare [])
+  , ("wCardHand", S.wCardHand [])
+  , ("mlCardOverlap", S.mlCardOverlap [])
+  , ("spaceXActionStackOverlap", S.spaceXActionStackOverlap [])
+  , ("spaceY2", S.spaceY2 [])
+  , ("originBottom", S.originBottom [])
+  , ("translateYNeg4", S.translateYNeg4 [])
+  , ("translateYNeg8", S.translateYNeg8 [])
+  , ("scale105", S.scale105 [])
+  , ("transitionAll", S.transitionAll [])
+  , ("transitionTransform", S.transitionTransform [])
+  , ("transitionColors", S.transitionColors [])
+  , ("duration200", S.duration200 [])
+  , ("easeOut", S.easeOut [])
+  , ("selectNone", S.selectNone [])
+  , ("ring2", S.ring2 [])
+  , ("ringBlue400", S.ringBlue400 [])
+  , ("ringAmber400", S.ringAmber400 [])
+  , ("ringIndigo400", S.ringIndigo400 [])
+  , ("ringOffset2", S.ringOffset2 [])
+  , ("flex1", S.flex1 [])
+  , ("full", S.full [])
+  ]
 
 -- | Parameterized functions
 data ParamFn = forall a. ParamFn
