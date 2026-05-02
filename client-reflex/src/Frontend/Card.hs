@@ -62,7 +62,6 @@ import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (row, spacer)
 import Frontend.Svg (renderHexagon)
-import Frontend.UI.Scaler (scalable)
 
 --------------------------------------------------------------------------------
 -- Display Mode Types
@@ -168,7 +167,7 @@ renderCoreCardWith settings c = case settings.displayMode of
     maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
     spacer
     renderStatsWith (StatsSettings StatsRow IconResponsive) c.stats
-  CardFull -> scalable 63 88 $ divS (cardClasses settings) $ do
+  CardFull -> divS (cardClasses settings) $ do
     row $ do
       componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
       spacer

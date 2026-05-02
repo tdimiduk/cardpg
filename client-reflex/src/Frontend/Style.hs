@@ -61,9 +61,8 @@ cardBase :: Style
 cardBase =
   flexCol
     . relative
-    . p2_5mm -- Padding around the card content within the S.border1
     . overflowHidden
-    . standardCardSize
+    . standardCardAspectRatio
 
 -- ** Screen Styles
 
@@ -78,7 +77,7 @@ cardScreenVisuals =
     . shadowXl
 
 cardScreen :: Style
-cardScreen = cardScreenVisuals
+cardScreen = cardScreenVisuals . p 2
 
 -- ** Print Styles
 
@@ -91,6 +90,7 @@ cardPrint =
     . S.border1
     . borderBlack
     . rounded3mm
+    . p2_5mm
 
 -- ** Compact Variants
 
@@ -145,7 +145,7 @@ nameBase =
   fontBold
     . textSm
     . leadingTight
-    . mb2mm
+    . mb 1
 
 nameScreen :: Style
 nameScreen = (S.text S.Gray 1)
@@ -179,8 +179,8 @@ textboxBase :: Style
 textboxBase =
   flex1
     . textXs
-    . border02mm
-    . p2mm
+    . border1
+    . p 1
     . grow
 
 -- Note: The child selectors like "[&_p]:mt-0" cannot be expressed as simple atoms.
