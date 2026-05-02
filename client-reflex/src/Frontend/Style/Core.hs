@@ -63,7 +63,7 @@ data Prop = Prop
 -- | A composable style transformer. Compose with (.) and apply to []:
 --
 -- @
--- myStyle = flexCol . gap4 . bgSlate800
+-- myStyle = flexCol . gap 4 . bgSlate800
 -- classes = classNames myStyle   -- "flex-col gap-4 bg-slate-800"
 -- @
 type Style = [Prop] -> [Prop]

@@ -6,6 +6,7 @@
 module Main where
 
 import Control.Monad (forM, join)
+import Data.Char (isAlphaNum)
 import Data.Function (on)
 import Data.List qualified as List
 import Data.Text (Text)
@@ -89,10 +90,6 @@ staticStyles =
   , ("hidden", S.hidden [])
   , ("overflowHidden", S.overflowHidden [])
   , ("overflowYAuto", S.overflowYAuto [])
-  , ("z10", S.z10 [])
-  , ("z20", S.z20 [])
-  , ("z30", S.z30 [])
-  , ("z40", S.z40 [])
   , ("cursorPointer", S.cursorPointer [])
   , ("cursorNotAllowed", S.cursorNotAllowed [])
   , ("pointerEventsNone", S.pointerEventsNone [])
@@ -105,55 +102,22 @@ staticStyles =
   , ("wFull", S.wFull [])
   , ("hFull", S.hFull [])
   , ("wFit", S.wFit [])
-  , ("w4", S.w4 [])
-  , ("h4", S.h4 [])
-  , ("w6", S.w6 [])
-  , ("h6", S.h6 [])
-  , ("w8", S.w8 [])
-  , ("h8", S.h8 [])
-  , ("w10", S.w10 [])
-  , ("h10", S.h10 [])
-  , ("w5", S.w5 [])
-  , ("h5", S.h5 [])
-  , ("w40", S.w40 [])
-  , ("w72", S.w72 [])
-  , ("w80", S.w80 [])
   , ("wCard", S.wCard [])
   , ("hCard", S.hCard [])
   , ("w8mm", S.w8mm [])
   , ("h8mm", S.h8mm [])
   , ("hScreen", S.hScreen [])
   , ("h2_5", S.h2_5 [])
-  , ("p1", S.p1 [])
   , ("p2mm", S.p2mm [])
   , ("p2_5mm", S.p2_5mm [])
-  , ("p4", S.p4 [])
   , ("p1_5", S.p1_5 [])
   , ("pb1", S.pb1 [])
   , ("pr1", S.pr1 [])
-  , ("px1", S.px1 [])
-  , ("px2", S.px2 [])
-  , ("py1", S.py1 [])
-  , ("px4", S.px4 [])
-  , ("py2", S.py2 [])
-  , ("p2", S.p2 [])
-  , ("px6", S.px6 [])
-  , ("px8", S.px8 [])
   , ("top1", S.top1 [])
   , ("right1", S.right1 [])
-  , ("py3", S.py3 [])
-  , ("p3", S.p3 [])
   , ("mb2mm", S.mb2mm [])
-  , ("mt2", S.mt2 [])
-  , ("mt1", S.mt1 [])
-  , ("mb1", S.mb1 [])
-  , ("mb2", S.mb2 [])
   , ("top2mm", S.top2mm [])
   , ("right2mm", S.right2mm [])
-  , ("gap0", S.gap0 [])
-  , ("gap1", S.gap1 [])
-  , ("gap2", S.gap2 [])
-  , ("gap4", S.gap4 [])
   , ("gap4mm", S.gap4mm [])
   , ("bottom0", S.bottom0 [])
   , ("left0", S.left0 [])
@@ -275,9 +239,15 @@ data ParamFn = forall a. ParamFn
 knownParams :: [ParamFn]
 knownParams =
   [ ParamFn "gap" parseInt (\n -> S.gap n [])
-  , ParamFn "pad" parseInt (\n -> S.pad n [])
+  , ParamFn "p" parseInt (\n -> S.p n [])
+  , ParamFn "px" parseInt (\n -> S.px n [])
+  , ParamFn "py" parseInt (\n -> S.py n [])
+  , ParamFn "mt" parseInt (\n -> S.mt n [])
+  , ParamFn "mb" parseInt (\n -> S.mb n [])
   , ParamFn "fontSize" parseInt (\n -> S.fontSize n [])
-  , ParamFn "zIndex" parseInt (\n -> S.zIndex n [])
+  , ParamFn "w" parseInt (\n -> S.w n [])
+  , ParamFn "h" parseInt (\n -> S.h n [])
+  , ParamFn "z" parseInt (\n -> S.z n [])
   , ParamFn "opacity" parseFloat (\d -> S.opacity d [])
   , ParamFn "borderRadius" parseInt (\n -> S.borderRadius n [])
   , ParamFn "css" parseThreeStrings (\(n, p, v) -> S.css n p v [])
@@ -299,10 +269,23 @@ scanContent content = case parse (many parseAny) "" content of
 
     tryParam :: ParamFn -> Parser [Prop]
     tryParam (ParamFn name p applyFn) = do
-      _ <- string name
-      space1
-      arg <- p
-      return $ applyFn arg
+      -- Word boundary: ensure we're not in the middle of an identifier
+      off <- getOffset
+      let prevChar = if off > 0 then Just (T.index content (off - 1)) else Nothing
+          -- If preceded by S., the offset includes "S." so check before that
+          prevOk = case prevChar of
+            Nothing -> True
+            Just '.' -> True -- S.w, composition chain
+            Just c -> not (isAlphaNum c || c == '_')
+      if prevOk
+        then do
+          _ <- string name
+          -- Ensure the name isn't a prefix of a longer identifier
+          notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_'))
+          space1
+          arg <- p
+          return $ applyFn arg
+        else empty
 
 -- | Parsers
 parseInt :: Parser Int

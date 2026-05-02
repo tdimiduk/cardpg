@@ -71,9 +71,9 @@ instance (Reflex t) => Default (ButtonConfig t) where
 
 sizeStyle :: ButtonSize -> Style
 sizeStyle = \case
-  SizeSmall -> px2 . py1 . textXs
-  SizeMedium -> px4 . py2 . textSm
-  SizeLarge -> px6 . py3 . textBase
+  SizeSmall -> px 2 . py 1 . textXs
+  SizeMedium -> px 4 . py 2 . textSm
+  SizeLarge -> px 6 . py 3 . textBase
 
 variantStyle :: ButtonVariant -> Style
 variantStyle = \case

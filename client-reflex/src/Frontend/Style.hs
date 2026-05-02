@@ -95,14 +95,14 @@ cardPrint =
 
 -- | Cost hexagon styling for CardRow (explicit small size)
 costRow :: Style
-costRow = w4 . h4 . textSlate200
+costRow = w 4 . h 4 . textSlate200
 
 cardRow :: Style
 cardRow =
   flexRow
     . itemsCenter
-    . gap1
-    . p1
+    . gap 1
+    . p 1
     . bgSlate900
     . border
     . borderSlate700
@@ -160,7 +160,7 @@ costBase =
     . css "h-1.4em" "height" "1.4em"
     . css "-mt-0.1em" "margin-top" "-0.1em"
     . css "-mb-0.1em" "margin-bottom" "-0.1em"
-    . z10
+    . z 10
     . flex
     . itemsCenter
     . justifyCenter
@@ -212,7 +212,7 @@ stagedActionCard =
     . originBottom
     . cardHandWidth
     . shrink0
-    . z10
+    . z 10
     . transitionTransform
 
 -- Note: hover:z-30, hover:scale-105 are variant states

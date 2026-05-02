@@ -15,15 +15,15 @@ import Frontend.Style.Layout
 
 statsWidget :: (DomBuilder t m, PostBuild t m) => Dynamic t ActorState -> m ()
 statsWidget actorState =
-  colWith (S.gap2 . S.p2) $
-    rowWith (S.itemsCenter . S.justifyAround . S.gap4) $ do
+  colWith (S.gap 2 . S.p 2) $
+    rowWith (S.itemsCenter . S.justifyAround . S.gap 4) $ do
       derivedStatDisplay "🛡" "Defense" (actorDefense actorState)
       derivedStatDisplay "💖" "Resilience" (actorResilience actorState)
 
 derivedStatDisplay
   :: (DomBuilder t m, PostBuild t m) => Text -> Text -> Dynamic t Int -> m ()
 derivedStatDisplay icon label valDyn =
-  rowWith (S.itemsCenter . S.gap2) $ do
+  rowWith (S.itemsCenter . S.gap 2) $ do
     elS "span" S.textLg $ text icon
     divS (S.textSm . S.fontBold . S.textBlue300) $ text $ label <> ":"
     divS (S.textLg . S.fontBold . S.textWhite) $ dynText (fmap tshow valDyn)

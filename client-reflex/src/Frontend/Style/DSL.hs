@@ -45,10 +45,7 @@ module Frontend.Style.DSL
   , hidden
   , overflowHidden
   , overflowYAuto
-  , z10
-  , z20
-  , z30
-  , z40
+  , z
   , cursorPointer
   , cursorNotAllowed
   , pointerEventsNone
@@ -60,22 +57,11 @@ module Frontend.Style.DSL
   , contentStart
 
     -- * Sizing
+  , w
+  , h
   , wFull
   , hFull
   , wFit
-  , w4
-  , h4
-  , w6
-  , h6
-  , w8
-  , h8
-  , w10
-  , h10
-  , w5
-  , h5
-  , w40
-  , w72
-  , w80
   , wCard
   , hCard
   , w8mm
@@ -84,36 +70,22 @@ module Frontend.Style.DSL
   , h2_5
 
     -- * Spacing
-  , p1
+  , p
+  , px
+  , py
+  , mt
+  , mb
   , p2mm
   , p2_5mm
-  , p4
   , p1_5
   , pb1
   , pr1
-  , px1
-  , px2
-  , py1
-  , px4
-  , py2
-  , p2
-  , px6
-  , px8
   , top1
   , right1
-  , py3
-  , p3
   , mb2mm
-  , mt2
-  , mt1
-  , mb1
-  , mb2
   , top2mm
   , right2mm
-  , gap0
-  , gap1
-  , gap2
-  , gap4
+  , gap
   , gap4mm
   , bottom0
   , left0
@@ -242,9 +214,7 @@ module Frontend.Style.DSL
 
     -- * Parameterized Styles
   , gap
-  , pad
   , fontSize
-  , zIndex
   , opacity
   , borderRadius
 
@@ -333,17 +303,8 @@ overflowHidden = css "overflow-hidden" "overflow" "hidden"
 overflowYAuto :: Style
 overflowYAuto = css "overflow-y-auto" "overflow-y" "auto"
 
-z10 :: Style
-z10 = css "z-10" "z-index" "10"
-
-z20 :: Style
-z20 = css "z-20" "z-index" "20"
-
-z30 :: Style
-z30 = css "z-30" "z-index" "30"
-
-z40 :: Style
-z40 = css "z-40" "z-index" "40"
+z :: Int -> Style
+z n = css ("z-" <> tshow n) "z-index" (tshow n)
 
 cursorPointer :: Style
 cursorPointer = css "cursor-pointer" "cursor" "pointer"
@@ -385,44 +346,22 @@ hFull = css "h-full" "height" "100%"
 wFit :: Style
 wFit = css "w-fit" "width" "fit-content"
 
-w4 :: Style
-w4 = css "w-4" "width" "1rem"
+-- | Width in Tailwind spacing units (n * 0.25rem).
+-- e.g. @w 4@ = 1rem, @w 8@ = 2rem, @w 80@ = 20rem
+w :: Int -> Style
+w n = css ("w-" <> tshow n) "width" (remValue n)
 
-h4 :: Style
-h4 = css "h-4" "height" "1rem"
+-- | Height in Tailwind spacing units (n * 0.25rem).
+-- e.g. @h 4@ = 1rem, @h 8@ = 2rem, @h 10@ = 2.5rem
+h :: Int -> Style
+h n = css ("h-" <> tshow n) "height" (remValue n)
 
-w6 :: Style
-w6 = css "w-6" "width" "1.5rem"
-
-h6 :: Style
-h6 = css "h-6" "height" "1.5rem"
-
-w8 :: Style
-w8 = css "w-8" "width" "2rem"
-
-h8 :: Style
-h8 = css "h-8" "height" "2rem"
-
-w10 :: Style
-w10 = css "w-10" "width" "2.5rem"
-
-h10 :: Style
-h10 = css "h-10" "height" "2.5rem"
-
-w5 :: Style
-w5 = css "w-5" "width" "1.25rem"
-
-h5 :: Style
-h5 = css "h-5" "height" "1.25rem"
-
-w40 :: Style
-w40 = css "w-40" "width" "10rem"
-
-w72 :: Style
-w72 = css "w-72" "width" "18rem"
-
-w80 :: Style
-w80 = css "w-80" "width" "20rem"
+-- | Convert a Tailwind spacing unit to a rem value string.
+-- Produces clean output: 1rem, 1.25rem, 2.5rem (no trailing .0)
+remValue :: Int -> Text
+remValue n
+  | n `mod` 4 == 0 = tshow (n `div` 4) <> "rem"
+  | otherwise = tshow (fromIntegral n * 0.25 :: Double) <> "rem"
 
 wCard :: Style
 wCard = css "w-card" "width" "63mm"
@@ -446,8 +385,24 @@ h2_5 = css "h-2/5" "height" "40%"
 -- Spacing
 --------------------------------------------------------------------------------
 
-p1 :: Style
-p1 = css "p-1" "padding" "0.25rem"
+p :: Int -> Style
+p n = css ("p-" <> tshow n) "padding" (remValue n)
+
+px :: Int -> Style
+px n = css' ("px-" <> tshow n) [("padding-left", v), ("padding-right", v)]
+  where
+    v = remValue n
+
+py :: Int -> Style
+py n = css' ("py-" <> tshow n) [("padding-top", v), ("padding-bottom", v)]
+  where
+    v = remValue n
+
+mt :: Int -> Style
+mt n = css ("mt-" <> tshow n) "margin-top" (remValue n)
+
+mb :: Int -> Style
+mb n = css ("mb-" <> tshow n) "margin-bottom" (remValue n)
 
 p2mm :: Style
 p2mm = css "p-2mm" "padding" "2mm"
@@ -455,20 +410,11 @@ p2mm = css "p-2mm" "padding" "2mm"
 p2_5mm :: Style
 p2_5mm = css "p-2.5mm" "padding" "2.5mm"
 
-p4 :: Style
-p4 = css "p-4" "padding" "1rem"
-
-p2 :: Style
-p2 = css "p-2" "padding" "0.5rem"
-
 p1_5 :: Style
 p1_5 = css "p-1.5" "padding" "0.375rem"
 
 pb1 :: Style
 pb1 = css "pb-1" "padding-bottom" "0.25rem"
-
-px1 :: Style
-px1 = css' "px-1" [("padding-left", "0.25rem"), ("padding-right", "0.25rem")]
 
 top1 :: Style
 top1 = css "top-1" "top" "0.25rem"
@@ -479,62 +425,14 @@ right1 = css "right-1" "right" "0.25rem"
 pr1 :: Style
 pr1 = css "pr-1" "padding-right" "0.25rem"
 
-px2 :: Style
-px2 = css' "px-2" [("padding-left", "0.5rem"), ("padding-right", "0.5rem")]
-
-py1 :: Style
-py1 = css' "py-1" [("padding-top", "0.25rem"), ("padding-bottom", "0.25rem")]
-
-px4 :: Style
-px4 = css' "px-4" [("padding-left", "1rem"), ("padding-right", "1rem")]
-
-py2 :: Style
-py2 = css' "py-2" [("padding-top", "0.5rem"), ("padding-bottom", "0.5rem")]
-
-px6 :: Style
-px6 = css' "px-6" [("padding-left", "1.5rem"), ("padding-right", "1.5rem")]
-
-px8 :: Style
-px8 = css' "px-8" [("padding-left", "2rem"), ("padding-right", "2rem")]
-
-py3 :: Style
-py3 = css' "py-3" [("padding-top", "0.75rem"), ("padding-bottom", "0.75rem")]
-
-p3 :: Style
-p3 = css "p-3" "padding" "0.75rem"
-
 mb2mm :: Style
 mb2mm = css "mb-2mm" "margin-bottom" "2mm"
-
-mt2 :: Style
-mt2 = css "mt-2" "margin-top" "0.5rem"
-
-mt1 :: Style
-mt1 = css "mt-1" "margin-top" "0.25rem"
-
-mb1 :: Style
-mb1 = css "mb-1" "margin-bottom" "0.25rem"
-
-mb2 :: Style
-mb2 = css "mb-2" "margin-bottom" "0.5rem"
 
 top2mm :: Style
 top2mm = css "top-2mm" "top" "2mm"
 
 right2mm :: Style
 right2mm = css "right-2mm" "right" "2mm"
-
-gap0 :: Style
-gap0 = css "gap-0" "gap" "0"
-
-gap1 :: Style
-gap1 = css "gap-1" "gap" "0.25rem"
-
-gap2 :: Style
-gap2 = css "gap-2" "gap" "0.5rem"
-
-gap4 :: Style
-gap4 = css "gap-4" "gap" "1rem"
 
 gap4mm :: Style
 gap4mm = css "gap-4mm" "gap" "4mm"
@@ -907,16 +805,10 @@ full = wFull . hFull
 
 gap :: Int -> Style
 gap 0 = css "gap-0" "gap" "0"
-gap n = css ("gap-" <> tshow n) "gap" (tshow n <> "px")
-
-pad :: Int -> Style
-pad n = css ("p-" <> tshow n) "padding" (tshow (n * 4) <> "px")
+gap n = css ("gap-" <> tshow n) "gap" (remValue n)
 
 fontSize :: Int -> Style
 fontSize n = css ("text-" <> tshow n) "font-size" (tshow n <> "px")
-
-zIndex :: Int -> Style
-zIndex n = css ("z-" <> tshow n) "z-index" (tshow n)
 
 opacity :: Double -> Style
 opacity v = css ("opacity-" <> tshow (round (v * 100) :: Int)) "opacity" (tshow v)

@@ -55,14 +55,14 @@ assetSectionWidget headerText itemsDyn renderDetail = do
     if not showItems
       then blank
       else do
-        divS (S.flexCol . S.gap2 . S.p2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt2) $ do
+        divS (S.flexCol . S.gap 2 . S.p 2 . S.bgSlate800 . S.rounded . S.textSlate100 . S.mt 2) $ do
           elS "h2" (S.textSm . S.fontBold . S.uppercase . S.textSlate400) $ text headerText
 
           void $ simpleList itemsDyn $ \itemDyn -> do
-            divS (S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p1 . S.rounded . S.mb1) $ do
+            divS (S.flex . S.justifyBetween . S.itemsCenter . S.bgSlate700 . S.p 1 . S.rounded . S.mb 1) $ do
               -- Display Name
               let nameDyn = fmap fst itemDyn
-              divS (S.textXs . S.px1) $
+              divS (S.textXs . S.px 1) $
                 dynText $
                   fmap
                     ( \case

@@ -41,7 +41,7 @@ cardHoverStyle =
     . S.easeOut
     . S.originBottom
     . S.hover S.translateYNeg8
-    . S.hover S.z40
+    . S.hover (S.z 40)
     . S.cursorPointer
 
 -- | Styles for cards in staging mode (resource candidates)
@@ -90,12 +90,12 @@ handWidget actorDyn = do
               . S.left0
               . S.right0
               . S.pointerEventsNone
-              . S.z40
+              . S.z 40
               . S.flex
               . S.justifyBetween
               . S.itemsEnd
               . S.wFull
-              . S.px8
+              . S.px 8
               . pb4
           )
           $ do
@@ -149,7 +149,7 @@ handCardsWidget
   -- ^ Planned Action (defines hidden cards)
   -> m (Event t CardInstanceId, Event t CardInstanceId)
 handCardsWidget actor stagingStack plannedAction = do
-  divS (S.flex . S.justifyCenter . S.itemsEnd . S.px4 . S.pointerEventsAuto) $ do
+  divS (S.flex . S.justifyCenter . S.itemsEnd . S.px 4 . S.pointerEventsAuto) $ do
     let visibleHand =
           (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
             <$> actor

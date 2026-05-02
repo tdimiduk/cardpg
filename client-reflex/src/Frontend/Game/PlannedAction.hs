@@ -36,7 +36,7 @@ plannedBadge =
     . S.css "text-[10px]" "font-size" "10px"
     . S.uppercase
     . S.fontBold
-    . S.px2
+    . S.px 2
     . S.css "py-0.5" "padding-block" "0.125rem"
     . S.rounded
     . S.shadowXl
@@ -45,11 +45,11 @@ plannedBadge =
 -- | Action card hover effect
 actionCardHover :: Style
 actionCardHover =
-  S.z20 . S.shadow2Xl . S.scale105 . S.transitionTransform
+  S.z 20 . S.shadow2Xl . S.scale105 . S.transitionTransform
 
 -- | Card hover for narrative stacks
 narrativeCardHover :: Style
-narrativeCardHover = S.relative . S.z10 . S.transitionTransform
+narrativeCardHover = S.relative . S.z 10 . S.transitionTransform
 
 plannedActionWidget
   :: ( DomBuilder t m
@@ -95,4 +95,4 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
     PPass -> do
       divS (S.textSlate400 . S.css "italic" "font-style" "italic" . S.textSm) $ text "Passed turn"
   where
-    colStyle = S.gap4 . S.itemsCenter . S.pointerEventsAuto
+    colStyle = S.gap 4 . S.itemsCenter . S.pointerEventsAuto

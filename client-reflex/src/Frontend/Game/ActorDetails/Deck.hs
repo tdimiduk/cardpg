@@ -35,11 +35,11 @@ deckWidget
   -> Dynamic t ActorState
   -> m ()
 deckWidget actorId actorState = do
-  divS (S.flexCol . S.gap2 . S.p2 . S.bgSlate950 . S.rounded . S.textSlate100) $ do
+  divS (S.flexCol . S.gap 2 . S.p 2 . S.bgSlate950 . S.rounded . S.textSlate100) $ do
     let cs = fmap (.coreState) actorState
 
     -- Cards Row
-    (viewDeck, viewDiscard) <- divS (S.flex . S.wFull . S.gap2) $ do
+    (viewDeck, viewDiscard) <- divS (S.flex . S.wFull . S.gap 2) $ do
       let deckBox =
             S.flexCol
               . S.flex
@@ -49,8 +49,8 @@ deckWidget actorId actorState = do
               . S.borderSlate800
               . S.bgSlate900
               . S.rounded
-              . S.p3
-              . S.gap2
+              . S.p 3
+              . S.gap 2
       let labelStyle = S.textSlate400 . S.textXs
       let countStyle = S.text2Xl . S.fontBold . S.textWhite
 
@@ -62,12 +62,12 @@ deckWidget actorId actorState = do
                 , size = constDyn SizeSmall
                 , extraStyle = S.absolute . S.top1 . S.right1 . S.textSlate600 . S.hover S.textIndigo400
                 }
-              (divS (S.w5 . S.h5) iconDeck)
+              (divS (S.w 5 . S.h 5) iconDeck)
 
       -- Draw Pile Box
       viewDeckClick <- divS deckBox $ do
         viewDeckClick' <- viewButton
-        divS (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Draw Pile"
+        divS (S.flex . S.itemsCenter . S.gap 2 . labelStyle) $ text "Draw Pile"
         elS "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
         drawClick <-
           button
@@ -83,7 +83,7 @@ deckWidget actorId actorState = do
       -- Discard Box
       viewDiscardClick <- divS deckBox $ do
         viewDiscardClick' <- viewButton
-        divS (S.flex . S.itemsCenter . S.gap2 . labelStyle) $ text "Discard"
+        divS (S.flex . S.itemsCenter . S.gap 2 . labelStyle) $ text "Discard"
 
         elS "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
 
@@ -116,10 +116,10 @@ reshuffleButtonRequesting actorId = do
       def
         { variant = constDyn VariantSecondary
         , size = constDyn SizeSmall
-        , extraStyle = S.gap1
+        , extraStyle = S.gap 1
         }
       $ do
-        divS (S.w4 . S.h4) iconRefresh
+        divS (S.w 4 . S.h 4) iconRefresh
         text "Reshuffle"
 
   requesting_ $ Req.Reshuffle actorId <$ reshuffleClick

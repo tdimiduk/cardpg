@@ -71,7 +71,7 @@ testId = ("data-testid" =:)
 
 -- | Block icon style (fixed size)
 iconBlock :: Style
-iconBlock = w10 . h10 . fontBold . textXl
+iconBlock = w 10 . h 10 . fontBold . textXl
 
 -- | Responsive icon (percentage height)
 iconResponsive :: Style
@@ -91,7 +91,7 @@ iconInline =
 
 -- | Resource icon size
 resourceIcon :: Style
-resourceIcon = w4 . h4
+resourceIcon = w 4 . h 4
 
 -- | Resource text base (bold)
 resourceTextBase :: Style

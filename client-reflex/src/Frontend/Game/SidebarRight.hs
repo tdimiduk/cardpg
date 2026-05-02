@@ -24,24 +24,24 @@ import Frontend.Util
 
 -- | Sidebar container (Right)
 sidebarRightContainer :: Style
-sidebarRightContainer = S.flexCol . S.w80 . S.bgSlate900 . S.borderL . S.borderSlate800 . S.hFull . S.z20 . S.shadowXl
+sidebarRightContainer = S.flexCol . S.w 80 . S.bgSlate900 . S.borderL . S.borderSlate800 . S.hFull . S.z 20 . S.shadowXl
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p4 . S.bgSlate950 . S.borderB . S.borderSlate800 . S.shrink0
+sidebarHeader = S.p 4 . S.bgSlate950 . S.borderB . S.borderSlate800 . S.shrink0
 
 -- | Log Area
 logArea :: Style
 logArea =
   S.flex1
     . S.overflowYAuto
-    . S.p4
+    . S.p 4
     . S.spaceY2
     . S.css "custom-scrollbar" "scrollbar-width" "thin"
 
 -- | Chat Input Area
 chatArea :: Style
-chatArea = S.p3 . S.bgSlate950 . S.borderT . S.borderSlate800 . S.shrink0 . S.flex . S.gap2
+chatArea = S.p 3 . S.bgSlate950 . S.borderT . S.borderSlate800 . S.shrink0 . S.flex . S.gap 2
 
 sidebarRightWidget
   :: ( DomBuilder t m
@@ -144,10 +144,10 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
     let chatStyle =
           S.bgSlate800_50
             . S.rounded
-            . S.p2
+            . S.p 2
             . S.css "animate-fade-in" "animation" "fadeIn 0.2s"
             . S.flex
-            . S.gap2
+            . S.gap 2
     let chatCls = classNames chatStyle
     elAttr
       "div"
@@ -157,7 +157,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
       $ do
         elS
           "div"
-          (S.w6 . S.h6 . S.roundedFull . S.bgSlate700 . S.flex . S.itemsCenter . S.justifyCenter . S.shrink0)
+          (S.w 6 . S.h 6 . S.roundedFull . S.bgSlate700 . S.flex . S.itemsCenter . S.justifyCenter . S.shrink0)
           $ text "Bot"
         divS S.flex1 $ do
           elS
@@ -173,9 +173,9 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             text c
   LogInfo c -> do
     let (bg, border) = (S.textSlate500, S.borderSlate800)
-    divS (S.textXs . bg . S.css "italic" "font-style" "italic" . S.p2 . S.borderB . border) $ text c
+    divS (S.textXs . bg . S.css "italic" "font-style" "italic" . S.p 2 . S.borderB . border) $ text c
   LogError c -> do
-    divS (S.textXs . S.textWhite . S.bgRed900_50 . S.fontBold . S.p2 . S.borderB . S.borderRed800) $
+    divS (S.textXs . S.textWhite . S.bgRed900_50 . S.fontBold . S.p 2 . S.borderB . S.borderRed800) $
       text c
   LogChallenge challenge _plannedAction -> do
     -- Red-themed container for attack/challenge (matching vtt-react)
@@ -184,27 +184,27 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             . S.border
             . S.css "border-red-900/50" "border-color" "rgb(127 29 29 / 0.5)"
             . S.rounded
-            . S.p3
-            . S.mb2
+            . S.p 3
+            . S.mb 2
             . S.css "animate-fade-in" "animation" "fadeIn 0.2s"
     divS challengeStyle $ do
       -- Header
-      divS (S.textXs . S.fontBold . S.textRed300 . S.flex . S.itemsCenter . S.gap1) $
+      divS (S.textXs . S.fontBold . S.textRed300 . S.flex . S.itemsCenter . S.gap 1) $
         text "Challenge Action"
       -- Attacker
-      divS (S.textXs . S.textSlate400 . S.mt1) $
+      divS (S.textXs . S.textSlate400 . S.mt 1) $
         text $
           "By: " <> renderSender l.sender
       -- Power display with color icon
       divS
         ( S.flex
             . S.itemsCenter
-            . S.gap2
+            . S.gap 2
             . S.textSm
             . S.css "bg-black/40" "background-color" "rgb(0 0 0 / 0.4)"
             . S.rounded
-            . S.p1
-            . S.mt2
+            . S.p 1
+            . S.mt 2
         )
         $ do
           elS "span" (S.fontBold . S.textRed400) $
@@ -218,8 +218,8 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             . S.border
             . S.css "border-blue-900/50" "border-color" "rgb(30 58 138 / 0.5)"
             . S.rounded
-            . S.p3
-            . S.mb2
+            . S.p 3
+            . S.mb 2
     divS defenseStyle $ do
       divS (S.textXs . S.fontBold . S.textBlue300) $ text "Defense Action"
 
