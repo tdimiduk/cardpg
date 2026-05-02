@@ -27,7 +27,7 @@ sidebarRightContainer :: Style
 sidebarRightContainer =
   S.flexCol
     . S.w 80
-    . (S.bg S.Gray 11)
+    . S.surface 2
     . S.borderL
     . (S.border S.Gray 10)
     . S.hFull

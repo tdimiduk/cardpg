@@ -106,6 +106,10 @@ module Frontend.Style.DSL
   , textWhite
   , borderBlack
   , borderTransparent
+  , canvas
+  , surface
+  , text1
+  , text2
 
     -- * Borders
   , border1
@@ -423,7 +427,7 @@ inset0 = css "inset-0" "inset" "0"
 -- Colors
 --------------------------------------------------------------------------------
 
-data Color = Gray | Red | Blue | Indigo | Yellow | Amber | White | Black | Transparent
+data Color = Gray | Red | Blue | Indigo | Yellow | Amber | White | Black | Transparent | Surface | Text
   deriving (Show, Eq, Enum, Bounded)
 
 colorName :: Color -> Text
@@ -496,6 +500,22 @@ borderBlack = border Gray 12
 
 borderTransparent :: Style
 borderTransparent = css "border-transparent" "border-color" "transparent"
+
+-- | Semantic adaptive background (canvas/base)
+canvas :: Style
+canvas = css "canvas" "background-color" "var(--surface-1)"
+
+-- | Semantic adaptive background (surface/card)
+surface :: Int -> Style
+surface n = css ("surface-" <> tshow n) "background-color" ("var(--surface-" <> tshow n <> ")")
+
+-- | Semantic adaptive text (primary)
+text1 :: Style
+text1 = css "text-1" "color" "var(--text-1)"
+
+-- | Semantic adaptive text (secondary)
+text2 :: Style
+text2 = css "text-2" "color" "var(--text-2)"
 
 --------------------------------------------------------------------------------
 -- Borders

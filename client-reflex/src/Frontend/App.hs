@@ -34,11 +34,11 @@ import Frontend.Util
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
-appRoot = S.flexRow . S.hScreen . (S.bg S.Gray 12) . (S.text S.Gray 1) . S.overflowHidden
+appRoot = S.flexRow . S.hScreen . S.canvas . S.text1 . S.overflowHidden
 
 -- | Main content area (right of sidebar)
 mainContent :: Style
-mainContent = S.flexCol . S.flex1 . S.relative . (S.bg S.Gray 11)
+mainContent = S.flexCol . S.flex1 . S.relative . S.surface 2
 
 -- | Placeholder for game board
 gameBoardPlaceholder :: Style

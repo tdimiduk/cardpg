@@ -22,7 +22,7 @@ import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: Style
-sidebarContainer = S.w 72 . (S.bg S.Gray 12) . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20 . S.shadowXl
+sidebarContainer = S.w 72 . S.canvas . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20 . S.shadowXl
 
 -- | Sidebar header section
 sidebarHeader :: Style
