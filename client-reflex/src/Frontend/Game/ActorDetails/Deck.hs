@@ -62,7 +62,7 @@ deckWidget actorId actorState = do
                 , size = constDyn SizeSmall
                 , extraStyle = S.absolute . S.top1 . S.right1 . S.textSlate600 . S.hover S.textIndigo400
                 }
-              (elClass "div" "w-5 h-5" iconDeck)
+              (divS (S.w5 . S.h5) iconDeck)
 
       -- Draw Pile Box
       viewDeckClick <- divS deckBox $ do
@@ -119,7 +119,7 @@ reshuffleButtonRequesting actorId = do
         , extraStyle = S.gap1
         }
       $ do
-        elClass "div" "w-4 h-4" iconRefresh
+        divS (S.w4 . S.h4) iconRefresh
         text "Reshuffle"
 
   requesting_ $ Req.Reshuffle actorId <$ reshuffleClick

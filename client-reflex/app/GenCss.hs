@@ -103,6 +103,8 @@ staticStyles =
     , S.h8
     , S.w10
     , S.h10
+    , S.w5
+    , S.h5
     , S.w40
     , S.w72
     , S.w80
@@ -233,6 +235,7 @@ staticStyles =
     , S.wCardHand
     , S.mlCardOverlap
     , S.spaceXActionStackOverlap
+    , S.spaceY2
     , S.originBottom
     , S.translateYNeg4
     , S.translateYNeg8

@@ -57,7 +57,8 @@ avatar =
 
 -- | Actor list container
 actorListContainer :: Style
-actorListContainer = S.flex1 . S.overflowYAuto . S.p4 . S.css "space-y-2" "margin-top" "> * + *" -- space-y-2 logic is hard.
+actorListContainer = S.flex1 . S.overflowYAuto . S.p4 . S.spaceY2
+
 -- I'll switch to flex col gap 2 in usage.
 
 actorListContainer' :: Style

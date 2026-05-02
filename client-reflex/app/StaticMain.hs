@@ -290,7 +290,7 @@ wrapHtml title body =
   "<!DOCTYPE html><html><head><meta charset='utf-8'><title>"
     <> BL.fromStrict (encodeUtf8 title)
     <> "</title><link rel='stylesheet' href='https://unpkg.com/open-props'/>"
-    <> "<link rel='stylesheet' href='client-reflex/static/output.css'>"
+    <> "<link rel='stylesheet' href='client-reflex/static/base.css'>"
     <> "<link rel='stylesheet' href='client-reflex/static/atomic.css'></head><body>"
     <> BL.fromStrict body
     <> "</body></html>"

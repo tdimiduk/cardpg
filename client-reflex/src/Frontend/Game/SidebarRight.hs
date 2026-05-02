@@ -36,7 +36,7 @@ logArea =
   S.flex1
     . S.overflowYAuto
     . S.p4
-    . S.css "space-y-2" "margin-top" "> * + *"
+    . S.spaceY2
     . S.css "custom-scrollbar" "scrollbar-width" "thin"
 
 -- | Chat Input Area

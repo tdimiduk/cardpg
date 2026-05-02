@@ -2,13 +2,9 @@
   "name": "cardpg-client-reflex-styles",
   "private": true,
   "scripts": {
-    "build:css": "npx @tailwindcss/cli -i ./styles/input.css -o ./static/output.css",
-    "watch:css": "npx @tailwindcss/cli -i ./styles/input.css -o ./static/output.css --watch",
     "proxy": "browser-sync start --proxy 'localhost:3003' --ws --files 'static/**/*' --serveStatic 'static' --port 3000 --no-open --no-ui"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.17",
-    "@tailwindcss/typography": "^0.5.10",
     "browser-sync": "^3.0.4"
   }
 }

@@ -81,11 +81,14 @@ variantStyle = \case
     bgIndigo600
       . textWhite
       . shadowSm
+      . hover bgIndigo500
   VariantSecondary ->
     bgSlate800
-      . textSlate200
+      . textSlate400
       . border
-      . borderSlate600
+      . borderSlate700
+      . hover bgSlate700
+      . hover textSlate200
   VariantDestructive ->
     bgRed900_50
       . textRed200

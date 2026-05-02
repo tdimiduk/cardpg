@@ -71,6 +71,8 @@ module Frontend.Style.DSL
   , h8
   , w10
   , h10
+  , w5
+  , h5
   , w40
   , w72
   , w80
@@ -215,6 +217,7 @@ module Frontend.Style.DSL
   , wCardHand
   , mlCardOverlap
   , spaceXActionStackOverlap
+  , spaceY2
   , originBottom
   , translateYNeg4
   , translateYNeg8
@@ -262,6 +265,11 @@ spaceXActionStackOverlap = \rest ->
     "space-x-action-stack-overlap"
     ".space-x-action-stack-overlap > * + *"
     [("margin-left", "-12vh")]
+    : rest
+
+spaceY2 :: Style
+spaceY2 = \rest ->
+  Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "0.5rem")]
     : rest
 
 --------------------------------------------------------------------------------
@@ -400,6 +408,12 @@ w10 = css "w-10" "width" "2.5rem"
 
 h10 :: Style
 h10 = css "h-10" "height" "2.5rem"
+
+w5 :: Style
+w5 = css "w-5" "width" "1.25rem"
+
+h5 :: Style
+h5 = css "h-5" "height" "1.25rem"
 
 w40 :: Style
 w40 = css "w-40" "width" "10rem"
@@ -693,16 +707,16 @@ border02mm :: Style
 border02mm = css "border-0.2mm" "border-width" "0.2mm"
 
 rounded :: Style
-rounded = css "rounded" "border-radius" "0.25rem"
+rounded = css "rounded" "border-radius" "var(--radius-2)"
 
 roundedNone :: Style
 roundedNone = css "rounded-none" "border-radius" "0"
 
 roundedXl :: Style
-roundedXl = css "rounded-xl" "border-radius" "0.75rem"
+roundedXl = css "rounded-xl" "border-radius" "var(--radius-3)"
 
 rounded3Xl :: Style
-rounded3Xl = css "rounded-3xl" "border-radius" "1.5rem"
+rounded3Xl = css "rounded-3xl" "border-radius" "var(--radius-5)"
 
 roundedFull :: Style
 roundedFull = css "rounded-full" "border-radius" "9999px"
@@ -767,18 +781,16 @@ textLeft = css "text-left" "text-align" "left"
 --------------------------------------------------------------------------------
 
 shadow2Xl :: Style
-shadow2Xl = css "shadow-2xl" "box-shadow" "0 25px 50px -12px rgb(0 0 0 / 0.25)"
+shadow2Xl = css "shadow-2xl" "box-shadow" "var(--shadow-6)"
 
 shadowXl :: Style
-shadowXl =
-  css "shadow-xl" "box-shadow" "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+shadowXl = css "shadow-xl" "box-shadow" "var(--shadow-5)"
 
 shadowLg :: Style
-shadowLg =
-  css "shadow-lg" "box-shadow" "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+shadowLg = css "shadow-lg" "box-shadow" "var(--shadow-4)"
 
 shadowSm :: Style
-shadowSm = css "shadow-sm" "box-shadow" "0 1px 2px 0 rgb(0 0 0 / 0.05)"
+shadowSm = css "shadow-sm" "box-shadow" "var(--shadow-2)"
 
 grayscale :: Style
 grayscale = css "grayscale" "filter" "grayscale(100%)"
@@ -851,7 +863,7 @@ duration200 :: Style
 duration200 = css "duration-200" "transition-duration" "200ms"
 
 easeOut :: Style
-easeOut = css "ease-out" "transition-timing-function" "ease-out"
+easeOut = css "ease-out" "transition-timing-function" "var(--ease-out-3)"
 
 --------------------------------------------------------------------------------
 -- Interactions
@@ -865,19 +877,19 @@ selectNone = css "select-none" "user-select" "none"
 --------------------------------------------------------------------------------
 
 ring2 :: Style
-ring2 = css "ring-2" "box-shadow" "0 0 0 2px var(--tw-ring-color)"
+ring2 = css "ring-2" "box-shadow" "0 0 0 2px var(--ring-color, #60a5fa)"
 
 ringBlue400 :: Style
-ringBlue400 = css "ring-blue-400" "--tw-ring-color" "#60a5fa"
+ringBlue400 = css "ring-blue-400" "--ring-color" "#60a5fa"
 
 ringAmber400 :: Style
-ringAmber400 = css "ring-amber-400" "--tw-ring-color" "#fbbf24"
+ringAmber400 = css "ring-amber-400" "--ring-color" "#fbbf24"
 
 ringIndigo400 :: Style
-ringIndigo400 = css "ring-indigo-400" "--tw-ring-color" "#818cf8"
+ringIndigo400 = css "ring-indigo-400" "--ring-color" "#818cf8"
 
 ringOffset2 :: Style
-ringOffset2 = css "ring-offset-2" "--tw-ring-offset-width" "2px"
+ringOffset2 = css "ring-offset-2" "--ring-offset-width" "2px"
 
 --------------------------------------------------------------------------------
 -- Compound Styles
