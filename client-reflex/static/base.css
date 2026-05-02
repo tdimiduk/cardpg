@@ -36,8 +36,8 @@ textarea {
 
 /* Body */
 body {
-  background-color: #0f172a;
-  color: #e2e8f0;
+  background-color: var(--gray-12);
+  color: var(--gray-2);
   margin: 0;
 }
 
@@ -58,14 +58,14 @@ body {
   height: 0.5rem;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: var(--gray-11);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: var(--gray-8);
   border-radius: 0.25rem;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: var(--gray-7);
 }
 
 /* Card Rules Spacing */

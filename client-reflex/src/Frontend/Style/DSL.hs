@@ -96,6 +96,7 @@ module Frontend.Style.DSL
   , Color (..)
   , bg
   , bgAlpha
+  , borderAlpha
   , text
   , border
   , ring
@@ -139,6 +140,7 @@ module Frontend.Style.DSL
   , whitespaceNowrap
   , textTruncate
   , textLeft
+  , italic
 
     -- * Effects
   , shadow2Xl
@@ -436,10 +438,25 @@ bg c n =
 
 bgAlpha :: Color -> Int -> Int -> Style
 bgAlpha c n a =
-  css
-    ("bg-" <> colorName c <> "-" <> tshow n <> "/" <> tshow a)
-    "background-color"
-    ("color-mix(in srgb, var(--" <> colorName c <> "-" <> tshow n <> ") " <> tshow a <> "%, transparent)")
+  let var = case c of
+        Black -> "black"
+        White -> "white"
+        _ -> "var(--" <> colorName c <> "-" <> tshow n <> ")"
+   in css
+        ("bg-" <> colorName c <> "-" <> tshow n <> "/" <> tshow a)
+        "background-color"
+        ("color-mix(in srgb, " <> var <> " " <> tshow a <> "%, transparent)")
+
+borderAlpha :: Color -> Int -> Int -> Style
+borderAlpha c n a =
+  let var = case c of
+        Black -> "black"
+        White -> "white"
+        _ -> "var(--" <> colorName c <> "-" <> tshow n <> ")"
+   in css
+        ("border-" <> colorName c <> "-" <> tshow n <> "/" <> tshow a)
+        "border-color"
+        ("color-mix(in srgb, " <> var <> " " <> tshow a <> "%, transparent)")
 
 text :: Color -> Int -> Style
 text c n =
@@ -578,6 +595,9 @@ textTruncate = css "truncate" "text-overflow" "ellipsis"
 textLeft :: Style
 textLeft = css "text-left" "text-align" "left"
 
+italic :: Style
+italic = css "italic" "font-style" "italic"
+
 --------------------------------------------------------------------------------
 -- Effects
 --------------------------------------------------------------------------------
@@ -679,7 +699,7 @@ selectNone = css "select-none" "user-select" "none"
 --------------------------------------------------------------------------------
 
 ring2 :: Style
-ring2 = css "ring-2" "box-shadow" "0 0 0 2px var(--ring-color, #60a5fa)"
+ring2 = css "ring-2" "box-shadow" "0 0 0 2px var(--ring-color, var(--blue-4))"
 
 ringOffset2 :: Style
 ringOffset2 = css "ring-offset-2" "--ring-offset-width" "2px"

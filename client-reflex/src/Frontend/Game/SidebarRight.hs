@@ -77,8 +77,8 @@ sidebarRightWidget activeActor logsDyn phaseConfig = do
         -- Count
         elS
           "div"
-          ( S.css "text-[10px]" "font-size" "10px"
-              . S.css "text-slate-600" "color" "#475569"
+          ( S.fontSize 10
+              . (S.text S.Gray 6)
               . S.css "font-mono" "font-family" "monospace"
           )
           $ dynText
@@ -137,13 +137,12 @@ chatInputRequesting activeActor = do
         . S.border1
         . (S.border S.Gray 9)
         . S.rounded
-        . S.css "px-3" "padding-left" "0.75rem"
-        . S.css "px-3" "padding-right" "0.75rem"
+        . S.px 3
         . S.p1_5
         . S.textXs
         . S.textWhite
         . S.css "focus:outline-none" "outline" "none"
-        . S.css "focus:S.border1-indigo-500" "S.border1-color" "#6366f1"
+        . S.pseudo "focus" (S.border S.Indigo 6)
 
     btnStyle = (S.bg S.Indigo 8) . S.hover (S.bg S.Indigo 7) . S.textWhite . S.p1_5 . S.rounded
 
@@ -179,10 +178,10 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
         divS S.flex1 $ do
           elS
             "div"
-            ( S.css "text-[10px]" "font-size" "10px"
+            ( S.fontSize 10
                 . S.fontBold
                 . (S.text S.Gray 5)
-                . S.css "mb-0.5" "margin-bottom" "0.125rem"
+                . S.mb 0
             )
             $ text (renderSender l.sender)
           let msgCls = classNames (S.textSm . (S.text S.Gray 2))
@@ -190,7 +189,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             text c
   LogInfo c -> do
     let (bg, bdr) = ((S.text S.Gray 5), (S.border S.Gray 10))
-    divS (S.textXs . bg . S.css "italic" "font-style" "italic" . S.p 2 . S.borderB . bdr) $ text c
+    divS (S.textXs . bg . S.italic . S.p 2 . S.borderB . bdr) $ text c
   LogError c -> do
     divS
       ( S.textXs
@@ -205,9 +204,9 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
   LogChallenge challenge _plannedAction -> do
     -- Red-themed container for attack/challenge (matching vtt-react)
     let challengeStyle =
-          S.css "bg-red-950/30" "background-color" "rgb(69 10 10 / 0.3)"
+          S.bgAlpha S.Red 12 30
             . S.border1
-            . S.css "S.border1-red-900/50" "S.border1-color" "rgb(127 29 29 / 0.5)"
+            . S.borderAlpha S.Red 9 50
             . S.rounded
             . S.p 3
             . S.mb 2
@@ -226,7 +225,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             . S.itemsCenter
             . S.gap 2
             . S.textSm
-            . S.css "bg-black/40" "background-color" "rgb(0 0 0 / 0.4)"
+            . S.bgAlpha S.Black 12 40
             . S.rounded
             . S.p 1
             . S.mt 2
@@ -239,9 +238,9 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
   LogDefense{} -> do
     -- Placeholder for Defense Logs (if rendered independently)
     let defenseStyle =
-          S.css "bg-blue-950/30" "background-color" "rgb(23 37 84 / 0.3)"
+          S.bgAlpha S.Blue 12 30
             . S.border1
-            . S.css "S.border1-blue-900/50" "S.border1-color" "rgb(30 58 138 / 0.5)"
+            . S.borderAlpha S.Blue 9 50
             . S.rounded
             . S.p 3
             . S.mb 2

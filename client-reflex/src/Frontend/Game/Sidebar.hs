@@ -35,7 +35,7 @@ sidebarHeader = S.p 4 . S.px 6 . S.borderB . (S.border S.Gray 10)
 -- I'll stick to S.p 4 as compromise or define p 6 locally?
 -- I'll use S.p 4.
 sidebarHeader' :: Style
-sidebarHeader' = S.css "p-6" "padding" "1.5rem" . S.borderB . (S.border S.Gray 10)
+sidebarHeader' = S.p 6 . S.borderB . (S.border S.Gray 10)
 
 -- | Active actor header base
 activeActorHeader :: Style
@@ -48,7 +48,7 @@ avatar =
     . S.h 10
     . S.roundedFull
     . S.border2
-    . S.css "S.border1-slate-600" "S.border1-color" "#475569"
+    . (S.border S.Gray 8)
     . (S.bg S.Gray 10)
     . S.flex
     . S.itemsCenter
@@ -87,7 +87,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
     dyContent <- dyn $ ffor selectionDyn $ \case
       Nothing -> do
         -- No selection: Show List
-        divS (S.p 4 . S.textCenter . (S.text S.Gray 5) . S.css "italic" "font-style" "italic" . S.textSm) $
+        divS (S.p 4 . S.textCenter . (S.text S.Gray 5) . S.italic . S.textSm) $
           text "Select an actor"
 
         divS actorListContainer' $ do
@@ -120,7 +120,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
             ( S.roundedFull
                 . S.w 8
                 . S.h 8
-                . S.css "p-0" "padding" "0"
+                . S.p 0
                 . S.flex
                 . S.itemsCenter
                 . S.justifyCenter
