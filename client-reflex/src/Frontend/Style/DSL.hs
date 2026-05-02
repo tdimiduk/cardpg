@@ -480,7 +480,7 @@ ring c n =
     ("var(--" <> colorName c <> "-" <> tshow n <> ")")
 
 bgWhite :: Style
-bgWhite = css "bg-white" "background-color" "white"
+bgWhite = bg Gray 0
 
 bgTransparent :: Style
 bgTransparent = css "bg-transparent" "background-color" "transparent"
@@ -492,7 +492,7 @@ textWhite :: Style
 textWhite = text Gray 0
 
 borderBlack :: Style
-borderBlack = css "border-black" "border-color" "black"
+borderBlack = border Gray 12
 
 borderTransparent :: Style
 borderTransparent = css "border-transparent" "border-color" "transparent"
@@ -538,7 +538,7 @@ rounded3Xl :: Style
 rounded3Xl = css "rounded-3xl" "border-radius" "var(--radius-5)"
 
 roundedFull :: Style
-roundedFull = css "rounded-full" "border-radius" "9999px"
+roundedFull = css "rounded-full" "border-radius" "var(--radius-round)"
 
 rounded3mm :: Style
 rounded3mm = css "rounded-3mm" "border-radius" "3mm"
@@ -557,25 +557,25 @@ fontBold :: Style
 fontBold = css "font-bold" "font-weight" "bold"
 
 textSm :: Style
-textSm = css "text-sm" "font-size" "0.875rem"
+textSm = css "text-sm" "font-size" "var(--font-size-0)"
 
 textXs :: Style
-textXs = css "text-xs" "font-size" "0.75rem"
+textXs = css "text-xs" "font-size" "var(--font-size-00)"
 
 textXl :: Style
-textXl = css "text-xl" "font-size" "1.25rem"
+textXl = css "text-xl" "font-size" "var(--font-size-3)"
 
 text2Xl :: Style
-text2Xl = css "text-2xl" "font-size" "1.5rem"
+text2Xl = css "text-2xl" "font-size" "var(--font-size-4)"
 
 textLg :: Style
-textLg = css "text-lg" "font-size" "1.125rem"
+textLg = css "text-lg" "font-size" "var(--font-size-2)"
 
 textBase :: Style
-textBase = css "text-base" "font-size" "1rem"
+textBase = css "text-base" "font-size" "var(--font-size-1)"
 
 leadingTight :: Style
-leadingTight = css "leading-tight" "line-height" "1.25"
+leadingTight = css "leading-tight" "line-height" "var(--font-lineheight-1)"
 
 textCenter :: Style
 textCenter = css "text-center" "text-align" "center"
@@ -584,7 +584,7 @@ uppercase :: Style
 uppercase = css "uppercase" "text-transform" "uppercase"
 
 trackingWider :: Style
-trackingWider = css "tracking-wider" "letter-spacing" "0.05em"
+trackingWider = css "tracking-wider" "letter-spacing" "var(--font-letterspacing-3)"
 
 whitespaceNowrap :: Style
 whitespaceNowrap = css "whitespace-nowrap" "white-space" "nowrap"
@@ -634,13 +634,13 @@ opacity50 = css "opacity-50" "opacity" "0.5"
 --------------------------------------------------------------------------------
 
 aspect43 :: Style
-aspect43 = css "aspect-4/3" "aspect-ratio" "4/3"
+aspect43 = css "aspect-4/3" "aspect-ratio" "var(--ratio-4-3)"
 
 aspectCard :: Style
 aspectCard = css "aspect-card" "aspect-ratio" "63/88"
 
 aspectSquare :: Style
-aspectSquare = css "aspect-square" "aspect-ratio" "1/1"
+aspectSquare = css "aspect-square" "aspect-ratio" "var(--ratio-square)"
 
 --------------------------------------------------------------------------------
 -- Card Layout
@@ -682,7 +682,7 @@ transitionColors =
     "color, background-color, border-color, text-decoration-color, fill, stroke"
 
 duration200 :: Style
-duration200 = css "duration-200" "transition-duration" "200ms"
+duration200 = css "duration-200" "transition-duration" "var(--duration-1)"
 
 easeOut :: Style
 easeOut = css "ease-out" "transition-timing-function" "var(--ease-out-3)"
