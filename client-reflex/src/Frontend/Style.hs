@@ -59,7 +59,8 @@ import Frontend.Style.DSL qualified as S
 -- | Base classes for the card container.
 cardBase :: Style
 cardBase =
-  flexCol
+  S.wFull
+    . flexCol
     . relative
     . overflowHidden
     . standardCardAspectRatio
@@ -73,11 +74,11 @@ cardScreenVisuals =
     . (S.text S.Gray 2)
     . border2
     . (S.border S.Gray 8)
-    . rounded3mm
+    . S.roundedS (S.Mm 3)
     . shadowXl
 
 cardScreen :: Style
-cardScreen = cardScreenVisuals . p 2
+cardScreen = cardHandWidth . cardScreenVisuals . S.p S.S2
 
 -- ** Print Styles
 
@@ -89,21 +90,21 @@ cardPrint =
     . textBlack
     . S.border1
     . borderBlack
-    . rounded3mm
-    . p2_5mm
+    . S.roundedS (S.Mm 3)
+    . S.p (S.Mm 2.5)
 
 -- ** Compact Variants
 
 -- | Cost hexagon styling for CardRow (explicit small size)
 costRow :: Style
-costRow = w 4 . h 4 . (S.text S.Gray 2)
+costRow = S.w S.S4 . S.h S.S4 . (S.text S.Gray 2)
 
 cardRow :: Style
 cardRow =
-  flexRow
-    . itemsCenter
-    . gap 1
-    . p 1
+  S.flexRow
+    . S.itemsCenter
+    . S.gap S.S1
+    . S.p S.S1
     . (S.bg S.Gray 11)
     . S.border1
     . (S.border S.Gray 9)
@@ -133,19 +134,19 @@ artBase :: Style
 artBase = id
 
 artScreen :: Style
-artScreen = grow . hFull . rounded2mm . (S.bg S.Gray 10) . S.border1 . (S.border S.Gray 9)
+artScreen = grow . hFull . S.roundedS (S.Mm 2) . (S.bg S.Gray 10) . S.border1 . (S.border S.Gray 9)
 
 artPrint :: Style
-artPrint = css "h-33mm" "height" "33mm" . S.border1 . borderBlack . grayscale . roundedNone . bgTransparent
+artPrint = S.h (S.Mm 33) . S.border1 . borderBlack . grayscale . roundedNone . bgTransparent
 
 -- ** Name
 
 nameBase :: Style
 nameBase =
-  fontBold
-    . textSm
-    . leadingTight
-    . mb 1
+  S.fontBold
+    . S.textSm
+    . S.leadingTight
+    . S.mb S.S1
 
 nameScreen :: Style
 nameScreen = (S.text S.Gray 1)
@@ -177,17 +178,17 @@ costPrint = textBlack
 
 textboxBase :: Style
 textboxBase =
-  flex1
-    . textXs
-    . border1
-    . p 1
-    . grow
+  S.flex1
+    . S.textXs
+    . S.border1
+    . S.p S.S1
+    . S.grow
 
 -- Note: The child selectors like "[&_p]:mt-0" cannot be expressed as simple atoms.
 -- They require custom CSS rules which we'll handle separately or inline.
 
 textboxScreen :: Style
-textboxScreen = (S.bg S.Gray 10) . (S.border S.Gray 8) . rounded2mm . (S.text S.Gray 3)
+textboxScreen = (S.bg S.Gray 10) . (S.border S.Gray 8) . S.roundedS (S.Mm 2) . (S.text S.Gray 3)
 
 textboxPrint :: Style
 textboxPrint = roundedNone . bgTransparent . borderBlack

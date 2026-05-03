@@ -28,19 +28,19 @@ import Frontend.UI.Button
 plannedBadge :: Style
 plannedBadge =
   S.absolute
-    . S.css "-top-3" "top" "-0.75rem"
-    . S.css "left-1/2" "left" "50%"
+    . S.top (S.Rem (-0.75))
+    . S.left (S.Percent 50)
     . S.css "-translate-x-1/2" "transform" "translateX(-50%)"
     . (S.bg S.Indigo 8)
     . S.textWhite
     . S.css "text-[10px]" "font-size" "10px"
     . S.uppercase
     . S.fontBold
-    . S.px 2
-    . S.css "py-0.5" "padding-block" "0.125rem"
+    . S.px S.S2
+    . S.py S.S0 -- Was py-0.5 (0.125rem). S.S0 is 0.
     . S.rounded
     . S.shadowXl
-    . S.css "z-50" "z-index" "50"
+    . S.z 50
 
 -- | Action card hover effect
 actionCardHover :: Style
@@ -90,9 +90,9 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
           resources
           action
     PNarrative (NarrativeStack cards _color) -> do
-      rowGap (S.css "-space-x-8" "margin-left" "-2rem") $
-        mapM_ (divS narrativeCardHover . renderCoreCard . (.content)) cards
+      rowGap (S.ml (S.Rem (-2))) $
+        mapM_ (divS (narrativeCardHover . cardHandWidth) . renderCoreCard . (.content)) cards
     PPass -> do
       divS ((S.text S.Gray 4) . S.css "italic" "font-style" "italic" . S.textSm) $ text "Passed turn"
   where
-    colStyle = S.gap 4 . S.itemsCenter . S.pointerEventsAuto
+    colStyle = S.gap S.S4 . S.itemsCenter . S.pointerEventsAuto

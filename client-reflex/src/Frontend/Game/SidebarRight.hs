@@ -26,7 +26,7 @@ import Frontend.Util
 sidebarRightContainer :: Style
 sidebarRightContainer =
   S.flexCol
-    . S.w 80
+    . S.w (S.Rem 20)
     . S.surface 2
     . S.borderL
     . (S.border S.Gray 10)
@@ -36,20 +36,20 @@ sidebarRightContainer =
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p 4 . (S.bg S.Gray 12) . S.borderB . (S.border S.Gray 10) . S.shrink0
+sidebarHeader = S.p S.S4 . (S.bg S.Gray 12) . S.borderB . (S.border S.Gray 10) . S.shrink0
 
 -- | Log Area
 logArea :: Style
 logArea =
   S.flex1
     . S.overflowYAuto
-    . S.p 4
+    . S.p S.S4
     . S.spaceY2
     . S.css "custom-scrollbar" "scrollbar-width" "thin"
 
 -- | Chat Input Area
 chatArea :: Style
-chatArea = S.p 3 . (S.bg S.Gray 12) . S.borderT . (S.border S.Gray 10) . S.shrink0 . S.flex . S.gap 2
+chatArea = S.p S.S3 . (S.bg S.Gray 12) . S.borderT . (S.border S.Gray 10) . S.shrink0 . S.flex . S.gap S.S2
 
 sidebarRightWidget
   :: ( DomBuilder t m
@@ -137,14 +137,14 @@ chatInputRequesting activeActor = do
         . S.border1
         . (S.border S.Gray 9)
         . S.rounded
-        . S.px 3
-        . S.p1_5
+        . S.px S.S3
+        . S.p S.S2
         . S.textXs
         . S.textWhite
         . S.css "focus:outline-none" "outline" "none"
         . S.pseudo "focus" (S.border S.Indigo 6)
 
-    btnStyle = (S.bg S.Indigo 8) . S.hover (S.bg S.Indigo 7) . S.textWhite . S.p1_5 . S.rounded
+    btnStyle = (S.bg S.Indigo 8) . S.hover (S.bg S.Indigo 7) . S.textWhite . S.p S.S2 . S.rounded
 
 renderLogEntry :: (DomBuilder t m, PostBuild t m) => Dynamic t LogEntry -> m ()
 renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
@@ -152,10 +152,10 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
     let chatStyle =
           (S.bgAlpha S.Gray 10 50)
             . S.rounded
-            . S.p 2
+            . S.p S.S2
             . S.css "animate-fade-in" "animation" "fadeIn 0.2s"
             . S.flex
-            . S.gap 2
+            . S.gap S.S2
     let chatCls = classNames chatStyle
     elAttr
       "div"
@@ -165,8 +165,8 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
       $ do
         elS
           "div"
-          ( S.w 6
-              . S.h 6
+          ( S.w S.S6
+              . S.h S.S6
               . S.roundedFull
               . (S.bg S.Gray 9)
               . S.flex
@@ -181,7 +181,7 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             ( S.fontSize 10
                 . S.fontBold
                 . (S.text S.Gray 5)
-                . S.mb 0
+                . S.mb S.S0
             )
             $ text (renderSender l.sender)
           let msgCls = classNames (S.textSm . (S.text S.Gray 2))
@@ -189,14 +189,14 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             text c
   LogInfo c -> do
     let (bg, bdr) = ((S.text S.Gray 5), (S.border S.Gray 10))
-    divS (S.textXs . bg . S.italic . S.p 2 . S.borderB . bdr) $ text c
+    divS (S.textXs . bg . S.italic . S.p S.S2 . S.borderB . bdr) $ text c
   LogError c -> do
     divS
       ( S.textXs
           . S.textWhite
           . (S.bgAlpha S.Red 11 50)
           . S.fontBold
-          . S.p 2
+          . S.p S.S2
           . S.borderB
           . (S.border S.Red 10)
       )
@@ -208,27 +208,27 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             . S.border1
             . S.borderAlpha S.Red 9 50
             . S.rounded
-            . S.p 3
-            . S.mb 2
+            . S.p S.S3
+            . S.mb S.S2
             . S.css "animate-fade-in" "animation" "fadeIn 0.2s"
     divS challengeStyle $ do
       -- Header
-      divS (S.textXs . S.fontBold . (S.text S.Red 4) . S.flex . S.itemsCenter . S.gap 1) $
+      divS (S.textXs . S.fontBold . (S.text S.Red 4) . S.flex . S.itemsCenter . S.gap S.S1) $
         text "Challenge Action"
       -- Attacker
-      divS (S.textXs . (S.text S.Gray 4) . S.mt 1) $
+      divS (S.textXs . (S.text S.Gray 4) . S.mt S.S1) $
         text $
           "By: " <> renderSender l.sender
       -- Power display with color icon
       divS
         ( S.flex
             . S.itemsCenter
-            . S.gap 2
+            . S.gap S.S2
             . S.textSm
             . S.bgAlpha S.Black 12 40
             . S.rounded
-            . S.p 1
-            . S.mt 2
+            . S.p S.S1
+            . S.mt S.S2
         )
         $ do
           elS "span" (S.fontBold . (S.text S.Red 5)) $
@@ -242,8 +242,8 @@ renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of
             . S.border1
             . S.borderAlpha S.Blue 9 50
             . S.rounded
-            . S.p 3
-            . S.mb 2
+            . S.p S.S3
+            . S.mb S.S2
     divS defenseStyle $ do
       divS (S.textXs . S.fontBold . (S.text S.Blue 4)) $ text "Defense Action"
 

@@ -79,12 +79,12 @@ overlayBottomWith s = divS (S.absolute . S.bottom0 . S.left0 . S.right0 . s)
 
 -- | Grid for printable cards (3x3 on standard paper).
 cardPrintGrid :: Style
-cardPrintGrid = S.flex . S.flexWrap . S.gap 0
+cardPrintGrid = S.flex . S.flexWrap . S.gap S.S0
 
 -- | Responsive grid for card display.
 cardGrid :: Style
-cardGrid = S.flex . S.flexWrap . S.gap4mm
+cardGrid = S.flex . S.flexWrap . S.gap (S.Mm 4)
 
 -- | Grid for deck viewing.
 deckGrid :: Style
-deckGrid = S.flex . S.flexWrap . S.gap 4 . S.contentStart
+deckGrid = S.flex . S.flexWrap . S.gap S.S4 . S.contentStart

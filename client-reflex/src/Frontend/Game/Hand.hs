@@ -95,8 +95,8 @@ handWidget actorDyn = do
               . S.justifyBetween
               . S.itemsEnd
               . S.wFull
-              . S.px 8
-              . pb4
+              . S.px S.S8
+              . S.pb S.S4
           )
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
@@ -137,8 +137,6 @@ handWidget actorDyn = do
   return ()
 
 -- Additional atoms needed that weren't in DSL2
-pb4 :: Style
-pb4 = S.css "pb-4" "padding-bottom" "1rem"
 
 handCardsWidget
   :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
@@ -149,7 +147,7 @@ handCardsWidget
   -- ^ Planned Action (defines hidden cards)
   -> m (Event t CardInstanceId, Event t CardInstanceId)
 handCardsWidget actor stagingStack plannedAction = do
-  divS (S.flex . S.justifyCenter . S.itemsEnd . S.px 4 . S.pointerEventsAuto) $ do
+  divS (S.flex . S.justifyCenter . S.itemsEnd . S.px S.S4 . S.pointerEventsAuto) $ do
     let visibleHand =
           (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
             <$> actor

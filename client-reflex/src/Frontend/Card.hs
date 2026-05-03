@@ -139,13 +139,13 @@ renderStatsWith settings s =
         StatsCol ->
           S.flexCol
             . S.justifyBetween
-            . S.gap 1
+            . S.gap S.S1
             . S.wFit
             . S.hFull
-            . S.pr1
-            . S.pb1
+            . S.pr S.S1
+            . S.pb S.S1
             . S.itemsCenter
-        StatsRow -> S.flex . S.gap 1
+        StatsRow -> S.flex . S.gap S.S1
    in componentS "stats" layoutStyle $
         mapM_
           (renderStatValue settings.statsIconMode . flip getStatValue s)

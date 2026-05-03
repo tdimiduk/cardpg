@@ -15,6 +15,7 @@ import Core.Card (CoreCard)
 import Core.Util (tshow)
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Icons (iconClose)
+import Frontend.Style qualified as Style
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (cardGrid)
@@ -60,11 +61,7 @@ renderModal
 renderModal deckView = do
   -- Overlay background
   -- Non-modal Overlay (Positioned to reveal hand and sidebar)
-  let fixedPos = S.fixed . S.z 30 . top 6 . bottom96 . left80 . right6
-      top 6 = S.css "top-6" "top" "1.5rem"
-      bottom96 = S.css "bottom-96" "bottom" "24rem"
-      left80 = S.css "left-80" "left" "20rem"
-      right6 = S.css "right-6" "right" "1.5rem"
+  let fixedPos = S.fixed . S.z 30 . S.top S.S6 . S.bottom (S.Rem 24) . S.left (S.Rem 20) . S.right S.S6
 
   divS fixedPos $ do
     -- Container
@@ -82,7 +79,7 @@ renderModal deckView = do
       $ do
         -- Header
         closeClick <- divS
-          ( S.p 4
+          ( S.p S.S4
               . S.borderB
               . (S.border S.Gray 9)
               . S.flex
@@ -91,17 +88,17 @@ renderModal deckView = do
               . (S.bg S.Gray 12)
           )
           $ do
-            elS "h2" (S.textXl . S.fontBold . (S.text S.Gray 1) . S.flex . S.itemsCenter . S.gap 2) $ do
+            elS "h2" (S.textXl . S.fontBold . (S.text S.Gray 1) . S.flex . S.itemsCenter . S.gap S.S2) $ do
               -- Using text for the icon for now as per plan, or maybe I should use an icon.
               -- Plan said "Title bar with 'Deck Viewer (N cards)'".
               text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"
 
             button def{variant = constDyn VariantGhost, size = constDyn SizeSmall} $
-              divS (S.w 8 . S.h 8) iconClose
+              divS (S.w S.S8 . S.h S.S8) iconClose
 
         let settings = CardSettings CardFull
         divS (cardGrid . S.flex1 . S.overflowYAuto . minH0 . S.wFull) $
-          mapM_ (renderCoreCardWith settings) deckView.cards
+          mapM_ (divS Style.standardCardSize . renderCoreCardWith settings) deckView.cards
 
         return closeClick
   where

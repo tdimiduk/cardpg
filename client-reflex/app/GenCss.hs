@@ -108,17 +108,6 @@ staticStyles =
   , ("h8mm", S.h8mm [])
   , ("hScreen", S.hScreen [])
   , ("h2_5", S.h2_5 [])
-  , ("p2mm", S.p2mm [])
-  , ("p2_5mm", S.p2_5mm [])
-  , ("p1_5", S.p1_5 [])
-  , ("pb1", S.pb1 [])
-  , ("pr1", S.pr1 [])
-  , ("top1", S.top1 [])
-  , ("right1", S.right1 [])
-  , ("mb2mm", S.mb2mm [])
-  , ("top2mm", S.top2mm [])
-  , ("right2mm", S.right2mm [])
-  , ("gap4mm", S.gap4mm [])
   , ("bottom0", S.bottom0 [])
   , ("left0", S.left0 [])
   , ("right0", S.right0 [])
@@ -142,9 +131,6 @@ staticStyles =
   , ("roundedXl", S.roundedXl [])
   , ("rounded3Xl", S.rounded3Xl [])
   , ("roundedFull", S.roundedFull [])
-  , ("rounded3mm", S.rounded3mm [])
-  , ("rounded2mm", S.rounded2mm [])
-  , ("rounded1mm", S.rounded1mm [])
   , ("fontBold", S.fontBold [])
   , ("textSm", S.textSm [])
   , ("textXs", S.textXs [])
@@ -200,15 +186,25 @@ data ParamFn = forall a. ParamFn
 
 knownParams :: [ParamFn]
 knownParams =
-  [ ParamFn "gap" parseInt (\n -> S.gap n [])
-  , ParamFn "p" parseInt (\n -> S.p n [])
-  , ParamFn "px" parseInt (\n -> S.px n [])
-  , ParamFn "py" parseInt (\n -> S.py n [])
-  , ParamFn "mt" parseInt (\n -> S.mt n [])
-  , ParamFn "mb" parseInt (\n -> S.mb n [])
+  [ ParamFn "gap" parseSize (\s -> S.gap s [])
+  , ParamFn "p" parseSize (\s -> S.p s [])
+  , ParamFn "px" parseSize (\s -> S.px s [])
+  , ParamFn "py" parseSize (\s -> S.py s [])
+  , ParamFn "pt" parseSize (\s -> S.pt s [])
+  , ParamFn "pb" parseSize (\s -> S.pb s [])
+  , ParamFn "pl" parseSize (\s -> S.pl s [])
+  , ParamFn "pr" parseSize (\s -> S.pr s [])
+  , ParamFn "mt" parseSize (\s -> S.mt s [])
+  , ParamFn "mb" parseSize (\s -> S.mb s [])
+  , ParamFn "ml" parseSize (\s -> S.ml s [])
+  , ParamFn "mr" parseSize (\s -> S.mr s [])
+  , ParamFn "bottom" parseSize (\s -> S.bottom s [])
+  , ParamFn "left" parseSize (\s -> S.left s [])
+  , ParamFn "right" parseSize (\s -> S.right s [])
+  , ParamFn "top" parseSize (\s -> S.top s [])
   , ParamFn "fontSize" parseInt (\n -> S.fontSize n [])
-  , ParamFn "w" parseInt (\n -> S.w n [])
-  , ParamFn "h" parseInt (\n -> S.h n [])
+  , ParamFn "w" parseSize (\s -> S.w s [])
+  , ParamFn "h" parseSize (\s -> S.h s [])
   , ParamFn "z" parseInt (\n -> S.z n [])
   , ParamFn "opacity" parseFloat (\d -> S.opacity d [])
   , ParamFn "borderRadius" parseInt (\n -> S.borderRadius n [])
@@ -219,42 +215,68 @@ knownParams =
   , ParamFn "text" parseColorAndTone (\(c, n) -> S.text c n [])
   , ParamFn "border" parseColorAndTone (\(c, n) -> S.border c n [])
   , ParamFn "ring" parseColorAndTone (\(c, n) -> S.ring c n [])
+  , ParamFn "media" parseMedia (\(q, props) -> props)
   ]
 
 scanContent :: Text -> [Prop]
 scanContent content = case parse (many parseAny) "" content of
   Left _ -> []
   Right parsedChunks -> concat parsedChunks
-  where
-    parseAny :: Parser [Prop]
-    parseAny = try parseParam <|> (anySingle >> return [])
 
-    parseParam :: Parser [Prop]
-    parseParam = do
-      _ <- optional (string "S.")
-      choice $ map tryParam knownParams
+parseAny :: Parser [Prop]
+parseAny = try parseParam <|> (anySingle >> return [])
 
-    tryParam :: ParamFn -> Parser [Prop]
-    tryParam (ParamFn name p applyFn) = do
-      -- Word boundary: ensure we're not in the middle of an identifier
-      off <- getOffset
-      let prevChar = if off > 0 then Just (T.index content (off - 1)) else Nothing
-          -- If preceded by S., the offset includes "S." so check before that
-          prevOk = case prevChar of
-            Nothing -> True
-            Just '.' -> True -- S.w, composition chain
-            Just c -> not (isAlphaNum c || c == '_')
-      if prevOk
-        then do
-          _ <- string name
-          -- Ensure the name isn't a prefix of a longer identifier
-          notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_'))
-          space1
-          arg <- p
-          return $ applyFn arg
-        else empty
+parseParam :: Parser [Prop]
+parseParam = do
+  _ <- optional (string "S.")
+  choice $ map tryParam knownParams
+
+tryParam :: ParamFn -> Parser [Prop]
+tryParam (ParamFn name p applyFn) = do
+  -- Handle optional parentheses around the whole call: (S.w (S.Mm 63))
+  let callParser = do
+        _ <- optional (string "S.")
+        _ <- string name
+        -- Ensure the name isn't a prefix of a longer identifier
+        notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_'))
+        space1
+        p
+
+  arg <- (char '(' *> space *> callParser <* space <* char ')') <|> callParser
+  return $ applyFn arg
 
 -- | Parsers
+parseSize :: Parser S.Size
+parseSize = do
+  let pSize =
+        choice
+          [ try $ S.S0 <$ string "S0"
+          , try $ S.S1 <$ string "S1"
+          , try $ S.S2 <$ string "S2"
+          , try $ S.S3 <$ string "S3"
+          , try $ S.S4 <$ string "S4"
+          , try $ S.S5 <$ string "S5"
+          , try $ S.S6 <$ string "S6"
+          , try $ S.S7 <$ string "S7"
+          , try $ S.S8 <$ string "S8"
+          , try $ S.S9 <$ string "S9"
+          , try $ S.S10 <$ string "S10"
+          , try $ S.S11 <$ string "S11"
+          , try $ S.S12 <$ string "S12"
+          , try $ S.S13 <$ string "S13"
+          , try $ S.S14 <$ string "S14"
+          , try $ S.S15 <$ string "S15"
+          , try $ S.Rem <$> (string "Rem" *> space *> parseFloat)
+          , try $ S.Px <$> (string "Px" *> space *> parseFloat)
+          , try $ S.Vh <$> (string "Vh" *> space *> parseFloat)
+          , try $ S.Vw <$> (string "Vw" *> space *> parseFloat)
+          , try $ S.Percent <$> (string "Percent" *> space *> parseFloat)
+          , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
+          , try $ (S.Rem . (/ 4) . fromIntegral) <$> parseInt -- Support legacy inline numbers for now
+          ]
+  _ <- optional (string "S.")
+  (char '(' *> space *> pSize <* space <* char ')') <|> pSize
+
 parseInt :: Parser Int
 parseInt = L.signed space L.decimal
 
@@ -262,18 +284,21 @@ parseNumber :: Parser Int
 parseNumber = L.decimal
 
 parseColor :: Parser S.Color
-parseColor =
-  choice
-    [ S.Gray <$ chunk "Gray"
-    , S.Red <$ chunk "Red"
-    , S.Blue <$ chunk "Blue"
-    , S.Indigo <$ chunk "Indigo"
-    , S.Yellow <$ chunk "Yellow"
-    , S.Amber <$ chunk "Amber"
-    , S.White <$ chunk "White"
-    , S.Black <$ chunk "Black"
-    , S.Transparent <$ chunk "Transparent"
-    ]
+parseColor = do
+  let pColor =
+        choice
+          [ S.Gray <$ chunk "Gray"
+          , S.Red <$ chunk "Red"
+          , S.Blue <$ chunk "Blue"
+          , S.Indigo <$ chunk "Indigo"
+          , S.Yellow <$ chunk "Yellow"
+          , S.Amber <$ chunk "Amber"
+          , S.White <$ chunk "White"
+          , S.Black <$ chunk "Black"
+          , S.Transparent <$ chunk "Transparent"
+          ]
+  _ <- optional (chunk "S.")
+  (char '(' *> space *> pColor <* space <* char ')') <|> pColor
 
 parseColorAndTone :: Parser (S.Color, Int)
 parseColorAndTone = do
@@ -323,6 +348,25 @@ parseThreeStrings = do
   space1
   v <- parseStringLiteral
   return (n, p, v)
+
+parseMedia :: Parser (Text, [Prop])
+parseMedia = do
+  q <- parseStringLiteral
+  space1
+  props <- parseStyle
+  return (q, map (S.mediaProp q) props)
+
+parseStyle :: Parser [Prop]
+parseStyle = try parseParam <|> parseStatic
+
+parseStatic :: Parser [Prop]
+parseStatic = do
+  _ <- optional (string "S.")
+  choice $
+    map
+      ( \(name, props) -> try (string name *> notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_')) *> return props)
+      )
+      staticStyles
 
 parseNameAndDecls :: Parser (Text, [(Text, Text)])
 parseNameAndDecls = do

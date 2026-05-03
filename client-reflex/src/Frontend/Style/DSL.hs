@@ -70,23 +70,46 @@ module Frontend.Style.DSL
   , h2_5
 
     -- * Spacing
+  , bottom
+  , left
+  , right
+  , top
   , p
   , px
   , py
+  , pt
+  , pb
+  , pl
+  , pr
   , mt
   , mb
-  , p2mm
-  , p2_5mm
-  , p1_5
-  , pb1
-  , pr1
-  , top1
-  , right1
-  , mb2mm
-  , top2mm
-  , right2mm
+  , ml
+  , mr
+  , Size
+    ( S0
+    , S1
+    , S2
+    , S3
+    , S4
+    , S5
+    , S6
+    , S7
+    , S8
+    , S9
+    , S10
+    , S11
+    , S12
+    , S13
+    , S14
+    , S15
+    , Rem
+    , Px
+    , Vh
+    , Vw
+    , Percent
+    , Mm
+    )
   , gap
-  , gap4mm
   , bottom0
   , left0
   , right0
@@ -121,13 +144,11 @@ module Frontend.Style.DSL
   , borderR
   , border02mm
   , rounded
+  , roundedS
   , roundedNone
   , roundedXl
   , rounded3Xl
   , roundedFull
-  , rounded3mm
-  , rounded2mm
-  , rounded1mm
 
     -- * Typography
   , fontBold
@@ -145,6 +166,9 @@ module Frontend.Style.DSL
   , textTruncate
   , textLeft
   , italic
+
+    -- * Sizing/Spacing types
+  , sizeValue
 
     -- * Effects
   , shadow2Xl
@@ -208,12 +232,13 @@ spaceXActionStackOverlap = \rest ->
   Prop
     "space-x-action-stack-overlap"
     ".space-x-action-stack-overlap > * + *"
-    [("margin-left", "-12vh")]
+    [("margin-left", "calc(var(--size-9) * -0.6)")]
+    Nothing
     : rest
 
 spaceY2 :: Style
 spaceY2 = \rest ->
-  Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")]
+  Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")] Nothing
     : rest
 
 --------------------------------------------------------------------------------
@@ -311,121 +336,173 @@ contentStart = css "content-start" "align-content" "flex-start"
 -- Sizing
 --------------------------------------------------------------------------------
 
+data Size
+  = S0
+  | S1
+  | S2
+  | S3
+  | S4
+  | S5
+  | S6
+  | S7
+  | S8
+  | S9
+  | S10
+  | S11
+  | S12
+  | S13
+  | S14
+  | S15
+  | Rem Double
+  | Vh Double
+  | Vw Double
+  | Px Double
+  | Percent Double
+  | Mm Double
+  deriving (Show, Eq)
+
+sizeName :: Size -> Text
+sizeName = \case
+  S0 -> "0"
+  S1 -> "1"
+  S2 -> "2"
+  S3 -> "3"
+  S4 -> "4"
+  S5 -> "5"
+  S6 -> "6"
+  S7 -> "7"
+  S8 -> "8"
+  S9 -> "9"
+  S10 -> "10"
+  S11 -> "11"
+  S12 -> "12"
+  S13 -> "13"
+  S14 -> "14"
+  S15 -> "15"
+  Rem d -> "rem-" <> cleanShow d
+  Vh d -> "vh-" <> cleanShow d
+  Vw d -> "vw-" <> cleanShow d
+  Px d -> "px-" <> tshow (round d :: Int)
+  Percent d -> "pct-" <> tshow (round d :: Int)
+  Mm d -> cleanShow d <> "mm"
+  where
+    cleanShow d =
+      let s = tshow d
+       in T.replace "." "_" $ if ".0" `T.isSuffixOf` s then T.dropEnd 2 s else s
+
+sizeValue :: Size -> Text
+sizeValue = \case
+  S0 -> "0"
+  S1 -> "var(--size-1)"
+  S2 -> "var(--size-2)"
+  S3 -> "var(--size-3)"
+  S4 -> "var(--size-4)"
+  S5 -> "var(--size-5)"
+  S6 -> "var(--size-6)"
+  S7 -> "var(--size-7)"
+  S8 -> "var(--size-8)"
+  S9 -> "var(--size-9)"
+  S10 -> "var(--size-10)"
+  S11 -> "var(--size-11)"
+  S12 -> "var(--size-12)"
+  S13 -> "var(--size-13)"
+  S14 -> "var(--size-14)"
+  S15 -> "var(--size-15)"
+  Rem d -> tshow d <> "rem"
+  Vh d -> tshow d <> "vh"
+  Vw d -> tshow d <> "vw"
+  Px d -> tshow d <> "px"
+  Percent d -> tshow d <> "%"
+  Mm d -> tshow d <> "mm"
+
+w :: Size -> Style
+w s = css ("w-" <> sizeName s) "width" (sizeValue s)
+
+h :: Size -> Style
+h s = css ("h-" <> sizeName s) "height" (sizeValue s)
+
 wFull :: Style
-wFull = css "w-full" "width" "100%"
+wFull = w (Percent 100)
 
 hFull :: Style
-hFull = css "h-full" "height" "100%"
+hFull = h (Percent 100)
 
 wFit :: Style
 wFit = css "w-fit" "width" "fit-content"
 
--- | Width in Tailwind spacing units (n * 0.25rem).
--- e.g. @w 4@ = 1rem, @w 8@ = 2rem, @w 80@ = 20rem
-w :: Int -> Style
-w n = css ("w-" <> tshow n) "width" (remValue n)
-
-h :: Int -> Style
-h n = css ("h-" <> tshow n) "height" (remValue n)
-
--- | Convert a Tailwind spacing unit to an Open Props size variable.
--- Maps the linear 0.25rem grid to the nearest Open Props size token.
-remValue :: Int -> Text
-remValue n =
-  case n of
-    0 -> "0"
-    1 -> "var(--size-1)"
-    2 -> "var(--size-2)"
-    3 -> "var(--size-3)"
-    4 -> "var(--size-4)"
-    5 -> "var(--size-5)"
-    6 -> "var(--size-6)"
-    7 -> "var(--size-7)"
-    8 -> "var(--size-8)"
-    12 -> "var(--size-9)"
-    16 -> "var(--size-10)"
-    20 -> "var(--size-11)"
-    24 -> "var(--size-12)"
-    28 -> "var(--size-13)"
-    32 -> "var(--size-14)"
-    36 -> "var(--size-15)"
-    _
-      | n `mod` 4 == 0 -> tshow (n `div` 4) <> "rem"
-      | otherwise -> tshow (fromIntegral n * 0.25 :: Double) <> "rem"
-
 wCard :: Style
-wCard = css "w-card" "width" "63mm"
+wCard = w (Mm 63)
 
 hCard :: Style
-hCard = css "h-card" "height" "88mm"
+hCard = h (Mm 88)
 
 w8mm :: Style
-w8mm = css "w-8mm" "width" "8mm"
+w8mm = w (Mm 8)
 
 h8mm :: Style
-h8mm = css "h-8mm" "height" "8mm"
+h8mm = h (Mm 8)
 
 hScreen :: Style
-hScreen = css "h-screen" "height" "100vh"
+hScreen = h (Vh 100)
 
 h2_5 :: Style
-h2_5 = css "h-2/5" "height" "40%"
+h2_5 = h (Percent 40)
+
+bottom :: Size -> Style
+bottom s = css ("bottom-" <> sizeName s) "bottom" (sizeValue s)
+
+left :: Size -> Style
+left s = css ("left-" <> sizeName s) "left" (sizeValue s)
+
+right :: Size -> Style
+right s = css ("right-" <> sizeName s) "right" (sizeValue s)
+
+top :: Size -> Style
+top s = css ("top-" <> sizeName s) "top" (sizeValue s)
 
 --------------------------------------------------------------------------------
 -- Spacing
 --------------------------------------------------------------------------------
 
-p :: Int -> Style
-p n = css ("p-" <> tshow n) "padding" (remValue n)
+p :: Size -> Style
+p s = css ("p-" <> sizeName s) "padding" (sizeValue s)
 
-px :: Int -> Style
-px n = css' ("px-" <> tshow n) [("padding-left", v), ("padding-right", v)]
+px :: Size -> Style
+px s = css' ("px-" <> sizeName s) [("padding-left", v), ("padding-right", v)]
   where
-    v = remValue n
+    v = sizeValue s
 
-py :: Int -> Style
-py n = css' ("py-" <> tshow n) [("padding-top", v), ("padding-bottom", v)]
+py :: Size -> Style
+py s = css' ("py-" <> sizeName s) [("padding-top", v), ("padding-bottom", v)]
   where
-    v = remValue n
+    v = sizeValue s
 
-mt :: Int -> Style
-mt n = css ("mt-" <> tshow n) "margin-top" (remValue n)
+pt :: Size -> Style
+pt s = css ("pt-" <> sizeName s) "padding-top" (sizeValue s)
 
-mb :: Int -> Style
-mb n = css ("mb-" <> tshow n) "margin-bottom" (remValue n)
+pb :: Size -> Style
+pb s = css ("pb-" <> sizeName s) "padding-bottom" (sizeValue s)
 
-p2mm :: Style
-p2mm = css "p-2mm" "padding" "2mm"
+pl :: Size -> Style
+pl s = css ("pl-" <> sizeName s) "padding-left" (sizeValue s)
 
-p2_5mm :: Style
-p2_5mm = css "p-2.5mm" "padding" "2.5mm"
+pr :: Size -> Style
+pr s = css ("pr-" <> sizeName s) "padding-right" (sizeValue s)
 
-p1_5 :: Style
-p1_5 = css "p-1.5" "padding" "var(--size-2)"
+mt :: Size -> Style
+mt s = css ("mt-" <> sizeName s) "margin-top" (sizeValue s)
 
-pb1 :: Style
-pb1 = css "pb-1" "padding-bottom" "var(--size-1)"
+mb :: Size -> Style
+mb s = css ("mb-" <> sizeName s) "margin-bottom" (sizeValue s)
 
-top1 :: Style
-top1 = css "top-1" "top" "var(--size-1)"
+ml :: Size -> Style
+ml s = css ("ml-" <> sizeName s) "margin-left" (sizeValue s)
 
-right1 :: Style
-right1 = css "right-1" "right" "var(--size-1)"
+mr :: Size -> Style
+mr s = css ("mr-" <> sizeName s) "margin-right" (sizeValue s)
 
-pr1 :: Style
-pr1 = css "pr-1" "padding-right" "var(--size-1)"
-
-mb2mm :: Style
-mb2mm = css "mb-2mm" "margin-bottom" "2mm"
-
-top2mm :: Style
-top2mm = css "top-2mm" "top" "2mm"
-
-right2mm :: Style
-right2mm = css "right-2mm" "right" "2mm"
-
-gap4mm :: Style
-gap4mm = css "gap-4mm" "gap" "4mm"
+gap :: Size -> Style
+gap s = css ("gap-" <> sizeName s) "gap" (sizeValue s)
 
 bottom0 :: Style
 bottom0 = css "bottom-0" "bottom" "0"
@@ -564,26 +641,20 @@ border02mm = css "border-0.2mm" "border-width" "0.2mm"
 rounded :: Style
 rounded = css "rounded" "border-radius" "var(--radius-2)"
 
+roundedS :: Size -> Style
+roundedS s = css ("rounded-" <> sizeName s) "border-radius" (sizeValue s)
+
 roundedNone :: Style
 roundedNone = css "rounded-none" "border-radius" "0"
 
 roundedXl :: Style
-roundedXl = css "rounded-xl" "border-radius" "var(--radius-3)"
+roundedXl = css "rounded-xl" "border-radius" "var(--radius-4)"
 
 rounded3Xl :: Style
-rounded3Xl = css "rounded-3xl" "border-radius" "var(--radius-5)"
+rounded3Xl = css "rounded-3xl" "border-radius" "var(--radius-6)"
 
 roundedFull :: Style
-roundedFull = css "rounded-full" "border-radius" "var(--radius-round)"
-
-rounded3mm :: Style
-rounded3mm = css "rounded-3mm" "border-radius" "3mm"
-
-rounded2mm :: Style
-rounded2mm = css "rounded-2mm" "border-radius" "2mm"
-
-rounded1mm :: Style
-rounded1mm = css "rounded-1mm" "border-radius" "1mm"
+roundedFull = css "rounded-full" "border-radius" "9999px"
 
 --------------------------------------------------------------------------------
 -- Typography
@@ -683,7 +754,7 @@ aspectSquare = css "aspect-square" "aspect-ratio" "var(--ratio-square)"
 --------------------------------------------------------------------------------
 
 wCardHand :: Style
-wCardHand = css "w-card-hand" "width" "16vh"
+wCardHand = w (Vh 16)
 
 mlCardOverlap :: Style
 mlCardOverlap = css "-ml-card-overlap" "margin-left" "-12vh"
@@ -751,12 +822,8 @@ full :: Style
 full = wFull . hFull
 
 --------------------------------------------------------------------------------
--- Parameterized Styles
+-- Parameterized Styles (Deprecated - use Size ADT)
 --------------------------------------------------------------------------------
-
-gap :: Int -> Style
-gap 0 = css "gap-0" "gap" "0"
-gap n = css ("gap-" <> tshow n) "gap" (remValue n)
 
 fontSize :: Int -> Style
 fontSize n = css ("text-" <> tshow n) "font-size" (tshow n <> "px")

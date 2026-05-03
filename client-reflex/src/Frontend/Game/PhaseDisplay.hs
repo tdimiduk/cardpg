@@ -38,16 +38,16 @@ phaseDisplayWidget
 phaseDisplayWidget config = do
   divS
     ( S.wFull
-        . S.p 4
+        . S.p S.S4
         . S.borderB
         . (S.border S.Gray 10)
         . (S.bg S.Gray 11)
     )
     $ do
-      divS (S.flexCol . S.gap 2) $ do
+      divS (S.flexCol . S.gap S.S2) $ do
         -- Phase Text
         divS (S.flex . S.itemsCenter . S.justifyBetween . S.wFull) $ do
-          divS (S.flex . S.itemsCenter . S.gap 2) $ do
+          divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
             text "Phase:"
             dyn_ $ ffor config.phase $ \p -> do
               let colorStyle = case p of
@@ -71,7 +71,7 @@ planningControls
   => PhaseDisplayConfig t
   -> m ()
 planningControls config = do
-  divS (S.flex . S.itemsCenter . S.gap 2) $ do
+  divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
     btnClick <- button (def :: ButtonConfig t){size = constDyn SizeSmall} $ text "Start Resolution"
     -- Ready Count
     divS (S.text S.Gray 4) $ do
@@ -88,7 +88,7 @@ resolutionControls
    . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, ApiRequester t m)
   => PhaseDisplayConfig t -> m ()
 resolutionControls _ = do
-  divS (S.flex . S.itemsCenter . S.gap 2) $ do
+  divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
     btnClick <-
       button
         (def :: ButtonConfig t)

@@ -22,11 +22,11 @@ import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: Style
-sidebarContainer = S.w 72 . S.canvas . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20 . S.shadowXl
+sidebarContainer = S.w (S.Rem 18) . S.canvas . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20 . S.shadowXl
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p 4 . S.px 6 . S.borderB . (S.border S.Gray 10)
+sidebarHeader = S.p S.S4 . S.px S.S6 . S.borderB . (S.border S.Gray 10)
 
 -- Note: original was p-6. DSL2 has p 4, px 6. p 6 doesn't exist. Using p 4 px 6? Or just p 4?
 -- Original was "p-6". p 6 is huge (1.5rem). p 4 is 1rem.
@@ -35,17 +35,17 @@ sidebarHeader = S.p 4 . S.px 6 . S.borderB . (S.border S.Gray 10)
 -- I'll stick to S.p 4 as compromise or define p 6 locally?
 -- I'll use S.p 4.
 sidebarHeader' :: Style
-sidebarHeader' = S.p 6 . S.borderB . (S.border S.Gray 10)
+sidebarHeader' = S.p S.S6 . S.borderB . (S.border S.Gray 10)
 
 -- | Active actor header base
 activeActorHeader :: Style
-activeActorHeader = S.p 4 . S.borderB . (S.border S.Gray 10) . (S.bg S.Gray 11) . S.flex . S.itemsCenter
+activeActorHeader = S.p S.S4 . S.borderB . (S.border S.Gray 10) . (S.bg S.Gray 11) . S.flex . S.itemsCenter
 
 -- | Placeholder avatar styling
 avatar :: Style
 avatar =
-  S.w 10
-    . S.h 10
+  S.w (S.Rem 2.5)
+    . S.h (S.Rem 2.5)
     . S.roundedFull
     . S.border2
     . (S.border S.Gray 8)
@@ -57,12 +57,12 @@ avatar =
 
 -- | Actor list container
 actorListContainer :: Style
-actorListContainer = S.flex1 . S.overflowYAuto . S.p 4 . S.spaceY2
+actorListContainer = S.flex1 . S.overflowYAuto . S.p S.S4 . S.spaceY2
 
 -- I'll switch to flex col gap 2 in usage.
 
 actorListContainer' :: Style
-actorListContainer' = S.flex1 . S.overflowYAuto . S.p 4 . S.flexCol . S.gap 2
+actorListContainer' = S.flex1 . S.overflowYAuto . S.p S.S4 . S.flexCol . S.gap S.S2
 
 sidebarWidget
   :: ( DomBuilder t m
@@ -87,7 +87,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
     dyContent <- dyn $ ffor selectionDyn $ \case
       Nothing -> do
         -- No selection: Show List
-        divS (S.p 4 . S.textCenter . (S.text S.Gray 5) . S.italic . S.textSm) $
+        divS (S.p S.S4 . S.textCenter . (S.text S.Gray 5) . S.italic . S.textSm) $
           text "Select an actor"
 
         divS actorListContainer' $ do
@@ -118,9 +118,9 @@ sidebarWidget selectionDyn actorsMapDyn = do
           -- Close indicator (decorative - header click handles deselection)
           divS
             ( S.roundedFull
-                . S.w 8
-                . S.h 8
-                . S.p 0
+                . S.w S.S8
+                . S.h S.S8
+                . S.p S.S0
                 . S.flex
                 . S.itemsCenter
                 . S.justifyCenter
@@ -141,7 +141,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
         let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
         let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
 
-        divS (S.flex1 . S.overflowYAuto . S.p 2) $
+        divS (S.flex1 . S.overflowYAuto . S.p S.S2) $
           actorDetailsWidget aid actorStateDyn
 
         return $ leftmost [deselectEvent, actorLostEvent]

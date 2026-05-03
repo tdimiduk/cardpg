@@ -57,23 +57,19 @@ stagingWidget actorId actionStackDyn validation = do
     "action-staging"
     ( S.flexCol
         . S.absolute
-        . S.css "bottom-80" "bottom" "20rem"
-        . S.css "left-1/2" "left" "50%"
+        . S.bottom (S.Rem 20)
+        . S.left (S.Percent 50)
         . S.css "-translate-x-1/2" "transform" "translateX(-50%)"
         . S.pointerEventsAuto
         . S.itemsCenter
-        . S.gap 2 -- gap-3 doesn't exist? Using gap 2 or atom "gap-3" "gap" "0.75rem"
-        -- DSL2 has gap 2 (0.5rem), gap 4 (1rem). gap-3 is 0.75rem.
-        -- I'll use S.css "gap-3" "gap" "0.75rem" or stick to gap 2/gap 4.
-        -- Original was "gap-3".
-        . S.css "gap-3" "gap" "0.75rem"
+        . S.gap S.S3
         . S.css "min-w-[320px]" "min-width" "320px"
-        . S.css "bg-slate-900/90" "background-color" "rgb(15 23 42 / 0.9)"
+        . (S.bgAlpha S.Gray 12 90)
         . S.backdropBlurMd
         . S.border1
         . (S.border S.Gray 9)
         . S.rounded3Xl
-        . S.p 4
+        . S.p S.S4
         . S.shadow2Xl
     )
     $ do
@@ -113,7 +109,7 @@ stagingStatusHeader
   => Dynamic t PlanValidation
   -> m ()
 stagingStatusHeader validation = do
-  divS (S.flexCol . S.itemsCenter . S.gap 2) $ do
+  divS (S.flexCol . S.itemsCenter . S.gap S.S2) $ do
     elAttr "div" (testId "staging-status") $ do
       text "Preparing Action"
       dyn_ $ ffor validation $ \case
@@ -160,7 +156,7 @@ stagingControls
   => Dynamic t PlanValidation
   -> m (Event t (), Event t ())
 stagingControls validation = do
-  divS (S.flex . S.gap 2 . S.wFull) $ do
+  divS (S.flex . S.gap S.S2 . S.wFull) $ do
     let cfg = def{extraStyle = S.flex1, size = constDyn SizeSmall}
     -- Cancel Button (Secondary)
     cancelEvt <-
@@ -189,6 +185,6 @@ stagingStats stackDyn = do
             resStats = mconcat $ map (toSum . (.content.stats)) planStack.resources
          in fromSum (actionStats <> resStats)
 
-  divS (S.flex . S.gap 2 . S.itemsCenter . S.textWhite) $ do
+  divS (S.flex . S.gap S.S2 . S.itemsCenter . S.textWhite) $ do
     dyn_ $ ffor totalStats $ \s ->
       renderStatsWith (StatsSettings StatsRow IconBlock) s

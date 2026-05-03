@@ -34,7 +34,7 @@ consequencesWidget
   -> Dynamic t ActorState
   -> m ()
 consequencesWidget actorId actorState = do
-  colWith (S.gap 2 . S.p 2 . (S.bg S.Gray 10) . S.rounded . (S.text S.Gray 1) . S.mt 2) $ do
+  colWith (S.gap S.S2 . S.p S.S2 . (S.bg S.Gray 10) . S.rounded . (S.text S.Gray 1) . S.mt S.S2) $ do
     rowWith (S.justifyBetween . S.itemsCenter) $ do
       elS "h2" (S.textSm . S.fontBold . S.uppercase . (S.text S.Gray 4)) $ text "Consequences"
 
@@ -47,17 +47,17 @@ consequencesWidget actorId actorState = do
     let consequencesDyn = fmap (\as -> as.tableState.consequences) actorState
 
     removeEvents <- simpleList consequencesDyn $ \consequenceDyn -> do
-      rowWith (S.justifyBetween . S.itemsCenter . (S.bg S.Gray 9) . S.p 1 . S.rounded . S.mb 1) $ do
+      rowWith (S.justifyBetween . S.itemsCenter . (S.bg S.Gray 9) . S.p S.S1 . S.rounded . S.mb S.S1) $ do
         let nameDyn = fmap (\(Identified _ c) -> getRawText c.name) consequenceDyn
 
-        divS (S.textXs . S.px 1) $ dynText nameDyn
+        divS (S.textXs . S.px S.S1) $ dynText nameDyn
 
         btnClick <-
           button
             def
               { variant = constDyn VariantGhost
               , size = constDyn SizeSmall
-              , extraStyle = S.px 1 . (S.text S.Red 5) . S.hover (S.text S.Red 4)
+              , extraStyle = S.px S.S1 . (S.text S.Red 5) . S.hover (S.text S.Red 4)
               }
             $ text "×"
 
@@ -71,7 +71,7 @@ consequencesWidget actorId actorState = do
           { variant = constDyn VariantDestructive
           , fullWidth = True
           , size = constDyn SizeSmall
-          , extraStyle = S.mt 2
+          , extraStyle = S.mt S.S2
           }
         $ text "+ Add Consequence"
 

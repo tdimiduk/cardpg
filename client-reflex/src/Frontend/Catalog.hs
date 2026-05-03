@@ -13,6 +13,7 @@ import Core.Stats
 
 import Frontend.Card (renderCoreCard)
 
+import Frontend.Style qualified as Style
 import Frontend.Style.Common
 import Frontend.Style.Layout (cardPrintGrid)
 
@@ -22,9 +23,9 @@ catalogWidget = do
 
   el "h2" $ text "Core Cards"
   divS cardPrintGrid $ do
-    renderCoreCard exampleAttack
-    renderCoreCard exampleSkill
-    renderCoreCard exampleHeavyText
+    divS Style.standardCardSize $ renderCoreCard exampleAttack
+    divS Style.standardCardSize $ renderCoreCard exampleSkill
+    divS Style.standardCardSize $ renderCoreCard exampleHeavyText
 
   el "h2" $ text "Card Elements"
   -- We can also render individual parts if needed, but rendering full cards is best for now

@@ -18,7 +18,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
 import Reflex.Dom.Core
 import System.Environment (lookupEnv)
-import WaiAppStatic.Types (ssIndices, unsafeToPiece)
+import WaiAppStatic.Types (MaxAge (NoMaxAge), ssIndices, ssMaxAge, unsafeToPiece)
 
 import Api.Reflex ()
 import Frontend.App (appWidget, headWidget)
@@ -63,7 +63,7 @@ devMain = do
   putStrLn $ "Running jsaddle-warp server on port " <> show port
 
   -- Static app settings: serve from "static" directory
-  let staticSettings = defaultWebAppSettings "static"
+  let staticSettings = (defaultWebAppSettings "static") { ssMaxAge = NoMaxAge }
 
   -- Build the jsaddle application with websocket support
   -- serveRoot serves / and /jsaddle.js, falling back to staticApp for other routes

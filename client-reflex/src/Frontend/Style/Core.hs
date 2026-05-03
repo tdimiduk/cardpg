@@ -3,7 +3,7 @@
 -- | Core types and functions for the purpose-built CSS system.
 --
 -- This module provides the foundational types for composable, type-safe
--- CSS utilities. Styles compose with (.) and produce atomic CSS classes.
+-- CSS utilities. Styles compose with (.) and produce utility CSS classes.
 --
 -- @
 -- cardStyle :: Style
@@ -57,6 +57,8 @@ data Prop = Prop
   -- ^ The full CSS selector (e.g. ".flex-col", ".hover\\:bg-slate-700:hover")
   , propDecls :: ![(Text, Text)]
   -- ^ CSS property declarations (e.g. [("display","flex")])
+  , propMediaQuery :: !(Maybe Text)
+  -- ^ Optional media query (e.g. "print", "(min-width: 768px)")
   }
   deriving (Show, Eq)
 
@@ -79,16 +81,16 @@ type Style = [Prop] -> [Prop]
 -- (S.bg S.Gray 10) = css "bg-slate-800" "background-color" "#1e293b"
 -- @
 css :: Text -> Text -> Text -> Style
-css name property value = (Prop name ("." <> escapeCss name) [(property, value)] :)
+css name property value = (Prop name ("." <> escapeCss name) [(property, value)] Nothing :)
 
 -- | Define a multi-property atomic style.
 css' :: Text -> [(Text, Text)] -> Style
-css' name decls = (Prop name ("." <> escapeCss name) decls :)
+css' name decls = (Prop name ("." <> escapeCss name) decls Nothing :)
 
 -- | An external class name with no generated CSS.
 -- Use for classes defined elsewhere (e.g. "action", "scaler-target").
 cls :: Text -> Style
-cls name = (Prop name ("." <> name) [] :)
+cls name = (Prop name ("." <> name) [] Nothing :)
 
 --------------------------------------------------------------------------------
 -- Modifiers
@@ -154,6 +156,7 @@ mediaProp q p =
   p
     { propClassName = mediaPrefix <> "\\:" <> p.propClassName
     , propSelector = "." <> escapeCss (mediaPrefix <> ":" <> p.propClassName)
+    , propMediaQuery = Just q
     }
   where
     -- Use a short prefix for the class name
@@ -174,10 +177,13 @@ renderAll = T.unlines . map renderProp . nubBy (\a b -> a.propClassName == b.pro
 
 -- | Render a single Prop to a CSS rule string.
 renderProp :: Prop -> Text
-renderProp (Prop _ _ []) = "" -- cls-only props produce no CSS
-renderProp (Prop _ sel decls) =
-  sel <> " { " <> T.intercalate "; " (map renderDecl decls) <> " }"
+renderProp (Prop _ _ [] _) = "" -- cls-only props produce no CSS
+renderProp (Prop _ sel decls mQuery) =
+  case mQuery of
+    Nothing -> rule
+    Just q -> "@media " <> q <> " { " <> rule <> " }"
   where
+    rule = sel <> " { " <> T.intercalate "; " (map renderDecl decls) <> " }"
     renderDecl (prop, val) = prop <> ": " <> val
 
 --------------------------------------------------------------------------------
