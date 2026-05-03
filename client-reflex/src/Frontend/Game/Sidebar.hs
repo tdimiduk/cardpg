@@ -26,16 +26,7 @@ sidebarContainer = S.w (S.Rem 18) . S.canvas . S.borderR . (S.border S.Gray 10) 
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p S.S4 . S.px S.S6 . S.borderB . (S.border S.Gray 10)
-
--- Note: original was p-6. DSL2 has p 4, px 6. p 6 doesn't exist. Using p 4 px 6? Or just p 4?
--- Original was "p-6". p 6 is huge (1.5rem). p 4 is 1rem.
--- I'll use S.p 4 for now or define p 6 locally.
--- p-6 is 1.5rem. DSL2 has p1_5 which is 0.375rem.
--- I'll stick to S.p 4 as compromise or define p 6 locally?
--- I'll use S.p 4.
-sidebarHeader' :: Style
-sidebarHeader' = S.p S.S6 . S.borderB . (S.border S.Gray 10)
+sidebarHeader = S.p S.S6 . S.borderB . (S.border S.Gray 10)
 
 -- | Active actor header base
 activeActorHeader :: Style
@@ -80,7 +71,7 @@ sidebarWidget
 sidebarWidget selectionDyn actorsMapDyn = do
   divS (S.flexCol . sidebarContainer) $ do
     -- Sidebar Header
-    divS sidebarHeader' $ do
+    divS sidebarHeader $ do
       elS "h1" (S.textXl . S.fontBold . (S.text S.Gray 1)) $ text "CardPG"
 
     -- Dynamic Content: List or Details

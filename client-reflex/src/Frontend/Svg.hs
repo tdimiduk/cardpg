@@ -84,7 +84,7 @@ renderSquare extraStyle mLabel = do
             <> "class" =: "resource-shape"
             <> "fill" =: "none"
             <> "stroke" =: "currentColor"
-            <> "stroke-width" =: "8"
+            <> "stroke-width" =: "2.5"
         )
         blank
       renderLabel mLabel
@@ -107,7 +107,7 @@ renderCircle extraStyle mLabel = do
             <> "class" =: "resource-shape"
             <> "fill" =: "none"
             <> "stroke" =: "currentColor"
-            <> "stroke-width" =: "8"
+            <> "stroke-width" =: "2.5"
         )
         blank
       renderLabel mLabel
@@ -134,7 +134,7 @@ renderDiamond extraStyle mLabel = do
             <> "class" =: "resource-shape"
             <> "fill" =: "none"
             <> "stroke" =: "currentColor"
-            <> "stroke-width" =: "8"
+            <> "stroke-width" =: "2.5"
         )
         blank
       renderLabel mLabel
@@ -155,7 +155,7 @@ renderHexagon extraStyle mLabel = do
             <> "class" =: "resource-shape"
             <> "fill" =: "none"
             <> "stroke" =: "currentColor"
-            <> "stroke-width" =: "8"
+            <> "stroke-width" =: "2.5"
         )
         blank
       renderLabel mLabel

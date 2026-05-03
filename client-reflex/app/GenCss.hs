@@ -37,6 +37,8 @@ main = do
       usedIn name variant =
         (variant <> " " <> name) `T.isInfixOf` allContentsText
           || (variant <> " S." <> name) `T.isInfixOf` allContentsText
+          || ("S." <> variant <> " " <> name) `T.isInfixOf` allContentsText
+          || ("S." <> variant <> " S." <> name) `T.isInfixOf` allContentsText
 
   let baseStaticProps = concatMap snd staticStyles
       allProps = baseStaticProps ++ scanned
@@ -44,11 +46,20 @@ main = do
 
       staticHoverProps = concat [[S.hoverProp p] | (name, props) <- staticStyles, usedIn name "hover", p <- props]
       staticActiveProps = concat [[S.activeProp p] | (name, props) <- staticStyles, usedIn name "active", p <- props]
+      staticLastProps = concat [[S.lastChildProp p] | (name, props) <- staticStyles, usedIn name "lastChild", p <- props]
 
       scannedHoverProps = map S.hoverProp scanned
       scannedActiveProps = map S.activeProp scanned
+      scannedLastProps = map S.lastChildProp scanned
 
-      withVariants = uniqueBase ++ staticHoverProps ++ staticActiveProps ++ scannedHoverProps ++ scannedActiveProps
+      withVariants =
+        uniqueBase
+          ++ staticHoverProps
+          ++ staticActiveProps
+          ++ staticLastProps
+          ++ scannedHoverProps
+          ++ scannedActiveProps
+          ++ scannedLastProps
       unique = List.nubBy ((==) `on` (.propClassName)) withVariants
 
   let header =
@@ -175,6 +186,7 @@ staticStyles =
   , ("ringOffset2", S.ringOffset2 [])
   , ("flex1", S.flex1 [])
   , ("full", S.full [])
+  , ("mb0", S.mb0 [])
   ]
 
 -- | Parameterized functions
@@ -251,6 +263,7 @@ parseSize = do
   let pSize =
         choice
           [ try $ S.S0 <$ string "S0"
+          , try $ S.S0_5 <$ string "S0_5"
           , try $ S.S1 <$ string "S1"
           , try $ S.S2 <$ string "S2"
           , try $ S.S3 <$ string "S3"

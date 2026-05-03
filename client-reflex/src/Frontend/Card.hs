@@ -42,6 +42,7 @@ import Frontend.Style qualified as Style
   , cardBase
   , cardPrint
   , cardRow
+  , cardRuleStyle
   , cardScreen
   , costBase
   , costPrint
@@ -176,8 +177,8 @@ renderCoreCardWith settings c = case settings.displayMode of
       renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
       componentS "art" (artClasses settings) blank
     componentS "rules" (textboxClasses settings) $ do
-      maybe blank (divClass "action" . el "p" . renderAttackDef) c.attack
-      mapM_ (mapM_ (divClass "action" . el "p" . renderRule)) c.rules
+      maybe blank (divS Style.cardRuleStyle . el "p" . renderAttackDef) c.attack
+      mapM_ (mapM_ (divS Style.cardRuleStyle . el "p" . renderRule)) c.rules
       mapM_ renderRichText c.flavor
   CardPrint -> divS (cardClasses settings) $ do
     row $ do
@@ -188,8 +189,8 @@ renderCoreCardWith settings c = case settings.displayMode of
       renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
       componentS "art" (artClasses settings) blank
     componentS "rules" (textboxClasses settings) $ do
-      maybe blank (divClass "action" . el "p" . renderAttackDef) c.attack
-      mapM_ (mapM_ (divClass "action" . el "p" . renderRule)) c.rules
+      maybe blank (divS Style.cardRuleStyle . el "p" . renderAttackDef) c.attack
+      mapM_ (mapM_ (divS Style.cardRuleStyle . el "p" . renderRule)) c.rules
       mapM_ renderRichText c.flavor
 
 --------------------------------------------------------------------------------

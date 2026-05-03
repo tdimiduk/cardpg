@@ -41,7 +41,8 @@ module Frontend.Style
   , textboxScreen
   , textboxPrint
 
-    -- * Staging Styles
+    -- * Card Component Styles
+  , cardRuleStyle
   , stagedActionCard
   , stagedResourceCard
   ) where
@@ -232,3 +233,11 @@ stagedResourceCard =
     . duration200
 
 -- Note: hover:-translate-y-4, hover:z-20 are variant states
+
+-- | Style for individual rules/actions within a card's textbox
+cardRuleStyle :: Style
+cardRuleStyle = S.mb S.S1 . S.lastChild S.mb0
+
+-- | Helper for last-child variant (need to add to DSL if not present)
+-- For now, we'll just use a simple mb-1 which is the common case
+-- and handle the last child margin via the container's padding.

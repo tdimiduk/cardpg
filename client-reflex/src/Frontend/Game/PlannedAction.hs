@@ -37,7 +37,7 @@ plannedBadge =
     . S.uppercase
     . S.fontBold
     . S.px S.S2
-    . S.py S.S0 -- Was py-0.5 (0.125rem). S.S0 is 0.
+    . S.py S.S0_5
     . S.rounded
     . S.shadowXl
     . S.z 50

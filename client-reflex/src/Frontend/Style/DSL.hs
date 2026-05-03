@@ -24,6 +24,8 @@ module Frontend.Style.DSL
   , pseudoProp
   , media
   , mediaProp
+  , lastChild
+  , lastChildProp
 
     -- * Layout
   , flex
@@ -83,10 +85,12 @@ module Frontend.Style.DSL
   , pr
   , mt
   , mb
+  , mb0
   , ml
   , mr
   , Size
     ( S0
+    , S0_5
     , S1
     , S2
     , S3
@@ -241,6 +245,18 @@ spaceY2 = \rest ->
   Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")] Nothing
     : rest
 
+lastChild :: Style -> Style
+lastChild style = \rest ->
+  let props = style []
+   in map lastChildProp props ++ rest
+
+lastChildProp :: Prop -> Prop
+lastChildProp p =
+  p
+    { propClassName = "last\\:" <> p.propClassName
+    , propSelector = "." <> escapeCss ("last:" <> p.propClassName) <> ":last-child"
+    }
+
 --------------------------------------------------------------------------------
 -- Layout
 --------------------------------------------------------------------------------
@@ -338,6 +354,7 @@ contentStart = css "content-start" "align-content" "flex-start"
 
 data Size
   = S0
+  | S0_5
   | S1
   | S2
   | S3
@@ -364,6 +381,7 @@ data Size
 sizeName :: Size -> Text
 sizeName = \case
   S0 -> "0"
+  S0_5 -> "0_5"
   S1 -> "1"
   S2 -> "2"
   S3 -> "3"
@@ -393,6 +411,7 @@ sizeName = \case
 sizeValue :: Size -> Text
 sizeValue = \case
   S0 -> "0"
+  S0_5 -> "var(--size-000)"
   S1 -> "var(--size-1)"
   S2 -> "var(--size-2)"
   S3 -> "var(--size-3)"
@@ -494,6 +513,9 @@ mt s = css ("mt-" <> sizeName s) "margin-top" (sizeValue s)
 
 mb :: Size -> Style
 mb s = css ("mb-" <> sizeName s) "margin-bottom" (sizeValue s)
+
+mb0 :: Style
+mb0 = mb S0
 
 ml :: Size -> Style
 ml s = css ("ml-" <> sizeName s) "margin-left" (sizeValue s)
