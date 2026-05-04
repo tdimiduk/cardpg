@@ -109,7 +109,6 @@ module Frontend.Style.DSL
     , Percent
     , Mm
     )
-  , gap
   , bottom0
   , left0
   , right0

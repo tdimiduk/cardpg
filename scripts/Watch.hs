@@ -9,8 +9,12 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
-    ["client"] -> runWatch Client
-    ["server"] -> runWatch Server
+    ["client"] -> do
+      putStrLn "Starting ghciwatch for client..."
+      runWatch Client
+    ["server"] -> do
+      putStrLn "Starting ghciwatch for server..."
+      runWatch Server
     _ -> putStrLn "Usage: runghc Watch.hs {client|server}"
 
 data Mode = Client | Server

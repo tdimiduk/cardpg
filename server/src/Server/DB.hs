@@ -21,6 +21,8 @@ import Database.PostgreSQL.Simple qualified as Pg
 import Server.Config (DBConfig (..))
 import Server.Types (GameState, StorageBackend (..))
 
+import Gargoyle.PostgreSQL.Connect (withDb)
+
 -- | The Game Table
 data GameT f = Game
   { gameId :: C f Text
@@ -54,13 +56,13 @@ annotatedDb = defaultAnnotatedDbSettings cardpgDb
 -- | Helper Functions
 initDB :: DBConfig -> IO StorageBackend
 initDB cfg = do
-  let connStr =
+  let passStr = if null cfg.dbPass then "" else " password=" <> cfg.dbPass
+      connStr =
         "host="
           <> cfg.dbHost
           <> " user="
           <> cfg.dbUser
-          <> " password="
-          <> cfg.dbPass
+          <> passStr
           <> " dbname="
           <> cfg.dbName
   pool <- newPool $ defaultPoolConfig (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 10 10
@@ -68,6 +70,13 @@ initDB cfg = do
     Pg.withTransaction conn $
       BA.tryRunMigrationsWithEditUpdate annotatedDb conn
   pure $ PostgresBackend pool
+
+withGargoyleDB :: FilePath -> (StorageBackend -> IO a) -> IO a
+withGargoyleDB dbPath f = withDb dbPath $ \pool -> do
+  withResource pool $ \conn ->
+    Pg.withTransaction conn $
+      BA.tryRunMigrationsWithEditUpdate annotatedDb conn
+  f $ PostgresBackend pool
 
 initInMemoryDB :: IO StorageBackend
 initInMemoryDB = InMemoryBackend <$> newIORef Map.empty
