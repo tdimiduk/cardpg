@@ -257,31 +257,18 @@ parseSize = do
   where
     parseS s = s <$ string (T.pack $ show s)
     pSize =
-      choice
-        [ parseS S.S0
-        , parseS S.S1
-        , parseS S.S2
-        , parseS S.S3
-        , parseS S.S4
-        , parseS S.S5
-        , parseS S.S6
-        , parseS S.S7
-        , parseS S.S8
-        , parseS S.S9
-        , parseS S.S10
-        , parseS S.S11
-        , parseS S.S12
-        , parseS S.S13
-        , parseS S.S14
-        , parseS S.S15
-        , try $ S.Rem <$> (string "Rem" *> space *> parseFloat)
-        , try $ S.Px <$> (string "Px" *> space *> parseFloat)
-        , try $ S.Vh <$> (string "Vh" *> space *> parseFloat)
-        , try $ S.Vw <$> (string "Vw" *> space *> parseFloat)
-        , try $ S.Percent <$> (string "Percent" *> space *> parseFloat)
-        , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
-        , try $ (S.Rem . (/ 4) . fromIntegral) <$> parseInt -- Support legacy inline numbers for now
-        ]
+      choice $
+        fmap
+          (parseS $)
+          [S.S0, S.S2, S.S3, S.S4, S.S5, S.S6, S.S7, S.S8, S.S9, S.S10, S.S11, S.S12, S.S13, S.S14, S.S15]
+          <> [ try $ S.Rem <$> (string "Rem" *> space *> parseFloat)
+             , try $ S.Px <$> (string "Px" *> space *> parseFloat)
+             , try $ S.Vh <$> (string "Vh" *> space *> parseFloat)
+             , try $ S.Vw <$> (string "Vw" *> space *> parseFloat)
+             , try $ S.Percent <$> (string "Percent" *> space *> parseFloat)
+             , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
+             , try $ (S.Rem . (/ 4) . fromIntegral) <$> parseInt -- Support legacy inline numbers for now
+             ]
 
 parseInt :: Parser Int
 parseInt = L.signed space L.decimal
