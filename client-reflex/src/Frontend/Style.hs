@@ -47,7 +47,6 @@ module Frontend.Style
   , stagedResourceCard
   ) where
 
-import Frontend.Style.Core (Style, css)
 import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
 

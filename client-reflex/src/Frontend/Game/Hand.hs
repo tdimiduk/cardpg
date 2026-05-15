@@ -10,7 +10,6 @@ import Control.Monad.IO.Class (MonadIO)
 import Data.List (find)
 import Data.Maybe (isJust)
 import Data.Set qualified as Set
-import Data.Text qualified as T
 import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))

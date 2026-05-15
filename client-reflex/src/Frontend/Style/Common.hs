@@ -35,7 +35,7 @@ import Data.Map (Map)
 import Data.Text (Text)
 import Reflex.Dom.Core
 
-import Frontend.Style.Core (Prop (..), Style, classNames, cls, css, css')
+import Frontend.Style.Core (Prop (..), classNames, cls)
 import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
 

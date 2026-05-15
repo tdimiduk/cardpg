@@ -19,7 +19,7 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
 import Frontend.Game.Common (staticActionStackWidget)
 import Frontend.Style (cardHandWidth)
-import Frontend.Style.Common (Style, classNames, divS, elS, elS', testId)
+import Frontend.Style.Common (Style, divS, elS, elS', testId)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 import Frontend.UI.Button

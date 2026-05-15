@@ -16,7 +16,7 @@ import Data.Text qualified as T
 
 import Reflex.Dom.Core hiding (button)
 
-import Frontend.Style.Common (Style, classNames)
+import Frontend.Style.Common (classNames)
 import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
 

@@ -1,7 +1,9 @@
 module Server.Config where
 
+import Data.Char (toLower)
 import Data.Maybe (fromMaybe)
 import System.Environment (lookupEnv)
+import System.IO (hPutStrLn, stderr)
 
 data DBConfig = DBConfig
   { dbHost :: String
@@ -17,6 +19,7 @@ data Config = Config
   , cardsDir :: FilePath
   , scenarioFile :: FilePath
   , useInMemoryDB :: Bool
+  , useGargoyle :: Bool
   , seed :: Maybe Int
   }
   deriving (Show, Eq)
@@ -45,8 +48,19 @@ loadConfig = do
   -- Feature Flags
   inMem <- lookupEnv "CARDPG_USE_IN_MEMORY_DB"
   let useInMem = case inMem of
-        Just "true" -> True
+        Just s | map toLower s == "true" -> True
         _ -> False
+
+  gargoyle <- lookupEnv "CARDPG_USE_GARGOYLE"
+  let useGargoyleVal = case gargoyle of
+        Just s | map toLower s == "true" -> True
+        _ -> False
+
+  hPutStrLn stderr $ "Config Loaded:"
+  hPutStrLn stderr $ "  PORT: " ++ show port
+  hPutStrLn stderr $ "  USE_IN_MEMORY_DB: " ++ show useInMem ++ " (env: " ++ show inMem ++ ")"
+  hPutStrLn stderr $ "  USE_GARGOYLE: " ++ show useGargoyleVal ++ " (env: " ++ show gargoyle ++ ")"
+  hPutStrLn stderr $ "  DB_HOST: " ++ dbConfig.dbHost
 
   -- Seed Config
   seedStr <- lookupEnv "CARDPG_SEED"
@@ -59,5 +73,6 @@ loadConfig = do
       , cardsDir = cDir
       , scenarioFile = sFile
       , useInMemoryDB = useInMem
+      , useGargoyle = useGargoyleVal
       , seed = seedVal
       }

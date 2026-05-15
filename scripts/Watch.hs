@@ -2,15 +2,24 @@
 
 module Main where
 
-import System.Environment (getArgs)
+import System.Directory (getCurrentDirectory)
+import System.Environment (getArgs, setEnv)
+import System.FilePath ((</>))
 import System.Process (callProcess)
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
-    ["client"] -> runWatch Client
-    ["server"] -> runWatch Server
+    ["client"] -> do
+      putStrLn "Starting ghciwatch for client..."
+      runWatch Client
+    ["server"] -> do
+      putStrLn "Starting ghciwatch for server..."
+      root <- getCurrentDirectory
+      setEnv "CARDPG_CARDS_DIR" (root </> "data/cards")
+      setEnv "CARDPG_SCENARIO_FILE" (root </> "data/scenarios/starter.yaml")
+      runWatch Server
     _ -> putStrLn "Usage: runghc Watch.hs {client|server}"
 
 data Mode = Client | Server

@@ -48,7 +48,7 @@ library
   build-depends:
     , aeson
     , api
-    , base                >=4.7 && <5
+    , base                         >=4.7 && <5
     , beam-automigrate
     , beam-core
     , beam-migrate
@@ -59,6 +59,7 @@ library
     , core
     , directory
     , filepath
+    , gargoyle-postgresql-connect
     , generic-lens
     , lens
     , megaparsec
@@ -80,6 +81,7 @@ executable server
   import:         project-config
   main-is:        Main.hs
   hs-source-dirs: app
+  ghc-options:    -threaded
   build-depends:
     , base    >=4.7 && <5
     , server

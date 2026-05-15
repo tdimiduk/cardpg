@@ -26,7 +26,7 @@ source-repository-package
   subdir: jsaddle jsaddle-warp jsaddle-wkwebview jsaddle-clib
 
 
-allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector
+allow-newer: beam-automigrate:QuickCheck, beam-automigrate:aeson, beam-automigrate:bytestring, beam-automigrate:postgresql-simple, beam-automigrate:text, beam-automigrate:vector, gargoyle-postgresql-nix:base, gargoyle-postgresql-connect:base, gargoyle:base
 
 
 constraints: entropy >= 0.4.1.11, reflex-dom -webkit2gtk +use-warp

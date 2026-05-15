@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Start a local Hoogle server for the project
+# This requires that the dev shell was built with withHoogle = true
+
+PORT=${1:-8080}
+
+echo "Starting Hoogle server on http://localhost:$PORT"
+echo "If this fails, ensure flake.nix has 'withHoogle = true' and you have re-entered the nix shell."
+
+hoogle server --local --port "$PORT"

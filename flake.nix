@@ -26,7 +26,7 @@
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ inputs.pre-commit-hooks.flakeModule ];
-      systems = [ "x86_64-linux" ];
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
       perSystem = { config, self', inputs', pkgs, system, ... }:
         let
@@ -62,6 +62,11 @@
           };
 
           # Helper to create haskell.nix projects with shared config
+          # Build gargoyle-nix-postgres-monitor exe path for symlinking.
+          # We can't reference the exe from within mkProject's modules (circular),
+          # so we compute the exe derivation from the already-built project.
+          gargoyleMonitorExe = project.hsPkgs.gargoyle-postgresql-nix.components.exes.gargoyle-nix-postgres-monitor;
+
           mkProject = hpkgs': hpkgs'.haskell-nix.project {
             src = projectSrc;
             compiler-nix-name = "ghc9122";
@@ -187,6 +192,15 @@
           devShells.default = project.shellFor {
             name = "cardpg-dev";
 
+            packages = p: [
+              p.core
+              p.server
+              p.api
+              p.client-reflex
+            ];
+
+            withHoogle = true;
+
             # Tools built with the project's GHC
             tools = {
               cabal = "latest";
@@ -196,6 +210,7 @@
               ghcid = "latest";
               apply-refact = "latest";
               weeder = "latest";
+              hoogle = "latest";
             };
 
             # Additional packages from nixpkgs (not GHC-dependent)
@@ -209,7 +224,10 @@
               pkgs.python3  # for run-client http server
               pkgs.ghciwatch
               pkgs.caddy
+              pkgs.postgresql
+              pkgs.pkg-config
               config.pre-commit.settings.package  # pre-commit hooks
+            ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
               pkgs.playwright-test
             ];
 
@@ -244,11 +262,13 @@
               fi
 
               echo ""
-              echo "Available commands: gen-types, deploy-prod, run-client, root-ghcjs"
+              echo "Available commands: gen-types, deploy-prod, run-client, root-ghcjs, hoogle"
 
               # Playwright Configuration
+              ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
               export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
               export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+              ''}
             '';
           };
         };
