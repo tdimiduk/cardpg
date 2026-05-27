@@ -32,27 +32,27 @@ introductory_materials:
     tags: ["doc-type:meta", "audience:designer-facing"]
 
 ai_configuration:
-  - name: "Chronicler Persona"
-    id: "ai-chronicler"
-    path: "ai/personas/chronicler.md"
+  - name: "Empirical Research Standards"
+    id: "empirical-research-standards"
+    path: "ai/common/empirical_research_standards.md"
     source_type: "local_file"
-    purpose: "The persona definition for the Lead Technical Researcher."
-    type: "AI Persona"
+    purpose: "Quantitative research standards for establishing the empirical foundations of game mechanics."
+    type: "AI Standards"
     status: "Canon"
-    tags: ["doc-type:ai-prompt", "audience:ai"]
-  - name: "Artificer Persona"
-    id: "ai-artificer"
-    path: "ai/personas/artificer.md"
+    tags: ["doc-type:meta", "audience:ai"]
+  - name: "Systems Design Standards"
+    id: "systems-design-standards"
+    path: "ai/common/systems_design_standards.md"
     source_type: "local_file"
-    purpose: "The persona definition for the Lead Systems Designer."
-    type: "AI Persona"
+    purpose: "Mathematical, mechanical, and architectural design standards for rules balancing."
+    type: "AI Standards"
     status: "Canon"
-    tags: ["doc-type:ai-prompt", "audience:ai"]
+    tags: ["doc-type:meta", "audience:ai"]
   - name: "Common Standards"
     id: "ai-standards"
     path: "ai/common/standards.md"
     source_type: "local_file"
-    purpose: "Common standards and shared context for all AI personas."
+    purpose: "Common standards and shared context for all AI agents."
     type: "AI Standards"
     status: "Canon"
     tags: ["doc-type:meta", "audience:ai"]

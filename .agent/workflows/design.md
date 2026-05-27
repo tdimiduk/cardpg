@@ -1,5 +1,5 @@
 ---
-description: Game design work using the Artificer persona (discuss, audit, create, refactor, or write)
+description: Game design work focusing on systems rules and mechanics (discuss, audit, create, refactor, or write)
 ---
 
 # Design Workflow
@@ -13,9 +13,9 @@ This unified workflow handles all game design tasks. The user's prompt determine
 ## 1. Load Context
 
 - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
-- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/personas/artificer.md`
+- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/systems_design_standards.md`
 
-Adopt the **Lead Systems Designer** persona.
+Adhere to the **Lead Systems Designer** guidelines and principles.
 
 ## 2. Determine Mode from User Request
 

@@ -1,5 +1,5 @@
 ---
-description: Research tasks using the Chronicler persona (design prompts, synthesize topics, vet sources)
+description: Research tasks focusing on physiological and physical facts (design prompts, synthesize topics, vet sources)
 ---
 
 # Research Workflow
@@ -13,9 +13,9 @@ This unified workflow handles all research tasks. The user's prompt determines t
 ## 1. Load Context
 
 - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
-- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/personas/chronicler.md`
+- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/empirical_research_standards.md`
 
-Adopt the **Lead Technical Researcher** persona.
+Adhere to the **Lead Technical Researcher** guidelines and principles.
 
 ## 2. Determine Mode from User Request
 
