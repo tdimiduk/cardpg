@@ -2,40 +2,10 @@ version: "0.5"
 log_location: ./scratch/logs/process-compose.log
 
 processes:
-  db:
-    command: |
-      if [ ! -d db/postgres ]; then
-        mkdir -p db/postgres
-        initdb -D db/postgres
-      fi
-      # Start temporarily to ensure database exists
-      postgres -D db/postgres -k /tmp -p 5432 &
-      PID=$!
-      for i in {1..30}; do
-        if pg_isready -h 127.0.0.1 -p 5432; then
-          break
-        fi
-        sleep 1
-      done
-      createdb -h 127.0.0.1 --maintenance-db=postgres cardpg || true
-      kill $PID
-      wait $PID || true
-      # Run in foreground
-      postgres -D db/postgres -k /tmp -p 5432
-    availability:
-      restart: "on_failure"
-    health_check:
-      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -d postgres"]
-      interval: 2s
-      timeout: 5s
-      retries: 5
-    ready_log_line: "database system is ready to accept connections"
-
   server:
     command: runghc scripts/Watch.hs server
     environment:
       - PORT=3004
-      - CARDPG_USE_GARGOYLE=false
       - CARDPG_DB_HOST=localhost
       - CARDPG_DB_NAME=cardpg
       - CARDPG_DB_USER=${USER}
@@ -52,9 +22,6 @@ processes:
     availability:
       restart: "on_failure"
       backoff_period: 2s
-    depends_on:
-      db:
-        condition: process_log_ready
     ready_log_line: "Starting CardPG Server on port 3004"
 
   client:
