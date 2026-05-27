@@ -15,6 +15,10 @@ To generate static assets for styling iteration:
 cabal run cardpg-static -- game data/scenarios/starter.yaml
 ```
 
+## Delegating to Subagent
+
+- **`reflex_ui_developer`**: For widget creation, visual refactoring, or pixel-perfect styling using the custom DSL, delegate to the `reflex_ui_developer` subagent. It is highly optimized for typography, glassmorphism, HSL color palettes, and rapid visual feedback loops.
+
 ## Agent Skills
 
 - **`dev_server`**: Manage the env. ALWAYS ensure it's running. Check logs for errors.

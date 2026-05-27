@@ -6,6 +6,10 @@ description: Run end-to-end Playwright tests for the application
 
 E2E tests use Playwright to test the full web application. The test infrastructure uses Nix-installed dependencies and process-compose to manage test servers.
 
+## Delegating to Subagent
+
+- **`e2e_testing_suite`**: E2E browser tests and Nix builds can be highly compute-intensive and generate extensive output. Delegate full-suite runs or visual regression diagnostics to the `e2e_testing_suite` subagent, preferably using a `branch` or `share` workspace to keep your primary environment uninterrupted.
+
 ## Quick Start
 
 // turbo

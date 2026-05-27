@@ -6,6 +6,10 @@ description: Game design work using the Artificer persona (discuss, audit, creat
 
 This unified workflow handles all game design tasks. The user's prompt determines the mode.
 
+## Delegating to Subagent
+
+- **`game_systems_designer`**: For auditing rules, brainstorming under Discuss mode, or drafting player-facing guidelines, delegate to the `game_systems_designer` subagent (Lead Systems Designer). This ensures strict compliance with our Core Design Patterns (Defender-Centric, Simultaneity, etc.) without cluttering your core developer workspace.
+
 ## 1. Load Context
 
 - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`

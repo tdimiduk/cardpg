@@ -6,6 +6,10 @@ description: Research tasks using the Chronicler persona (design prompts, synthe
 
 This unified workflow handles all research tasks. The user's prompt determines the mode.
 
+## Delegating to Subagent
+
+- **`research_analyst`**: For deep scientific or physiological fact-finding, vetting academic/historical texts, or drafting research prompts, delegate to the `research_analyst` subagent (Lead Technical Researcher) to maintain academic focus and quantitative rigor in a separate research sandbox.
+
 ## 1. Load Context
 
 - `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
