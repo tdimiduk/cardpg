@@ -8,11 +8,12 @@ processes:
       - PORT=3004
       - CARDPG_DB_HOST=localhost
       - CARDPG_DB_NAME=cardpg
-      - CARDPG_DB_USER=${USER}
-      - CARDPG_DB_PASS=
+      - CARDPG_DB_USER=cardpg
+      - CARDPG_DB_PASS=cardpg
       # Standard libpq env vars as fallback
       - PGDATABASE=cardpg
-      - PGUSER=${USER}
+      - PGUSER=cardpg
+      - PGPASSWORD=cardpg
       - PGHOST=localhost
     is_restart: true
     shutdown:
