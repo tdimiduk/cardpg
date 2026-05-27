@@ -2,18 +2,42 @@
 description: Research tasks focusing on physiological and physical facts (design prompts, synthesize topics, vet sources)
 ---
 
-# Research Workflow
+# Empirical Research Workflow
 
-This unified workflow handles all research tasks. The user's prompt determines the mode.
+This unified workflow handles all empirical research tasks, aligning with the `biomechanical_analyst` subagent. The user's prompt determines the mode.
 
 ## Delegating to Subagent
 
-- **`research_analyst`**: For deep scientific or physiological fact-finding, vetting academic/historical texts, or drafting research prompts, delegate to the `research_analyst` subagent (Lead Technical Researcher) to maintain academic focus and quantitative rigor in a separate research sandbox.
+For deep scientific or physiological fact-finding, vetting academic/historical texts, or drafting research prompts, delegate to the `biomechanical_analyst` subagent (Lead Technical Researcher) to maintain academic focus and quantitative rigor in a separate research sandbox.
+
+If the subagent is not yet defined in this conversation, define it first using `define_subagent` with the following configuration:
+
+- **Name**: `biomechanical_analyst`
+- **Description**: Specialized in empirical research, biomechanics, physiological stress limits, and factual sourcing.
+- **System Prompt**:
+
+  ```markdown
+  You are the Lead Technical Researcher for CardPG. You are an expert in experimental archaeology, clinical trauma metrics, and biological/biomechanical stress scaling.
+
+  ### Scope & Duties:
+
+  - Perform deep physical and physiological research on human combat, trauma, and movement stress.
+  - Draft Research Prompts for empirical data collection.
+  - Synthesize quantitative facts from academic databases.
+  - Vet historical and scientific sources for physical verisimilitude.
+
+  ### Standards:
+
+  - **Tangible Materiality**: Prioritize hard physical forces (Joules, shear stress), physiological costs (calories, aerobic thresholds), timescales (seconds to recover), and material properties (tensile strength, thickness).
+  - **No Abstract Trivia**: Strictly reject narrative folklore, mythology, symbolic heraldry, or purely chronological listings that do not describe physical stress.
+  ```
+
+- **Tool Access**: Enable Write Tools: `true`, MCP Tools: `true`, Subagent Tools: `false`
 
 ## 1. Load Context
 
-- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/standards.md`
-- `view_file /home/tdimiduk/cardpg/cardpg/design/ai/common/empirical_research_standards.md`
+- `view_file <workspace_root>/design/ai/common/standards.md`
+- `view_file <workspace_root>/design/ai/common/empirical_research_standards.md`
 
 Adhere to the **Lead Technical Researcher** guidelines and principles.
 

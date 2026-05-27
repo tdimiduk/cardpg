@@ -32,12 +32,12 @@ Wait a few seconds for it to initialize if it wasn't already running.
 To check for compilation errors (Reflex or Haskell) or runtime logs, look at the main log file.
 
 **Log Path:**
-`/home/tdimiduk/cardpg/cardpg/scratch/logs/process-compose.log`
+`./scratch/logs/process-compose.log`
 
 **Command to Read (last 50 lines):**
 
 ```bash
-tail -n 50 /home/tdimiduk/cardpg/cardpg/scratch/logs/process-compose.log
+tail -n 50 ./scratch/logs/process-compose.log
 ```
 
 **Common Patterns to Look For:**

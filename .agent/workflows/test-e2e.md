@@ -8,7 +8,31 @@ E2E tests use Playwright to test the full web application. The test infrastructu
 
 ## Delegating to Subagent
 
-- **`e2e_testing_suite`**: E2E browser tests and Nix builds can be highly compute-intensive and generate extensive output. Delegate full-suite runs or visual regression diagnostics to the `e2e_testing_suite` subagent, preferably using a `branch` or `share` workspace to keep your primary environment uninterrupted.
+E2E browser tests and Nix builds can be highly compute-intensive and generate extensive output. Delegate full-suite runs or visual regression diagnostics to the `e2e_testing_suite` subagent, preferably using a `branch` or `share` workspace to keep your primary environment uninterrupted.
+
+If the subagent is not yet defined in this conversation, define it first using `define_subagent` with the following configuration:
+
+- **Name**: `e2e_testing_suite`
+- **Description**: Specialized in Playwright E2E browser tests, visual regression verification, and Nix-packaged environments.
+- **System Prompt**:
+
+  ```markdown
+  You are the E2E Testing Suite subagent for CardPG. You are an expert in automated browser testing, visual diagnostics, and reproducible Nix build validation.
+
+  ### Scope & Duties:
+
+  - Run and write Playwright tests under `tests/e2e/`.
+  - Diagnose visual layout regressions and integration failures.
+  - Run Nix builds to verify production bundling.
+
+  ### Standards:
+
+  - Always use the shared fixtures from `fixtures.ts` (e.g., `loadedPage`).
+  - Target components using their `data-testid` attribute (e.g., `app-container`, `chat-input`).
+  - For faster iteration, use `./scripts/test-e2e --no-server` against a running dev server on port 3000.
+  ```
+
+- **Tool Access**: Enable Write Tools: `true`, MCP Tools: `true`, Subagent Tools: `false`
 
 ## Quick Start
 
@@ -53,86 +77,14 @@ If you already have the dev server running (`./scripts/dev`), you can run tests 
 
 **Warning**: This assumes the dev server is running on port 3000. Only use this for development iteration.
 
-## Test Files
+## Detailed References & Test Writing
 
-- Test specs: `tests/e2e/*.spec.ts`
-- Playwright config: `tests/e2e/playwright.config.ts`
-- Process Compose config: `tests/e2e/process-compose.yaml`
-- **Shared fixtures**: `tests/e2e/fixtures.ts` - Provides `loadedPage` fixture with pre-loaded app
-- **Config**: `tests/e2e/config.ts` - Centralized port configuration
+For concrete details on:
 
-## Common Test Patterns
+- Directory structures and config parameters
+- Writing Playwright test files and using TypeScript fixtures (`loadedPage`)
+- Using `data-testid` values in frontend code (both Haskell and TypeScript)
+- Reviewing HTML test reports and interactive execution traces
+- Troubleshooting "element not found" and target failures
 
-### Using the Shared Fixture
-
-Import from `fixtures.ts` instead of `@playwright/test` to get the `loadedPage` fixture:
-
-```typescript
-import { test, expect } from "./fixtures";
-
-test("my test", async ({ loadedPage }) => {
-  // loadedPage already has: page.goto("/") + wait for app-container visible
-  const element = loadedPage.getByTestId("my-element");
-});
-```
-
-Use `{ page }` for tests that don't need the full app loaded (e.g., just checking title).
-
-### Finding Elements
-
-Use `data-testid` attributes for reliable element selection:
-
-```typescript
-const chatInput = page.getByTestId("chat-input");
-const sendButton = page.getByTestId("chat-send");
-```
-
-Available test IDs in the app:
-
-- `app-container` - Main app root
-- `main-content` - Main content area
-- `game-board` - Game board area
-- `game-log` - The game log panel
-- `chat-input` - Chat message input field
-- `chat-send` - Send button
-- `log-entry-chat` - Individual chat log entries
-- `log-entry-message` - The message text within a log entry
-
-### Adding New Test IDs
-
-In Haskell, use the `component` helper which adds `data-testid`:
-
-```haskell
-component "my-component" [styles] $ do
-  -- child widgets
-```
-
-Or add directly to elements:
-
-```haskell
-elAttr "div" ("class" =: classes styles <> testId "my-element") $ ...
-```
-
-## Troubleshooting
-
-### "Element not found" errors
-
-1. Check if the testid exists in the current production build
-2. If testing code changes, rebuild with `nix build .#reflex-client-prod`
-3. Use `--no-server` with dev server for faster iteration
-
-### Viewing Test Reports
-
-After tests run, Playwright serves an HTML report. The URL is shown in the output:
-
-```
-Serving HTML report at http://localhost:9323
-```
-
-### Viewing Test Recordings
-
-Failed tests save traces to `tests/e2e/test-results/`. View with:
-
-```bash
-cd tests/e2e && npx playwright show-report
-```
+Refer directly to the **@[testing]** skill guide ([`SKILL.md`](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/testing/SKILL.md#3-end-to-end-e2e-tests)).
