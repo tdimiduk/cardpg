@@ -29,7 +29,7 @@ import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
 
 import Frontend.Style qualified as FS
-import Frontend.Style.Common (Style, classNames, divS)
+import Frontend.Style.Common (classNames, divS)
 import Frontend.Style.DSL as S
 
 -- | Styles for hand card hover interactions (transformer style)

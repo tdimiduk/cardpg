@@ -28,7 +28,6 @@ import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 
 import Frontend.Style.Common (Style, componentS)
-import Frontend.Style.DSL qualified as S
 
 import Frontend.Util
 
