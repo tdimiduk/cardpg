@@ -24,6 +24,7 @@ import Core.State (ActorState, identifiedLookup, isActorPC, isActorReady)
 
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
+import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 
@@ -48,7 +49,7 @@ appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
       (_, requests) <-
-        runRequesterT (uiWidget Nothing actorsMapDyn logsDyn phaseDyn readyDyn totalDyn) responses
+        runRequesterT (uiWidget Nothing Nothing actorsMapDyn logsDyn phaseDyn readyDyn totalDyn) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
@@ -108,7 +109,9 @@ uiWidget
      , ApiRequester t m
      , Prerender t m
      )
-  => Maybe ActorId
+  => Maybe StagingState
+  -- ^ Optional initial staging state
+  -> Maybe ActorId
   -- ^ Initial active actor
   -> Dynamic t (Map.Map ActorId ActorState)
   -> Dynamic t [LogEntry]
@@ -118,7 +121,7 @@ uiWidget
   -> Dynamic t Int
   -- ^ Total Count
   -> m ()
-uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = componentS "app-container" appRoot $ do
+uiWidget mStaging initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = componentS "app-container" appRoot $ do
   rec -- Construct config for Phase Display
       let phaseConfig =
             PhaseDisplayConfig
@@ -141,7 +144,7 @@ uiWidget initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = compon
           Just (Identified i c) -> Map.singleton i c
 
     _ <- listWithKey activeActorMap $ \k vDyn ->
-      handWidget (Identified k <$> vDyn)
+      handWidget mStaging (Identified k <$> vDyn)
 
     return ()
 

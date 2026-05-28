@@ -8,8 +8,11 @@
 -- This ensures we capture parameterized styles
 -- by exercising all UI code paths during static/gen-css runs.
 module Frontend.MockData
-  ( -- * Mock Actors
-    mockActorState
+  ( -- * Helper
+    mockUUID
+
+    -- * Mock Actors
+  , mockActorState
   , mockActorId
   , mockActorsMap
 
@@ -23,6 +26,7 @@ module Frontend.MockData
     -- * Mock Cards
   , mockCoreCard
   , mockCardInstance
+  , mockHandCards
   ) where
 
 import Data.Map.Strict qualified as Map
@@ -92,13 +96,16 @@ mockActionStack =
 mockPlannedAction :: PlannedAction
 mockPlannedAction = PStandard mockActionStack
 
--- | Sample hand cards (cards not staged)
+-- | Sample hand cards containing both non-staged and staged cards
 mockHandCards :: [CardInstance CoreCard]
 mockHandCards =
-  [ mockCardInstance 20 "Defend" 1
-  , mockCardInstance 21 "Dodge" 0
-  , mockCardInstance 22 "Counter" 2
+  [ mockActionCard
   ]
+    ++ mockResourceCards
+    ++ [ mockCardInstance 20 "Defend" 1
+       , mockCardInstance 21 "Dodge" 0
+       , mockCardInstance 22 "Counter" 2
+       ]
 
 -- | Sample CoreCardState with populated hand and staged action
 mockCoreCardState :: CoreCardState

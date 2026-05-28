@@ -69,13 +69,16 @@ handWidget
      , Requester t m
      , Request m ~ ApiRequest
      )
-  => Dynamic t (Identified ActorId ActorState)
+  => Maybe StagingState
+  -- ^ Optional initial staging state
+  -> Dynamic t (Identified ActorId ActorState)
   -> m ()
-handWidget actorDyn = do
+handWidget mInitialStaging actorDyn = do
   let safeActor = (.content) <$> actorDyn
       actorId = (.id) <$> actorDyn
 
-  rec (stagingState, validation) <- mkPlanBuilderLogic safeActor selectEvt toggleEvt clearEvt
+  rec (stagingState, validation) <-
+        mkPlanBuilderLogic mInitialStaging safeActor selectEvt toggleEvt clearEvt
 
       -- Derived View Models
       let plannedActionDyn = (.coreState.planned) <$> safeActor

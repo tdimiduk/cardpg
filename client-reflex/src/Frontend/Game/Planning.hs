@@ -9,6 +9,7 @@ module Frontend.Game.Planning
 
 import Control.Monad.Fix (MonadFix)
 import Data.List (find)
+import Data.Maybe (fromMaybe)
 import Data.Set (Set)
 import Data.Set qualified as Set
 import Reflex
@@ -46,20 +47,23 @@ applyUpdate Clear _ = emptyStaging
 
 mkPlanBuilderLogic
   :: (Reflex t, MonadHold t m, MonadFix m)
-  => Dynamic t ActorState
+  => Maybe StagingState
+  -- ^ Optional initial staging state
+  -> Dynamic t ActorState
   -> Event t CardInstanceId -- Select Action Click
   -> Event t CardInstanceId -- Toggle Resource Click
   -> Event t () -- Clear/Cancel Click
   -> m (Dynamic t StagingState, Dynamic t PlanValidation)
-mkPlanBuilderLogic actorState actionClick resourceClick clearClick = do
-  let updateEvent =
+mkPlanBuilderLogic mInitialStaging actorState actionClick resourceClick clearClick = do
+  let initialStaging = fromMaybe emptyStaging mInitialStaging
+      updateEvent =
         leftmost
           [ fmap SelectAction actionClick
           , fmap ToggleResource resourceClick
           , fmap (const Clear) clearClick
           ]
 
-  currentStaging <- foldDyn applyUpdate emptyStaging updateEvent
+  currentStaging <- foldDyn applyUpdate initialStaging updateEvent
 
   let validation = zipDynWith validateStaging actorState currentStaging
 

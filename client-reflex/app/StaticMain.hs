@@ -13,10 +13,9 @@ import Control.Monad.IO.Class (MonadIO)
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
 import Data.Char (isAlphaNum)
+import Data.List qualified as List
 import Data.Map qualified as Map
-import Data.Text (Text)
 import Data.Text qualified as T
-import Data.Text.Encoding (encodeUtf8)
 import Data.Yaml qualified as Yaml
 import Options.Applicative qualified as OA
 import Reflex.Dom.Core
@@ -32,10 +31,11 @@ import System.FilePath (takeBaseName, (</>))
 import System.Process (callProcess)
 
 import Api.Reflex ()
-import Api.Types (LogEntry, Phase (..))
-import Core.Card (ActorDefinition (..))
-import Core.Primitives (ActorId)
-import Core.State (ActorState (..))
+import Api.Types (Phase (..))
+import Core.Card (ActorDefinition (..), CardInstance, CoreCard)
+import Core.Primitives (ActorId, CardInstanceId (..), Identified (..))
+import Core.State (ActorState (..), CoreCardState (..))
+import Data.Set qualified as Set
 import Frontend.App (headWidget, uiWidget)
 import Frontend.Card
   ( CardDisplayMode (..)
@@ -45,6 +45,8 @@ import Frontend.Card
   , renderNatureCardWith
   )
 import Frontend.Catalog (catalogWidget)
+import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
+import Frontend.Game.Planning (StagingState (..))
 import Frontend.MockData qualified as Mock
 
 import Frontend.Style.Common
@@ -223,7 +225,24 @@ generateGame opts path skipSnapshot = do
 
         writeStaticPage
           outHtml
-          (mockGameWidget mActorId gameState phase)
+          (mockGameWidget Nothing mActorId gameState phase)
+
+        unless skipSnapshot $ do
+          unless opts.quiet $ putStrLn $ "Taking screenshot for " <> nameSuffix <> "..."
+          currentDir <- getCurrentDirectory
+          let absHtml = currentDir </> outHtml
+          takeScreenshot absHtml outPng 1920 1080
+          unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
+
+  -- Helper to generate snapshot with a custom widget
+  let genWith customWidget nameSuffix = do
+        let baseName = "game_" <> nameSuffix
+            outHtml = opts.outputDir </> baseName <> ".html"
+            outPng = opts.outputDir </> baseName <> ".png"
+
+        writeStaticPage
+          outHtml
+          customWidget
 
         unless skipSnapshot $ do
           unless opts.quiet $ putStrLn $ "Taking screenshot for " <> nameSuffix <> "..."
@@ -235,6 +254,11 @@ generateGame opts path skipSnapshot = do
   -- 3. Explicitly generate Mock Game state as well (to match GenCss coverage)
   gen "MockHero_planning" (Just Mock.mockActorId) Planning
   gen "MockHero_resolution" (Just Mock.mockActorId) Resolution
+
+  -- Extra states for complete interactive UI styling visibility
+  genWith (mockGameWidgetWithStaging gameState) "MockHero_staging"
+  genWith (mockGameWidgetWithDeckView gameState) "MockHero_deckview"
+  genWith (mockGameWidgetWithDiscardView gameState) "MockHero_discardview"
 
   -- 1. No Actor Selected (both phases)
   gen "none_planning" Nothing Planning
@@ -259,11 +283,12 @@ mockGameWidget
      , MonadIO m
      , Prerender t m
      )
-  => Maybe ActorId
+  => Maybe StagingState
+  -> Maybe ActorId
   -> GameState
   -> Phase
   -> m ()
-mockGameWidget initialActorId gameState phaseSetting = do
+mockGameWidget mStaging initialActorId gameState phaseSetting = do
   -- Use mock actors with staged actions if available, otherwise fall back to gameState
   let baseActors = gameState.actors
       -- Merge mock actor data to exercise staging styles
@@ -274,8 +299,96 @@ mockGameWidget initialActorId gameState phaseSetting = do
   let logsDyn = constDyn Mock.mockLogs
   rec (_, _) <-
         runRequesterT
-          (uiWidget initialActorId actorsDyn logsDyn (constDyn phaseSetting) (constDyn 1) (constDyn 1))
+          (uiWidget mStaging initialActorId actorsDyn logsDyn (constDyn phaseSetting) (constDyn 1) (constDyn 1))
           never
+  return ()
+
+-- | Specialized mock widget that natively displays the active staging/planning state
+mockGameWidgetWithStaging
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     )
+  => GameState
+  -> m ()
+mockGameWidgetWithStaging gameState = do
+  -- Define the exact mock staging state matching MockData.hs
+  let mockStagingState =
+        StagingState
+          { stagedActionId = Just (CardInstanceId (Mock.mockUUID 10)) -- "Strike"
+          , stagedResourceIds =
+              Set.fromList
+                [ CardInstanceId (Mock.mockUUID 11) -- "Focus"
+                , CardInstanceId (Mock.mockUUID 12) -- "Momentum"
+                ]
+          }
+  -- Render standard uiWidget with mockActorId selected and initial staging injected
+  mockGameWidget (Just mockStagingState) (Just Mock.mockActorId) gameState Planning
+
+-- | Specialized mock widget that overlays the Deck Viewer modal (Draw Pile)
+mockGameWidgetWithDeckView
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     )
+  => GameState
+  -> m ()
+mockGameWidgetWithDeckView gameState = do
+  -- Render standard uiWidget with Vallhach selected
+  let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      (actorId, actorState) = case mVallhach of
+        Just (aid, a) -> (Just aid, a)
+        Nothing -> (Just Mock.mockActorId, Mock.mockActorState)
+
+  mockGameWidget Nothing actorId gameState Planning
+
+  -- Overlay open Deck Viewer modal with all Vallhach's cards (deck + hand = approx 24 cards) for realistic styling verification
+  pb <- getPostBuild
+  let coreState = actorState.coreState :: CoreCardState
+      realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
+      realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+      viewCards = realDeckCards ++ realHandCards
+      viewData = DeckViewData "Draw Pile" viewCards
+  deckViewerModal (Just viewData <$ pb)
+  return ()
+
+-- | Specialized mock widget that overlays the Discard Pile modal
+mockGameWidgetWithDiscardView
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     )
+  => GameState
+  -> m ()
+mockGameWidgetWithDiscardView gameState = do
+  -- Render standard uiWidget with Vallhach selected
+  let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      (actorId, actorState) = case mVallhach of
+        Just (aid, a) -> (Just aid, a)
+        Nothing -> (Just Mock.mockActorId, Mock.mockActorState)
+
+  mockGameWidget Nothing actorId gameState Planning
+
+  -- Overlay open Discard Pile modal with all Vallhach's cards (deck + hand = approx 24 cards) for realistic styling verification
+  pb <- getPostBuild
+  let coreState = actorState.coreState :: CoreCardState
+      realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
+      realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+      viewCards = realDeckCards ++ realHandCards
+      viewData = DeckViewData "Discard" viewCards
+  deckViewerModal (Just viewData <$ pb)
   return ()
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
