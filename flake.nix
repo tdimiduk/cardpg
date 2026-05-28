@@ -38,9 +38,27 @@
           };
 
           # Shared project configuration
-          projectSrc = hpkgs.haskell-nix.haskellLib.cleanGit {
-            name = "cardpg";
-            src = ./.;
+          # We clean git tracked files and apply a custom source filter to prevent non-Haskell files 
+          # (like templates, static assets, docs, and notes) from invalidating the Nix build cache.
+          projectSrc = pkgs.lib.cleanSourceWith {
+            src = hpkgs.haskell-nix.haskellLib.cleanGit {
+              name = "cardpg";
+              src = ./.;
+            };
+            filter = name: type:
+              let baseName = baseNameOf name; in
+              # Exclude directories that do not contain code compiled by Nix/cabal
+              !(type == "directory" && (
+                baseName == "docs" || 
+                baseName == "design" || 
+                baseName == "deploy" ||
+                baseName == "static" ||
+                baseName == "tests" ||
+                baseName == "vtt-react" ||
+                baseName == ".agent"
+              )) &&
+              # Exclude flake files to prevent re-evaluation compilation of the dev shell
+              !(baseName == "flake.nix" || baseName == "flake.lock" || baseName == "README.md");
           };
 
           # SHA256 hashes for git dependencies in cabal.project
@@ -122,31 +140,16 @@
             reflex-client-js = projectJS.client-reflex.components.exes.client-reflex;
 
             # Production bundle for Reflex Client (JS + CSS + HTML)
-            reflex-client-prod = pkgs.runCommand "reflex-client-prod" {
-              nativeBuildInputs = [ pkgs.nodejs pkgs.tailwindcss_4 ];
-            } ''
-              # 1. Build CSS (Tailwind)
-              mkdir -p styles static
-              cp ${./client-reflex/styles/input.css} styles/input.css
-              cp -r ${./client-reflex/src} src
-              cp -r ${./client-reflex/app} app
-              
-              # Build CSS using tailwindcss CLI
-              tailwindcss -i styles/input.css -o static/output.css
-              
+            reflex-client-prod = pkgs.runCommand "reflex-client-prod" { } ''
               mkdir -p $out
-              cp ${./client-reflex/deploy/index.html} $out/index.html
               
               # Copy JS and strip shebang
               tail -n +2 ${self'.packages.reflex-client-js}/bin/client-reflex > $out/all.js
               
-              # Copy static assets (including the newly generated CSS if it was in static, 
-              # but we generated it in the current dir's static folder)
-              cp static/output.css $out/output.css
-              
-              # Copy other static assets from source if they exist
+              # Copy static assets (including index.html, base.css and the pre-built atomic.css)
               cp -r ${./client-reflex/static}/* $out/ || true
             '';
+
 
             # GHC JS cross-compiler - run `root-ghcjs` to protect from GC
             js-ghc = projectJS.pkg-set.config.ghc.package;
@@ -199,7 +202,7 @@
               p.client-reflex
             ];
 
-            withHoogle = true;
+            withHoogle = false;
 
             # Tools built with the project's GHC
             tools = {
