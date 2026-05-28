@@ -223,7 +223,6 @@ knownParams =
   , ParamFn "h" parseSize (\s -> S.h s [])
   , ParamFn "z" parseInt (\n -> S.z n [])
   , ParamFn "opacity" parseFloat (\d -> S.opacity d [])
-  , ParamFn "borderRadius" parseInt (\n -> S.borderRadius n [])
   , ParamFn "css" parseThreeStrings (\(n, p, v) -> S.css n p v [])
   , ParamFn "css'" parseNameAndDecls (\(n, ds) -> S.css' n ds [])
   , ParamFn "bg" parseColorAndTone (\(c, n) -> S.bg c n [])
@@ -272,7 +271,24 @@ parseSize = do
       choice $
         fmap
           (parseS $)
-          [S.S0, S.S0_5, S.S1, S.S2, S.S3, S.S4, S.S5, S.S6, S.S7, S.S8, S.S9, S.S10, S.S11, S.S12, S.S13, S.S14, S.S15]
+          [ S.S0
+          , S.S0_5
+          , S.S1
+          , S.S2
+          , S.S3
+          , S.S4
+          , S.S5
+          , S.S6
+          , S.S7
+          , S.S8
+          , S.S9
+          , S.S10
+          , S.S11
+          , S.S12
+          , S.S13
+          , S.S14
+          , S.S15
+          ]
           <> [ try $ S.Rem <$> (string "Rem" *> space *> parseFloat)
              , try $ S.Px <$> (string "Px" *> space *> parseFloat)
              , try $ S.Vh <$> (string "Vh" *> space *> parseFloat)
@@ -281,7 +297,6 @@ parseSize = do
              , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
              , try $ (S.Rem . (/ 4) . fromIntegral) <$> parseInt -- Support legacy inline numbers for now
              ]
-
 
 parseInt :: Parser Int
 parseInt = L.signed space L.decimal

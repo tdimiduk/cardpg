@@ -90,7 +90,6 @@ module Frontend.Style.DSL
   , mr
   , Size (..)
   , standardSizes
-
   , bottom0
   , left0
   , right0
@@ -195,7 +194,6 @@ module Frontend.Style.DSL
   , gap
   , fontSize
   , opacity
-  , borderRadius
 
     -- * Compound Styles
   , flex1
@@ -832,6 +830,3 @@ fontSize n = css ("text-" <> tshow n) "font-size" (tshow n <> "px")
 
 opacity :: Double -> Style
 opacity v = css ("opacity-" <> tshow (round (v * 100) :: Int)) "opacity" (tshow v)
-
-borderRadius :: Int -> Style
-borderRadius n = css ("rounded-" <> tshow n) "border-radius" (tshow n <> "px")

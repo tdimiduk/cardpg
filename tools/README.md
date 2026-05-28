@@ -1,44 +1,38 @@
 # Tools
 
-This directory contains various utility scripts and tools for the CardPG project.
+This directory contains various utility scripts and tools for development, database initialization, game design, and syncing card data.
 
-## Scripts
+## Scripts & Tools
 
-### `run_pipeline.py`
+### Google Sheets Sync (`gsheet_sync/`)
 
-The master orchestration script for the data pipeline.
+- **`gsheet_sync/sync-cards-gsheet.py`**: Fetches raw card data from Google Sheets and saves it as JSON definitions in `data/cards/raw/`.
+- **Usage**:
+  ```bash
+  uv run gsheet_sync/sync-cards-gsheet.py --all
+  ```
 
-## Usage
+### Design Utils (`design_utils/`)
 
-Run the full pipeline:
+- **`design_utils/scripts/build_vtt_data.py`**: Exports the YAML card data source of truth into cleaned JSON artifacts for VTT ingestion (stripping design-only fields like metadata).
+- **`design_utils/keywordMod.py`** & **`design_utils/scripts/keyword_mod.py`**: Helper scripts to perform bulk keyword/action modifications across YAML card files.
 
-```bash
-# Default: skips Google Sheets sync, runs compiler, exports VTT JSON
-python3 run_pipeline.py
+### Database Utilities (`db_utils/`)
 
-# With sync enabled:
-python3 run_pipeline.py --sync
-```
+- **`db_utils/init-db.sh`**: A quick script to initialize or reset the local database.
 
-The pipeline performs the following steps:
+### Standalone Utilities
 
-1.  **Sync (Optional):** Fetches data from Google Sheets and saves it as JSON in `data/cards/raw`. This step is skipped by default and can be enabled with `--sync`.
-2.  **Compile:** Converts the raw JSON data into YAML card definitions in `data/cards/pc` and `data/cards/monsters`.
-3.  **Export:** Generates `vtt-react/data/generated_cards.json` for the VTT.Sheets.
-
-### `gsheet_sync/sync-cards-gsheet.py`
-
-Fetches card data from Google Sheets.
-
-- **Usage**: `uv run gsheet_sync/gsheet_sync/sync-cards-gsheet.py --all` (in `tools` directory)
-- **Output**: JSON files in `data/cards/raw/`.
-
-### `hs-card-compiler`
-
-Haskell tool to convert JSON card definitions to YAML.
-
-- **Usage**: `cabal run hs-card-compiler <input.json> <output_dir>` (in `tools/hs-card-compiler` directory)
+- **`pack_context.py`**: A prompt/context packaging utility that gathers design documents (manifest files, core rules, principles) and outputs them as formatted context for AI ingestion.
+- **`svg_sword_generator.py`**: Generates SVG crossed sword icons (modeled after Oakeshott XVII). Originally used for VTT favicon generation.
+- **`sync-design-mirror.sh`**: Safely syncs changes from the `design/` and `data/` directories to a shadow repository (`tdimiduk/cardpg-design`).
 
 ## Setup
 
-Ensure you have the required dependencies installed (see root `shell.nix` or `pyproject.toml`).
+Ensure you have the required development dependencies installed via the Python development shell:
+
+```bash
+nix develop
+# or inside the tools folder:
+nix-shell shell.nix
+```
