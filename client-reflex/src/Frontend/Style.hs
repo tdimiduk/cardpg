@@ -10,8 +10,13 @@
 --
 -- This module retains component-specific style groups.
 module Frontend.Style
-  ( -- * Card Style Groups
-    cardBase
+  ( -- * Re-exports
+    module Frontend.Style.DSL
+  , module Frontend.Style.Common
+  , module Frontend.Style.Layout
+
+    -- * Card Style Groups
+  , cardBase
   , cardScreen
   , cardPrint
   , cardRow
@@ -47,8 +52,10 @@ module Frontend.Style
   , stagedResourceCard
   ) where
 
+import Frontend.Style.Common
 import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
+import Frontend.Style.Layout
 
 --------------------------------------------------------------------------------
 
@@ -162,10 +169,10 @@ namePrint = textBlack
 
 costBase :: Style
 costBase =
-  css "w-1.4em" "width" "1.4em"
-    . css "h-1.4em" "height" "1.4em"
-    . css "-mt-0.1em" "margin-top" "-0.1em"
-    . css "-mb-0.1em" "margin-bottom" "-0.1em"
+  w (Em 1.4)
+    . h (Em 1.4)
+    . mt (Em (-0.1))
+    . mb (Em (-0.1))
     . z 10
     . flex
     . itemsCenter

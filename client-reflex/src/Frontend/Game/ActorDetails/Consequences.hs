@@ -11,11 +11,11 @@ import Reflex.Dom.Core hiding (button)
 
 import Api.Request qualified as Req
 import Core.Card (ConsequenceCard (..), Identified (..))
+import Core.Logic.Combat (computeNextSeverity)
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..), TableState (..))
 import Core.Util (tshow)
-import Frontend.Game.ActorLogic (actorNextSeverity)
 import Frontend.Game.Class
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
@@ -46,10 +46,9 @@ consequencesWidget actorId actorState = do
         )
         $ text "Consequences"
 
-      -- Next Severity
       divS (S.textXs . S.cls "fantasy-font" . S.css "text-gold-muted" "color" "var(--color-gold-muted)") $ do
         text "Next Severity: "
-        dynText $ fmap tshow (actorNextSeverity actorState)
+        dynText $ fmap (tshow . computeNextSeverity . (.tableState)) actorState
 
     -- List Consequences
     let consequencesDyn = fmap (\as -> as.tableState.consequences) actorState
@@ -66,8 +65,8 @@ consequencesWidget actorId actorState = do
           btnClick <-
             button
               def
-                { variant = constDyn VariantGhost
-                , size = constDyn SizeSmall
+                { variant = VariantGhost
+                , size = SizeSmall
                 , extraStyle = S.px S.S1 . S.text S.Red 5 . S.hover (S.text S.Red 4)
                 }
               $ text "×"
@@ -79,9 +78,9 @@ consequencesWidget actorId actorState = do
     addClick <-
       button
         def
-          { variant = constDyn VariantDestructive
+          { variant = VariantDestructive
           , fullWidth = True
-          , size = constDyn SizeSmall
+          , size = SizeSmall
           , extraStyle = S.mt S.S2
           }
         $ text "+ Add Consequence"

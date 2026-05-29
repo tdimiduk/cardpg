@@ -166,10 +166,10 @@ stagingControls
   -> m (Event t (), Event t ())
 stagingControls validation = do
   divS (S.flex . S.gap S.S2 . S.wFull) $ do
-    let cfg = def{extraStyle = S.flex1, size = constDyn SizeSmall}
+    let cfg = def{extraStyle = S.flex1, size = SizeSmall}
     -- Cancel Button (Secondary)
     cancelEvt <-
-      button cfg{variant = constDyn VariantSecondary, testId = Just "staging-cancel"} $ text "Cancel"
+      button cfg{variant = VariantSecondary, testId = Just "staging-cancel"} $ text "Cancel"
 
     -- Commit Button (Primary, disabled if invalid)
     let validDyn = ffor validation $ \case PlanValid _ -> True; _ -> False
@@ -177,7 +177,7 @@ stagingControls validation = do
 
     commitEvt <-
       button
-        cfg{variant = constDyn VariantPrimary, disabled = commitDisabled, testId = Just "staging-commit"}
+        cfg{variant = VariantPrimary, disabled = commitDisabled, testId = Just "staging-commit"}
         $ text "Commit"
 
     return (cancelEvt, commitEvt)

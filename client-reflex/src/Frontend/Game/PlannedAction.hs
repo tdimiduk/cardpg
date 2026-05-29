@@ -63,7 +63,7 @@ plannedActionWidget
 plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
   e <-
     button
-      def{variant = constDyn VariantDestructive, attributes = constDyn (testId "revise-action")}
+      def{variant = VariantDestructive, attributes = testId "revise-action"}
       $ text "↺ Revise"
   _ <- requestGame $ Req.CancelPlan actorId <$ e
   case planned of

@@ -190,9 +190,6 @@ handCardsWidget actor stagingStack plannedAction = do
     return (selectEvent, toggleEvent)
 
 -- Additional atoms needed
-transitionOpacity :: Style
-transitionOpacity = S.css "transition-opacity" "transition-property" "opacity"
-
 -- Re-export styles from Frontend.Style as transformers
 cardHandWidth :: Style
 cardHandWidth = FS.cardHandWidth

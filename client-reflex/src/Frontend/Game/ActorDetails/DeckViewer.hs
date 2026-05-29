@@ -93,7 +93,7 @@ renderModal deckView = do
               -- Plan said "Title bar with 'Deck Viewer (N cards)'".
               text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"
 
-            button def{variant = constDyn VariantGhost, size = constDyn SizeSmall} $
+            button def{variant = VariantGhost, size = SizeSmall} $
               divS (S.w S.S8 . S.h S.S8) iconClose
 
         let settings = CardSettings CardFull

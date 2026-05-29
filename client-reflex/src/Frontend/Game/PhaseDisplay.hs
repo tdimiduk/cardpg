@@ -66,7 +66,7 @@ planningControls = do
   readyCountDyn <- askReadyCount
   totalCountDyn <- askTotalCount
   divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
-    btnClick <- button (def :: ButtonConfig t){size = constDyn SizeSmall} $ text "Start Resolution"
+    btnClick <- button (def :: ButtonConfig t){size = SizeSmall} $ text "Start Resolution"
     -- Ready Count
     divS (S.text S.Gray 4) $ do
       text "Ready: "
@@ -86,8 +86,8 @@ resolutionControls = do
     btnClick <-
       button
         (def :: ButtonConfig t)
-          { size = constDyn SizeSmall
-          , variant = constDyn VariantSecondary
+          { size = SizeSmall
+          , variant = VariantSecondary
           }
         $ text "End Round"
 

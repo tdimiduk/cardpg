@@ -46,28 +46,28 @@ data ButtonSize
 
 -- | Configuration for the button widget
 data ButtonConfig t = ButtonConfig
-  { variant :: Dynamic t ButtonVariant
-  , size :: Dynamic t ButtonSize
+  { variant :: ButtonVariant
+  , size :: ButtonSize
   , disabled :: Dynamic t Bool
   , fullWidth :: Bool
   , testId :: Maybe T.Text
   -- ^ Optional test ID for automation
   , extraStyle :: Style
   -- ^ Additional custom styles
-  , attributes :: Dynamic t (Map.Map T.Text T.Text)
+  , attributes :: Map.Map T.Text T.Text
   -- ^ Arbitrary HTML attributes
   }
 
 instance (Reflex t) => Default (ButtonConfig t) where
   def =
     ButtonConfig
-      { variant = constDyn VariantPrimary
-      , size = constDyn SizeMedium
+      { variant = VariantPrimary
+      , size = SizeMedium
       , disabled = constDyn False
       , fullWidth = False
       , testId = Nothing
       , extraStyle = id
-      , attributes = constDyn mempty
+      , attributes = mempty
       }
 
 sizeStyle :: ButtonSize -> Style
@@ -130,20 +130,20 @@ button
 button cfg label = do
   -- Width handling
   let widthStyle = if cfg.fullWidth then wFull else id
+      sz = sizeStyle cfg.size
+      var = variantStyle cfg.variant
 
   let dynClassText = do
-        sz <- ffor cfg.size sizeStyle
-        var <- ffor cfg.variant variantStyle
         dis <- cfg.disabled
         let interaction = if dis then disabledStyle else cursorPointer
-        let fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
+            fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
         pure $ classNames fullStyle
 
-  let attrs = ffor3 dynClassText cfg.disabled cfg.attributes $ \clsText dis attrs' ->
+  let attrs = ffor2 dynClassText cfg.disabled $ \clsText dis ->
         "class" =: clsText
           <> mkDisabledAttr dis
           <> maybe mempty testIdAttr cfg.testId
-          <> attrs'
+          <> cfg.attributes
 
   (e, _) <- elDynAttr' "button" attrs label
 
