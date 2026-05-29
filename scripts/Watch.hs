@@ -5,7 +5,8 @@ module Main where
 import System.Directory (getCurrentDirectory)
 import System.Environment (getArgs, setEnv)
 import System.FilePath ((</>))
-import System.Process (callProcess)
+import System.IO.Error (catchIOError)
+import System.Process (callProcess, readProcess)
 
 main :: IO ()
 main = do
@@ -13,7 +14,14 @@ main = do
   case args of
     ["client"] -> do
       putStrLn "Starting ghciwatch for client..."
-      runWatch Client
+      putStrLn "Ensuring gen-css is built..."
+      callProcess "cabal" ["build", "client-reflex:gen-css"]
+      binPath <-
+        catchIOError
+          (init <$> readProcess "cabal" ["list-bin", "client-reflex:gen-css"] "")
+          (\_ -> return "cabal run client-reflex:gen-css")
+      putStrLn $ "Using gen-css binary at: " ++ binPath
+      runWatch (Client binPath)
     ["server"] -> do
       putStrLn "Starting ghciwatch for server..."
       root <- getCurrentDirectory
@@ -22,7 +30,7 @@ main = do
       runWatch Server
     _ -> putStrLn "Usage: runghc Watch.hs {client|server}"
 
-data Mode = Client | Server
+data Mode = Client FilePath | Server
 
 runWatch :: Mode -> IO ()
 runWatch mode = callProcess "ghciwatch" (getGhciWatchArgs mode)
@@ -30,14 +38,14 @@ runWatch mode = callProcess "ghciwatch" (getGhciWatchArgs mode)
 getGhciWatchArgs :: Mode -> [String]
 getGhciWatchArgs mode =
   case mode of
-    Client ->
+    Client genCssBin ->
       mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" []
         ++ [ "--before-startup-shell"
-           , "cabal run client-reflex:gen-css"
+           , genCssBin
            , "--before-reload-shell"
-           , "cabal run client-reflex:gen-css"
+           , genCssBin
            , "--before-restart-shell"
-           , "cabal run client-reflex:gen-css"
+           , genCssBin
            ]
     Server -> mkArgs "server" "exe:server-devel" "Main.main" ["server/app"]
   where
