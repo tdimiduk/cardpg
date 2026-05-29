@@ -1,2 +1,3 @@
-# Placeholder - Tailwind output will be generated here
-# Run `npm run build:css` or `npm run watch:css` to generate
+# Static assets directory for cardpg-client-reflex
+# This directory contains manually curated files (base.css, index.html)
+# and generated/build assets (atomic.css, js/all.js).

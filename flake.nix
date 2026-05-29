@@ -250,7 +250,7 @@
               
 
 
-              # npm install if needed for client-reflex (Tailwind)
+              # npm install if needed for client-reflex (Browser Sync)
               if [ -f client-reflex/package.json ]; then
                 if [ ! -d client-reflex/node_modules ] || \
                    [ client-reflex/package.json -nt client-reflex/node_modules ]; then

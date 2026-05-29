@@ -1,10 +1,6 @@
 {
   "name": "cardpg-client-reflex-styles",
   "private": true,
-  "scripts": {
-    "proxy": "browser-sync start --proxy 'localhost:3003' --ws --files 'static/**/*' --serveStatic 'static' --port 3000 --no-open --no-ui"
-  },
-  "devDependencies": {
-    "browser-sync": "^3.0.4"
-  }
+  "scripts": {},
+  "devDependencies": {}
 }
