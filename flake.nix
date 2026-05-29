@@ -185,9 +185,13 @@
             ];
             hooks = {
               fourmolu.enable = true;
-              hlint.enable = false;
+              hlint.enable = true;
               cabal-fmt.enable = true;
               prettier.enable = true;
+              shellcheck.enable = true;
+              nixpkgs-fmt.enable = true;
+              deadnix.enable = true;
+              statix.enable = true;
             };
           };
 
