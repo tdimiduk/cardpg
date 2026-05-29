@@ -51,10 +51,10 @@ renderLabel (Just t) = do
   svgEl
     "text"
     ( "x" =: "50"
-        <> "y" =: "53" -- adjusted for baseline centering of Almendra font
+        <> "y" =: "49" -- adjusted for baseline centering of Almendra font
         <> "dominant-baseline" =: "central"
         <> "text-anchor" =: "middle"
-        <> "font-size" =: "44" -- larger for readability
+        <> "font-size" =: "54" -- larger for readability
         <> "font-family" =: "'Almendra', Georgia, serif"
         <> "font-weight" =: "700" -- bold weight for Almendra numbers
         <> "fill" =: "#ffffff" -- high-contrast white fill for all shapes
