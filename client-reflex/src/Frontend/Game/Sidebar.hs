@@ -52,12 +52,6 @@ avatar =
     . S.justifyCenter
     . S.shrink0
 
--- | Actor list container
-actorListContainer :: Style
-actorListContainer = S.flex1 . S.overflowYAuto . S.p S.S4 . S.spaceY2
-
--- I'll switch to flex col gap 2 in usage.
-
 actorListContainer' :: Style
 actorListContainer' = S.flex1 . S.overflowYAuto . S.p S.S4 . S.flexCol . S.gap S.S2
 

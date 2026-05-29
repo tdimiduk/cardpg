@@ -11,13 +11,9 @@ module Frontend.Card
   , StatsSettings (..)
   , renderCoreCard
   , renderCoreCardWith
-  , renderStats
   , renderStatsWith
-  , renderItemCard
   , renderItemCardWith
-  , renderNatureCard
   , renderNatureCardWith
-  , renderIdentified
   ) where
 
 import Data.Default (Default (..))
@@ -25,7 +21,6 @@ import Reflex.Dom.Core
 
 import Core.Card
   ( CoreCard (..)
-  , Identified (..)
   , ItemCard (..)
   , NatureCard (..)
   , Stats (..)
@@ -129,10 +124,6 @@ textboxClasses settings = case settings.displayMode of
 -- Stats Rendering
 --------------------------------------------------------------------------------
 
--- | Render stats with default settings (column layout, responsive icons)
-renderStats :: (DomBuilder t m) => Stats Int -> m ()
-renderStats = renderStatsWith def
-
 -- | Render stats with custom settings
 renderStatsWith :: (DomBuilder t m) => StatsSettings -> Stats Int -> m ()
 renderStatsWith settings s =
@@ -197,10 +188,6 @@ renderCoreCardWith settings c = case settings.displayMode of
 -- ItemCard Rendering
 --------------------------------------------------------------------------------
 
--- | Render an ItemCard with default settings
-renderItemCard :: (DomBuilder t m) => ItemCard -> m ()
-renderItemCard = renderItemCardWith def
-
 -- | Render an ItemCard with custom settings
 renderItemCardWith :: (DomBuilder t m) => CardSettings -> ItemCard -> m ()
 renderItemCardWith settings c = divS (cardClasses settings) $ do
@@ -214,10 +201,6 @@ renderItemCardWith settings c = divS (cardClasses settings) $ do
 -- NatureCard Rendering
 --------------------------------------------------------------------------------
 
--- | Render a NatureCard with default settings
-renderNatureCard :: (DomBuilder t m) => NatureCard -> m ()
-renderNatureCard = renderNatureCardWith def
-
 -- | Render a NatureCard with custom settings
 renderNatureCardWith :: (DomBuilder t m) => CardSettings -> NatureCard -> m ()
 renderNatureCardWith settings c = divS (cardClasses settings) $ do
@@ -226,11 +209,3 @@ renderNatureCardWith settings c = divS (cardClasses settings) $ do
   componentS "rules" (textboxClasses settings) $ do
     mapM_ (el "p" . text) c.passive
     mapM_ renderRichText c.flavor
-
---------------------------------------------------------------------------------
--- Identified Wrapper Rendering
---------------------------------------------------------------------------------
-
--- | Render an Identified wrapper by delegating to the inner render function
-renderIdentified :: (a -> m ()) -> Identified id a -> m ()
-renderIdentified renderInner (Identified _ content) = renderInner content

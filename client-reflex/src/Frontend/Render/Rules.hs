@@ -11,7 +11,6 @@ module Frontend.Render.Rules
   , renderDifficulty
   , renderStatValue
   , renderResourceType
-  , renderBlock
   ) where
 
 import Reflex.Dom.Core hiding (Space)
@@ -19,7 +18,7 @@ import Reflex.Dom.Core hiding (Space)
 import Core.Language (TextStyle (..))
 import Core.Layout hiding (renderLayoutItem)
 import Core.NonEmptyText (getRawText)
-import Core.RichText (Block (..), Inline (..), RichText (..), getInlines)
+import Core.RichText (Inline (..), RichText (..), getInlines)
 import Core.Rules (AttackDef (..), Rule (..), layoutAttackDef, layoutRule)
 import Core.Stats (Difficulty (..), StatValue (..))
 import Core.Util (tshow)
@@ -88,14 +87,3 @@ renderAttackDef = renderLayout . layoutAttackDef
 -- | Render any Rule variant using Layout
 renderRule :: (DomBuilder t m) => Rule -> m ()
 renderRule rule = renderLayout (layoutRule rule)
-
---------------------------------------------------------------------------------
--- Block Rendering
---------------------------------------------------------------------------------
-
--- | Render a Block element
-renderBlock :: (DomBuilder t m) => Block -> m ()
-renderBlock (Paragraph rt) = el "p" $ renderRichText rt
-renderBlock Rule = el "hr" $ pure ()
-renderBlock (Header rt) = el "h3" $ renderRichText rt
-renderBlock (BulletList items) = el "ul" $ mapM_ (el "li" . renderRichText) items

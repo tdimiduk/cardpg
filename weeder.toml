@@ -5,6 +5,7 @@
 roots = [
   # Main executables
   "^Main.main$",
+  "^ClientMain.main$",
   "server:exe:server",
   "server:exe:server-devel",
   "client-reflex:exe:client-reflex",
@@ -14,6 +15,17 @@ roots = [
   "core:test:core-test",
   "server:test:server-test",
   "client-reflex:test:client-reflex-test",
+
+  # Library Public APIs (protect core and api layers)
+  "^Core\\..*$",
+  "^Api\\..*$",
+
+  # Development and Testing helper patterns
+  "^Frontend\\.Devel\\..*$",
+  "\\.prop_[a-zA-Z0-9_]+$",
+
+  # Style and design system vocabularies
+  "^Frontend\\.Style\\..*$"
 ]
 
 type-class-roots = true

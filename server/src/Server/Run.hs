@@ -13,7 +13,7 @@ import Server.DB (initDB, initInMemoryDB, withGargoyleDB)
 import Server.Loader (loadLibrary)
 import Server.ReflexConnection (application)
 import Server.Session (initGame)
-import Server.Types (ServerState (..), StorageBackend, newServerState)
+import Server.Types (ServerState (..), newServerState)
 
 -- | Run the server. This function blocks indefinitely.
 runServer :: IO ()

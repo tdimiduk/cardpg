@@ -14,7 +14,6 @@ module Server.Types
   , Phase (..)
   , ConnectedSocket (..)
   , newServerState
-  , numClients
   , clientExists
   , addClient
   , removeClient
@@ -123,9 +122,6 @@ newServerState :: StorageBackend -> GameState -> StdGen -> Config -> ServerState
 newServerState backend gs = ServerState Map.empty (CardLibrary [] [] [] [] []) gs backend
 
 -- | Helpers for managing server state
-numClients :: ServerState -> Int
-numClients = Map.size . (.clients)
-
 clientExists :: UUID -> ServerState -> Bool
 clientExists cid state = Map.member cid (state.clients)
 
