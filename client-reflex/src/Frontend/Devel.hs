@@ -18,7 +18,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
 import Reflex.Dom.Core
 import System.Environment (lookupEnv)
-import WaiAppStatic.Types (MaxAge (NoMaxAge), ssIndices, ssMaxAge, unsafeToPiece)
+import WaiAppStatic.Types (MaxAge (NoMaxAge), ssMaxAge)
 
 import Api.Reflex ()
 import Frontend.App (appWidget, headWidget)

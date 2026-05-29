@@ -227,10 +227,10 @@ lastChild style rest =
    in map lastChildProp props ++ rest
 
 lastChildProp :: Prop -> Prop
-lastChildProp p =
-  p
-    { propClassName = "last\\:" <> p.propClassName
-    , propSelector = "." <> escapeCss ("last:" <> p.propClassName) <> ":last-child"
+lastChildProp prop =
+  prop
+    { propClassName = "last\\:" <> prop.propClassName
+    , propSelector = "." <> escapeCss ("last:" <> prop.propClassName) <> ":last-child"
     }
 
 --------------------------------------------------------------------------------

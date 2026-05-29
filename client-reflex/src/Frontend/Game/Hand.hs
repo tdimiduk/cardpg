@@ -156,8 +156,6 @@ handCardsWidget actor stagingStack plannedAction = do
             <*> stagingStack
             <*> plannedAction
 
-    let handSizeDyn = length . (.coreState.hand) <$> actor
-
     cardClicks <- divS (S.flex . S.itemsEnd . transitionOpacity . S.duration200) $ do
       simpleList visibleHand $ \cardDyn -> do
         let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
@@ -214,7 +212,7 @@ cardHandWidth = FS.cardHandWidth
 isCardVisible :: Maybe ActionStack -> Maybe PlannedAction -> CardInstance CoreCard -> Bool
 isCardVisible stagingStack plannedAction c =
   let hiddenInPlan = case plannedAction of
-        Just p -> c.id `elem` map (.id) (plannedActionCards p)
+        Just plan -> c.id `elem` map (.id) (plannedActionCards plan)
         Nothing -> False
       hiddenInStaging = case stagingStack of
         Just s -> Just c.id == Just s.actionCard.id

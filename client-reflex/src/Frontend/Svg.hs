@@ -15,8 +15,6 @@ import Data.Text (Text)
 import Reflex.Dom.Core
 
 import Frontend.Style.Common (Style, classNames)
-import Frontend.Style.Common qualified as CommonStyle
-import Frontend.Style.DSL qualified as S
 
 type ElAttrs = Map.Map Text Text
 

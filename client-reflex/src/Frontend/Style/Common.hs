@@ -27,15 +27,13 @@ module Frontend.Style.Common
   , resourceIcon
   , resourceTextBase
   , resourceTextPrint
-  , shadow
-  , backdropBlur
   ) where
 
 import Data.Map (Map)
 import Data.Text (Text)
 import Reflex.Dom.Core
 
-import Frontend.Style.Core (Prop (..), classNames, cls)
+import Frontend.Style.Core (Prop (..), classNames)
 import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
 
@@ -100,11 +98,3 @@ resourceTextBase = fontBold . S.text S.Gray 2
 -- | Resource text for print (black/dark gray)
 resourceTextPrint :: Style
 resourceTextPrint = media "print" textBlack
-
--- | Helper for dynamic shadows (takes size suffix like "md", "lg", "xl")
-shadow :: Text -> Style
-shadow size = css ("shadow-" <> size) "box-shadow" ""
-
--- | Helper for dynamic backdrop blur
-backdropBlur :: Text -> Style
-backdropBlur size = css ("backdrop-blur-" <> size) "backdrop-filter" ("blur(" <> size <> ")")
