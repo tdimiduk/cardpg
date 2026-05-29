@@ -70,12 +70,10 @@ cardBase =
 -- Shared visuals used by both full cards and spines/strips
 cardScreenVisuals :: Style
 cardScreenVisuals =
-  (S.bg S.Gray 11)
+  S.cls "double-frame-gold"
+    . (S.bg S.Gray 12)
     . (S.text S.Gray 2)
-    . border2
-    . (S.border S.Gray 8)
     . S.roundedS (S.Mm 3)
-    . shadowXl
 
 cardScreen :: Style
 cardScreen = cardHandWidth . cardScreenVisuals . S.p S.S2
@@ -105,9 +103,7 @@ cardRow =
     . S.itemsCenter
     . S.gap S.S1
     . S.p S.S1
-    . (S.bg S.Gray 11)
-    . S.border1
-    . (S.border S.Gray 9)
+    . S.cls "obsidian-panel"
     . rounded
 
 standardCardSize :: Style
@@ -134,7 +130,13 @@ artBase :: Style
 artBase = id
 
 artScreen :: Style
-artScreen = grow . hFull . S.roundedS (S.Mm 2) . (S.bg S.Gray 10) . S.border1 . (S.border S.Gray 9)
+artScreen =
+  grow
+    . hFull
+    . S.roundedS (S.Mm 2)
+    . S.css "bg-mystic-art" "background" "radial-gradient(circle, #252220 0%, #12100f 100%)"
+    . S.border1
+    . (S.border S.Gray 9)
 
 artPrint :: Style
 artPrint = S.h (S.Mm 33) . S.border1 . borderBlack . grayscale . roundedNone . bgTransparent
@@ -144,12 +146,14 @@ artPrint = S.h (S.Mm 33) . S.border1 . borderBlack . grayscale . roundedNone . b
 nameBase :: Style
 nameBase =
   S.fontBold
+    . S.cls "fantasy-font"
     . S.textSm
     . S.leadingTight
+    . S.uppercase
     . S.mb S.S1
 
 nameScreen :: Style
-nameScreen = (S.text S.Gray 1)
+nameScreen = S.css "text-gold-bright" "color" "var(--color-gold-bright)"
 
 namePrint :: Style
 namePrint = textBlack
@@ -167,6 +171,7 @@ costBase =
     . itemsCenter
     . justifyCenter
     . fontBold
+    . S.cls "fantasy-font"
 
 costScreen :: Style
 costScreen = (S.text S.Gray 2)
@@ -188,7 +193,12 @@ textboxBase =
 -- They require custom CSS rules which we'll handle separately or inline.
 
 textboxScreen :: Style
-textboxScreen = (S.bg S.Gray 10) . (S.border S.Gray 8) . S.roundedS (S.Mm 2) . (S.text S.Gray 3)
+textboxScreen =
+  S.css "bg-obsidian-textbox" "background-color" "rgba(18, 16, 15, 0.85)"
+    . S.border1
+    . (S.border S.Gray 9)
+    . S.roundedS (S.Mm 2)
+    . (S.text S.Gray 2)
 
 textboxPrint :: Style
 textboxPrint = roundedNone . bgTransparent . borderBlack

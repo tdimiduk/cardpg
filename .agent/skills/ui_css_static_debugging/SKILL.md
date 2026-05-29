@@ -12,11 +12,11 @@ This skill outlines how to use the project's static generation infrastructure to
 - **Developing new UI components**: Quickly see changes without navigating the game state in a browser.
 - **Styling with the Frontend DSL**: Verify that your @[haskell_frontend_styling_dsl] calls are generating the expected classes and rules.
 - **Debugging Visual Regressions**: Compare current renderings against "known good" snapshots.
-- **Verifying Complex States**: Use `MockData.hs` to force the UI into specific edge cases (e.g., long names, empty hands, many consequences).
+- **Verifying Complex States**: Use saved game YAML files (e.g., `data/saved_games/ui_preview.yaml`) to force the UI into specific edge cases (e.g., long names, empty hands, many consequences).
 
 ## Overview
 
-The `cardpg-static` tool (defined in `client-reflex/app/StaticMain.hs`) generates static snapshots of the game. It uses mock data from `Frontend.MockData.hs` to populate the UI, making it the perfect way to:
+The `cardpg-static` tool (defined in `client-reflex/app/StaticMain.hs`) generates static snapshots of the game. It uses saved games (like `data/saved_games/ui_preview.yaml`) to populate the UI, making it the perfect way to:
 
 1.  Verify that styling changes look correct without launching a browser.
 2.  Iterate on the styling DSL with a fast feedback loop.
@@ -26,13 +26,13 @@ Since `gen-css` runs before each ghciwatch reload (and you can run it manually),
 
 ## Workflow
 
-### 1. Update Mock Data
+### 1. Update Saved Game State
 
-Edit `client-reflex/src/Frontend/MockData.hs` to include the state you want to visualize.
+Edit `data/saved_games/ui_preview.yaml` (or create a new saved game YAML file) to include the state you want to visualize.
 
-- Add a specific `LogEntry` if you are styling logs.
-- Add a specific `CoreCard` or `CardInstance` if you are styling cards.
-- Add a new `Phase` or `ActorState` configuration if testing game flow.
+- Add a specific `LogEntry` in the `history` list if you are styling logs.
+- Add a specific `CoreCard` to an actor's `deck`, `hand`, or `discard` list if you are styling cards.
+- Adjust an actor's `phase` or status attributes if testing game flow.
 
 ### 2. Regenerate CSS (if needed)
 
@@ -49,11 +49,11 @@ cabal run gen-css
 Run the `cardpg-static` executable. The `game` mode renders the full game board:
 
 ```bash
-cabal run cardpg-static -- game data/scenarios/starter.yaml
+cabal run cardpg-static -- game data/saved_games/ui_preview.yaml
 ```
 
-- This generates views for all actors in the scenario file.
-- It **also** explicitly generates views based on `MockData.hs` (e.g., `game_MockHero_planning.html`).
+- This generates views for all actors in the loaded saved game.
+- It automatically detects whether a file is a standard Scenario or a Saved Game (`GameState`). If a Saved Game like `ui_preview.yaml` is loaded, it generates snapshots for the player's planned, staging, and modal states (such as `game_MockHero_staging.html`).
 
 Other modes:
 
@@ -69,15 +69,15 @@ cabal run cardpg-static -- deck data/cards/pc/berserker.yaml
 
 Check the `output/` directory (created in the project root).
 
-- **PNGs**: `output/game_MockHero_planning.png` — Open to see what the UI looks like.
-- **HTML**: `output/game_MockHero_planning.html` — Inspect structure in a browser's dev tools.
+- **PNGs**: `output/game_Vallhach_planning.png` — Open to see what the UI looks like.
+- **HTML**: `output/game_Vallhach_planning.html` — Inspect structure in a browser's dev tools.
 - **PDFs**: Generated for deck mode (for print-ready card sheets).
 
 ### 5. Iterate
 
-1. Make a change to `MockData.hs`, your widget code, or DSL styles.
+1. Make a change to your saved game YAML file, your widget code, or DSL styles.
 2. Run `cabal run gen-css` (or let ghciwatch do it).
-3. Run `cabal run cardpg-static -- game data/scenarios/starter.yaml`.
+3. Run `cabal run cardpg-static -- game data/saved_games/ui_preview.yaml`.
 4. Check the PNG.
 
 ## Connection to CSS Generation
@@ -91,14 +91,13 @@ If your component is missing or unstyled:
 
 ## Troubleshooting
 
-**Problem**: "I don't see my specific mock state in the output."
+**Problem**: "I don't see my specific saved game preview state in the output."
 
-- **Check**: `StaticMain.hs` processes `Mock.mockActorId` in both `Planning` and `Resolution` phases:
+- **Check**: `StaticMain.hs` dynamically searches for the player actor (e.g., `"vallhach"`) and dynamically stages/renders components (like `Vallhach_staging` or `Vallhach_deckview`):
   ```haskell
-  gen "MockHero_planning" (Just Mock.mockActorId) Planning
-  gen "MockHero_resolution" (Just Mock.mockActorId) Resolution
+  genWith (mockGameWidgetWithStaging gameState) (playerActorName <> "_staging")
   ```
-- **Fix**: If you added a new `Phase`, modify `StaticMain.hs` to generate a snapshot for it.
+- **Fix**: Ensure that the name of the player actor or cards in `ui_preview.yaml` matches the names evaluated in `StaticMain.hs`.
 
 **Problem**: "My styles look wrong in the snapshot."
 
@@ -110,13 +109,13 @@ If your component is missing or unstyled:
 
 If you notice a visual regression, you can use the static generator to isolate the cause:
 
-1. **Generate current snapshots**: Run `cabal run cardpg-static -- game data/scenarios/starter.yaml`.
+1. **Generate current snapshots**: Run `cabal run cardpg-static -- game data/saved_games/ui_preview.yaml`.
 2. **Save current snapshots**: `cp -r output/ regression_current/`.
 3. **Switch to a "known good" version**: `git checkout <commit_hash>`.
-4. **Generate "known good" snapshots**: Run `cabal run cardpg-static -- game data/scenarios/starter.yaml`.
+4. **Generate "known good" snapshots**: Run `cabal run cardpg-static -- game data/saved_games/ui_preview.yaml`.
 5. **Compare**:
    - Compare the PNGs visually.
-   - Compare the HTML files: `diff output/game_MockHero_planning.html regression_current/game_MockHero_planning.html`.
+   - Compare the HTML files: `diff output/game_Vallhach_planning.html regression_current/game_Vallhach_planning.html`.
    - Compare the CSS: `diff client-reflex/static/atomic.css regression_current/atomic.css`.
 
 This workflow is much faster than trying to reproduce regressions in a live browser session.

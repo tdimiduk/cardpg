@@ -202,3 +202,7 @@ determineItemState item =
   case item.tags of
     Just ts | "Equipped" `elem` toList ts -> Equipped SlotUnspecified
     _ -> InCollection
+
+-- | Load a full GameState from a saved game YAML file
+loadSavedGame :: FilePath -> IO GameState
+loadSavedGame path = decodeFileThrow path

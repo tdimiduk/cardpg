@@ -14,6 +14,7 @@ module Frontend.Style.DSL
     Style
   , css
   , css'
+  , cls
 
     -- * Modifiers
   , hover

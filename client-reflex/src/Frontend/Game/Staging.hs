@@ -64,13 +64,10 @@ stagingWidget actorId actionStackDyn validation = do
         . S.itemsCenter
         . S.gap S.S3
         . S.css "min-w-[320px]" "min-width" "320px"
-        . (S.bgAlpha S.Gray 12 90)
+        . S.cls "altar-glowing-gold"
         . S.backdropBlurMd
-        . S.border1
-        . (S.border S.Gray 9)
         . S.rounded3Xl
         . S.p S.S4
-        . S.shadow2Xl
     )
     $ do
       -- Header / Status
@@ -110,12 +107,25 @@ stagingStatusHeader
   -> m ()
 stagingStatusHeader validation = do
   divS (S.flexCol . S.itemsCenter . S.gap S.S2) $ do
-    elAttr "div" (testId "staging-status") $ do
-      text "Preparing Action"
-      dyn_ $ ffor validation $ \case
-        PlanIncomplete cost provided -> text $ " " <> tshow provided <> "/" <> tshow cost
-        PlanValid _ -> text " ✅"
-        _ -> blank
+    elAttr
+      "div"
+      ( testId "staging-status"
+          <> "class"
+            =: classNames
+              ( S.cls "fantasy-font"
+                  . S.textSm
+                  . S.fontBold
+                  . S.css "text-gold-light" "color" "var(--color-gold-bright)"
+                  . S.uppercase
+                  . S.trackingWider
+              )
+      )
+      $ do
+        text "Preparing Action"
+        dyn_ $ ffor validation $ \case
+          PlanIncomplete cost provided -> text $ " " <> tshow provided <> "/" <> tshow cost
+          PlanValid _ -> text " ✅"
+          _ -> blank
 
 stagedCardsRow
   :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)

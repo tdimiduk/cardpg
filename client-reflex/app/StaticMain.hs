@@ -32,9 +32,12 @@ import System.Process (callProcess)
 
 import Api.Reflex ()
 import Api.Types (Phase (..))
-import Core.Card (ActorDefinition (..), CardInstance, CoreCard)
-import Core.Primitives (ActorId, CardInstanceId (..), Identified (..))
+import Control.Applicative ((<|>))
+import Core.Card (ActorDefinition (..), CardInstance, CoreCard (..))
+import Core.NonEmptyText (getRawText)
+import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..), CoreCardState (..))
+import Data.Maybe (catMaybes, listToMaybe)
 import Data.Set qualified as Set
 import Frontend.App (headWidget, uiWidget)
 import Frontend.Card
@@ -47,12 +50,11 @@ import Frontend.Card
 import Frontend.Catalog (catalogWidget)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
 import Frontend.Game.Planning (StagingState (..))
-import Frontend.MockData qualified as Mock
 
 import Frontend.Style.Common
 import Frontend.Style.Layout
 import Server.Game (GameState (..))
-import Server.Scenario (loadScenario)
+import Server.Scenario (loadSavedGame, loadScenario)
 
 -- | CLI Options
 data Mode
@@ -151,6 +153,7 @@ takeScreenshot srcHtml outPng width height = do
         , "--hide-scrollbars"
         , "--window-size=" <> show width <> "," <> show height
         , "--screenshot=" <> outPng
+        , "--log-level=3"
         , "file://" <> srcHtml
         ]
 
@@ -167,6 +170,7 @@ printPdf srcHtml outPdf = do
         , "--disable-gpu"
         , "--print-to-pdf=" <> outPdf
         , "--no-pdf-header-footer"
+        , "--log-level=3"
         , "file://" <> srcHtml
         ]
   callProcess cmd args
@@ -215,7 +219,22 @@ generateDeck opts path skipSnapshot = do
 generateGame :: Options -> FilePath -> Bool -> IO ()
 generateGame opts path skipSnapshot = do
   unless opts.quiet $ putStrLn $ "Generating game view for " <> path
-  (gameState, _) <- loadScenario path Nothing
+  -- Try to load as a saved game (GameState) first, otherwise fall back to loadScenario
+  gameState <-
+    (loadSavedGame path)
+      `catch` ( \(_ :: SomeException) -> do
+                  (gs, _) <- loadScenario path Nothing
+                  return gs
+              )
+
+  -- Find player actor dynamically
+  let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      mFirstActor = List.uncons (Map.toList gameState.actors)
+      playerActorName = case mVallhach of
+        Just (_, a) -> filter isAlphaNum (T.unpack a.name)
+        Nothing -> case mFirstActor of
+          Just ((_, a), _) -> filter isAlphaNum (T.unpack a.name)
+          Nothing -> "player"
 
   -- Helper to generate snapshot for a specific state
   let gen nameSuffix mActorId phase = do
@@ -251,14 +270,11 @@ generateGame opts path skipSnapshot = do
           takeScreenshot absHtml outPng 1920 1080
           unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
 
-  -- 3. Explicitly generate Mock Game state as well (to match GenCss coverage)
-  gen "MockHero_planning" (Just Mock.mockActorId) Planning
-  gen "MockHero_resolution" (Just Mock.mockActorId) Resolution
-
-  -- Extra states for complete interactive UI styling visibility
-  genWith (mockGameWidgetWithStaging gameState) "MockHero_staging"
-  genWith (mockGameWidgetWithDeckView gameState) "MockHero_deckview"
-  genWith (mockGameWidgetWithDiscardView gameState) "MockHero_discardview"
+  -- Extra states for complete interactive UI styling visibility, generated for the main player character dynamically
+  unless (null playerActorName) $ do
+    genWith (mockGameWidgetWithStaging gameState) (playerActorName <> "_staging")
+    genWith (mockGameWidgetWithDeckView gameState) (playerActorName <> "_deckview")
+    genWith (mockGameWidgetWithDiscardView gameState) (playerActorName <> "_discardview")
 
   -- 1. No Actor Selected (both phases)
   gen "none_planning" Nothing Planning
@@ -289,19 +305,18 @@ mockGameWidget
   -> Phase
   -> m ()
 mockGameWidget mStaging initialActorId gameState phaseSetting = do
-  -- Use mock actors with staged actions if available, otherwise fall back to gameState
   let baseActors = gameState.actors
-      -- Merge mock actor data to exercise staging styles
-      actorsWithStaging = Map.union Mock.mockActorsMap baseActors
-      -- Use whichever map has data
-      actorsMap = if Map.null baseActors then actorsWithStaging else baseActors
-  actorsDyn <- holdDyn actorsMap never
-  let logsDyn = constDyn Mock.mockLogs
+  actorsDyn <- holdDyn baseActors never
+  let logsDyn = constDyn gameState.history
   rec (_, _) <-
         runRequesterT
           (uiWidget mStaging initialActorId actorsDyn logsDyn (constDyn phaseSetting) (constDyn 1) (constDyn 1))
           never
   return ()
+
+-- | Helper to get a card's name bypassing NoFieldSelectors
+cardName :: CardInstance CoreCard -> T.Text
+cardName (Identified _ (CoreCard nameNE _ _ _ _ _ _)) = getRawText nameNE
 
 -- | Specialized mock widget that natively displays the active staging/planning state
 mockGameWidgetWithStaging
@@ -316,18 +331,29 @@ mockGameWidgetWithStaging
   => GameState
   -> m ()
 mockGameWidgetWithStaging gameState = do
-  -- Define the exact mock staging state matching MockData.hs
-  let mockStagingState =
-        StagingState
-          { stagedActionId = Just (CardInstanceId (Mock.mockUUID 10)) -- "Strike"
-          , stagedResourceIds =
-              Set.fromList
-                [ CardInstanceId (Mock.mockUUID 11) -- "Focus"
-                , CardInstanceId (Mock.mockUUID 12) -- "Momentum"
-                ]
-          }
-  -- Render standard uiWidget with mockActorId selected and initial staging injected
-  mockGameWidget (Just mockStagingState) (Just Mock.mockActorId) gameState Planning
+  let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      mFirstActor = List.uncons (Map.toList gameState.actors)
+      (actorId, actorState) = case mVallhach of
+        Just (aid, a) -> (Just aid, a)
+        Nothing -> case mFirstActor of
+          Just ((aid, a), _) -> (Just aid, a)
+          Nothing -> (Nothing, error "No actors found in game state for staging preview")
+
+  case actorId of
+    Nothing -> blank
+    Just aid -> do
+      let hand = actorState.coreState.hand
+          mActionId =
+            fmap (.id) (List.find (\c -> cardName c == "Sunburn") hand)
+              <|> fmap (.id) (listToMaybe hand)
+          mResource1 = fmap (.id) (List.find (\c -> cardName c == "Lightning Dodge") hand)
+          mResource2 = fmap (.id) (List.find (\c -> cardName c == "Blinding Sun") hand)
+          mockStagingState =
+            StagingState
+              { stagedActionId = mActionId
+              , stagedResourceIds = Set.fromList (catMaybes [mResource1, mResource2])
+              }
+      mockGameWidget (Just mockStagingState) (Just aid) gameState Planning
 
 -- | Specialized mock widget that overlays the Deck Viewer modal (Draw Pile)
 mockGameWidgetWithDeckView
@@ -342,23 +368,26 @@ mockGameWidgetWithDeckView
   => GameState
   -> m ()
 mockGameWidgetWithDeckView gameState = do
-  -- Render standard uiWidget with Vallhach selected
   let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      mFirstActor = List.uncons (Map.toList gameState.actors)
       (actorId, actorState) = case mVallhach of
         Just (aid, a) -> (Just aid, a)
-        Nothing -> (Just Mock.mockActorId, Mock.mockActorState)
+        Nothing -> case mFirstActor of
+          Just ((aid, a), _) -> (Just aid, a)
+          Nothing -> (Nothing, error "No actors found in game state for deck view preview")
 
   mockGameWidget Nothing actorId gameState Planning
 
-  -- Overlay open Deck Viewer modal with all Vallhach's cards (deck + hand = approx 24 cards) for realistic styling verification
-  pb <- getPostBuild
-  let coreState = actorState.coreState :: CoreCardState
-      realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
-      realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
-      viewCards = realDeckCards ++ realHandCards
-      viewData = DeckViewData "Draw Pile" viewCards
-  deckViewerModal (Just viewData <$ pb)
-  return ()
+  case actorState of
+    _ -> do
+      pb <- getPostBuild
+      let coreState = actorState.coreState :: CoreCardState
+          realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
+          realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+          viewCards = realDeckCards ++ realHandCards
+          viewData = DeckViewData "Draw Pile" viewCards
+      deckViewerModal (Just viewData <$ pb)
+      return ()
 
 -- | Specialized mock widget that overlays the Discard Pile modal
 mockGameWidgetWithDiscardView
@@ -373,23 +402,26 @@ mockGameWidgetWithDiscardView
   => GameState
   -> m ()
 mockGameWidgetWithDiscardView gameState = do
-  -- Render standard uiWidget with Vallhach selected
   let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      mFirstActor = List.uncons (Map.toList gameState.actors)
       (actorId, actorState) = case mVallhach of
         Just (aid, a) -> (Just aid, a)
-        Nothing -> (Just Mock.mockActorId, Mock.mockActorState)
+        Nothing -> case mFirstActor of
+          Just ((aid, a), _) -> (Just aid, a)
+          Nothing -> (Nothing, error "No actors found in game state for discard view preview")
 
   mockGameWidget Nothing actorId gameState Planning
 
-  -- Overlay open Discard Pile modal with all Vallhach's cards (deck + hand = approx 24 cards) for realistic styling verification
-  pb <- getPostBuild
-  let coreState = actorState.coreState :: CoreCardState
-      realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
-      realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
-      viewCards = realDeckCards ++ realHandCards
-      viewData = DeckViewData "Discard" viewCards
-  deckViewerModal (Just viewData <$ pb)
-  return ()
+  case actorState of
+    _ -> do
+      pb <- getPostBuild
+      let coreState = actorState.coreState :: CoreCardState
+          realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
+          realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+          viewCards = realDeckCards ++ realHandCards
+          viewData = DeckViewData "Discard" viewCards
+      deckViewerModal (Just viewData <$ pb)
+      return ()
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do

@@ -171,7 +171,7 @@ handCardsWidget actor stagingStack plannedAction = do
 
                   -- Interaction highlights
                   extraStyle
-                    | inStaging = if sel then S.ring2 . (S.ring S.Indigo 5) . S.ringOffset2 else id
+                    | inStaging = if sel then S.cls "staged-gold-ring" else id
                     | otherwise = id
                  in
                   -- Build final class string from composed styles

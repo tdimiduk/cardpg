@@ -22,7 +22,7 @@ import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: Style
-sidebarContainer = S.w (S.Rem 18) . S.canvas . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20 . S.shadowXl
+sidebarContainer = S.w (S.Rem 18) . S.cls "obsidian-panel" . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20
 
 -- | Sidebar header section
 sidebarHeader :: Style
@@ -30,7 +30,13 @@ sidebarHeader = S.p S.S6 . S.borderB . (S.border S.Gray 10)
 
 -- | Active actor header base
 activeActorHeader :: Style
-activeActorHeader = S.p S.S4 . S.borderB . (S.border S.Gray 10) . (S.bg S.Gray 11) . S.flex . S.itemsCenter
+activeActorHeader =
+  S.p S.S4
+    . S.borderB
+    . (S.border S.Gray 10)
+    . S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
+    . S.flex
+    . S.itemsCenter
 
 -- | Placeholder avatar styling
 avatar :: Style
@@ -72,7 +78,14 @@ sidebarWidget selectionDyn actorsMapDyn = do
   divS (S.flexCol . sidebarContainer) $ do
     -- Sidebar Header
     divS sidebarHeader $ do
-      elS "h1" (S.textXl . S.fontBold . (S.text S.Gray 1)) $ text "CardPG"
+      elS
+        "h1"
+        ( S.textXl
+            . S.fontBold
+            . S.cls "fantasy-font"
+            . S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+        )
+        $ text "CardPG"
 
     -- Dynamic Content: List or Details
     dyContent <- dyn $ ffor selectionDyn $ \case

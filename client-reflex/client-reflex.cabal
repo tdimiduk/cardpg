@@ -84,7 +84,6 @@ library
     Frontend.Game.SidebarRight
     Frontend.Game.Staging
     Frontend.Icons
-    Frontend.MockData
     Frontend.Render.Common
     Frontend.Render.Rules
     Frontend.Style

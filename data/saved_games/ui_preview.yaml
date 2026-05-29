@@ -1,0 +1,717 @@
+actors:
+  1a6a3f9e-bff7-4283-99a9-77d9390a57d9:
+    actorType: PC
+    coreState:
+      deck:
+        - content:
+            name: Sunny Day
+            rules:
+              - All sleeping (unconscious/stunned) characters are woken up
+            stats:
+              blue: 3
+              red: 3
+              yellow: 4
+          id: 9e11aaee-3385-47b5-a16c-6b25157ea234
+        - content:
+            cost: 1
+            name: Heat Up
+            rules:
+              - Add +1 to all attacks for the rest of this battle
+            stats:
+              blue: 2
+              red: 3
+              yellow: 2
+          id: 9941a077-ed0b-45e3-83f4-46327199bced
+        - content:
+            name: Lightning Speed
+            stats:
+              blue: 2
+              red: 2
+              yellow: 5
+          id: 1a7f9849-502a-4a4a-bcbb-094b222b821a
+        - content:
+            attack: "{Red}: Str = {Blue} + 4"
+            cost: 3
+            name: Lightning Bolt
+            stats:
+              blue: 3
+              red: 3
+              yellow: 3
+          id: 285b1c27-df32-4b7b-acf0-7279b8c3b9ac
+        - content:
+            name: Overheated
+            stats:
+              blue: 2
+              red: 5
+              yellow: 2
+          id: d820e010-d025-4209-a1e5-2022432026a0
+        - content:
+            attack: "{Red}: Str = {Blue} + 2"
+            cost: 1
+            name: Light Blast
+            stats:
+              blue: 3
+              red: 3
+              yellow: 3
+          id: 9736ce48-8d3a-49a9-9527-1ac29bbfe344
+        - content:
+            cost: 3
+            name: Haste
+            rules:
+              - "Action: put into play"
+              - Up to 4 target creatures draw an extra card per turn for 4 turns
+            stats:
+              blue: 2
+              red: 1
+              yellow: 5
+          id: 7ef34e0d-298b-4599-bb9c-4fd8c6b1efec
+        - content:
+            attack: "{Red}: Str = {Blue} + 5"
+            cost: 4
+            name: Fire Blast
+            stats:
+              blue: 4
+              red: 3
+              yellow: 2
+          id: 09d67969-6474-42b6-b31d-d35bcce25465
+        - content:
+            attack:
+              "{Red}: Str = {Blue} → Attacks each round removing one card from
+              stack each turn until empty"
+            cost: 3
+            name: Magma Missile
+            stats:
+              blue: 4
+              red: 2
+              yellow: 1
+          id: f30fb7d4-9498-4e1b-bb7f-bddf74c5f9ff
+        - content:
+            attack: "{Red}: Str = {Blue} + 2"
+            cost: 2
+            name: Melt Weapon
+            rules:
+              - Heat up a weapon so much it melts, hurts the one holding it
+            stats:
+              blue: 3
+              red: 3
+              yellow: 2
+          id: 25d05197-ab08-4444-b8f2-463468d614d6
+        - content:
+            attack: "{Red}: Str = {Blue} + 2"
+            cost: 5
+            name: Fireball
+            rules:
+              - Affects all monsters
+            stats:
+              blue: 4
+              red: 3
+              yellow: 1
+          id: 6be341a8-7e41-4681-bc8c-8920c4347b79
+        - content:
+            name: Lightning Dodge
+            rules:
+              - Use {yellow} + {red} for {Red} defense
+            stats:
+              blue: 2
+              red: 2
+              yellow: 5
+          id: 3852626b-deb9-4208-9c3a-95d911e14eb3
+        - content:
+            attack:
+              "{Red}: Str = {Blue} - 1 → Atacks everyone in area first round,
+              then for 5 rounds anyone in area takes same attack"
+            cost: 5
+            name: The Floor is Lava
+            rules:
+              - Makes an area of ground that is lava
+            stats:
+              blue: 3
+              red: 3
+              yellow: 1
+          id: d030dee3-b380-42d5-8379-1ec18d8b8545
+        - content:
+            attack: "{Red}: Str = {Blue} + 4"
+            cost: 2
+            name: Fire Bolt
+            stats:
+              blue: 4
+              red: 4
+              yellow: 2
+          id: 5f4ee6f8-f2f7-41a5-9c25-9cca15d4b3c5
+        - content:
+            name: Elvish Footsteps
+            rules:
+              - Super good at sneaking in a forest
+            stats:
+              blue: 5
+              red: 1
+              yellow: 2
+          id: 6fdee43c-71fb-455a-b40c-1484fe535e59
+        - content:
+            name: Magical Abilities
+            stats:
+              blue: 6
+              red: 1
+              yellow: 1
+          id: ad0a2d78-0360-4598-ab2d-527a119c324e
+        - content:
+            attack: "{Red}: Str = {Blue} + 6"
+            cost: 2
+            name: Banish Darkness
+            rules:
+              - Only affects dark-related monsters
+            stats:
+              blue: 3
+              red: 4
+              yellow: 3
+          id: f0a44a87-e9ca-40c1-ac15-73c0a6e98e31
+        - content:
+            name: Light On Fire
+            rules:
+              - Ignites nonliving burnable things on fire
+            stats:
+              blue: 4
+              red: 4
+              yellow: 2
+          id: 2ca2f432-07ff-4063-abf9-8cbeb9c80305
+      discard: []
+      hand:
+        - content:
+            attack: "{Red}: Str = {Blue}"
+            cost: 2
+            name: Sunburn
+            rules:
+              - Debuffs monster
+            stats:
+              blue: 4
+              red: 4
+              yellow: 1
+          id: 73cb8902-d14d-467d-8950-48cf7e2c1368
+        - content:
+            name: Blinding Sun
+            rules:
+              - The next 2 attacks against you, ignore the resource number on the top
+                card
+            stats:
+              blue: 4
+              red: 3
+              yellow: 3
+          id: 00131e4b-d6fb-473e-bca6-d8f3d7ea1b0c
+        - content:
+            name: Sunlight
+            rules:
+              - Causes the character to glow
+            stats:
+              blue: 4
+              red: 2
+              yellow: 4
+          id: f18e582c-92cc-4d09-bcc3-639611c8cab4
+        - content:
+            attack: "{Red}: Str = {Blue} - 3"
+            cost: 6
+            name: Thunderstorm
+            rules:
+              - Summons a cloud that zaps monsters randomly for 3 rounds
+            stats:
+              blue: 4
+              red: 2
+              yellow: 3
+          id: f00dc356-3e02-486a-b135-d5232fae64e7
+        - content:
+            name: Supercharged
+            rules:
+              - "Action: Put in play. Attack {Red} 10 anyone who attacks you. Resolve
+                (end): expend the attack the attack triggered, otherwise recover to hand"
+            stats:
+              blue: 1
+              red: 2
+              yellow: 5
+          id: 5057e08e-0650-4593-8d8c-1b7cfbbf0611
+        - content:
+            attack: "{Red}: Str = {Blue} + 3"
+            cost: 4
+            name: Chain Lightning
+            rules:
+              - Attacks 1 monster for full strength next for 1/2 and next for 1/4 strength
+            stats:
+              blue: 3
+              red: 2
+              yellow: 4
+          id: 80f8099a-a992-4783-9eb9-2aebf0f6347e
+      inPlay: {}
+    name: Vallhach
+    spatial:
+      posX: 0
+      posY: 0
+      size: 1
+    tableState:
+      assets:
+        541e66fc-39b0-41a1-879f-1d939be4adcf:
+          - content:
+              contents:
+                name: Lightning Earrings
+                tags:
+                  - Equipped
+                traits:
+                  - Lightning
+              tag: tCItem
+            id: 541e66fc-39b0-41a1-879f-1d939be4adcf
+          - contents: slotUnspecified
+            tag: equipped
+        5eefbda4-5734-4f2c-beb0-590e744b2086:
+          - content:
+              contents:
+                name: Vallhach
+                passive: An elf mage
+                traits:
+                  - Fire
+              tag: tCNature
+            id: 5eefbda4-5734-4f2c-beb0-590e744b2086
+          - tag: trait
+        7d465f54-6336-4f91-b9be-ff33e7cdfb1d:
+          - content:
+              contents:
+                name: Elven Staff
+                tags:
+                  - Equipped
+              tag: tCItem
+            id: 7d465f54-6336-4f91-b9be-ff33e7cdfb1d
+          - contents: slotUnspecified
+            tag: equipped
+        8a94712f-96d7-47f5-8d13-58c27171351c:
+          - content:
+              contents:
+                defense: 2
+                name: Hero
+                resilience: 3
+              tag: tCNature
+            id: 8a94712f-96d7-47f5-8d13-58c27171351c
+          - tag: trait
+        c9343c4f-a0bd-4000-9b3f-ea0a8c252397:
+          - content:
+              contents:
+                name: Sun Belt
+                tags:
+                  - Equipped
+                traits:
+                  - Sun
+              tag: tCItem
+            id: c9343c4f-a0bd-4000-9b3f-ea0a8c252397
+          - contents: slotUnspecified
+            tag: equipped
+      consequences: []
+  f9c4a715-7f1f-472e-953c-b0dc6373829e:
+    actorType: Monster
+    coreState:
+      deck:
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 2
+            name: Claw
+            rules:
+              - 2 + when spent to defend
+            stats:
+              blue: 2
+              red: 1
+              yellow: 3
+          id: 42a94fab-da48-432b-a4d1-5a5dad778ec0
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 2
+            name: Claw
+            rules:
+              - 2 + when spent to defend
+            stats:
+              blue: 2
+              red: 3
+              yellow: 3
+          id: 05721ead-2e18-47cb-ac5f-149a1c16cdf5
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 1
+            name: Pack attack
+            rules:
+              - Other wolves attacking this round +1
+            stats:
+              blue: 2
+              red: 3
+              yellow: 4
+          id: 0822a55a-d924-4083-afbb-84e82df519a9
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 2
+              yellow: 2
+          id: 0670854d-fcca-413b-99c5-a8e0d3e27799
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 2
+            name: Claw
+            rules:
+              - 2 + when spent to defend
+            stats:
+              blue: 2
+              red: 2
+              yellow: 3
+          id: 3c78e34a-213d-4c00-9375-55233cc5696b
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 4
+              yellow: 2
+          id: fe038d43-86db-4317-959e-be2b802d1af1
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 2
+            name: Claw
+            rules:
+              - 2 + when spent to defend
+            stats:
+              blue: 2
+              red: 1
+              yellow: 3
+          id: 3daacd95-01ba-4db5-bbe9-d85d5be3c759
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 3
+            name: Pounce
+            stats:
+              blue: 2
+              red: 1
+              yellow: 4
+          id: 45686ab9-c06c-427d-94ea-cb55602c03b9
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 1
+            name: Pack attack
+            rules:
+              - Other wolves attacking this round +1
+            stats:
+              blue: 2
+              red: 2
+              yellow: 4
+          id: 7d3a78a8-a922-41b5-995b-9bf50db439c3
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 2
+              yellow: 2
+          id: d3c8382d-ca91-41ef-b27d-f4dfe1016900
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 1
+            name: Pack attack
+            rules:
+              - Other wolves attacking this round +1
+            stats:
+              blue: 2
+              red: 5
+              yellow: 4
+          id: 80333943-1bee-4531-8650-f885234bd93b
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 3
+              yellow: 2
+          id: 0663438a-ca62-4e70-88e4-4be9c0d3ef71
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 2
+              yellow: 2
+          id: def03240-787e-42ae-aa62-9d2d200753b5
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 5
+              yellow: 2
+          id: 0d59b980-ac23-4234-80b0-aae560591893
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 3
+              yellow: 2
+          id: 21a28198-f229-4b02-b7ce-b491c4dce2d9
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 3
+              yellow: 2
+          id: 63c3628c-5bcc-4dba-b4a4-2d8067213071
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 3
+            name: Pounce
+            stats:
+              blue: 2
+              red: 3
+              yellow: 4
+          id: b39bad0b-39bd-4f63-b42f-09653497c802
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 3
+            name: Pounce
+            stats:
+              blue: 2
+              red: 4
+              yellow: 4
+          id: 4666f415-c5d8-4308-861a-f94506ed2f00
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 3
+            name: Pounce
+            stats:
+              blue: 2
+              red: 2
+              yellow: 4
+          id: 14b3a754-a91e-4f2d-abcd-953d24568659
+        - content:
+            attack: "{Red}: Str = {Red} + 2 → basic wound"
+            cost: 2
+            name: Claw
+            rules:
+              - 2 + when spent to defend
+            stats:
+              blue: 2
+              red: 4
+              yellow: 3
+          id: aa5af070-bf5b-4f81-bf4a-d111f8817e2d
+      discard: []
+      hand:
+        - content:
+            attack: "{Red}: Str = {Red} + 4 → basic wound"
+            cost: 2
+            name: Bite
+            stats:
+              blue: 2
+              red: 1
+              yellow: 2
+          id: a47cf91e-747e-496a-aa77-951c222242ef
+      inPlay: {}
+      planned:
+        contents:
+          actionCard:
+            content:
+              attack: "{Red}: Str = {Red} + 4 → basic wound"
+              cost: 2
+              name: Bite
+              stats:
+                blue: 2
+                red: 4
+                yellow: 2
+            id: 947ac60b-5f43-4ab8-a540-119b202021e6
+          resources:
+            - content:
+                attack: "{Red}: Str = {Red} + 2 → basic wound"
+                cost: 1
+                name: Pack attack
+                rules:
+                  - Other wolves attacking this round +1
+                stats:
+                  blue: 2
+                  red: 6
+                  yellow: 4
+              id: add19447-940b-4ede-85d8-2de7dc922084
+            - content:
+                attack: "{Red}: Str = {Red} + 2 → basic wound"
+                cost: 3
+                name: Pounce
+                stats:
+                  blue: 2
+                  red: 5
+                  yellow: 4
+              id: c9bcd6c2-21bf-4605-8306-df3fa4255663
+        tag: pStandard
+    name: Wolf
+    spatial:
+      posX: 1
+      posY: 1
+      size: 1
+    tableState:
+      assets:
+        f7c9dddc-99f2-44c6-8f63-67d726f8fa7a:
+          - content:
+              contents:
+                defense: 2
+                name: Wolf
+                resilience: 2
+                traits:
+                  - Teeth Claws
+              tag: tCNature
+            id: f7c9dddc-99f2-44c6-8f63-67d726f8fa7a
+          - tag: trait
+      consequences: []
+env:
+  consequenceCardTemplates:
+    Breached Guard:
+      name: Breached Guard
+      notes: A severe penalty to defense.
+      passive:
+        When calculating Defense Strength, treat the highest value card in
+        your stack as 0
+      rules:
+        - "Task: Hammer Out (Check {Red} 8; Time 1 hour; Cost Hammer) → Remove this"
+        - "Task: Careful Repair (Check {Yellow} 12; Time 4 hours; Cost Repair Tools)
+          → Remove this"
+        - When removed → If you used 'Hammer Out', this armor gains the 'Battered' condition
+      severity: 2
+      tags:
+        - Combat
+        - Condition
+    Compromised Leverage:
+      name: Compromised Leverage
+      notes: A severe penalty to offense.
+      passive:
+        When calculating Attack Strength, treat the highest value card in your
+        stack as 0
+      rules:
+        - "Task: Set and Bind Wound (Check {Blue} 10; Time 1 hour) → Remove this"
+        - When removed → Add 2 Wounds to your expended pile
+      severity: 2
+      tags:
+        - Combat
+        - Condition
+    Major Trauma:
+      effects:
+        - Expend 4 cards from hand and replace them with Injury cards. For each card
+          you cannot expend, put the Injury on top of your deck instead.
+      name: Major Trauma
+      notes: Severe immediate attrition.
+      rules:
+        - "Task: Recuperate (Check {Red} 5; Time 1 hour) → Remove this"
+        - "Action: Force Yourself Back (Spend {Red} 10) → Remove this"
+        - When removed → Add 1 Fatigue to your expended pile
+      severity: 2
+      tags:
+        - General
+        - Status_Effect
+    Minor Trauma:
+      effects:
+        - Put 2 Injury cards on top of your deck.
+      name: Minor Trauma
+      notes: Immediate deck pollution.
+      rules:
+        - "Task: Steady Yourself (Check {Red} 3; Time 1 min) → Remove this"
+        - "Action: Push Through (Spend {Red} 10) → Remove this"
+      severity: 1
+      tags:
+        - General
+        - Status_Effect
+    Rattled Guard:
+      name: Rattled Guard
+      notes: Increases the risk from future attacks
+      passive: Impact of Defense +1
+      rules:
+        - "Task: Stretch Out (Check {Yellow} 3; Time 1 min) → Remove this"
+        - When removed → Add 2 Fatigue to your expended pile
+      severity: 1
+      tags:
+        - Combat
+        - Condition
+    Strained Offense:
+      name: Strained Offense
+      notes: Models minor muscle strain or poor positioning requiring extra effort.
+      passive: You must discard a card to perform an Attack Action.
+      rules:
+        - "Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) → Remove this"
+        - When removed → Add 1 Wound to your expended pile
+      severity: 1
+      tags:
+        - Combat
+        - Condition
+    Taken Out:
+      effects:
+        - You are unconsious or dying and on longer a meaningful participant in this
+          fight
+      name: Taken Out
+      severity: 3
+  fatigueCardTemplate:
+    flavor: Fatigue is setting in ...
+    name: Fatigue
+    rules:
+      - "Task: Sleep (Time 2 Hours) → Remove this card."
+      - "Task: Light Rest (Time 4 Hours) → Remove this card."
+    stats:
+      blue: 1
+      red: 1
+      yellow: 1
+    tags:
+      - Status
+      - Fatigue
+      - Physical
+  statusCardTemplates:
+    Fatigue:
+      flavor: Fatigue is setting in ...
+      name: Fatigue
+      rules:
+        - "Task: Sleep (Time 2 Hours) → Remove this card."
+        - "Task: Light Rest (Time 4 Hours) → Remove this card."
+      stats:
+        blue: 1
+        red: 1
+        yellow: 1
+      tags:
+        - Status
+        - Fatigue
+        - Physical
+    Injury:
+      flavor: A minor injury. The pain is distracting.
+      name: Injury
+      rules:
+        - If this card is in your hand at the end of the Resolve Step, expend it.
+        - "Task: Rest (Time 1 Day) → Remove this card."
+      stats:
+        blue: 0
+        red: 0
+        yellow: 0
+      tags:
+        - Status
+        - Injury
+        - Physical
+history:
+  - id: 00000064-0000-0000-0000-000000000000
+    payload:
+      content: Game started
+      tag: logInfo
+    sender:
+      tag: senderSystem
+  - id: 00000065-0000-0000-0000-000000000000
+    payload:
+      content: Ready to fight!
+      tag: logChat
+    sender:
+      contents:
+        - 1a6a3f9e-bff7-4283-99a9-77d9390a57d9
+        - Vallhach
+      tag: senderActor
+  - id: 00000066-0000-0000-0000-000000000000
+    payload:
+      content: Planning phase begun
+      tag: logInfo
+    sender:
+      tag: senderGame
+phase: planning

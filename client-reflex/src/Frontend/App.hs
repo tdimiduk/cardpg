@@ -34,15 +34,15 @@ import Frontend.Util
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
-appRoot = S.flexRow . S.hScreen . S.canvas . S.text1 . S.overflowHidden
+appRoot = S.flexRow . S.hScreen . S.bgTransparent . S.text1 . S.overflowHidden
 
 -- | Main content area (right of sidebar)
 mainContent :: Style
-mainContent = S.flexCol . S.flex1 . S.relative . S.surface 2
+mainContent = S.flexCol . S.flex1 . S.relative . S.bgTransparent
 
 -- | Placeholder for game board
 gameBoardPlaceholder :: Style
-gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . (S.text S.Gray 7)
+gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . (S.text S.Gray 6)
 
 appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
@@ -158,6 +158,13 @@ headWidget = do
   elAttr "meta" ("charset" =: "utf-8") blank
   elAttr "meta" ("name" =: "viewport" <> "content" =: "width=device-width, initial-scale=1") blank
   el "title" $ text "CardPG"
+  elAttr
+    "link"
+    ( "rel" =: "stylesheet"
+        <> "href"
+          =: "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lora:ital,wght@0,400;0,700;1,400&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    )
+    blank
   elAttr "link" ("rel" =: "stylesheet" <> "href" =: "https://unpkg.com/open-props") blank
   elAttr "link" ("href" =: "base.css" <> "rel" =: "stylesheet") blank
   elAttr "link" ("href" =: "atomic.css" <> "rel" =: "stylesheet") blank

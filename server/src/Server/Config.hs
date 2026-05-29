@@ -18,6 +18,7 @@ data Config = Config
   , serverPort :: Int
   , cardsDir :: FilePath
   , scenarioFile :: FilePath
+  , savedGameFile :: Maybe FilePath
   , useInMemoryDB :: Bool
   , useGargoyle :: Bool
   , seed :: Maybe Int
@@ -44,6 +45,7 @@ loadConfig = do
   -- File Config
   cDir <- fromMaybe "data/cards" <$> lookupEnv "CARDPG_CARDS_DIR"
   sFile <- fromMaybe "data/scenarios/starter.yaml" <$> lookupEnv "CARDPG_SCENARIO_FILE"
+  savedGameFileVal <- lookupEnv "CARDPG_SAVED_GAME_FILE"
 
   -- Feature Flags
   inMem <- lookupEnv "CARDPG_USE_IN_MEMORY_DB"
@@ -61,6 +63,7 @@ loadConfig = do
   hPutStrLn stderr $ "  USE_IN_MEMORY_DB: " ++ show useInMem ++ " (env: " ++ show inMem ++ ")"
   hPutStrLn stderr $ "  USE_GARGOYLE: " ++ show useGargoyleVal ++ " (env: " ++ show gargoyle ++ ")"
   hPutStrLn stderr $ "  DB_HOST: " ++ dbConfig.dbHost
+  hPutStrLn stderr $ "  SAVED_GAME_FILE: " ++ show savedGameFileVal
 
   -- Seed Config
   seedStr <- lookupEnv "CARDPG_SEED"
@@ -72,6 +75,7 @@ loadConfig = do
       , serverPort = port
       , cardsDir = cDir
       , scenarioFile = sFile
+      , savedGameFile = savedGameFileVal
       , useInMemoryDB = useInMem
       , useGargoyle = useGargoyleVal
       , seed = seedVal

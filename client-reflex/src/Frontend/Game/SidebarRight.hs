@@ -27,16 +27,20 @@ sidebarRightContainer :: Style
 sidebarRightContainer =
   S.flexCol
     . S.w (S.Rem 20)
-    . S.surface 2
+    . S.cls "obsidian-panel"
     . S.borderL
     . (S.border S.Gray 10)
     . S.hFull
     . S.z 20
-    . S.shadowXl
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p S.S4 . (S.bg S.Gray 12) . S.borderB . (S.border S.Gray 10) . S.shrink0
+sidebarHeader =
+  S.p S.S4
+    . S.css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
+    . S.borderB
+    . (S.border S.Gray 10)
+    . S.shrink0
 
 -- | Log Area
 logArea :: Style
@@ -49,7 +53,14 @@ logArea =
 
 -- | Chat Input Area
 chatArea :: Style
-chatArea = S.p S.S3 . (S.bg S.Gray 12) . S.borderT . (S.border S.Gray 10) . S.shrink0 . S.flex . S.gap S.S2
+chatArea =
+  S.p S.S3
+    . S.css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
+    . S.borderT
+    . (S.border S.Gray 10)
+    . S.shrink0
+    . S.flex
+    . S.gap S.S2
 
 sidebarRightWidget
   :: ( DomBuilder t m
@@ -133,18 +144,25 @@ chatInputRequesting activeActor = do
   where
     classList =
       S.flex1
-        . (S.bg S.Gray 11)
+        . S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
         . S.border1
-        . (S.border S.Gray 9)
+        . (S.border S.Gray 10)
         . S.rounded
         . S.px S.S3
         . S.p S.S2
         . S.textXs
         . S.textWhite
         . S.css "focus:outline-none" "outline" "none"
-        . S.pseudo "focus" (S.border S.Indigo 6)
+        . S.pseudo "focus" (S.border S.Yellow 5)
 
-    btnStyle = (S.bg S.Indigo 8) . S.hover (S.bg S.Indigo 7) . S.textWhite . S.p S.S2 . S.rounded
+    btnStyle =
+      (S.bg S.Yellow 5)
+        . S.hover (S.bg S.Yellow 4)
+        . S.textBlack
+        . S.p S.S2
+        . S.rounded
+        . S.fontBold
+        . S.cls "fantasy-font"
 
 renderLogEntry :: (DomBuilder t m, PostBuild t m) => Dynamic t LogEntry -> m ()
 renderLogEntry logDyn = dyn_ $ ffor logDyn $ \l -> case l.payload of

@@ -1,4 +1,29 @@
-/* CSS Reset — consider using Open Props normalize: https://unpkg.com/open-props/normalize.min.css */
+/* CSS Reset & Dark Fantasy Variables */
+:root {
+  /* Mystical & Dark Fantasy Color Palette */
+  --color-obsidian: #090706; /* Ultra dark obsidian stone base */
+  --color-stone-dark: #12100f; /* Dark granite slab */
+  --color-stone-med: #1a1716; /* Medium igneous rock */
+  --color-stone-light: #26211f; /* Highlight stone */
+
+  --color-gold-bright: #f59e0b; /* Lustrous amber/gold */
+  --color-gold-muted: #b45309; /* Antique weathered gold */
+  --color-gold-glow: rgba(245, 158, 11, 0.15);
+
+  --color-silver-bright: #cbd5e1; /* Platinum accent */
+  --color-silver-muted: #64748b; /* Weathered pewter */
+
+  --color-crimson: #991b1b; /* Cursed red / consequence */
+  --color-crimson-glow: rgba(153, 27, 27, 0.25);
+
+  --color-mana-blue: #2563eb; /* Royal sapphire blue */
+  --color-mana-glow: rgba(37, 99, 235, 0.25);
+
+  /* Typography */
+  --font-fantasy: "Cinzel", Georgia, "Times New Roman", serif;
+  --font-text: "Lora", Garamond, "Book Antiqua", serif;
+}
+
 *,
 *::before,
 *::after {
@@ -6,11 +31,14 @@
   margin: 0;
   padding: 0;
 }
+
 html {
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
+  background-color: var(--color-obsidian);
 }
+
 img,
 svg,
 video,
@@ -18,11 +46,13 @@ canvas {
   display: block;
   vertical-align: middle;
 }
+
 img,
 video {
   max-width: 100%;
   height: auto;
 }
+
 button,
 input,
 select,
@@ -30,48 +60,171 @@ textarea {
   font: inherit;
   color: inherit;
 }
+
 [hidden] {
   display: none !important;
 }
 
-/* Body */
+/* Body Reset with Radial Vignette */
 body {
-  background-color: var(--gray-12);
-  color: var(--gray-2);
+  background: radial-gradient(
+    circle at center,
+    var(--color-stone-light) 0%,
+    var(--color-obsidian) 100%
+  );
+  color: var(--color-silver-bright);
+  font-family: var(--font-text);
   margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
-/* Print */
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.fantasy-font {
+  font-family: var(--font-fantasy) !important;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Scrollbars - Weathered Granite Scroll */
+.custom-scrollbar::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: var(--color-obsidian);
+  border-left: 1px solid var(--color-stone-dark);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: var(--color-stone-med);
+  border: 1px solid var(--color-stone-light);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-muted);
+  border-color: var(--color-gold-bright);
+}
+
+/* Theme Utilities for Custom Styling DSL Use */
+
+/* Double-Framed Card visual styles */
+.double-frame-gold {
+  border: 3px double var(--color-gold-muted) !important;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.7),
+    inset 0 0 15px rgba(180, 83, 9, 0.15) !important;
+}
+
+.double-frame-gold:hover {
+  border-color: var(--color-gold-bright) !important;
+  box-shadow:
+    0 8px 30px var(--color-gold-glow),
+    inset 0 0 25px rgba(245, 158, 11, 0.25) !important;
+}
+
+.double-frame-silver {
+  border: 3px double var(--color-silver-muted) !important;
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.7),
+    inset 0 0 10px rgba(100, 116, 139, 0.1) !important;
+}
+
+/* Runic Obsidian panel backgrounds */
+.obsidian-panel {
+  background: linear-gradient(
+    135deg,
+    var(--color-stone-dark) 0%,
+    var(--color-stone-med) 100%
+  ) !important;
+  border: 1px solid var(--color-stone-light) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Glowing Runic Altars */
+.altar-glowing-gold {
+  background: radial-gradient(
+    circle at center,
+    var(--color-stone-med) 30%,
+    var(--color-obsidian) 100%
+  ) !important;
+  border: 2px solid var(--color-gold-muted) !important;
+  box-shadow:
+    0 0 35px var(--color-gold-glow),
+    inset 0 0 25px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Cursed cracked stone effect for consequences */
+.cursed-lava-stone {
+  background: linear-gradient(135deg, #100606 0%, #220b0b 100%) !important;
+  border: 1px solid var(--color-crimson) !important;
+  box-shadow:
+    0 0 15px var(--color-crimson-glow),
+    inset 0 0 8px rgba(153, 27, 27, 0.3) !important;
+  animation: cursed-pulse 3s infinite ease-in-out;
+}
+
+@keyframes cursed-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px var(--color-crimson-glow),
+      inset 0 0 5px rgba(153, 27, 27, 0.2);
+    border-color: #7f1d1d;
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(153, 27, 27, 0.45),
+      inset 0 0 12px rgba(153, 27, 27, 0.5);
+    border-color: #ef4444;
+  }
+}
+
+/* Glowing Aura for Traits */
+.mystic-traits-aura {
+  background: linear-gradient(135deg, #090910 0%, #111020 100%) !important;
+  border: 1px solid #4338ca !important;
+  box-shadow:
+    0 0 12px rgba(67, 56, 202, 0.15),
+    inset 0 0 6px rgba(67, 56, 202, 0.2) !important;
+}
+
+/* Active Hand Selector Glow Ring */
+.staged-gold-ring {
+  box-shadow:
+    0 0 15px var(--color-gold-bright),
+    0 0 0 2px var(--color-gold-bright) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Print Overrides */
 @media print {
   @page {
     size: letter;
     margin: 0.25in;
   }
   body {
-    background-color: white;
+    background: white !important;
+    color: black !important;
   }
 }
 
-/* Custom scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 0.5rem;
-  height: 0.5rem;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: var(--gray-11);
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--gray-8);
-  border-radius: 0.25rem;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-7);
-}
-
-/* Card Rules Spacing */
+/* Card Rules Paragraph Formatting */
 .action p,
 .rules p {
   margin-top: 0;
-  margin-bottom: 0.1em;
-  line-height: 1.25;
+  margin-bottom: 0.2em;
+  line-height: 1.3;
 }

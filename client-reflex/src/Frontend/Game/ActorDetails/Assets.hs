@@ -26,7 +26,12 @@ equippedWidget
   -> m ()
 equippedWidget actorState = do
   let equippedDyn = fmap getEquippedItems actorState
-  assetSectionWidget "Equipped" equippedDyn $ \itemDyn -> do
+      goldFrameStyle =
+        S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
+          . S.border1
+          . (S.border S.Yellow 5)
+          . S.shadowSm
+  assetSectionWidget "Equipped" goldFrameStyle equippedDyn $ \itemDyn -> do
     dyn_ $ ffor itemDyn $ \(_, slot) -> do
       case slot of
         SlotUnspecified -> return ()
@@ -38,16 +43,18 @@ traitsWidget
   -> m ()
 traitsWidget actorState = do
   let traitsDyn = fmap getTraits actorState
-  assetSectionWidget "Traits" traitsDyn $ \itemDyn -> do
+      mysticAuraStyle = S.cls "mystic-traits-aura"
+  assetSectionWidget "Traits" mysticAuraStyle traitsDyn $ \itemDyn -> do
     dynText $ fmap (cardType . fst) itemDyn
 
 assetSectionWidget
   :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, Adjustable t m, Eq a)
   => Text
+  -> Style
   -> Dynamic t [(TableCard, a)]
   -> (Dynamic t (TableCard, a) -> m ())
   -> m ()
-assetSectionWidget headerText itemsDyn renderDetail = do
+assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
   -- Optimally only rebuild the container when ensuring empty/non-empty state changes
   hasItems <- holdUniqDyn $ fmap (not . null) itemsDyn
 
@@ -56,17 +63,32 @@ assetSectionWidget headerText itemsDyn renderDetail = do
       then blank
       else do
         divS
-          (S.flexCol . S.gap S.S2 . S.p S.S2 . (S.bg S.Gray 10) . S.rounded . (S.text S.Gray 1) . S.mt S.S2)
+          ( S.flexCol
+              . S.gap S.S2
+              . S.p S.S2
+              . S.cls "obsidian-panel"
+              . S.rounded
+              . (S.text S.Gray 1)
+              . S.mt S.S2
+          )
           $ do
-            elS "h2" (S.textSm . S.fontBold . S.uppercase . (S.text S.Gray 4)) $ text headerText
+            elS
+              "h2"
+              ( S.textSm
+                  . S.fontBold
+                  . S.uppercase
+                  . S.cls "fantasy-font"
+                  . S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+              )
+              $ text headerText
 
             void $ simpleList itemsDyn $ \itemDyn -> do
               divS
-                (S.flex . S.justifyBetween . S.itemsCenter . (S.bg S.Gray 9) . S.p S.S1 . S.rounded . S.mb S.S1)
+                (S.flex . S.justifyBetween . S.itemsCenter . rowStyle . S.p S.S1 . S.rounded . S.mb S.S1)
                 $ do
                   -- Display Name
                   let nameDyn = fmap fst itemDyn
-                  divS (S.textXs . S.px S.S1) $
+                  divS (S.textXs . S.px S.S1 . S.fontBold) $
                     dynText $
                       fmap
                         ( \case
