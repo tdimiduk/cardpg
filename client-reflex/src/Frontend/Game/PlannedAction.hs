@@ -8,7 +8,6 @@ import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
-import Api.Request (ApiRequest)
 import Api.Request qualified as Req
 import Data.Map qualified as Map
 

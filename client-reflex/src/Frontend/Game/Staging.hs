@@ -5,7 +5,6 @@ module Frontend.Game.Staging where
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
-import Api.Request (ApiRequest)
 import Api.Request qualified as Req
 
 import Core.Card (CoreCard (..), Identified (..))

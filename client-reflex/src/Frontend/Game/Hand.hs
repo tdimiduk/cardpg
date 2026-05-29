@@ -7,12 +7,9 @@ module Frontend.Game.Hand where
 
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
-import Data.List (find)
 import Data.Maybe (isJust)
-import Data.Set qualified as Set
 import Reflex.Dom.Core
 
-import Api.Request (ApiRequest (..))
 import Core.Card (CardInstance, CoreCard (..), Identified (..))
 
 import Core.Primitives (ActorId, CardInstanceId)
