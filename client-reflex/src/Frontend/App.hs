@@ -20,18 +20,16 @@ import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
 import Api.Types (LogEntry, Phase (..))
 import Core.Primitives (ActorId, Identified (..))
-import Core.State (ActorState, identifiedLookup, isActorPC, isActorReady)
+import Core.State (ActorState, identifiedLookup)
 
 import Frontend.Game.Class
 import Frontend.Game.Hand (handWidget)
-import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
+
 import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (sidebarRightWidget)
 
 import Frontend.Style.Common (Style, componentS)
-
-import Frontend.Util
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
@@ -114,30 +112,19 @@ uiWidget
   -- ^ Initial active actor
   -> m ()
 uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
-  phaseDyn <- askPhase
-  readyDyn <- askReadyCount
-  totalDyn <- askTotalCount
-  actorsMapDyn <- askActors
-  rec -- Construct config for Phase Display
-      let phaseConfig =
-            PhaseDisplayConfig
-              { phase = phaseDyn
-              , readyCount = readyDyn
-              , totalCount = totalDyn
-              }
-
-      selectedActorId <- holdDyn initialActorId activeActorChange
-      let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)
-      activeActorChange <- sidebarWidget activeActor
+  rec selectedActorId <- holdDyn initialActorId activeActorChange
+      activeActorChange <- sidebarWidget selectedActorId
 
   -- Main Content Area (Right)
   componentS "main-content" mainContent $ do
     -- Top Bar / Game Board Area (Placeholder)
     componentS "game-board" gameBoardPlaceholder $ text "Game Board Area"
 
-    let activeActorMap = ffor activeActor $ \case
-          Nothing -> Map.empty
-          Just (Identified i c) -> Map.singleton i c
+    actorsMapDyn <- askActors
+    let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
+          case mId >>= \aid -> identifiedLookup aid actors of
+            Nothing -> Map.empty
+            Just (Identified i c) -> Map.singleton i c
 
     _ <- listWithKey activeActorMap $ \k vDyn ->
       handWidget mStaging (Identified k <$> vDyn)
@@ -145,7 +132,7 @@ uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
     return ()
 
   -- Right Sidebar
-  sidebarRightWidget activeActor
+  sidebarRightWidget selectedActorId
 
   pure ()
 

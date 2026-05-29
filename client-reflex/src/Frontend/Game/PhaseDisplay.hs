@@ -3,8 +3,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Frontend.Game.PhaseDisplay
-  ( PhaseDisplayConfig (..)
-  , phaseDisplayWidget
+  ( phaseDisplayWidget
   ) where
 
 import Control.Monad (void)
@@ -21,12 +20,6 @@ import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
 import Frontend.Util (ApiRequester)
 
-data PhaseDisplayConfig t = PhaseDisplayConfig
-  { phase :: Dynamic t Phase
-  , readyCount :: Dynamic t Int
-  , totalCount :: Dynamic t Int
-  }
-
 phaseDisplayWidget
   :: forall t m
    . ( DomBuilder t m
@@ -35,9 +28,9 @@ phaseDisplayWidget
      , MonadFix m
      , MonadGame t m
      )
-  => PhaseDisplayConfig t
-  -> m ()
-phaseDisplayWidget config = do
+  => m ()
+phaseDisplayWidget = do
+  phaseDyn <- askPhase
   divS
     ( S.wFull
         . S.p S.S4
@@ -51,16 +44,16 @@ phaseDisplayWidget config = do
         divS (S.flex . S.itemsCenter . S.justifyBetween . S.wFull) $ do
           divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
             text "Phase:"
-            dyn_ $ ffor config.phase $ \p -> do
+            dyn_ $ ffor phaseDyn $ \p -> do
               let colorStyle = case p of
                     Planning -> S.text S.Blue 5
                     Resolution -> S.text S.Red 5
               elS "span" (S.fontBold . colorStyle) $ text (tshow p)
 
         -- Phase Controls / Status
-        dyn_ $ ffor config.phase $ \case
-          Planning -> planningControls config
-          Resolution -> resolutionControls config
+        dyn_ $ ffor phaseDyn $ \case
+          Planning -> planningControls
+          Resolution -> resolutionControls
 
 planningControls
   :: forall t m
@@ -70,15 +63,16 @@ planningControls
      , MonadFix m
      , MonadGame t m
      )
-  => PhaseDisplayConfig t
-  -> m ()
-planningControls config = do
+  => m ()
+planningControls = do
+  readyCountDyn <- askReadyCount
+  totalCountDyn <- askTotalCount
   divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
     btnClick <- button (def :: ButtonConfig t){size = constDyn SizeSmall} $ text "Start Resolution"
     -- Ready Count
     divS (S.text S.Gray 4) $ do
       text "Ready: "
-      dynText $ (\r t -> tshow r <> "/" <> tshow t) <$> config.readyCount <*> config.totalCount
+      dynText $ (\r t -> tshow r <> "/" <> tshow t) <$> readyCountDyn <*> totalCountDyn
 
     let req = Req.StartResolution <$ btnClick
 
@@ -88,8 +82,8 @@ planningControls config = do
 resolutionControls
   :: forall t m
    . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
-  => PhaseDisplayConfig t -> m ()
-resolutionControls _ = do
+  => m ()
+resolutionControls = do
   divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
     btnClick <-
       button

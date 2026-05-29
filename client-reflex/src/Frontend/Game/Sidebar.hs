@@ -4,7 +4,7 @@
 module Frontend.Game.Sidebar where
 
 import Control.Monad.Fix (MonadFix)
-import Core.Primitives (ActorId, Identified (..))
+import Core.Primitives (ActorId)
 import Core.State (ActorState (..))
 import Data.Map qualified as Map
 import Data.Text qualified as T
@@ -13,7 +13,6 @@ import Reflex.Dom.Core hiding (button)
 import Frontend.Style.Common (Style, divS, elS, elS', testId)
 import Frontend.Style.DSL qualified as S
 
-import Api.Request (ApiRequest)
 import Data.Maybe (fromMaybe)
 import Frontend.Game.ActorDetails (actorDetailsWidget)
 import Frontend.Game.Class
@@ -65,9 +64,9 @@ sidebarWidget
      , Prerender t m
      , MonadGame t m
      )
-  => Dynamic t (Maybe (Identified ActorId ActorState))
+  => Dynamic t (Maybe ActorId)
   -> m (Event t (Maybe ActorId))
-sidebarWidget selectionDyn = do
+sidebarWidget selectedActorId = do
   actorsMapDyn <- askActors
   divS (S.flexCol . sidebarContainer) $ do
     -- Sidebar Header
@@ -82,7 +81,7 @@ sidebarWidget selectionDyn = do
         $ text "CardPG"
 
     -- Dynamic Content: List or Details
-    dyContent <- dyn $ ffor selectionDyn $ \case
+    dyContent <- dyn $ ffor selectedActorId $ \case
       Nothing -> do
         -- No selection: Show List
         divS (S.p S.S4 . S.textCenter . S.text S.Gray 5 . S.italic . S.textSm) $
@@ -103,46 +102,49 @@ sidebarWidget selectionDyn = do
             return (aid <$ e)
 
           return (Just <$> switchDyn (fmap (leftmost . Map.elems) selectClick))
-      Just (Identified aid actorState) -> do
-        -- Selection: Show Details
-        -- Header (Click anywhere to deselect)
-        (minHeader, _) <- elS' "div" (S.cursorPointer . S.hover (S.bg S.Gray 10) . activeActorHeader) Map.empty $ do
-          divS avatar $ text $ T.take 1 actorState.name
+      Just aid -> do
+        -- Fetch the initial state from current actors map to boot the UI cleanly.
+        actorsMap <- sample (current actorsMapDyn)
+        case Map.lookup aid actorsMap of
+          Nothing -> return never
+          Just initialActorState -> do
+            -- Dynamic ActorState from the map to ensure it receives updates.
+            let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe initialActorState (Map.lookup aid m)
 
-          divS (S.flex1 . S.overflowHidden) $ do
-            elS "div" (S.fontBold . S.text S.Gray 1 . S.textTruncate) $ text actorState.name
-            elS "div" (S.textXs . S.text S.Gray 5 . S.uppercase) $ text "Player"
+            -- Header (Click anywhere to deselect)
+            (minHeader, _) <- elS' "div" (S.cursorPointer . S.hover (S.bg S.Gray 10) . activeActorHeader) Map.empty $ do
+              let nameDyn = (.name) <$> actorStateDyn
+              divS avatar $ dynText $ T.take 1 <$> nameDyn
 
-          -- Close indicator (decorative - header click handles deselection)
-          divS
-            ( S.roundedFull
-                . S.w S.S8
-                . S.h S.S8
-                . S.p S.S0
-                . S.flex
-                . S.itemsCenter
-                . S.justifyCenter
-                . S.text S.Gray 4
-                . S.hover (S.text S.Gray 2)
-            )
-            iconClose
+              divS (S.flex1 . S.overflowHidden) $ do
+                elS "div" (S.fontBold . S.text S.Gray 1 . S.textTruncate) $ dynText nameDyn
+                elS "div" (S.textXs . S.text S.Gray 5 . S.uppercase) $ text "Player"
 
-        -- Header click deselects
-        let deselectEvent = Nothing <$ domEvent Click minHeader
+              -- Close indicator (decorative - header click handles deselection)
+              divS
+                ( S.roundedFull
+                    . S.w S.S8
+                    . S.h S.S8
+                    . S.p S.S0
+                    . S.flex
+                    . S.itemsCenter
+                    . S.justifyCenter
+                    . S.text S.Gray 4
+                    . S.hover (S.text S.Gray 2)
+                )
+                iconClose
 
-        -- Details Widget
-        -- We re-derive the Dynamic ActorState from the map to ensure it receives updates.
-        -- We gracefully fall back to the snapshot 'actorState' if the actor is removed from the map.
-        let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe actorState (Map.lookup aid m)
+            -- Header click deselects
+            let deselectEvent = Nothing <$ domEvent Click minHeader
 
-        -- Auto-deselect if the actor is removed from the map
-        let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
-        let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
+            -- Auto-deselect if the actor is removed from the map
+            let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
+            let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
 
-        divS (S.flex1 . S.overflowYAuto . S.p S.S2) $
-          actorDetailsWidget aid actorStateDyn
+            divS (S.flex1 . S.overflowYAuto . S.p S.S2) $
+              actorDetailsWidget aid actorStateDyn
 
-        return $ leftmost [deselectEvent, actorLostEvent]
+            return $ leftmost [deselectEvent, actorLostEvent]
 
     -- Extract events
     contentEvents <- holdDyn never dyContent

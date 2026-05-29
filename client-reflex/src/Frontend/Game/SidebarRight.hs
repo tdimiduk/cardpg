@@ -12,16 +12,15 @@ import Api.Types
   , LogPayload (..)
   , LogSender (..)
   )
-import Core.Primitives (ActorId, Identified (..))
-import Core.State (ActiveChallenge (..), ActorState)
+import Core.Primitives (ActorId)
+import Core.State (ActiveChallenge (..))
 import Core.Util (tshow)
 import Frontend.Game.Class
-import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..), phaseDisplayWidget)
+import Frontend.Game.PhaseDisplay (phaseDisplayWidget)
 import Frontend.Render.Common (IconMode (..), renderResourceType)
 import Frontend.Style.Common (Style, classNames, divS, elS, testId)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
-import Frontend.Util
 
 -- | Sidebar container (Right)
 sidebarRightContainer :: Style
@@ -70,22 +69,13 @@ sidebarRightWidget
      , MonadFix m
      , MonadGame t m
      )
-  => Dynamic t (Maybe (Identified ActorId ActorState))
+  => Dynamic t (Maybe ActorId)
   -> m ()
-sidebarRightWidget activeActor = do
+sidebarRightWidget selectedActorId = do
   logsDyn <- askLogs
-  phaseDyn <- askPhase
-  readyDyn <- askReadyCount
-  totalDyn <- askTotalCount
-  let phaseConfig =
-        PhaseDisplayConfig
-          { phase = phaseDyn
-          , readyCount = readyDyn
-          , totalCount = totalDyn
-          }
   divS sidebarRightContainer $ do
     -- Phase Display
-    phaseDisplayWidget phaseConfig
+    phaseDisplayWidget
 
     -- Header
     divS sidebarHeader $ do
@@ -109,13 +99,13 @@ sidebarRightWidget activeActor = do
       -- Reverse to show oldest at top, newest at bottom (standard chat log)
       simpleList (fmap reverse logsDyn) renderLogEntry
 
-    divS chatArea $ chatInputRequesting activeActor
+    divS chatArea $ chatInputRequesting selectedActorId
     pure ()
 
 chatInputRequesting
   :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, MonadGame t m)
-  => Dynamic t (Maybe (Identified ActorId ActorState)) -> m ()
-chatInputRequesting activeActor = do
+  => Dynamic t (Maybe ActorId) -> m ()
+chatInputRequesting selectedActorId = do
   let classListCls = classNames classList
   rec input <-
         inputElement $
@@ -145,7 +135,7 @@ chatInputRequesting activeActor = do
       let clickSend = current (value input) <@ domEvent Click btn
 
       let msgEvt = leftmost [send, clickSend]
-      r <- requestGame $ attachWith (\a t -> SendChat ((.id) <$> a) t) (current activeActor) msgEvt
+      r <- requestGame $ attachWith SendChat (current selectedActorId) msgEvt
       let (err, success) = fanEither r
   widgetHold_ blank $ text . tshow <$> err
   pure ()
