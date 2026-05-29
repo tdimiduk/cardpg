@@ -79,30 +79,30 @@ sizeStyle = \case
 variantStyle :: ButtonVariant -> Style
 variantStyle = \case
   VariantPrimary ->
-    (S.bg S.Indigo 8)
+    S.bg S.Indigo 8
       . textWhite
       . shadowSm
       . hover (S.bg S.Indigo 7)
   VariantSecondary ->
-    (S.bg S.Gray 10)
-      . (S.text S.Gray 4)
+    S.bg S.Gray 10
+      . S.text S.Gray 4
       . S.border1
-      . (S.border S.Gray 9)
+      . S.border S.Gray 9
       . hover (S.bg S.Gray 9)
       . hover (S.text S.Gray 2)
   VariantDestructive ->
-    (S.bgAlpha S.Red 11 50)
-      . (S.text S.Red 3)
+    S.bgAlpha S.Red 11 50
+      . S.text S.Red 3
       . S.border1
-      . (S.border S.Red 10)
+      . S.border S.Red 10
   VariantGhost ->
     bgTransparent
-      . (S.text S.Gray 4)
+      . S.text S.Gray 4
   VariantOutline ->
     bgTransparent
-      . (S.text S.Gray 2)
+      . S.text S.Gray 2
       . S.border1
-      . (S.border S.Gray 8)
+      . S.border S.Gray 8
 
 -- | Base styles shared by all buttons
 baseStyle :: Style

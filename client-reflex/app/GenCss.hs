@@ -1,11 +1,10 @@
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 
 module Main where
 
-import Control.Monad (forM, join)
+import Control.Monad (forM)
 import Data.Char (isAlphaNum)
 import Data.Function (on)
 import Data.List qualified as List
@@ -202,27 +201,27 @@ data ParamFn = forall a. ParamFn
 
 knownParams :: [ParamFn]
 knownParams =
-  [ ParamFn "gap" parseSize (\s -> S.gap s [])
-  , ParamFn "p" parseSize (\s -> S.p s [])
-  , ParamFn "px" parseSize (\s -> S.px s [])
-  , ParamFn "py" parseSize (\s -> S.py s [])
-  , ParamFn "pt" parseSize (\s -> S.pt s [])
-  , ParamFn "pb" parseSize (\s -> S.pb s [])
-  , ParamFn "pl" parseSize (\s -> S.pl s [])
-  , ParamFn "pr" parseSize (\s -> S.pr s [])
-  , ParamFn "mt" parseSize (\s -> S.mt s [])
-  , ParamFn "mb" parseSize (\s -> S.mb s [])
-  , ParamFn "ml" parseSize (\s -> S.ml s [])
-  , ParamFn "mr" parseSize (\s -> S.mr s [])
-  , ParamFn "bottom" parseSize (\s -> S.bottom s [])
-  , ParamFn "left" parseSize (\s -> S.left s [])
-  , ParamFn "right" parseSize (\s -> S.right s [])
-  , ParamFn "top" parseSize (\s -> S.top s [])
-  , ParamFn "fontSize" parseInt (\n -> S.fontSize n [])
-  , ParamFn "w" parseSize (\s -> S.w s [])
-  , ParamFn "h" parseSize (\s -> S.h s [])
-  , ParamFn "z" parseInt (\n -> S.z n [])
-  , ParamFn "opacity" parseFloat (\d -> S.opacity d [])
+  [ ParamFn "gap" parseSize (`S.gap` [])
+  , ParamFn "p" parseSize (`S.p` [])
+  , ParamFn "px" parseSize (`S.px` [])
+  , ParamFn "py" parseSize (`S.py` [])
+  , ParamFn "pt" parseSize (`S.pt` [])
+  , ParamFn "pb" parseSize (`S.pb` [])
+  , ParamFn "pl" parseSize (`S.pl` [])
+  , ParamFn "pr" parseSize (`S.pr` [])
+  , ParamFn "mt" parseSize (`S.mt` [])
+  , ParamFn "mb" parseSize (`S.mb` [])
+  , ParamFn "ml" parseSize (`S.ml` [])
+  , ParamFn "mr" parseSize (`S.mr` [])
+  , ParamFn "bottom" parseSize (`S.bottom` [])
+  , ParamFn "left" parseSize (`S.left` [])
+  , ParamFn "right" parseSize (`S.right` [])
+  , ParamFn "top" parseSize (`S.top` [])
+  , ParamFn "fontSize" parseInt (`S.fontSize` [])
+  , ParamFn "w" parseSize (`S.w` [])
+  , ParamFn "h" parseSize (`S.h` [])
+  , ParamFn "z" parseInt (`S.z` [])
+  , ParamFn "opacity" parseFloat (`S.opacity` [])
   , ParamFn "css" parseThreeStrings (\(n, p, v) -> S.css n p v [])
   , ParamFn "css'" parseNameAndDecls (\(n, ds) -> S.css' n ds [])
   , ParamFn "bg" parseColorAndTone (\(c, n) -> S.bg c n [])
@@ -230,7 +229,7 @@ knownParams =
   , ParamFn "text" parseColorAndTone (\(c, n) -> S.text c n [])
   , ParamFn "border" parseColorAndTone (\(c, n) -> S.border c n [])
   , ParamFn "ring" parseColorAndTone (\(c, n) -> S.ring c n [])
-  , ParamFn "media" parseMedia (\(q, props) -> props)
+  , ParamFn "media" parseMedia snd
   ]
 
 scanContent :: Text -> [Prop]
@@ -270,7 +269,7 @@ parseSize = do
     pSize =
       choice $
         fmap
-          (parseS $)
+          parseS
           [ S.S0
           , S.S0_5
           , S.S1
@@ -295,7 +294,7 @@ parseSize = do
              , try $ S.Vw <$> (string "Vw" *> space *> parseFloat)
              , try $ S.Percent <$> (string "Percent" *> space *> parseFloat)
              , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
-             , try $ (S.Rem . (/ 4) . fromIntegral) <$> parseInt -- Support legacy inline numbers for now
+             , try $ S.Rem . (/ 4) . fromIntegral <$> parseInt -- Support legacy inline numbers for now
              ]
 
 parseInt :: Parser Int
@@ -385,7 +384,7 @@ parseStatic = do
   _ <- optional (string "S.")
   choice $
     map
-      ( \(name, props) -> try (string name *> notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_')) *> return props)
+      ( \(name, props) -> try (props <$ (string name *> notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_'))))
       )
       staticStyles
 

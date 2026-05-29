@@ -40,8 +40,8 @@ phaseDisplayWidget config = do
     ( S.wFull
         . S.p S.S4
         . S.borderB
-        . (S.border S.Gray 10)
-        . (S.bg S.Gray 11)
+        . S.border S.Gray 10
+        . S.bg S.Gray 11
     )
     $ do
       divS (S.flexCol . S.gap S.S2) $ do
@@ -51,8 +51,8 @@ phaseDisplayWidget config = do
             text "Phase:"
             dyn_ $ ffor config.phase $ \p -> do
               let colorStyle = case p of
-                    Planning -> (S.text S.Blue 5)
-                    Resolution -> (S.text S.Red 5)
+                    Planning -> S.text S.Blue 5
+                    Resolution -> S.text S.Red 5
               elS "span" (S.fontBold . colorStyle) $ text (tshow p)
 
         -- Phase Controls / Status

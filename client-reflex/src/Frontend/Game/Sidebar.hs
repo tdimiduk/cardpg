@@ -22,18 +22,18 @@ import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: Style
-sidebarContainer = S.w (S.Rem 18) . S.cls "obsidian-panel" . S.borderR . (S.border S.Gray 10) . S.hFull . S.z 20
+sidebarContainer = S.w (S.Rem 18) . S.cls "obsidian-panel" . S.borderR . S.border S.Gray 10 . S.hFull . S.z 20
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p S.S6 . S.borderB . (S.border S.Gray 10)
+sidebarHeader = S.p S.S6 . S.borderB . S.border S.Gray 10
 
 -- | Active actor header base
 activeActorHeader :: Style
 activeActorHeader =
   S.p S.S4
     . S.borderB
-    . (S.border S.Gray 10)
+    . S.border S.Gray 10
     . S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
     . S.flex
     . S.itemsCenter
@@ -45,8 +45,8 @@ avatar =
     . S.h (S.Rem 2.5)
     . S.roundedFull
     . S.border2
-    . (S.border S.Gray 8)
-    . (S.bg S.Gray 10)
+    . S.border S.Gray 8
+    . S.bg S.Gray 10
     . S.flex
     . S.itemsCenter
     . S.justifyCenter
@@ -91,7 +91,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
     dyContent <- dyn $ ffor selectionDyn $ \case
       Nothing -> do
         -- No selection: Show List
-        divS (S.p S.S4 . S.textCenter . (S.text S.Gray 5) . S.italic . S.textSm) $
+        divS (S.p S.S4 . S.textCenter . S.text S.Gray 5 . S.italic . S.textSm) $
           text "Select an actor"
 
         divS actorListContainer' $ do
@@ -116,8 +116,8 @@ sidebarWidget selectionDyn actorsMapDyn = do
           divS avatar $ text $ T.take 1 actorState.name
 
           divS (S.flex1 . S.overflowHidden) $ do
-            elS "div" (S.fontBold . (S.text S.Gray 1) . S.textTruncate) $ text actorState.name
-            elS "div" (S.textXs . (S.text S.Gray 5) . S.uppercase) $ text "Player"
+            elS "div" (S.fontBold . S.text S.Gray 1 . S.textTruncate) $ text actorState.name
+            elS "div" (S.textXs . S.text S.Gray 5 . S.uppercase) $ text "Player"
 
           -- Close indicator (decorative - header click handles deselection)
           divS
@@ -128,7 +128,7 @@ sidebarWidget selectionDyn actorsMapDyn = do
                 . S.flex
                 . S.itemsCenter
                 . S.justifyCenter
-                . (S.text S.Gray 4)
+                . S.text S.Gray 4
                 . S.hover (S.text S.Gray 2)
             )
             iconClose

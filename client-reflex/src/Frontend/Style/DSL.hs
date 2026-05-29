@@ -208,7 +208,7 @@ import Frontend.Style.Core
 ----------------------------------------------------------------------------------
 
 spaceXActionStackOverlap :: Style
-spaceXActionStackOverlap = \rest ->
+spaceXActionStackOverlap rest =
   Prop
     "space-x-action-stack-overlap"
     ".space-x-action-stack-overlap > * + *"
@@ -217,12 +217,12 @@ spaceXActionStackOverlap = \rest ->
     : rest
 
 spaceY2 :: Style
-spaceY2 = \rest ->
+spaceY2 rest =
   Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")] Nothing
     : rest
 
 lastChild :: Style -> Style
-lastChild style = \rest ->
+lastChild style rest =
   let props = style []
    in map lastChildProp props ++ rest
 

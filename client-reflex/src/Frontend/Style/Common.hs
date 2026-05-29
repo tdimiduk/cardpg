@@ -59,8 +59,7 @@ elS' tagName style attrs = elAttr' tagName (("class" =: classNames style) <> att
 
 -- | A named component div (adds data-testid for testing/debugging).
 componentS :: (DomBuilder t m) => Text -> Style -> m a -> m a
-componentS name style child =
-  elAttr "div" ("class" =: classNames style <> testId name) child
+componentS name style = elAttr "div" ("class" =: classNames style <> testId name)
 
 -- | Add a data-testid attribute for testing.
 testId :: Text -> Map Text Text

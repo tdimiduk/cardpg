@@ -34,7 +34,7 @@ consequencesWidget
   -> Dynamic t ActorState
   -> m ()
 consequencesWidget actorId actorState = do
-  colWith (S.gap S.S2 . S.p S.S2 . S.cls "obsidian-panel" . S.rounded . (S.text S.Gray 1) . S.mt S.S2) $ do
+  colWith (S.gap S.S2 . S.p S.S2 . S.cls "obsidian-panel" . S.rounded . S.text S.Gray 1 . S.mt S.S2) $ do
     rowWith (S.justifyBetween . S.itemsCenter) $ do
       elS
         "h2"
@@ -68,7 +68,7 @@ consequencesWidget actorId actorState = do
               def
                 { variant = constDyn VariantGhost
                 , size = constDyn SizeSmall
-                , extraStyle = S.px S.S1 . (S.text S.Red 5) . S.hover (S.text S.Red 4)
+                , extraStyle = S.px S.S1 . S.text S.Red 5 . S.hover (S.text S.Red 4)
                 }
               $ text "×"
 

@@ -42,7 +42,7 @@ mainContent = S.flexCol . S.flex1 . S.relative . S.bgTransparent
 
 -- | Placeholder for game board
 gameBoardPlaceholder :: Style
-gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . (S.text S.Gray 6)
+gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . S.text S.Gray 6
 
 appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do

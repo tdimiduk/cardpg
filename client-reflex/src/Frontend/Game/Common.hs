@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Frontend.Game.Common where
 
 import Control.Monad.Fix (MonadFix)

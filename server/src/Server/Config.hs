@@ -58,7 +58,7 @@ loadConfig = do
         Just s | map toLower s == "true" -> True
         _ -> False
 
-  hPutStrLn stderr $ "Config Loaded:"
+  hPutStrLn stderr "Config Loaded:"
   hPutStrLn stderr $ "  PORT: " ++ show port
   hPutStrLn stderr $ "  USE_IN_MEMORY_DB: " ++ show useInMem ++ " (env: " ++ show inMem ++ ")"
   hPutStrLn stderr $ "  USE_GARGOYLE: " ++ show useGargoyleVal ++ " (env: " ++ show gargoyle ++ ")"

@@ -205,4 +205,4 @@ determineItemState item =
 
 -- | Load a full GameState from a saved game YAML file
 loadSavedGame :: FilePath -> IO GameState
-loadSavedGame path = decodeFileThrow path
+loadSavedGame = decodeFileThrow

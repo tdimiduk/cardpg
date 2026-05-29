@@ -71,8 +71,8 @@ cardBase =
 cardScreenVisuals :: Style
 cardScreenVisuals =
   S.cls "double-frame-gold"
-    . (S.bg S.Gray 12)
-    . (S.text S.Gray 2)
+    . S.bg S.Gray 12
+    . S.text S.Gray 2
     . S.roundedS (S.Mm 3)
 
 cardScreen :: Style
@@ -95,7 +95,7 @@ cardPrint =
 
 -- | Cost hexagon styling for CardRow (explicit small size)
 costRow :: Style
-costRow = S.w S.S4 . S.h S.S4 . (S.text S.Gray 2)
+costRow = S.w S.S4 . S.h S.S4 . S.text S.Gray 2
 
 cardRow :: Style
 cardRow =
@@ -136,7 +136,7 @@ artScreen =
     . S.roundedS (S.Mm 2)
     . S.css "bg-mystic-art" "background" "radial-gradient(circle, #252220 0%, #12100f 100%)"
     . S.border1
-    . (S.border S.Gray 9)
+    . S.border S.Gray 9
 
 artPrint :: Style
 artPrint = S.h (S.Mm 33) . S.border1 . borderBlack . grayscale . roundedNone . bgTransparent
@@ -174,7 +174,7 @@ costBase =
     . S.cls "fantasy-font"
 
 costScreen :: Style
-costScreen = (S.text S.Gray 2)
+costScreen = S.text S.Gray 2
 
 costPrint :: Style
 costPrint = textBlack
@@ -196,9 +196,9 @@ textboxScreen :: Style
 textboxScreen =
   S.css "bg-obsidian-textbox" "background-color" "rgba(18, 16, 15, 0.85)"
     . S.border1
-    . (S.border S.Gray 9)
+    . S.border S.Gray 9
     . S.roundedS (S.Mm 2)
-    . (S.text S.Gray 2)
+    . S.text S.Gray 2
 
 textboxPrint :: Style
 textboxPrint = roundedNone . bgTransparent . borderBlack

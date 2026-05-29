@@ -221,7 +221,7 @@ generateGame opts path skipSnapshot = do
   unless opts.quiet $ putStrLn $ "Generating game view for " <> path
   -- Try to load as a saved game (GameState) first, otherwise fall back to loadScenario
   gameState <-
-    (loadSavedGame path)
+    loadSavedGame path
       `catch` ( \(_ :: SomeException) -> do
                   (gs, _) <- loadScenario path Nothing
                   return gs
@@ -378,16 +378,15 @@ mockGameWidgetWithDeckView gameState = do
 
   mockGameWidget Nothing actorId gameState Planning
 
-  case actorState of
-    _ -> do
-      pb <- getPostBuild
-      let coreState = actorState.coreState :: CoreCardState
-          realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
-          realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
-          viewCards = realDeckCards ++ realHandCards
-          viewData = DeckViewData "Draw Pile" viewCards
-      deckViewerModal (Just viewData <$ pb)
-      return ()
+  do
+    pb <- getPostBuild
+    let coreState = actorState.coreState :: CoreCardState
+        realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
+        realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+        viewCards = realDeckCards ++ realHandCards
+        viewData = DeckViewData "Draw Pile" viewCards
+    deckViewerModal (Just viewData <$ pb)
+    return ()
 
 -- | Specialized mock widget that overlays the Discard Pile modal
 mockGameWidgetWithDiscardView
@@ -412,16 +411,15 @@ mockGameWidgetWithDiscardView gameState = do
 
   mockGameWidget Nothing actorId gameState Planning
 
-  case actorState of
-    _ -> do
-      pb <- getPostBuild
-      let coreState = actorState.coreState :: CoreCardState
-          realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
-          realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
-          viewCards = realDeckCards ++ realHandCards
-          viewData = DeckViewData "Discard" viewCards
-      deckViewerModal (Just viewData <$ pb)
-      return ()
+  do
+    pb <- getPostBuild
+    let coreState = actorState.coreState :: CoreCardState
+        realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
+        realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+        viewCards = realDeckCards ++ realHandCards
+        viewData = DeckViewData "Discard" viewCards
+    deckViewerModal (Just viewData <$ pb)
+    return ()
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do

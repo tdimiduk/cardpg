@@ -29,7 +29,7 @@ equippedWidget actorState = do
       goldFrameStyle =
         S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
           . S.border1
-          . (S.border S.Yellow 5)
+          . S.border S.Yellow 5
           . S.shadowSm
   assetSectionWidget "Equipped" goldFrameStyle equippedDyn $ \itemDyn -> do
     dyn_ $ ffor itemDyn $ \(_, slot) -> do
@@ -68,7 +68,7 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
               . S.p S.S2
               . S.cls "obsidian-panel"
               . S.rounded
-              . (S.text S.Gray 1)
+              . S.text S.Gray 1
               . S.mt S.S2
           )
           $ do
@@ -99,7 +99,7 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
                         nameDyn
 
                   -- Display Detail (Slot or Type)
-                  divS (S.textXs . (S.text S.Gray 4) . S.css "italic" "font-style" "italic") $
+                  divS (S.textXs . S.text S.Gray 4 . S.css "italic" "font-style" "italic") $
                     renderDetail itemDyn
 
 getEquippedItems :: ActorState -> [(TableCard, EquipSlot)]

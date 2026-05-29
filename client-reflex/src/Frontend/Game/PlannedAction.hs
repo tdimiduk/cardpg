@@ -31,7 +31,7 @@ plannedBadge =
     . S.top (S.Rem (-0.75))
     . S.left (S.Percent 50)
     . S.css "-translate-x-1/2" "transform" "translateX(-50%)"
-    . (S.bg S.Indigo 8)
+    . S.bg S.Indigo 8
     . S.textWhite
     . S.css "text-[10px]" "font-size" "10px"
     . S.uppercase
@@ -93,6 +93,6 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
       rowGap (S.ml (S.Rem (-2))) $
         mapM_ (divS (narrativeCardHover . cardHandWidth) . renderCoreCard . (.content)) cards
     PPass -> do
-      divS ((S.text S.Gray 4) . S.css "italic" "font-style" "italic" . S.textSm) $ text "Passed turn"
+      divS (S.text S.Gray 4 . S.css "italic" "font-style" "italic" . S.textSm) $ text "Passed turn"
   where
     colStyle = S.gap S.S4 . S.itemsCenter . S.pointerEventsAuto

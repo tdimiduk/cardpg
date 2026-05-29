@@ -102,7 +102,7 @@ cls name = (Prop name ("." <> name) [] Nothing :)
 -- cardHover = hover (S.bg S.Gray 9)
 -- @
 hover :: Style -> Style
-hover inner = \rest -> map hoverProp (inner []) ++ rest
+hover inner rest = map hoverProp (inner []) ++ rest
 
 -- | Add hover styling to a single Prop. Useful for GenCss generation.
 hoverProp :: Prop -> Prop
@@ -114,7 +114,7 @@ hoverProp p =
 
 -- | Apply a style only on :active.
 active :: Style -> Style
-active inner = \rest -> map activeProp (inner []) ++ rest
+active inner rest = map activeProp (inner []) ++ rest
 
 -- | Add active styling to a single Prop. Useful for GenCss generation.
 activeProp :: Prop -> Prop
@@ -130,7 +130,7 @@ activeProp p =
 -- focusVisible = pseudo "focus-visible" ((S.ring S.Blue 5) . ring2)
 -- @
 pseudo :: Text -> Style -> Style
-pseudo pseudoClass inner = \rest -> map (pseudoProp pseudoClass) (inner []) ++ rest
+pseudo pseudoClass inner rest = map (pseudoProp pseudoClass) (inner []) ++ rest
 
 -- | Add pseudo-class styling to a single Prop.
 pseudoProp :: Text -> Prop -> Prop
@@ -148,7 +148,7 @@ pseudoProp pseudoClass p =
 -- responsive = media "(min-width: 768px)" (fontSize 18)
 -- @
 media :: Text -> Style -> Style
-media query inner = \rest -> map (mediaProp query) (inner []) ++ rest
+media query inner rest = map (mediaProp query) (inner []) ++ rest
 
 -- | Add media query styling to a single Prop.
 mediaProp :: Text -> Prop -> Prop

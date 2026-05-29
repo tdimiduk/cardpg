@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 -- | Layout combinators and utilities.
 module Frontend.Style.Layout
   ( -- * Layout Combinators
