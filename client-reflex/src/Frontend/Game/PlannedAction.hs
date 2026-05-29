@@ -17,6 +17,7 @@ import Core.Primitives (ActorId)
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
+import Frontend.Game.Class
 import Frontend.Game.Common (staticActionStackWidget)
 import Frontend.Style (cardHandWidth)
 import Frontend.Style.Common (Style, divS, elS', testId)
@@ -56,8 +57,7 @@ plannedActionWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , Requester t m
-     , Request m ~ ApiRequest
+     , MonadGame t m
      )
   => Identified ActorId PlannedAction
   -> m ()
@@ -66,7 +66,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
     button
       def{variant = constDyn VariantDestructive, attributes = constDyn (testId "revise-action")}
       $ text "↺ Revise"
-  _ <- requesting $ Req.CancelPlan actorId <$ e
+  _ <- requestGame $ Req.CancelPlan actorId <$ e
   case planned of
     PStandard (ActionStack action resources) -> do
       void $

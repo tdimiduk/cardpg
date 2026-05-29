@@ -22,6 +22,7 @@ import Api.Types (LogEntry, Phase (..))
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState, identifiedLookup, isActorPC, isActorReady)
 
+import Frontend.Game.Class
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..))
 import Frontend.Game.Planning (StagingState)
@@ -48,8 +49,9 @@ appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
+      let sessionState = SessionState actorsMapDyn logsDyn phaseDyn
       (_, requests) <-
-        runRequesterT (uiWidget Nothing Nothing actorsMapDyn logsDyn phaseDyn readyDyn totalDyn) responses
+        runRequesterT (runGameT sessionState (uiWidget Nothing Nothing)) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
@@ -92,9 +94,6 @@ appWidget wsBaseUrl clientId = do
 
       phaseDyn <- foldDyn updatePhase Planning pushEvt
 
-      let totalDyn = fmap (Map.size . Map.filter isActorPC) actorsMapDyn
-          readyDyn = fmap (Map.size . Map.filter (\a -> isActorPC a && isActorReady a)) actorsMapDyn
-
   pure ()
   where
     wsUrl = wsBaseUrl <> "?clientId=" <> T.pack (show clientId)
@@ -106,22 +105,19 @@ uiWidget
      , MonadFix m
      , Adjustable t m
      , MonadIO m
-     , ApiRequester t m
      , Prerender t m
+     , MonadGame t m
      )
   => Maybe StagingState
   -- ^ Optional initial staging state
   -> Maybe ActorId
   -- ^ Initial active actor
-  -> Dynamic t (Map.Map ActorId ActorState)
-  -> Dynamic t [LogEntry]
-  -> Dynamic t Phase
-  -> Dynamic t Int
-  -- ^ Ready Count
-  -> Dynamic t Int
-  -- ^ Total Count
   -> m ()
-uiWidget mStaging initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn = componentS "app-container" appRoot $ do
+uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
+  phaseDyn <- askPhase
+  readyDyn <- askReadyCount
+  totalDyn <- askTotalCount
+  actorsMapDyn <- askActors
   rec -- Construct config for Phase Display
       let phaseConfig =
             PhaseDisplayConfig
@@ -132,7 +128,7 @@ uiWidget mStaging initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn
 
       selectedActorId <- holdDyn initialActorId activeActorChange
       let activeActor = ffor2 selectedActorId actorsMapDyn (\mId actors -> mId >>= \aid -> identifiedLookup aid actors)
-      activeActorChange <- sidebarWidget activeActor actorsMapDyn
+      activeActorChange <- sidebarWidget activeActor
 
   -- Main Content Area (Right)
   componentS "main-content" mainContent $ do
@@ -149,7 +145,7 @@ uiWidget mStaging initialActorId actorsMapDyn logsDyn phaseDyn readyDyn totalDyn
     return ()
 
   -- Right Sidebar
-  sidebarRightWidget activeActor logsDyn phaseConfig
+  sidebarRightWidget activeActor
 
   pure ()
 

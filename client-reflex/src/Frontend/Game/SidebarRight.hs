@@ -15,7 +15,8 @@ import Api.Types
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActiveChallenge (..), ActorState)
 import Core.Util (tshow)
-import Frontend.Game.PhaseDisplay (PhaseDisplayConfig, phaseDisplayWidget)
+import Frontend.Game.Class
+import Frontend.Game.PhaseDisplay (PhaseDisplayConfig (..), phaseDisplayWidget)
 import Frontend.Render.Common (IconMode (..), renderResourceType)
 import Frontend.Style.Common (Style, classNames, divS, elS, testId)
 import Frontend.Style.DSL qualified as S
@@ -67,14 +68,21 @@ sidebarRightWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , ApiRequester t m
+     , MonadGame t m
      )
   => Dynamic t (Maybe (Identified ActorId ActorState))
-  -> Dynamic t [LogEntry]
-  -- ^ List of logs (newest first in list)
-  -> PhaseDisplayConfig t
   -> m ()
-sidebarRightWidget activeActor logsDyn phaseConfig = do
+sidebarRightWidget activeActor = do
+  logsDyn <- askLogs
+  phaseDyn <- askPhase
+  readyDyn <- askReadyCount
+  totalDyn <- askTotalCount
+  let phaseConfig =
+        PhaseDisplayConfig
+          { phase = phaseDyn
+          , readyCount = readyDyn
+          , totalCount = totalDyn
+          }
   divS sidebarRightContainer $ do
     -- Phase Display
     phaseDisplayWidget phaseConfig
@@ -105,7 +113,7 @@ sidebarRightWidget activeActor logsDyn phaseConfig = do
     pure ()
 
 chatInputRequesting
-  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, ApiRequester t m)
+  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, MonadGame t m)
   => Dynamic t (Maybe (Identified ActorId ActorState)) -> m ()
 chatInputRequesting activeActor = do
   let classListCls = classNames classList
@@ -137,7 +145,7 @@ chatInputRequesting activeActor = do
       let clickSend = current (value input) <@ domEvent Click btn
 
       let msgEvt = leftmost [send, clickSend]
-      r <- requesting $ attachWith (\a t -> SendChat ((.id) <$> a) t) (current activeActor) msgEvt
+      r <- requestGame $ attachWith (\a t -> SendChat ((.id) <$> a) t) (current activeActor) msgEvt
       let (err, success) = fanEither r
   widgetHold_ blank $ text . tshow <$> err
   pure ()

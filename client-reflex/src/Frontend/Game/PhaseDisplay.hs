@@ -7,6 +7,7 @@ module Frontend.Game.PhaseDisplay
   , phaseDisplayWidget
   ) where
 
+import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
@@ -14,6 +15,7 @@ import Api.Request qualified as Req
 import Api.Types (Phase (..))
 import Core.Util (tshow)
 
+import Frontend.Game.Class
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
@@ -31,7 +33,7 @@ phaseDisplayWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , ApiRequester t m
+     , MonadGame t m
      )
   => PhaseDisplayConfig t
   -> m ()
@@ -66,7 +68,7 @@ planningControls
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , ApiRequester t m
+     , MonadGame t m
      )
   => PhaseDisplayConfig t
   -> m ()
@@ -80,12 +82,12 @@ planningControls config = do
 
     let req = Req.StartResolution <$ btnClick
 
-    _ <- requesting req
+    _ <- requestGame req
     pure ()
 
 resolutionControls
   :: forall t m
-   . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, ApiRequester t m)
+   . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
   => PhaseDisplayConfig t -> m ()
 resolutionControls _ = do
   divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
@@ -99,5 +101,5 @@ resolutionControls _ = do
 
     let req = Req.EndRound <$ btnClick
 
-    _ <- requesting req
+    _ <- requestGame req
     pure ()

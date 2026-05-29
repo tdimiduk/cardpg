@@ -41,7 +41,9 @@ library
     , foreign-store
     , generic-lens
     , http-types
+    , jsaddle
     , lens
+    , primitive
     , random
     , ref-tf
     , reflex
@@ -75,6 +77,7 @@ library
     Frontend.Game.ActorDetails.DeckViewer
     Frontend.Game.ActorDetails.Stats
     Frontend.Game.ActorLogic
+    Frontend.Game.Class
     Frontend.Game.Common
     Frontend.Game.Hand
     Frontend.Game.PhaseDisplay

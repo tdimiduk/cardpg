@@ -1,11 +1,9 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE OverloadedRecordDot #-}
-
 module Frontend.Game.ActorDetails.Deck
   ( deckWidget
   ) where
 
 import Control.Category ((.))
+import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 import Prelude hiding (filter, id, (.))
@@ -16,6 +14,7 @@ import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..), CoreCardState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
+import Frontend.Game.Class
 
 import Frontend.Icons (iconDeck, iconRefresh)
 import Frontend.Style.Common
@@ -28,8 +27,7 @@ deckWidget
      , MonadHold t m
      , Prerender t m
      , MonadFix m
-     , Requester t m
-     , Request m ~ ApiRequest
+     , MonadGame t m
      )
   => ActorId
   -> Dynamic t ActorState
@@ -78,7 +76,7 @@ deckWidget actorId actorState = do
               , fullWidth = True
               }
             $ text "Draw 1"
-        requesting_ $ Req.DrawCards actorId <$ drawClick
+        void $ requestGame $ Req.DrawCards actorId <$ drawClick
         pure viewDeckClick'
 
       -- Discard Box
@@ -109,7 +107,7 @@ buttonSpacer :: (DomBuilder t m) => m ()
 buttonSpacer = elS "div" (S.css "h-[26px]" "height" "26px") blank
 
 reshuffleButtonRequesting
-  :: (Request m ~ ApiRequest, DomBuilder t m, PostBuild t m, Requester t m)
+  :: (DomBuilder t m, PostBuild t m, MonadGame t m)
   => ActorId -> m ()
 reshuffleButtonRequesting actorId = do
   reshuffleClick <-
@@ -123,4 +121,4 @@ reshuffleButtonRequesting actorId = do
         divS (S.w S.S4 . S.h S.S4) iconRefresh
         text "Reshuffle"
 
-  requesting_ $ Req.Reshuffle actorId <$ reshuffleClick
+  void $ requestGame $ Req.Reshuffle actorId <$ reshuffleClick

@@ -4,6 +4,7 @@ module Frontend.Game.ActorDetails.Consequences
   ( consequencesWidget
   ) where
 
+import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Data.Default ()
 import Reflex.Dom.Core hiding (button)
@@ -16,6 +17,7 @@ import Core.Primitives (ActorId)
 import Core.State (ActorState (..), TableState (..))
 import Core.Util (tshow)
 import Frontend.Game.ActorLogic (actorNextSeverity)
+import Frontend.Game.Class
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
@@ -27,8 +29,7 @@ consequencesWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
-     , Requester t m
-     , Request m ~ ApiRequest
+     , MonadGame t m
      )
   => ActorId
   -> Dynamic t ActorState
@@ -88,4 +89,4 @@ consequencesWidget actorId actorState = do
 
     let addReq = Req.AddConsequence actorId Nothing <$ addClick
 
-    requesting_ $ leftmost [addReq, switchDyn $ fmap leftmost removeEvents]
+    void $ requestGame $ leftmost [addReq, switchDyn $ fmap leftmost removeEvents]

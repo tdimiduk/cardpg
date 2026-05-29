@@ -8,7 +8,6 @@ import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core
 import Prelude hiding (filter, id, map)
 
-import Api.Request (ApiRequest)
 import Core.Primitives (ActorId)
 import Core.State (ActorState)
 
@@ -16,6 +15,7 @@ import Frontend.Game.ActorDetails.Assets (equippedWidget, traitsWidget)
 import Frontend.Game.ActorDetails.Consequences (consequencesWidget)
 import Frontend.Game.ActorDetails.Deck (deckWidget)
 import Frontend.Game.ActorDetails.Stats (statsWidget)
+import Frontend.Game.Class (MonadGame)
 
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
@@ -26,9 +26,8 @@ actorDetailsWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
-     , Requester t m
-     , Request m ~ ApiRequest
      , Prerender t m
+     , MonadGame t m
      )
   => ActorId
   -> Dynamic t ActorState

@@ -29,6 +29,7 @@ import Frontend.Style (stagedActionCard, stagedResourceCard)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 
+import Frontend.Game.Class
 import Frontend.UI.Button
 
 data StagingEvents t = StagingEvents
@@ -44,8 +45,7 @@ stagingWidget
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
-     , Requester t m
-     , Request m ~ ApiRequest
+     , MonadGame t m
      )
   => ActorId
   -> Dynamic t ActionStack
@@ -91,7 +91,7 @@ stagingWidget actorId actionStackDyn validation = do
               (current actionStackDyn)
               commitClick
 
-      _ <- requesting planReq
+      _ <- requestGame planReq
 
       -- Combine cancels (Clicking the ACTION card also cancels/unstages it)
       return $

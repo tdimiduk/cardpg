@@ -16,6 +16,7 @@ import Frontend.Style.DSL qualified as S
 import Api.Request (ApiRequest)
 import Data.Maybe (fromMaybe)
 import Frontend.Game.ActorDetails (actorDetailsWidget)
+import Frontend.Game.Class
 
 import Frontend.Icons (iconClose)
 import Frontend.UI.Button
@@ -61,14 +62,13 @@ sidebarWidget
      , MonadHold t m
      , MonadFix m
      , Adjustable t m
-     , Requester t m
-     , Request m ~ ApiRequest
      , Prerender t m
+     , MonadGame t m
      )
   => Dynamic t (Maybe (Identified ActorId ActorState))
-  -> Dynamic t (Map.Map ActorId ActorState)
   -> m (Event t (Maybe ActorId))
-sidebarWidget selectionDyn actorsMapDyn = do
+sidebarWidget selectionDyn = do
+  actorsMapDyn <- askActors
   divS (S.flexCol . sidebarContainer) $ do
     -- Sidebar Header
     divS sidebarHeader $ do

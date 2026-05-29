@@ -24,6 +24,7 @@ import Core.State
   , plannedActionCards
   )
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
+import Frontend.Game.Class
 import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
@@ -51,23 +52,13 @@ resourceCandidateStyle =
     . S.hover (S.ring S.Amber 5)
     . S.cursorPointer
 
--- | Safely build the ActionStack for staging mode
--- Returns Nothing if the staged action card is not in hand
-buildStagingStack :: ActorState -> StagingState -> Maybe ActionStack
-buildStagingStack actor staging = do
-  actId <- staging.stagedActionId
-  actCard <- find (\(Identified i _) -> i == actId) actor.coreState.hand
-  let resources = filter (\(Identified i _) -> i `Set.member` staging.stagedResourceIds) actor.coreState.hand
-  return $ ActionStack actCard resources
-
 handWidget
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
      , MonadFix m
      , MonadIO m
-     , Requester t m
-     , Request m ~ ApiRequest
+     , MonadGame t m
      )
   => Maybe StagingState
   -- ^ Optional initial staging state

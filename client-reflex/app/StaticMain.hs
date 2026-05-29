@@ -49,6 +49,7 @@ import Frontend.Card
   )
 import Frontend.Catalog (catalogWidget)
 import Frontend.Game.ActorDetails.DeckViewer (DeckViewData (..), deckViewerModal)
+import Frontend.Game.Class (SessionState (..), runGameT)
 import Frontend.Game.Planning (StagingState (..))
 
 import Frontend.Style.Common
@@ -308,9 +309,15 @@ mockGameWidget mStaging initialActorId gameState phaseSetting = do
   let baseActors = gameState.actors
   actorsDyn <- holdDyn baseActors never
   let logsDyn = constDyn gameState.history
+      sessionState =
+        SessionState
+          { actors = actorsDyn
+          , logs = logsDyn
+          , phase = constDyn phaseSetting
+          }
   rec (_, _) <-
         runRequesterT
-          (uiWidget mStaging initialActorId actorsDyn logsDyn (constDyn phaseSetting) (constDyn 1) (constDyn 1))
+          (runGameT sessionState (uiWidget mStaging initialActorId))
           never
   return ()
 
