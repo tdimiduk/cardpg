@@ -103,20 +103,14 @@ getActiveTableCards tblSt =
 computeDefense :: TableState -> Int
 computeDefense tblSt =
   let activeCards = getActiveTableCards tblSt
-      getDef (TCItem item) = fromMaybe 0 item.defense
-      getDef (TCNature nature) = fromMaybe 0 nature.defense
-      getDef (TCTalent talent) = fromMaybe 0 talent.defense
-      maxDef = maximum (0 : map getDef activeCards)
+      maxDef = maximum (0 : map (fromMaybe 0 . (.defense)) activeCards)
    in max 1 maxDef
 
 -- | Pure function to compute resilience from table state
 computeResilience :: TableState -> Int
 computeResilience tblSt =
   let activeCards = getActiveTableCards tblSt
-      getRes (TCItem item) = fromMaybe 0 item.resilience
-      getRes (TCNature nature) = fromMaybe 0 nature.resilience
-      getRes (TCTalent talent) = fromMaybe 0 talent.resilience
-      maxRes = maximum (0 : map getRes activeCards)
+      maxRes = maximum (0 : map (fromMaybe 0 . (.resilience)) activeCards)
    in max 1 maxRes
 
 -- | Pure function to compute next consequence severity from table state

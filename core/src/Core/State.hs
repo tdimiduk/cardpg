@@ -1,3 +1,9 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeApplications #-}
+
 module Core.State where
 
 import Data.Aeson.TH (deriveJSON)
@@ -7,9 +13,12 @@ import Data.Map.Strict qualified as M
 import Data.Maybe (isJust)
 import Data.Text (Text)
 import GHC.Generics (Generic)
+import GHC.Records qualified
 
+import Control.Lens qualified as L
 import Core.Card (CardInstance, ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
 import Core.Json (cardpgJsonDef)
+import Core.NonEmptyText (NonEmptyText)
 import Core.Primitives
   ( CardInstanceId (..)
   , CardLocation
@@ -18,10 +27,12 @@ import Core.Primitives
   , Identified (..)
   , TargetId (..)
   )
+import Core.RichText (RichText)
 import Core.Stats
   ( ResourceType
   , Stats (..)
   )
+import Data.Generics.Product.Fields qualified as GPF
 
 data DefenseDetails = DefenseDetails
   { values :: Stats Int
@@ -213,3 +224,137 @@ isActorPC as = as.actorType == "PC"
 
 identifiedLookup :: (Ord id) => id -> Map id a -> Maybe (Identified id a)
 identifiedLookup key m = Identified key <$> M.lookup key m
+
+-- | Custom GHC.Records.HasField instance to support OverloadedRecordDot (.name) on TableCard
+instance GHC.Records.HasField "name" TableCard NonEmptyText where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"name") x
+    TCNature x -> L.view (GPF.field @"name") x
+    TCTalent x -> L.view (GPF.field @"name") x
+
+-- | Custom GHC.Records.HasField instance to support OverloadedLabels (#name) on TableCard
+instance GPF.HasField "name" TableCard TableCard NonEmptyText NonEmptyText where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"name") x
+        TCNature x -> L.view (GPF.field @"name") x
+        TCTalent x -> L.view (GPF.field @"name") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"name") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"name") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"name") val x)
+
+-- | Custom instances for TableCard's passive field (Maybe Text)
+instance GHC.Records.HasField "passive" TableCard (Maybe Text) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"passive") x
+    TCNature x -> L.view (GPF.field @"passive") x
+    TCTalent x -> L.view (GPF.field @"passive") x
+
+instance GPF.HasField "passive" TableCard TableCard (Maybe Text) (Maybe Text) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"passive") x
+        TCNature x -> L.view (GPF.field @"passive") x
+        TCTalent x -> L.view (GPF.field @"passive") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"passive") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"passive") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"passive") val x)
+
+-- | Custom instances for TableCard's traits field (Maybe (NonEmpty Text))
+instance GHC.Records.HasField "traits" TableCard (Maybe (NonEmpty Text)) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"traits") x
+    TCNature x -> L.view (GPF.field @"traits") x
+    TCTalent x -> L.view (GPF.field @"traits") x
+
+instance GPF.HasField "traits" TableCard TableCard (Maybe (NonEmpty Text)) (Maybe (NonEmpty Text)) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"traits") x
+        TCNature x -> L.view (GPF.field @"traits") x
+        TCTalent x -> L.view (GPF.field @"traits") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"traits") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"traits") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"traits") val x)
+
+-- | Custom instances for TableCard's flavor field (Maybe RichText)
+instance GHC.Records.HasField "flavor" TableCard (Maybe RichText) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"flavor") x
+    TCNature x -> L.view (GPF.field @"flavor") x
+    TCTalent x -> L.view (GPF.field @"flavor") x
+
+instance GPF.HasField "flavor" TableCard TableCard (Maybe RichText) (Maybe RichText) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"flavor") x
+        TCNature x -> L.view (GPF.field @"flavor") x
+        TCTalent x -> L.view (GPF.field @"flavor") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"flavor") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"flavor") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"flavor") val x)
+
+-- | Custom instances for TableCard's defense field (Maybe Int)
+instance GHC.Records.HasField "defense" TableCard (Maybe Int) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"defense") x
+    TCNature x -> L.view (GPF.field @"defense") x
+    TCTalent x -> L.view (GPF.field @"defense") x
+
+instance GPF.HasField "defense" TableCard TableCard (Maybe Int) (Maybe Int) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"defense") x
+        TCNature x -> L.view (GPF.field @"defense") x
+        TCTalent x -> L.view (GPF.field @"defense") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"defense") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"defense") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"defense") val x)
+
+-- | Custom instances for TableCard's resilience field (Maybe Int)
+instance GHC.Records.HasField "resilience" TableCard (Maybe Int) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"resilience") x
+    TCNature x -> L.view (GPF.field @"resilience") x
+    TCTalent x -> L.view (GPF.field @"resilience") x
+
+instance GPF.HasField "resilience" TableCard TableCard (Maybe Int) (Maybe Int) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"resilience") x
+        TCNature x -> L.view (GPF.field @"resilience") x
+        TCTalent x -> L.view (GPF.field @"resilience") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"resilience") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"resilience") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"resilience") val x)
+
+-- | Custom instances for TableCard's tags field (Maybe (NonEmpty Text))
+instance GHC.Records.HasField "tags" TableCard (Maybe (NonEmpty Text)) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"tags") x
+    TCNature x -> L.view (GPF.field @"tags") x
+    TCTalent x -> L.view (GPF.field @"tags") x
+
+instance GPF.HasField "tags" TableCard TableCard (Maybe (NonEmpty Text)) (Maybe (NonEmpty Text)) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"tags") x
+        TCNature x -> L.view (GPF.field @"tags") x
+        TCTalent x -> L.view (GPF.field @"tags") x
+      setter tc val = case tc of
+        TCItem x -> TCItem (L.set (GPF.field @"tags") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"tags") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"tags") val x)
