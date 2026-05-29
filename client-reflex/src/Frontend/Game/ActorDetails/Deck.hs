@@ -8,7 +8,6 @@ import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 import Prelude hiding (filter, id, (.))
 
-import Api.Request (ApiRequest)
 import Api.Request qualified as Req
 import Core.Primitives (ActorId, Identified (..))
 import Core.State (ActorState (..), CoreCardState (..))

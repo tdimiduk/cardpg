@@ -6,7 +6,6 @@ module Frontend.Game.PhaseDisplay
   ( phaseDisplayWidget
   ) where
 
-import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
@@ -18,7 +17,6 @@ import Frontend.Game.Class
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
-import Frontend.Util (ApiRequester)
 
 phaseDisplayWidget
   :: forall t m

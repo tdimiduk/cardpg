@@ -9,7 +9,6 @@ import Control.Monad.Fix (MonadFix)
 import Data.Default ()
 import Reflex.Dom.Core hiding (button)
 
-import Api.Request (ApiRequest)
 import Api.Request qualified as Req
 import Core.Card (ConsequenceCard (..), Identified (..))
 import Core.NonEmptyText (getRawText)
