@@ -18,7 +18,7 @@ import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCard, renderCoreCardWith)
 import Frontend.Game.Class
 import Frontend.Game.Common (staticActionStackWidget)
-import Frontend.Style (cardHandWidth)
+import Frontend.Style (cardHandWidth, stagedResourceCard)
 import Frontend.Style.Common (Style, divS, elS', testId)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
@@ -42,10 +42,10 @@ plannedBadge =
     . S.shadowXl
     . S.z 50
 
--- | Action card hover effect
+-- | Action card hover/layout styling
 actionCardHover :: Style
 actionCardHover =
-  S.z 20 . S.shadow2Xl . S.scale105 . S.transitionTransform
+  S.z 20 . S.shadow2Xl . S.transitionTransform
 
 -- | Card hover for narrative stacks
 narrativeCardHover :: Style
@@ -72,7 +72,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
         staticActionStackWidget
           ( \r -> do
               (eRes, _) <-
-                elS' "div" (cardHandWidth . S.shrink0 . S.transitionAll) Map.empty $
+                elS' "div" stagedResourceCard Map.empty $
                   renderCoreCardWith (CardSettings CardFull) r.content
               return (tag (constant r.id) (domEvent Click eRes))
           )

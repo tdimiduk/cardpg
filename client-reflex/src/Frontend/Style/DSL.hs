@@ -171,6 +171,7 @@ module Frontend.Style.DSL
   , wCardHand
   , mlCardOverlap
   , spaceXActionStackOverlap
+  , spaceXTuckedOverlap
   , spaceY2
   , originBottom
   , translateYNeg4
@@ -214,6 +215,15 @@ spaceXActionStackOverlap rest =
     "space-x-action-stack-overlap"
     ".space-x-action-stack-overlap > * + *"
     [("margin-left", "calc(var(--size-9) * -0.6)")]
+    Nothing
+    : rest
+
+spaceXTuckedOverlap :: Style
+spaceXTuckedOverlap rest =
+  Prop
+    "space-x-tucked-overlap"
+    ".space-x-tucked-overlap > * + *"
+    [("margin-left", "-12.3vh")]
     Nothing
     : rest
 

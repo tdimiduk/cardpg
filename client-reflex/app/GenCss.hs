@@ -174,6 +174,7 @@ staticStyles =
   , ("wCardHand", S.wCardHand [])
   , ("mlCardOverlap", S.mlCardOverlap [])
   , ("spaceXActionStackOverlap", S.spaceXActionStackOverlap [])
+  , ("spaceXTuckedOverlap", S.spaceXTuckedOverlap [])
   , ("spaceY2", S.spaceY2 [])
   , ("originBottom", S.originBottom [])
   , ("translateYNeg4", S.translateYNeg4 [])

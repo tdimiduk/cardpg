@@ -108,7 +108,7 @@ cardHandWidth :: Style
 cardHandWidth = wCardHand
 
 plannedCardOverlap :: Style
-plannedCardOverlap = spaceXActionStackOverlap
+plannedCardOverlap = spaceXTuckedOverlap
 
 --------------------------------------------------------------------------------
 
@@ -231,6 +231,7 @@ stagedResourceCard =
     . shrink0
     . transitionAll
     . duration200
+    . S.hover (S.z 30 . S.translateYNeg4)
 
 -- Note: hover:-translate-y-4, hover:z-20 are variant states
 
