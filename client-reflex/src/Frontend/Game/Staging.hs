@@ -13,6 +13,8 @@ import Core.Primitives (ActorId, CardInstanceId)
 import Core.State (ActionStack (..))
 import Core.Util (tshow)
 
+import Data.Map qualified as Map
+import Data.Maybe (fromMaybe)
 import Data.Monoid (Sum (..))
 import Frontend.Card
   ( CardDisplayMode (..)
@@ -22,14 +24,16 @@ import Frontend.Card
   , renderCoreCardWith
   , renderStatsWith
   )
-import Frontend.Game.Common (cardStackWidget)
 import Frontend.Render.Common (IconMode (..))
-import Frontend.Style (stagedActionCard, stagedResourceCard)
+import Frontend.Style (plannedCardOverlap, stagedActionCard, stagedResourceCard)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
+import Frontend.Style.Layout (rowWith)
 
 import Frontend.Game.Class
+import Frontend.Game.Planning (StableHandKey (..))
 import Frontend.UI.Button
+import Frontend.Util (buildStableKeyMap)
 
 data StagingEvents t = StagingEvents
   { cancel :: Event t ()
@@ -132,33 +136,44 @@ stagedCardsRow
   -> m (Event t (), Event t CardInstanceId)
 stagedCardsRow actionStackDyn = do
   divS (S.flex . S.justifyCenter) $ do
-    -- Extract resources and action from the ActionStack dynamic
     let stagedResourcesDyn = fmap (.resources) actionStackDyn
         stagedActionDyn = fmap (.actionCard) actionStackDyn
 
-    (clickResource, clickAction) <-
-      cardStackWidget
-        ( \rDyn -> do
-            let stagedResourceCls = classNames stagedResourceCard
-            (eRes, _) <- elDynAttr'
-              "div"
-              (constDyn ("class" =: stagedResourceCls <> testId "staged-resource"))
-              $ do
-                dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
-            return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
-        )
-        ( \aDyn -> do
-            let stagedActionCls = classNames stagedActionCard
-            (eAct, _) <- elDynAttr'
-              "div"
-              (constDyn ("class" =: stagedActionCls <> testId "staged-action"))
-              $ do
-                dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) aDyn
-            return (domEvent Click eAct)
-        )
-        stagedResourcesDyn
-        stagedActionDyn
-    return (clickAction, clickResource)
+    resourceKeyMapDyn <- buildStableKeyMap (.id) stagedResourcesDyn
+
+    let stagedResourceMapDyn =
+          ( \vis resourceKeys ->
+              Map.fromList
+                [ (StableHandKey (-seqNum) c.id, c)
+                | c <- vis
+                , let seqNum = fromMaybe 0 (Map.lookup c.id resourceKeys)
+                ]
+          )
+            <$> stagedResourcesDyn
+            <*> resourceKeyMapDyn
+
+    rowWith (S.itemsCenter . plannedCardOverlap) $ do
+      clickResourceMapDyn <- listWithKey stagedResourceMapDyn $ \_key rDyn -> do
+        let stagedResourceCls = classNames stagedResourceCard
+        (eRes, _) <- elDynAttr'
+          "div"
+          (constDyn ("class" =: stagedResourceCls <> testId "staged-resource"))
+          $ do
+            dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
+        return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
+
+      let clickResource = switchDyn (leftmost . Map.elems <$> clickResourceMapDyn)
+
+      -- Action card (top/right)
+      let stagedActionCls = classNames stagedActionCard
+      (eAct, _) <- elDynAttr'
+        "div"
+        (constDyn ("class" =: stagedActionCls <> testId "staged-action"))
+        $ do
+          dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) stagedActionDyn
+      let clickAction = domEvent Click eAct
+
+      return (clickAction, clickResource)
 
 stagingControls
   :: (DomBuilder t m, PostBuild t m)

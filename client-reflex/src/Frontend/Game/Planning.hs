@@ -2,6 +2,7 @@
 
 module Frontend.Game.Planning
   ( StagingState (..)
+  , StableHandKey (..)
   , mkPlanBuilderLogic
   , StagUpdate (..)
   , applyUpdate
@@ -25,6 +26,18 @@ data StagingState = StagingState
   , stagedResourceIds :: !(Set CardInstanceId)
   }
   deriving (Eq, Show)
+
+-- | Represents a card's stable position in the hand.
+-- The Int is a monotonic sequence number that governs stable rendering order.
+-- The CardInstanceId preserves the card's DOM identity for transition animations.
+data StableHandKey = StableHandKey
+  { sequenceNum :: !Int
+  , instanceId :: !CardInstanceId
+  }
+  deriving (Eq)
+
+instance Ord StableHandKey where
+  compare k1 k2 = compare k1.sequenceNum k2.sequenceNum
 
 data StagUpdate
   = SelectAction CardInstanceId
