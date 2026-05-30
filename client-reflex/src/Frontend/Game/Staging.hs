@@ -59,17 +59,13 @@ stagingWidget actorId actionStackDyn validation = do
   componentS
     "action-staging"
     ( S.flexCol
-        . S.absolute
-        . S.bottom (S.Rem 20)
-        . S.left (S.Percent 50)
-        . S.css "-translate-x-1/2" "transform" "translateX(-50%)"
         . S.pointerEventsAuto
         . S.itemsCenter
         . S.gap S.S3
         . S.css "min-w-[320px]" "min-width" "320px"
         . S.cls "altar-glowing-gold"
         . S.backdropBlurMd
-        . S.rounded3Xl
+        . S.roundedXl
         . S.p S.S4
     )
     $ do

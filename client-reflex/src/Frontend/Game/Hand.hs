@@ -95,26 +95,30 @@ handWidget mInitialStaging actorDyn = do
           )
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
-            (sel, tog) <- do
+            (sel, tog, overlayEvts) <- do
               -- Left: Planned Action
               divS (S.flex1 . S.flex . S.justifyCenter) $ do
                 dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
                   (aid, Just plan) -> plannedActionWidget (Identified aid plan)
                   _ -> blank
 
-              -- Center: Hand
-              (s, t) <-
-                handCardsWidget safeActor stagingStackDyn plannedActionDyn keyMapDyn
+              -- Center: Hand & Staging Container
+              (s, t, oEvts) <- divS (S.relative . S.flexCol . S.itemsCenter . S.pointerEventsNone . S.gap S.S4) $ do
+                -- Layer 2: Staging Overlay (placed above hand cards)
+                o <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
+                  (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
+                  _ -> return (StagingEvents never never never)
+
+                -- Center: Hand Cards
+                (handS, handT) <-
+                  handCardsWidget safeActor stagingStackDyn plannedActionDyn keyMapDyn
+
+                return (handS, handT, o)
 
               -- Right: Spacer
               divS S.flex1 blank
 
-              return (s, t)
-
-            -- Layer 2: Staging Overlay
-            overlayEvts <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
-              (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
-              _ -> return (StagingEvents never never never)
+              return (s, t, oEvts)
 
             -- Flatten events
             cancel <- switchHold never (fmap (.cancel) overlayEvts)

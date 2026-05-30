@@ -158,7 +158,6 @@ costBase =
     . h (Em 1.4)
     . mt (Em (-0.1))
     . mb (Em (-0.1))
-    . z 10
     . flex
     . itemsCenter
     . justifyCenter
