@@ -350,12 +350,15 @@ mockGameWidgetWithStaging gameState = do
               <|> fmap (.id) (listToMaybe hand)
           mResource1 = fmap (.id) (List.find (\c -> cardName c == "Lightning Dodge") hand)
           mResource2 = fmap (.id) (List.find (\c -> cardName c == "Blinding Sun") hand)
-          mockStagingState =
-            StagingState
-              { stagedActionId = mActionId
-              , stagedResourceIds = Set.fromList (catMaybes [mResource1, mResource2])
-              }
-      mockGameWidget (Just mockStagingState) (Just aid) gameState Planning
+          mockStagingState = case mActionId of
+            Nothing -> Nothing
+            Just actId ->
+              Just $
+                StagingState
+                  { stagedActionId = actId
+                  , stagedResourceIds = Set.fromList (catMaybes [mResource1, mResource2])
+                  }
+      mockGameWidget mockStagingState (Just aid) gameState Planning
 
 -- | Specialized mock widget that overlays the Deck Viewer modal (Draw Pile)
 mockGameWidgetWithDeckView
