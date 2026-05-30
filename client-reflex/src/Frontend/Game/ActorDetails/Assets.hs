@@ -12,7 +12,6 @@ import Data.Text (Text)
 import Reflex.Dom.Core
 import Prelude hiding (filter, id, map)
 
-import Core.Card (ItemCard (..), NatureCard (..), TalentCard (..))
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (EquipSlot (..), Identified (..))
 import Core.State (ActorState (..), AssetState (..), TableCard (..), TableState (..))

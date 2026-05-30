@@ -19,7 +19,6 @@ module Frontend.Style
   , cardBase
   , cardScreen
   , cardPrint
-  , cardRow
   , cardHandWidth
   , standardCardSize
   , standardCardAspectRatio
@@ -39,7 +38,6 @@ module Frontend.Style
   , costBase
   , costScreen
   , costPrint
-  , costRow
 
     -- * Textbox Style Groups
   , textboxBase
@@ -99,19 +97,6 @@ cardPrint =
     . S.p (S.Mm 2.5)
 
 -- ** Compact Variants
-
--- | Cost hexagon styling for CardRow (explicit small size)
-costRow :: Style
-costRow = S.w S.S4 . S.h S.S4 . S.text S.Gray 2
-
-cardRow :: Style
-cardRow =
-  S.flexRow
-    . S.itemsCenter
-    . S.gap S.S1
-    . S.p S.S1
-    . S.cls "obsidian-panel"
-    . rounded
 
 standardCardSize :: Style
 standardCardSize = wCard . hCard
