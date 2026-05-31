@@ -6,6 +6,8 @@ module Frontend.Icons
   , iconClose
   , iconDeck
   , iconRefresh
+  , iconDefense
+  , iconResilience
   ) where
 
 import Data.Text (Text)
@@ -104,3 +106,35 @@ iconRefresh = iconBase "lucide-refresh-cw" $ do
   svgPath "M21 3v5h-5"
   svgPath "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
   svgPath "M8 16H3v5"
+
+-- | Dark Fantasy Shield Icon for Defense
+iconDefense :: (DomBuilder t m) => m ()
+iconDefense = do
+  let attrs =
+        "width" =: "100%"
+          <> "height" =: "100%"
+          <> "viewBox" =: "0 0 512 512"
+          <> "fill" =: "currentColor"
+          <> "stroke" =: "none"
+          <> "class" =: "icon-defense"
+  svgEl "svg" attrs $
+    svgPath
+      "M256 16c25 24 100 72 150 72v96c0 96-75 240-150 312-75-72-150-216-150-312V88c50 0 125-48 150-72z"
+
+-- | Dark Fantasy Sprout Icon for Resilience
+iconResilience :: (DomBuilder t m) => m ()
+iconResilience = iconSprout
+
+-- | Nature Sprout Icon for Resilience
+iconSprout :: (DomBuilder t m) => m ()
+iconSprout = do
+  let attrs =
+        "width" =: "100%"
+          <> "height" =: "100%"
+          <> "viewBox" =: "0 0 512 512"
+          <> "fill" =: "currentColor"
+          <> "stroke" =: "none"
+          <> "class" =: "icon-sprout"
+  svgEl "svg" attrs $
+    svgPath
+      "M255.688 18S198.118 84.876 199 148.875c.11 7.924 1.104 15.806 2.78 23.53 23.498 25.825 43.035 57.618 58.19 95 13.85-31.163 30.07-60.016 50.03-84.967 3.764-12.817 6.056-26.13 5.875-39.313-.88-64-60.188-125.125-60.188-125.125zM24.094 111.47c.138 1.77.174 2.98.406 5.186a251.39 251.39 0 0 0 6.813 37.22c7.703 29.27 22.952 64.12 52.25 87.81 16.455 13.308 40.276 20.756 64.593 27.064s48.935 11.302 67.594 23.156c14.984 9.52 24.296 24.148 28.375 40.813 4.08 16.663 3.338 35.387-.72 55.06-7.072 34.304-24.28 71.737-46.874 105.908h126.44c-22.767-34.427-39.985-72.006-46.94-106.438-3.982-19.722-4.637-38.51-.436-55.188 4.2-16.677 13.665-31.284 28.75-40.78 18.79-11.83 43.49-16.743 67.812-22.938 24.322-6.196 48.034-13.46 64.313-26.625 47.514-38.425 57.337-105.795 59.405-130.19-61.585 1.928-106.926 21.097-142.406 52.19-37.42 32.788-64.065 79.142-85.345 132.436l-5.28 13.156-10.033-10.03-1.53-1.532-.688-2.063C210.397 177.51 133.342 115.054 24.094 111.47z"
