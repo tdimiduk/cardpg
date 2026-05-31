@@ -10,6 +10,8 @@ These precepts define the fundamental user-facing experience of the game's resol
 
 **Rationale:** This is the central mechanical implementation of our "Fail Forward & Narrative Momentum" guiding principle. It ensures the story never stalls on a single bad roll.
 
+**Design Nuance:** "Success at a cost" must never feel like a flat mechanical tax. The game must provide clear pathways for players to actively mitigate or bypass these costs through clever positioning, proactive planning, and tactical restraint. The cost should feel like a natural consequence of a deliberate choice, not an unavoidable punishment for playing.
+
 ### Design for Narrative Possibility, Not Game States
 
 **Core Principle:** An action's viability should be determined by its narrative context and its cost, not by an abstract game state. If a player can describe how their character performs an action and is willing to pay the associated costs and risk the consequences, the rules should facilitate that action.
@@ -70,6 +72,8 @@ These precepts guide the design of player-facing content like cards, consequence
 **Core Principle:** Harm and its resolution should be modeled as a tangible, multi-stage process that creates new tactical and narrative challenges, never as simple numerical attrition.
 
 **Rationale:** This supports the "Illusion of Lethality" and "Fail Forward" principles by using `Status Cards` to model accumulating wear and `Condition Cards` to represent specific tactical problems. Furthermore, it establishes that character death is the ultimate outcome of a telegraphed _process_, not a random event.
+
+**Design Nuance:** While injuries are tactile and impactful, they are structurally designed to be mended. In the default game mode, injuries are temporary narrative hurdles that drive the plot of recovery, rather than permanent, disabling scars.
 
 ### Design Advancement and Archetypes for Tangibility
 

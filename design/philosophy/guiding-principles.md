@@ -7,7 +7,7 @@
 - **Ludonarrative Harmony:** The game's rules should be intuitive. The mechanically optimal choice should align with what makes the most sense in the story.
 - **Casual Realism:** The rules should simulate reality in an elegant way that isn't tedious for players.
 - **Player Agency:** The system empowers players by defining the cost and potential consequences of an action, rather than prescribing when an action is allowed. Outcomes may be unpredictable, but players feel in control of their choices and their character's fate.
-- **Meaningful Choices Emerge from Tradeoffs:** The game is designed to create difficult decisions by presenting players with compelling tradeoffs. This is achieved by combining two core pressures: the internal pressure of resource management (the state of a character's deck) and the external pressure of a dynamic world (driven by `Clocks` and `Fronts`). Players are constantly forced to weigh the cost of action against the cost of inaction, leading to strategic, narrative-rich choices.
+- **Meaningful Choices Emerge from Tradeoffs and Pacing:** The game creates tension not by punishing players, but by demanding deliberate choices. Players hold the agency to actively mitigate and manage costs: they can balance aggressive strikes against defensive card hoarding, choose to push through fatigue or pause to rest (knowing the world's clocks and fronts will keep moving while they wait), or spend time preparing and investigating to break a complex hazard down into low-risk, bite-sized tasks.
 
 # Core Philosophy
 
@@ -19,7 +19,7 @@ The game's systems must always propel the story forward, never allowing it to st
 
 Characters are heroic and capable of mighty deeds, but they are not beings of limitless power. Their incredible abilities are grounded by the real, tangible costs of exertion.
 
-- **Cards as a Universal Resource:** A character's 24-card deck is their sole resource for all actions, unifying the concepts of stamina, focus, and health into a single, constantly cycling pool.
+- **Cards as a Unified Character System:** A character's 24-card deck is their sole resource, elegantly integrating their **Training** (skills and attributes printed on the cards), their **Tactical Focus** (the immediate options in their hand), and their **Endurance** (the attrition and fatigue cycle of the draw pile) into a single, cohesive engine.
 
 ## The Illusion of Lethality
 
@@ -34,6 +34,7 @@ Injuries have weight, and the process of healing is a meaningful part of the gam
 
 - **Healing Transforms, It Does Not Erase:** Healing is a process of transforming an injury's cost, not simply deleting it (e.g., a Wound becomes Fatigue).
 - **Crisis Healing is Mitigation, Not Restoration:** Abilities used in Crisis Time can provide temporary relief but cannot provide true healing.
+- **Injuries are Narrative Recovery Arcs:** In the default game setting, injuries are significant tactical hurdles—represented by physical cards on the table—but they are fully treatable and designed to be mended. They are narrative obstacles that force the party to adapt, protect the wounded hero, and seek out treatment, rather than permanent character-ruining nerfs.
 
 ## System Architecture
 
