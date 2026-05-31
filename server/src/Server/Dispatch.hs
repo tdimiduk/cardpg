@@ -8,6 +8,7 @@ import System.Random (StdGen)
 import System.Random.Stateful (uniform)
 
 import Core.Logic.Deck qualified as Logic
+import Core.Logic.Monad (GameM)
 import Core.Logic.Planning qualified as Logic
 import Core.Logic.Status qualified as Logic
 import Core.Primitives (ActorId)
@@ -17,6 +18,7 @@ import Core.State
   , ChallengeSource (..)
   , PlannedAction (PPass)
   )
+import Data.Text (Text)
 import Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
 import Server.Presenter (eventToLogs)
@@ -142,6 +144,10 @@ processCommand cmd game =
     Pass tid -> runStandard tid Logic.passAction
     DiscardCards tid cids -> runStandard tid (Logic.discardCards cids)
   where
+    runStandard
+      :: ActorId
+      -> GameM StdGen ()
+      -> State StdGen (GameState, Either Text [StateUpdate], [ActorGameEvent], [LogEntry])
     runStandard targetId action = do
       (maybeEvents, newGame) <- runActorAction targetId action game
       case maybeEvents of
