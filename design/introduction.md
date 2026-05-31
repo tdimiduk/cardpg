@@ -6,7 +6,7 @@ In this game, the story never stalls. The central question is not if you will su
 
 # Trust the Story
 
-The system is designed to be intuitive. An action that would make sense in a book or a film will be an effective choice in the game. You are encouraged to think like your character and engage with the world's fiction. If you can describe a dramatic or clever action, the rules exist to help determine what happens next, not to stand in your way.
+The system is designed to be intuitive. An action that would make sense in real life (with the addition of magic) will be an effective choice in the game. You are encouraged to think like your character and engage with the world's fiction. If you can describe a dramatic or clever action, the rules exist to help determine what happens next, not to stand in your way.
 
 # Your Deck is Your Resolve
 
