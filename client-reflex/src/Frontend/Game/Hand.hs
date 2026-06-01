@@ -7,12 +7,10 @@ module Frontend.Game.Hand where
 
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
-import Data.List (find)
-import Data.Maybe (isJust)
-import Data.Set qualified as Set
+import Data.Map qualified as Map
+import Data.Maybe (fromMaybe, isJust)
 import Reflex.Dom.Core
 
-import Api.Request (ApiRequest (..))
 import Core.Card (CardInstance, CoreCard (..), Identified (..))
 
 import Core.Primitives (ActorId, CardInstanceId)
@@ -32,6 +30,7 @@ import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
 import Frontend.Style qualified as FS
 import Frontend.Style.Common (classNames, divS)
 import Frontend.Style.DSL as S
+import Frontend.Util (buildStableKeyMap)
 
 -- | Styles for hand card hover interactions (transformer style)
 cardHoverStyle :: Style
@@ -67,6 +66,9 @@ handWidget
 handWidget mInitialStaging actorDyn = do
   let safeActor = (.content) <$> actorDyn
       actorId = (.id) <$> actorDyn
+      handDyn = (.coreState.hand) <$> safeActor
+
+  keyMapDyn <- buildStableKeyMap (.id) handDyn
 
   rec (stagingState, validation) <-
         mkPlanBuilderLogic mInitialStaging safeActor selectEvt toggleEvt clearEvt
@@ -93,26 +95,30 @@ handWidget mInitialStaging actorDyn = do
           )
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
-            (sel, tog) <- do
+            (sel, tog, overlayEvts) <- do
               -- Left: Planned Action
               divS (S.flex1 . S.flex . S.justifyCenter) $ do
                 dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
                   (aid, Just plan) -> plannedActionWidget (Identified aid plan)
                   _ -> blank
 
-              -- Center: Hand
-              (s, t) <-
-                handCardsWidget safeActor stagingStackDyn plannedActionDyn
+              -- Center: Hand & Staging Container
+              (s, t, oEvts) <- divS (S.relative . S.flexCol . S.itemsCenter . S.pointerEventsNone . S.gap S.S4) $ do
+                -- Layer 2: Staging Overlay (placed above hand cards)
+                o <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
+                  (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
+                  _ -> return (StagingEvents never never never)
+
+                -- Center: Hand Cards
+                (handS, handT) <-
+                  handCardsWidget safeActor stagingStackDyn plannedActionDyn keyMapDyn
+
+                return (handS, handT, o)
 
               -- Right: Spacer
               divS S.flex1 blank
 
-              return (s, t)
-
-            -- Layer 2: Staging Overlay
-            overlayEvts <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
-              (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
-              _ -> return (StagingEvents never never never)
+              return (s, t, oEvts)
 
             -- Flatten events
             cancel <- switchHold never (fmap (.cancel) overlayEvts)
@@ -138,8 +144,10 @@ handCardsWidget
   -- ^ Staging Stack (defines staging mode)
   -> Dynamic t (Maybe PlannedAction)
   -- ^ Planned Action (defines hidden cards)
+  -> Dynamic t (Map.Map CardInstanceId Int)
+  -- ^ Stable sequence mappings for cards
   -> m (Event t CardInstanceId, Event t CardInstanceId)
-handCardsWidget actor stagingStack plannedAction = do
+handCardsWidget actor stagingStack plannedAction keyMapDyn = do
   divS (S.flex . S.justifyCenter . S.itemsEnd . S.px S.S4 . S.pointerEventsAuto) $ do
     let visibleHand =
           (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
@@ -147,8 +155,19 @@ handCardsWidget actor stagingStack plannedAction = do
             <*> stagingStack
             <*> plannedAction
 
-    cardClicks <- divS (S.flex . S.itemsEnd . transitionOpacity . S.duration200) $ do
-      simpleList visibleHand $ \cardDyn -> do
+        keyedHandMapDyn =
+          ( \vis handKeys ->
+              Map.fromList
+                [ (StableHandKey seqNum c.id, c)
+                | c <- vis
+                , let seqNum = fromMaybe 0 (Map.lookup c.id handKeys)
+                ]
+          )
+            <$> visibleHand
+            <*> keyMapDyn
+
+    cardClicksDyn <- divS (S.flex . S.itemsEnd . transitionOpacity . S.duration200) $ do
+      listWithKey keyedHandMapDyn $ \_key cardDyn -> do
         let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
             isSelected = zipDynWith checkIsSelected stagingStack cardDyn
 
@@ -173,8 +192,10 @@ handCardsWidget actor stagingStack plannedAction = do
 
         return (effectiveClick, cardDyn)
 
-    let flatClick = switchDyn $ fmap (leftmost . map (\(e, c) -> tag (current c) e)) cardClicks
-        flatClickId = fmap (.id) flatClick
+    let clickEventsMapDyn =
+          ffor cardClicksDyn $ \m ->
+            Map.elems $ Map.mapWithKey (\_ (clickEvt, cardDyn) -> tag (current (fmap (.id) cardDyn)) clickEvt) m
+        flatClickId = switchDyn (leftmost <$> clickEventsMapDyn)
 
     -- Select Event: Only fires when NOT in staging mode
     let selectEvent =
@@ -193,9 +214,6 @@ handCardsWidget actor stagingStack plannedAction = do
     return (selectEvent, toggleEvent)
 
 -- Additional atoms needed
-transitionOpacity :: Style
-transitionOpacity = S.css "transition-opacity" "transition-property" "opacity"
-
 -- Re-export styles from Frontend.Style as transformers
 cardHandWidth :: Style
 cardHandWidth = FS.cardHandWidth

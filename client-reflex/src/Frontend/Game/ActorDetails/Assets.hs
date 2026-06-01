@@ -12,7 +12,6 @@ import Data.Text (Text)
 import Reflex.Dom.Core
 import Prelude hiding (filter, id, map)
 
-import Core.Card (ItemCard (..), NatureCard (..), TalentCard (..))
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (EquipSlot (..), Identified (..))
 import Core.State (ActorState (..), AssetState (..), TableCard (..), TableState (..))
@@ -90,13 +89,7 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
                   let nameDyn = fmap fst itemDyn
                   divS (S.textXs . S.px S.S1 . S.fontBold) $
                     dynText $
-                      fmap
-                        ( \case
-                            TCItem (ItemCard{name}) -> getRawText name
-                            TCNature (NatureCard{name}) -> getRawText name
-                            TCTalent (TalentCard{name}) -> getRawText name
-                        )
-                        nameDyn
+                      fmap (\c -> getRawText c.name) nameDyn
 
                   -- Display Detail (Slot or Type)
                   divS (S.textXs . S.text S.Gray 4 . S.css "italic" "font-style" "italic") $

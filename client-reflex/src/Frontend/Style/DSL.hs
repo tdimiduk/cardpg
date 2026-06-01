@@ -171,6 +171,7 @@ module Frontend.Style.DSL
   , wCardHand
   , mlCardOverlap
   , spaceXActionStackOverlap
+  , spaceXTuckedOverlap
   , spaceY2
   , originBottom
   , translateYNeg4
@@ -181,6 +182,7 @@ module Frontend.Style.DSL
   , transitionAll
   , transitionTransform
   , transitionColors
+  , transitionOpacity
   , duration200
   , easeOut
 
@@ -213,6 +215,15 @@ spaceXActionStackOverlap rest =
     "space-x-action-stack-overlap"
     ".space-x-action-stack-overlap > * + *"
     [("margin-left", "calc(var(--size-9) * -0.6)")]
+    Nothing
+    : rest
+
+spaceXTuckedOverlap :: Style
+spaceXTuckedOverlap rest =
+  Prop
+    "space-x-tucked-overlap"
+    ".space-x-tucked-overlap > * + *"
+    [("margin-left", "-12.3vh")]
     Nothing
     : rest
 
@@ -352,6 +363,7 @@ data Size
   | Px Double
   | Percent Double
   | Mm Double
+  | Em Double
   deriving (Show, Eq)
 
 standardSizes :: [Size]
@@ -382,6 +394,7 @@ sizeName = \case
   Px d -> "px-" <> tshow (round d :: Int)
   Percent d -> "pct-" <> tshow (round d :: Int)
   Mm d -> cleanShow d <> "mm"
+  Em d -> "em-" <> cleanShow d
   where
     cleanShow d =
       let s = tshow d
@@ -412,6 +425,7 @@ sizeValue = \case
   Px d -> tshow d <> "px"
   Percent d -> tshow d <> "%"
   Mm d -> tshow d <> "mm"
+  Em d -> tshow d <> "em"
 
 w :: Size -> Style
 w s = css ("w-" <> sizeName s) "width" (sizeValue s)
@@ -758,7 +772,7 @@ wCardHand :: Style
 wCardHand = w (Vh 16)
 
 mlCardOverlap :: Style
-mlCardOverlap = css "-ml-card-overlap" "margin-left" "-12vh"
+mlCardOverlap = ml (Vh (-12))
 
 originBottom :: Style
 originBottom = css "origin-bottom" "transform-origin" "bottom"
@@ -781,6 +795,9 @@ transitionAll = css "transition-all" "transition-property" "all"
 
 transitionTransform :: Style
 transitionTransform = css "transition-transform" "transition-property" "transform"
+
+transitionOpacity :: Style
+transitionOpacity = css "transition-opacity" "transition-property" "opacity"
 
 transitionColors :: Style
 transitionColors =

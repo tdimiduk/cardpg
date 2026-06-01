@@ -76,7 +76,6 @@ library
     Frontend.Game.ActorDetails.Deck
     Frontend.Game.ActorDetails.DeckViewer
     Frontend.Game.ActorDetails.Stats
-    Frontend.Game.ActorLogic
     Frontend.Game.Class
     Frontend.Game.Common
     Frontend.Game.Hand

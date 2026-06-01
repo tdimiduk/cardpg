@@ -55,8 +55,8 @@ deckWidget actorId actorState = do
       let viewButton =
             button
               def
-                { variant = constDyn VariantGhost
-                , size = constDyn SizeSmall
+                { variant = VariantGhost
+                , size = SizeSmall
                 , extraStyle =
                     S.absolute . S.top S.S1 . S.right S.S1 . S.text S.Gray 6 . S.hover (S.text S.Indigo 5)
                 }
@@ -70,8 +70,8 @@ deckWidget actorId actorState = do
         drawClick <-
           button
             def
-              { variant = constDyn VariantSecondary
-              , size = constDyn SizeSmall
+              { variant = VariantSecondary
+              , size = SizeSmall
               , fullWidth = True
               }
             $ text "Draw 1"
@@ -112,8 +112,8 @@ reshuffleButtonRequesting actorId = do
   reshuffleClick <-
     button
       def
-        { variant = constDyn VariantSecondary
-        , size = constDyn SizeSmall
+        { variant = VariantSecondary
+        , size = SizeSmall
         , extraStyle = S.gap S.S1
         }
       $ do

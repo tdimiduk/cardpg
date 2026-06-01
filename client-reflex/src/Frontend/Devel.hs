@@ -16,6 +16,8 @@ import Network.Wai (Application, pathInfo, requestMethod, responseLBS)
 import Network.Wai.Application.Static (defaultWebAppSettings, staticApp)
 import Network.Wai.Handler.Warp (run)
 import Network.WebSockets (defaultConnectionOptions)
+import Data.Maybe (fromMaybe)
+import Data.UUID.Types (fromString)
 import Reflex.Dom.Core
 import System.Environment (lookupEnv)
 import WaiAppStatic.Types (MaxAge (NoMaxAge), ssMaxAge)
@@ -57,8 +59,8 @@ devMain = do
   stopServer
 
   putStrLn "Starting CardPG Reflex Client ..."
-  -- Hardcoding something to avoid the UUID dependency
-  let clientId = read "00000000-0000-0000-0000-000000000001"
+  -- Safe parsing of UUID
+  let clientId = fromMaybe (error "Invalid hardcoded UUID") $ fromString "00000000-0000-0000-0000-000000000001"
   port <- maybe 3003 read <$> lookupEnv "JSADDLE_WARP_PORT"
   putStrLn $ "Running jsaddle-warp server on port " <> show port
 

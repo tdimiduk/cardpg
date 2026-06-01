@@ -10,11 +10,15 @@
 --
 -- This module retains component-specific style groups.
 module Frontend.Style
-  ( -- * Card Style Groups
-    cardBase
+  ( -- * Re-exports
+    module Frontend.Style.DSL
+  , module Frontend.Style.Common
+  , module Frontend.Style.Layout
+
+    -- * Card Style Groups
+  , cardBase
   , cardScreen
   , cardPrint
-  , cardRow
   , cardHandWidth
   , standardCardSize
   , standardCardAspectRatio
@@ -34,7 +38,6 @@ module Frontend.Style
   , costBase
   , costScreen
   , costPrint
-  , costRow
 
     -- * Textbox Style Groups
   , textboxBase
@@ -47,8 +50,10 @@ module Frontend.Style
   , stagedResourceCard
   ) where
 
+import Frontend.Style.Common
 import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
+import Frontend.Style.Layout
 
 --------------------------------------------------------------------------------
 
@@ -93,19 +98,6 @@ cardPrint =
 
 -- ** Compact Variants
 
--- | Cost hexagon styling for CardRow (explicit small size)
-costRow :: Style
-costRow = S.w S.S4 . S.h S.S4 . S.text S.Gray 2
-
-cardRow :: Style
-cardRow =
-  S.flexRow
-    . S.itemsCenter
-    . S.gap S.S1
-    . S.p S.S1
-    . S.cls "obsidian-panel"
-    . rounded
-
 standardCardSize :: Style
 standardCardSize = wCard . hCard
 
@@ -116,7 +108,7 @@ cardHandWidth :: Style
 cardHandWidth = wCardHand
 
 plannedCardOverlap :: Style
-plannedCardOverlap = spaceXActionStackOverlap
+plannedCardOverlap = spaceXTuckedOverlap
 
 --------------------------------------------------------------------------------
 
@@ -162,11 +154,10 @@ namePrint = textBlack
 
 costBase :: Style
 costBase =
-  css "w-1.4em" "width" "1.4em"
-    . css "h-1.4em" "height" "1.4em"
-    . css "-mt-0.1em" "margin-top" "-0.1em"
-    . css "-mb-0.1em" "margin-bottom" "-0.1em"
-    . z 10
+  w (Em 1.4)
+    . h (Em 1.4)
+    . mt (Em (-0.1))
+    . mb (Em (-0.1))
     . flex
     . itemsCenter
     . justifyCenter
@@ -240,6 +231,7 @@ stagedResourceCard =
     . shrink0
     . transitionAll
     . duration200
+    . S.hover (S.z 30 . S.translateYNeg4)
 
 -- Note: hover:-translate-y-4, hover:z-20 are variant states
 

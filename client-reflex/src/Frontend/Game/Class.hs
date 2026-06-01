@@ -10,7 +10,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Frontend.Game.Class
-  ( SessionState (..)
+  ( SessionState (SessionState)
   , MonadGame (..)
   , GameT (..)
   , runGameT

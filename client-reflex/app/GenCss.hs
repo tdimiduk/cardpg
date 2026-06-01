@@ -174,6 +174,7 @@ staticStyles =
   , ("wCardHand", S.wCardHand [])
   , ("mlCardOverlap", S.mlCardOverlap [])
   , ("spaceXActionStackOverlap", S.spaceXActionStackOverlap [])
+  , ("spaceXTuckedOverlap", S.spaceXTuckedOverlap [])
   , ("spaceY2", S.spaceY2 [])
   , ("originBottom", S.originBottom [])
   , ("translateYNeg4", S.translateYNeg4 [])
@@ -294,6 +295,7 @@ parseSize = do
              , try $ S.Vw <$> (string "Vw" *> space *> parseFloat)
              , try $ S.Percent <$> (string "Percent" *> space *> parseFloat)
              , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
+             , try $ S.Em <$> (string "Em" *> space *> parseFloat)
              , try $ S.Rem . (/ 4) . fromIntegral <$> parseInt -- Support legacy inline numbers for now
              ]
 
@@ -339,7 +341,9 @@ parseColorToneAlpha = do
   return (c, n, a)
 
 parseFloat :: Parser Double
-parseFloat = L.signed space L.float <|> (fromIntegral <$> parseInt)
+parseFloat = (char '(' *> space *> pFloat <* space <* char ')') <|> pFloat
+  where
+    pFloat = L.signed space L.float <|> (fromIntegral <$> parseInt)
 
 parseStringLiteral :: Parser Text
 parseStringLiteral = do

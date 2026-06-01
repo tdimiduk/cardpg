@@ -46,55 +46,44 @@ data ButtonSize
 
 -- | Configuration for the button widget
 data ButtonConfig t = ButtonConfig
-  { variant :: Dynamic t ButtonVariant
-  , size :: Dynamic t ButtonSize
+  { variant :: ButtonVariant
+  , size :: ButtonSize
   , disabled :: Dynamic t Bool
   , fullWidth :: Bool
   , testId :: Maybe T.Text
   -- ^ Optional test ID for automation
   , extraStyle :: Style
   -- ^ Additional custom styles
-  , attributes :: Dynamic t (Map.Map T.Text T.Text)
+  , attributes :: Map.Map T.Text T.Text
   -- ^ Arbitrary HTML attributes
   }
 
 instance (Reflex t) => Default (ButtonConfig t) where
   def =
     ButtonConfig
-      { variant = constDyn VariantPrimary
-      , size = constDyn SizeMedium
+      { variant = VariantPrimary
+      , size = SizeMedium
       , disabled = constDyn False
       , fullWidth = False
       , testId = Nothing
       , extraStyle = id
-      , attributes = constDyn mempty
+      , attributes = mempty
       }
 
 sizeStyle :: ButtonSize -> Style
 sizeStyle = \case
-  SizeSmall -> px S2 . py S1 . textXs
-  SizeMedium -> px S4 . py S2 . textSm
-  SizeLarge -> px S6 . py S3 . textBase
+  SizeSmall -> px S2 . py S1 . textSm
+  SizeMedium -> px S4 . py S2 . textBase
+  SizeLarge -> px S6 . py S3 . textLg
 
 variantStyle :: ButtonVariant -> Style
 variantStyle = \case
   VariantPrimary ->
-    S.bg S.Indigo 8
-      . textWhite
-      . shadowSm
-      . hover (S.bg S.Indigo 7)
+    S.cls "btn-fantasy-primary"
   VariantSecondary ->
-    S.bg S.Gray 10
-      . S.text S.Gray 4
-      . S.border1
-      . S.border S.Gray 9
-      . hover (S.bg S.Gray 9)
-      . hover (S.text S.Gray 2)
+    S.cls "btn-fantasy-secondary"
   VariantDestructive ->
-    S.bgAlpha S.Red 11 50
-      . S.text S.Red 3
-      . S.border1
-      . S.border S.Red 10
+    S.cls "btn-fantasy-destructive"
   VariantGhost ->
     bgTransparent
       . S.text S.Gray 4
@@ -130,20 +119,20 @@ button
 button cfg label = do
   -- Width handling
   let widthStyle = if cfg.fullWidth then wFull else id
+      sz = sizeStyle cfg.size
+      var = variantStyle cfg.variant
 
   let dynClassText = do
-        sz <- ffor cfg.size sizeStyle
-        var <- ffor cfg.variant variantStyle
         dis <- cfg.disabled
         let interaction = if dis then disabledStyle else cursorPointer
-        let fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
+            fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
         pure $ classNames fullStyle
 
-  let attrs = ffor3 dynClassText cfg.disabled cfg.attributes $ \clsText dis attrs' ->
+  let attrs = ffor2 dynClassText cfg.disabled $ \clsText dis ->
         "class" =: clsText
           <> mkDisabledAttr dis
           <> maybe mempty testIdAttr cfg.testId
-          <> attrs'
+          <> cfg.attributes
 
   (e, _) <- elDynAttr' "button" attrs label
 

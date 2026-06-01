@@ -36,12 +36,10 @@ import Frontend.Style qualified as Style
   , artScreen
   , cardBase
   , cardPrint
-  , cardRow
   , cardRuleStyle
   , cardScreen
   , costBase
   , costPrint
-  , costRow
   , costScreen
   , nameBase
   , namePrint
@@ -63,7 +61,7 @@ import Frontend.Svg (renderHexagon)
 -- Display Mode Types
 --------------------------------------------------------------------------------
 
-data CardDisplayMode = CardFull | CardPrint | CardRow
+data CardDisplayMode = CardFull | CardPrint
   deriving (Eq, Show, Enum, Bounded)
 
 newtype CardSettings = CardSettings
@@ -94,31 +92,26 @@ cardClasses :: CardSettings -> Style
 cardClasses settings = case settings.displayMode of
   CardFull -> Style.cardBase . Style.cardScreen
   CardPrint -> Style.cardBase . Style.cardPrint
-  CardRow -> Style.cardRow
 
 artClasses :: CardSettings -> Style
 artClasses settings = case settings.displayMode of
   CardFull -> Style.artBase . Style.artScreen
   CardPrint -> Style.artBase . Style.artPrint
-  CardRow -> S.hidden
 
 nameClasses :: CardSettings -> Style
 nameClasses settings = case settings.displayMode of
   CardFull -> Style.nameBase . Style.nameScreen
   CardPrint -> Style.nameBase . Style.namePrint
-  CardRow -> S.fontBold . S.textTruncate . S.flex1
 
 costClasses :: CardSettings -> Style
 costClasses settings = case settings.displayMode of
   CardFull -> Style.costBase . Style.costScreen
   CardPrint -> Style.costBase . Style.costPrint
-  CardRow -> Style.costRow
 
 textboxClasses :: CardSettings -> Style
 textboxClasses settings = case settings.displayMode of
   CardFull -> Style.textboxBase . Style.textboxScreen
   CardPrint -> Style.textboxBase . Style.textboxPrint
-  CardRow -> S.hidden
 
 --------------------------------------------------------------------------------
 -- Stats Rendering
@@ -153,36 +146,18 @@ renderCoreCard = renderCoreCardWith def
 
 -- | Render a CoreCard with custom settings
 renderCoreCardWith :: (DomBuilder t m) => CardSettings -> CoreCard -> m ()
-renderCoreCardWith settings c = case settings.displayMode of
-  CardRow -> divS (cardClasses settings) $ do
+renderCoreCardWith settings c = divS (cardClasses settings) $ do
+  row $ do
     componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
-    maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
     spacer
-    renderStatsWith (StatsSettings StatsRow IconResponsive) c.stats
-  CardFull -> divS (cardClasses settings) $ do
-    row $ do
-      componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
-      spacer
-      maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
-    componentS "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
-      renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
-      componentS "art" (artClasses settings) blank
-    componentS "rules" (textboxClasses settings) $ do
-      maybe blank (divS Style.cardRuleStyle . el "p" . renderAttackDef) c.attack
-      mapM_ (mapM_ (divS Style.cardRuleStyle . el "p" . renderRule)) c.rules
-      mapM_ renderRichText c.flavor
-  CardPrint -> divS (cardClasses settings) $ do
-    row $ do
-      componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
-      spacer
-      maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
-    componentS "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
-      renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
-      componentS "art" (artClasses settings) blank
-    componentS "rules" (textboxClasses settings) $ do
-      maybe blank (divS Style.cardRuleStyle . el "p" . renderAttackDef) c.attack
-      mapM_ (mapM_ (divS Style.cardRuleStyle . el "p" . renderRule)) c.rules
-      mapM_ renderRichText c.flavor
+    maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
+  componentS "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
+    renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
+    componentS "art" (artClasses settings) blank
+  componentS "rules" (textboxClasses settings) $ do
+    maybe blank (divS Style.cardRuleStyle . el "p" . renderAttackDef) c.attack
+    mapM_ (mapM_ (divS Style.cardRuleStyle . el "p" . renderRule)) c.rules
+    mapM_ renderRichText c.flavor
 
 --------------------------------------------------------------------------------
 -- ItemCard Rendering

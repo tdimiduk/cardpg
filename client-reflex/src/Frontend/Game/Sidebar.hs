@@ -89,12 +89,13 @@ sidebarWidget selectedActorId = do
 
         divS actorListContainer' $ do
           selectClick <- listWithKey actorsMapDyn $ \aid actorDyn -> do
+            actorVal <- sample (current actorDyn)
             e <- button
               def
-                { variant = constDyn VariantSecondary
+                { variant = VariantSecondary
                 , fullWidth = True
                 , extraStyle = S.justifyStart . S.textLeft
-                , attributes = ffor actorDyn $ \a -> testId ("select-actor-" <> a.name)
+                , attributes = testId ("select-actor-" <> actorVal.name)
                 }
               $ dyn_
               $ ffor actorDyn

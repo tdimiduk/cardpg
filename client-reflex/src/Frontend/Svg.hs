@@ -3,6 +3,7 @@
 
 module Frontend.Svg
   ( svgEl
+  , renderSvgShape
   , renderSquare
   , renderCircle
   , renderDiamond
@@ -63,9 +64,19 @@ renderLabel (Just t) = do
     )
     $ text t
 
--- | Renders a square icon (Ruby/Red).
-renderSquare :: (DomBuilder t m) => Style -> Maybe Text -> m ()
-renderSquare extraStyle mLabel = do
+-- | Higher-order parameterized SVG shape builder that handles viewBox scaffolding, defs, and labeling.
+renderSvgShape
+  :: (DomBuilder t m)
+  => Style
+  -- ^ Extra classes
+  -> Maybe Text
+  -- ^ Label text
+  -> m ()
+  -- ^ Gradient and filter definitions
+  -> m ()
+  -- ^ SVG shape rendering block (e.g. rect, circle, polygon)
+  -> m ()
+renderSvgShape extraStyle mLabel defsBuilder shapeBuilder = do
   let cls = classNames extraStyle
   svgEl
     "svg"
@@ -73,12 +84,22 @@ renderSquare extraStyle mLabel = do
         <> "class" =: cls
     )
     $ do
-      svgEl "defs" Map.empty $ do
+      svgEl "defs" Map.empty defsBuilder
+      shapeBuilder
+      renderLabel mLabel
+
+-- | Renders a square icon (Ruby/Red).
+renderSquare :: (DomBuilder t m) => Style -> Maybe Text -> m ()
+renderSquare extraStyle mLabel =
+  renderSvgShape
+    extraStyle
+    mLabel
+    ( do
         svgEl "radialGradient" ("id" =: "rubyGrad" <> "cx" =: "35%" <> "cy" =: "35%" <> "r" =: "60%") $ do
           svgEl "stop" ("offset" =: "0%" <> "stop-color" =: "#ffa8a8") blank
           svgEl "stop" ("offset" =: "60%" <> "stop-color" =: "#ff4b4b") blank
           svgEl "stop" ("offset" =: "100%" <> "stop-color" =: "#c92a2a") blank
-        svgEl "filter" ("id" =: "rubyGlow") $ do
+        svgEl "filter" ("id" =: "rubyGlow") $
           svgEl
             "feDropShadow"
             ( "dx" =: "0"
@@ -88,7 +109,8 @@ renderSquare extraStyle mLabel = do
                 <> "flood-opacity" =: "0.5"
             )
             blank
-      svgEl
+    )
+    ( svgEl
         "rect"
         ( "x" =: "12.5"
             <> "y" =: "12.5"
@@ -102,24 +124,20 @@ renderSquare extraStyle mLabel = do
             <> "filter" =: "url(#rubyGlow)"
         )
         blank
-      renderLabel mLabel
+    )
 
 -- | Renders a circle icon (Topaz/Yellow).
 renderCircle :: (DomBuilder t m) => Style -> Maybe Text -> m ()
-renderCircle extraStyle mLabel = do
-  let cls = classNames extraStyle
-  svgEl
-    "svg"
-    ( "viewBox" =: "0 0 100 100"
-        <> "class" =: cls
-    )
-    $ do
-      svgEl "defs" Map.empty $ do
+renderCircle extraStyle mLabel =
+  renderSvgShape
+    extraStyle
+    mLabel
+    ( do
         svgEl "radialGradient" ("id" =: "topazGrad" <> "cx" =: "35%" <> "cy" =: "35%" <> "r" =: "60%") $ do
           svgEl "stop" ("offset" =: "0%" <> "stop-color" =: "#ffec99") blank
           svgEl "stop" ("offset" =: "75%" <> "stop-color" =: "#f59e0b") blank
           svgEl "stop" ("offset" =: "100%" <> "stop-color" =: "#b45309") blank
-        svgEl "filter" ("id" =: "topazGlow") $ do
+        svgEl "filter" ("id" =: "topazGlow") $
           svgEl
             "feDropShadow"
             ( "dx" =: "0"
@@ -129,7 +147,8 @@ renderCircle extraStyle mLabel = do
                 <> "flood-opacity" =: "0.5"
             )
             blank
-      svgEl
+    )
+    ( svgEl
         "circle"
         ( "cx" =: "50"
             <> "cy" =: "50"
@@ -140,24 +159,20 @@ renderCircle extraStyle mLabel = do
             <> "filter" =: "url(#topazGlow)"
         )
         blank
-      renderLabel mLabel
+    )
 
 -- | Renders a diamond icon (Sapphire/Blue).
 renderDiamond :: (DomBuilder t m) => Style -> Maybe Text -> m ()
-renderDiamond extraStyle mLabel = do
-  let cls = classNames extraStyle
-  svgEl
-    "svg"
-    ( "viewBox" =: "0 0 100 100"
-        <> "class" =: cls
-    )
-    $ do
-      svgEl "defs" Map.empty $ do
+renderDiamond extraStyle mLabel =
+  renderSvgShape
+    extraStyle
+    mLabel
+    ( do
         svgEl "radialGradient" ("id" =: "sapphireGrad" <> "cx" =: "35%" <> "cy" =: "35%" <> "r" =: "60%") $ do
           svgEl "stop" ("offset" =: "0%" <> "stop-color" =: "#a5d8ff") blank
           svgEl "stop" ("offset" =: "70%" <> "stop-color" =: "#228be6") blank
           svgEl "stop" ("offset" =: "100%" <> "stop-color" =: "#1c7ed6") blank
-        svgEl "filter" ("id" =: "sapphireGlow") $ do
+        svgEl "filter" ("id" =: "sapphireGlow") $
           svgEl
             "feDropShadow"
             ( "dx" =: "0"
@@ -167,7 +182,8 @@ renderDiamond extraStyle mLabel = do
                 <> "flood-opacity" =: "0.5"
             )
             blank
-      svgEl
+    )
+    ( svgEl
         "rect"
         ( "x" =: "19"
             <> "y" =: "19"
@@ -182,26 +198,22 @@ renderDiamond extraStyle mLabel = do
             <> "filter" =: "url(#sapphireGlow)"
         )
         blank
-      renderLabel mLabel
+    )
 
 -- | Renders a hexagon icon (Cost Hexagon).
 renderHexagon :: (DomBuilder t m) => Style -> Maybe Text -> m ()
-renderHexagon extraStyle mLabel = do
-  let cls = classNames extraStyle
-  svgEl
-    "svg"
-    ( "viewBox" =: "0 0 100 100"
-        <> "class" =: cls
-    )
-    $ do
-      svgEl "defs" Map.empty $ do
+renderHexagon extraStyle mLabel =
+  renderSvgShape
+    extraStyle
+    mLabel
+    ( do
         svgEl
           "linearGradient"
           ("id" =: "hexGrad" <> "x1" =: "0%" <> "y1" =: "0%" <> "x2" =: "100%" <> "y2" =: "100%")
           $ do
             svgEl "stop" ("offset" =: "0%" <> "stop-color" =: "#1c1917") blank
             svgEl "stop" ("offset" =: "100%" <> "stop-color" =: "#0c0a09") blank
-        svgEl "filter" ("id" =: "hexGlow") $ do
+        svgEl "filter" ("id" =: "hexGlow") $
           svgEl
             "feDropShadow"
             ( "dx" =: "0"
@@ -211,7 +223,8 @@ renderHexagon extraStyle mLabel = do
                 <> "flood-opacity" =: "0.6"
             )
             blank
-      svgEl
+    )
+    ( svgEl
         "polygon"
         ( "points" =: "50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
             <> "fill" =: "url(#hexGrad)"
@@ -220,5 +233,4 @@ renderHexagon extraStyle mLabel = do
             <> "filter" =: "url(#hexGlow)"
         )
         blank
-      -- Cost Hexagon uses our highly-readable outlined text label
-      renderLabel mLabel
+    )
