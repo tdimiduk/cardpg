@@ -32,9 +32,9 @@ Combat and other dangerous situations should feel tense and consequential, but c
 
 Injuries have weight, and the process of healing is a meaningful part of the game that requires time and resources.
 
-- **Healing Transforms, It Does Not Erase:** Healing is a process of transforming an injury's cost, not simply deleting it (e.g., a Wound becomes Fatigue).
+- **Injuries are Narrative Recovery Arcs:** In the default game setting, serious injuries are significant tactical hurdles—represented by physical cards on the table—but they are fully treatable and designed to heal completely eventually. They serve as narrative obstacles that force the party to adapt, protect the wounded hero, and seek out treatment, rather than permanent, character-ruining nerfs.
+- **Healing is a Process of Transformation:** Recovery is not a binary "reset button" that instantly erases harm. Instead, healing tools and rest gradually _transform_ severe injuries into lesser, manageable burdens—converting a major Wound into lingering Fatigue over time—before they can be fully resolved. The Magic/Heroic Level dial adjusts the duration, but even in highly heroic settings, a character will not be back to peak performance the morning after breaking an arm.
 - **Crisis Healing is Mitigation, Not Restoration:** Abilities used in Crisis Time can provide temporary relief but cannot provide true healing.
-- **Injuries are Narrative Recovery Arcs:** In the default game setting, injuries are significant tactical hurdles—represented by physical cards on the table—but they are fully treatable and designed to be mended. They are narrative obstacles that force the party to adapt, protect the wounded hero, and seek out treatment, rather than permanent character-ruining nerfs.
 
 ## System Architecture
 

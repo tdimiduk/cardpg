@@ -12,7 +12,7 @@ introductory_materials:
     source_type: "local_file"
     purpose: "The primary player-facing introduction to the game. Sets the tone, theme, and core player experience before the rules are presented."
     type: "Introductory Text"
-    status: "Canon"
+    status: "Leading-Edge"
     tags: ["doc-type:introductory-text", "audience:player-facing"]
   - name: "Root Readme"
     id: "readme-root"
