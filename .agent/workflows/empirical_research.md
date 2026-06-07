@@ -36,8 +36,8 @@ If the subagent is not yet defined in this conversation, define it first using `
 
 ## 1. Load Context
 
-- `view_file <workspace_root>/design/ai/common/standards.md`
-- `view_file <workspace_root>/design/ai/common/empirical_research_standards.md`
+- `view_file <workspace_root>/.agent/standards/standards.md`
+- `view_file <workspace_root>/.agent/standards/empirical_research_standards.md`
 
 Adhere to the **Lead Technical Researcher** guidelines and principles.
 

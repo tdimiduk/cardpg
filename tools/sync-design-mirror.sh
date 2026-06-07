@@ -4,37 +4,29 @@
 set -e
 
 # Ensure the script is being run from the root of the cardpg monorepo
-if [[ ! -d "design" || ! -d "data" ]]; then
+if [[ ! -d "design" ]]; then
     echo "Error: This script must be run from the root of the cardpg monorepo."
     exit 1
 fi
 
-# 2. Setup Temp Directory
-TEMP_DIR=$(mktemp -d)
-trap 'rm -rf "$TEMP_DIR"' EXIT
+TARGET_DIR="${1:-../cardpg-design}"
 
-echo "Created temporary directory: $TEMP_DIR"
+# Ensure target directory exists and is a git repository
+if [[ ! -d "$TARGET_DIR" || ! -d "$TARGET_DIR/.git" ]]; then
+    echo "Error: Target directory '$TARGET_DIR' does not exist or is not a git repository."
+    exit 1
+fi
 
-# 3. Clone Shadow Repo
-SHADOW_REPO_URL="git@github.com:tdimiduk/cardpg-design.git"
-echo "Cloning shadow repo: $SHADOW_REPO_URL"
-git clone --depth 1 "$SHADOW_REPO_URL" "$TEMP_DIR/shadow"
+echo "Syncing design/ to $TARGET_DIR/..."
 
-# 4. Clean Existing Mirror
-echo "Cleaning existing mirror directories..."
-rm -rf "$TEMP_DIR/shadow/design"
-rm -rf "$TEMP_DIR/shadow/data"
+# 2. Sync Directories
+rsync -rauv --delete --exclude '.git' design/ "$TARGET_DIR/"
 
-# 5. Sync Directories
-echo "Syncing design/ and data/ directories..."
-rsync -av design/ "$TEMP_DIR/shadow/design/"
-rsync -av data/ "$TEMP_DIR/shadow/data/"
-
-# 6. Commit and Push
-cd "$TEMP_DIR/shadow"
+# 3. Commit and Push
+cd "$TARGET_DIR"
 
 # Add changes
-git add design/ data/
+git add .
 
 # Check for changes
 if git diff-index --quiet HEAD --; then
@@ -42,8 +34,9 @@ if git diff-index --quiet HEAD --; then
     exit 0
 fi
 
-echo "Changes detected, committing and pushing..."
+echo "Changes detected in $TARGET_DIR, committing and pushing..."
 git commit -m "chore: automatic sync from monorepo"
 git push origin main
 
 echo "Successfully synced to shadow repo."
+

@@ -38,8 +38,8 @@ If the subagent is not yet defined in this conversation, define it first using `
 
 ## 1. Load Context
 
-- `view_file <workspace_root>/design/ai/common/standards.md`
-- `view_file <workspace_root>/design/ai/common/systems_design_standards.md`
+- `view_file <workspace_root>/.agent/standards/standards.md`
+- `view_file <workspace_root>/.agent/standards/systems_design_standards.md`
 
 Adhere to the **Lead Systems Designer** guidelines and principles.
 
@@ -64,7 +64,7 @@ Follow the behavior for the determined mode above.
 
 ### Index Synchronization Rule
 
-If your execution creates, renames, archives, or deletes files under `design/`, you MUST run `./design/audit_index.py` and update the registry as documented in the [Design Index Guide](file:///home/tdimiduk/cardpg/cardpg/design/index_guide.md).
+If your execution creates, renames, archives, or deletes files under `design/`, you MUST run `python3 tools/audit_index.py` and update the registry as documented in the [Design Index Guide](file:///home/tdimiduk/cardpg/docs/design_index_guide.md).
 
 ## 5. If Mode Unclear
 

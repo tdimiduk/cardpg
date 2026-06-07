@@ -85,7 +85,7 @@ def get_repo_files(root_dir):
 def main():
     # Use script location as the anchor
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    root_dir = script_dir  # We want to scan the design directory (where the script is)
+    root_dir = os.path.abspath(os.path.join(script_dir, "..", "design"))
     
     index_path = os.path.join(root_dir, 'index.yaml')
     

@@ -6,8 +6,8 @@ This document outlines the step-by-step instructions to synchronize the systems 
 
 The design registry is split hierarchically:
 
-1.  **[`design/index.yaml`](file:///home/tdimiduk/cardpg/cardpg/design/index.yaml)**: The root index containing game system rules, guidelines, philosophies, VTT registries, and active templates.
-2.  **[`design/research/index.yaml`](file:///home/tdimiduk/cardpg/cardpg/design/research/index.yaml)**: The sub-index mapping empirical research reports, verisimilitude sources, and research syntheses.
+1.  **[`design/index.yaml`](file:///home/tdimiduk/cardpg/design/index.yaml)**: The root index containing game system rules, guidelines, philosophies, VTT registries, and active templates.
+2.  **[`design/research/index.yaml`](file:///home/tdimiduk/cardpg/design/research/index.yaml)**: The sub-index mapping empirical research reports, verisimilitude sources, and research syntheses.
 
 The audit script recursively parses both files.
 
@@ -18,7 +18,7 @@ The audit script recursively parses both files.
 Run the index audit script from the root of the project to identify files that are out of sync:
 
 ```bash
-./design/audit_index.py
+python3 tools/audit_index.py
 ```
 
 This script will report discrepancies under two main categories:
@@ -33,7 +33,7 @@ This script will report discrepancies under two main categories:
 For each file reported as `[MISSING]`:
 
 1.  Verify if the file was moved or renamed.
-    - **Action:** Update the corresponding `path` value under its entry in [`design/index.yaml`](file:///home/tdimiduk/cardpg/cardpg/design/index.yaml).
+    - **Action:** Update the corresponding `path` value under its entry in [`design/index.yaml`](file:///home/tdimiduk/cardpg/design/index.yaml).
 2.  If the file was intentionally deleted:
     - **Action:** Move its entry to the `archive` section in the index, or remove it entirely.
 
@@ -43,7 +43,7 @@ For each file reported as `[MISSING]`:
 
 For each file reported as `[UNINDEXED]`:
 
-1.  **Action:** Create a new entry in [`design/index.yaml`](file:///home/tdimiduk/cardpg/cardpg/design/index.yaml) under the appropriate section.
+1.  **Action:** Create a new entry in [`design/index.yaml`](file:///home/tdimiduk/cardpg/design/index.yaml) under the appropriate section.
 2.  Fill in the **Required Fields**:
     - `name`: A descriptive, human-readable title.
     - `id`: A unique, URL-friendly slug (kebab-case).
@@ -59,7 +59,7 @@ For each file reported as `[UNINDEXED]`:
 After making changes, run the audit script once more to confirm a clean state:
 
 ```bash
-./design/audit_index.py
+python3 tools/audit_index.py
 ```
 
 You should see no missing or unindexed file alerts in the terminal output.
