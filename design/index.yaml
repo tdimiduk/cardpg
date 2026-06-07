@@ -1,9 +1,13 @@
 # The Knowledge Index
 #
 # This file is the master index of the `cardpg` project's design landscape.
-# It functions as a focused "knowledge map" for the Chronicler & Artificer AI.
-# The AI uses this map to understand the project's design structure, from
-# high-level philosophy to specific rules and content ideation.
+# It functions as a focused "knowledge map" for Gemini Gems and AI assistants.
+# The AI uses this map to navigate the design structure, rules, and research.
+#
+# Document Lifecycle & Status Guide:
+# - Canon: Current, authoritative rules, philosophies, and data. Always prioritize these.
+# - Leading-Edge: Active, draft-status ideas or proposals. Use as context for current direction.
+# - Archived: Outdated, historical playtest content. DO NOT treat as current rules, but use as design reference or examples.
 
 introductory_materials:
   - name: "Introduction"

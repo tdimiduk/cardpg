@@ -3,6 +3,8 @@
 # This file is a sub-index of the `cardpg` project's design landscape,
 # specifically mapping out empirical research reports, verisimilitude sources,
 # and research syntheses.
+#
+# Refer to the root `design/index.yaml` for status definitions (Canon, Leading-Edge, Archived).
 
 design_process_and_research:
   inspiration_library:
