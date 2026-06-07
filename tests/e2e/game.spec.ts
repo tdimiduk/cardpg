@@ -75,3 +75,31 @@ test("can select Vallhach actor and plan an action", async ({ loadedPage }) => {
   // Confirm planned action appears
   await expect(loadedPage.getByTestId("planned-action-card")).toBeVisible();
 });
+
+test("can select Vallhach actor and plan a movement on the mapboard grid", async ({
+  loadedPage,
+}) => {
+  // Select Vallhach actor
+  const vallhachSelector = loadedPage.getByTestId("select-actor-Vallhach");
+  await expect(vallhachSelector).toBeVisible();
+  await vallhachSelector.click();
+
+  // Find map grid container
+  const mapGrid = loadedPage.getByTestId("map-grid");
+  await expect(mapGrid).toBeVisible();
+
+  // Click on coordinate (3, 3). In cell pixels: x = 3 * 40 + 20 = 140, y = 3 * 40 + 20 = 140
+  await mapGrid.click({ position: { x: 140, y: 140 } });
+
+  // A Ghost Token representing the planned location should appear
+  const ghostToken = loadedPage.locator(
+    '[title="Vallhach (Planned Location)"]',
+  );
+  await expect(ghostToken).toBeVisible();
+
+  // Click on the Ghost Token to cancel the move plan
+  await ghostToken.click();
+
+  // The Ghost Token should disappear
+  await expect(ghostToken).not.toBeVisible();
+});

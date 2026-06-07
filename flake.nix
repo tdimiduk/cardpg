@@ -28,13 +28,13 @@
       imports = [ inputs.pre-commit-hooks.flakeModule ];
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
-      perSystem = { config, self', inputs', pkgs, system, ... }:
+      perSystem = { config, self', pkgs, system, ... }:
         let
           # Haskell.nix pkgs
           hpkgs = import inputs.nixpkgs {
             inherit system;
             overlays = [ inputs.haskellNix.overlay ];
-            config = inputs.haskellNix.config;
+            inherit (inputs.haskellNix) config;
           };
 
           # Shared project configuration
@@ -49,8 +49,8 @@
               let baseName = baseNameOf name; in
               # Exclude directories that do not contain code compiled by Nix/cabal
               !(type == "directory" && (
-                baseName == "docs" || 
-                baseName == "design" || 
+                baseName == "docs" ||
+                baseName == "design" ||
                 baseName == "deploy" ||
                 baseName == "static" ||
                 baseName == "tests" ||
@@ -80,11 +80,6 @@
           };
 
           # Helper to create haskell.nix projects with shared config
-          # Build gargoyle-nix-postgres-monitor exe path for symlinking.
-          # We can't reference the exe from within mkProject's modules (circular),
-          # so we compute the exe derivation from the already-built project.
-          gargoyleMonitorExe = project.hsPkgs.gargoyle-postgresql-nix.components.exes.gargoyle-nix-postgres-monitor;
-
           mkProject = hpkgs': hpkgs'.haskell-nix.project {
             src = projectSrc;
             compiler-nix-name = "ghc9122";
@@ -92,10 +87,12 @@
             inputMap = commonInputMap;
             modules = [{
               # Enable parallel compilation for all local packages
-              packages.core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings" "-fspecialise-aggressively"];
-              packages.api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings"];
-              packages.server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
-              packages.client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-O2" "-fexpose-all-unfoldings" "-fspecialise-aggressively" ];
+              packages = {
+                core.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings" "-fspecialise-aggressively" ];
+                api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings" ];
+                server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
+                client-reflex.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-O2" "-fexpose-all-unfoldings" "-fspecialise-aggressively" ];
+              };
             }];
           };
 
@@ -146,8 +143,16 @@
               # Copy JS and strip shebang
               tail -n +2 ${self'.packages.reflex-client-js}/bin/client-reflex > $out/all.js
               
-              # Copy static assets (including index.html, base.css and the pre-built atomic.css)
+              # Copy static assets
               cp -r ${./client-reflex/static}/* $out/ || true
+              
+              # Generate atomic.css dynamically using gen-css
+              mkdir -p temp
+              cd temp
+              cp -r ${./client-reflex} ./client-reflex
+              chmod -R +w ./client-reflex
+              ${project.client-reflex.components.exes.gen-css}/bin/gen-css
+              cp client-reflex/static/atomic.css $out/atomic.css
             '';
 
 
@@ -223,17 +228,17 @@
             # Additional packages from nixpkgs (not GHC-dependent)
             buildInputs = [
               pkgs.process-compose
-              pkgs.haskellPackages.cabal-fmt  # cabal-fmt doesn't support GHC 9.12 yet
+              pkgs.haskellPackages.cabal-fmt # cabal-fmt doesn't support GHC 9.12 yet
               pkgs.nodejs
               pkgs.git
               pkgs.rsync
               pkgs.openssh
-              pkgs.python3  # for run-client http server
+              pkgs.python3 # for run-client http server
               pkgs.ghciwatch
               pkgs.caddy
               pkgs.postgresql
               pkgs.pkg-config
-              config.pre-commit.settings.package  # pre-commit hooks
+              config.pre-commit.settings.package # pre-commit hooks
             ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
               pkgs.playwright-test
             ];

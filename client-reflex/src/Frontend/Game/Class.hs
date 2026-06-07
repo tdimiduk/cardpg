@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
@@ -88,7 +89,9 @@ deriving newtype instance
 deriving newtype instance (MonadRef m) => MonadRef (GameT t m)
 deriving newtype instance (MonadAtomicRef m) => MonadAtomicRef (GameT t m)
 deriving newtype instance (DomRenderHook t m) => DomRenderHook t (GameT t m)
+#if !defined(ghcjs_HOST_OS) && !defined(javascript_HOST_ARCH)
 deriving newtype instance (MonadJSM m) => MonadJSM (GameT t m)
+#endif
 deriving newtype instance (MonadReflexCreateTrigger t m) => MonadReflexCreateTrigger t (GameT t m)
 deriving newtype instance (PrimMonad m) => PrimMonad (GameT t m)
 

@@ -162,7 +162,9 @@ plannedActionTo dst gameLog = do
       tell [gameLog plan]
 
 cancelPlan :: GameM g ()
-cancelPlan = plannedActionTo #hand PlanCanceled
+cancelPlan = do
+  plannedActionTo #hand PlanCanceled
+  modify $ #plannedMove .~ Nothing
 
 revealPlannedActions :: (RandomGen g) => GameM g ()
 revealPlannedActions = do

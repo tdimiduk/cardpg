@@ -25,7 +25,8 @@ import Frontend.Style.Layout
 -- | Sidebar container (Right)
 sidebarRightContainer :: Style
 sidebarRightContainer =
-  S.flexCol
+  S.shrink0
+    . S.flexCol
     . S.w (S.Rem 20)
     . S.cls "obsidian-panel"
     . S.borderL

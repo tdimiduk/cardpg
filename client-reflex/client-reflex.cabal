@@ -79,6 +79,7 @@ library
     Frontend.Game.Class
     Frontend.Game.Common
     Frontend.Game.Hand
+    Frontend.Game.MapBoard
     Frontend.Game.PhaseDisplay
     Frontend.Game.PlannedAction
     Frontend.Game.Planning
@@ -131,6 +132,7 @@ executable cardpg-static
     , core
     , directory
     , filepath
+    , jsaddle
     , mtl
     , optparse-applicative
     , process

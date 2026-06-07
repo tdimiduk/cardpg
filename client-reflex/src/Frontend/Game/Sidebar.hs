@@ -22,7 +22,14 @@ import Frontend.UI.Button
 
 -- | Sidebar container styles
 sidebarContainer :: Style
-sidebarContainer = S.w (S.Rem 18) . S.cls "obsidian-panel" . S.borderR . S.border S.Gray 10 . S.hFull . S.z 20
+sidebarContainer =
+  S.shrink0
+    . S.w (S.Rem 18)
+    . S.cls "obsidian-panel"
+    . S.borderR
+    . S.border S.Gray 10
+    . S.hFull
+    . S.z 20
 
 -- | Sidebar header section
 sidebarHeader :: Style

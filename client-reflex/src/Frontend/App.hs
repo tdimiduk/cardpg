@@ -24,6 +24,7 @@ import Core.State (ActorState, identifiedLookup)
 
 import Frontend.Game.Class
 import Frontend.Game.Hand (handWidget)
+import Frontend.Game.MapBoard (mapBoardWidget)
 
 import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
@@ -37,11 +38,7 @@ appRoot = S.flexRow . S.hScreen . S.bgTransparent . S.text1 . S.overflowHidden
 
 -- | Main content area (right of sidebar)
 mainContent :: Style
-mainContent = S.flexCol . S.flex1 . S.relative . S.bgTransparent
-
--- | Placeholder for game board
-gameBoardPlaceholder :: Style
-gameBoardPlaceholder = S.flex1 . S.flex . S.itemsCenter . S.justifyCenter . S.text S.Gray 6
+mainContent = S.flexCol . S.flex1 . S.relative . S.bgTransparent . S.css "min-w-0" "min-width" "0"
 
 appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
@@ -105,6 +102,7 @@ uiWidget
      , MonadIO m
      , Prerender t m
      , MonadGame t m
+     , MonadGame t (Client m)
      )
   => Maybe StagingState
   -- ^ Optional initial staging state
@@ -112,24 +110,24 @@ uiWidget
   -- ^ Initial active actor
   -> m ()
 uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
-  rec selectedActorId <- holdDyn initialActorId activeActorChange
-      activeActorChange <- sidebarWidget selectedActorId
+  rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
+      sidebarActiveChange <- sidebarWidget selectedActorId
 
-  -- Main Content Area (Right)
-  componentS "main-content" mainContent $ do
-    -- Top Bar / Game Board Area (Placeholder)
-    componentS "game-board" gameBoardPlaceholder $ text "Game Board Area"
+      -- Main Content Area (Right)
+      mapActiveChange <- componentS "main-content" mainContent $ do
+        -- Top Bar / Game Board Area (Map Board Widget)
+        mapChange <- mapBoardWidget selectedActorId
 
-    actorsMapDyn <- askActors
-    let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
-          case mId >>= \aid -> identifiedLookup aid actors of
-            Nothing -> Map.empty
-            Just (Identified i c) -> Map.singleton i c
+        actorsMapDyn <- askActors
+        let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
+              case mId >>= \aid -> identifiedLookup aid actors of
+                Nothing -> Map.empty
+                Just (Identified i c) -> Map.singleton i c
 
-    _ <- listWithKey activeActorMap $ \k vDyn ->
-      handWidget mStaging (Identified k <$> vDyn)
+        _ <- listWithKey activeActorMap $ \k vDyn ->
+          handWidget mStaging (Identified k <$> vDyn)
 
-    return ()
+        return mapChange
 
   -- Right Sidebar
   sidebarRightWidget selectedActorId
