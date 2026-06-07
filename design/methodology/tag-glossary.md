@@ -4,7 +4,7 @@
 
 This is a designer-facing document intended for internal use.
 
-Its purpose is to serve as the single source of truth for the project's tagging system. It defines the scope, meaning, and intended use of each tag category and provides a list of canonical tags. This ensures that as the project grows, its metadata remains consistent, structured, and queryable. All new documents added to `manifest.yaml` should be tagged in accordance with this glossary.
+Its purpose is to serve as the single source of truth for the project's tagging system. It defines the scope, meaning, and intended use of each tag category and provides a list of canonical tags. This ensures that as the project grows, its metadata remains consistent, structured, and queryable. All new documents added to `index.yaml` should be tagged in accordance with this glossary.
 
 ---
 

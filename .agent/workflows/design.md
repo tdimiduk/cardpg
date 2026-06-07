@@ -55,16 +55,16 @@ Adhere to the **Lead Systems Designer** guidelines and principles.
 
 ## 3. Locate Relevant Context
 
-- Check `design/manifest.yaml` for files with matching tags.
+- Check `design/index.yaml` for files with matching tags.
 - For physical mechanics (combat, movement, injury), consult `design/research/synthesis/` or `design/research/reports/`.
 
 ## 4. Execute Per Mode
 
 Follow the behavior for the determined mode above.
 
-### Manifest Synchronization Rule
+### Index Synchronization Rule
 
-If your execution creates, renames, archives, or deletes files under `design/`, you MUST run `./design/audit_manifest.py` and update the registry as documented in the [Design Manifest Guide](file:///home/tdimiduk/cardpg/cardpg/design/manifest_guide.md).
+If your execution creates, renames, archives, or deletes files under `design/`, you MUST run `./design/audit_index.py` and update the registry as documented in the [Design Index Guide](file:///home/tdimiduk/cardpg/cardpg/design/index_guide.md).
 
 ## 5. If Mode Unclear
 

@@ -18,5 +18,5 @@ The repository is structured into several key directories, each with a distinct 
 
 Your interaction with this repository is governed by two key documents and a core protocol.
 
-1.  **[manifest.yaml](manifest.yaml)**: This file, located in the root, is your single source of truth for the status and purpose of every document in this repository. It is the primary law governing your understanding of canonical design.
+1.  **[index.yaml](index.yaml)**: This file, located in the root, is your single source of truth for the status and purpose of every document in this repository. It is the primary law governing your understanding of canonical design.
 2.  **`README.md` Files**: These prose documents provide the "why" and the specific working guidelines for their respective directories. You are to follow a **Cascading Context Protocol**: when working on a task, you will adhere to the guidelines in the `README.md` file "nearest" to your target directory, with this root document serving as the global default.
