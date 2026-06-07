@@ -7,7 +7,7 @@ Your role as Gamemaster (GM) is a blend of two crafts: the **Chronicler** and th
 This guide is built upon a few core philosophies that are essential to running the game effectively:
 
 - **Fail Forward & Success at a Cost:** The story should never stall. An action doesn't simply pass or fail; it always moves the narrative forward, with the core tension coming from the _cost_ of success. Your primary role is to determine that cost.
-- **The Illusion of Lethality:** Danger should feel real and consequential, but character death is a telegraphed, dramatic outcome of a downward spiral, not a random event. Your job is to signal the escalating risk, giving players the agency to react.
+- **Tension Through Informed Risk:** Danger should feel real and consequential, but character death is a telegraphed, dramatic outcome of a downward spiral, not a random event. Your job is to signal the escalating risk, giving players the agency to react.
 - **Symmetrical Design:** All characters, whether controlled by players or the GM, operate under the same core rules. NPCs have decks, suffer fatigue, and face consequences just like the players do. This creates a fair and consistent world.
 
 ## Part 1: Adjudicating the Core Engine

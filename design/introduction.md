@@ -18,7 +18,7 @@ In _caRdPG_, your hero is not defined by static numbers on a sheet. **Your chara
 
 1. **Your Training and Capabilities:** The cards in your deck _are_ your skills, actions, and maneuvers. The attributes printed on them represent your physical and mental training.
 2. **Your Tactical Presence of Mind:** The hand of cards you hold represents your immediate focus. It reflects the fleeting opportunities, sudden openings, and split-second decisions you can capitalize on in the heat of the moment.
-3. **Your Endurance and Attrition:** The depth of your deck is your overall reserve. As you exert yourself, your deck degrades. Weariness and stress are represented by **Fatigue** and **Strain** cards that slip into your deck, clogging your hand and representing slipped concentration, heavy breathing, and fading focus.
+3. **Your Endurance and Attrition:** The depth of your deck is your overall reserve. As you exert yourself, your deck degrades. Weariness and stress are represented by `Status Cards` (like `Fatigue`) that accumulate into your deck, clogging your hand and representing slipped concentration, heavy breathing, and fading focus.
 
 ---
 

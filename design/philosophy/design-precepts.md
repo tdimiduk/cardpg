@@ -71,7 +71,7 @@ These precepts guide the design of player-facing content like cards, consequence
 
 **Core Principle:** Harm and its resolution should be modeled as a tangible, multi-stage process that creates new tactical and narrative challenges, never as simple numerical attrition.
 
-**Rationale:** This supports the "Illusion of Lethality" and "Fail Forward" principles by using `Status Cards` to model accumulating wear and `Condition Cards` to represent specific tactical problems. Furthermore, it establishes that character death is the ultimate outcome of a telegraphed _process_, not a random event.
+**Rationale:** This supports the "Tension Through Informed Risk" and "Fail Forward" principles by using `Status Cards` to model accumulating wear and `Condition Cards` to represent specific tactical problems. Furthermore, it establishes that character death is the ultimate outcome of a telegraphed _process_, not a random event.
 
 **Design Nuance:** While injuries are tactile and impactful, they are structurally designed to be mended. In the default game mode, injuries are temporary narrative hurdles that drive the plot of recovery, rather than permanent, disabling scars.
 
@@ -85,7 +85,7 @@ These precepts guide the design of player-facing content like cards, consequence
 
 Enforce Action on Zero-Value Cards
 
-**Core Principle:** Any Status Card with zero stats (0/0/0) should generally have a mechanic that forces it out of the player's hand (for example the Injury card).
+**Core Principle:** Any Status Card with zero stats (0/0/0) should generally have a mechanic that forces it out of the player's hand (for example the Minor Wound card).
 
 **Rationale:** This prevents the "optimal play" problem where players hoard useless cards to keep their draw deck thin and efficient. It ensures that drawing a "dead" card is always an immediate tactical hindrance that must be dealt with, reinforcing the Deck as Life pattern.
 

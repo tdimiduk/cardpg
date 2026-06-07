@@ -57,4 +57,4 @@ This is the most granular and important tag category. It pinpoints the specific 
 - **`core-concept:verisimilitude`**: The principle of grounding design in real-world data.
 - **`core-concept:disengagement`**: Mechanics and principles for creating separation and safely leaving a combat encounter.
 - **`core-concept:hand-management`**: Principles regarding the optimal size, retention, and cycling of a player's hand of cards.
-- **`core-concept:status-cards`**: Design rules and mechanics for cards representing negative states (Fatigue, Injury, etc.) added to a deck.
+- **`core-concept:status-cards`**: Design rules and mechanics for cards representing negative states (Fatigue, Minor Wound, etc.) added to a deck.

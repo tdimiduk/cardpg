@@ -106,7 +106,7 @@ _Figure: Fatigue Card_
 
 As you face challenges, you will gain cards that represent harm, exhaustion, and other complications. These fall into two categories:
 
-**Status Cards (In Your Deck)** These represent general wear-and-tear, like `Fatigue` or minor `Injury`.
+**Status Cards (In Your Deck)** These represent general wear-and-tear, like `Fatigue` or `Minor Wound`.
 
 - **Where they go:** Added directly to your deck and shuffle pile.
 - **What they do:** Clog your hand and deck, making you less effective over time.

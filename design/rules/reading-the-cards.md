@@ -40,7 +40,7 @@ These are used during **Adventuring Time** (exploration, downtime, or safe momen
 - **`Task: [Name] ({Color} X, [Time]) -> [Effect]`**
   - **Usage:** You spend the specified `[Time]` performing the activity.
   - **Resolution:** You must perform a **General Action** check. Flip cards from the top of your deck until their total `{Color}` value equals or exceeds `X`.
-  - **Risk:** If you flip too many cards, you may suffer Consequences (like Fatigue or Injury) based on your Defense.
+  - **Risk:** If you flip too many cards, you may suffer Consequences (like Fatigue or Minor Wound) based on your Defense.
   - _Example:_ `Task: First Aid ({Blue} 3, 1 min) -> Remove this card.`
 
 ### 3. Passive & Triggered Rules

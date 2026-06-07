@@ -11,22 +11,27 @@
 
 # Core Philosophy
 
+**Grounded Heroism** is the defining thesis of caRdPG. The game is about earned victories—heroes who are capable of mighty deeds, but whose achievements are meaningful because they are born from real choices, real sacrifices, and real consequences. Characters are not beings of limitless power; their incredible abilities are grounded by the tangible costs of exertion.
+
+## Cards As Your Character
+
+A character's 24-card deck is their sole resource, elegantly integrating three aspects of who they are into a single, cohesive engine:
+
+- **Training and Capabilities:** The skills, actions, and attributes printed on the cards represent a character's physical and mental training.
+- **Tactical Presence of Mind:** The hand of cards represents immediate focus—the fleeting opportunities, sudden openings, and split-second decisions a character can capitalize on in the heat of the moment.
+- **Endurance and Attrition:** The depth of the deck is the character's overall reserve. As they exert themselves, the deck degrades through the accumulation of Status Cards like `Fatigue` and `Minor Wound`.
+
 ## Fail Forward & Narrative Momentum
 
 The game's systems must always propel the story forward, never allowing it to stall due to a single outcome. A poor attempt should take extra time and effort or introduce a new complication or change the situation, not create a dead end. The narrative should always answer the question "What happens now?" rather than "Does it work?".
 
-## Grounded Heroism
-
-Characters are heroic and capable of mighty deeds, but they are not beings of limitless power. Their incredible abilities are grounded by the real, tangible costs of exertion.
-
-- **Cards as a Unified Character System:** A character's 24-card deck is their sole resource, elegantly integrating their **Training** (skills and attributes printed on the cards), their **Tactical Focus** (the immediate options in their hand), and their **Endurance** (the attrition and fatigue cycle of the draw pile) into a single, cohesive engine.
-
-## The Illusion of Lethality
+## Tension Through Informed Risk
 
 Combat and other dangerous situations should feel tense and consequential, but character death must be a dramatic, telegraphed outcome of a downward spiral, not a sudden or arbitrary event.
 
 - The primary source of tension is the telegraphed downward spiral, modeled by the accumulation of negative Status Cards and persistent Condition Cards.
 - This process provides players with a clear signal of escalating risk, giving them the agency to recognize the mounting stakes and decide how to proceed.
+- The true danger enters when players _choose_ to push past the warning signs, actively gambling with their hero's life to beat a ticking clock, protect a friend, or press deeper into danger. If they fall, it is the dramatic climax of a choice, not a cheap trick of the dice.
 
 ## Health & Recovery
 
