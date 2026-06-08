@@ -23,7 +23,6 @@ This directory contains various utility scripts and tools for development, datab
 
 ### Standalone Utilities
 
-- **`pack_context.py`**: A prompt/context packaging utility that gathers design documents (manifest files, core rules, principles) and outputs them as formatted context for AI ingestion.
 - **`svg_sword_generator.py`**: Generates SVG crossed sword icons (modeled after Oakeshott XVII). Originally used for VTT favicon generation.
 - **`sync-design-mirror.sh`**: Safely syncs changes from the `design/` and `data/` directories to a shadow repository (`tdimiduk/cardpg-design`).
 

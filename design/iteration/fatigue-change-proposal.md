@@ -38,3 +38,11 @@ How is the feel of this?
 The current system (adding fatigue cards) handles a "defensive collapse" without any special casing, if you don't have enough cards in your deck to meet the strength of an attack, you just do fatigue cycles and flip the new fatigue cards to the defense until you count up (one by one) to the necessary value. This is Very Bad for the character it happens to, but nicely handled in the rules with no special casing.
 
 If we are replacing cards with fatigue in the fatigue cycles it is possible to end up in a situation where you cannot count up to the required value with all of the "cycling" cards (deck + discard). So we'd need some special case rule or other re-designs to handle this situation.
+
+---
+
+# Document Purpose
+
+This is a designer-facing proposal, **not a decided change.**
+
+It outlines a potential shift in how fatigue works mechanically. The analysis section identifies open problems (particularly around defensive collapse) that would need to be solved before adoption. See [core-rules.md](../rules/core-rules.md) for the current canon fatigue rules.

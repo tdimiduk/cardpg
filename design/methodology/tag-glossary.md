@@ -4,7 +4,7 @@
 
 This is a designer-facing document intended for internal use.
 
-Its purpose is to serve as the single source of truth for the project's tagging system. It defines the scope, meaning, and intended use of each tag category and provides a list of canonical tags. This ensures that as the project grows, its metadata remains consistent, structured, and queryable. All new documents added to `manifest.yaml` should be tagged in accordance with this glossary.
+Its purpose is to serve as the single source of truth for the project's tagging system. It defines the scope, meaning, and intended use of each tag category and provides a list of canonical tags. This ensures that as the project grows, its metadata remains consistent, structured, and queryable. All new documents added to `index.yaml` should be tagged in accordance with this glossary.
 
 ---
 
@@ -57,4 +57,4 @@ This is the most granular and important tag category. It pinpoints the specific 
 - **`core-concept:verisimilitude`**: The principle of grounding design in real-world data.
 - **`core-concept:disengagement`**: Mechanics and principles for creating separation and safely leaving a combat encounter.
 - **`core-concept:hand-management`**: Principles regarding the optimal size, retention, and cycling of a player's hand of cards.
-- **`core-concept:status-cards`**: Design rules and mechanics for cards representing negative states (Fatigue, Injury, etc.) added to a deck.
+- **`core-concept:status-cards`**: Design rules and mechanics for cards representing negative states (Fatigue, Minor Wound, etc.) added to a deck.

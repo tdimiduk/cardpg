@@ -2,9 +2,9 @@
 
 These standards apply to all AI personas operating within the `cardpg` project.
 
-## 1. The Manifest
+## 1. The Index
 
-The `design/manifest.yaml` is a map of all of the documents in the `design` directory. Start here to figure out what documents you want to look at.
+The `design/index.yaml` is a map of all of the documents in the `design` directory. Start here to figure out what documents you want to look at.
 
 It uses a status system to indicate which documents are how current
 
@@ -12,12 +12,12 @@ It uses a status system to indicate which documents are how current
 - **Canon:** The generally settled thinking and rules.
 - **Leading-Edge:** New ideas and experiments. These should generally be allowed to suggest adjustments to the Canon documents.
 
-You should always be looking to keep the manifest up to date.
+You should always be looking to keep the index up to date.
 
 ## 3. Conflict Resolution
 
 - **Design vs. Reality:** If a Design Precept conflicts with a Research Report (Reality), the Research wins. Flag the conflict and propose a realistic mechanic.
-- **Manifest vs. File:** If the files/filesystem conflict with the manifest, stop and ask for clarification.
+- **Index vs. File:** If the files/filesystem conflict with the index, stop and ask for clarification.
 
 ## 4. Agent Transparency
 

@@ -10,10 +10,10 @@ from pathlib import Path
 import argparse
 
 
-MANIFEST_PATH = Path(__file__).parents[2] / "design/manifest.yaml"
+INDEX_PATH = Path(__file__).parents[2] / "design/index.yaml"
 
-def load_manifest():
-    with open(MANIFEST_PATH, 'r') as f:
+def load_index():
+    with open(INDEX_PATH, 'r') as f:
         return yaml.safe_load(f)
 
 def get_spreadsheet_key_from_url(url):
@@ -65,26 +65,26 @@ def safe_get_all_records(worksheet):
         records.append(record)
     return records
 
-def dump_manifest_entry(manifest_entry, output_dir=None):
+def dump_index_entry(index_entry, output_dir=None):
     gc = gspread.service_account()
-    spreadsheet_key = get_spreadsheet_key_from_url(manifest_entry['path'])
+    spreadsheet_key = get_spreadsheet_key_from_url(index_entry['path'])
     try:
         spreadsheet = gc.open_by_key(spreadsheet_key)
     except (gspread.exceptions.APIError, gspread.exceptions.SpreadsheetNotFound, PermissionError) as e:
-        print(f"Error opening spreadsheet {manifest_entry['name']}: {e}", file=sys.stderr)
+        print(f"Error opening spreadsheet {index_entry['name']}: {e}", file=sys.stderr)
         return
 
     data = None
-    if 'sheets' in manifest_entry:
-        # Dump all sheets defined in manifest
+    if 'sheets' in index_entry:
+        # Dump all sheets defined in index
         result = {}
-        for sheet_info in manifest_entry['sheets']:
+        for sheet_info in index_entry['sheets']:
             s_name = sheet_info['name']
             try:
                 worksheet = spreadsheet.worksheet(s_name)
                 result[s_name] = safe_get_all_records(worksheet)
             except gspread.exceptions.WorksheetNotFound:
-                print(f"Warning: Worksheet '{s_name}' not found in spreadsheet {manifest_entry['name']}.", file=sys.stderr)
+                print(f"Warning: Worksheet '{s_name}' not found in spreadsheet {index_entry['name']}.", file=sys.stderr)
         data = result
     else:
         # Default to first sheet
@@ -92,7 +92,7 @@ def dump_manifest_entry(manifest_entry, output_dir=None):
         data = safe_get_all_records(worksheet)
     
     if output_dir:
-        filename = manifest_entry['id'] + ".json"
+        filename = index_entry['id'] + ".json"
         output_path = Path(output_dir) / filename
         with open(output_path, 'w') as f:
             json.dump(data, f, indent=2)
@@ -101,7 +101,7 @@ def dump_manifest_entry(manifest_entry, output_dir=None):
         print(json.dumps(data))
 
 def main(key: str | None = None, sheet_name: str | None = None, all: bool = False):
-    manifest = load_manifest()
+    index = load_index()
     
     if all:
         # Hardcoded output directory for batch mode
@@ -110,7 +110,7 @@ def main(key: str | None = None, sheet_name: str | None = None, all: bool = Fals
         
         # Find all entries of type 'Cards'
         entries_to_sync = []
-        for category in manifest.values():
+        for category in index.values():
             if isinstance(category, list):
                 for item in category:
                     if item.get('type') == 'Cards':
@@ -125,32 +125,32 @@ def main(key: str | None = None, sheet_name: str | None = None, all: bool = Fals
         print(f"Syncing {len(entries_to_sync)} entries to {output_dir}...")
         for entry in entries_to_sync:
             print(f"Syncing {entry['name']} ({entry['id']})...")
-            dump_manifest_entry(entry, output_dir=output_dir)
+            dump_index_entry(entry, output_dir=output_dir)
             
     elif key:
         target_id = key
-        # Try to find target_id in manifest
-        manifest_entry = None
+        # Try to find target_id in index
+        index_entry = None
         
-        # Search in all lists in manifest
-        for category in manifest.values():
+        # Search in all lists in index
+        for category in index.values():
             if isinstance(category, list):
                 for item in category:
                     if item.get('id') == target_id:
-                        manifest_entry = item
+                        index_entry = item
                         break
             elif isinstance(category, dict):
                  for subcategory in category.values():
                     if isinstance(subcategory, list):
                         for item in subcategory:
                             if item.get('id') == target_id:
-                                manifest_entry = item
+                                index_entry = item
                                 break
-            if manifest_entry:
+            if index_entry:
                 break
 
-        if manifest_entry:
-            dump_manifest_entry(manifest_entry)
+        if index_entry:
+            dump_index_entry(index_entry)
         else:
             # Assume target_id is a raw key
             gc = gspread.service_account()
@@ -167,9 +167,9 @@ def main(key: str | None = None, sheet_name: str | None = None, all: bool = Fals
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Sync Google Sheets to JSON")
-    parser.add_argument("key", nargs="?", help="GSheet key or Manifest ID")
+    parser.add_argument("key", nargs="?", help="GSheet key or Index ID")
     parser.add_argument("--sheet-name", help="Specific sheet name to sync (only used if key is provided directly)")
-    parser.add_argument("--all", action="store_true", help="Sync all cards defined in manifest")
+    parser.add_argument("--all", action="store_true", help="Sync all cards defined in index")
 
     args = parser.parse_args()
     main(key=args.key, sheet_name=args.sheet_name, all=args.all)

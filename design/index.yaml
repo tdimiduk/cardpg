@@ -1,0 +1,485 @@
+# The Knowledge Index
+#
+# This file is the master index of the `cardpg` project's design landscape.
+# It functions as a focused "knowledge map" for Gemini Gems and AI assistants.
+# The AI uses this map to navigate the design structure, rules, and research.
+#
+# Document Lifecycle & Status Guide:
+# - Canon: Current, authoritative rules, philosophies, and data. Always prioritize these.
+# - Leading-Edge: Active, draft-status ideas or proposals. Use as context for current direction.
+# - Archived: Outdated, historical playtest content. DO NOT treat as current rules, but use as design reference or examples.
+
+introductory_materials:
+  - name: "Introduction"
+    id: "introduction"
+    path: "introduction.md"
+    source_type: "local_file"
+    purpose: "The primary player-facing introduction to the game. Sets the tone, theme, and core player experience before the rules are presented."
+    type: "Introductory Text"
+    status: "Leading-Edge"
+    tags: ["doc-type:introductory-text", "audience:player-facing"]
+  - name: "Root Readme"
+    id: "readme-root"
+    path: "README.md"
+    source_type: "local_file"
+    purpose: "The root orientation document for the repository."
+    type: "Meta Document"
+    status: "Canon"
+    tags: ["doc-type:meta", "audience:designer-facing"]
+  - name: "Research Readme"
+    id: "readme-research"
+    path: "research/README.md"
+    source_type: "local_file"
+    purpose: "Orientation for the research directory."
+    type: "Meta Document"
+    status: "Canon"
+    tags: ["doc-type:meta", "audience:designer-facing"]
+
+project_foundation:
+  philosophy:
+    - name: "Guiding Principles"
+      id: "guiding-principles"
+      path: "philosophy/guiding-principles.md"
+      source_type: "local_file"
+      purpose: "The 'Why.' The ultimate authority on the project's creative vision and core philosophies."
+      type: "Design Philosophy"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:philosophy",
+          "audience:designer-facing",
+          "core-concept:design-vision",
+          "core-concept:pillars-of-play",
+        ]
+    - name: "Game Settings"
+      id: "game-settings"
+      path: "philosophy/game-settings.md"
+      source_type: "local_file"
+      purpose: "A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences, from grim realism to lighthearted adventure."
+      type: "Design Philosophy"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:philosophy",
+          "audience:designer-facing",
+          "core-concept:design-vision",
+          "core-concept:game-tone",
+        ]
+  design_patterns:
+    - name: "Design Precepts"
+      id: "design-precepts"
+      path: "philosophy/design-precepts.md"
+      source_type: "local_file"
+      purpose: "The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics."
+      type: "Design Patterns"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:philosophy",
+          "audience:designer-facing",
+          "core-concept:design-patterns",
+          "core-concept:core-mechanic",
+          "core-concept:hand-management",
+          "core-concept:status-cards",
+        ]
+    - name: "Paradigm Shifts"
+      id: "paradigm-shifts"
+      path: "methodology/paradigm-shifts.md" # <-- New Document
+      source_type: "local_file"
+      purpose: "An onboarding guide for designers familiar with other TTRPGs, detailing the core assumptions they need to 'un-learn' to design for this system effectively."
+      type: "Meta Document"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:meta",
+          "audience:designer-facing",
+          "core-concept:design-patterns",
+        ]
+  methodology:
+    - name: "Documentation Standards"
+      id: "documentation-standards"
+      path: "methodology/documentation-standards.md"
+      source_type: "local_file"
+      purpose: "The official style guide for creating and formatting all design documents in the project, ensuring clarity, consistency, and structural integrity."
+      type: "Meta Document"
+      status: "Canon"
+      tags: ["doc-type:meta", "audience:designer-facing"]
+    - name: "Design Methodology"
+      id: "design-methodology"
+      path: "methodology/design-methodology.md"
+      source_type: "local_file"
+      purpose: "Defines the high-level principles for how we structure the project's design, such as the distinction between core rules and optional modules."
+      type: "Meta Document"
+      status: "Canon"
+      tags: ["doc-type:meta", "audience:designer-facing"]
+    - name: "Tag Glossary"
+      id: "tag-glossary"
+      path: "methodology/tag-glossary.md"
+      source_type: "local_file"
+      purpose: "The canonical reference for the project's tagging system. Defines the scope and usage of all tags to ensure metadata consistency."
+      type: "Meta Document"
+      status: "Canon"
+      tags: ["doc-type:meta", "audience:designer-facing"]
+
+game_system_and_rules:
+  core_rules_and_guides:
+    - name: "Core Rules"
+      id: "core-rules"
+      path: "rules/core-rules.md"
+      source_type: "local_file"
+      purpose: "The foundational player-facing rules. The single most important mechanics document."
+      type: "Game Rules"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:rules",
+          "audience:player-facing",
+          "core-concept:core-mechanic",
+          "core-concept:action-resolution",
+          "core-concept:consequences",
+          "core-concept:fatigue",
+          "core-concept:harm",
+          "pillar:combat",
+          "pillar:exploration",
+          "pillar:social",
+        ]
+    - name: "Player's Guide"
+      id: "players-guide"
+      path: "rules/players-guide.md"
+      source_type: "local_file"
+      purpose: "A player-facing document for strategic advice, advanced tactics, and detailed examples of play. Complements core-rules.md by providing deeper strategic insights and other elaborations innaproprate for that focused document."
+      type: "Player Guide"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:guide",
+          "audience:player-facing",
+          "core-concept:strategy",
+          "core-concept:fatigue",
+          "core-concept:hand-management",
+        ]
+    - name: "Gamemaster's Guide"
+      id: "gamemasters-guide"
+      path: "rules/gamemaster-guide.md"
+      source_type: "local_file"
+      purpose: "Instructions, best practices, and advanced guidance for running the game and writing adventures."
+      type: "GM Procedures"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:guide",
+          "audience:gm-facing",
+          "core-concept:action-resolution",
+          "core-concept:consequences",
+          "core-concept:npc-design",
+          "core-concept:pacing",
+          "core-concept:clocks",
+          "core-concept:fronts",
+          "pillar:combat",
+          "pillar:exploration",
+          "pillar:social",
+          "pillar:downtime",
+          "core-concept:disengagement",
+        ]
+    - name: "Keyword Glossary"
+      id: "keyword-glossary"
+      path: "rules/keyword-glossary.md"
+      source_type: "local_file"
+      purpose: "Reference for the keywords in the game"
+      status: "Canon"
+      tags:
+        ["doc-type:rules", "audience:player-facing", "core-concept:keywords"]
+    - name: "Reading the Cards"
+      id: "rules-reading-cards"
+      path: "rules/reading-the-cards.md"
+      source_type: "local_file"
+      purpose: "Guide on interpreting card rules and keywords."
+      type: "Game Rules"
+      status: "Canon"
+      tags: ["doc-type:rules", "audience:player-facing"]
+  lexicons:
+    - name: "Colors of Action"
+      id: "colors-of-action"
+      path: "rules/colors-of-action.md"
+      source_type: "local_file"
+      purpose: "A extensive lexicon that to guide classifying actions in-game actions into Red, `Yellow`, or Blue."
+      type: "Action Lexicon"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:player-facing",
+          "audience:gm-facing",
+          "core-concept:colors-of-action",
+          "core-concept:action-resolution",
+        ]
+  modules:
+    - name: "Clocks and Fronts"
+      id: "module-clocks-and-fronts"
+      path: "rules/modules/clocks-and-fronts.md"
+      source_type: "local_file"
+      purpose: "Optional rules for dynamic campaign play."
+      type: "Game Rules Module"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:module",
+          "audience:gm-facing",
+          "pillar:downtime",
+          "core-concept:clocks",
+          "core-concept:fronts",
+          "core-concept:pacing",
+        ]
+    - name: "Snap Check"
+      id: "module-snap-check"
+      path: "rules/modules/snap-check.md"
+      source_type: "local_file"
+      purpose: "Optional rules for passive checks (like perception)."
+      type: "Game Rules Module"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:module",
+          "audience:player-facing",
+          "audience:gm-facing",
+          "pillar:exploration",
+          "pillar:social",
+          "core-concept:passive-check",
+          "core-concept:perception",
+        ]
+
+active_design_exploration:
+  # Documents in the iteration/ folder represent unsettled ideas under active
+  # exploration. They are NOT canon rules—treat them as proposals and open
+  # questions intended to seed design discussion.
+  - name: "Resolution Mechanic Exploration"
+    id: "iteration-resolution-exploration"
+    path: "iteration/resolution-exploration.md"
+    source_type: "local_file"
+    purpose: "An honest critique of the current resolution mechanic (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.' Contains open design questions about how fights end, analysis paralysis tradeoffs, and the role of hand-based defense."
+    type: "Design Exploration"
+    status: "Leading-Edge"
+    tags:
+      [
+        "doc-type:iteration",
+        "audience:designer-facing",
+        "core-concept:action-resolution",
+        "core-concept:consequences",
+        "core-concept:hand-management",
+      ]
+  - name: "Fatigue Change Proposal"
+    id: "iteration-fatigue-change"
+    path: "iteration/fatigue-change-proposal.md"
+    source_type: "local_file"
+    purpose: "A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant. Includes analysis of tradeoffs and an open question about defensive collapse under this model."
+    type: "Design Exploration"
+    status: "Leading-Edge"
+    tags:
+      [
+        "doc-type:iteration",
+        "audience:designer-facing",
+        "core-concept:fatigue",
+        "core-concept:status-cards",
+      ]
+
+sub_indexes:
+  - name: "Research Index"
+    id: "index-research"
+    path: "research/index.yaml"
+    source_type: "local_file"
+    purpose: "Sub-index containing the empirical research reports, verisimilitude sources, and research syntheses."
+    type: "Index"
+    status: "Canon"
+    tags: ["doc-type:index", "audience:designer-facing"]
+
+global_registries:
+  - name: "Card Catalog"
+    id: "registry-cards"
+    path: "../data/cards/_manifest.yaml"
+    source_type: "local_file"
+    purpose: "The master index for all game objects (Cards, Items, Encounters). Used by the VTT build pipeline."
+    type: "Registry"
+    status: "Canon"
+    tags: ["doc-type:registry", "audience:builder"]
+
+  - name: "Data Schema & Syntax"
+    id: "meta-data-schema"
+    path: "../data/cards/README.md"
+    source_type: "local_file"
+    purpose: "Technical documentation for the YAML schema and notation syntax used in card definitions."
+    type: "Meta Document"
+    status: "Canon"
+    tags: ["doc-type:meta", "audience:builder", "audience:designer-facing"]
+
+game_content_design:
+  active_content:
+    - name: "Consequence Decks"
+      id: "gdoc-consequences"
+      path: "https://docs.google.com/spreadsheets/u/0/d/1H49JzTbhXSZzbtooRIRm5wj3Kd9GD4Yq7xeztLDoRWU/edit"
+      source_type: "google_sheet"
+      purpose: "The primary spreadsheet for consequence card design."
+      type: "Cards"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:cards",
+          "core-concept:consequences",
+          "core-concept:harm",
+        ]
+      sheets:
+        - {
+            name: "combat-general",
+            purpose: "consequences cards for direct combat action or other physical harm.",
+            status: "Canon",
+          }
+        - {
+            name: "task-general",
+            purpose: "Contains consequences for non-combat tasks.",
+            status: "Canon",
+          }
+        - {
+            name: "Conditions",
+            purpose: "Lists ongoing status effects that characters can gain.",
+            status: "Archived",
+          }
+    - name: "Encounters (2025)"
+      id: "gdoc-encounters-2025"
+      path: "https://docs.google.com/spreadsheets/d/1iIy53SLPovtR9VlpGvmtJ1Q8Vmv0cUyJEx83_0iE9WI/edit?gid=0#gid=0"
+      source_type: "google_sheet"
+      purpose: "Adventure decks from a recent playtest campaign, mostly up to date with current rules."
+      type: "Cards"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:cards",
+          "core-concept:npc-design",
+        ]
+  archived_playtest_content:
+    - name: "Cards - v 0.0.4"
+      id: "gdoc-cards-v004"
+      path: "https://docs.google.com/spreadsheets/u/0/d/1w6SvDr2nwZcXQDvsZ97F5IUh3D7vcjAcf-V40NYrolM/edit"
+      source_type: "google_sheet"
+      purpose: "Early playtesting character decks. Useful as few-shot examples for card structure."
+      type: "Cards"
+      status: "Archived"
+      tags:
+        [
+          "doc-type:content-library",
+          "type:pc-deck",
+          "audience:designer-facing",
+          "core-concept:cards",
+        ]
+      sheets:
+        - {
+            name: "Swashbuckler",
+            purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.",
+            status: "Archived",
+          }
+        - {
+            name: "Berserker",
+            purpose: "Early playtesting aggressive red. More speculative, we never actually used this.",
+            status: "Archived",
+          }
+        - {
+            name: "Squire",
+            purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot.",
+            status: "Archived",
+          }
+        - {
+            name: "Wizard",
+            purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date.",
+            status: "Archived",
+          }
+        - {
+            name: "shield-fighter",
+            purpose: "Very Early playtesting defensive character.",
+            status: "Archived",
+          }
+    - name: "Monsters - v 0.0.4"
+      id: "gdoc-monsters-v004"
+      path: "https://docs.google.com/spreadsheets/u/0/d/1_vBIPPSB4B2Y7_icIl3v2-iKZvIJRFEYM6kfAWTLSbQ/edit"
+      source_type: "google_sheet"
+      purpose: "Early playtesting monster decks. Useful as few-shot examples for monster design."
+      type: "Cards"
+      status: "Archived"
+      tags:
+        [
+          "doc-type:content-library",
+          "type:monster-deck",
+          "audience:designer-facing",
+          "core-concept:cards",
+          "core-concept:npc-design",
+        ]
+      sheets:
+        - {
+            name: "Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+        - {
+            name: "Campaign 2025",
+            purpose: "Most recent monsters we have written",
+            status: "Canon",
+          }
+        - {
+            name: "Vin's Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+        - {
+            name: "Peter's Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+        - {
+            name: "Kid's Campaign Monsters",
+            purpose: "Early playtesting monster decks. Probably still mostly useful.",
+            status: "Archived",
+          }
+    - name: "Kid’s Campaign Characters"
+      id: "gdoc-kids-campaign-chars"
+      path: "https://docs.google.com/spreadsheets/u/0/d/1kN1ZZoWVXjpMAbjw0x33D6DWrHIYvVjaYM8qC-ViqYI/edit"
+      source_type: "google_sheet"
+      purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
+      type: "Cards"
+      status: "Archived"
+      tags:
+        [
+          "doc-type:content-library",
+          "type:pc-deck",
+          "audience:designer-facing",
+          "core-concept:cards",
+        ]
+      sheets:
+        - {
+            name: "Vin",
+            purpose: "The oldest of the kids with the most complex characters",
+            status: "Archived",
+          }
+        - {
+            name: "Peter",
+            purpose: "The middle child with intermediate characters",
+            status: "Archived",
+          }
+        - {
+            name: "Luke",
+            purpose: "The youngest of the kids with the simplest characters",
+            status: "Archived",
+          }
+    - name: "Kids Events"
+      id: "gdoc-kids-campaign-events"
+      path: "https://docs.google.com/spreadsheets/u/0/d/1XH0j1CNqiYYSc4hoSCuY-9dznPsv3ZiE2cg4UrSk2Q8/edit"
+      source_type: "google_sheet"
+      purpose: "Location, Travel and event cards from an early playtest campaign."
+      type: "Cards"
+      status: "Archived"
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:cards",
+        ]
