@@ -248,6 +248,40 @@ game_system_and_rules:
           "core-concept:perception",
         ]
 
+active_design_exploration:
+  # Documents in the iteration/ folder represent unsettled ideas under active
+  # exploration. They are NOT canon rules—treat them as proposals and open
+  # questions intended to seed design discussion.
+  - name: "Resolution Mechanic Exploration"
+    id: "iteration-resolution-exploration"
+    path: "iteration/resolution-exploration.md"
+    source_type: "local_file"
+    purpose: "An honest critique of the current resolution mechanic (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.' Contains open design questions about how fights end, analysis paralysis tradeoffs, and the role of hand-based defense."
+    type: "Design Exploration"
+    status: "Leading-Edge"
+    tags:
+      [
+        "doc-type:iteration",
+        "audience:designer-facing",
+        "core-concept:action-resolution",
+        "core-concept:consequences",
+        "core-concept:hand-management",
+      ]
+  - name: "Fatigue Change Proposal"
+    id: "iteration-fatigue-change"
+    path: "iteration/fatigue-change-proposal.md"
+    source_type: "local_file"
+    purpose: "A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant. Includes analysis of tradeoffs and an open question about defensive collapse under this model."
+    type: "Design Exploration"
+    status: "Leading-Edge"
+    tags:
+      [
+        "doc-type:iteration",
+        "audience:designer-facing",
+        "core-concept:fatigue",
+        "core-concept:status-cards",
+      ]
+
 sub_indexes:
   - name: "Research Index"
     id: "index-research"

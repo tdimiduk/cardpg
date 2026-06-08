@@ -71,3 +71,11 @@ In early versions of caRdPG we had everyone defend from hand (and consequences k
 - Noob trap of needing to save cards in hand to be able to defend yourself or risk getting on-shotted.
 
 However defending from hand is a space we probably still want to explore (likely in concert with other things, probably flips). The route we have gone so far is having specific cards that say you can add them to defenses from hand. We could also have say shields always let you defend from hand, or even everyone can always defend from hand (but still use some other mechanic as well)
+
+---
+
+# Document Purpose
+
+This is a designer-facing exploration document, **not settled design.**
+
+It captures critiques of the current resolution mechanic and explores alternative approaches. The ideas here are starting points for discussion, not proposals ready for implementation. See [core-rules.md](../rules/core-rules.md) for the current canon mechanic.

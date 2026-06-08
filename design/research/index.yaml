@@ -418,22 +418,6 @@ design_process_and_research:
       type: "Ideation"
       status: "Leading-Edge"
       tags: ["doc-type:ideation", "core-concept:defense"]
-    - name: "Armor Rework Proposal"
-      id: "discussion-armor-rework"
-      path: "discussions/armor-rework.md"
-      source_type: "local_file"
-      purpose: "Discussion on reworking armor mechanics."
-      type: "Discussion"
-      status: "Leading-Edge"
-      tags: ["doc-type:discussion", "core-concept:armor"]
-    - name: "Armor Physics Proposal"
-      id: "discussion-armor-physics"
-      path: "discussions/armor-proposal-physics.md"
-      source_type: "local_file"
-      purpose: "Physics-based model for armor mechanics."
-      type: "Discussion"
-      status: "Leading-Edge"
-      tags: ["doc-type:discussion", "core-concept:armor"]
   archived_research:
     - name: "Armor Research"
       id: "synthesis-armor-old"
