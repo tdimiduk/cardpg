@@ -10,7 +10,7 @@ import Data.Map qualified as Map
 import Data.Text qualified as T
 import Reflex.Dom.Core hiding (button)
 
-import Frontend.Style.Common (Style, divS, elS, elS', testId)
+import Frontend.Style.Common (Style, classNames, divS, elS, elS', testId)
 import Frontend.Style.DSL qualified as S
 
 import Data.Maybe (fromMaybe)
@@ -84,8 +84,23 @@ sidebarWidget selectedActorId = do
             . S.fontBold
             . S.cls "fantasy-font"
             . S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+            . S.mb S.S2
         )
         $ text "CardPG"
+      divS (S.flex . S.gap S.S2 . S.textXs . S.fontBold . S.trackingWider . S.cls "fantasy-font") $ do
+        let linkStyle =
+              S.text S.Gray 5
+                . S.hover (S.css "text-gold-bright" "color" "var(--color-gold-bright)")
+                . S.css "transition-colors" "transition-property" "color"
+            linkAttrs href =
+              "href" =: href
+                <> "target" =: "_blank"
+                <> "class" =: classNames linkStyle
+        elAttr "a" (linkAttrs "rules.html") $ text "Rules"
+        elS "span" (S.text S.Gray 8) $ text "|"
+        elAttr "a" (linkAttrs "glossary.html") $ text "Glossary"
+        elS "span" (S.text S.Gray 8) $ text "|"
+        elAttr "a" (linkAttrs "colors.html") $ text "Colors"
 
     -- Dynamic Content: List or Details
     dyContent <- dyn $ ffor selectedActorId $ \case

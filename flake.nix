@@ -137,14 +137,15 @@
             reflex-client-js = projectJS.client-reflex.components.exes.client-reflex;
 
             # Production bundle for Reflex Client (JS + CSS + HTML)
-            reflex-client-prod = pkgs.runCommand "reflex-client-prod" { } ''
+            reflex-client-prod = pkgs.runCommand "reflex-client-prod" { buildInputs = [ pkgs.pandoc ]; } ''
               mkdir -p $out
               
               # Copy JS and strip shebang
               tail -n +2 ${self'.packages.reflex-client-js}/bin/client-reflex > $out/all.js
               
-              # Copy static assets
+              # Copy static assets (excluding template)
               cp -r ${./client-reflex/static}/* $out/ || true
+              rm -f $out/rules-template.html
               
               # Generate atomic.css dynamically using gen-css
               mkdir -p temp
@@ -153,6 +154,12 @@
               chmod -R +w ./client-reflex
               ${project.client-reflex.components.exes.gen-css}/bin/gen-css
               cp client-reflex/static/atomic.css $out/atomic.css
+
+              # Compile static markdown rules to static HTML
+              echo "Compiling markdown rules via Pandoc..."
+              pandoc ${./design/rules/core-rules.md} -o $out/rules.html --standalone --template=${./client-reflex/static/rules-template.html} --metadata title="Core Rules"
+              pandoc ${./design/rules/keyword-glossary.md} -o $out/glossary.html --standalone --template=${./client-reflex/static/rules-template.html} --metadata title="Keyword Glossary"
+              pandoc ${./design/rules/colors-of-action.md} -o $out/colors.html --standalone --template=${./client-reflex/static/rules-template.html} --metadata title="Colors of Action"
             '';
 
 

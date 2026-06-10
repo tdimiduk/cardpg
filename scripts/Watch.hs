@@ -39,14 +39,15 @@ getGhciWatchArgs :: Mode -> [String]
 getGhciWatchArgs mode =
   case mode of
     Client genCssBin ->
-      mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" []
-        ++ [ "--before-startup-shell"
-           , genCssBin
-           , "--before-reload-shell"
-           , genCssBin
-           , "--before-restart-shell"
-           , genCssBin
-           ]
+      let cmd = "scripts/recompile-assets " ++ genCssBin
+       in mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" ["design/rules"]
+            ++ [ "--before-startup-shell"
+               , cmd
+               , "--before-reload-shell"
+               , cmd
+               , "--before-restart-shell"
+               , cmd
+               ]
     Server -> mkArgs "server" "exe:server-devel" "Main.main" ["server/app"]
   where
     mkArgs folder component mainModule extraWatches =

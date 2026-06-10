@@ -2,6 +2,9 @@
 /data/cards/raw
 /vtt-react/src/generated/*.ts
 /client-reflex/static/atomic.css
+/client-reflex/static/colors.html
+/client-reflex/static/glossary.html
+/client-reflex/static/rules.html
 vtt-react/src/data/generated_cards.json
 *.yaml.reformatted
 cardpg.code-workspace
