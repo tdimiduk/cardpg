@@ -92,6 +92,6 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
       rowGap (S.ml (S.Rem (-2))) $
         mapM_ (divS (narrativeCardHover . cardHandWidth) . renderCoreCard . (.content)) cards
     PPass -> do
-      divS (S.text S.Gray 4 . S.css "italic" "font-style" "italic" . S.textSm) $ text "Passed turn"
+      divS (S.text S.Gray 4 . S.css "italic" "font-style" "italic" . S.textSm) $ text "No action planned"
   where
     colStyle = S.gap S.S4 . S.itemsCenter . S.pointerEventsAuto

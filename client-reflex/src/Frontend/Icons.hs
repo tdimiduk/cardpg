@@ -13,6 +13,7 @@ module Frontend.Icons
   , iconSword
   , iconCheck
   , iconNote
+  , iconSkipForward
   ) where
 
 import Data.Text (Text)
@@ -177,3 +178,10 @@ iconNote :: (DomBuilder t m) => m ()
 iconNote =
   iconBase "lucide-sticky-note" $
     svgPath "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z M14 2v4a1 1 0 0 0 1 1h4"
+
+-- | Lucide 'skip-forward' Icon
+iconSkipForward :: (DomBuilder t m) => m ()
+iconSkipForward =
+  iconBase "lucide-skip-forward" $ do
+    svgPath "M5 4l10 8-10 8V4z"
+    svgPath "M19 5v14"

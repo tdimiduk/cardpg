@@ -9,7 +9,7 @@ import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe, isJust)
-import Reflex.Dom.Core
+import Reflex.Dom.Core hiding (button)
 
 import Core.Card (CardInstance, CoreCard (..), Identified (..))
 
@@ -26,10 +26,15 @@ import Frontend.Game.Class
 import Frontend.Game.PlannedAction (plannedActionWidget)
 import Frontend.Game.Planning
 import Frontend.Game.Staging (StagingEvents (..), stagingWidget)
+import Frontend.Icons (iconSkipForward)
+import Frontend.UI.Button (ButtonConfig (..), ButtonSize (..), ButtonVariant (..), button)
+
+import Api.Request qualified as Req
+import Api.Types (Phase (..))
 
 import Frontend.Style qualified as FS
-import Frontend.Style.Common (classNames, divS)
-import Frontend.Style.DSL as S
+import Frontend.Style.Common (Style, classNames, divS)
+import Frontend.Style.DSL qualified as S
 import Frontend.Util (buildStableKeyMap)
 
 -- | Styles for hand card hover interactions (transformer style)
@@ -68,6 +73,7 @@ handWidget mInitialStaging actorDyn = do
       actorId = (.id) <$> actorDyn
       handDyn = (.coreState.hand) <$> safeActor
 
+  phaseDyn <- askPhase
   keyMapDyn <- buildStableKeyMap (.id) handDyn
 
   rec (stagingState, validation) <-
@@ -96,11 +102,33 @@ handWidget mInitialStaging actorDyn = do
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
             (sel, tog, overlayEvts) <- do
-              -- Left: Planned Action
-              divS (S.flex1 . S.flex . S.justifyCenter) $ do
-                dyn_ $ ffor (zipDyn actorId plannedActionDyn) $ \case
-                  (aid, Just plan) -> plannedActionWidget (Identified aid plan)
-                  _ -> blank
+              -- Left: Planned Action or No Action Button
+              noActionClickDyn <- divS (S.flex1 . S.flex . S.justifyCenter) $ do
+                dyn $ ffor ((,,,) <$> actorId <*> plannedActionDyn <*> stagingState <*> phaseDyn) $ \case
+                  (_, Nothing, Nothing, Planning) -> do
+                    button
+                      def
+                        { variant = VariantSecondary
+                        , size = SizeMedium
+                        , testId = Just "plan-no-action"
+                        , extraStyle = S.pointerEventsAuto
+                        }
+                      $ divS (S.flex . S.itemsCenter . S.gap S.S2)
+                      $ do
+                        divS (S.w S.S4 . S.h S.S4) iconSkipForward
+                        text "No Action"
+                  (aid, Just plan, _, _) -> do
+                    plannedActionWidget (Identified aid plan)
+                    return never
+                  _ -> do
+                    blank
+                    return never
+
+              noActionClick <- switchHold never noActionClickDyn
+
+              -- Dispatch Pass request when "No Action" clicked
+              let passReq = attachWith (\aid _ -> Req.Pass aid) (current actorId) noActionClick
+              _ <- requestGame passReq
 
               -- Center: Hand & Staging Container
               (s, t, oEvts) <- divS (S.relative . S.flexCol . S.itemsCenter . S.pointerEventsNone . S.gap S.S4) $ do
@@ -166,7 +194,7 @@ handCardsWidget actor stagingStack plannedAction keyMapDyn = do
             <$> visibleHand
             <*> keyMapDyn
 
-    cardClicksDyn <- divS (S.flex . S.itemsEnd . transitionOpacity . S.duration200) $ do
+    cardClicksDyn <- divS (S.flex . S.itemsEnd . S.transitionOpacity . S.duration200) $ do
       listWithKey keyedHandMapDyn $ \_key cardDyn -> do
         let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
             isSelected = zipDynWith checkIsSelected stagingStack cardDyn
