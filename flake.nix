@@ -54,7 +54,6 @@
                 baseName == "deploy" ||
                 baseName == "static" ||
                 baseName == "tests" ||
-                baseName == "vtt-react" ||
                 baseName == ".agent"
               )) &&
               # Exclude flake files to prevent re-evaluation compilation of the dev shell

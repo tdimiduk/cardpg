@@ -46,7 +46,6 @@ cardpg/
 ├── scripts/            # Development utilities (dev, Watch.hs, deploy)
 ├── deploy/             # Production deployment (NixOS service, deploy script)
 ├── output/             # Generated static snapshots (HTML, PNG, PDF)
-├── vtt-react/          # Legacy TypeScript/React frontend (reference only)
 └── .agent/             # AI agent workflows and skills
 ```
 
