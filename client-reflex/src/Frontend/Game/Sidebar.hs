@@ -72,7 +72,7 @@ sidebarWidget
      , MonadGame t m
      )
   => Dynamic t (Maybe ActorId)
-  -> m (Event t (Maybe ActorId))
+  -> m (Event t (Maybe ActorId), Event t ActorId)
 sidebarWidget selectedActorId = do
   actorsMapDyn <- askActors
   divS (S.flexCol . sidebarContainer) $ do
@@ -109,12 +109,12 @@ sidebarWidget selectedActorId = do
               $ \actor -> text actor.name
             return (aid <$ e)
 
-          return (Just <$> switchDyn (fmap (leftmost . Map.elems) selectClick))
+          return (Just <$> switchDyn (fmap (leftmost . Map.elems) selectClick), never)
       Just aid -> do
         -- Fetch the initial state from current actors map to boot the UI cleanly.
         actorsMap <- sample (current actorsMapDyn)
         case Map.lookup aid actorsMap of
-          Nothing -> return never
+          Nothing -> return (never, never)
           Just initialActorState -> do
             -- Dynamic ActorState from the map to ensure it receives updates.
             let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe initialActorState (Map.lookup aid m)
@@ -149,13 +149,15 @@ sidebarWidget selectedActorId = do
             let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
             let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
 
-            divS (S.flex1 . S.overflowYAuto . S.p S.S2) $
-              actorDetailsWidget aid actorStateDyn
+            resumeEvt <-
+              divS (S.flex1 . S.overflowYAuto . S.p S.S2) $
+                actorDetailsWidget aid actorStateDyn
 
-            return $ leftmost [deselectEvent, actorLostEvent]
+            return (leftmost [deselectEvent, actorLostEvent], aid <$ resumeEvt)
 
     -- Extract events
-    contentEvents <- holdDyn never dyContent
-    let selectionChange = switchDyn contentEvents
+    contentEvents <- holdDyn (never, never) dyContent
+    let selectionChange = switchDyn (fmap fst contentEvents)
+        resumeDefense = switchDyn (fmap snd contentEvents)
 
-    return selectionChange
+    return (selectionChange, resumeDefense)

@@ -251,7 +251,7 @@ parseAny = try parseParam <|> (anySingle >> return [])
 parseParam :: Parser [Prop]
 parseParam = do
   _ <- optional (string "S.")
-  choice $ map tryParam knownParams
+  choice $ map (try . tryParam) knownParams
 
 tryParam :: ParamFn -> Parser [Prop]
 tryParam (ParamFn name p applyFn) = do
@@ -279,8 +279,14 @@ parseSize = do
       choice $
         fmap
           parseS
-          [ S.S0
-          , S.S0_5
+          [ S.S0_5
+          , S.S10
+          , S.S11
+          , S.S12
+          , S.S13
+          , S.S14
+          , S.S15
+          , S.S0
           , S.S1
           , S.S2
           , S.S3
@@ -290,12 +296,6 @@ parseSize = do
           , S.S7
           , S.S8
           , S.S9
-          , S.S10
-          , S.S11
-          , S.S12
-          , S.S13
-          , S.S14
-          , S.S15
           ]
           <> [ try $ S.Rem <$> (string "Rem" *> space *> parseFloat)
              , try $ S.Px <$> (string "Px" *> space *> parseFloat)

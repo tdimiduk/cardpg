@@ -31,12 +31,20 @@ import System.FilePath (takeBaseName, (</>))
 import System.Process (callProcess)
 
 import Api.Reflex ()
-import Api.Types (Phase (..))
+import Api.Types (LogEntry (..), LogId (..), LogPayload (..), LogSender (..), Phase (..))
 import Control.Applicative ((<|>))
 import Core.Card (ActorDefinition (..), CardInstance, CoreCard (..))
 import Core.NonEmptyText (getRawText)
-import Core.Primitives (ActorId, Identified (..))
-import Core.State (ActorState (..), CoreCardState (..))
+import Core.Primitives (ActorId, CardInstanceId (..), ChallengeId (..), Identified (..))
+import Core.State
+  ( ActiveChallenge (..)
+  , ActiveDefense (..)
+  , ActorState (..)
+  , ChallengeSource (..)
+  , CoreCardState (..)
+  , PlannedAction (..)
+  )
+import Core.Stats (ResourceType (..))
 import Data.Maybe (catMaybes, listToMaybe)
 import Data.Set qualified as Set
 import Frontend.App (headWidget, uiWidget)
@@ -276,6 +284,7 @@ generateGame opts path skipSnapshot = do
     genWith (mockGameWidgetWithStaging gameState) (playerActorName <> "_staging")
     genWith (mockGameWidgetWithDeckView gameState) (playerActorName <> "_deckview")
     genWith (mockGameWidgetWithDiscardView gameState) (playerActorName <> "_discardview")
+    genWith (mockGameWidgetWithDefense gameState) (playerActorName <> "_defense")
 
   -- 1. No Actor Selected (both phases)
   gen "none_planning" Nothing Planning
@@ -425,6 +434,59 @@ mockGameWidgetWithDiscardView gameState = do
         viewData = DeckViewData "Discard" viewCards
     deckViewerModal (Just viewData <$ pb)
     return ()
+
+-- | Specialized mock widget that sets up an active defense resolution overlay
+mockGameWidgetWithDefense
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     )
+  => GameState
+  -> m ()
+mockGameWidgetWithDefense gameState = do
+  let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      mFirstActor = List.uncons (Map.toList gameState.actors)
+      (actorId, actorState) = case mVallhach of
+        Just (aid, a) -> (Just aid, a)
+        Nothing -> case mFirstActor of
+          Just ((aid, a), _) -> (Just aid, a)
+          Nothing -> (Nothing, error "No actors found in game state for defense preview")
+
+  case actorId of
+    Nothing -> blank
+    Just aid -> do
+      let challengeId = ChallengeId (read "00000000-0000-0000-0000-000000000099")
+          challenge =
+            ActiveChallenge
+              { id = challengeId
+              , source = CSAdHoc "Fierce Attack" Nothing
+              , challengeStrength = 4
+              , challengeColor = Red
+              }
+          -- Use first card in deck as flipped card
+          coreState = actorState.coreState :: CoreCardState
+          defCards = take 1 coreState.deck
+          activeDefense =
+            ActiveDefense
+              { activeChallenge = challenge
+              , cards = defCards
+              }
+          actorState' = actorState{coreState = coreState{defending = Just activeDefense}}
+          actors' = Map.insert aid actorState' gameState.actors
+
+          -- Insert challenge log entry
+          logId = LogId (read "00000000-0000-0000-0000-000000000099")
+          logPayload = LogChallenge challenge PPass
+          logEntry = LogEntry logId SenderGM logPayload
+          history' = logEntry : gameState.history
+
+          gameState' = gameState{actors = actors', history = history'}
+
+      mockGameWidget Nothing (Just aid) gameState' Resolution
 
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do

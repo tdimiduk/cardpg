@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecursiveDo #-}
 
@@ -10,6 +11,7 @@ import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (eitherDecode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
+import Data.Maybe (fromMaybe)
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
@@ -18,17 +20,26 @@ import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
+import Api.Request qualified as Req
 import Api.Types (LogEntry, Phase (..))
 import Core.Primitives (ActorId, Identified (..))
-import Core.State (ActorState, identifiedLookup)
+import Core.State
+  ( ActiveChallenge (..)
+  , ActiveDefense (..)
+  , ActorState (..)
+  , CoreCardState (..)
+  , identifiedLookup
+  )
 
 import Frontend.Game.Class
+import Frontend.Game.Defense (DefenseAction (..), DefenseTarget (..))
+import Frontend.Game.DefenseWidget (defenseWidget)
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.MapBoard (mapBoardWidget)
 
 import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
-import Frontend.Game.SidebarRight (sidebarRightWidget)
+import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
 
 import Frontend.Style.Common (Style, componentS)
 
@@ -111,7 +122,7 @@ uiWidget
   -> m ()
 uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
   rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
-      sidebarActiveChange <- sidebarWidget selectedActorId
+      (sidebarActiveChange, resumeDefenseEvt) <- sidebarWidget selectedActorId
 
       -- Main Content Area (Right)
       mapActiveChange <- componentS "main-content" mainContent $ do
@@ -129,10 +140,96 @@ uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
 
         return mapChange
 
-  -- Right Sidebar
-  sidebarRightWidget selectedActorId
+  -- Right Sidebar — now returns Event t DefenseTarget from challenge clicks
+  openDefenseEvt <- sidebarRightWidget selectedActorId
+
+  actorsMapDyn <- askActors
+  logsDyn <- askLogs
+
+  rec let closePanelEvt = ffilter (\case ClosePanel -> True; EndDefense -> True; _ -> False) defenseWidgetEvt
+
+      let actorSelectedEvt = updated selectedActorId
+      pb <- getPostBuild
+      let actorSelectedOrBuildEvt = leftmost [actorSelectedEvt, initialActorId <$ pb]
+          autoOpenEvt =
+            attachWith
+              (\(actorsMap, history) mActorId -> getActiveDefenseTarget mActorId actorsMap history)
+              (current (zipDyn actorsMapDyn logsDyn))
+              actorSelectedOrBuildEvt
+
+          manualResumeEvt =
+            attachWith
+              (\(actorsMap, history) actorId -> getActiveDefenseTarget (Just actorId) actorsMap history)
+              (current (zipDyn actorsMapDyn logsDyn))
+              resumeDefenseEvt
+
+      -- Defense modal state: Nothing = closed, Just target = open
+      --
+      -- When a challenge is clicked, we check if the selected actor already has
+      -- an active defense. If so, we redirect to that defense (conflict detection).
+      defenseTargetDyn <-
+        foldDyn applyDefenseEvent Nothing $
+          leftmost
+            [ Just
+                <$> attachWith
+                  ( \(mActorId, actorsMap) newTarget ->
+                      -- Conflict detection: if actor is already defending a different challenge,
+                      -- open that defense instead.
+                      let mActiveDefense = do
+                            actorId <- mActorId
+                            actorState <- Map.lookup actorId actorsMap
+                            _defending <- actorState.coreState.defending
+                            pure (actorState, _defending)
+                       in case mActiveDefense of
+                            Just (_actorState, defending) ->
+                              if defending.activeChallenge.id /= newTarget.challenge.id
+                                then -- Actor is defending a different challenge — keep active defense
+                                  newTarget{challenge = defending.activeChallenge}
+                                else newTarget
+                            Nothing -> newTarget
+                  )
+                  (current (zipDyn selectedActorId actorsMapDyn))
+                  openDefenseEvt
+            , autoOpenEvt
+            , manualResumeEvt
+            , Nothing <$ closePanelEvt
+            ]
+
+      -- Render defense widget when active, routing actions to API requests
+      widgetActionEvt <- dyn $
+        ffor (zipDyn defenseTargetDyn (zipDyn selectedActorId actorsMapDyn)) $
+          \(mTarget, (mActorId, actorsMap)) ->
+            case (mTarget, mActorId, mActorId >>= \aid -> Map.lookup aid actorsMap) of
+              (Just target, Just actorId, Just actorState) -> do
+                let actorStateDyn = ffor actorsMapDyn $ \m ->
+                      fromMaybe actorState (Map.lookup actorId m)
+
+                actionEvt <- defenseWidget (constDyn target) actorStateDyn
+
+                -- Route DefenseAction events to API requests
+                let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
+                _ <- requestGame defenseReqs
+
+                return actionEvt
+              _ -> return never
+
+      defenseWidgetEvt <- switchHold never widgetActionEvt
 
   pure ()
+  where
+    -- \| Route a DefenseAction to the appropriate API request.
+    toDefenseRequest actorId target = \case
+      FlipCard ->
+        Just (Req.Defend actorId target.challenge.id)
+      TakeConsequence mSev ->
+        Just (Req.AddConsequence actorId mSev)
+      EndDefense ->
+        Just (Req.EndDefense actorId)
+      ClosePanel ->
+        Nothing -- UI-only: no API call
+
+    -- \| Apply a defense open/close event to the current state.
+    applyDefenseEvent mNew _old = mNew
 
 headWidget :: (DomBuilder t m) => m ()
 headWidget = do

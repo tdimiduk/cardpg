@@ -78,6 +78,8 @@ library
     Frontend.Game.ActorDetails.Stats
     Frontend.Game.Class
     Frontend.Game.Common
+    Frontend.Game.Defense
+    Frontend.Game.DefenseWidget
     Frontend.Game.Hand
     Frontend.Game.MapBoard
     Frontend.Game.PhaseDisplay
