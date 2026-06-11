@@ -34,10 +34,12 @@ library
     Reflex.AtomicCss.Core
     Reflex.AtomicCss.DSL
     Reflex.AtomicCss.Layout
+    Reflex.AtomicCss.Parser
 
   build-depends:
     , base
     , containers
+    , megaparsec
     , reflex-dom-core
     , text
 
@@ -54,4 +56,18 @@ executable gen-css
     , mtl
     , optparse-applicative
     , reflex-atomic-css
+    , text
+
+test-suite reflex-atomic-css-test
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+  hs-source-dirs: tests
+  build-depends:
+    , base
+    , megaparsec
+    , QuickCheck
+    , reflex-atomic-css
+    , tasty
+    , tasty-quickcheck
     , text
