@@ -15,11 +15,11 @@ main = do
     ["client"] -> do
       putStrLn "Starting ghciwatch for client..."
       putStrLn "Ensuring gen-css is built..."
-      callProcess "cabal" ["build", "client-reflex:gen-css"]
+      callProcess "cabal" ["build", "client:gen-css"]
       binPath <-
         catchIOError
-          (init <$> readProcess "cabal" ["list-bin", "client-reflex:gen-css"] "")
-          (\_ -> return "cabal run client-reflex:gen-css")
+          (init <$> readProcess "cabal" ["list-bin", "client:gen-css"] "")
+          (\_ -> return "cabal run client:gen-css")
       putStrLn $ "Using gen-css binary at: " ++ binPath
       runWatch (Client binPath)
     ["server"] -> do
@@ -40,7 +40,7 @@ getGhciWatchArgs mode =
   case mode of
     Client genCssBin ->
       let cmd = "scripts/recompile-assets " ++ genCssBin
-       in mkArgs "client-reflex" "lib:client-reflex" "Frontend.Devel.devMain" ["design/rules"]
+       in mkArgs "client" "lib:client" "Frontend.Devel.devMain" ["design/rules"]
             ++ [ "--before-startup-shell"
                , cmd
                , "--before-reload-shell"

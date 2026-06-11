@@ -141,7 +141,7 @@ setupOutputDir outDir = do
   createDirectoryIfMissing True outDir
 
   let linkFile name = do
-        let target = ".." </> "client-reflex" </> "static" </> name
+        let target = ".." </> "client" </> "static" </> name
             linkPath = outDir </> name
         isSym <- pathIsSymbolicLink linkPath `catch` (\(_ :: SomeException) -> return False)
         exists <- doesPathExist linkPath

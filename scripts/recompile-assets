@@ -13,21 +13,21 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Compile static markdown rules to static HTML
 echo "Compiling markdown rules via Pandoc..."
 pandoc "$ROOT_DIR/design/rules/core-rules.md" \
-  -o "$ROOT_DIR/client-reflex/static/rules.html" \
+  -o "$ROOT_DIR/client/static/rules.html" \
   --standalone \
-  --template="$ROOT_DIR/client-reflex/static/rules-template.html" \
+  --template="$ROOT_DIR/client/static/rules-template.html" \
   --metadata title="Core Rules"
 
 pandoc "$ROOT_DIR/design/rules/keyword-glossary.md" \
-  -o "$ROOT_DIR/client-reflex/static/glossary.html" \
+  -o "$ROOT_DIR/client/static/glossary.html" \
   --standalone \
-  --template="$ROOT_DIR/client-reflex/static/rules-template.html" \
+  --template="$ROOT_DIR/client/static/rules-template.html" \
   --metadata title="Keyword Glossary"
 
 pandoc "$ROOT_DIR/design/rules/colors-of-action.md" \
-  -o "$ROOT_DIR/client-reflex/static/colors.html" \
+  -o "$ROOT_DIR/client/static/colors.html" \
   --standalone \
-  --template="$ROOT_DIR/client-reflex/static/rules-template.html" \
+  --template="$ROOT_DIR/client/static/rules-template.html" \
   --metadata title="Colors of Action"
 
 echo "Asset recompilation complete."

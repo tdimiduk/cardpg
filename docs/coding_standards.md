@@ -67,7 +67,7 @@ actor & coreState . hand %~ (card :)
 
 ---
 
-## 2. Reflex Frontend (`client-reflex`)
+## 2. Reflex Frontend (`client`)
 
 ### 2.1 FRP Principles
 

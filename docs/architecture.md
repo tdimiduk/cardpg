@@ -25,7 +25,7 @@ cardpg/
 │       └── Card.hs     # Card definitions
 ├── server/             # cardpg-server: WebSocket server
 │   └── src/Server/     # Connection handling, game hosting
-├── client-reflex/      # cardpg-client-reflex: Haskell/Reflex-DOM frontend
+├── client/             # cardpg-client: Haskell/Reflex-DOM frontend
 │   ├── src/Frontend/
 │   │   ├── Style/      # Styling DSL system (Core, DSL, Common, Layout)
 │   │   ├── Game/       # Game UI widgets (Hand, Sidebar, Staging, Planning)
@@ -51,18 +51,18 @@ cardpg/
 
 ## Cabal Packages
 
-| Package                | Purpose                         | Dependencies                |
-| ---------------------- | ------------------------------- | --------------------------- |
-| `cardpg-core`          | Pure game logic, fully testable | None (pure)                 |
-| `cardpg-api`           | Shared API types                | `cardpg-core`               |
-| `cardpg-server`        | WebSocket server executable     | `cardpg-core`, `cardpg-api` |
-| `cardpg-client-reflex` | Reflex frontend + build tools   | `cardpg-core`, `cardpg-api` |
+| Package         | Purpose                         | Dependencies                |
+| --------------- | ------------------------------- | --------------------------- |
+| `cardpg-core`   | Pure game logic, fully testable | None (pure)                 |
+| `cardpg-api`    | Shared API types                | `cardpg-core`               |
+| `cardpg-server` | WebSocket server executable     | `cardpg-core`, `cardpg-api` |
+| `cardpg-client` | Reflex frontend + build tools   | `cardpg-core`, `cardpg-api` |
 
-### Executables in `client-reflex`
+### Executables in `client`
 
 | Executable      | Purpose                                      |
 | --------------- | -------------------------------------------- |
-| `client-reflex` | Main frontend (runs via jsaddle-warp in dev) |
+| `client`        | Main frontend (runs via jsaddle-warp in dev) |
 | `cardpg-static` | Static HTML/PNG/PDF snapshot generator       |
 | `gen-css`       | CSS generation tool (run at build time)      |
 
@@ -133,7 +133,7 @@ dev
 This runs `process-compose` which starts:
 
 - **server**: ghciwatch watching `server/` and rebuilding on changes
-- **client**: ghciwatch watching `client-reflex/` with `gen-css` running before each reload
+- **client**: ghciwatch watching `client/` with `gen-css` running before each reload
 
 ### Running Tests
 

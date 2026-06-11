@@ -1,5 +1,5 @@
 cabal-version: 3.4
-name:          client-reflex
+name:          client
 version:       0.1.0.0
 synopsis:      Reflex-DOM frontend for CardPG
 license:       MIT
@@ -103,14 +103,14 @@ library
 
   hs-source-dirs:  src
 
-executable client-reflex
+executable client
   import:         project-config
   ghc-options:    -threaded -rtsopts -with-rtsopts=-N -main-is ClientMain
   main-is:        Main.hs
   build-depends:
     , base
     , bytestring
-    , client-reflex
+    , client
     , jsaddle
     , reflex-dom-core
     , text
@@ -129,7 +129,7 @@ executable cardpg-static
     , api
     , base
     , bytestring
-    , client-reflex
+    , client
     , containers
     , core
     , directory
@@ -146,7 +146,7 @@ executable cardpg-static
     , uuid-types
     , yaml
 
-test-suite client-reflex-test
+test-suite client-test
   import:         project-config
   type:           exitcode-stdio-1.0
   main-is:        Main.hs
@@ -154,7 +154,7 @@ test-suite client-reflex-test
   other-modules:  PlanningTest
   build-depends:
     , base
-    , client-reflex
+    , client
     , containers
     , core
     , mtl
@@ -174,7 +174,7 @@ executable gen-css
     , api
     , base
     , bytestring
-    , client-reflex
+    , client
     , containers
     , core
     , directory

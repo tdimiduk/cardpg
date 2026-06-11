@@ -1,9 +1,9 @@
 /scratch
 /data/cards/raw
-/client-reflex/static/atomic.css
-/client-reflex/static/colors.html
-/client-reflex/static/glossary.html
-/client-reflex/static/rules.html
+/client/static/atomic.css
+/client/static/colors.html
+/client/static/glossary.html
+/client/static/rules.html
 *.yaml.reformatted
 cardpg.code-workspace
 catalog.*
