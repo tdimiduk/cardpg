@@ -133,7 +133,7 @@ This writes to `client-reflex/static/atomic.css`.
 
 ### How GenCss Works
 
-1. **Static enumeration**: Named atoms (zero-argument functions) from `Frontend.Style.DSL` are listed in `GenCss.hs`'s `staticStyles` array.
+1. **Static enumeration**: Named atoms (zero-argument functions) from `Frontend.Style.DSL` are listed in [Parser.hs](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/src/Reflex/AtomicCss/Parser.hs)'s `staticStyles` array.
 2. **Source scanning**: A Megaparsec parser scans all `.hs` files under `client-reflex/src/` for:
    - Parameterized calls like `bg Gray 10`, `p S4`, `gap (Rem 1)`.
    - Low-level `css` and `css'` calls.
@@ -155,7 +155,7 @@ myNewStyle :: Style
 myNewStyle = css "my-new-style" "some-property" "some-value"
 ```
 
-Then add it to the export list and to the `staticStyles` list in `GenCss.hs`.
+Then add it to the export list and to the `staticStyles` list in [Parser.hs](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/src/Reflex/AtomicCss/Parser.hs).
 
 ### Option B: Inline Custom (One-off)
 
@@ -165,14 +165,14 @@ Use `css` directly in your widget code:
 divS (S.css "h-custom" "height" "42px" . S.flexCol) $ text "Hello"
 ```
 
-The Megaparsec scanner in `GenCss.hs` will find this and include it in the generated CSS.
+The Megaparsec scanner will find this and include it in the generated CSS.
 
 ## Troubleshooting
 
 **Problem**: My styles are missing (elements look unstyled).
 
 - **Check 1**: Did you run `gen-css`? If using `dev`, it runs automatically.
-- **Check 2**: Is your atom in the `staticStyles` list in `GenCss.hs`? (For static, zero-argument atoms only).
+- **Check 2**: Is your atom in the `staticStyles` list in [Parser.hs](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/src/Reflex/AtomicCss/Parser.hs)? (For static, zero-argument atoms only).
 - **Check 3**: For parameterized calls (like `bg Gray 10`), is the Megaparsec scanner picking them up? Ensure you are using standard `S.bg S.Gray 10` or `bg Gray 10` patterns.
 - **Debug**: Run `cabal run gen-css` and grep the output file for your class name.
 - **Visual Verification**: Use the @[ui_css_static_debugging] skill to generate snapshots and verify the rendered HTML/CSS structure without a browser.

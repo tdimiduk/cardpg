@@ -86,8 +86,27 @@ The static snapshots load `atomic.css` (and `base.css` for reset/base styles). I
 
 If your component is missing or unstyled:
 
-- Check that any new named atoms are in the `staticStyles` list in `GenCss.hs`.
-- For parameterized functions, ensure they are in the `knownParams` list in `GenCss.hs` and that the Megaparsec scanner is picking up your call sites.
+- Check that any new named atoms are in the `staticStyles` list in [Parser.hs](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/src/Reflex/AtomicCss/Parser.hs).
+- For parameterized functions, ensure they are in the `knownParams` list in [Parser.hs](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/src/Reflex/AtomicCss/Parser.hs) and that the Megaparsec scanner is picking up your call sites.
+
+## Testing and Extending the Style Parser
+
+If you add a new styling function, modify parser logic, or suspect a parsing issue, use the dedicated QuickCheck test suite.
+
+### Running Parser Tests
+
+To run the style parser unit tests:
+
+```bash
+cabal test reflex-atomic-css
+```
+
+### Extending the Tests
+
+Instead of writing custom verification scripts, add test coverage directly to the QuickCheck suite:
+
+1. Extend the QuickCheck properties or add a conventional test case in [Main.hs (tests)](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/tests/Main.hs).
+2. Fix the parser in [Parser.hs](file:///home/tdimiduk/cardpg/cardpg/reflex-atomic-css/src/Reflex/AtomicCss/Parser.hs) and verify that the tests pass.
 
 ## Troubleshooting
 
