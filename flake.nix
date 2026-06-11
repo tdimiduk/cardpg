@@ -91,6 +91,7 @@
                 api.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-fexpose-all-unfoldings" ];
                 server.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
                 client.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" "-O2" "-fexpose-all-unfoldings" "-fspecialise-aggressively" ];
+                reflex-atomic-css.ghcOptions = [ "-j" "+RTS" "-A128m" "-n4m" "-RTS" ];
               };
             }];
           };
@@ -151,7 +152,7 @@
               cd temp
               cp -r ${./client} ./client
               chmod -R +w ./client
-              ${project.client.components.exes.gen-css}/bin/gen-css
+              ${project.reflex-atomic-css.components.exes.gen-css}/bin/gen-css
               cp client/static/atomic.css $out/atomic.css
 
               # Compile static markdown rules to static HTML
@@ -215,6 +216,7 @@
               p.server
               p.api
               p.client
+              p.reflex-atomic-css
             ];
 
             withHoogle = false;

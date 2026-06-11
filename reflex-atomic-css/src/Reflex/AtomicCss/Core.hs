@@ -11,7 +11,7 @@
 --
 -- widget = divS cardStyle $ text "Hello"
 -- @
-module Frontend.Style.Core
+module Reflex.AtomicCss.Core
   ( -- * Core Types
     Prop (..)
   , Style

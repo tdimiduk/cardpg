@@ -1,24 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Common styling infrastructure and element helpers.
---
--- This module provides the core element helpers for building styled
--- Reflex DOM elements using the composable Style system.
+-- | Thin wrapper around Reflex.AtomicCss.Common that exposes generic element helpers
+-- alongside CardPG game-specific icon and text styles.
 module Frontend.Style.Common
-  ( -- * Core re-exports
-    Style
-  , Prop (..)
-  , css
-  , css'
-  , cls
-  , classNames
-
-    -- * Element Helpers
-  , divS
-  , elS
-  , elS'
-  , componentS
-  , testId
+  ( module Reflex.AtomicCss.Common
 
     -- * Composite Styles (multi-atom combinations)
   , iconBlock
@@ -29,39 +14,8 @@ module Frontend.Style.Common
   , resourceTextPrint
   ) where
 
-import Data.Map (Map)
-import Data.Text (Text)
-import Reflex.Dom.Core
-
-import Frontend.Style.Core (Prop (..), classNames)
-import Frontend.Style.DSL
 import Frontend.Style.DSL qualified as S
-
---------------------------------------------------------------------------------
--- Element Helpers
---------------------------------------------------------------------------------
-
--- | Create a styled div.
-divS :: (DomBuilder t m) => Style -> m a -> m a
-divS style = divClass (classNames style)
-
--- | Create a styled element.
-elS :: (DomBuilder t m) => Text -> Style -> m a -> m a
-elS tagName style = elClass tagName (classNames style)
-
--- | Create a styled element with additional attributes.
-elS'
-  :: (DomBuilder t m)
-  => Text -> Style -> Map Text Text -> m a -> m (Element EventResult (DomBuilderSpace m) t, a)
-elS' tagName style attrs = elAttr' tagName (("class" =: classNames style) <> attrs)
-
--- | A named component div (adds data-testid for testing/debugging).
-componentS :: (DomBuilder t m) => Text -> Style -> m a -> m a
-componentS name style = elAttr "div" ("class" =: classNames style <> testId name)
-
--- | Add a data-testid attribute for testing.
-testId :: Text -> Map Text Text
-testId = ("data-testid" =:)
+import Reflex.AtomicCss.Common
 
 --------------------------------------------------------------------------------
 -- Composite Styles (multi-atom combinations)
@@ -74,18 +28,18 @@ iconBlock = S.w (S.Rem 2.5) . S.h (S.Rem 2.5) . S.fontBold . S.textXl
 -- | Responsive icon (percentage height)
 iconResponsive :: Style
 iconResponsive =
-  css "h-30pct" "height" "30%"
-    . css "w-auto" "width" "auto"
-    . aspectSquare
-    . fontBold
+  S.css "h-30pct" "height" "30%"
+    . S.css "w-auto" "width" "auto"
+    . S.aspectSquare
+    . S.fontBold
 
 -- | Inline icon (fits text line height)
 iconInline :: Style
 iconInline =
-  inlineBlock
-    . css "h-0.8em" "height" "0.8em"
-    . css "w-auto" "width" "auto"
-    . alignTextBottom
+  S.inlineBlock
+    . S.css "h-0.8em" "height" "0.8em"
+    . S.css "w-auto" "width" "auto"
+    . S.alignTextBottom
 
 -- | Resource icon size
 resourceIcon :: Style
@@ -93,8 +47,8 @@ resourceIcon = S.w S.S4 . S.h S.S4
 
 -- | Resource text base (bold, light gray for screen)
 resourceTextBase :: Style
-resourceTextBase = fontBold . S.text S.Gray 2
+resourceTextBase = S.fontBold . S.text S.Gray 2
 
 -- | Resource text for print (black/dark gray)
 resourceTextPrint :: Style
-resourceTextPrint = media "print" textBlack
+resourceTextPrint = S.media "print" S.textBlack

@@ -15,11 +15,11 @@ main = do
     ["client"] -> do
       putStrLn "Starting ghciwatch for client..."
       putStrLn "Ensuring gen-css is built..."
-      callProcess "cabal" ["build", "client:gen-css"]
+      callProcess "cabal" ["build", "reflex-atomic-css:gen-css"]
       binPath <-
         catchIOError
-          (init <$> readProcess "cabal" ["list-bin", "client:gen-css"] "")
-          (\_ -> return "cabal run client:gen-css")
+          (init <$> readProcess "cabal" ["list-bin", "reflex-atomic-css:gen-css"] "")
+          (\_ -> return "cabal run reflex-atomic-css:gen-css")
       putStrLn $ "Using gen-css binary at: " ++ binPath
       runWatch (Client binPath)
     ["server"] -> do
@@ -68,8 +68,12 @@ getGhciWatchArgs mode =
       , "core/core.cabal"
       , "--restart-glob"
       , "api/api.cabal"
+      , "--restart-glob"
+      , "reflex-atomic-css/reflex-atomic-css.cabal"
       , "--watch"
       , "core/src"
       , "--watch"
       , "api/src"
+      , "--watch"
+      , "reflex-atomic-css/src"
       ]

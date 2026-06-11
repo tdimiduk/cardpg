@@ -1,0 +1,57 @@
+cabal-version: 3.4
+name:          reflex-atomic-css
+version:       0.1.0.0
+synopsis:      Reflex-DOM utility-first atomic CSS DSL and generator
+license:       MIT
+author:        Antigravity
+maintainer:    antigravity@example.com
+build-type:    Simple
+
+common project-config
+  default-language:   GHC2021
+  ghc-options:        -Wall
+  default-extensions:
+    DefaultSignatures
+    DerivingStrategies
+    DuplicateRecordFields
+    LambdaCase
+    MultiWayIf
+    NoFieldSelectors
+    OverloadedLabels
+    OverloadedRecordDot
+    OverloadedStrings
+    QuantifiedConstraints
+    RecordWildCards
+    RecursiveDo
+    TemplateHaskell
+    TypeFamilies
+
+library
+  import:          project-config
+  hs-source-dirs:  src
+  exposed-modules:
+    Reflex.AtomicCss.Common
+    Reflex.AtomicCss.Core
+    Reflex.AtomicCss.DSL
+    Reflex.AtomicCss.Layout
+
+  build-depends:
+    , base
+    , containers
+    , reflex-dom-core
+    , text
+
+executable gen-css
+  import:         project-config
+  main-is:        Main.hs
+  hs-source-dirs: app
+  build-depends:
+    , base
+    , containers
+    , directory
+    , filepath
+    , megaparsec
+    , mtl
+    , optparse-applicative
+    , reflex-atomic-css
+    , text

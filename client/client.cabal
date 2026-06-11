@@ -47,6 +47,7 @@ library
     , random
     , ref-tf
     , reflex
+    , reflex-atomic-css
     , reflex-dom
     , reflex-dom-core
     , reflex-gadt-api
@@ -93,7 +94,6 @@ library
     Frontend.Render.Rules
     Frontend.Style
     Frontend.Style.Common
-    Frontend.Style.Core
     Frontend.Style.DSL
     Frontend.Style.Layout
     Frontend.Svg
@@ -165,25 +165,3 @@ test-suite client-test
     , tasty-hunit
     , text
     , uuid-types
-
-executable gen-css
-  import:         project-config
-  main-is:        GenCss.hs
-  hs-source-dirs: app
-  build-depends:
-    , api
-    , base
-    , bytestring
-    , client
-    , containers
-    , core
-    , directory
-    , filepath
-    , megaparsec
-    , mtl
-    , random
-    , reflex
-    , reflex-dom-core
-    , server
-    , text
-    , yaml
