@@ -7,7 +7,7 @@
 module Reflex.AtomicCss.Common
   ( -- * Core re-exports
     Style
-  , Prop (..)
+  , Prop
   , css
   , css'
   , cls
@@ -25,7 +25,7 @@ import Data.Map (Map)
 import Data.Text (Text)
 import Reflex.Dom.Core
 
-import Reflex.AtomicCss.Core (Prop (..), Style, classNames, cls, css, css')
+import Reflex.AtomicCss.Core (Prop, Style, classNames, cls, css, css')
 
 --------------------------------------------------------------------------------
 -- Element Helpers

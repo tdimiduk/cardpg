@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -e
 # Run hlint on source directories
-hlint api client-reflex core server tools
+hlint api client core server tools reflex-atomic-css
 weeder

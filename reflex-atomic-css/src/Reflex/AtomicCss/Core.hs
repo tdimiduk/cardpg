@@ -13,13 +13,14 @@
 -- @
 module Reflex.AtomicCss.Core
   ( -- * Core Types
-    Prop (..)
+    Prop (propClassName, propSelector, propDecls, propMediaQuery)
   , Style
 
     -- * Atomic Constructors
   , css
   , css'
   , cls
+  , customSelector
 
     -- * Modifiers
   , hover
@@ -30,6 +31,8 @@ module Reflex.AtomicCss.Core
   , pseudoProp
   , media
   , mediaProp
+  , lastChild
+  , lastChildProp
 
     -- * Rendering
   , classNames
@@ -86,6 +89,10 @@ css name property value = (Prop name ("." <> escapeCss name) [(property, value)]
 -- | Define a multi-property atomic style.
 css' :: Text -> [(Text, Text)] -> Style
 css' name decls = (Prop name ("." <> escapeCss name) decls Nothing :)
+
+-- | Define a custom selector style with custom class name, selector and declarations.
+customSelector :: Text -> Text -> [(Text, Text)] -> Style
+customSelector name selector decls = (Prop name selector decls Nothing :)
 
 -- | An external class name with no generated CSS.
 -- Use for classes defined elsewhere (e.g. "action", "scaler-target").
@@ -161,6 +168,20 @@ mediaProp q p =
   where
     -- Use a short prefix for the class name
     mediaPrefix = T.filter (\c -> c /= ' ' && c /= '(' && c /= ')' && c /= ':') q
+
+-- | Apply a style to the last child.
+lastChild :: Style -> Style
+lastChild style rest =
+  let props = style []
+   in map lastChildProp props ++ rest
+
+-- | Add last-child styling to a single Prop.
+lastChildProp :: Prop -> Prop
+lastChildProp prop =
+  prop
+    { propClassName = "last\\:" <> prop.propClassName
+    , propSelector = "." <> escapeCss ("last:" <> prop.propClassName) <> ":last-child"
+    }
 
 --------------------------------------------------------------------------------
 -- Rendering

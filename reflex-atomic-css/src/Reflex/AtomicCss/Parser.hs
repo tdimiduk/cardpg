@@ -36,7 +36,8 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer qualified as L
 
-import Reflex.AtomicCss.Core (Prop (..))
+import Data.Map.Strict qualified as Map
+import Reflex.AtomicCss.Core (Prop)
 import Reflex.AtomicCss.DSL qualified as S
 
 type Parser = Parsec Void Text
@@ -177,7 +178,86 @@ knownParams =
   , ParamFn "border" parseColorAndTone (\(c, n) -> S.border c n [])
   , ParamFn "ring" parseColorAndTone (\(c, n) -> S.ring c n [])
   , ParamFn "media" parseMedia snd
+  , ParamFn "cls" parseStringLiteral (`S.cls` [])
+  , ParamFn "roundedS" parseSize (`S.roundedS` [])
+  , ParamFn "surface" parseInt (`S.surface` [])
+  , ParamFn "borderAlpha" parseColorToneAlpha (\(c, n, a) -> S.borderAlpha c n a [])
   ]
+
+staticStylesMap :: Map.Map Text [Prop]
+staticStylesMap = Map.fromList staticStyles
+
+knownParamsMap :: Map.Map Text ParamFn
+knownParamsMap = Map.fromList [(fn.fnName, fn) | fn <- knownParams]
+
+parseIdentifier :: Parser Text
+parseIdentifier = do
+  first <- letterChar <|> char '_'
+  rest <- many (alphaNumChar <|> char '_' <|> char '\'')
+  return $ T.pack (first : rest)
+
+parseStyleExpr :: Parser [Prop]
+parseStyleExpr = do
+  terms <- sepBy1 parseStyleDotChain (try (space *> char '$' *> space))
+  return $ concat terms
+
+parseStyleDotChain :: Parser [Prop]
+parseStyleDotChain = do
+  terms <- sepBy1 parseStyleTerm (try (space *> char '.' *> space))
+  return $ concat terms
+
+parseDecls :: Parser [(Text, Text)]
+parseDecls = do
+  _ <- char '['
+  space
+  ds <- sepBy parseDecl (space >> char ',' >> space)
+  space
+  _ <- char ']'
+  return ds
+
+parseStyleTerm :: Parser [Prop]
+parseStyleTerm = do
+  choice
+    [ char '(' *> space *> parseStyleExpr <* space <* char ')'
+    , do
+        _ <- optional (string "S.")
+        ident <- parseIdentifier
+        if
+          | ident == "hover" -> do
+              space1
+              map S.hoverProp <$> parseStyleTerm
+          | ident == "active" -> do
+              space1
+              map S.activeProp <$> parseStyleTerm
+          | ident == "lastChild" -> do
+              space1
+              map S.lastChildProp <$> parseStyleTerm
+          | ident == "pseudo" -> do
+              space1
+              pseudoClass <- parseStringLiteral
+              space1
+              map (S.pseudoProp pseudoClass) <$> parseStyleTerm
+          | ident == "media" -> do
+              space1
+              q <- parseStringLiteral
+              space1
+              map (S.mediaProp q) <$> parseStyleTerm
+          | ident == "customSelector" -> do
+              space1
+              name <- parseStringLiteral
+              space1
+              selector <- parseStringLiteral
+              space1
+              decls <- parseDecls
+              return $ S.customSelector name selector decls []
+          | otherwise -> case Map.lookup ident staticStylesMap of
+              Just props -> return props
+              Nothing -> case Map.lookup ident knownParamsMap of
+                Just (ParamFn _ parser applyFn) -> do
+                  space1
+                  applyFn <$> parser
+                Nothing -> fail $ "Unknown identifier: " ++ T.unpack ident
+    ]
 
 scanContent :: Text -> [Prop]
 scanContent content = case parse (many parseAny) "" content of
@@ -185,12 +265,17 @@ scanContent content = case parse (many parseAny) "" content of
   Right parsedChunks -> concat parsedChunks
 
 parseAny :: Parser [Prop]
-parseAny = try parseParam <|> (anySingle >> return [])
+parseAny = try parseStyleExpr <|> (anySingle >> return [])
 
 parseParam :: Parser [Prop]
 parseParam = do
   _ <- optional (string "S.")
-  choice $ map (try . tryParam) knownParams
+  ident <- parseIdentifier
+  case Map.lookup ident knownParamsMap of
+    Just (ParamFn _ parser applyFn) -> do
+      space1
+      applyFn <$> parser
+    Nothing -> fail $ "Not a known parameterized style: " ++ T.unpack ident
 
 tryParam :: ParamFn -> Parser [Prop]
 tryParam (ParamFn name p applyFn) = do
@@ -331,11 +416,10 @@ parseStyle = try parseParam <|> parseStatic
 parseStatic :: Parser [Prop]
 parseStatic = do
   _ <- optional (string "S.")
-  choice $
-    map
-      ( \(name, props) -> try (props <$ (string name *> notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_'))))
-      )
-      staticStyles
+  ident <- parseIdentifier
+  case Map.lookup ident staticStylesMap of
+    Just props -> return props
+    Nothing -> fail $ "Not a static style: " ++ T.unpack ident
 
 parseNameAndDecls :: Parser (Text, [(Text, Text)])
 parseNameAndDecls = do

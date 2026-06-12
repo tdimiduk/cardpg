@@ -4,13 +4,13 @@ module Main where
 
 import Data.Text (Text)
 import Data.Text qualified as T
+import Reflex.AtomicCss.Core (Prop)
+import Reflex.AtomicCss.DSL qualified as S
+import Reflex.AtomicCss.Parser
 import Test.QuickCheck
 import Test.Tasty
 import Test.Tasty.QuickCheck
 import Text.Megaparsec (parse)
-
-import Reflex.AtomicCss.DSL qualified as S
-import Reflex.AtomicCss.Parser
 
 main :: IO ()
 main = defaultMain tests
@@ -31,6 +31,7 @@ tests =
     , testProperty "css' (name + decls) parsing in isolation" prop_cssPrime
     , testProperty "media (query + substyle) parsing in isolation" prop_media
     , testProperty "mixed content scanning (integration)" prop_mixedContent
+    , testProperty "structural styling expression composition" prop_styleExprComposition
     ]
 
 --------------------------------------------------------------------------------
@@ -377,3 +378,53 @@ prop_mixedContent = forAll (listOf genItem) $ \items ->
                 ]
             return (word, [])
         ]
+
+prop_styleExprComposition :: Property
+prop_styleExprComposition = forAll genStyleExpr $ \(expr, expected) ->
+  let parsed = scanContent expr
+   in counterexample
+        ("Expr: " <> T.unpack expr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
+        $ parsed === expected
+
+genStyleExpr :: Gen (Text, [Prop])
+genStyleExpr = genStyleExprWithDepth 2
+
+genStyleExprWithDepth :: Int -> Gen (Text, [Prop])
+genStyleExprWithDepth depth
+  | depth <= 0 = oneof [genStatic, genParam]
+  | otherwise =
+      oneof
+        [ genStatic
+        , genParam
+        , genCompose depth
+        , genModifier depth
+        ]
+  where
+    genStatic = do
+      (name, props) <- elements staticStyles
+      prefix <- elements ["", "S."]
+      return (prefix <> name, props)
+    genParam = do
+      sz <- arbitrary
+      szStr <- sizeToHaskell sz
+      prefix <- elements ["", "S."]
+      return (prefix <> "gap " <> szStr, S.gap sz [])
+    genCompose d = do
+      (expr1, props1) <- genStyleExprWithDepth (d - 1)
+      (expr2, props2) <- genStyleExprWithDepth (d - 1)
+      let combined = expr1 <> " . " <> expr2
+      return (combined, props1 ++ props2)
+    genModifier d = do
+      (expr, props) <- genStyleExprWithDepth (d - 1)
+      prefix <- elements ["", "S."]
+      modifier <- elements ["hover", "active", "lastChild"]
+      let modifierFn = case modifier of
+            "hover" -> S.hoverProp
+            "active" -> S.activeProp
+            "lastChild" -> S.lastChildProp
+            _ -> id
+      let expr' =
+            if " " `T.isInfixOf` expr || "." `T.isInfixOf` expr || "$" `T.isInfixOf` expr
+              then "(" <> expr <> ")"
+              else expr
+      return (prefix <> modifier <> " " <> expr', map modifierFn props)

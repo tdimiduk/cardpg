@@ -21,7 +21,7 @@ module Frontend.Style.DSL
   , h8mm
   ) where
 
-import Reflex.AtomicCss.Core (Prop (..), Style, css)
+import Reflex.AtomicCss.Core (Style, css)
 import Reflex.AtomicCss.DSL
 
 wCard :: Style
@@ -37,22 +37,18 @@ mlCardOverlap :: Style
 mlCardOverlap = ml (Vh (-12))
 
 spaceXActionStackOverlap :: Style
-spaceXActionStackOverlap rest =
-  Prop
+spaceXActionStackOverlap =
+  customSelector
     "space-x-action-stack-overlap"
     ".space-x-action-stack-overlap > * + *"
     [("margin-left", "calc(var(--size-9) * -0.6)")]
-    Nothing
-    : rest
 
 spaceXTuckedOverlap :: Style
-spaceXTuckedOverlap rest =
-  Prop
+spaceXTuckedOverlap =
+  customSelector
     "space-x-tucked-overlap"
     ".space-x-tucked-overlap > * + *"
     [("margin-left", "-12.3vh")]
-    Nothing
-    : rest
 
 originBottom :: Style
 originBottom = css "origin-bottom" "transform-origin" "bottom"

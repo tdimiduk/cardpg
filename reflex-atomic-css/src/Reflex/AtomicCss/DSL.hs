@@ -15,6 +15,7 @@ module Reflex.AtomicCss.DSL
   , css
   , css'
   , cls
+  , customSelector
 
     -- * Modifiers
   , hover
@@ -195,21 +196,7 @@ import Reflex.AtomicCss.Core
 ----------------------------------------------------------------------------------
 
 spaceY2 :: Style
-spaceY2 rest =
-  Prop "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")] Nothing
-    : rest
-
-lastChild :: Style -> Style
-lastChild style rest =
-  let props = style []
-   in map lastChildProp props ++ rest
-
-lastChildProp :: Prop -> Prop
-lastChildProp prop =
-  prop
-    { propClassName = "last\\:" <> prop.propClassName
-    , propSelector = "." <> escapeCss ("last:" <> prop.propClassName) <> ":last-child"
-    }
+spaceY2 = customSelector "space-y-2" ".space-y-2 > * + *" [("margin-top", "var(--size-2)")]
 
 --------------------------------------------------------------------------------
 -- Layout

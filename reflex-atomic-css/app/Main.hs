@@ -6,7 +6,6 @@ import Control.Monad (forM)
 import Data.Function (on)
 import Data.List qualified as List
 import Data.Text (Text)
-import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Options.Applicative qualified as OA
 import System.Directory (doesDirectoryExist, listDirectory)
@@ -14,7 +13,6 @@ import System.FilePath (takeExtension, (</>))
 import System.IO (IOMode (ReadMode), hSetEncoding, utf8, withFile)
 
 import Reflex.AtomicCss.Core (Prop (..), renderAll)
-import Reflex.AtomicCss.DSL qualified as S
 import Reflex.AtomicCss.Parser (scanContent, staticStyles)
 
 -- | CLI Options
@@ -65,34 +63,9 @@ main = do
   allContents <- forM files readUtf8File
   let scanned = concatMap scanContent allContents
 
-  let allContentsText = T.concat allContents
-      usedIn name variant =
-        (variant <> " " <> name) `T.isInfixOf` allContentsText
-          || (variant <> " S." <> name) `T.isInfixOf` allContentsText
-          || ("S." <> variant <> " " <> name) `T.isInfixOf` allContentsText
-          || ("S." <> variant <> " S." <> name) `T.isInfixOf` allContentsText
-
   let baseStaticProps = concatMap snd staticStyles
-      allProps = baseStaticProps ++ scanned
-      uniqueBase = List.nubBy ((==) `on` (.propClassName)) allProps
-
-      staticHoverProps = concat [[S.hoverProp p] | (name, props) <- staticStyles, usedIn name "hover", p <- props]
-      staticActiveProps = concat [[S.activeProp p] | (name, props) <- staticStyles, usedIn name "active", p <- props]
-      staticLastProps = concat [[S.lastChildProp p] | (name, props) <- staticStyles, usedIn name "lastChild", p <- props]
-
-      scannedHoverProps = map S.hoverProp scanned
-      scannedActiveProps = map S.activeProp scanned
-      scannedLastProps = map S.lastChildProp scanned
-
-      withVariants =
-        uniqueBase
-          ++ staticHoverProps
-          ++ staticActiveProps
-          ++ staticLastProps
-          ++ scannedHoverProps
-          ++ scannedActiveProps
-          ++ scannedLastProps
-      unique = List.nubBy ((==) `on` (.propClassName)) withVariants
+      allProps = scanned ++ baseStaticProps
+      unique = List.nubBy ((==) `on` (.propClassName)) allProps
 
   T.writeFile opts.outCss (header <> renderAll unique)
   putStrLn $ "Done. Wrote " <> opts.outCss <> " with " <> show (length unique) <> " rules."
