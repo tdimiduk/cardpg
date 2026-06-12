@@ -68,11 +68,8 @@ data/cards/status/core.reformatted.yaml
 .direnv
 .stamp*
 
-# Devenv
-.devenv*
-devenv.local.nix
-devenv.local.yaml
-devenv.lock
+# Deploy cache
+.deploy-cache/
 client-dist
 
 # direnv

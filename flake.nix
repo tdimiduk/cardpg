@@ -107,7 +107,7 @@
         {
 
           # Formatter for `nix fmt` - only formats main project files
-          # (excludes generated .devenv.flake.nix and scratch/)
+          # (excludes scratch/ and other temporary files)
           formatter = pkgs.writeShellScriptBin "nixpkgs-fmt" ''
             ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt \
               flake.nix \

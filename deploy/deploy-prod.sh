@@ -5,7 +5,7 @@ set -e
 SERVER_HOST="${SERVER_HOST:-tgd.me}"
 ROOT_AT="${ROOT_AT:-root@tgd.me}"
 SERVICE_FILE="deploy/cardpg-service.nix"
-LAST_SERVICE_FILE=".devenv/state/deploy/cardpg-service.nix.last"
+LAST_SERVICE_FILE=".deploy-cache/cardpg-service.nix.last"
 
 # 1. Check for Key
 if [ -z "$NIX_SIGNING_KEY" ]; then
