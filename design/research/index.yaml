@@ -320,7 +320,7 @@ design_process_and_research:
       id: "synthesis-consequence-database"
       path: "research/synthesis/consequence-database.md"
       source_type: "local_file"
-      purpose: "A structured rules-independent database of physical, cognitive, and environmental stress states grounded in clinical and biomechanical realism, including research report citations."
+      purpose: "A central hub and calibration guide for the structured, rules-independent databases of physical, cognitive, environmental, and social stress states."
       type: "Research Synthesis"
       status: "Canon"
       tags:
@@ -329,6 +329,69 @@ design_process_and_research:
           "audience:designer-facing",
           "core-concept:harm",
           "core-concept:injury",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+    - name: "Combat Consequence Database"
+      id: "synthesis-consequences-combat"
+      path: "research/synthesis/consequences-combat.md"
+      source_type: "local_file"
+      purpose: "A structured, rules-independent database of physical injuries, tactical disruptions, and combat-related trauma."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:combat",
+          "core-concept:harm",
+          "core-concept:injury",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+    - name: "Exploration Consequence Database"
+      id: "synthesis-consequences-exploration"
+      path: "research/synthesis/consequences-exploration.md"
+      source_type: "local_file"
+      purpose: "A structured, rules-independent database of environmental hazards, travel-related hardship, and wilderness trauma."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:exploration",
+          "core-concept:hardship",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+    - name: "Social Consequence Database"
+      id: "synthesis-consequences-social"
+      path: "research/synthesis/consequences-social.md"
+      source_type: "local_file"
+      purpose: "A structured, rules-independent database of social fallout, reputational damage, and psychological stress."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:social",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+    - name: "Crafting Consequence Database"
+      id: "synthesis-consequences-crafting"
+      path: "research/synthesis/consequences-crafting.md"
+      source_type: "local_file"
+      purpose: "A structured, rules-independent database of workplace accidents, industrial hazards, downtime exhaustion, and material strain."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:downtime",
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
