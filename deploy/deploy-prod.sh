@@ -47,16 +47,16 @@ fi
 echo "Updating symlink..."
 TARGET_LINK="/sites/cardpg.tgd.me"
 ssh "$ROOT_AT" "mkdir -p /sites"
-ssh "$ROOT_AT" "ln -sfn $PACKAGE $TARGET_LINK"
+ssh "$ROOT_AT" ln -sfn "$PACKAGE" "$TARGET_LINK"
 
 # Register GC Root
 GC_ROOT="/nix/var/nix/gcroots/cardpg-live"
-ssh "$ROOT_AT" "ln -sfn $TARGET_LINK $GC_ROOT"
+ssh "$ROOT_AT" ln -sfn "$TARGET_LINK" "$GC_ROOT"
 
 if [ "$SHOULD_REBUILD" -eq 1 ]; then
   echo "Service changed or rebuild forced. Rebuilding NixOS..."
   rsync -rav "$SERVICE_FILE" "$ROOT_AT:/etc/nixos/"
-  ssh "$ROOT_AT" "nixos-rebuild switch"
+  ssh "$ROOT_AT" "nixos-rebuild switch --flake /etc/nixos#tgd_me --impure"
   cp "$SERVICE_FILE" "$LAST_SERVICE_FILE"
 else
   echo "Service file unchanged. Skipping nixos-rebuild."

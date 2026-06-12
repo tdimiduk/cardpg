@@ -169,11 +169,18 @@
             # Wrapped server with data paths
             cardpg-server-wrapped = pkgs.runCommand "cardpg-server"
               {
-                buildInputs = [ pkgs.makeWrapper ];
+                buildInputs = [ pkgs.makeWrapper pkgs.removeReferencesTo ];
               } ''
               mkdir -p $out/bin
               cp ${self'.packages.cardpg-server-raw}/bin/server $out/bin/cardpg-server
              
+              # Gargoyle library is statically linked, but its package path in the binary
+              # drags in the entire GHC/LLVM/GCC toolchain (5GB+). We strip these references
+              # as they are not needed at runtime.
+              remove-references-to -t ${project.hsPkgs.gargoyle-postgresql-nix.components.library} $out/bin/cardpg-server
+              remove-references-to -t ${project.pkg-set.config.ghc.package} $out/bin/cardpg-server
+              remove-references-to -t ${self'.packages.cardpg-server-raw} $out/bin/cardpg-server
+
               wrapProgram $out/bin/cardpg-server \
                 --set CARDPG_CARDS_DIR "${self'.packages.game-data}/data/cards" \
                 --set CARDPG_SCENARIO_FILE "${self'.packages.game-data}/data/scenarios/starter.yaml"
