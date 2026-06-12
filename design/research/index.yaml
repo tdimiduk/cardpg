@@ -395,6 +395,37 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
+    - name: "Arcane Consequence Database"
+      id: "synthesis-consequences-arcane"
+      path: "research/synthesis/consequences-arcane.md"
+      source_type: "local_file"
+      purpose: "A structured, rules-independent database of magical backdrafts, alchemical toxicity, elemental exposure, and runic failures."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:magic",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+    - name: "Logistics Consequence Database"
+      id: "synthesis-consequences-logistics"
+      path: "research/synthesis/consequences-logistics.md"
+      source_type: "local_file"
+      purpose: "A structured, rules-independent database of equipment wear, transport breakdowns, supply contamination, and pack animal injuries."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "pillar:exploration",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
+
     - name: "Factual Basis for Consequences: Hardship & Exertion"
       id: "synthesis-hardship-and-exertion"
       path: "research/synthesis/hardship-and-exertion.md"
