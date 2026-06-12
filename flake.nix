@@ -186,7 +186,13 @@
               cp -r ${./data}/cards/* $out/data/cards/
             '';
 
+            bundle = pkgs.runCommand "cardpg-release" { } ''
+              mkdir -p $out/backend
+              mkdir -p $out/frontend
 
+              cp -r ${self'.packages.cardpg-server-wrapped}/* $out/backend/
+              cp -r ${self'.packages.reflex-client-prod}/* $out/frontend/
+            '';
           };
 
           # Pre-commit hooks configuration
