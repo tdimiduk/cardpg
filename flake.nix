@@ -230,6 +230,7 @@
               p.api
               p.client
               p.reflex-atomic-css
+              p.tools-hs
             ];
 
             withHoogle = false;

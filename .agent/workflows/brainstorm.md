@@ -69,8 +69,11 @@ If the subagent is not yet defined in this conversation, define it first using `
 - Apply the 1-100 Grading Scale calibration standards to evaluate each item's Impact vs. Recovery.
 - Format the output in a markdown table.
 
-## 3. Register the Brainstorming File
+## 3. Register and Audit the Brainstormed Content
 
-- Save the output to a new file in `design/research/synthesis/` (e.g., `design/research/synthesis/consequence-database.md`).
-- Run `python3 tools/audit_index.py` and register the new file in `design/research/index.yaml` under `research_synthesis`.
-- Re-run `python3 tools/audit_index.py` to verify the index is clean.
+- Save the output or updates to the appropriate domain consequence files in `design/research/synthesis/` (e.g., `design/research/synthesis/consequences-combat.md`, etc.).
+- Run `python3 tools/audit_index.py` and register any new files in `design/research/index.yaml` under `research_synthesis`. Re-run to verify the index is clean.
+- Run the consequence auditing and density tabulation tool using `cabal run audit-consequences` to:
+  1. Validate that all consequence rows conform to the 10-column schema.
+  2. Verify that all tags match the canonical tag taxonomy defined in `design/research/synthesis/consequence-database.md`.
+  3. Recalculate and auto-inject the updated decade-density summary table back into the database hub file.

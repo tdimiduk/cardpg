@@ -4,6 +4,7 @@ packages:
   api/api.cabal
   client/client.cabal
   reflex-atomic-css/reflex-atomic-css.cabal
+  tools-hs/tools-hs.cabal
 source-repository-package
   type: git
   location: https://github.com/reflex-frp/reflex-gadt-api.git

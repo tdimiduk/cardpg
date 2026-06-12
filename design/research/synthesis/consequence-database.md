@@ -68,8 +68,8 @@ To maintain structured consistency across all sub-databases and prevent tag frag
 
 ### 2. Sub-Tags & Locations
 
-- **Anatomy / Focus**: `Hands`, `Legs`, `Torso`, `Head`, `Eyes`, `Lung`, `Internal`, `Skin`, `Animal`, `Transport`.
-- **Status / Progression**: `Bleeding`, `Sepsis`, `Exertion`, `Balance`, `Psych`, `Fatal`.
+- **Anatomy / Focus**: `Hands`, `Arms`, `Legs`, `Torso`, `Head`, `Eyes`, `Lung`, `Internal`, `Skin`, `Animal`, `Transport`.
+- **Status / Progression**: `Bleeding`, `Sepsis`, `Exertion`, `Balance`, `Psych`, `Fatal`, `Status`, `Fire`, `Cold`, `Wear`, `Food`.
 
 ---
 
@@ -89,3 +89,24 @@ To keep file sizes manageable and organize consequences logically by the pillar 
    - _Scope:_ Magical backdrafts, spellcasting feedback, elemental exposure (frost, flame), alchemical toxicity, and runic failures.
 6. **[Logistics & Equipment Consequences](file:///home/tdimiduk/cardpg/cardpg/design/research/synthesis/consequences-logistics.md)**
    - _Scope:_ Equipment wear, structural transport breakdowns, supply contamination, and pack animal injuries.
+
+---
+
+## Decade-Density Distribution
+
+<!-- START_DENSITY_TABLE -->
+<!-- prettier-ignore -->
+| Decade | Combat | Exploration | Social | Crafting | Arcane | Logistics | Total |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1–10** | 3 | 1 | 1 | 1 | 1 | 2 | **9** |
+| **11–20** | 3 | 1 | 1 | 2 | 1 | 1 | **9** |
+| **21–30** | 1 | 3 | 1 | 1 | 1 | 2 | **9** |
+| **31–40** | 1 | 1 | 1 | 1 | 1 | 1 | **6** |
+| **41–50** | 2 | 0 | 1 | 1 | 1 | 1 | **6** |
+| **51–60** | 1 | 1 | 1 | 1 | 1 | 1 | **6** |
+| **61–70** | 1 | 1 | 1 | 0 | 1 | 0 | **4** |
+| **71–80** | 1 | 1 | 0 | 1 | 1 | 1 | **5** |
+| **81–90** | 1 | 1 | 0 | 1 | 1 | 1 | **5** |
+| **91–100** | 1 | 1 | 1 | 1 | 1 | 1 | **6** |
+
+<!-- END_DENSITY_TABLE -->
