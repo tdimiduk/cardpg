@@ -316,6 +316,22 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
+    - name: "Factual Consequence Database"
+      id: "synthesis-consequence-database"
+      path: "research/synthesis/consequence-database.md"
+      source_type: "local_file"
+      purpose: "A structured rules-independent database of physical, cognitive, and environmental stress states grounded in clinical and biomechanical realism, including research report citations."
+      type: "Research Synthesis"
+      status: "Canon"
+      tags:
+        [
+          "doc-type:research-synthesis",
+          "audience:designer-facing",
+          "core-concept:harm",
+          "core-concept:injury",
+          "core-concept:consequences",
+          "core-concept:verisimilitude",
+        ]
     - name: "Factual Basis for Consequences: Hardship & Exertion"
       id: "synthesis-hardship-and-exertion"
       path: "research/synthesis/hardship-and-exertion.md"
