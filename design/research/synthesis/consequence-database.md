@@ -26,19 +26,50 @@ When brainstorming new entries, the AI must align its ratings with the calibrati
 #### Terminal Impact (1-100) - Peak escalation if left untreated:
 
 - **1–10 (Minor)**: Resolves or remains minor; no progressive threat or risk of complications.
-- **11–30 (Moderate)**: Escalates to moderate distraction or impairment; low risk of life threat but potential minor secondary issues.
+- **11–30 (Moderate)**: Escalates to moderate distraction, minor secondary issues, or slight localized wear.
 - **31–60 (Severe)**: Escalates to severe structural impairment, localized necrosis, or severe non-fatal systemic illness if neglected.
-- **61–90 (Critical)**: Progresses to highly critical status, severe shock, massive infection, or major organ loss; survivable only with extreme luck/hardiness.
-- **91–100 (Fatal)**: Guaranteed death if not aggressively treated or magically mitigated (e.g., sepsis, fatal blood loss, asphyxiation).
+- **61–90 (Critical)**: Progresses to highly critical status, severe shock, massive infection, or major asset loss.
+- **91–100 (Fatal)**: Guaranteed death or total destruction of the asset if not aggressively treated or mitigated (e.g., systemic sepsis, fatal blood loss, complete supply washout).
 - **`-` (No Escalation)**: The consequence does not escalate over time. Its peak severity remains at its Onset Impact value.
+
+> [!NOTE]
+> **Non-Physical Escalation**: For Social consequences, Terminal Impact represents rumor-spreading, blackmail leaking, or panic escalating to persistent phobias. For Logistics consequences, it represents minor wear deteriorating to catastrophic structural failures (e.g., frayed rope snapping under tension).
 
 #### Recovery Difficulty (1-100) - Care, time, and resources needed to clear:
 
-- **1–10 (Trivial)**: Resolves naturally in seconds to minutes with deep breaths or minor adjustments (e.g., Catching Balance, Blinking out Dust).
-- **11–30 (Minor)**: Resolves in hours to 1 week with basic field care, bandages, sleep, or rehydration (e.g., Shallow Cut, Muscle Strain, Ringing Ears).
-- **31–60 (Moderate)**: Resolves in 1 week to 2 months; requires clinical attention (stitches, splints, casting) and relative rest (e.g., Simple Fracture, Sprained Wrist, Deep Puncture Wound).
-- **61–90 (Major)**: Resolves in 2 months to 1 year; requires surgical intervention, intensive physical therapy, or rare active antidotes (e.g., Shattered Joint, Sucking Chest Wound, Compound Fracture).
-- **91–100 (Permanent)**: Permanent, irreversible tissue loss, or requires miraculous/magical intervention (e.g., Amputated Limb, Severe Brain Damage).
+- **1–10 (Trivial)**: Resolves naturally in seconds to minutes with deep breaths, basic cleaning, or minor tool adjustments.
+- **11–30 (Minor)**: Resolves in hours to 1 week with basic field care, bandages, sleep, rehydration, or simple tool repairs (e.g., replacing small harness straps).
+- **31–60 (Moderate)**: Resolves in 1 week to 2 months; requires clinical attention (stitches, splints, casting), specialized smithing/craft tools, or veterinary care.
+- **61–90 (Major)**: Resolves in 2 months to 1 year; requires surgical intervention, rare antidotes, reconstructing destroyed facilities/wagons, or long-term convalescence.
+- **91–100 (Permanent)**: Permanent, irreversible tissue loss, destruction of legendary assets, or permanent loss of a mount/capability.
+
+> [!IMPORTANT]
+> **Baseline Recovery Assumptions**: Ratings assume that recovery efforts occur under standard conditions (e.g., access to basic field tools, local village resources, clean water, or safe rest periods). If stranded in extreme wilderness or hostile territory, the effective Recovery Difficulty scales upward by **+20**.
+
+---
+
+## Canonical Tag Taxonomy
+
+To maintain structured consistency across all sub-databases and prevent tag fragmentation, all entries must draw their tags from the following taxonomy:
+
+### 1. Primary Categories (Pillars of Impact)
+
+- `Physical`: Direct damage to anatomy, tissue, or bones.
+- `Cognitive`: Disruption of logical thought, memory, concentration, or reaction speeds.
+- `Sensory`: Impairments affecting sight, hearing, touch, or equilibrium.
+- `Relational`: Damage to reputation, credibility, social status, or alliances.
+- `Mental`: Severe psychological distress, anxiety, fear, or trauma.
+- `Environmental`: Extreme weather, exposure (heat/cold), or wilderness hazards.
+- `Alchemical`: Chemical exposure, toxicity, ingestion, or corrosive burns.
+- `Arcane`: Unstable magical energy feedback, Ley-line static, or planar distortion.
+- `Equipment`: Wear, breakage, or functional decline of weapons, armor, or tools.
+- `Supply`: Depletion, spoilage, or loss of food, water, raw materials, or cargo.
+- `Logistics`: Breakdowns in transport vehicles (wagons, carriages) or pack animal health.
+
+### 2. Sub-Tags & Locations
+
+- **Anatomy / Focus**: `Hands`, `Legs`, `Torso`, `Head`, `Eyes`, `Lung`, `Internal`, `Skin`, `Animal`, `Transport`.
+- **Status / Progression**: `Bleeding`, `Sepsis`, `Exertion`, `Balance`, `Psych`, `Fatal`.
 
 ---
 
