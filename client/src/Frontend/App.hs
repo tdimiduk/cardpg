@@ -39,7 +39,7 @@ import Frontend.Game.DefenseWidget (defenseWidget)
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.MapBoard (mapBoardWidget)
 
-import Frontend.Game.Planning (RankMoveStaging, StagingState)
+import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
 
@@ -100,13 +100,13 @@ appWidget wsBaseUrl clientId = do
           updatePhase (PushUpdate{newPhase = Just p}) _ = p
           updatePhase _ old = old
 
-      phaseDyn <- foldDyn updatePhase Planning pushEvt
+      phaseDyn <- holdUniqDyn =<< foldDyn updatePhase Planning pushEvt
 
       let updateMapMode (PushWelcome{game = a}) _ = fromMaybe MapModeGrid a.mapMode
           updateMapMode (PushUpdate{game = a}) _ = fromMaybe MapModeGrid a.mapMode
           updateMapMode _ old = old
 
-      mapModeDyn <- foldDyn updateMapMode MapModeGrid pushEvt
+      mapModeDyn <- holdUniqDyn =<< foldDyn updateMapMode MapModeGrid pushEvt
 
   pure ()
   where
@@ -144,15 +144,15 @@ uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
             stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
               handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
 
-            let stagingStateDyn = join $ ffor stagingStateDynMap $ \m ->
-                  case Map.elems m of
-                    [] -> constDyn Nothing
-                    (d : _) -> fst d
+            stagingStateDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
+              case Map.elems m of
+                [] -> constDyn Nothing
+                (d : _) -> fst d
 
-            let rankMoveStagingDyn = join $ ffor stagingStateDynMap $ \m ->
-                  case Map.elems m of
-                    [] -> constDyn Nothing
-                    (d : _) -> snd d
+            rankMoveStagingDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
+              case Map.elems m of
+                [] -> constDyn Nothing
+                (d : _) -> snd d
 
         return mapChange
 
