@@ -81,7 +81,7 @@
           # Helper to create haskell.nix projects with shared config
           mkProject = hpkgs': hpkgs'.haskell-nix.project {
             src = projectSrc;
-            compiler-nix-name = "ghc9122";
+            compiler-nix-name = "ghc9124";
             sha256map = commonSha256map;
             inputMap = commonInputMap;
             modules = [{
