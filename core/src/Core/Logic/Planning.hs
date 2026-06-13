@@ -53,10 +53,17 @@ planMove x y = do
   modify $ #plannedMove ?~ (x, y)
   tell [MovePlanned (x, y)]
 
-planRankMove :: BattleRank -> GameM g ()
-planRankMove r = do
-  modify $ #plannedRank ?~ r
-  tell [RankMovePlanned r]
+planRankMove :: BattleRank -> CardInstanceId -> GameM g ()
+planRankMove r cardId = do
+  currentHand <- use (#coreState . #hand)
+  let maybeCard = find (\c -> c.id == cardId) currentHand
+  case maybeCard of
+    Nothing ->
+      tell [IllegalAction (IllegalActionDetails Nothing (Just "discard card not in hand"))]
+    Just card -> do
+      modify $ #coreState . #hand %~ filter (\c -> c.id /= cardId)
+      modify $ #plannedRank ?~ (r, card)
+      tell [RankMovePlanned r]
 
 applyPlannedMove :: GameM g ()
 applyPlannedMove = do
@@ -72,9 +79,10 @@ applyPlannedMove = do
   maybeRankPlan <- use #plannedRank
   case maybeRankPlan of
     Nothing -> return ()
-    Just newRank -> do
+    Just (newRank, card) -> do
       modify $ #spatial . lens (.rank) (\s v -> s{rank = v}) ?~ newRank
       modify $ #plannedRank .~ Nothing
+      modify $ #coreState . #discard %~ (card :)
       tell [ActorRankMoved newRank]
 
 data PlanValidation
@@ -180,7 +188,12 @@ cancelPlan :: GameM g ()
 cancelPlan = do
   plannedActionTo #hand PlanCanceled
   modify $ #plannedMove .~ Nothing
-  modify $ #plannedRank .~ Nothing
+  maybeRankPlan <- use #plannedRank
+  case maybeRankPlan of
+    Nothing -> return ()
+    Just (_, card) -> do
+      modify $ #coreState . #hand %~ (card :)
+      modify $ #plannedRank .~ Nothing
 
 revealPlannedActions :: (RandomGen g) => GameM g ()
 revealPlannedActions = do

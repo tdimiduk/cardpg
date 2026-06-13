@@ -40,6 +40,7 @@ import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId)
 import Core.State
 import Frontend.Game.Class
+import Frontend.Game.Planning (RankMoveStaging (..), StagingState (..))
 import Frontend.Icons (iconCheck, iconClose, iconNote, iconSkull, iconSword, iconUser)
 import Frontend.Style.Common (Style, classNames, componentS, divS)
 import Frontend.Style.DSL qualified as S
@@ -371,8 +372,10 @@ mapBoardWidget
      , MonadGame t (Client m)
      )
   => Dynamic t (Maybe ActorId) -- Selected Actor
-  -> m (Event t (Maybe ActorId)) -- Selection click change
-mapBoardWidget selectedActorId = componentS "map-board-container" (S.flexCol . S.flex1 . S.wFull . S.relative) $ do
+  -> Dynamic t (Maybe StagingState) -- Active Staging State
+  -> Dynamic t (Maybe RankMoveStaging) -- Active Rank Move Staging State
+  -> m (Event t (Maybe ActorId), Event t BattleRank) -- Selection and Rank Move clicks
+mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn = componentS "map-board-container" (S.flexCol . S.flex1 . S.wFull . S.relative) $ do
   actorsMapDyn <- askActors
   phaseDyn <- askPhase
   mapModeDyn <- askMapMode
@@ -384,23 +387,28 @@ mapBoardWidget selectedActorId = componentS "map-board-container" (S.flexCol . S
           dyn_ $ ffor mapModeDyn $ \case
             MapModeGrid -> renderStaticGridBoard actorsMapDyn
             MapModeRank -> renderStaticRankBoard actorsMapDyn
-        return never
+        return (never, never)
 
       clientSide = do
         divS mapBoardContainer $ do
-          let gridWidget = renderInteractiveGridBoard selectedActorId actorsMapDyn phaseDyn
-              rankWidget = renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn
-          evDyn <-
+          let gridWidget = (,never) <$> renderInteractiveGridBoard selectedActorId actorsMapDyn phaseDyn
+              rankWidget =
+                renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn actorsMapDyn phaseDyn
+          rankWidgetDyn <-
             widgetHold
               gridWidget
               ( ffor (updated mapModeDyn) $ \case
                   MapModeGrid -> gridWidget
                   MapModeRank -> rankWidget
               )
-          return (switch (current evDyn))
+          let selectEvt = switch (current (fmap fst rankWidgetDyn))
+              rankMoveEvt = switch (current (fmap snd rankWidgetDyn))
+          return (selectEvt, rankMoveEvt)
 
   evDyn <- prerender serverSide clientSide
-  return $ switch (current evDyn)
+  let selectEvt = switch (current (fmap fst evDyn))
+      rankMoveEvt = switch (current (fmap snd evDyn))
+  return (selectEvt, rankMoveEvt)
 
 -- | Renders the mode toggle bar at the top of the map area
 renderModeToggle
@@ -646,37 +654,52 @@ renderInteractiveRankBoard
      , MonadGame t (Client m)
      )
   => Dynamic t (Maybe ActorId)
+  -> Dynamic t (Maybe StagingState)
+  -> Dynamic t (Maybe RankMoveStaging)
   -> Dynamic t (Map.Map ActorId ActorState)
   -> Dynamic t Phase
-  -> m (Event t (Maybe ActorId))
-renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn = do
+  -> m (Event t (Maybe ActorId), Event t BattleRank)
+renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn actorsMapDyn phaseDyn = do
   (eArena, selectionEvts) <- elAttr' "div" ("class" =: classNames rankArenaContainer <> "data-testid" =: "rank-arena") $ do
     let isPC actor = actor.actorType == "PC"
         getRank actor = fromMaybe FrontRank actor.spatial.rank
-        getPlannedRank actor = actor.plannedRank
+        getEffectivePlannedRank selId actorId actor staging =
+          case fmap fst actor.plannedRank of
+            Just r -> Just r
+            Nothing ->
+              if selId == Just actorId
+                then fmap (.targetRank) staging
+                else Nothing
 
         enemyBackFilter a = not (isPC a) && getRank a == BackRank
         enemyFrontFilter a = not (isPC a) && getRank a == FrontRank
         pcFrontFilter a = isPC a && getRank a == FrontRank
         pcBackFilter a = isPC a && getRank a == BackRank
 
-        enemyBackGhostFilter a = not (isPC a) && getPlannedRank a == Just BackRank && getRank a /= BackRank
-        enemyFrontGhostFilter a = not (isPC a) && getPlannedRank a == Just FrontRank && getRank a /= FrontRank
-        pcFrontGhostFilter a = isPC a && getPlannedRank a == Just FrontRank && getRank a /= FrontRank
-        pcBackGhostFilter a = isPC a && getPlannedRank a == Just BackRank && getRank a /= BackRank
+        enemyBackGhostFilter selId aid a stg = not (isPC a) && getEffectivePlannedRank selId aid a stg == Just BackRank && getRank a /= BackRank
+        enemyFrontGhostFilter selId aid a stg =
+          not (isPC a) && getEffectivePlannedRank selId aid a stg == Just FrontRank && getRank a /= FrontRank
+        pcFrontGhostFilter selId aid a stg = isPC a && getEffectivePlannedRank selId aid a stg == Just FrontRank && getRank a /= FrontRank
+        pcBackGhostFilter selId aid a stg = isPC a && getEffectivePlannedRank selId aid a stg == Just BackRank && getRank a /= BackRank
+
+        ghostActorsDyn filterFunc =
+          (\selId actors staging -> Map.filterWithKey (\k a -> filterFunc selId k a staging) actors)
+            <$> selectedActorId
+            <*> actorsMapDyn
+            <*> rankMoveStagingDyn
 
     evs1 <-
       renderRankLane
         "enemy-back"
         "Enemy Back Rank"
         (Map.filter enemyBackFilter <$> actorsMapDyn)
-        (Map.filter enemyBackGhostFilter <$> actorsMapDyn)
+        (ghostActorsDyn enemyBackGhostFilter)
     evs2 <-
       renderRankLane
         "enemy-front"
         "Enemy Front Rank"
         (Map.filter enemyFrontFilter <$> actorsMapDyn)
-        (Map.filter enemyFrontGhostFilter <$> actorsMapDyn)
+        (ghostActorsDyn enemyFrontGhostFilter)
 
     divS dividerStyle blank
 
@@ -685,13 +708,13 @@ renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn = do
         "pc-front"
         "PC Front Rank"
         (Map.filter pcFrontFilter <$> actorsMapDyn)
-        (Map.filter pcFrontGhostFilter <$> actorsMapDyn)
+        (ghostActorsDyn pcFrontGhostFilter)
     evs4 <-
       renderRankLane
         "pc-back"
         "PC Back Rank"
         (Map.filter pcBackFilter <$> actorsMapDyn)
-        (Map.filter pcBackGhostFilter <$> actorsMapDyn)
+        (ghostActorsDyn pcBackGhostFilter)
 
     return $ leftmost [evs1, evs2, evs3, evs4]
 
@@ -708,7 +731,7 @@ renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn = do
     _ <- rawArenaVal # ("addEventListener" :: Text) $ ("click" :: Text, cbFunc)
     return ()
 
-  let rankMovePlanReq =
+  let startRankMoveEvt =
         attachWithMaybe
           ( \(mId, (actorsMap, phase)) click ->
               case (click, phase == Planning) of
@@ -724,13 +747,12 @@ renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn = do
                         _ -> Nothing
                   let isPCLane = laneId `elem` ["pc-front", "pc-back"]
                   if isPC == isPCLane
-                    then fmap (Req.PlanRankMove aid) targetRank
+                    then targetRank
                     else Nothing
                 _ -> Nothing
           )
           (current ((,) <$> selectedActorId <*> ((,) <$> actorsMapDyn <*> phaseDyn)))
           coordsEv
-  _ <- requestGame rankMovePlanReq
 
   let selectLaneDeselectEv =
         attachWithMaybe
@@ -742,7 +764,7 @@ renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn = do
           (current ((,) <$> selectedActorId <*> phaseDyn))
           coordsEv
 
-  return $ leftmost [selectionEvts, selectLaneDeselectEv]
+  return (leftmost [selectionEvts, selectLaneDeselectEv], startRankMoveEvt)
   where
     renderRankLane laneId laneTitle activeActorsDyn ghostActorsDyn = do
       let laneAttrs =

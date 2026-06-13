@@ -181,7 +181,7 @@ data ActorState = ActorState
   , tableState :: TableState -- Handles Table Cards (Equipment/Conditions)
   , spatial :: SpatialState
   , plannedMove :: Maybe (Int, Int)
-  , plannedRank :: Maybe BattleRank
+  , plannedRank :: Maybe (BattleRank, CardInstance CoreCard)
   }
   deriving stock (Show, Eq, Generic)
 

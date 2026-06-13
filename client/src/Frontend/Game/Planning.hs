@@ -7,6 +7,9 @@ module Frontend.Game.Planning
   , StagUpdate (..)
   , applyUpdate
   , buildStagingStack
+  , RankMoveStaging (..)
+  , RankMoveUpdate (..)
+  , applyRankMoveUpdate
   ) where
 
 import Control.Monad.Fix (MonadFix)
@@ -18,7 +21,7 @@ import Reflex
 import Core.Card (Identified (..))
 import Core.Logic.Planning (PlanValidation (..), validateStandardPlan)
 import Core.Primitives (CardInstanceId)
-import Core.State (ActionStack (..), ActorState (..), CoreCardState (..))
+import Core.State (ActionStack (..), ActorState (..), BattleRank, CoreCardState (..))
 
 -- Structural safety: An active staging state MUST have a strict action card
 data StagingState = StagingState
@@ -97,3 +100,21 @@ validateStaging actor st =
   case buildStagingStack actor st of
     Nothing -> PlanInvalid "No action selected"
     Just stack -> validateStandardPlan stack.actionCard stack.resources
+
+data RankMoveStaging = RankMoveStaging
+  { targetRank :: !BattleRank
+  , selectedDiscardId :: !(Maybe CardInstanceId)
+  }
+  deriving (Eq, Show)
+
+data RankMoveUpdate
+  = StartRankMove !BattleRank
+  | SelectDiscardId !CardInstanceId
+  | ClearRankMove
+  deriving (Eq, Show)
+
+applyRankMoveUpdate :: RankMoveUpdate -> Maybe RankMoveStaging -> Maybe RankMoveStaging
+applyRankMoveUpdate (StartRankMove r) _ = Just $ RankMoveStaging r Nothing
+applyRankMoveUpdate (SelectDiscardId cid) (Just rms) = Just $ rms{selectedDiscardId = Just cid}
+applyRankMoveUpdate (SelectDiscardId _) Nothing = Nothing
+applyRankMoveUpdate ClearRankMove _ = Nothing

@@ -6,6 +6,7 @@
 
 module Frontend.App (appWidget, headWidget, uiWidget) where
 
+import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (eitherDecode, encode)
@@ -38,7 +39,7 @@ import Frontend.Game.DefenseWidget (defenseWidget)
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.MapBoard (mapBoardWidget)
 
-import Frontend.Game.Planning (StagingState)
+import Frontend.Game.Planning (RankMoveStaging, StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
 
@@ -131,19 +132,27 @@ uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
   rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
       (sidebarActiveChange, resumeDefenseEvt) <- sidebarWidget selectedActorId
 
-      -- Main Content Area (Right)
       mapActiveChange <- componentS "main-content" mainContent $ do
-        -- Top Bar / Game Board Area (Map Board Widget)
-        mapChange <- mapBoardWidget selectedActorId
+        rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
 
-        actorsMapDyn <- askActors
-        let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
-              case mId >>= \aid -> identifiedLookup aid actors of
-                Nothing -> Map.empty
-                Just (Identified i c) -> Map.singleton i c
+            actorsMapDyn <- askActors
+            let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
+                  case mId >>= \aid -> identifiedLookup aid actors of
+                    Nothing -> Map.empty
+                    Just (Identified i c) -> Map.singleton i c
 
-        _ <- listWithKey activeActorMap $ \k vDyn ->
-          handWidget mStaging (Identified k <$> vDyn)
+            stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
+              handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
+
+            let stagingStateDyn = join $ ffor stagingStateDynMap $ \m ->
+                  case Map.elems m of
+                    [] -> constDyn Nothing
+                    (d : _) -> fst d
+
+            let rankMoveStagingDyn = join $ ffor stagingStateDynMap $ \m ->
+                  case Map.elems m of
+                    [] -> constDyn Nothing
+                    (d : _) -> snd d
 
         return mapChange
 

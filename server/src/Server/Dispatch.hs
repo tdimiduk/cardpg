@@ -120,7 +120,7 @@ processCommand cmd game =
         Nothing -> runStandard tid (return ())
     EndDefense tid -> runStandard tid Logic.endDefense
     PlanMove tid x y -> runStandard tid (Logic.planMove x y)
-    PlanRankMove tid rank -> runStandard tid (Logic.planRankMove rank)
+    PlanRankMove tid rank cardId -> runStandard tid (Logic.planRankMove rank cardId)
     SetMapMode mode -> do
       let newGame = game{mapMode = Just mode}
       let logPayload = LogInfo ("Map mode switched to " <> pack (show mode))

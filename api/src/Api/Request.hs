@@ -20,7 +20,7 @@ data ApiRequest a where
   DrawCards :: ActorId -> ApiRequest (Either Text [StateUpdate])
   Defend :: ActorId -> ChallengeId -> ApiRequest (Either Text [StateUpdate])
   PlanMove :: ActorId -> Int -> Int -> ApiRequest (Either Text [StateUpdate])
-  PlanRankMove :: ActorId -> BattleRank -> ApiRequest (Either Text [StateUpdate])
+  PlanRankMove :: ActorId -> BattleRank -> CardInstanceId -> ApiRequest (Either Text [StateUpdate])
   SetMapMode :: MapMode -> ApiRequest (Either Text [StateUpdate])
   PlanAction
     :: ActorId -> CardInstanceId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])

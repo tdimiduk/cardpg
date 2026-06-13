@@ -5,10 +5,13 @@
 
 module Frontend.Game.Hand where
 
+import Control.Monad (void)
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
+import Data.List (find)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe, isJust)
+import Data.Text qualified as T
 import Reflex.Dom.Core hiding (button)
 
 import Core.Card (CardInstance, CoreCard (..), Identified (..))
@@ -17,6 +20,7 @@ import Core.Primitives (ActorId, CardInstanceId)
 import Core.State
   ( ActionStack (..)
   , ActorState (..)
+  , BattleRank
   , CoreCardState (..)
   , PlannedAction (..)
   , plannedActionCards
@@ -33,7 +37,7 @@ import Api.Request qualified as Req
 import Api.Types (Phase (..))
 
 import Frontend.Style qualified as FS
-import Frontend.Style.Common (Style, classNames, divS)
+import Frontend.Style.Common (Style, classNames, componentS, divS)
 import Frontend.Style.DSL qualified as S
 import Frontend.Util (buildStableKeyMap)
 
@@ -66,9 +70,11 @@ handWidget
      )
   => Maybe StagingState
   -- ^ Optional initial staging state
+  -> Event t BattleRank
+  -- ^ Start rank move staging
   -> Dynamic t (Identified ActorId ActorState)
-  -> m ()
-handWidget mInitialStaging actorDyn = do
+  -> m (Dynamic t (Maybe StagingState), Dynamic t (Maybe RankMoveStaging))
+handWidget mInitialStaging rankMoveClickEvt actorDyn = do
   let safeActor = (.content) <$> actorDyn
       actorId = (.id) <$> actorDyn
       handDyn = (.coreState.hand) <$> safeActor
@@ -77,14 +83,31 @@ handWidget mInitialStaging actorDyn = do
   keyMapDyn <- buildStableKeyMap (.id) handDyn
 
   rec (stagingState, validation) <-
-        mkPlanBuilderLogic mInitialStaging safeActor selectEvt toggleEvt clearEvt
+        mkPlanBuilderLogic
+          mInitialStaging
+          safeActor
+          selectEvt
+          toggleEvt
+          (leftmost [clearEvt, void rankMoveClickEvt])
+
+      -- Rank Move Staging logic
+      rec rankMoveUpdateEvt <-
+            return $
+              leftmost
+                [ StartRankMove <$> rankMoveClickEvt
+                , SelectDiscardId <$> discardEvt
+                , ClearRankMove <$ cancelRankMoveEvt
+                , ClearRankMove <$ commitRankMoveEvt
+                , ClearRankMove <$ selectEvt
+                ]
+          rankMoveStaging <- foldDyn applyRankMoveUpdate Nothing rankMoveUpdateEvt
 
       -- Derived View Models
       let plannedActionDyn = (.coreState.planned) <$> safeActor
           stagingStackDyn = zipDynWith buildStagingStack safeActor stagingState
 
       -- Render UI
-      (selectEvt, toggleEvt, clearEvt) <-
+      (selectEvt, toggleEvt, discardEvt, cancelRankMoveEvt, commitRankMoveEvt, clearEvt) <-
         divS
           ( S.absolute
               . S.bottom0
@@ -101,7 +124,7 @@ handWidget mInitialStaging actorDyn = do
           )
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
-            (sel, tog, overlayEvts) <- do
+            (sel, tog, disc, overlayEvts, rankMoveOverlayEvts) <- do
               -- Left: Planned Action or No Action Button
               noActionClickDyn <- divS (S.flex1 . S.flex . S.justifyCenter) $ do
                 dyn $ ffor ((,,,) <$> actorId <*> plannedActionDyn <*> stagingState <*> phaseDyn) $ \case
@@ -131,51 +154,161 @@ handWidget mInitialStaging actorDyn = do
               _ <- requestGame passReq
 
               -- Center: Hand & Staging Container
-              (s, t, oEvts) <- divS (S.relative . S.flexCol . S.itemsCenter . S.pointerEventsNone . S.gap S.S4) $ do
-                -- Layer 2: Staging Overlay (placed above hand cards)
+              (s, t, d, oEvts, rmsOverlay) <- divS (S.relative . S.flexCol . S.itemsCenter . S.pointerEventsNone . S.gap S.S4) $ do
+                -- Layer 2: Action Staging Overlay
                 o <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
                   (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
                   _ -> return (StagingEvents never never never)
 
-                -- Center: Hand Cards
-                (handS, handT) <-
-                  handCardsWidget safeActor stagingStackDyn plannedActionDyn keyMapDyn
+                -- Layer 2b: Rank Move Staging Overlay
+                rmsOv <- dyn $ ffor (zipDyn actorId rankMoveStaging) $ \case
+                  (aid, Just rms) -> rankMoveStagingWidget aid (constDyn rms) safeActor
+                  _ -> return (never, never)
 
-                return (handS, handT, o)
+                -- Center: Hand Cards
+                (handS, handT, handD) <-
+                  handCardsWidget safeActor stagingStackDyn rankMoveStaging plannedActionDyn keyMapDyn
+
+                return (handS, handT, handD, o, rmsOv)
 
               -- Right: Spacer
               divS S.flex1 blank
 
-              return (s, t, oEvts)
+              return (s, t, d, oEvts, rmsOverlay)
 
             -- Flatten events
             cancel <- switchHold never (fmap (.cancel) overlayEvts)
             unstageResource' <- switchHold never (fmap (.unstage) overlayEvts)
             commit <- switchHold never (fmap (.commit) overlayEvts)
 
+            (cancelRankMove, commitRankMove) <- do
+              c1 <- switchHold never (fmap fst rankMoveOverlayEvts)
+              c2 <- switchHold never (fmap snd rankMoveOverlayEvts)
+              return (c1, c2)
+
             return
               ( sel
               , leftmost [tog, unstageResource']
+              , disc
+              , cancelRankMove
+              , commitRankMove
               , leftmost [cancel, commit]
               )
 
-      return ()
+  return (stagingState, rankMoveStaging)
 
-  return ()
+rankMoveStagingWidget
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
+  => ActorId
+  -> Dynamic t RankMoveStaging
+  -> Dynamic t ActorState
+  -> m (Event t (), Event t ())
+rankMoveStagingWidget actorId rmsDyn actorDyn = do
+  componentS
+    "rank-move-staging"
+    ( S.flexCol
+        . S.pointerEventsAuto
+        . S.itemsCenter
+        . S.gap S.S3
+        . S.css "min-w-[320px]" "min-width" "320px"
+        . S.cls "altar-glowing-gold"
+        . S.backdropBlurMd
+        . S.roundedXl
+        . S.p S.S4
+    )
+    $ do
+      -- Header / Status
+      divS (S.flexCol . S.itemsCenter . S.gap S.S1) $ do
+        divS
+          ( S.cls "fantasy-font"
+              . S.textSm
+              . S.fontBold
+              . S.css "text-gold-light" "color" "var(--color-gold-bright)"
+              . S.uppercase
+              . S.trackingWider
+          )
+          $ text "Plan Rank Move"
+        divS (S.text S.Gray 3 . S.textXs) $ do
+          dyn_ $ ffor rmsDyn $ \rms ->
+            text $ "Moving to " <> T.pack (show rms.targetRank)
 
--- Additional atoms needed that weren't in DSL2
+      -- Selected Card to Discard
+      divS (S.flex . S.justifyCenter . S.itemsCenter . S.mt S.S2 . S.mb S.S2) $ do
+        let selectedCardDyn = ffor2 rmsDyn actorDyn $ \rms actor ->
+              rms.selectedDiscardId >>= \cid -> find (\c -> c.id == cid) actor.coreState.hand
+
+        dyn_ $ ffor selectedCardDyn $ \case
+          Nothing ->
+            divS
+              ( S.border1
+                  . S.border S.Gray 7
+                  . S.css "border-dashed" "border-style" "dashed"
+                  . S.rounded
+                  . S.p S.S4
+                  . S.w (S.Vh 9.6)
+                  . S.h (S.Vh 13.4)
+                  . S.flex
+                  . S.itemsCenter
+                  . S.justifyCenter
+                  . S.text S.Gray 4
+                  . S.textCenter
+                  . S.textXs
+              )
+              $ text "Select a card from hand to discard"
+          Just card -> do
+            divS
+              ( S.relative
+                  . S.w (S.Vh 9.6)
+                  . S.h (S.Vh 13.4)
+                  . S.css "ring-discard" "box-shadow" "0 0 0 3px #ef4444"
+                  . S.rounded
+                  . S.overflowHidden
+              )
+              $ divS
+                ( S.absolute
+                    . S.css "origin-top-left" "transform-origin" "top left"
+                    . S.css "scale-card" "transform" "scale(0.6)"
+                )
+              $ renderCoreCardWith (CardSettings CardFull) card.content
+
+      -- Controls
+      divS (S.flex . S.gap S.S2 . S.wFull) $ do
+        let cfg = def{extraStyle = S.flex1, size = SizeSmall}
+        cancelEvt <-
+          button cfg{variant = VariantSecondary, testId = Just "rank-staging-cancel"} $ text "Cancel"
+
+        let validDyn = isJust . (.selectedDiscardId) <$> rmsDyn
+            commitDisabled = not <$> validDyn
+
+        commitEvt <-
+          button cfg{variant = VariantPrimary, disabled = commitDisabled, testId = Just "rank-staging-commit"} $
+            text "Commit"
+
+        -- Commit request logic
+        let planReq =
+              attachWithMaybe
+                ( \(rms, aid) _ -> do
+                    Req.PlanRankMove aid rms.targetRank <$> rms.selectedDiscardId
+                )
+                (current ((,) <$> rmsDyn <*> constDyn actorId))
+                commitEvt
+        _ <- requestGame planReq
+
+        return (cancelEvt, commitEvt)
 
 handCardsWidget
   :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
   => Dynamic t ActorState
   -> Dynamic t (Maybe ActionStack)
   -- ^ Staging Stack (defines staging mode)
+  -> Dynamic t (Maybe RankMoveStaging)
+  -- ^ Rank Move Staging
   -> Dynamic t (Maybe PlannedAction)
   -- ^ Planned Action (defines hidden cards)
   -> Dynamic t (Map.Map CardInstanceId Int)
   -- ^ Stable sequence mappings for cards
-  -> m (Event t CardInstanceId, Event t CardInstanceId)
-handCardsWidget actor stagingStack plannedAction keyMapDyn = do
+  -> m (Event t CardInstanceId, Event t CardInstanceId, Event t CardInstanceId)
+handCardsWidget actor stagingStack rankMoveStaging plannedAction keyMapDyn = do
   divS (S.flex . S.justifyCenter . S.itemsEnd . S.px S.S4 . S.pointerEventsAuto) $ do
     let visibleHand =
           (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
@@ -196,22 +329,34 @@ handCardsWidget actor stagingStack plannedAction keyMapDyn = do
 
     cardClicksDyn <- divS (S.flex . S.itemsEnd . S.transitionOpacity . S.duration200) $ do
       listWithKey keyedHandMapDyn $ \_key cardDyn -> do
-        let isCandidate = zipDynWith checkResourceCandidate stagingStack cardDyn
-            isSelected = zipDynWith checkIsSelected stagingStack cardDyn
+        let isCandidate = checkResourceCandidate <$> stagingStack <*> cardDyn
+            isSelected = checkIsSelected <$> stagingStack <*> cardDyn
+            isDiscardSelected = ffor2 rankMoveStaging cardDyn $ \rms card ->
+              case rms of
+                Just r -> r.selectedDiscardId == Just card.id
+                Nothing -> False
 
         let finalClassDyn =
-              ffor ((,,) <$> isCandidate <*> isSelected <*> stagingStack) $ \(cand, sel, stk) ->
-                let
-                  inStaging = isJust stk
-                  baseStyle = if cand then resourceCandidateStyle else cardHoverStyle
+              ffor
+                ( (,,,)
+                    <$> isCandidate
+                    <*> isSelected
+                    <*> isDiscardSelected
+                    <*> ((,) <$> stagingStack <*> rankMoveStaging)
+                )
+                $ \(cand, sel, discSel, (stk, rms)) ->
+                  let
+                    inStaging = isJust stk
+                    inRankStaging = isJust rms
+                    baseStyle = if cand then resourceCandidateStyle else cardHoverStyle
 
-                  -- Interaction highlights
-                  extraStyle
-                    | inStaging = if sel then S.cls "staged-gold-ring" else id
-                    | otherwise = id
-                 in
-                  -- Build final class string from composed styles
-                  classNames $ S.relative . cardHandWidth . extraStyle . baseStyle . S.pointerEventsAuto . S.group
+                    -- Interaction highlights
+                    extraStyle
+                      | inStaging = if sel then S.cls "staged-gold-ring" else id
+                      | inRankStaging = if discSel then S.css "ring-discard" "box-shadow" "0 0 0 3px #ef4444" else id
+                      | otherwise = id
+                   in
+                    classNames $ S.relative . cardHandWidth . extraStyle . baseStyle . S.pointerEventsAuto . S.group
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderCoreCardWith (CardSettings CardFull) . (.content)
@@ -225,11 +370,11 @@ handCardsWidget actor stagingStack plannedAction keyMapDyn = do
             Map.elems $ Map.mapWithKey (\_ (clickEvt, cardDyn) -> tag (current (fmap (.id) cardDyn)) clickEvt) m
         flatClickId = switchDyn (leftmost <$> clickEventsMapDyn)
 
-    -- Select Event: Only fires when NOT in staging mode
+    -- Select Action Event: Only fires when NEITHER action staging nor rank move staging is active
     let selectEvent =
           attachWithMaybe
-            (\stk cid -> if isJust stk then Nothing else Just cid)
-            (current stagingStack)
+            (\(stk, rms) cid -> if isJust stk || isJust rms then Nothing else Just cid)
+            (current ((,) <$> stagingStack <*> rankMoveStaging))
             flatClickId
 
     -- Toggle Event: Only fires when IN staging mode
@@ -239,7 +384,14 @@ handCardsWidget actor stagingStack plannedAction keyMapDyn = do
             (current stagingStack)
             flatClickId
 
-    return (selectEvent, toggleEvent)
+    -- Select Discard Event: Only fires when rank move staging is active
+    let discardEvent =
+          attachWithMaybe
+            (\rms cid -> if isJust rms then Just cid else Nothing)
+            (current rankMoveStaging)
+            flatClickId
+
+    return (selectEvent, toggleEvent, discardEvent)
 
 -- Additional atoms needed
 -- Re-export styles from Frontend.Style as transformers
