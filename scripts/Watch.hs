@@ -2,11 +2,27 @@
 
 module Main where
 
-import System.Directory (getCurrentDirectory)
-import System.Environment (getArgs, setEnv)
+import Control.Concurrent (forkIO, threadDelay)
+import Control.Monad (forM)
+import Data.Maybe (catMaybes)
+import Data.Time.Clock (UTCTime)
+import System.Directory
+  ( doesDirectoryExist
+  , getCurrentDirectory
+  , getModificationTime
+  , listDirectory
+  )
+import System.Environment (getArgs, lookupEnv, setEnv)
 import System.FilePath ((</>))
 import System.IO.Error (catchIOError)
-import System.Process (callProcess, readProcess)
+import System.Process
+  ( callProcess
+  , createProcess
+  , proc
+  , readProcess
+  , terminateProcess
+  , waitForProcess
+  )
 
 main :: IO ()
 main = do
@@ -23,11 +39,51 @@ main = do
       putStrLn $ "Using gen-css binary at: " ++ binPath
       runWatch (Client binPath)
     ["server"] -> do
-      putStrLn "Starting ghciwatch for server..."
       root <- getCurrentDirectory
       setEnv "CARDPG_CARDS_DIR" (root </> "data/cards")
       setEnv "CARDPG_SCENARIO_FILE" (root </> "data/scenarios/starter.yaml")
-      runWatch Server
+      useCompiled <- lookupEnv "CARDPG_USE_COMPILED_SERVER"
+      if useCompiled == Just "1"
+        then do
+          putStrLn "Running precompiled server..."
+          serverBinPath <-
+            catchIOError
+              (init <$> readProcess "cabal" ["list-bin", "exe:server"] "")
+              (\_ -> return "")
+          if null serverBinPath
+            then do
+              putStrLn "Could not find precompiled server binary, falling back to cabal run..."
+              callProcess "cabal" ["run", "exe:server"]
+            else do
+              putStrLn $ "Running server binary at: " ++ serverBinPath
+              let watchedPaths =
+                    [ "server/src"
+                    , "core/src"
+                    , "api/src"
+                    , "server/server.cabal"
+                    , "core/core.cabal"
+                    , "api/api.cabal"
+                    ]
+              initialTime <- monitorPaths watchedPaths
+              (_, _, _, ph) <- createProcess (proc serverBinPath [])
+              _ <- forkIO $ do
+                let loop lastTime = do
+                      threadDelay 2000000 -- Poll every 2 seconds
+                      newTime <- monitorPaths watchedPaths
+                      if newTime > lastTime
+                        then do
+                          putStrLn "\n========================================================================="
+                          putStrLn "WARNING: Backend/shared source files changed in compiled server dev mode!"
+                          putStrLn "Terminating server to prevent stale state..."
+                          putStrLn "=========================================================================\n"
+                          terminateProcess ph
+                        else loop lastTime
+                loop initialTime
+              _ <- waitForProcess ph
+              return ()
+        else do
+          putStrLn "Starting ghciwatch for server..."
+          runWatch Server
     _ -> putStrLn "Usage: runghc Watch.hs {client|server}"
 
 data Mode = Client FilePath | Server
@@ -77,3 +133,24 @@ getGhciWatchArgs mode =
       , "--watch"
       , "reflex-atomic-css/src"
       ]
+
+getRecursiveModificationTime :: FilePath -> IO (Maybe UTCTime)
+getRecursiveModificationTime path = do
+  isDir <- doesDirectoryExist path
+  if isDir
+    then do
+      contents <- catchIOError (listDirectory path) (\_ -> return [])
+      times <- forM contents $ \name -> getRecursiveModificationTime (path </> name)
+      return $ safeMaximum (catMaybes times)
+    else catchIOError (Just <$> getModificationTime path) (\_ -> return Nothing)
+  where
+    safeMaximum [] = Nothing
+    safeMaximum xs = Just (maximum xs)
+
+monitorPaths :: [FilePath] -> IO (Maybe UTCTime)
+monitorPaths paths = do
+  times <- mapM getRecursiveModificationTime paths
+  return $ safeMaximum (catMaybes times)
+  where
+    safeMaximum [] = Nothing
+    safeMaximum xs = Just (maximum xs)

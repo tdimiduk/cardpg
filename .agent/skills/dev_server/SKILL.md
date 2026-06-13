@@ -17,12 +17,12 @@ This skill helps you manage the `process-compose` based development server used 
 
 ### 1. Check/Start Server
 
-The `./scripts/dev` script is idempotent. To ensure the server is running, simply execute it in the background:
+The `./scripts/agent_dev` script is idempotent. To ensure the server is running, simply execute it in the background:
 
 **Command:**
 
 ```bash
-nohup ./scripts/dev > /dev/null 2>&1 &
+nohup ./scripts/agent_dev > /dev/null 2>&1 &
 ```
 
 Wait a few seconds for it to initialize if it wasn't already running.

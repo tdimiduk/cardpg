@@ -3,13 +3,42 @@ set -e
 
 # Run the development environment using process-compose
 # This handles both the server and the client with clean shutdown
+# Check if script is run as "fedev"
+SCRIPT_NAME=$(basename "$0")
+if [ "$SCRIPT_NAME" = "fedev" ]; then
+  USE_COMPILED=1
+else
+  USE_COMPILED=0
+fi
+
+# Detect if run as "agent_dev" or in a non-interactive terminal, and disable TUI
+if [ "$SCRIPT_NAME" = "agent_dev" ] || [ ! -t 0 ] || [ ! -t 1 ]; then
+  export PC_DISABLE_TUI=true
+fi
+
+ARGS=()
+for arg in "$@"; do
+  case "$arg" in
+    -c|--compiled-server)
+      USE_COMPILED=1
+      ;;
+    *)
+      ARGS+=("$arg")
+      ;;
+  esac
+done
+
+if [ "$USE_COMPILED" -eq 1 ]; then
+  export CARDPG_USE_COMPILED_SERVER=1
+fi
+
 if pgrep -f "process-compose up" > /dev/null; then
   echo "Dev server is already running."
   exit 0
 fi
 
 if command -v process-compose &> /dev/null; then
-  process-compose up -f process-compose.yaml "$@"
+  process-compose up -f process-compose.yaml "${ARGS[@]}"
 else
   echo "Error: process-compose not found. Please reload your direnv/shell."
   exit 1
