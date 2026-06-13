@@ -403,6 +403,7 @@ emptyActorState =
           }
     , name = "Tester"
     , actorType = "PC"
-    , spatial = SpatialState 0 0 1 Nothing
+    , spatial = SpatialState 0 0 1 Nothing Nothing
     , plannedMove = Nothing
+    , plannedRank = Nothing
     }

@@ -28,6 +28,7 @@ import Core.State
   , ActiveDefense (..)
   , ActorState (..)
   , CoreCardState (..)
+  , MapMode (..)
   , identifiedLookup
   )
 
@@ -55,7 +56,7 @@ appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
-      let sessionState = SessionState actorsMapDyn logsDyn phaseDyn
+      let sessionState = SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn
       (_, requests) <-
         runRequesterT (runGameT sessionState (uiWidget Nothing Nothing)) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
@@ -99,6 +100,12 @@ appWidget wsBaseUrl clientId = do
           updatePhase _ old = old
 
       phaseDyn <- foldDyn updatePhase Planning pushEvt
+
+      let updateMapMode (PushWelcome{game = a}) _ = fromMaybe MapModeGrid a.mapMode
+          updateMapMode (PushUpdate{game = a}) _ = fromMaybe MapModeGrid a.mapMode
+          updateMapMode _ old = old
+
+      mapModeDyn <- foldDyn updateMapMode MapModeGrid pushEvt
 
   pure ()
   where

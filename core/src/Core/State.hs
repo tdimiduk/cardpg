@@ -152,11 +152,22 @@ $(deriveJSON cardpgJsonDef ''AssetState)
 
 $(deriveJSON cardpgJsonDef ''TableState)
 
+data MapMode = MapModeGrid | MapModeRank
+  deriving stock (Show, Eq, Ord, Generic)
+
+$(deriveJSON cardpgJsonDef ''MapMode)
+
+data BattleRank = FrontRank | BackRank
+  deriving stock (Show, Eq, Ord, Generic)
+
+$(deriveJSON cardpgJsonDef ''BattleRank)
+
 data SpatialState = SpatialState
   { posX :: Int
   , posY :: Int
   , size :: Int
   , mapId :: Maybe Text
+  , rank :: Maybe BattleRank
   }
   deriving stock (Show, Eq, Generic)
 
@@ -170,6 +181,7 @@ data ActorState = ActorState
   , tableState :: TableState -- Handles Table Cards (Equipment/Conditions)
   , spatial :: SpatialState
   , plannedMove :: Maybe (Int, Int)
+  , plannedRank :: Maybe BattleRank
   }
   deriving stock (Show, Eq, Generic)
 
@@ -190,6 +202,8 @@ data GameEvent
   | CardDefended ActiveChallenge (CardInstance CoreCard)
   | MovePlanned (Int, Int)
   | ActorMoved (Int, Int)
+  | RankMovePlanned BattleRank
+  | ActorRankMoved BattleRank
   | ActionPlanned PlannedAction
   | PlanCanceled PlannedAction
   | ActionRevealed PlannedAction RevealedEffect

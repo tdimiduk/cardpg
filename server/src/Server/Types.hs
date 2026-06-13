@@ -58,7 +58,7 @@ import Core.Card
   )
 import Core.Json (cardpgJsonDef)
 import Core.Primitives (ActorId)
-import Core.State (ActorState, GameEnv)
+import Core.State (ActorState, GameEnv, MapMode)
 import Server.Config (Config)
 
 -- | GameState depends on Phase and LogEntry from Api.Types
@@ -67,6 +67,7 @@ data GameState = GameState
   , actors :: Map ActorId ActorState
   , phase :: Phase
   , history :: [LogEntry]
+  , mapMode :: Maybe MapMode
   }
   deriving (Show, Generic)
 

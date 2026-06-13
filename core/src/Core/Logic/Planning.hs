@@ -3,6 +3,7 @@
 
 module Core.Logic.Planning
   ( planMove
+  , planRankMove
   , applyPlannedMove
   , planAction
   , planNarrative
@@ -35,6 +36,7 @@ import Core.Primitives (CardInstanceId (..))
 import Core.State
   ( ActionStack (..)
   , ActiveDefense (..)
+  , BattleRank (..)
   , CoreCardState (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
@@ -51,6 +53,11 @@ planMove x y = do
   modify $ #plannedMove ?~ (x, y)
   tell [MovePlanned (x, y)]
 
+planRankMove :: BattleRank -> GameM g ()
+planRankMove r = do
+  modify $ #plannedRank ?~ r
+  tell [RankMovePlanned r]
+
 applyPlannedMove :: GameM g ()
 applyPlannedMove = do
   maybePlan <- use #plannedMove
@@ -61,6 +68,14 @@ applyPlannedMove = do
       modify $ #spatial . lens (.posY) (\s v -> s{posY = v}) .~ newY
       modify $ #plannedMove .~ Nothing
       tell [ActorMoved (newX, newY)]
+
+  maybeRankPlan <- use #plannedRank
+  case maybeRankPlan of
+    Nothing -> return ()
+    Just newRank -> do
+      modify $ #spatial . lens (.rank) (\s v -> s{rank = v}) ?~ newRank
+      modify $ #plannedRank .~ Nothing
+      tell [ActorRankMoved newRank]
 
 data PlanValidation
   = PlanValid PlannedAction
@@ -165,6 +180,7 @@ cancelPlan :: GameM g ()
 cancelPlan = do
   plannedActionTo #hand PlanCanceled
   modify $ #plannedMove .~ Nothing
+  modify $ #plannedRank .~ Nothing
 
 revealPlannedActions :: (RandomGen g) => GameM g ()
 revealPlannedActions = do

@@ -58,8 +58,9 @@ mkActorState handCards =
           , revealed = Nothing
           }
     , tableState = TableState Map.empty []
-    , spatial = SpatialState 0 0 1 Nothing
+    , spatial = SpatialState 0 0 1 Nothing Nothing
     , plannedMove = Nothing
+    , plannedRank = Nothing
     }
 
 mkConsTemplate :: Int -> ConsequenceCard

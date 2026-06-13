@@ -70,8 +70,9 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
         , tableState = tableSt
         , name = "Dummy"
         , actorType = "NPC"
-        , spatial = SpatialState 0 0 1 Nothing
+        , spatial = SpatialState 0 0 1 Nothing Nothing
         , plannedMove = Nothing
+        , plannedRank = Nothing
         }
 
     initialDiscardSize = length (coreSt ^. #discard)

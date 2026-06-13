@@ -42,6 +42,7 @@ import Core.State
   , ActorState (..)
   , ChallengeSource (..)
   , CoreCardState (..)
+  , MapMode (..)
   , PlannedAction (..)
   )
 import Core.Stats (ResourceType (..))
@@ -318,7 +319,7 @@ mockGameWidget mStaging initialActorId gameState phaseSetting = do
   let baseActors = gameState.actors
   actorsDyn <- holdDyn baseActors never
   let logsDyn = constDyn gameState.history
-      sessionState = SessionState actorsDyn logsDyn (constDyn phaseSetting)
+      sessionState = SessionState actorsDyn logsDyn (constDyn phaseSetting) (constDyn MapModeGrid)
   rec (_, _) <-
         runRequesterT
           (runGameT sessionState (uiWidget mStaging initialActorId))

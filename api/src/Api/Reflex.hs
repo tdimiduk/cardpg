@@ -9,10 +9,12 @@ import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 
 import Api.Types (LogEntry, Phase)
 import Core.Primitives (ActorId)
-import Core.State (ActorState)
+import Core.State (ActorState, MapMode)
 
-newtype GameView
-  = GameView {actors :: Map ActorId ActorState}
+data GameView = GameView
+  { actors :: Map ActorId ActorState
+  , mapMode :: Maybe MapMode
+  }
   deriving (Show, Eq, Generic)
 
 instance FromJSON GameView

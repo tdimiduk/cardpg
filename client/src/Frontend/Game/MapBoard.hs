@@ -11,7 +11,7 @@ import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.List.NonEmpty (NonEmpty)
 import Data.Map.Strict qualified as Map
-import Data.Maybe (isJust)
+import Data.Maybe (fromMaybe, isJust)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Language.Javascript.JSaddle
@@ -26,6 +26,7 @@ import Language.Javascript.JSaddle
   , valIsUndefined
   , valToBool
   , valToNumber
+  , valToText
   , (!)
   , (#)
   )
@@ -371,57 +372,452 @@ mapBoardWidget
      )
   => Dynamic t (Maybe ActorId) -- Selected Actor
   -> m (Event t (Maybe ActorId)) -- Selection click change
-mapBoardWidget selectedActorId = componentS "map-board-container" mapBoardContainer $ do
+mapBoardWidget selectedActorId = componentS "map-board-container" (S.flexCol . S.flex1 . S.wFull . S.relative) $ do
   actorsMapDyn <- askActors
   phaseDyn <- askPhase
+  mapModeDyn <- askMapMode
+
+  renderModeToggle mapModeDyn
 
   let serverSide = do
-        elAttr "div" ("class" =: classNames gridContainer <> "data-testid" =: "map-grid") $ do
-          renderStaticSvg actorsMapDyn
-          _ <- listWithKey actorsMapDyn $ \actorId actorDyn -> do
-            let spatialDyn = (.spatial) <$> actorDyn
-                isDefeatedDyn = isActorDefeated <$> actorDyn
-                isSelectedDyn = ffor2 selectedActorId actorDyn $ \mSelId _ ->
-                  mSelId == Just actorId
-            let tokenAttrsDyn = (,,,) <$> spatialDyn <*> isSelectedDyn <*> isDefeatedDyn <*> actorDyn
-                divAttrsDyn = ffor tokenAttrsDyn $ \(spatial, isSelected, isDefeated, actor) ->
-                  let x = spatial.posX * 40
-                      y = spatial.posY * 40
-                      sz = spatial.size * 40
-                      zIndexStr = if isSelected then "50" else "10"
-                      styleStr =
-                        "position: absolute; left: "
-                          <> T.pack (show x)
-                          <> "px; top: "
-                          <> T.pack (show y)
-                          <> "px; width: "
-                          <> T.pack (show sz)
-                          <> "px; height: "
-                          <> T.pack (show sz)
-                          <> "px; transition: all 0.2s ease-out; z-index: "
-                          <> zIndexStr
-                          <> ";"
-                      baseCls = "group flex items-center justify-center relative"
-                      clsStr = if isDefeated then baseCls <> " grayscale opacity-70" else baseCls
-                   in "style" =: styleStr
-                        <> "class" =: clsStr
-                        <> "title" =: (actor.name <> if isDefeated then " (Defeated)" else "")
-
-            _ <- elDynAttr "div" divAttrsDyn $ do
-              let tokenConfigDyn = constDyn (TokenCircleConfig False False 0)
-              renderTokenCircle actorDyn tokenConfigDyn
-            return ()
-          return ()
+        divS mapBoardContainer $ do
+          dyn_ $ ffor mapModeDyn $ \case
+            MapModeGrid -> renderStaticGridBoard actorsMapDyn
+            MapModeRank -> renderStaticRankBoard actorsMapDyn
         return never
 
       clientSide = do
-        renderInteractiveBoard selectedActorId actorsMapDyn phaseDyn
+        divS mapBoardContainer $ do
+          let gridWidget = renderInteractiveGridBoard selectedActorId actorsMapDyn phaseDyn
+              rankWidget = renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn
+          evDyn <-
+            widgetHold
+              gridWidget
+              ( ffor (updated mapModeDyn) $ \case
+                  MapModeGrid -> gridWidget
+                  MapModeRank -> rankWidget
+              )
+          return (switch (current evDyn))
 
   evDyn <- prerender serverSide clientSide
   return $ switch (current evDyn)
 
--- | Renders the fully interactive board with JSM events and dispatch triggers
-renderInteractiveBoard
+-- | Renders the mode toggle bar at the top of the map area
+renderModeToggle
+  :: (DomBuilder t m, PostBuild t m, MonadGame t m)
+  => Dynamic t MapMode
+  -> m ()
+renderModeToggle mapModeDyn = do
+  divS
+    ( S.flexRow
+        . S.justifyBetween
+        . S.itemsCenter
+        . S.p S.S2
+        . S.css "bg-slate-900" "background-color" "#0f172a"
+        . S.css "border-b-slate-800" "border-bottom" "1px solid #1e293b"
+    )
+    $ do
+      divS (S.text S.Gray 3 . S.fontBold . S.css "text-md" "font-size" "1rem") $ text "VTT Arena"
+      divS (S.flexRow . S.gap S.S2) $ do
+        let btnStyle active =
+              S.px S.S3
+                . S.py S.S1
+                . S.rounded
+                . S.text S.Gray (if active then 1 else 4)
+                . S.css "transition-colors" "transition" "color 0.2s, background-color 0.2s"
+                . if active
+                  then S.css "bg-blue-600" "background-color" "#2563eb" . S.text S.White 0
+                  else
+                    S.css "bg-slate-800" "background-color" "#1e293b"
+                      . S.hover (S.css "bg-slate-700" "background-color" "#334155")
+                      . S.cursorPointer
+
+        (eGridBtn, _) <-
+          elDynAttr'
+            "button"
+            ( ffor mapModeDyn $ \m ->
+                "class" =: classNames (btnStyle (m == MapModeGrid))
+                  <> "type" =: "button"
+                  <> "data-testid" =: "toggle-grid-mode"
+            )
+            $ text "Grid Map"
+        (eRankBtn, _) <-
+          elDynAttr'
+            "button"
+            ( ffor mapModeDyn $ \m ->
+                "class" =: classNames (btnStyle (m == MapModeRank))
+                  <> "type" =: "button"
+                  <> "data-testid" =: "toggle-ranks-mode"
+            )
+            $ text "Ranks Mode"
+
+        let toggleGridEv = Req.SetMapMode MapModeGrid <$ domEvent Click eGridBtn
+            toggleRankEv = Req.SetMapMode MapModeRank <$ domEvent Click eRankBtn
+        _ <- requestGame (leftmost [toggleGridEv, toggleRankEv])
+        return ()
+
+-- | Renders the static Grid map board (for SSR)
+renderStaticGridBoard
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  => Dynamic t (Map.Map ActorId ActorState) -> m ()
+renderStaticGridBoard actorsMapDyn = do
+  elAttr "div" ("class" =: classNames gridContainer <> "data-testid" =: "map-grid") $ do
+    renderStaticSvg actorsMapDyn
+    _ <- listWithKey actorsMapDyn $ \actorId actorDyn -> do
+      let spatialDyn = (.spatial) <$> actorDyn
+          isDefeatedDyn = isActorDefeated <$> actorDyn
+      let tokenAttrsDyn = (,,) <$> spatialDyn <*> isDefeatedDyn <*> actorDyn
+          divAttrsDyn = ffor tokenAttrsDyn $ \(spatial, isDefeated, actor) ->
+            let x = spatial.posX * 40
+                y = spatial.posY * 40
+                sz = spatial.size * 40
+                styleStr =
+                  "position: absolute; left: "
+                    <> T.pack (show x)
+                    <> "px; top: "
+                    <> T.pack (show y)
+                    <> "px; width: "
+                    <> T.pack (show sz)
+                    <> "px; height: "
+                    <> T.pack (show sz)
+                    <> "px; transition: all 0.2s ease-out; z-index: 10;"
+                baseCls = "group flex items-center justify-center relative"
+                clsStr = if isDefeated then baseCls <> " grayscale opacity-70" else baseCls
+             in "style" =: styleStr
+                  <> "class" =: clsStr
+                  <> "title" =: (actor.name <> if isDefeated then " (Defeated)" else "")
+
+      _ <- elDynAttr "div" divAttrsDyn $ do
+        let tokenConfigDyn = constDyn (TokenCircleConfig False False 0)
+        renderTokenCircle actorDyn tokenConfigDyn
+      return ()
+    return ()
+
+-- | Renders the static Rank map board (for SSR)
+renderStaticRankBoard
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  => Dynamic t (Map.Map ActorId ActorState) -> m ()
+renderStaticRankBoard actorsMapDyn = do
+  divS rankArenaContainer $ do
+    let isPC actor = actor.actorType == "PC"
+        getRank actor = fromMaybe FrontRank actor.spatial.rank
+        enemyBackFilter a = not (isPC a) && getRank a == BackRank
+        enemyFrontFilter a = not (isPC a) && getRank a == FrontRank
+        pcFrontFilter a = isPC a && getRank a == FrontRank
+        pcBackFilter a = isPC a && getRank a == BackRank
+
+    _ <- renderStaticRankLane "Enemy Back Rank" (Map.filter enemyBackFilter <$> actorsMapDyn)
+    _ <- renderStaticRankLane "Enemy Front Rank" (Map.filter enemyFrontFilter <$> actorsMapDyn)
+    divS dividerStyle blank
+    _ <- renderStaticRankLane "PC Front Rank" (Map.filter pcFrontFilter <$> actorsMapDyn)
+    _ <- renderStaticRankLane "PC Back Rank" (Map.filter pcBackFilter <$> actorsMapDyn)
+    return ()
+
+-- | Renders a single static rank lane (for SSR)
+renderStaticRankLane
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  => Text
+  -> Dynamic t (Map.Map ActorId ActorState)
+  -> m ()
+renderStaticRankLane laneTitle actorsDyn = do
+  divS laneRowStyle $ do
+    divS laneTitleStyle $ text laneTitle
+    divS tokensContainerStyle $ do
+      _ <- listWithKey actorsDyn $ \_ actorDyn -> do
+        let tokenWrapperStyle =
+              S.relative
+                . S.w (S.Px 48)
+                . S.h (S.Px 48)
+        divS tokenWrapperStyle $ do
+          let tokenConfigDyn = constDyn (TokenCircleConfig False False 0)
+          renderTokenCircle actorDyn tokenConfigDyn
+      return ()
+    return ()
+
+-- | Styled container for the rank arena
+rankArenaContainer :: Style
+rankArenaContainer =
+  S.flexCol
+    . S.hFull
+    . S.wFull
+    . S.css "bg-slate-900" "background-color" "#0f172a"
+    . S.p S.S4
+    . S.gap S.S4
+
+-- | Lane row layout
+laneRowStyle :: Style
+laneRowStyle =
+  S.flexRow
+    . S.itemsCenter
+    . S.gap S.S4
+    . S.p S.S4
+    . S.rounded
+    . S.css "bg-slate-800-40" "background-color" "rgba(30, 41, 59, 0.4)"
+    . S.css "border-slate-800" "border" "1px solid #1e293b"
+    . S.css "min-h-100px" "min-height" "100px"
+    . S.relative
+
+-- | Divider style between sides
+dividerStyle :: Style
+dividerStyle =
+  S.wFull
+    . S.css "h-2px" "height" "2px"
+    . S.css "bg-slate-700-50" "background-color" "rgba(51, 65, 85, 0.5)"
+    . S.mt S.S2
+    . S.mb S.S2
+
+-- | Lane title layout
+laneTitleStyle :: Style
+laneTitleStyle =
+  S.text S.Gray 4
+    . S.fontBold
+    . S.css "w-120px" "width" "120px"
+    . S.css "select-none" "user-select" "none"
+    . S.css "uppercase" "text-transform" "uppercase"
+    . S.css "tracking-wider" "letter-spacing" "0.05em"
+    . S.css "text-sm" "font-size" "0.875rem"
+
+-- | Tokens container inside rank lane
+tokensContainerStyle :: Style
+tokensContainerStyle =
+  S.flexRow
+    . S.itemsCenter
+    . S.gap S.S4
+    . S.flex1
+
+-- | Represents a click event on the rank board.
+data RankBoardClick
+  = RankTokenClick
+  | RankLaneClick !Text
+  | RankOutOfBoundsClick
+  deriving (Show, Eq)
+
+-- | Type-safe helper to compute rank lane clicked on the board.
+getRankBoardClick :: (MonadJSM m) => JSVal -> m RankBoardClick
+getRankBoardClick ev = liftJSM $ do
+  let jsLines =
+        [ "(function(ev) {"
+        , "  try {"
+        , "    var target = ev.target;"
+        , "    if (!target) return null;"
+        , "    var closestToken = target.closest('.token-circle-wrapper');"
+        , "    if (closestToken) return { isToken: true };"
+        , "    var closestLane = target.closest('.rank-lane');"
+        , "    if (closestLane) {"
+        , "      return {"
+        , "        isToken: false,"
+        , "        laneId: closestLane.getAttribute('data-lane-id')"
+        , "      };"
+        , "    }"
+        , "    return null;"
+        , "  } catch (e) {"
+        , "    return null;"
+        , "  }"
+        , "})"
+        ]
+  jsFunc <- eval (T.unlines jsLines)
+  res <- call jsFunc jsFunc [ev]
+  isNull <- valIsNull res
+  isUndef <- valIsUndefined res
+  if isNull || isUndef
+    then return RankOutOfBoundsClick
+    else do
+      isTokenVal <- res ! ("isToken" :: Text)
+      isToken <- valToBool isTokenVal
+      if isToken
+        then return RankTokenClick
+        else do
+          laneIdVal <- res ! ("laneId" :: Text)
+          laneId <- valToText laneIdVal
+          return $ RankLaneClick laneId
+
+-- | Renders the interactive Ranks board
+renderInteractiveRankBoard
+  :: forall t m
+   . ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , MonadIO m
+     , MonadGame t m
+     , PerformEvent t m
+     , TriggerEvent t m
+     , MonadJSM (Performable m)
+     , MonadGame t (Client m)
+     )
+  => Dynamic t (Maybe ActorId)
+  -> Dynamic t (Map.Map ActorId ActorState)
+  -> Dynamic t Phase
+  -> m (Event t (Maybe ActorId))
+renderInteractiveRankBoard selectedActorId actorsMapDyn phaseDyn = do
+  (eArena, selectionEvts) <- elAttr' "div" ("class" =: classNames rankArenaContainer <> "data-testid" =: "rank-arena") $ do
+    let isPC actor = actor.actorType == "PC"
+        getRank actor = fromMaybe FrontRank actor.spatial.rank
+        getPlannedRank actor = actor.plannedRank
+
+        enemyBackFilter a = not (isPC a) && getRank a == BackRank
+        enemyFrontFilter a = not (isPC a) && getRank a == FrontRank
+        pcFrontFilter a = isPC a && getRank a == FrontRank
+        pcBackFilter a = isPC a && getRank a == BackRank
+
+        enemyBackGhostFilter a = not (isPC a) && getPlannedRank a == Just BackRank && getRank a /= BackRank
+        enemyFrontGhostFilter a = not (isPC a) && getPlannedRank a == Just FrontRank && getRank a /= FrontRank
+        pcFrontGhostFilter a = isPC a && getPlannedRank a == Just FrontRank && getRank a /= FrontRank
+        pcBackGhostFilter a = isPC a && getPlannedRank a == Just BackRank && getRank a /= BackRank
+
+    evs1 <-
+      renderRankLane
+        "enemy-back"
+        "Enemy Back Rank"
+        (Map.filter enemyBackFilter <$> actorsMapDyn)
+        (Map.filter enemyBackGhostFilter <$> actorsMapDyn)
+    evs2 <-
+      renderRankLane
+        "enemy-front"
+        "Enemy Front Rank"
+        (Map.filter enemyFrontFilter <$> actorsMapDyn)
+        (Map.filter enemyFrontGhostFilter <$> actorsMapDyn)
+
+    divS dividerStyle blank
+
+    evs3 <-
+      renderRankLane
+        "pc-front"
+        "PC Front Rank"
+        (Map.filter pcFrontFilter <$> actorsMapDyn)
+        (Map.filter pcFrontGhostFilter <$> actorsMapDyn)
+    evs4 <-
+      renderRankLane
+        "pc-back"
+        "PC Back Rank"
+        (Map.filter pcBackFilter <$> actorsMapDyn)
+        (Map.filter pcBackGhostFilter <$> actorsMapDyn)
+
+    return $ leftmost [evs1, evs2, evs3, evs4]
+
+  postBuildEv <- getPostBuild
+  let rawArenaVal = unsafeCoerce (_element_raw eArena) :: JSVal
+  (coordsEv, triggerCoords) <- newTriggerEvent
+  performEvent_ $ ffor postBuildEv $ \_ -> liftJSM $ do
+    let cb :: JSVal -> JSVal -> [JSVal] -> JSM ()
+        cb _ _ [ev] = do
+          click <- getRankBoardClick ev
+          liftIO $ triggerCoords click
+        cb _ _ _ = return ()
+        cbFunc = fun cb
+    _ <- rawArenaVal # ("addEventListener" :: Text) $ ("click" :: Text, cbFunc)
+    return ()
+
+  let rankMovePlanReq =
+        attachWithMaybe
+          ( \(mId, (actorsMap, phase)) click ->
+              case (click, phase == Planning) of
+                (RankLaneClick laneId, True) -> do
+                  aid <- mId
+                  actor <- Map.lookup aid actorsMap
+                  let isPC = actor.actorType == "PC"
+                  let targetRank = case laneId of
+                        "pc-front" -> Just FrontRank
+                        "pc-back" -> Just BackRank
+                        "enemy-front" -> Just FrontRank
+                        "enemy-back" -> Just BackRank
+                        _ -> Nothing
+                  let isPCLane = laneId `elem` ["pc-front", "pc-back"]
+                  if isPC == isPCLane
+                    then fmap (Req.PlanRankMove aid) targetRank
+                    else Nothing
+                _ -> Nothing
+          )
+          (current ((,) <$> selectedActorId <*> ((,) <$> actorsMapDyn <*> phaseDyn)))
+          coordsEv
+  _ <- requestGame rankMovePlanReq
+
+  let selectLaneDeselectEv =
+        attachWithMaybe
+          ( \(mId, phase) click ->
+              case click of
+                RankLaneClick _ | isJust mId && phase /= Planning -> Just Nothing
+                _ -> Nothing
+          )
+          (current ((,) <$> selectedActorId <*> phaseDyn))
+          coordsEv
+
+  return $ leftmost [selectionEvts, selectLaneDeselectEv]
+  where
+    renderRankLane laneId laneTitle activeActorsDyn ghostActorsDyn = do
+      let laneAttrs =
+            "class" =: ("rank-lane " <> classNames laneRowStyle)
+              <> "data-lane-id" =: laneId
+              <> "data-testid" =: ("rank-lane-" <> laneId)
+      elAttr "div" laneAttrs $ do
+        divS laneTitleStyle $ text laneTitle
+        divS tokensContainerStyle $ do
+          activeSelEvts <- listWithKey activeActorsDyn $ \actorId actorDyn -> do
+            let isSelectedDyn = (== Just actorId) <$> selectedActorId
+                isDefeatedDyn = isActorDefeated <$> actorDyn
+                handSizeDyn = ffor2 phaseDyn actorDyn $ \phase actor ->
+                  let handSize = length (actor.coreState.hand :: [CardInstance CoreCard])
+                      planned = actor.coreState.planned
+                      plannedCount = case planned of
+                        Nothing -> 0
+                        Just p -> case p of
+                          PStandard (ActionStack _ res) -> 1 + length (res :: [CardInstance CoreCard])
+                          PNarrative (NarrativeStack cs _) -> length (cs :: NonEmpty (CardInstance CoreCard))
+                          PPass -> 0
+                   in if phase == Planning then handSize + plannedCount else handSize
+
+            let tokenWrapperStyle =
+                  S.relative
+                    . S.w (S.Px 48)
+                    . S.h (S.Px 48)
+                    . S.cursorPointer
+                    . S.css "token-circle-wrapper" "token-circle-wrapper" ""
+
+            let wrapperAttrsDyn = ffor actorDyn $ \actor ->
+                  let nameClean = actor.name
+                      defeated = isActorDefeated actor
+                      baseCls = classNames tokenWrapperStyle
+                      cls = if defeated then baseCls <> " grayscale opacity-70" else baseCls
+                   in "class" =: cls
+                        <> "data-testid" =: ("map-actor-" <> nameClean)
+                        <> "title" =: (nameClean <> if defeated then " (Defeated)" else "")
+
+            (eToken, _) <- elDynAttr' "div" wrapperAttrsDyn $ do
+              let tokenConfigDyn = TokenCircleConfig False <$> isSelectedDyn <*> handSizeDyn
+              renderTokenCircle actorDyn tokenConfigDyn
+
+            let selectEv = Just actorId <$ domEvent Click eToken
+            return selectEv
+
+          ghostSelEvts <- listWithKey ghostActorsDyn $ \actorId actorDyn -> do
+            let tokenWrapperStyle =
+                  S.relative
+                    . S.w (S.Px 48)
+                    . S.h (S.Px 48)
+                    . S.cursorPointer
+                    . S.css "token-circle-wrapper" "token-circle-wrapper" ""
+                    . S.opacity 0.5
+                    . S.css "grayscale" "filter" "grayscale(100%)"
+
+            let wrapperAttrsDyn = ffor actorDyn $ \actor ->
+                  "class" =: classNames tokenWrapperStyle
+                    <> "title" =: (actor.name <> " (Planned Rank Location)")
+                    <> "data-testid" =: ("ghost-actor-" <> actor.name)
+
+            (eGhost, _) <- elDynAttr' "div" wrapperAttrsDyn $ do
+              let tokenConfigDyn = constDyn (TokenCircleConfig True False 0)
+              renderTokenCircle actorDyn tokenConfigDyn
+
+            let clickGhostEv = domEvent Click eGhost
+                cancelReq = Req.CancelPlan actorId <$ clickGhostEv
+            _ <- requestGame cancelReq
+            return (never :: Event t (Maybe ActorId))
+
+          let activeSelectEv = switchDyn (leftmost . Map.elems <$> activeSelEvts)
+          return activeSelectEv
+
+-- | Renders the fully interactive grid board with JSM events and dispatch triggers
+renderInteractiveGridBoard
   :: ( DomBuilder t m
      , PostBuild t m
      , MonadHold t m
@@ -431,12 +827,13 @@ renderInteractiveBoard
      , PerformEvent t m
      , TriggerEvent t m
      , MonadJSM (Performable m)
+     , MonadGame t (Client m)
      )
   => Dynamic t (Maybe ActorId)
   -> Dynamic t (Map.Map ActorId ActorState)
   -> Dynamic t Phase
   -> m (Event t (Maybe ActorId))
-renderInteractiveBoard selectedActorId actorsMapDyn phaseDyn = do
+renderInteractiveGridBoard selectedActorId actorsMapDyn phaseDyn = do
   (eGrid, tokenClicksMapDyn) <- elAttr' "div" ("class" =: classNames gridContainer <> "data-testid" =: "map-grid") $ do
     -- 1. SVG planned paths layer
     renderStaticSvg actorsMapDyn
@@ -519,6 +916,7 @@ renderInteractiveBoard selectedActorId actorsMapDyn phaseDyn = do
              in "style" =: styleStr
                   <> "class" =: clsStr
                   <> "title" =: (actor.name <> if isDefeated then " (Defeated)" else "")
+                  <> "data-testid" =: ("map-actor-" <> actor.name)
 
       (eToken, _) <- elDynAttr' "div" divAttrsDyn $ do
         let tokenConfigDyn = TokenCircleConfig False <$> isSelectedDyn <*> handSizeDyn

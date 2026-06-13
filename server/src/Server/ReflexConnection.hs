@@ -100,7 +100,7 @@ application state pending = do
   -- Send Welcome
   (msgs, _) <-
     readMVar state >>= \s -> do
-      let view = GameView{actors = s.gameState.actors}
+      let view = GameView{actors = s.gameState.actors, mapMode = s.gameState.mapMode}
       let ph = s.gameState.phase
       return ([PushWelcome finalClientId view s.gameState.history ph], s.clients)
 
@@ -173,7 +173,7 @@ handleGameCommand client state cmd =
       readMVar state >>= \s -> do
         broadcastReflex
           ( PushUpdate
-              (GameView{actors = s.gameState.actors})
+              (GameView{actors = s.gameState.actors, mapMode = s.gameState.mapMode})
               (Just s.gameState.phase)
           )
           s.clients

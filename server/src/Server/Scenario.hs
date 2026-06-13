@@ -179,8 +179,9 @@ instantiateActor def x y maybeHandSize = do
       , actorType = actorTypeVal
       , coreState = coreSt
       , tableState = tableSt
-      , spatial = State.SpatialState{posX = x, posY = y, size = 1, mapId = Nothing}
+      , spatial = State.SpatialState{posX = x, posY = y, size = 1, mapId = Nothing, rank = Nothing}
       , plannedMove = Nothing
+      , plannedRank = Nothing
       }
 
 -- | Helper to instantiate a list of cards

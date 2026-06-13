@@ -255,6 +255,14 @@ instance Arbitrary PlannedAction where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary MapMode where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary BattleRank where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary SpatialState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink

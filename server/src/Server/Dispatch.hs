@@ -18,7 +18,7 @@ import Core.State
   , ChallengeSource (..)
   , PlannedAction (PPass)
   )
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
 import Server.Presenter (eventToLogs)
@@ -120,6 +120,13 @@ processCommand cmd game =
         Nothing -> runStandard tid (return ())
     EndDefense tid -> runStandard tid Logic.endDefense
     PlanMove tid x y -> runStandard tid (Logic.planMove x y)
+    PlanRankMove tid rank -> runStandard tid (Logic.planRankMove rank)
+    SetMapMode mode -> do
+      let newGame = game{mapMode = Just mode}
+      let logPayload = LogInfo ("Map mode switched to " <> pack (show mode))
+      logEntry <- mkLogEntry SenderSystem logPayload
+      let finalGame = newGame{history = game.history ++ [logEntry]}
+      return (finalGame, Right [], [], [logEntry])
     PlanAction tid actionId resourceIds ->
       runStandard
         tid

@@ -13,6 +13,7 @@ import Core.State
   ( ActiveChallenge (..)
   , ActiveDefense (..)
   , ActorState (..)
+  , BattleRank (..)
   , CoreCardState (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
@@ -64,4 +65,8 @@ eventToLogs actorId event game =
         StatusRemoved st dest -> [mkSystemLog (LogInfo $ actorName <> " removed status " <> st <> " from " <> dest)]
         PlanCanceled _ -> [mkSystemLog (LogInfo $ actorName <> " canceled their plan.")]
         ActorMoved _ -> [mkSystemLog (LogInfo $ actorName <> " moved.")]
+        ActorRankMoved rank ->
+          let friendlyRank FrontRank = "front rank"
+              friendlyRank BackRank = "back rank"
+           in [mkSystemLog (LogInfo $ actorName <> " moved to the " <> friendlyRank rank <> ".")]
         _ -> []

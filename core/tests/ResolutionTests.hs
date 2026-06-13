@@ -72,8 +72,9 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
         , actorType = "PC"
         , coreState = initialCore
         , tableState = TableState Map.empty []
-        , spatial = SpatialState 0 0 1 Nothing
+        , spatial = SpatialState 0 0 1 Nothing Nothing
         , plannedMove = Nothing
+        , plannedRank = Nothing
         }
 
   -- 1. Plan Action (c1 with c2 as resource)

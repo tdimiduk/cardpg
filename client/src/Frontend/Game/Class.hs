@@ -35,13 +35,14 @@ import Unsafe.Coerce (unsafeCoerce)
 import Api.Request (ApiRequest)
 import Api.Types (LogEntry, Phase)
 import Core.Primitives (ActorId)
-import Core.State (ActorState, isActorPC, isActorReady)
+import Core.State (ActorState, MapMode, isActorPC, isActorReady)
 
 -- | SessionState packages all fine-grained Dynamics folded from WS events.
 data SessionState t = SessionState
   { actors :: Dynamic t (Map.Map ActorId ActorState)
   , logs :: Dynamic t [LogEntry]
   , phase :: Dynamic t Phase
+  , mapMode :: Dynamic t MapMode
   }
 
 -- | Type-safe context class that abstracts state reads and request dispatching.
@@ -49,6 +50,7 @@ class (Monad m) => MonadGame t m | m -> t where
   askActors :: m (Dynamic t (Map.Map ActorId ActorState))
   askLogs :: m (Dynamic t [LogEntry])
   askPhase :: m (Dynamic t Phase)
+  askMapMode :: m (Dynamic t MapMode)
   requestGame :: Event t (ApiRequest a) -> m (Event t (Either Text a))
 
 -- | Auto-derived derived stats
@@ -137,4 +139,5 @@ instance
   askActors = GameT $ asks (.actors)
   askLogs = GameT $ asks (.logs)
   askPhase = GameT $ asks (.phase)
+  askMapMode = GameT $ asks (.mapMode)
   requestGame = lift . requesting
