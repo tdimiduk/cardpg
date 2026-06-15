@@ -9,19 +9,27 @@ module Core.Card
   , EncounterCard (..)
   , ConsequenceCard (..)
   , ActorDefinition (..)
+  , CustomCard (..)
+  , customCardNameText
+  , customCardCategoryText
+  , customCardIdText
+  , customCardFingerprint
   , GeneralActionDef (..)
   , EncounterMechanics (..)
   , Identified (..)
   , CardInstance
   ) where
 
+import Data.Aeson (toJSON)
 import Data.Aeson.TH (deriveJSON)
+import Data.Char (isAlphaNum, ord, toLower)
 import Data.List.NonEmpty (NonEmpty)
 import Data.Text (Text)
+import Data.Text qualified as T
 import GHC.Generics (Generic)
 
 import Core.Json
-import Core.NonEmptyText (NonEmptyText)
+import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.Primitives (CardInstanceId, Identified (..))
 import Core.RichText (RichText)
 import Core.Rules
@@ -161,3 +169,49 @@ data ActorDefinition = ActorDefinition
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ActorDefinition)
+
+-- | A wrapper for any type of authored card.
+data CustomCard
+  = CustomCore CoreCard
+  | CustomItem ItemCard
+  | CustomNature NatureCard
+  | CustomTalent TalentCard
+  | CustomEncounter EncounterCard
+  | CustomConsequence ConsequenceCard
+  deriving stock (Eq, Show, Generic)
+
+$(deriveJSON cardpgJsonDef ''CustomCard)
+
+customCardNameText :: CustomCard -> Text
+customCardNameText (CustomCore c) = getRawText c.name
+customCardNameText (CustomItem c) = getRawText c.name
+customCardNameText (CustomNature c) = getRawText c.name
+customCardNameText (CustomTalent c) = getRawText c.name
+customCardNameText (CustomEncounter c) = getRawText c.name
+customCardNameText (CustomConsequence c) = getRawText c.name
+
+customCardCategoryText :: CustomCard -> Text
+customCardCategoryText (CustomCore _) = "core"
+customCardCategoryText (CustomItem _) = "items"
+customCardCategoryText (CustomNature _) = "nature"
+customCardCategoryText (CustomTalent _) = "talent"
+customCardCategoryText (CustomEncounter _) = "encounters"
+customCardCategoryText (CustomConsequence _) = "consequences"
+
+customCardFingerprint :: CustomCard -> Text
+customCardFingerprint card =
+  let jsonStr = show (toJSON card)
+      h = foldl (\acc c -> acc * 33 + ord c) 5381 jsonStr
+   in T.pack (show (abs h))
+
+customCardIdText :: CustomCard -> Text
+customCardIdText card =
+  let nameText = customCardNameText card
+      categoryText = customCardCategoryText card
+      slug =
+        T.map (\c -> if c == ' ' then '-' else toLower c) $
+          T.filter (\c -> isAlphaNum c || c == ' ') nameText
+      fp = customCardFingerprint card
+   in if T.null fp
+        then categoryText <> "-" <> slug
+        else categoryText <> "-" <> slug <> "-" <> fp

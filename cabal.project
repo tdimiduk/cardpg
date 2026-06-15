@@ -1,3 +1,5 @@
+multi-repl: True
+
 packages:
   core/core.cabal
   server/server.cabal

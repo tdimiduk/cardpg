@@ -71,6 +71,7 @@ library
     Frontend.Card
     Frontend.Catalog
     Frontend.Devel
+    Frontend.Editor
     Frontend.Game.ActorDetails
     Frontend.Game.ActorDetails.Assets
     Frontend.Game.ActorDetails.Consequences
@@ -126,8 +127,11 @@ executable cardpg-static
   main-is:        StaticMain.hs
   hs-source-dirs: app
   build-depends:
+    , aeson
     , api
     , base
+    , beam-core
+    , beam-postgres
     , bytestring
     , client
     , containers
@@ -137,12 +141,15 @@ executable cardpg-static
     , jsaddle
     , mtl
     , optparse-applicative
+    , postgresql-simple
     , process
     , random
     , reflex
     , reflex-dom-core
+    , resource-pool
     , server
     , text
+    , time
     , uuid-types
     , yaml
 

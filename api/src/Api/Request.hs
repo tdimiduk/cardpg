@@ -7,9 +7,11 @@ import Data.GADT.Show.TH (deriveGShow)
 import Data.Text (Text)
 import Data.UUID.Types (UUID)
 
+import Core.Card (CustomCard)
 import Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
 import Core.State (BattleRank, MapMode)
 import Core.Stats (ResourceType)
+import Data.Aeson (Value)
 
 import Api.Types (StateUpdate)
 
@@ -38,6 +40,7 @@ data ApiRequest a where
   ReturnToDeck :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
   EndRound :: ApiRequest (Either Text [StateUpdate])
   Pass :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  SaveCustomCard :: Value -> Text -> ApiRequest (Either Text ())
 
 deriveGShow ''ApiRequest
 deriveGEq ''ApiRequest

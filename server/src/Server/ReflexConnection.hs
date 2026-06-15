@@ -6,7 +6,7 @@ import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
 import Control.Exception (finally, try)
 import Control.Monad (forM_, forever, unless)
 import Control.Monad.State (runState)
-import Data.Aeson (decode, encode)
+import Data.Aeson (Result (..), decode, encode, fromJSON)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
@@ -30,6 +30,7 @@ import Network.WebSockets
 import Data.ByteString.Lazy.Char8 qualified as BSL
 import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), mkTaggedResponse)
 
+import Server.DB (saveCustomCard)
 import Server.Dispatch (processCommand)
 import Server.Types
   ( Client (..)
@@ -160,6 +161,13 @@ handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
 handleGameCommand client state cmd =
   case cmd of
     Req.Join name -> handleJoin client name state
+    Req.SaveCustomCard cardVal file -> do
+      s <- readMVar state
+      let backend = s.dbPool
+          author = client.clientName
+      case fromJSON cardVal of
+        Success card -> saveCustomCard backend card file author
+        Error err -> return $ Left $ T.pack err
     _ -> do
       (ret, newLog) <- modifyMVar state $ \s -> do
         let game = s.gameState

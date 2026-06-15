@@ -477,7 +477,19 @@ inset0 = css "inset-0" "inset" "0"
 -- Colors
 --------------------------------------------------------------------------------
 
-data Color = Gray | Red | Blue | Indigo | Yellow | Amber | White | Black | Transparent | Surface | Text
+data Color
+  = Gray
+  | Red
+  | Blue
+  | Indigo
+  | Yellow
+  | Amber
+  | Green
+  | White
+  | Black
+  | Transparent
+  | Surface
+  | Text
   deriving (Show, Eq, Enum, Bounded)
 
 colorName :: Color -> Text

@@ -14,16 +14,22 @@ module Frontend.Card
   , renderStatsWith
   , renderItemCardWith
   , renderNatureCardWith
+  , renderTalentCardWith
+  , renderConsequenceCardWith
+  , renderEncounterCardWith
   ) where
 
 import Data.Default (Default (..))
 import Reflex.Dom.Core
 
 import Core.Card
-  ( CoreCard (..)
+  ( ConsequenceCard (..)
+  , CoreCard (..)
+  , EncounterCard (..)
   , ItemCard (..)
   , NatureCard (..)
   , Stats (..)
+  , TalentCard (..)
   )
 import Core.Stats (ResourceType (..), getStatValue)
 import Core.Util (tshow)
@@ -184,3 +190,43 @@ renderNatureCardWith settings c = divS (cardClasses settings) $ do
   componentS "rules" (textboxClasses settings) $ do
     mapM_ (el "p" . text) c.passive
     mapM_ renderRichText c.flavor
+
+--------------------------------------------------------------------------------
+-- TalentCard Rendering
+--------------------------------------------------------------------------------
+
+-- | Render a TalentCard with custom settings
+renderTalentCardWith :: (DomBuilder t m) => CardSettings -> TalentCard -> m ()
+renderTalentCardWith settings c = divS (cardClasses settings) $ do
+  componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
+  divS (artClasses settings) blank
+  componentS "rules" (textboxClasses settings) $ do
+    mapM_ (el "p" . text) c.passive
+    mapM_ renderRichText c.flavor
+
+--------------------------------------------------------------------------------
+-- ConsequenceCard Rendering
+--------------------------------------------------------------------------------
+
+-- | Render a ConsequenceCard with custom settings
+renderConsequenceCardWith :: (DomBuilder t m) => CardSettings -> ConsequenceCard -> m ()
+renderConsequenceCardWith settings c = divS (cardClasses settings) $ do
+  componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
+  divS (artClasses settings) blank
+  componentS "rules" (textboxClasses settings) $ do
+    el "p" $ text $ "Severity: " <> tshow c.severity
+    mapM_ (el "p" . text) c.passive
+    mapM_ (mapM_ (el "p" . renderRule)) c.rules
+
+--------------------------------------------------------------------------------
+-- EncounterCard Rendering
+--------------------------------------------------------------------------------
+
+-- | Render an EncounterCard with custom settings
+renderEncounterCardWith :: (DomBuilder t m) => CardSettings -> EncounterCard -> m ()
+renderEncounterCardWith settings c = divS (cardClasses settings) $ do
+  componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
+  divS (artClasses settings) blank
+  componentS "rules" (textboxClasses settings) $ do
+    renderRichText c.narrative
+    mapM_ (mapM_ (el "p" . text)) c.options

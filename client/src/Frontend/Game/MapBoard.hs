@@ -471,7 +471,7 @@ renderStaticGridBoard
 renderStaticGridBoard actorsMapDyn = do
   elAttr "div" ("class" =: classNames gridContainer <> "data-testid" =: "map-grid") $ do
     renderStaticSvg actorsMapDyn
-    _ <- listWithKey actorsMapDyn $ \actorId actorDyn -> do
+    _ <- listWithKey actorsMapDyn $ \_ actorDyn -> do
       let spatialDyn = (.spatial) <$> actorDyn
           isDefeatedDyn = isActorDefeated <$> actorDyn
       let tokenAttrsDyn = (,,) <$> spatialDyn <*> isDefeatedDyn <*> actorDyn

@@ -16,8 +16,10 @@ import Data.Maybe (fromMaybe)
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
+import Frontend.Editor (editorWidget)
 import Frontend.Style.DSL qualified as S
-import Reflex.Dom.Core
+import Frontend.UI.Button (ButtonConfig (..), ButtonSize (..), ButtonVariant (..), button)
+import Reflex.Dom.Core hiding (button)
 import Reflex.Dom.GadtApi.WebSocket (tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
@@ -43,7 +45,7 @@ import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (sidebarWidget)
 import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
 
-import Frontend.Style.Common (Style, componentS)
+import Frontend.Style.Common (Style, componentS, divS, elS)
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
@@ -112,6 +114,10 @@ appWidget wsBaseUrl clientId = do
   where
     wsUrl = wsBaseUrl <> "?clientId=" <> T.pack (show clientId)
 
+updatePhase (PushWelcome{phase = p}) _ = p
+updatePhase (PushUpdate{newPhase = Just p}) _ = p
+updatePhase _ old = old
+
 uiWidget
   :: ( DomBuilder t m
      , PostBuild t m
@@ -128,108 +134,140 @@ uiWidget
   -> Maybe ActorId
   -- ^ Initial active actor
   -> m ()
-uiWidget mStaging initialActorId = componentS "app-container" appRoot $ do
-  rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
-      (sidebarActiveChange, resumeDefenseEvt) <- sidebarWidget selectedActorId
+uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol . S.hScreen . S.overflowHidden) $ do
+  -- Developer Header Bar with toggle button
+  editorActiveDyn <- divS
+    ( S.flexRow
+        . S.wFull
+        . S.bg S.Gray 10
+        . S.borderB
+        . S.border S.Gray 9
+        . S.p S.S2
+        . S.itemsCenter
+        . S.justifyBetween
+        . S.shrink0
+    )
+    $ do
+      elS "span" (S.textXs . S.fontBold . S.text S.Gray 4 . S.trackingWider . S.uppercase) $
+        text "CardPG Game Console"
 
-      mapActiveChange <- componentS "main-content" mainContent $ do
-        rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
+      rec toggleClick <- button
+            def
+              { variant = VariantGhost
+              , size = SizeSmall
+              , extraStyle = S.text S.Yellow 5 . S.hover (S.text S.Yellow 4) . S.cls "fantasy-font"
+              }
+            $ dynText
+            $ ffor activeDyn
+            $ \active -> if active then "Exit Card Editor" else "Open Card Editor"
+          activeDyn <- foldDyn (\_ val -> not val) False toggleClick
+      return activeDyn
 
-            actorsMapDyn <- askActors
-            let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
-                  case mId >>= \aid -> identifiedLookup aid actors of
-                    Nothing -> Map.empty
-                    Just (Identified i c) -> Map.singleton i c
+  dyn_ $ ffor editorActiveDyn $ \case
+    True -> editorWidget
+    False -> divS appRoot $ do
+      rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
+          (sidebarActiveChange, resumeDefenseEvt) <- sidebarWidget selectedActorId
 
-            stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
-              handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
+          mapActiveChange <- componentS "main-content" mainContent $ do
+            rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
 
-            stagingStateDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
-              case Map.elems m of
-                [] -> constDyn Nothing
-                (d : _) -> fst d
+                actorsMapDyn <- askActors
+                let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
+                      case mId >>= \aid -> identifiedLookup aid actors of
+                        Nothing -> Map.empty
+                        Just (Identified i c) -> Map.singleton i c
 
-            rankMoveStagingDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
-              case Map.elems m of
-                [] -> constDyn Nothing
-                (d : _) -> snd d
+                stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
+                  handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
 
-        return mapChange
+                stagingStateDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
+                  case Map.elems m of
+                    [] -> constDyn Nothing
+                    (d : _) -> fst d
 
-  -- Right Sidebar — now returns Event t DefenseTarget from challenge clicks
-  openDefenseEvt <- sidebarRightWidget selectedActorId
+                rankMoveStagingDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
+                  case Map.elems m of
+                    [] -> constDyn Nothing
+                    (d : _) -> snd d
 
-  actorsMapDyn <- askActors
-  logsDyn <- askLogs
+            return mapChange
 
-  rec let closePanelEvt = ffilter (\case ClosePanel -> True; EndDefense -> True; _ -> False) defenseWidgetEvt
+      -- Right Sidebar — now returns Event t DefenseTarget from challenge clicks
+      openDefenseEvt <- sidebarRightWidget selectedActorId
 
-      let actorSelectedEvt = updated selectedActorId
-      pb <- getPostBuild
-      let actorSelectedOrBuildEvt = leftmost [actorSelectedEvt, initialActorId <$ pb]
-          autoOpenEvt =
-            attachWith
-              (\(actorsMap, history) mActorId -> getActiveDefenseTarget mActorId actorsMap history)
-              (current (zipDyn actorsMapDyn logsDyn))
-              actorSelectedOrBuildEvt
+      actorsMapDyn <- askActors
+      logsDyn <- askLogs
 
-          manualResumeEvt =
-            attachWith
-              (\(actorsMap, history) actorId -> getActiveDefenseTarget (Just actorId) actorsMap history)
-              (current (zipDyn actorsMapDyn logsDyn))
-              resumeDefenseEvt
+      rec let closePanelEvt = ffilter (\case ClosePanel -> True; EndDefense -> True; _ -> False) defenseWidgetEvt
 
-      -- Defense modal state: Nothing = closed, Just target = open
-      --
-      -- When a challenge is clicked, we check if the selected actor already has
-      -- an active defense. If so, we redirect to that defense (conflict detection).
-      defenseTargetDyn <-
-        foldDyn applyDefenseEvent Nothing $
-          leftmost
-            [ Just
-                <$> attachWith
-                  ( \(mActorId, actorsMap) newTarget ->
-                      -- Conflict detection: if actor is already defending a different challenge,
-                      -- open that defense instead.
-                      let mActiveDefense = do
-                            actorId <- mActorId
-                            actorState <- Map.lookup actorId actorsMap
-                            _defending <- actorState.coreState.defending
-                            pure (actorState, _defending)
-                       in case mActiveDefense of
-                            Just (_actorState, defending) ->
-                              if defending.activeChallenge.id /= newTarget.challenge.id
-                                then -- Actor is defending a different challenge — keep active defense
-                                  newTarget{challenge = defending.activeChallenge}
-                                else newTarget
-                            Nothing -> newTarget
-                  )
-                  (current (zipDyn selectedActorId actorsMapDyn))
-                  openDefenseEvt
-            , autoOpenEvt
-            , manualResumeEvt
-            , Nothing <$ closePanelEvt
-            ]
+          let actorSelectedEvt = updated selectedActorId
+          pb <- getPostBuild
+          let actorSelectedOrBuildEvt = leftmost [actorSelectedEvt, initialActorId <$ pb]
+              autoOpenEvt =
+                attachWith
+                  (\(actorsMap, history) mActorId -> getActiveDefenseTarget mActorId actorsMap history)
+                  (current (zipDyn actorsMapDyn logsDyn))
+                  actorSelectedOrBuildEvt
 
-      -- Render defense widget when active, routing actions to API requests
-      widgetActionEvt <- dyn $
-        ffor (zipDyn defenseTargetDyn (zipDyn selectedActorId actorsMapDyn)) $
-          \(mTarget, (mActorId, actorsMap)) ->
-            case (mTarget, mActorId, mActorId >>= \aid -> Map.lookup aid actorsMap) of
-              (Just target, Just actorId, Just actorState) -> do
-                let actorStateDyn = ffor actorsMapDyn $ \m ->
-                      fromMaybe actorState (Map.lookup actorId m)
+              manualResumeEvt =
+                attachWith
+                  (\(actorsMap, history) actorId -> getActiveDefenseTarget (Just actorId) actorsMap history)
+                  (current (zipDyn actorsMapDyn logsDyn))
+                  resumeDefenseEvt
 
-                actionEvt <- defenseWidget (constDyn target) actorStateDyn
+          -- Defense modal state: Nothing = closed, Just target = open
+          --
+          -- When a challenge is clicked, we check if the selected actor already has
+          -- an active defense. If so, we redirect to that defense (conflict detection).
+          defenseTargetDyn <-
+            foldDyn applyDefenseEvent Nothing $
+              leftmost
+                [ Just
+                    <$> attachWith
+                      ( \(mActorId, actorsMap) newTarget ->
+                          -- Conflict detection: if actor is already defending a different challenge,
+                          -- open that defense instead.
+                          let mActiveDefense = do
+                                actorId <- mActorId
+                                actorState <- Map.lookup actorId actorsMap
+                                _defending <- actorState.coreState.defending
+                                pure (actorState, _defending)
+                           in case mActiveDefense of
+                                Just (_actorState, defending) ->
+                                  if defending.activeChallenge.id /= newTarget.challenge.id
+                                    then -- Actor is defending a different challenge — keep active defense
+                                      newTarget{challenge = defending.activeChallenge}
+                                    else newTarget
+                                Nothing -> newTarget
+                      )
+                      (current (zipDyn selectedActorId actorsMapDyn))
+                      openDefenseEvt
+                , autoOpenEvt
+                , manualResumeEvt
+                , Nothing <$ closePanelEvt
+                ]
 
-                -- Route DefenseAction events to API requests
-                let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
-                _ <- requestGame defenseReqs
+          -- Render defense widget when active, routing actions to API requests
+          widgetActionEvt <- dyn $
+            ffor (zipDyn defenseTargetDyn (zipDyn selectedActorId actorsMapDyn)) $
+              \(mTarget, (mActorId, actorsMap)) ->
+                case (mTarget, mActorId, mActorId >>= \aid -> Map.lookup aid actorsMap) of
+                  (Just target, Just actorId, Just actorState) -> do
+                    let actorStateDyn = ffor actorsMapDyn $ \m ->
+                          fromMaybe actorState (Map.lookup actorId m)
 
-                return actionEvt
-              _ -> return never
+                    actionEvt <- defenseWidget (constDyn target) actorStateDyn
 
-      defenseWidgetEvt <- switchHold never widgetActionEvt
+                    -- Route DefenseAction events to API requests
+                    let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
+                    _ <- requestGame defenseReqs
+
+                    return actionEvt
+                  _ -> return never
+
+          defenseWidgetEvt <- switchHold never widgetActionEvt
+      pure ()
 
   pure ()
   where

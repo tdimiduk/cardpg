@@ -18,6 +18,7 @@ import Database.Beam.AutoMigrate qualified as BA
 import Database.Beam.Postgres
 import Database.PostgreSQL.Simple qualified as Pg
 
+import Core.Card (CustomCard, customCardCategoryText, customCardIdText, customCardNameText)
 import Server.Config (DBConfig (..))
 import Server.Types (GameState, StorageBackend (..))
 
@@ -40,9 +41,30 @@ instance Table GameT where
     deriving (Generic, Beamable)
   primaryKey (Game gId _ _ _) = GameId gId
 
+-- | The Custom Card Table
+data CustomCardT f = CustomCard
+  { customCardId :: C f Text -- e.g. "Sunburn" or "action-strike"
+  , customCardCategory :: C f Text -- "core", "items", "monsters", etc.
+  , customCardName :: C f Text
+  , customCardData :: C f (PgJSONB Value) -- Serialized CustomCard JSON
+  , customCardSourceFile :: C f Text -- e.g. "pc/vallhach.yaml"
+  , customCardAuthor :: C f Text -- E.g. "Jeff" or "GM"
+  , customCardUpdatedAt :: C f UTCTime
+  }
+  deriving (Generic, Beamable)
+
+type CustomCardRecord = CustomCardT Identity
+type CustomCardId = PrimaryKey CustomCardT Identity
+
+instance Table CustomCardT where
+  data PrimaryKey CustomCardT f = CustomCardId (C f Text)
+    deriving (Generic, Beamable)
+  primaryKey (CustomCard cId _ _ _ _ _ _) = CustomCardId cId
+
 -- | The Database
-newtype CardPGDB f = CardPGDB
+data CardPGDB f = CardPGDB
   { games :: f (TableEntity GameT)
+  , customCards :: f (TableEntity CustomCardT)
   }
   deriving stock (Generic)
   deriving anyclass (Database be)
@@ -132,3 +154,42 @@ loadGame (PostgresBackend pool) gId = do
             putStrLn $ "Failed to decode game state: " ++ e
             return Nothing
           Success s -> return (Just s)
+
+saveCustomCard :: StorageBackend -> CustomCard -> Text -> Text -> IO (Either Text ())
+saveCustomCard (InMemoryBackend _) _ _ _ = do
+  return $ Right ()
+saveCustomCard (PostgresBackend pool) card sourceFile author = do
+  now <- getCurrentTime
+  let cId = customCardIdText card
+      category = customCardCategoryText card
+      name = customCardNameText card
+      dbRecord = CustomCard cId category name (PgJSONB (toJSON card)) sourceFile author now
+
+  withResource pool $ \conn -> do
+    existing <-
+      runBeamPostgres conn $
+        runSelectReturningOne $
+          select $
+            filter_ (\c -> customCardId c ==. val_ cId) (all_ (customCards cardpgDb))
+
+    case existing of
+      Just _ -> do
+        runBeamPostgres conn $
+          runUpdate $
+            update
+              (customCards cardpgDb)
+              ( \c ->
+                  mconcat
+                    [ customCardCategory c <-. val_ category
+                    , customCardName c <-. val_ name
+                    , customCardData c <-. val_ (PgJSONB (toJSON card))
+                    , customCardSourceFile c <-. val_ sourceFile
+                    , customCardAuthor c <-. val_ author
+                    , customCardUpdatedAt c <-. val_ now
+                    ]
+              )
+              (\c -> customCardId c ==. val_ cId)
+      Nothing -> do
+        runBeamPostgres conn $ runInsert $ insert (customCards cardpgDb) (insertValues [dbRecord])
+
+    return $ Right ()
