@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 set -e
 
-# formatting via pre-commit (configured in flake.nix)
-# formatting via pre-commit (configured in flake.nix)
-pre-commit run --all-files
+# Run formatting via pre-commit (configured in flake.nix)
+# If --all or -a is passed, run on all files. Otherwise, run on changed files only.
+if [ "$1" = "--all" ] || [ "$1" = "-a" ]; then
+  pre-commit run --all-files
+else
+  # Get all changed files (staged, unstaged, and untracked)
+  mapfile -t files < <( (git diff HEAD --name-only; git ls-files --others --exclude-standard) | sort -u )
+  
+  # Filter to only existing files (handles deleted files)
+  existing_files=()
+  for file in "${files[@]}"; do
+    if [ -f "$file" ]; then
+      existing_files+=("$file")
+    fi
+  done
+
+  if [ ${#existing_files[@]} -gt 0 ]; then
+    echo "Running pre-commit on ${#existing_files[@]} changed file(s)..."
+    pre-commit run --files "${existing_files[@]}"
+  else
+    echo "No changed files to check. (Use --all or -a to check the entire repo)"
+  fi
+fi
