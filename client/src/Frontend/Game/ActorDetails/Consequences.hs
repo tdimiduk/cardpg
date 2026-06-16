@@ -42,11 +42,11 @@ consequencesWidget actorId actorState = do
             . S.fontBold
             . S.uppercase
             . S.cls "fantasy-font"
-            . S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+            . textGoldBright
         )
         $ text "Consequences"
 
-      divS (S.textXs . S.cls "fantasy-font" . S.css "text-gold-muted" "color" "var(--color-gold-muted)") $ do
+      divS (S.textXs . S.cls "fantasy-font" . textGoldMuted) $ do
         text "Next Severity: "
         dynText $ fmap (tshow . computeNextSeverity . (.tableState)) actorState
 
@@ -59,7 +59,7 @@ consequencesWidget actorId actorState = do
         $ do
           let nameDyn = fmap (\(Identified _ c) -> getRawText c.name) consequenceDyn
 
-          divS (S.textXs . S.px S.S1 . S.css "text-crimson-light" "color" "#fca5a5" . S.fontBold) $
+          divS (S.textXs . S.px S.S1 . textCrimsonLight . S.fontBold) $
             dynText nameDyn
 
           btnClick <-

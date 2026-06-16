@@ -25,7 +25,12 @@ import Frontend.Card
   , renderStatsWith
   )
 import Frontend.Render.Common (IconMode (..))
-import Frontend.Style (plannedCardOverlap, stagedActionCard, stagedResourceCard)
+import Frontend.Style
+  ( altarStagingPanel
+  , plannedCardOverlap
+  , stagedActionCard
+  , stagedResourceCard
+  )
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (rowWith)
@@ -58,16 +63,7 @@ stagingWidget actorId actionStackDyn validation = do
   -- Staging UI Container
   componentS
     "action-staging"
-    ( S.flexCol
-        . S.pointerEventsAuto
-        . S.itemsCenter
-        . S.gap S.S3
-        . S.css "min-w-[320px]" "min-width" "320px"
-        . S.cls "altar-glowing-gold"
-        . S.backdropBlurMd
-        . S.roundedXl
-        . S.p S.S4
-    )
+    altarStagingPanel
     $ do
       -- Header / Status
       stagingStatusHeader validation
@@ -114,7 +110,7 @@ stagingStatusHeader validation = do
               ( S.cls "fantasy-font"
                   . S.textSm
                   . S.fontBold
-                  . S.css "text-gold-light" "color" "var(--color-gold-bright)"
+                  . textGoldBright
                   . S.uppercase
                   . S.trackingWider
               )

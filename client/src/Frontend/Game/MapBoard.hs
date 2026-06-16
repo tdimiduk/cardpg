@@ -51,19 +51,19 @@ mapBoardContainer :: Style
 mapBoardContainer =
   S.relative
     . S.flex1
-    . S.css "min-w-0" "min-width" "0"
-    . S.css "min-h-0" "min-height" "0"
+    . S.minW0
+    . S.minH0
     . S.css "bg-board-outer" "background-color" "#0f172a" -- Slate-900
     . S.css "overflow-auto" "overflow" "auto"
     . S.css "cursor-crosshair" "cursor" "crosshair"
-    . S.css "select-none" "user-select" "none"
+    . S.selectNone
 
 -- | Named Style for the absolute-positioned grid cells container
 gridContainer :: Style
 gridContainer =
   S.relative
-    . S.css "min-w-2000px" "min-width" "2000px"
-    . S.css "min-h-2000px" "min-height" "2000px"
+    . S.minW (S.Px 2000)
+    . S.minH (S.Px 2000)
     . S.css "bg-board-grid" "background-color" "#1e293b" -- Slate-800
     . S.css "bg-size-40" "background-size" "40px 40px"
     . S.css
@@ -75,10 +75,10 @@ gridContainer =
 activeRingStyle :: Style
 activeRingStyle =
   S.absolute
-    . S.css "top-neg-4" "top" "-4px"
-    . S.css "bottom-neg-4" "bottom" "-4px"
-    . S.css "left-neg-4" "left" "-4px"
-    . S.css "right-neg-4" "right" "-4px"
+    . S.top (S.Px (-4))
+    . S.bottom (S.Px (-4))
+    . S.left (S.Px (-4))
+    . S.right (S.Px (-4))
     . S.roundedFull
     . S.css "border-ring-active" "border" "2px dashed #facc15" -- Yellow-400
     . S.pointerEventsNone
@@ -89,10 +89,10 @@ activeRingStyle =
 defeatedRingStyle :: Style
 defeatedRingStyle =
   S.absolute
-    . S.css "top-neg-4" "top" "-4px"
-    . S.css "bottom-neg-4" "bottom" "-4px"
-    . S.css "left-neg-4" "left" "-4px"
-    . S.css "right-neg-4" "right" "-4px"
+    . S.top (S.Px (-4))
+    . S.bottom (S.Px (-4))
+    . S.left (S.Px (-4))
+    . S.right (S.Px (-4))
     . S.roundedFull
     . S.css "border-ring-defeated" "border" "2px dashed #7f1d1d" -- Red-900
     . S.pointerEventsNone
@@ -228,11 +228,11 @@ renderTokenCircle actorDyn configDyn = do
               _ -> iconUser
 
       divS
-        ( S.css "w-pct-50" "width" "50%"
-            . S.css "h-pct-50" "height" "50%"
+        ( S.w (S.Percent 50)
+            . S.h (S.Percent 50)
             . S.css "m-auto" "margin" "auto"
-            . S.css "mt-pct-25" "margin-top" "25%"
-            . S.css "text-white-pure" "color" "#ffffff"
+            . S.mt (S.Percent 25)
+            . S.textWhite
             . S.opacity 0.8
         )
         $ do
@@ -251,9 +251,9 @@ renderTokenCircle actorDyn configDyn = do
                 . S.css "backdrop-blur-4px" "backdrop-filter" "blur(4px)"
             )
             $ divS
-              ( S.css "w-20px" "width" "20px"
-                  . S.css "h-20px" "height" "20px"
-                  . S.css "text-red-icon" "color" "#ef4444"
+              ( S.w (S.Px 20)
+                  . S.h (S.Px 20)
+                  . S.text S.Red 5
               )
               iconClose
         False -> blank
@@ -271,16 +271,16 @@ renderTokenCircle actorDyn configDyn = do
     when (showStatus && hasPlan) $
       divS
         ( S.absolute
-            . S.css "top-neg-4" "top" "-4px"
-            . S.css "right-neg-4" "right" "-4px"
+            . S.top (S.Px (-4))
+            . S.right (S.Px (-4))
             . S.z 30
-            . S.css "bg-green-checkmark" "background-color" "#22c55e" -- Green-500
-            . S.css "text-white-pure" "color" "#ffffff"
+            . S.bg S.Green 5
+            . S.textWhite
             . S.roundedFull
-            . S.css "p-2px" "padding" "2px"
+            . S.p (S.Px 2)
             . S.css "border-checkmark" "border" "1px solid #0f172a"
-            . S.css "w-18px" "width" "18px"
-            . S.css "h-18px" "height" "18px"
+            . S.w (S.Px 18)
+            . S.h (S.Px 18)
             . S.css "animate-bounce-slow" "animation" "bounce 1s infinite"
         )
         iconCheck
@@ -297,19 +297,19 @@ renderTokenCircle actorDyn configDyn = do
             . S.justifyCenter
             . S.css "bg-token-badge" "background-color" "#1e293b"
             . S.css "border-token-badge" "border" "1px solid #475569"
-            . S.css "rounded-4px" "border-radius" "4px"
+            . S.roundedS (S.Px 4)
             . S.css "shadow-token-badge" "box-shadow" "0 1px 2px rgba(0,0,0,0.5)"
             . S.py S.S1
             . S.px S.S2
-            . S.css "min-w-20px" "min-width" "20px"
-            . S.css "h-16px" "height" "16px"
+            . S.minW (S.Px 20)
+            . S.h (S.Px 16)
         )
       $ do
         divS
-          ( S.css "w-10px" "width" "10px"
-              . S.css "h-10px" "height" "10px"
-              . S.css "text-badge-icon" "color" "#94a3b8"
-              . S.css "mr-2px" "margin-right" "2px"
+          ( S.w (S.Px 10)
+              . S.h (S.Px 10)
+              . S.text S.Gray 5
+              . S.mr (S.Px 2)
           )
           iconNote
         elAttr
@@ -579,11 +579,11 @@ laneTitleStyle :: Style
 laneTitleStyle =
   S.text S.Gray 4
     . S.fontBold
-    . S.css "w-120px" "width" "120px"
-    . S.css "select-none" "user-select" "none"
-    . S.css "uppercase" "text-transform" "uppercase"
-    . S.css "tracking-wider" "letter-spacing" "0.05em"
-    . S.css "text-sm" "font-size" "0.875rem"
+    . S.w (S.Px 120)
+    . S.selectNone
+    . S.uppercase
+    . S.trackingWider
+    . S.textSm
 
 -- | Tokens container inside rank lane
 tokensContainerStyle :: Style

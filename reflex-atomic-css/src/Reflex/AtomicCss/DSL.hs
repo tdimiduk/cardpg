@@ -69,6 +69,10 @@ module Reflex.AtomicCss.DSL
   , wFit
   , hScreen
   , h2_5
+  , minW
+  , minH
+  , minW0
+  , minH0
 
     -- * Spacing
   , bottom
@@ -131,6 +135,7 @@ module Reflex.AtomicCss.DSL
 
     -- * Typography
   , fontBold
+  , fontMono
   , textSm
   , textXs
   , textXl
@@ -154,6 +159,7 @@ module Reflex.AtomicCss.DSL
   , shadowXl
   , shadowLg
   , shadowSm
+  , shadow
   , grayscale
   , grayscale50
   , opacity75
@@ -479,12 +485,21 @@ inset0 = css "inset-0" "inset" "0"
 
 data Color
   = Gray
+  | Stone
   | Red
-  | Blue
+  | Pink
+  | Purple
+  | Violet
   | Indigo
-  | Yellow
-  | Amber
+  | Blue
+  | Cyan
+  | Teal
   | Green
+  | Lime
+  | Yellow
+  | Orange
+  | Cocoa
+  | Amber
   | White
   | Black
   | Transparent
@@ -777,3 +792,21 @@ fontSize n = css ("text-" <> tshow n) "font-size" (tshow n <> "px")
 
 opacity :: Double -> Style
 opacity v = css ("opacity-" <> tshow (round (v * 100) :: Int)) "opacity" (tshow v)
+
+minW :: Size -> Style
+minW s = css ("min-w-" <> sizeName s) "min-width" (sizeValue s)
+
+minH :: Size -> Style
+minH s = css ("min-h-" <> sizeName s) "min-height" (sizeValue s)
+
+minW0 :: Style
+minW0 = minW S0
+
+minH0 :: Style
+minH0 = minH S0
+
+fontMono :: Style
+fontMono = css "font-mono" "font-family" "monospace"
+
+shadow :: Int -> Style
+shadow n = css ("shadow-" <> tshow n) "box-shadow" ("var(--shadow-" <> tshow n <> ")")

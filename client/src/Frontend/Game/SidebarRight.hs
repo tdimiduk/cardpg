@@ -25,7 +25,7 @@ import Frontend.Game.Class
 import Frontend.Game.Defense (DefenseTarget (..))
 import Frontend.Game.PhaseDisplay (phaseDisplayWidget)
 import Frontend.Render.Common (IconMode (..), renderResourceType)
-import Frontend.Style.Common (Style, classNames, divS, elS, testId)
+import Frontend.Style.Common (Style, classNames, divS, elS, testId, textGoldBright)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 
@@ -99,7 +99,7 @@ sidebarRightWidget selectedActorId = do
           "div"
           ( S.fontSize 10
               . S.text S.Gray 6
-              . S.css "font-mono" "font-family" "monospace"
+              . S.fontMono
           )
           $ dynText
           $ fmap (T.pack . show . length) logsDyn
@@ -278,9 +278,9 @@ challengeLogItem defenseTarget mDefenseLog = do
     divS (S.flex . S.justifyBetween . S.itemsCenter . S.mb S.S1) $ do
       divS (S.textXs . S.fontBold . S.text S.Red 3 . S.flex . S.itemsCenter . S.gap S.S1) $ do
         divS
-          ( S.css "w-3" "width" "0.75rem"
-              . S.css "h-3" "height" "0.75rem"
-              . S.css "bg-red-fill" "background-color" "var(--red-6)"
+          ( S.w S.S3
+              . S.h S.S3
+              . S.bg S.Red 6
               . S.roundedFull
           )
           blank
@@ -344,8 +344,8 @@ renderInlineDefenseSummary defLog = case defLog.payload of
             divS
               ( S.flex
                   . S.gap S.S2
-                  . S.css "font-mono" "font-family" "monospace"
-                  . S.css "font-size-10" "font-size" "10px"
+                  . S.fontMono
+                  . S.fontSize 10
               )
               $ do
                 elS "span" (S.text S.Red 4) $ text ("R:" <> tshow details.values.red)

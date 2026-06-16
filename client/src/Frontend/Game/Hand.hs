@@ -37,7 +37,7 @@ import Api.Request qualified as Req
 import Api.Types (Phase (..))
 
 import Frontend.Style qualified as FS
-import Frontend.Style.Common (Style, classNames, componentS, divS)
+import Frontend.Style.Common (Style, classNames, componentS, divS, textGoldBright)
 import Frontend.Style.DSL qualified as S
 import Frontend.Util (buildStableKeyMap)
 
@@ -206,16 +206,7 @@ rankMoveStagingWidget
 rankMoveStagingWidget actorId rmsDyn actorDyn = do
   componentS
     "rank-move-staging"
-    ( S.flexCol
-        . S.pointerEventsAuto
-        . S.itemsCenter
-        . S.gap S.S3
-        . S.css "min-w-[320px]" "min-width" "320px"
-        . S.cls "altar-glowing-gold"
-        . S.backdropBlurMd
-        . S.roundedXl
-        . S.p S.S4
-    )
+    FS.altarStagingPanel
     $ do
       -- Header / Status
       divS (S.flexCol . S.itemsCenter . S.gap S.S1) $ do
@@ -223,7 +214,7 @@ rankMoveStagingWidget actorId rmsDyn actorDyn = do
           ( S.cls "fantasy-font"
               . S.textSm
               . S.fontBold
-              . S.css "text-gold-light" "color" "var(--color-gold-bright)"
+              . textGoldBright
               . S.uppercase
               . S.trackingWider
           )
@@ -260,7 +251,7 @@ rankMoveStagingWidget actorId rmsDyn actorDyn = do
               ( S.relative
                   . S.w (S.Vh 9.6)
                   . S.h (S.Vh 13.4)
-                  . S.css "ring-discard" "box-shadow" "0 0 0 3px #ef4444"
+                  . FS.ringDiscard
                   . S.rounded
                   . S.overflowHidden
               )
@@ -353,7 +344,7 @@ handCardsWidget actor stagingStack rankMoveStaging plannedAction keyMapDyn = do
                     -- Interaction highlights
                     extraStyle
                       | inStaging = if sel then S.cls "staged-gold-ring" else id
-                      | inRankStaging = if discSel then S.css "ring-discard" "box-shadow" "0 0 0 3px #ef4444" else id
+                      | inRankStaging = if discSel then FS.ringDiscard else id
                       | otherwise = id
                    in
                     classNames $ S.relative . cardHandWidth . extraStyle . baseStyle . S.pointerEventsAuto . S.group

@@ -23,7 +23,7 @@ statsWidget actorState =
         "Defense"
         (fmap (\as -> computeDefense as.tableState) actorState)
       derivedStatDisplay
-        (divS (S.w S.S5 . S.h S.S5 . S.css "text-emerald" "color" "#10b981") iconResilience)
+        (divS (S.w S.S5 . S.h S.S5 . textEmerald) iconResilience)
         "Resilience"
         (fmap (\as -> computeResilience as.tableState) actorState)
 

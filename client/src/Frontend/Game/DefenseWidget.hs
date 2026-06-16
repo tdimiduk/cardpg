@@ -34,7 +34,16 @@ import Frontend.Game.Class
 import Frontend.Game.Defense (DefenseAction (..), DefenseTarget (..), defensePreview)
 import Frontend.Icons (iconClose, iconDefense, iconResilience)
 import Frontend.Render.Common (IconMode (..), renderResourceType)
-import Frontend.Style.Common (Style, classNames, divS, elS)
+import Frontend.Style.Common
+  ( Style
+  , bgCrimsonDim
+  , classNames
+  , divS
+  , elS
+  , textCrimsonLight
+  , textEmerald
+  , textGoldBright
+  )
 import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
 
@@ -97,9 +106,9 @@ attackAccent :: Style
 attackAccent =
   S.absolute
     . S.left0
-    . S.css "top-0" "top" "0"
-    . S.css "bottom-0" "bottom" "0"
-    . S.css "w-1" "width" "4px"
+    . S.top S.S0
+    . S.bottom0
+    . S.w S.S1
     . S.bg S.Red 6
 
 -- | Defense stats panel.
@@ -161,15 +170,15 @@ severityMiniBtn =
   S.css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
     . S.hover (S.bg S.Red 9)
     . S.textWhite
-    . S.css "text-8px" "font-size" "8px"
+    . S.fontSize 8
     . S.flex
     . S.itemsCenter
     . S.justifyCenter
     . S.border1
     . S.border S.Gray 9
     . S.cursorPointer
-    . S.css "w-5" "width" "1.25rem"
-    . S.css "h-5" "height" "1.25rem"
+    . S.w S.S5
+    . S.h S.S5
 
 -- ---------------------------------------------------------------------------
 -- Widget
@@ -236,7 +245,7 @@ widgetHeader = divS headerBar $ do
       ( S.textSm
           . S.fontBold
           . S.cls "fantasy-font"
-          . S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+          . textGoldBright
       )
       $ text "Defense Resolution"
   button
@@ -277,8 +286,8 @@ challengeBannerContent targetDyn = do
             ( S.shrink0
                 . S.css "scale-75" "transform" "scale(0.75)"
                 . S.css "origin-tl" "transform-origin" "top left"
-                . S.css "neg-mb-10" "margin-bottom" "-2.5rem"
-                . S.css "neg-mr-6" "margin-right" "-1.5rem"
+                . S.mb (S.Rem (-2.5))
+                . S.mr (S.Rem (-1.5))
             )
             $ renderCoreCardWith (CardSettings CardFull) cardContent
 
@@ -292,7 +301,7 @@ challengeBannerContent targetDyn = do
             "span"
             ( S.css "text-3xl" "font-size" "1.875rem"
                 . S.fontBold
-                . S.css "text-crimson-light" "color" "#fca5a5"
+                . textCrimsonLight
             )
             $ text (tshow challenge.challengeStrength)
           renderResourceType IconInline challenge.challengeColor Nothing
@@ -312,7 +321,7 @@ challengeBannerContent targetDyn = do
                   . S.px S.S2
                   . S.py S.S0_5
                   . S.rounded
-                  . S.css "w-fit" "width" "fit-content"
+                  . S.wFit
               )
               $ text ("+" <> tshow (length rs) <> " resource cards")
 
@@ -347,25 +356,25 @@ defenseStatsContent actorDyn = do
         divS (S.flex . S.gap S.S3) $ do
           -- Red
           divS (S.flex . S.itemsCenter . S.gap S.S1) $ do
-            divS (S.css "w-2" "width" "0.5rem" . S.css "h-2" "height" "0.5rem" . S.rounded . S.bg S.Red 6) blank
+            divS (S.w S.S2 . S.h S.S2 . S.rounded . S.bg S.Red 6) blank
             dynText $ ffor detailsDyn $ \d -> tshow d.values.red
           -- Yellow
           divS (S.flex . S.itemsCenter . S.gap S.S1) $ do
             divS
-              (S.css "w-2" "width" "0.5rem" . S.css "h-2" "height" "0.5rem" . S.roundedFull . S.bg S.Yellow 5)
+              (S.w S.S2 . S.h S.S2 . S.roundedFull . S.bg S.Yellow 5)
               blank
             dynText $ ffor detailsDyn $ \d -> tshow d.values.yellow
           -- Blue
           divS (S.flex . S.itemsCenter . S.gap S.S1) $ do
             divS
-              ( S.css "w-2" "width" "0.5rem"
-                  . S.css "h-2" "height" "0.5rem"
+              ( S.w S.S2
+                  . S.h S.S2
                   . S.css "rotate-45" "transform" "rotate(45deg)"
                   . S.bg S.Blue 5
               )
               blank
             dynText $ ffor detailsDyn $ \d -> tshow d.values.blue
-        elS "span" (S.text S.Gray 7 . S.css "font-mono" "font-family" "monospace") $ text "Totals"
+        elS "span" (S.text S.Gray 7 . S.fontMono) $ text "Totals"
 
     -- Net stats row: defense, resilience, net impact
     divS (S.flex . S.justifyBetween . S.itemsCenter . S.pt S.S1) $ do
@@ -377,7 +386,7 @@ defenseStatsContent actorDyn = do
           elS "span" statLabel $ text "DEF"
         -- Resilience
         divS (S.flexCol . S.itemsCenter) $ do
-          divS (S.w S.S5 . S.h S.S5 . S.css "text-emerald" "color" "#10b981") iconResilience
+          divS (S.w S.S5 . S.h S.S5 . textEmerald) iconResilience
           dynText $ ffor resilienceDyn tshow
           elS "span" statLabel $ text "RES"
       -- Net impact + consequence count
@@ -388,7 +397,7 @@ defenseStatsContent actorDyn = do
             elS
               "span"
               ( statValue
-                  . if d.impact > 0 then S.css "text-crimson-light" "color" "#fca5a5" else S.text S.Blue 4
+                  . if d.impact > 0 then textCrimsonLight else S.text S.Blue 4
               )
               $ text (tshow d.impact)
           dyn_ $ ffor detailsDyn $ \d ->
@@ -397,8 +406,8 @@ defenseStatsContent actorDyn = do
                 elS
                   "span"
                   ( S.textXs
-                      . S.css "bg-crimson-dim" "background-color" "rgba(153, 27, 27, 0.4)"
-                      . S.css "text-crimson-light" "color" "#fca5a5"
+                      . bgCrimsonDim
+                      . textCrimsonLight
                       . S.px S.S1
                       . S.rounded
                       . S.border1
@@ -485,7 +494,7 @@ defenseActionBar _actorDyn = do
             dynText (fmap tshow nextSevDyn)
 
     -- Severity override mini-buttons [3, 2, 1]
-    sevEvts <- divS (S.flexCol . S.css "w-5" "width" "1.25rem") $ do
+    sevEvts <- divS (S.flexCol . S.w S.S5) $ do
       evts <-
         mapM
           ( \sev -> do

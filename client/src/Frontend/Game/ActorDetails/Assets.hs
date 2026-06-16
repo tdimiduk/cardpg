@@ -77,7 +77,7 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
                   . S.fontBold
                   . S.uppercase
                   . S.cls "fantasy-font"
-                  . S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+                  . textGoldBright
               )
               $ text headerText
 
@@ -92,7 +92,7 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
                       fmap (\c -> getRawText c.name) nameDyn
 
                   -- Display Detail (Slot or Type)
-                  divS (S.textXs . S.text S.Gray 4 . S.css "italic" "font-style" "italic") $
+                  divS (S.textXs . S.text S.Gray 4 . S.italic) $
                     renderDetail itemDyn
 
 getEquippedItems :: ActorState -> [(TableCard, EquipSlot)]

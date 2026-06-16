@@ -12,6 +12,11 @@ module Frontend.Style.Common
   , resourceIcon
   , resourceTextBase
   , resourceTextPrint
+  , textGoldBright
+  , textGoldMuted
+  , textCrimsonLight
+  , bgCrimsonDim
+  , textEmerald
   ) where
 
 import Frontend.Style.DSL qualified as S
@@ -52,3 +57,18 @@ resourceTextBase = S.fontBold . S.text S.Gray 2
 -- | Resource text for print (black/dark gray)
 resourceTextPrint :: Style
 resourceTextPrint = S.media "print" S.textBlack
+
+textGoldBright :: Style
+textGoldBright = S.css "text-gold-bright" "color" "var(--color-gold-bright)"
+
+textGoldMuted :: Style
+textGoldMuted = S.css "text-gold-muted" "color" "var(--color-gold-muted)"
+
+textCrimsonLight :: Style
+textCrimsonLight = S.css "text-crimson-light" "color" "#fca5a5"
+
+bgCrimsonDim :: Style
+bgCrimsonDim = S.css "bg-crimson-dim" "background-color" "rgba(153, 27, 27, 0.4)"
+
+textEmerald :: Style
+textEmerald = S.css "text-emerald" "color" "#10b981"

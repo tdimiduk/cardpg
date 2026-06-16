@@ -138,6 +138,9 @@ staticStyles =
   , ("flex1", S.flex1 [])
   , ("full", S.full [])
   , ("mb0", S.mb0 [])
+  , ("minW0", S.minW0 [])
+  , ("minH0", S.minH0 [])
+  , ("fontMono", S.fontMono [])
   ]
 
 -- | Parameterized functions
@@ -182,6 +185,9 @@ knownParams =
   , ParamFn "roundedS" parseSize (`S.roundedS` [])
   , ParamFn "surface" parseInt (`S.surface` [])
   , ParamFn "borderAlpha" parseColorToneAlpha (\(c, n, a) -> S.borderAlpha c n a [])
+  , ParamFn "minW" parseSize (`S.minW` [])
+  , ParamFn "minH" parseSize (`S.minH` [])
+  , ParamFn "shadow" parseInt (`S.shadow` [])
   ]
 
 staticStylesMap :: Map.Map Text [Prop]
@@ -341,14 +347,26 @@ parseColor = do
         _ <- optional (chunk "S.")
         choice
           [ S.Gray <$ chunk "Gray"
+          , S.Stone <$ chunk "Stone"
           , S.Red <$ chunk "Red"
-          , S.Blue <$ chunk "Blue"
+          , S.Pink <$ chunk "Pink"
+          , S.Purple <$ chunk "Purple"
+          , S.Violet <$ chunk "Violet"
           , S.Indigo <$ chunk "Indigo"
+          , S.Blue <$ chunk "Blue"
+          , S.Cyan <$ chunk "Cyan"
+          , S.Teal <$ chunk "Teal"
+          , S.Green <$ chunk "Green"
+          , S.Lime <$ chunk "Lime"
           , S.Yellow <$ chunk "Yellow"
+          , S.Orange <$ chunk "Orange"
+          , S.Cocoa <$ chunk "Cocoa"
           , S.Amber <$ chunk "Amber"
           , S.White <$ chunk "White"
           , S.Black <$ chunk "Black"
           , S.Transparent <$ chunk "Transparent"
+          , S.Surface <$ chunk "Surface"
+          , S.Text <$ chunk "Text"
           ]
   (char '(' *> space *> pColor <* space <* char ')') <|> pColor
 
