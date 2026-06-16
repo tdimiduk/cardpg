@@ -341,33 +341,14 @@ parseInt = L.signed space L.decimal
 parseNumber :: Parser Int
 parseNumber = L.decimal
 
+parseEnum :: (Show a, Bounded a, Enum a) => Parser a
+parseEnum = choice [val <$ chunk (T.pack $ show val) | val <- [minBound .. maxBound]]
+
 parseColor :: Parser S.Color
 parseColor = do
   let pColor = do
         _ <- optional (chunk "S.")
-        choice
-          [ S.Gray <$ chunk "Gray"
-          , S.Stone <$ chunk "Stone"
-          , S.Red <$ chunk "Red"
-          , S.Pink <$ chunk "Pink"
-          , S.Purple <$ chunk "Purple"
-          , S.Violet <$ chunk "Violet"
-          , S.Indigo <$ chunk "Indigo"
-          , S.Blue <$ chunk "Blue"
-          , S.Cyan <$ chunk "Cyan"
-          , S.Teal <$ chunk "Teal"
-          , S.Green <$ chunk "Green"
-          , S.Lime <$ chunk "Lime"
-          , S.Yellow <$ chunk "Yellow"
-          , S.Orange <$ chunk "Orange"
-          , S.Cocoa <$ chunk "Cocoa"
-          , S.Amber <$ chunk "Amber"
-          , S.White <$ chunk "White"
-          , S.Black <$ chunk "Black"
-          , S.Transparent <$ chunk "Transparent"
-          , S.Surface <$ chunk "Surface"
-          , S.Text <$ chunk "Text"
-          ]
+        parseEnum
   (char '(' *> space *> pColor <* space <* char ')') <|> pColor
 
 parseColorAndTone :: Parser (S.Color, Int)
