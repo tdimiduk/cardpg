@@ -394,6 +394,7 @@ parseSize = do
   (char '(' *> space *> pSize <* space <* char ')') <|> pSize
   where
     parseS s = s <$ string (T.pack $ show s)
+    parseCon name constructor = try $ constructor <$> (string name *> space *> parseFloat)
     pSize = do
       optionalSPrefix
       choice $
@@ -417,13 +418,13 @@ parseSize = do
           , S.S8
           , S.S9
           ]
-          <> [ try $ S.Rem <$> (string "Rem" *> space *> parseFloat)
-             , try $ S.Px <$> (string "Px" *> space *> parseFloat)
-             , try $ S.Vh <$> (string "Vh" *> space *> parseFloat)
-             , try $ S.Vw <$> (string "Vw" *> space *> parseFloat)
-             , try $ S.Percent <$> (string "Percent" *> space *> parseFloat)
-             , try $ S.Mm <$> (string "Mm" *> space *> parseFloat)
-             , try $ S.Em <$> (string "Em" *> space *> parseFloat)
+          <> [ parseCon "Rem" S.Rem
+             , parseCon "Px" S.Px
+             , parseCon "Vh" S.Vh
+             , parseCon "Vw" S.Vw
+             , parseCon "Percent" S.Percent
+             , parseCon "Mm" S.Mm
+             , parseCon "Em" S.Em
              , try $ S.Rem . (/ 4) . fromIntegral <$> parseInt
              ]
 
