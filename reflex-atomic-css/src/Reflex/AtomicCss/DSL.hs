@@ -394,16 +394,16 @@ h :: Size -> Style
 h s = css ("h-" <> sizeName s) "height" (sizeValue s)
 
 wFull :: Style
-wFull = w (Percent 100)
+wFull = css "w-full" "width" "100%"
 
 hFull :: Style
-hFull = h (Percent 100)
+hFull = css "h-full" "height" "100%"
 
 wFit :: Style
 wFit = css "w-fit" "width" "fit-content"
 
 hScreen :: Style
-hScreen = h (Vh 100)
+hScreen = css "h-screen" "height" "100vh"
 
 h2_5 :: Style
 h2_5 = h (Percent 40)
@@ -561,19 +561,19 @@ ring c n =
     ("var(--" <> colorName c <> "-" <> tshow n <> ")")
 
 bgWhite :: Style
-bgWhite = bg Gray 0
+bgWhite = css "bg-white" "background-color" "var(--gray-0)"
 
 bgTransparent :: Style
 bgTransparent = css "bg-transparent" "background-color" "transparent"
 
 textBlack :: Style
-textBlack = text Gray 12
+textBlack = css "text-black" "color" "var(--gray-12)"
 
 textWhite :: Style
-textWhite = text Gray 0
+textWhite = css "text-white" "color" "var(--gray-0)"
 
 borderBlack :: Style
-borderBlack = border Gray 12
+borderBlack = css "border-black" "border-color" "var(--gray-12)"
 
 borderTransparent :: Style
 borderTransparent = css "border-transparent" "border-color" "transparent"

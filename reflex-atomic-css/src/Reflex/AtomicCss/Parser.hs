@@ -28,6 +28,7 @@ module Reflex.AtomicCss.Parser
   , parseDecl
   ) where
 
+import Control.Monad (void)
 import Data.Char (isAlphaNum, toUpper)
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -46,20 +47,11 @@ type Parser = Parsec Void Text
 classNameToHaskell :: Text -> Text
 classNameToHaskell = \case
   -- Semantic / Custom aliases
-  "bg-gray-0" -> "bgWhite"
-  "bg-transparent" -> "bgTransparent"
-  "text-gray-12" -> "textBlack"
-  "text-gray-0" -> "textWhite"
-  "border-gray-12" -> "borderBlack"
-  "border-transparent" -> "borderTransparent"
   "truncate" -> "textTruncate"
   "h-pct-40" -> "h2_5"
   "border-0.2mm" -> "border02mm"
   "aspect-4/3" -> "aspect43"
-  "w-pct-100" -> "wFull"
-  "h-pct-100" -> "hFull"
-  "h-vh-100" -> "hScreen"
-  "border" -> "border1" -- S.border1 [] uses class name "border"
+  "border" -> "border1" -- S.border1 uses class name "border"
 
   -- Fallback to standard camelCase translation
   className ->
@@ -83,7 +75,7 @@ propsToHaskellName :: [Prop] -> Text
 propsToHaskellName props =
   let classNamesList = map (.propClassName) props
    in case classNamesList of
-        ["w-pct-100", "h-pct-100"] -> "full" -- Special compound style 'full'
+        ["w-full", "h-full"] -> "full" -- Special compound style 'full'
         [clsName] -> classNameToHaskell clsName
         _ -> error $ "Unknown or unhandled compound style: " ++ show classNamesList
 
@@ -203,44 +195,89 @@ data ParamFn = forall a. ParamFn
   , fnApply :: a -> [Prop]
   }
 
+-- | Class for providing default values to evaluate parameterized style functions.
+class Dummy a where
+  dummy :: a
+
+instance Dummy S.Size where
+  dummy = S.S0
+
+instance Dummy Int where
+  dummy = 0
+
+instance Dummy Double where
+  dummy = 0.0
+
+instance Dummy S.Color where
+  dummy = S.Gray
+
+instance (Dummy a, Dummy b) => Dummy (a, b) where
+  dummy = (dummy, dummy)
+
+-- | Derive Haskell identifier name from the class name of the style.
+deriveParamName :: Style -> Text
+deriveParamName style =
+  case getProps style of
+    (p : _) ->
+      let cls = p.propClassName
+          parts = T.splitOn "-" cls
+       in case parts of
+            ("min" : "w" : _) -> "minW"
+            ("min" : "h" : _) -> "minH"
+            (x : _) -> classNameToHaskell x
+            _ -> error $ "Could not derive param name from class: " ++ show cls
+    _ -> error "Empty style in deriveParamName"
+
+-- | Helper to build a ParamFn with derived name.
+param :: (Dummy a) => (a -> Style) -> Parser a -> ParamFn
+param f parser =
+  let name = deriveParamName (f dummy)
+   in ParamFn name parser (getProps . f)
+
+-- | Helper for 2-parameter functions.
+param2 :: (Dummy a, Dummy b) => (a -> b -> Style) -> Parser (a, b) -> ParamFn
+param2 f parser =
+  let name = deriveParamName (f dummy dummy)
+   in ParamFn name parser (\(a, b) -> getProps (f a b))
+
 knownParams :: [ParamFn]
 knownParams =
-  [ ParamFn "gap" parseSize (getProps . S.gap)
-  , ParamFn "p" parseSize (getProps . S.p)
-  , ParamFn "px" parseSize (getProps . S.px)
-  , ParamFn "py" parseSize (getProps . S.py)
-  , ParamFn "pt" parseSize (getProps . S.pt)
-  , ParamFn "pb" parseSize (getProps . S.pb)
-  , ParamFn "pl" parseSize (getProps . S.pl)
-  , ParamFn "pr" parseSize (getProps . S.pr)
-  , ParamFn "mt" parseSize (getProps . S.mt)
-  , ParamFn "mb" parseSize (getProps . S.mb)
-  , ParamFn "ml" parseSize (getProps . S.ml)
-  , ParamFn "mr" parseSize (getProps . S.mr)
-  , ParamFn "bottom" parseSize (getProps . S.bottom)
-  , ParamFn "left" parseSize (getProps . S.left)
-  , ParamFn "right" parseSize (getProps . S.right)
-  , ParamFn "top" parseSize (getProps . S.top)
+  [ param S.gap parseSize
+  , param S.p parseSize
+  , param S.px parseSize
+  , param S.py parseSize
+  , param S.pt parseSize
+  , param S.pb parseSize
+  , param S.pl parseSize
+  , param S.pr parseSize
+  , param S.mt parseSize
+  , param S.mb parseSize
+  , param S.ml parseSize
+  , param S.mr parseSize
+  , param S.bottom parseSize
+  , param S.left parseSize
+  , param S.right parseSize
+  , param S.top parseSize
   , ParamFn "fontSize" parseInt (getProps . S.fontSize)
-  , ParamFn "w" parseSize (getProps . S.w)
-  , ParamFn "h" parseSize (getProps . S.h)
-  , ParamFn "z" parseInt (getProps . S.z)
-  , ParamFn "opacity" parseFloat (getProps . S.opacity)
+  , param S.w parseSize
+  , param S.h parseSize
+  , param S.z parseInt
+  , param S.opacity parseFloat
   , ParamFn "css" parseThreeStrings (\(n, p, v) -> getProps (S.css n p v))
   , ParamFn "css'" parseNameAndDecls (\(n, ds) -> getProps (S.css' n ds))
-  , ParamFn "bg" parseColorAndTone (\(c, n) -> getProps (S.bg c n))
+  , param2 S.bg parseColorAndTone
   , ParamFn "bgAlpha" parseColorToneAlpha (\(c, n, a) -> getProps (S.bgAlpha c n a))
-  , ParamFn "text" parseColorAndTone (\(c, n) -> getProps (S.text c n))
-  , ParamFn "border" parseColorAndTone (\(c, n) -> getProps (S.border c n))
-  , ParamFn "ring" parseColorAndTone (\(c, n) -> getProps (S.ring c n))
+  , param2 S.text parseColorAndTone
+  , param2 S.border parseColorAndTone
+  , param2 S.ring parseColorAndTone
   , ParamFn "media" parseMedia snd
   , ParamFn "cls" parseStringLiteral (getProps . S.cls)
   , ParamFn "roundedS" parseSize (getProps . S.roundedS)
-  , ParamFn "surface" parseInt (getProps . S.surface)
+  , param S.surface parseInt
   , ParamFn "borderAlpha" parseColorToneAlpha (\(c, n, a) -> getProps (S.borderAlpha c n a))
-  , ParamFn "minW" parseSize (getProps . S.minW)
-  , ParamFn "minH" parseSize (getProps . S.minH)
-  , ParamFn "shadow" parseInt (getProps . S.shadow)
+  , param S.minW parseSize
+  , param S.minH parseSize
+  , param S.shadow parseInt
   ]
 
 staticStylesMap :: Map.Map Text [Prop]
@@ -248,6 +285,9 @@ staticStylesMap = Map.fromList staticStyles
 
 knownParamsMap :: Map.Map Text ParamFn
 knownParamsMap = Map.fromList [(fn.fnName, fn) | fn <- knownParams]
+
+optionalSPrefix :: Parser ()
+optionalSPrefix = void (optional (string "S."))
 
 parseIdentifier :: Parser Text
 parseIdentifier = do
@@ -279,7 +319,7 @@ parseStyleTerm = do
   choice
     [ char '(' *> space *> parseStyleExpr <* space <* char ')'
     , do
-        _ <- optional (string "S.")
+        optionalSPrefix
         ident <- parseIdentifier
         if
           | ident == "hover" -> do
@@ -327,7 +367,7 @@ parseAny = try parseStyleExpr <|> (anySingle >> return [])
 
 parseParam :: Parser [Prop]
 parseParam = do
-  _ <- optional (string "S.")
+  optionalSPrefix
   ident <- parseIdentifier
   case Map.lookup ident knownParamsMap of
     Just (ParamFn _ parser applyFn) -> do
@@ -338,7 +378,7 @@ parseParam = do
 tryParam :: ParamFn -> Parser [Prop]
 tryParam (ParamFn name p applyFn) = do
   let callParser = do
-        _ <- optional (string "S.")
+        optionalSPrefix
         _ <- string name
         notFollowedBy (satisfy (\c -> isAlphaNum c || c == '_'))
         space1
@@ -350,12 +390,12 @@ tryParam (ParamFn name p applyFn) = do
 -- | Parsers
 parseSize :: Parser S.Size
 parseSize = do
-  _ <- optional (string "S.")
+  optionalSPrefix
   (char '(' *> space *> pSize <* space <* char ')') <|> pSize
   where
     parseS s = s <$ string (T.pack $ show s)
     pSize = do
-      _ <- optional (string "S.")
+      optionalSPrefix
       choice $
         fmap
           parseS
@@ -399,13 +439,13 @@ parseEnum = choice [val <$ chunk (T.pack $ show val) | val <- [minBound .. maxBo
 parseColor :: Parser S.Color
 parseColor = do
   let pColor = do
-        _ <- optional (chunk "S.")
+        optionalSPrefix
         parseEnum
   (char '(' *> space *> pColor <* space <* char ')') <|> pColor
 
 parseColorAndTone :: Parser (S.Color, Int)
 parseColorAndTone = do
-  _ <- optional (chunk "S.")
+  optionalSPrefix
   c <- parseColor
   space1
   n <- parseNumber
@@ -413,7 +453,7 @@ parseColorAndTone = do
 
 parseColorToneAlpha :: Parser (S.Color, Int, Int)
 parseColorToneAlpha = do
-  _ <- optional (chunk "S.")
+  optionalSPrefix
   c <- parseColor
   space1
   n <- parseNumber
@@ -466,7 +506,7 @@ parseStyle = try parseParam <|> parseStatic
 
 parseStatic :: Parser [Prop]
 parseStatic = do
-  _ <- optional (string "S.")
+  optionalSPrefix
   ident <- parseIdentifier
   case Map.lookup ident staticStylesMap of
     Just props -> return props
