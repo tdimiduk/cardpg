@@ -34,7 +34,7 @@ actorDetailsWidget
   => ActorId
   -> Dynamic t ActorState
   -> m (Event t ())
-actorDetailsWidget actorId actorState = componentS "actor-details" (S.flexCol . S.gap S.S2 . S.wFull) $ do
+actorDetailsWidget actorId actorState = componentS "actor-details" (S.flexCol <> S.gap S.S2 <> S.wFull) $ do
   deckWidget actorId actorState
 
   statsWidget actorState

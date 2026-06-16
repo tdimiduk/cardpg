@@ -31,22 +31,22 @@ phaseDisplayWidget = do
   phaseDyn <- askPhase
   divS
     ( S.wFull
-        . S.p S.S4
-        . S.borderB
-        . S.border S.Gray 10
-        . S.bg S.Gray 11
+        <> S.p S.S4
+        <> S.borderB
+        <> S.border S.Gray 10
+        <> S.bg S.Gray 11
     )
     $ do
-      divS (S.flexCol . S.gap S.S2) $ do
+      divS (S.flexCol <> S.gap S.S2) $ do
         -- Phase Text
-        divS (S.flex . S.itemsCenter . S.justifyBetween . S.wFull) $ do
-          divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
+        divS (S.flex <> S.itemsCenter <> S.justifyBetween <> S.wFull) $ do
+          divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
             text "Phase:"
             dyn_ $ ffor phaseDyn $ \p -> do
               let colorStyle = case p of
                     Planning -> S.text S.Blue 5
                     Resolution -> S.text S.Red 5
-              elS "span" (S.fontBold . colorStyle) $ text (tshow p)
+              elS "span" (S.fontBold <> colorStyle) $ text (tshow p)
 
         -- Phase Controls / Status
         dyn_ $ ffor phaseDyn $ \case
@@ -65,7 +65,7 @@ planningControls
 planningControls = do
   readyCountDyn <- askReadyCount
   totalCountDyn <- askTotalCount
-  divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
+  divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
     btnClick <- button (def :: ButtonConfig t){size = SizeSmall} $ text "Start Resolution"
     -- Ready Count
     divS (S.text S.Gray 4) $ do
@@ -82,7 +82,7 @@ resolutionControls
    . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
   => m ()
 resolutionControls = do
-  divS (S.flex . S.itemsCenter . S.gap S.S2) $ do
+  divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
     btnClick <-
       button
         (def :: ButtonConfig t)

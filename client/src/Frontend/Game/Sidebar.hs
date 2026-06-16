@@ -24,43 +24,43 @@ import Frontend.UI.Button
 sidebarContainer :: Style
 sidebarContainer =
   S.shrink0
-    . S.w (S.Rem 18)
-    . S.cls "obsidian-panel"
-    . S.borderR
-    . S.border S.Gray 10
-    . S.hFull
-    . S.z 20
+    <> S.w (S.Rem 18)
+    <> S.cls "obsidian-panel"
+    <> S.borderR
+    <> S.border S.Gray 10
+    <> S.hFull
+    <> S.z 20
 
 -- | Sidebar header section
 sidebarHeader :: Style
-sidebarHeader = S.p S.S6 . S.borderB . S.border S.Gray 10
+sidebarHeader = S.p S.S6 <> S.borderB <> S.border S.Gray 10
 
 -- | Active actor header base
 activeActorHeader :: Style
 activeActorHeader =
   S.p S.S4
-    . S.borderB
-    . S.border S.Gray 10
-    . S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
-    . S.flex
-    . S.itemsCenter
+    <> S.borderB
+    <> S.border S.Gray 10
+    <> S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
+    <> S.flex
+    <> S.itemsCenter
 
 -- | Placeholder avatar styling
 avatar :: Style
 avatar =
   S.w (S.Rem 2.5)
-    . S.h (S.Rem 2.5)
-    . S.roundedFull
-    . S.border2
-    . S.border S.Gray 8
-    . S.bg S.Gray 10
-    . S.flex
-    . S.itemsCenter
-    . S.justifyCenter
-    . S.shrink0
+    <> S.h (S.Rem 2.5)
+    <> S.roundedFull
+    <> S.border2
+    <> S.border S.Gray 8
+    <> S.bg S.Gray 10
+    <> S.flex
+    <> S.itemsCenter
+    <> S.justifyCenter
+    <> S.shrink0
 
 actorListContainer' :: Style
-actorListContainer' = S.flex1 . S.overflowYAuto . S.p S.S4 . S.flexCol . S.gap S.S2
+actorListContainer' = S.flex1 <> S.overflowYAuto <> S.p S.S4 <> S.flexCol <> S.gap S.S2
 
 sidebarWidget
   :: ( DomBuilder t m
@@ -75,23 +75,23 @@ sidebarWidget
   -> m (Event t (Maybe ActorId), Event t ActorId)
 sidebarWidget selectedActorId = do
   actorsMapDyn <- askActors
-  divS (S.flexCol . sidebarContainer) $ do
+  divS (S.flexCol <> sidebarContainer) $ do
     -- Sidebar Header
     divS sidebarHeader $ do
       elS
         "h1"
         ( S.textXl
-            . S.fontBold
-            . S.cls "fantasy-font"
-            . textGoldBright
-            . S.mb S.S2
+            <> S.fontBold
+            <> S.cls "fantasy-font"
+            <> textGoldBright
+            <> S.mb S.S2
         )
         $ text "CardPG"
-      divS (S.flex . S.gap S.S2 . S.textXs . S.fontBold . S.trackingWider . S.cls "fantasy-font") $ do
+      divS (S.flex <> S.gap S.S2 <> S.textXs <> S.fontBold <> S.trackingWider <> S.cls "fantasy-font") $ do
         let linkStyle =
               S.text S.Gray 5
-                . S.hover textGoldBright
-                . S.css "transition-colors" "transition-property" "color"
+                <> S.hover textGoldBright
+                <> S.css "transition-colors" "transition-property" "color"
             linkAttrs href =
               "href" =: href
                 <> "target" =: "_blank"
@@ -106,7 +106,7 @@ sidebarWidget selectedActorId = do
     dyContent <- dyn $ ffor selectedActorId $ \case
       Nothing -> do
         -- No selection: Show List
-        divS (S.p S.S4 . S.textCenter . S.text S.Gray 5 . S.italic . S.textSm) $
+        divS (S.p S.S4 <> S.textCenter <> S.text S.Gray 5 <> S.italic <> S.textSm) $
           text "Select an actor"
 
         divS actorListContainer' $ do
@@ -116,7 +116,7 @@ sidebarWidget selectedActorId = do
               def
                 { variant = VariantSecondary
                 , fullWidth = True
-                , extraStyle = S.justifyStart . S.textLeft
+                , extraStyle = S.justifyStart <> S.textLeft
                 , attributes = testId ("select-actor-" <> actorVal.name)
                 }
               $ dyn_
@@ -135,25 +135,25 @@ sidebarWidget selectedActorId = do
             let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe initialActorState (Map.lookup aid m)
 
             -- Header (Click anywhere to deselect)
-            (minHeader, _) <- elS' "div" (S.cursorPointer . S.hover (S.bg S.Gray 10) . activeActorHeader) Map.empty $ do
+            (minHeader, _) <- elS' "div" (S.cursorPointer <> S.hover (S.bg S.Gray 10) <> activeActorHeader) Map.empty $ do
               let nameDyn = (.name) <$> actorStateDyn
               divS avatar $ dynText $ T.take 1 <$> nameDyn
 
-              divS (S.flex1 . S.overflowHidden) $ do
-                elS "div" (S.fontBold . S.text S.Gray 1 . S.textTruncate) $ dynText nameDyn
-                elS "div" (S.textXs . S.text S.Gray 5 . S.uppercase) $ text "Player"
+              divS (S.flex1 <> S.overflowHidden) $ do
+                elS "div" (S.fontBold <> S.text S.Gray 1 <> S.textTruncate) $ dynText nameDyn
+                elS "div" (S.textXs <> S.text S.Gray 5 <> S.uppercase) $ text "Player"
 
               -- Close indicator (decorative - header click handles deselection)
               divS
                 ( S.roundedFull
-                    . S.w S.S8
-                    . S.h S.S8
-                    . S.p S.S0
-                    . S.flex
-                    . S.itemsCenter
-                    . S.justifyCenter
-                    . S.text S.Gray 4
-                    . S.hover (S.text S.Gray 2)
+                    <> S.w S.S8
+                    <> S.h S.S8
+                    <> S.p S.S0
+                    <> S.flex
+                    <> S.itemsCenter
+                    <> S.justifyCenter
+                    <> S.text S.Gray 4
+                    <> S.hover (S.text S.Gray 2)
                 )
                 iconClose
 
@@ -165,7 +165,7 @@ sidebarWidget selectedActorId = do
             let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
 
             resumeEvt <-
-              divS (S.flex1 . S.overflowYAuto . S.p S.S2) $
+              divS (S.flex1 <> S.overflowYAuto <> S.p S.S2) $
                 actorDetailsWidget aid actorStateDyn
 
             return (leftmost [deselectEvent, actorLostEvent], aid <$ resumeEvt)

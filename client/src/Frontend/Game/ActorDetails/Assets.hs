@@ -27,9 +27,9 @@ equippedWidget actorState = do
   let equippedDyn = fmap getEquippedItems actorState
       goldFrameStyle =
         S.css "bg-stone-med" "background-color" "var(--color-stone-med)"
-          . S.border1
-          . S.border S.Yellow 5
-          . S.shadowSm
+          <> S.border1
+          <> S.border S.Yellow 5
+          <> S.shadowSm
   assetSectionWidget "Equipped" goldFrameStyle equippedDyn $ \itemDyn -> do
     dyn_ $ ffor itemDyn $ \(_, slot) -> do
       case slot of
@@ -63,36 +63,36 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
       else do
         divS
           ( S.flexCol
-              . S.gap S.S2
-              . S.p S.S2
-              . S.cls "obsidian-panel"
-              . S.rounded
-              . S.text S.Gray 1
-              . S.mt S.S2
+              <> S.gap S.S2
+              <> S.p S.S2
+              <> S.cls "obsidian-panel"
+              <> S.rounded
+              <> S.text S.Gray 1
+              <> S.mt S.S2
           )
           $ do
             elS
               "h2"
               ( S.textSm
-                  . S.fontBold
-                  . S.uppercase
-                  . S.cls "fantasy-font"
-                  . textGoldBright
+                  <> S.fontBold
+                  <> S.uppercase
+                  <> S.cls "fantasy-font"
+                  <> textGoldBright
               )
               $ text headerText
 
             void $ simpleList itemsDyn $ \itemDyn -> do
               divS
-                (S.flex . S.justifyBetween . S.itemsCenter . rowStyle . S.p S.S1 . S.rounded . S.mb S.S1)
+                (S.flex <> S.justifyBetween <> S.itemsCenter <> rowStyle <> S.p S.S1 <> S.rounded <> S.mb S.S1)
                 $ do
                   -- Display Name
                   let nameDyn = fmap fst itemDyn
-                  divS (S.textXs . S.px S.S1 . S.fontBold) $
+                  divS (S.textXs <> S.px S.S1 <> S.fontBold) $
                     dynText $
                       fmap (\c -> getRawText c.name) nameDyn
 
                   -- Display Detail (Slot or Type)
-                  divS (S.textXs . S.text S.Gray 4 . S.italic) $
+                  divS (S.textXs <> S.text S.Gray 4 <> S.italic) $
                     renderDetail itemDyn
 
 getEquippedItems :: ActorState -> [(TableCard, EquipSlot)]

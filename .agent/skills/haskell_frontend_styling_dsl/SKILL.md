@@ -20,7 +20,7 @@ This skill provides the definitive guide for styling and layout in the CardPG pr
 
 ## Overview
 
-The project uses a purpose-built CSS system defined entirely in Haskell. Styles are composable functions of type `Style = [Prop] -> [Prop]` that compose with `(.)` and produce atomic CSS class names at runtime.
+The project uses a purpose-built CSS system defined entirely in Haskell. Styles are represented by `newtype Style = Style [Prop]` that compose with `(<>)` and produce atomic CSS class names at runtime.
 
 CSS rules are generated at **build time** by the `gen-css` executable, which:
 
@@ -53,7 +53,7 @@ import Frontend.Style.Common (divS, elS, componentS)
 import Frontend.Style.DSL qualified as S
 
 myWidget :: (DomBuilder t m) => m ()
-myWidget = componentS "my-widget" (S.flexCol . S.bg S.Gray 1 . S.p S.S4 . S.gap S.S2) $ do
+myWidget = componentS "my-widget" (S.flexCol <> S.bg S.Gray 1 <> S.p S.S4 <> S.gap S.S2) $ do
   divS (S.text S.Gray 11) $ text "Hello!"
 ```
 
@@ -82,11 +82,11 @@ ringColor  = S.ring S.Amber 4
 
 ### Composing Styles
 
-Styles compose with regular function composition `(.)`:
+Styles compose with semigroup composition `(<>)`:
 
 ```haskell
 cardStyle :: Style
-cardStyle = S.flexCol . S.relative . S.p (S.Mm 2.5) . S.overflowHidden . S.wCard . S.hCard
+cardStyle = S.flexCol <> S.relative <> S.p (S.Mm 2.5) <> S.overflowHidden <> S.wCard <> S.hCard
 ```
 
 ### Using Modifiers
@@ -96,13 +96,13 @@ cardStyle = S.flexCol . S.relative . S.p (S.Mm 2.5) . S.overflowHidden . S.wCard
 hoverStyle = S.hover (S.bg S.Gray 9)
 
 -- Active effect
-activeStyle = S.active (S.bg S.Gray 8 . S.scale105)
+activeStyle = S.active (S.bg S.Gray 8 <> S.scale105)
 
 -- Pseudo-class
-focusStyle = S.pseudo "focus-visible" (S.ring S.Blue 5 . S.ring2)
+focusStyle = S.pseudo "focus-visible" (S.ring S.Blue 5 <> S.ring2)
 
 -- Media query
-printStyle = S.media "print" (S.text S.Black 12 . S.bg S.White 0)
+printStyle = S.media "print" (S.text S.Black 12 <> S.bg S.White 0)
 ```
 
 ### Custom One-off Styles
@@ -162,7 +162,7 @@ Then add it to the export list and to the `staticStyles` list in [Parser.hs](fil
 Use `css` directly in your widget code:
 
 ```haskell
-divS (S.css "h-custom" "height" "42px" . S.flexCol) $ text "Hello"
+divS (S.css "h-custom" "height" "42px" <> S.flexCol) $ text "Hello"
 ```
 
 The Megaparsec scanner will find this and include it in the generated CSS.

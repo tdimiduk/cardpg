@@ -32,24 +32,24 @@ deckWidget
   -> Dynamic t ActorState
   -> m ()
 deckWidget actorId actorState = do
-  divS (S.flexCol . S.gap S.S2 . S.p S.S2 . S.bg S.Gray 12 . S.rounded . S.text S.Gray 1) $ do
+  divS (S.flexCol <> S.gap S.S2 <> S.p S.S2 <> S.bg S.Gray 12 <> S.rounded <> S.text S.Gray 1) $ do
     let cs = fmap (.coreState) actorState
 
     -- Cards Row
-    (viewDeck, viewDiscard) <- divS (S.flex . S.wFull . S.gap S.S2) $ do
+    (viewDeck, viewDiscard) <- divS (S.flex <> S.wFull <> S.gap S.S2) $ do
       let deckBox =
             S.flexCol
-              . S.flex
-              . S.flex1
-              . S.relative
-              . S.border1
-              . S.border S.Gray 10
-              . S.bg S.Gray 11
-              . S.rounded
-              . S.p S.S3
-              . S.gap S.S2
-      let labelStyle = S.text S.Gray 4 . S.textXs
-      let countStyle = S.text2Xl . S.fontBold . S.textWhite
+              <> S.flex
+              <> S.flex1
+              <> S.relative
+              <> S.border1
+              <> S.border S.Gray 10
+              <> S.bg S.Gray 11
+              <> S.rounded
+              <> S.p S.S3
+              <> S.gap S.S2
+      let labelStyle = S.text S.Gray 4 <> S.textXs
+      let countStyle = S.text2Xl <> S.fontBold <> S.textWhite
 
       -- Helper for view button
       let viewButton =
@@ -58,14 +58,14 @@ deckWidget actorId actorState = do
                 { variant = VariantGhost
                 , size = SizeSmall
                 , extraStyle =
-                    S.absolute . S.top S.S1 . S.right S.S1 . S.text S.Gray 6 . S.hover (S.text S.Indigo 5)
+                    S.absolute <> S.top S.S1 <> S.right S.S1 <> S.text S.Gray 6 <> S.hover (S.text S.Indigo 5)
                 }
-              (divS (S.w S.S5 . S.h S.S5) iconDeck)
+              (divS (S.w S.S5 <> S.h S.S5) iconDeck)
 
       -- Draw Pile Box
       viewDeckClick <- divS deckBox $ do
         viewDeckClick' <- viewButton
-        divS (S.flex . S.itemsCenter . S.gap S.S2 . labelStyle) $ text "Draw Pile"
+        divS (S.flex <> S.itemsCenter <> S.gap S.S2 <> labelStyle) $ text "Draw Pile"
         elS "div" countStyle $ dynText $ fmap (tshow . length . (.deck)) cs
         drawClick <-
           button
@@ -81,7 +81,7 @@ deckWidget actorId actorState = do
       -- Discard Box
       viewDiscardClick <- divS deckBox $ do
         viewDiscardClick' <- viewButton
-        divS (S.flex . S.itemsCenter . S.gap S.S2 . labelStyle) $ text "Discard"
+        divS (S.flex <> S.itemsCenter <> S.gap S.S2 <> labelStyle) $ text "Discard"
 
         elS "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
 
@@ -117,7 +117,7 @@ reshuffleButtonRequesting actorId = do
         , extraStyle = S.gap S.S1
         }
       $ do
-        divS (S.w S.S4 . S.h S.S4) iconRefresh
+        divS (S.w S.S4 <> S.h S.S4) iconRefresh
         text "Reshuffle"
 
   void $ requestGame $ Req.Reshuffle actorId <$ reshuffleClick

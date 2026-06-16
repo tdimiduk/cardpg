@@ -50,23 +50,23 @@ import Frontend.Svg (svgEl)
 mapBoardContainer :: Style
 mapBoardContainer =
   S.relative
-    . S.flex1
-    . S.minW0
-    . S.minH0
-    . S.css "bg-board-outer" "background-color" "#0f172a" -- Slate-900
-    . S.css "overflow-auto" "overflow" "auto"
-    . S.css "cursor-crosshair" "cursor" "crosshair"
-    . S.selectNone
+    <> S.flex1
+    <> S.minW0
+    <> S.minH0
+    <> S.css "bg-board-outer" "background-color" "#0f172a" -- Slate-900
+    <> S.css "overflow-auto" "overflow" "auto"
+    <> S.css "cursor-crosshair" "cursor" "crosshair"
+    <> S.selectNone
 
 -- | Named Style for the absolute-positioned grid cells container
 gridContainer :: Style
 gridContainer =
   S.relative
-    . S.minW (S.Px 2000)
-    . S.minH (S.Px 2000)
-    . S.css "bg-board-grid" "background-color" "#1e293b" -- Slate-800
-    . S.css "bg-size-40" "background-size" "40px 40px"
-    . S.css
+    <> S.minW (S.Px 2000)
+    <> S.minH (S.Px 2000)
+    <> S.css "bg-board-grid" "background-color" "#1e293b" -- Slate-800
+    <> S.css "bg-size-40" "background-size" "40px 40px"
+    <> S.css
       "bg-img-grid"
       "background-image"
       "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)"
@@ -75,28 +75,28 @@ gridContainer =
 activeRingStyle :: Style
 activeRingStyle =
   S.absolute
-    . S.top (S.Px (-4))
-    . S.bottom (S.Px (-4))
-    . S.left (S.Px (-4))
-    . S.right (S.Px (-4))
-    . S.roundedFull
-    . S.css "border-ring-active" "border" "2px dashed #facc15" -- Yellow-400
-    . S.pointerEventsNone
-    . S.z 0
-    . S.css "animate-spin-slow" "animation" "spin 8s linear infinite"
+    <> S.top (S.Px (-4))
+    <> S.bottom (S.Px (-4))
+    <> S.left (S.Px (-4))
+    <> S.right (S.Px (-4))
+    <> S.roundedFull
+    <> S.css "border-ring-active" "border" "2px dashed #facc15" -- Yellow-400
+    <> S.pointerEventsNone
+    <> S.z 0
+    <> S.css "animate-spin-slow" "animation" "spin 8s linear infinite"
 
 -- | Defeated highlighted static ring style
 defeatedRingStyle :: Style
 defeatedRingStyle =
   S.absolute
-    . S.top (S.Px (-4))
-    . S.bottom (S.Px (-4))
-    . S.left (S.Px (-4))
-    . S.right (S.Px (-4))
-    . S.roundedFull
-    . S.css "border-ring-defeated" "border" "2px dashed #7f1d1d" -- Red-900
-    . S.pointerEventsNone
-    . S.z 0
+    <> S.top (S.Px (-4))
+    <> S.bottom (S.Px (-4))
+    <> S.left (S.Px (-4))
+    <> S.right (S.Px (-4))
+    <> S.roundedFull
+    <> S.css "border-ring-defeated" "border" "2px dashed #7f1d1d" -- Red-900
+    <> S.pointerEventsNone
+    <> S.z 0
 
 -- | Check if an actor is defeated by inspecting tableState consequences for "Taken Out"
 isActorDefeated :: ActorState -> Bool
@@ -191,28 +191,28 @@ renderTokenCircle actorDyn configDyn = do
          in if isDefeated
               then
                 S.css "bg-token-defeated" "background-color" "#0f172a"
-                  . S.css "border-token-defeated" "border-color" "#475569"
+                  <> S.css "border-token-defeated" "border-color" "#475569"
               else
                 if isSelected
                   then
                     S.css "bg-token-active" "background-color" "#1e293b"
-                      . S.css "border-token-active" "border-color" "#facc15"
-                      . S.css "shadow-token-active" "box-shadow" "0 0 15px rgba(250,204,21,0.5)"
-                      . S.scale105
+                      <> S.css "border-token-active" "border-color" "#facc15"
+                      <> S.css "shadow-token-active" "box-shadow" "0 0 15px rgba(250,204,21,0.5)"
+                      <> S.scale105
                   else
                     S.css "bg-token-default" "background-color" "#1e293b"
-                      . S.css "border-token-default" "border-color" "rgba(255,255,255,0.2)"
-                      . S.hover (S.css "border-token-hover" "border-color" "rgba(255,255,255,0.5)")
+                      <> S.css "border-token-default" "border-color" "rgba(255,255,255,0.2)"
+                      <> S.hover (S.css "border-token-hover" "border-color" "rgba(255,255,255,0.5)")
 
       circleStyleDyn = ffor bgClsDyn $ \bgCls ->
         S.wFull
-          . S.hFull
-          . S.roundedFull
-          . S.overflowHidden
-          . S.relative
-          . S.border2
-          . S.css "transition-token" "transition" "all 0.2s ease-out"
-          . bgCls
+          <> S.hFull
+          <> S.roundedFull
+          <> S.overflowHidden
+          <> S.relative
+          <> S.border2
+          <> S.css "transition-token" "transition" "all 0.2s ease-out"
+          <> bgCls
 
   elDynAttr
     "div"
@@ -229,11 +229,11 @@ renderTokenCircle actorDyn configDyn = do
 
       divS
         ( S.w (S.Percent 50)
-            . S.h (S.Percent 50)
-            . S.css "m-auto" "margin" "auto"
-            . S.mt (S.Percent 25)
-            . S.textWhite
-            . S.opacity 0.8
+            <> S.h (S.Percent 50)
+            <> S.css "m-auto" "margin" "auto"
+            <> S.mt (S.Percent 25)
+            <> S.textWhite
+            <> S.opacity 0.8
         )
         $ do
           dyn_ iconWidgetDyn
@@ -243,17 +243,17 @@ renderTokenCircle actorDyn configDyn = do
         True ->
           divS
             ( S.absolute
-                . S.inset0
-                . S.flex
-                . S.itemsCenter
-                . S.justifyCenter
-                . S.css "bg-black-overlay" "background-color" "rgba(0,0,0,0.5)"
-                . S.css "backdrop-blur-4px" "backdrop-filter" "blur(4px)"
+                <> S.inset0
+                <> S.flex
+                <> S.itemsCenter
+                <> S.justifyCenter
+                <> S.css "bg-black-overlay" "background-color" "rgba(0,0,0,0.5)"
+                <> S.css "backdrop-blur-4px" "backdrop-filter" "blur(4px)"
             )
             $ divS
               ( S.w (S.Px 20)
-                  . S.h (S.Px 20)
-                  . S.text S.Red 5
+                  <> S.h (S.Px 20)
+                  <> S.text S.Red 5
               )
               iconClose
         False -> blank
@@ -271,17 +271,17 @@ renderTokenCircle actorDyn configDyn = do
     when (showStatus && hasPlan) $
       divS
         ( S.absolute
-            . S.top (S.Px (-4))
-            . S.right (S.Px (-4))
-            . S.z 30
-            . S.bg S.Green 5
-            . S.textWhite
-            . S.roundedFull
-            . S.p (S.Px 2)
-            . S.css "border-checkmark" "border" "1px solid #0f172a"
-            . S.w (S.Px 18)
-            . S.h (S.Px 18)
-            . S.css "animate-bounce-slow" "animation" "bounce 1s infinite"
+            <> S.top (S.Px (-4))
+            <> S.right (S.Px (-4))
+            <> S.z 30
+            <> S.bg S.Green 5
+            <> S.textWhite
+            <> S.roundedFull
+            <> S.p (S.Px 2)
+            <> S.css "border-checkmark" "border" "1px solid #0f172a"
+            <> S.w (S.Px 18)
+            <> S.h (S.Px 18)
+            <> S.css "animate-bounce-slow" "animation" "bounce 1s infinite"
         )
         iconCheck
 
@@ -289,27 +289,27 @@ renderTokenCircle actorDyn configDyn = do
     when showStatus
       $ divS
         ( S.absolute
-            . S.css "bottom-neg-4" "bottom" "-4px"
-            . S.css "right-neg-4" "right" "-4px"
-            . S.z 30
-            . S.flex
-            . S.itemsCenter
-            . S.justifyCenter
-            . S.css "bg-token-badge" "background-color" "#1e293b"
-            . S.css "border-token-badge" "border" "1px solid #475569"
-            . S.roundedS (S.Px 4)
-            . S.css "shadow-token-badge" "box-shadow" "0 1px 2px rgba(0,0,0,0.5)"
-            . S.py S.S1
-            . S.px S.S2
-            . S.minW (S.Px 20)
-            . S.h (S.Px 16)
+            <> S.css "bottom-neg-4" "bottom" "-4px"
+            <> S.css "right-neg-4" "right" "-4px"
+            <> S.z 30
+            <> S.flex
+            <> S.itemsCenter
+            <> S.justifyCenter
+            <> S.css "bg-token-badge" "background-color" "#1e293b"
+            <> S.css "border-token-badge" "border" "1px solid #475569"
+            <> S.roundedS (S.Px 4)
+            <> S.css "shadow-token-badge" "box-shadow" "0 1px 2px rgba(0,0,0,0.5)"
+            <> S.py S.S1
+            <> S.px S.S2
+            <> S.minW (S.Px 20)
+            <> S.h (S.Px 16)
         )
       $ do
         divS
           ( S.w (S.Px 10)
-              . S.h (S.Px 10)
-              . S.text S.Gray 5
-              . S.mr (S.Px 2)
+              <> S.h (S.Px 10)
+              <> S.text S.Gray 5
+              <> S.mr (S.Px 2)
           )
           iconNote
         elAttr
@@ -375,7 +375,7 @@ mapBoardWidget
   -> Dynamic t (Maybe StagingState) -- Active Staging State
   -> Dynamic t (Maybe RankMoveStaging) -- Active Rank Move Staging State
   -> m (Event t (Maybe ActorId), Event t BattleRank) -- Selection and Rank Move clicks
-mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn = componentS "map-board-container" (S.flexCol . S.flex1 . S.wFull . S.relative) $ do
+mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn = componentS "map-board-container" (S.flexCol <> S.flex1 <> S.wFull <> S.relative) $ do
   actorsMapDyn <- askActors
   phaseDyn <- askPhase
   mapModeDyn <- askMapMode
@@ -418,27 +418,27 @@ renderModeToggle
 renderModeToggle mapModeDyn = do
   divS
     ( S.flexRow
-        . S.justifyBetween
-        . S.itemsCenter
-        . S.p S.S2
-        . S.css "bg-slate-900" "background-color" "#0f172a"
-        . S.css "border-b-slate-800" "border-bottom" "1px solid #1e293b"
+        <> S.justifyBetween
+        <> S.itemsCenter
+        <> S.p S.S2
+        <> S.css "bg-slate-900" "background-color" "#0f172a"
+        <> S.css "border-b-slate-800" "border-bottom" "1px solid #1e293b"
     )
     $ do
-      divS (S.text S.Gray 3 . S.fontBold . S.css "text-md" "font-size" "1rem") $ text "VTT Arena"
-      divS (S.flexRow . S.gap S.S2) $ do
+      divS (S.text S.Gray 3 <> S.fontBold <> S.css "text-md" "font-size" "1rem") $ text "VTT Arena"
+      divS (S.flexRow <> S.gap S.S2) $ do
         let btnStyle active =
               S.px S.S3
-                . S.py S.S1
-                . S.rounded
-                . S.text S.Gray (if active then 1 else 4)
-                . S.css "transition-colors" "transition" "color 0.2s, background-color 0.2s"
-                . if active
-                  then S.css "bg-blue-600" "background-color" "#2563eb" . S.text S.White 0
+                <> S.py S.S1
+                <> S.rounded
+                <> S.text S.Gray (if active then 1 else 4)
+                <> S.css "transition-colors" "transition" "color 0.2s, background-color 0.2s"
+                <> if active
+                  then S.css "bg-blue-600" "background-color" "#2563eb" <> S.text S.White 0
                   else
                     S.css "bg-slate-800" "background-color" "#1e293b"
-                      . S.hover (S.css "bg-slate-700" "background-color" "#334155")
-                      . S.cursorPointer
+                      <> S.hover (S.css "bg-slate-700" "background-color" "#334155")
+                      <> S.cursorPointer
 
         (eGridBtn, _) <-
           elDynAttr'
@@ -534,8 +534,8 @@ renderStaticRankLane laneTitle actorsDyn = do
       _ <- listWithKey actorsDyn $ \_ actorDyn -> do
         let tokenWrapperStyle =
               S.relative
-                . S.w (S.Px 48)
-                . S.h (S.Px 48)
+                <> S.w (S.Px 48)
+                <> S.h (S.Px 48)
         divS tokenWrapperStyle $ do
           let tokenConfigDyn = constDyn (TokenCircleConfig False False 0)
           renderTokenCircle actorDyn tokenConfigDyn
@@ -546,52 +546,52 @@ renderStaticRankLane laneTitle actorsDyn = do
 rankArenaContainer :: Style
 rankArenaContainer =
   S.flexCol
-    . S.hFull
-    . S.wFull
-    . S.css "bg-slate-900" "background-color" "#0f172a"
-    . S.p S.S4
-    . S.gap S.S4
+    <> S.hFull
+    <> S.wFull
+    <> S.css "bg-slate-900" "background-color" "#0f172a"
+    <> S.p S.S4
+    <> S.gap S.S4
 
 -- | Lane row layout
 laneRowStyle :: Style
 laneRowStyle =
   S.flexRow
-    . S.itemsCenter
-    . S.gap S.S4
-    . S.p S.S4
-    . S.rounded
-    . S.css "bg-slate-800-40" "background-color" "rgba(30, 41, 59, 0.4)"
-    . S.css "border-slate-800" "border" "1px solid #1e293b"
-    . S.css "min-h-100px" "min-height" "100px"
-    . S.relative
+    <> S.itemsCenter
+    <> S.gap S.S4
+    <> S.p S.S4
+    <> S.rounded
+    <> S.css "bg-slate-800-40" "background-color" "rgba(30, 41, 59, 0.4)"
+    <> S.css "border-slate-800" "border" "1px solid #1e293b"
+    <> S.css "min-h-100px" "min-height" "100px"
+    <> S.relative
 
 -- | Divider style between sides
 dividerStyle :: Style
 dividerStyle =
   S.wFull
-    . S.css "h-2px" "height" "2px"
-    . S.css "bg-slate-700-50" "background-color" "rgba(51, 65, 85, 0.5)"
-    . S.mt S.S2
-    . S.mb S.S2
+    <> S.css "h-2px" "height" "2px"
+    <> S.css "bg-slate-700-50" "background-color" "rgba(51, 65, 85, 0.5)"
+    <> S.mt S.S2
+    <> S.mb S.S2
 
 -- | Lane title layout
 laneTitleStyle :: Style
 laneTitleStyle =
   S.text S.Gray 4
-    . S.fontBold
-    . S.w (S.Px 120)
-    . S.selectNone
-    . S.uppercase
-    . S.trackingWider
-    . S.textSm
+    <> S.fontBold
+    <> S.w (S.Px 120)
+    <> S.selectNone
+    <> S.uppercase
+    <> S.trackingWider
+    <> S.textSm
 
 -- | Tokens container inside rank lane
 tokensContainerStyle :: Style
 tokensContainerStyle =
   S.flexRow
-    . S.itemsCenter
-    . S.gap S.S4
-    . S.flex1
+    <> S.itemsCenter
+    <> S.gap S.S4
+    <> S.flex1
 
 -- | Represents a click event on the rank board.
 data RankBoardClick
@@ -790,10 +790,10 @@ renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn ac
 
             let tokenWrapperStyle =
                   S.relative
-                    . S.w (S.Px 48)
-                    . S.h (S.Px 48)
-                    . S.cursorPointer
-                    . S.css "token-circle-wrapper" "token-circle-wrapper" ""
+                    <> S.w (S.Px 48)
+                    <> S.h (S.Px 48)
+                    <> S.cursorPointer
+                    <> S.css "token-circle-wrapper" "token-circle-wrapper" ""
 
             let wrapperAttrsDyn = ffor actorDyn $ \actor ->
                   let nameClean = actor.name
@@ -814,12 +814,12 @@ renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn ac
           ghostSelEvts <- listWithKey ghostActorsDyn $ \actorId actorDyn -> do
             let tokenWrapperStyle =
                   S.relative
-                    . S.w (S.Px 48)
-                    . S.h (S.Px 48)
-                    . S.cursorPointer
-                    . S.css "token-circle-wrapper" "token-circle-wrapper" ""
-                    . S.opacity 0.5
-                    . S.css "grayscale" "filter" "grayscale(100%)"
+                    <> S.w (S.Px 48)
+                    <> S.h (S.Px 48)
+                    <> S.cursorPointer
+                    <> S.css "token-circle-wrapper" "token-circle-wrapper" ""
+                    <> S.opacity 0.5
+                    <> S.css "grayscale" "filter" "grayscale(100%)"
 
             let wrapperAttrsDyn = ffor actorDyn $ \actor ->
                   "class" =: classNames tokenWrapperStyle

@@ -28,28 +28,28 @@ import Frontend.UI.Button
 plannedBadge :: Style
 plannedBadge =
   S.absolute
-    . S.top (S.Rem (-0.75))
-    . S.left (S.Percent 50)
-    . S.css "-translate-x-1/2" "transform" "translateX(-50%)"
-    . S.bg S.Indigo 8
-    . S.textWhite
-    . S.fontSize 10
-    . S.uppercase
-    . S.fontBold
-    . S.px S.S2
-    . S.py S.S0_5
-    . S.rounded
-    . S.shadowXl
-    . S.z 50
+    <> S.top (S.Rem (-0.75))
+    <> S.left (S.Percent 50)
+    <> S.css "-translate-x-1/2" "transform" "translateX(-50%)"
+    <> S.bg S.Indigo 8
+    <> S.textWhite
+    <> S.fontSize 10
+    <> S.uppercase
+    <> S.fontBold
+    <> S.px S.S2
+    <> S.py S.S0_5
+    <> S.rounded
+    <> S.shadowXl
+    <> S.z 50
 
 -- | Action card hover/layout styling
 actionCardHover :: Style
 actionCardHover =
-  S.z 20 . S.shadow2Xl . S.transitionTransform
+  S.z 20 <> S.shadow2Xl <> S.transitionTransform
 
 -- | Card hover for narrative stacks
 narrativeCardHover :: Style
-narrativeCardHover = S.relative . S.z 10 . S.transitionTransform
+narrativeCardHover = S.relative <> S.z 10 <> S.transitionTransform
 
 plannedActionWidget
   :: ( DomBuilder t m
@@ -79,7 +79,7 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
           ( \a -> do
               (eAct, _) <- elS'
                 "div"
-                ((S.relative . cardHandWidth . S.shrink0) . actionCardHover)
+                ((S.relative <> cardHandWidth <> S.shrink0) <> actionCardHover)
                 (testId "planned-action-card")
                 $ do
                   renderCoreCard a.content
@@ -90,8 +90,8 @@ plannedActionWidget (Identified actorId planned) = colWith colStyle $ do
           action
     PNarrative (NarrativeStack cards _color) -> do
       rowGap (S.ml (S.Rem (-2))) $
-        mapM_ (divS (narrativeCardHover . cardHandWidth) . renderCoreCard . (.content)) cards
+        mapM_ (divS (narrativeCardHover <> cardHandWidth) . renderCoreCard . (.content)) cards
     PPass -> do
-      divS (S.text S.Gray 4 . S.italic . S.textSm) $ text "No action planned"
+      divS (S.text S.Gray 4 <> S.italic <> S.textSm) $ text "No action planned"
   where
-    colStyle = S.gap S.S4 . S.itemsCenter . S.pointerEventsAuto
+    colStyle = S.gap S.S4 <> S.itemsCenter <> S.pointerEventsAuto

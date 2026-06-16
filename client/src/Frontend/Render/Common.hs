@@ -28,9 +28,9 @@ instance Default IconMode where
 renderResourceType
   :: (DomBuilder t m) => IconMode -> ResourceType -> Maybe Text -> m ()
 renderResourceType mode r t = case r of
-  Red -> renderSquare (color . style) t
-  Yellow -> renderCircle (color . style) t
-  Blue -> renderDiamond (color . style) t
+  Red -> renderSquare (color <> style) t
+  Yellow -> renderCircle (color <> style) t
+  Blue -> renderDiamond (color <> style) t
   where
     color :: Style
     color = case r of

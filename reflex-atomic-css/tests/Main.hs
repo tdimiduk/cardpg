@@ -4,7 +4,7 @@ module Main where
 
 import Data.Text (Text)
 import Data.Text qualified as T
-import Reflex.AtomicCss.Core (Prop)
+import Reflex.AtomicCss.Core (Prop, getProps)
 import Reflex.AtomicCss.DSL qualified as S
 import Reflex.AtomicCss.Parser
 import Test.QuickCheck
@@ -187,7 +187,7 @@ prop_staticStyle = forAll (elements staticStyles) $ \(name, expected) ->
 prop_sizeParamHelper :: Text -> (S.Size -> S.Style) -> S.Size -> Property
 prop_sizeParamHelper name applyFn sz = forAll genCall $ \callExpr ->
   let parsed = scanContent callExpr
-      expected = applyFn sz []
+      expected = getProps (applyFn sz)
    in counterexample
         ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
         $ parsed === expected
@@ -207,7 +207,7 @@ prop_fontSize :: Property
 prop_fontSize = forAll (choose (-100, 1000)) $ \val ->
   forAll (genCall val) $ \callExpr ->
     let parsed = scanContent callExpr
-        expected = S.fontSize val []
+        expected = getProps (S.fontSize val)
      in counterexample
           ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
           $ parsed === expected
@@ -221,7 +221,7 @@ prop_opacity :: Property
 prop_opacity = forAll (choose (0.0 :: Double, 1.0 :: Double)) $ \val ->
   forAll (genCall val) $ \callExpr ->
     let parsed = scanContent callExpr
-        expected = S.opacity val []
+        expected = getProps (S.opacity val)
      in counterexample
           ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
           $ parsed === expected
@@ -237,7 +237,7 @@ prop_bg = forAll genColor $ \c ->
   forAll (choose (0, 100)) $ \tone ->
     forAll (genCall c tone) $ \callExpr ->
       let parsed = scanContent callExpr
-          expected = S.bg c tone []
+          expected = getProps (S.bg c tone)
        in counterexample
             ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
             $ parsed === expected
@@ -254,7 +254,7 @@ prop_bgAlpha = forAll genColor $ \c ->
     forAll (choose (0, 100)) $ \alpha ->
       forAll (genCall c tone alpha) $ \callExpr ->
         let parsed = scanContent callExpr
-            expected = S.bgAlpha c tone alpha []
+            expected = getProps (S.bgAlpha c tone alpha)
          in counterexample
               ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
               $ parsed === expected
@@ -277,7 +277,7 @@ prop_css = forAll genSafeString $ \n ->
     forAll genSafeString $ \v ->
       forAll (genCall n p v) $ \callExpr ->
         let parsed = scanContent callExpr
-            expected = S.css n p v []
+            expected = getProps (S.css n p v)
          in counterexample
               ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
               $ parsed === expected
@@ -294,7 +294,7 @@ prop_cssPrime = forAll genSafeString $ \n ->
   forAll (listOf1 ((,) <$> genSafeString <*> genSafeString)) $ \decls ->
     forAll (genCall n decls) $ \callExpr ->
       let parsed = scanContent callExpr
-          expected = S.css' n decls []
+          expected = getProps (S.css' n decls)
        in counterexample
             ("Expr: " <> T.unpack callExpr <> "\nExpected: " <> show expected <> "\nParsed: " <> show parsed)
             $ parsed === expected
@@ -325,7 +325,7 @@ prop_media = forAll genSafeString $ \q ->
             sz <- arbitrary
             szStr <- sizeToHaskell sz
             prefix <- elements ["", "S."]
-            return (prefix <> "gap " <> szStr, S.gap sz [])
+            return (prefix <> "gap " <> szStr, getProps (S.gap sz))
         ]
     genCall q subStr = do
       fnPrefix <- elements ["", "S."]
@@ -354,7 +354,7 @@ prop_mixedContent = forAll (listOf genItem) $ \items ->
             szStr <- sizeToHaskell sz
             prefix <- elements ["", "S."]
             expr <- wrapNoise (prefix <> "gap " <> szStr)
-            return (expr, S.gap sz [])
+            return (expr, getProps (S.gap sz))
         , do
             word <-
               elements
@@ -408,11 +408,11 @@ genStyleExprWithDepth depth
       sz <- arbitrary
       szStr <- sizeToHaskell sz
       prefix <- elements ["", "S."]
-      return (prefix <> "gap " <> szStr, S.gap sz [])
+      return (prefix <> "gap " <> szStr, getProps (S.gap sz))
     genCompose d = do
       (expr1, props1) <- genStyleExprWithDepth (d - 1)
       (expr2, props2) <- genStyleExprWithDepth (d - 1)
-      let combined = expr1 <> " . " <> expr2
+      let combined = expr1 <> " <> " <> expr2
       return (combined, props1 ++ props2)
     genModifier d = do
       (expr, props) <- genStyleExprWithDepth (d - 1)

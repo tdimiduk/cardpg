@@ -3,11 +3,11 @@
 -- | CSS utility DSL.
 --
 -- This module provides CSS utilities as composable style functions.
--- Compose with (.) and apply to [] or use with divS/elS helpers.
+-- Compose with (<>) or use with divS/elS helpers.
 --
 -- @
 -- myStyle :: Style
--- myStyle = transitionTransform . duration200 . hover translateYNeg8
+-- myStyle = transitionTransform <> duration200 <> hover translateYNeg8
 -- @
 module Reflex.AtomicCss.DSL
   ( -- * Re-exports from Core
@@ -781,7 +781,7 @@ flex1 :: Style
 flex1 = css "flex-1" "flex" "1 1 0%"
 
 full :: Style
-full = wFull . hFull
+full = wFull <> hFull
 
 --------------------------------------------------------------------------------
 -- Parameterized Styles (Deprecated - use Size ADT)

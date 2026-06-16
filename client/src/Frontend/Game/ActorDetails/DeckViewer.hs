@@ -61,43 +61,43 @@ renderModal
 renderModal deckView = do
   -- Overlay background
   -- Non-modal Overlay (Positioned to reveal hand and sidebar)
-  let fixedPos = S.fixed . S.z 30 . S.top S.S6 . S.bottom (S.Rem 24) . S.left (S.Rem 20) . S.right S.S6
+  let fixedPos = S.fixed <> S.z 30 <> S.top S.S6 <> S.bottom (S.Rem 24) <> S.left (S.Rem 20) <> S.right S.S6
 
   divS fixedPos $ do
     -- Container
     divS
       ( S.bg S.Gray 11
-          . S.border1
-          . S.border S.Gray 9
-          . S.roundedXl
-          . S.shadow2Xl
-          . S.wFull
-          . S.hFull
-          . S.flexCol
-          . S.overflowHidden
+          <> S.border1
+          <> S.border S.Gray 9
+          <> S.roundedXl
+          <> S.shadow2Xl
+          <> S.wFull
+          <> S.hFull
+          <> S.flexCol
+          <> S.overflowHidden
       )
       $ do
         -- Header
         closeClick <- divS
           ( S.p S.S4
-              . S.borderB
-              . S.border S.Gray 9
-              . S.flex
-              . S.justifyBetween
-              . S.itemsCenter
-              . S.bg S.Gray 12
+              <> S.borderB
+              <> S.border S.Gray 9
+              <> S.flex
+              <> S.justifyBetween
+              <> S.itemsCenter
+              <> S.bg S.Gray 12
           )
           $ do
-            elS "h2" (S.textXl . S.fontBold . S.text S.Gray 1 . S.flex . S.itemsCenter . S.gap S.S2) $ do
+            elS "h2" (S.textXl <> S.fontBold <> S.text S.Gray 1 <> S.flex <> S.itemsCenter <> S.gap S.S2) $ do
               -- Using text for the icon for now as per plan, or maybe I should use an icon.
               -- Plan said "Title bar with 'Deck Viewer (N cards)'".
               text $ deckView.title <> " (" <> tshow (length deckView.cards) <> " cards)"
 
             button def{variant = VariantGhost, size = SizeSmall} $
-              divS (S.w S.S8 . S.h S.S8) iconClose
+              divS (S.w S.S8 <> S.h S.S8) iconClose
 
         let settings = CardSettings CardFull
-        divS (cardGrid . S.flex1 . S.overflowYAuto . minH0 . S.wFull) $
+        divS (cardGrid <> S.flex1 <> S.overflowYAuto <> minH0 <> S.wFull) $
           mapM_ (divS Style.standardCardSize . renderCoreCardWith settings) deckView.cards
 
         return closeClick

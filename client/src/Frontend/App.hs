@@ -49,11 +49,11 @@ import Frontend.Style.Common (Style, componentS, divS, elS)
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
-appRoot = S.flexRow . S.hScreen . S.bgTransparent . S.text1 . S.overflowHidden
+appRoot = S.flexRow <> S.hScreen <> S.bgTransparent <> S.text1 <> S.overflowHidden
 
 -- | Main content area (right of sidebar)
 mainContent :: Style
-mainContent = S.flexCol . S.flex1 . S.relative . S.bgTransparent . S.css "min-w-0" "min-width" "0"
+mainContent = S.flexCol <> S.flex1 <> S.relative <> S.bgTransparent <> S.css "min-w-0" "min-width" "0"
 
 appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
@@ -134,28 +134,28 @@ uiWidget
   -> Maybe ActorId
   -- ^ Initial active actor
   -> m ()
-uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol . S.hScreen . S.overflowHidden) $ do
+uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol <> S.hScreen <> S.overflowHidden) $ do
   -- Developer Header Bar with toggle button
   editorActiveDyn <- divS
     ( S.flexRow
-        . S.wFull
-        . S.bg S.Gray 10
-        . S.borderB
-        . S.border S.Gray 9
-        . S.p S.S2
-        . S.itemsCenter
-        . S.justifyBetween
-        . S.shrink0
+        <> S.wFull
+        <> S.bg S.Gray 10
+        <> S.borderB
+        <> S.border S.Gray 9
+        <> S.p S.S2
+        <> S.itemsCenter
+        <> S.justifyBetween
+        <> S.shrink0
     )
     $ do
-      elS "span" (S.textXs . S.fontBold . S.text S.Gray 4 . S.trackingWider . S.uppercase) $
+      elS "span" (S.textXs <> S.fontBold <> S.text S.Gray 4 <> S.trackingWider <> S.uppercase) $
         text "CardPG Game Console"
 
       rec toggleClick <- button
             def
               { variant = VariantGhost
               , size = SizeSmall
-              , extraStyle = S.text S.Yellow 5 . S.hover (S.text S.Yellow 4) . S.cls "fantasy-font"
+              , extraStyle = S.text S.Yellow 5 <> S.hover (S.text S.Yellow 4) <> S.cls "fantasy-font"
               }
             $ dynText
             $ ffor activeDyn

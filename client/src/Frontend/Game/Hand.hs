@@ -45,20 +45,20 @@ import Frontend.Util (buildStableKeyMap)
 cardHoverStyle :: Style
 cardHoverStyle =
   S.transitionTransform
-    . S.duration200
-    . S.easeOut
-    . S.originBottom
-    . S.hover S.translateYNeg8
-    . S.hover (S.z 40)
-    . S.cursorPointer
+    <> S.duration200
+    <> S.easeOut
+    <> S.originBottom
+    <> S.hover S.translateYNeg8
+    <> S.hover (S.z 40)
+    <> S.cursorPointer
 
 -- | Styles for cards in staging mode (resource candidates)
 resourceCandidateStyle :: Style
 resourceCandidateStyle =
   S.hover S.translateYNeg4
-    . S.hover S.ring2
-    . S.hover (S.ring S.Amber 5)
-    . S.cursorPointer
+    <> S.hover S.ring2
+    <> S.hover (S.ring S.Amber 5)
+    <> S.cursorPointer
 
 handWidget
   :: ( DomBuilder t m
@@ -110,23 +110,23 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
       (selectEvt, toggleEvt, discardEvt, cancelRankMoveEvt, commitRankMoveEvt, clearEvt) <-
         divS
           ( S.absolute
-              . S.bottom0
-              . S.left0
-              . S.right0
-              . S.pointerEventsNone
-              . S.z 40
-              . S.flex
-              . S.justifyBetween
-              . S.itemsEnd
-              . S.wFull
-              . S.px S.S8
-              . S.pb S.S4
+              <> S.bottom0
+              <> S.left0
+              <> S.right0
+              <> S.pointerEventsNone
+              <> S.z 40
+              <> S.flex
+              <> S.justifyBetween
+              <> S.itemsEnd
+              <> S.wFull
+              <> S.px S.S8
+              <> S.pb S.S4
           )
           $ do
             -- Layer 1: Main Layout (Flex Row) merged into parent
             (sel, tog, disc, overlayEvts, rankMoveOverlayEvts) <- do
               -- Left: Planned Action or No Action Button
-              noActionClickDyn <- divS (S.flex1 . S.flex . S.justifyCenter) $ do
+              noActionClickDyn <- divS (S.flex1 <> S.flex <> S.justifyCenter) $ do
                 dyn $ ffor ((,,,) <$> actorId <*> plannedActionDyn <*> stagingState <*> phaseDyn) $ \case
                   (_, Nothing, Nothing, Planning) -> do
                     button
@@ -136,9 +136,9 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
                         , testId = Just "plan-no-action"
                         , extraStyle = S.pointerEventsAuto
                         }
-                      $ divS (S.flex . S.itemsCenter . S.gap S.S2)
+                      $ divS (S.flex <> S.itemsCenter <> S.gap S.S2)
                       $ do
-                        divS (S.w S.S4 . S.h S.S4) iconSkipForward
+                        divS (S.w S.S4 <> S.h S.S4) iconSkipForward
                         text "No Action"
                   (aid, Just plan, _, _) -> do
                     plannedActionWidget (Identified aid plan)
@@ -154,7 +154,7 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
               _ <- requestGame passReq
 
               -- Center: Hand & Staging Container
-              (s, t, d, oEvts, rmsOverlay) <- divS (S.relative . S.flexCol . S.itemsCenter . S.pointerEventsNone . S.gap S.S4) $ do
+              (s, t, d, oEvts, rmsOverlay) <- divS (S.relative <> S.flexCol <> S.itemsCenter <> S.pointerEventsNone <> S.gap S.S4) $ do
                 -- Layer 2: Action Staging Overlay
                 o <- dyn $ ffor (zipDyn actorId stagingStackDyn) $ \case
                   (aid, Just stk) -> stagingWidget aid (constDyn stk) validation
@@ -209,22 +209,22 @@ rankMoveStagingWidget actorId rmsDyn actorDyn = do
     FS.altarStagingPanel
     $ do
       -- Header / Status
-      divS (S.flexCol . S.itemsCenter . S.gap S.S1) $ do
+      divS (S.flexCol <> S.itemsCenter <> S.gap S.S1) $ do
         divS
           ( S.cls "fantasy-font"
-              . S.textSm
-              . S.fontBold
-              . textGoldBright
-              . S.uppercase
-              . S.trackingWider
+              <> S.textSm
+              <> S.fontBold
+              <> textGoldBright
+              <> S.uppercase
+              <> S.trackingWider
           )
           $ text "Plan Rank Move"
-        divS (S.text S.Gray 3 . S.textXs) $ do
+        divS (S.text S.Gray 3 <> S.textXs) $ do
           dyn_ $ ffor rmsDyn $ \rms ->
             text $ "Moving to " <> T.pack (show rms.targetRank)
 
       -- Selected Card to Discard
-      divS (S.flex . S.justifyCenter . S.itemsCenter . S.mt S.S2 . S.mb S.S2) $ do
+      divS (S.flex <> S.justifyCenter <> S.itemsCenter <> S.mt S.S2 <> S.mb S.S2) $ do
         let selectedCardDyn = ffor2 rmsDyn actorDyn $ \rms actor ->
               rms.selectedDiscardId >>= \cid -> find (\c -> c.id == cid) actor.coreState.hand
 
@@ -232,38 +232,38 @@ rankMoveStagingWidget actorId rmsDyn actorDyn = do
           Nothing ->
             divS
               ( S.border1
-                  . S.border S.Gray 7
-                  . S.css "border-dashed" "border-style" "dashed"
-                  . S.rounded
-                  . S.p S.S4
-                  . S.w (S.Vh 9.6)
-                  . S.h (S.Vh 13.4)
-                  . S.flex
-                  . S.itemsCenter
-                  . S.justifyCenter
-                  . S.text S.Gray 4
-                  . S.textCenter
-                  . S.textXs
+                  <> S.border S.Gray 7
+                  <> S.css "border-dashed" "border-style" "dashed"
+                  <> S.rounded
+                  <> S.p S.S4
+                  <> S.w (S.Vh 9.6)
+                  <> S.h (S.Vh 13.4)
+                  <> S.flex
+                  <> S.itemsCenter
+                  <> S.justifyCenter
+                  <> S.text S.Gray 4
+                  <> S.textCenter
+                  <> S.textXs
               )
               $ text "Select a card from hand to discard"
           Just card -> do
             divS
               ( S.relative
-                  . S.w (S.Vh 9.6)
-                  . S.h (S.Vh 13.4)
-                  . FS.ringDiscard
-                  . S.rounded
-                  . S.overflowHidden
+                  <> S.w (S.Vh 9.6)
+                  <> S.h (S.Vh 13.4)
+                  <> FS.ringDiscard
+                  <> S.rounded
+                  <> S.overflowHidden
               )
               $ divS
                 ( S.absolute
-                    . S.css "origin-top-left" "transform-origin" "top left"
-                    . S.css "scale-card" "transform" "scale(0.6)"
+                    <> S.css "origin-top-left" "transform-origin" "top left"
+                    <> S.css "scale-card" "transform" "scale(0.6)"
                 )
               $ renderCoreCardWith (CardSettings CardFull) card.content
 
       -- Controls
-      divS (S.flex . S.gap S.S2 . S.wFull) $ do
+      divS (S.flex <> S.gap S.S2 <> S.wFull) $ do
         let cfg = def{extraStyle = S.flex1, size = SizeSmall}
         cancelEvt <-
           button cfg{variant = VariantSecondary, testId = Just "rank-staging-cancel"} $ text "Cancel"
@@ -300,7 +300,7 @@ handCardsWidget
   -- ^ Stable sequence mappings for cards
   -> m (Event t CardInstanceId, Event t CardInstanceId, Event t CardInstanceId)
 handCardsWidget actor stagingStack rankMoveStaging plannedAction keyMapDyn = do
-  divS (S.flex . S.justifyCenter . S.itemsEnd . S.px S.S4 . S.pointerEventsAuto) $ do
+  divS (S.flex <> S.justifyCenter <> S.itemsEnd <> S.px S.S4 <> S.pointerEventsAuto) $ do
     let visibleHand =
           (\a stk plan -> filter (isCardVisible stk plan) a.coreState.hand)
             <$> actor
@@ -318,7 +318,7 @@ handCardsWidget actor stagingStack rankMoveStaging plannedAction keyMapDyn = do
             <$> visibleHand
             <*> keyMapDyn
 
-    cardClicksDyn <- divS (S.flex . S.itemsEnd . S.transitionOpacity . S.duration200) $ do
+    cardClicksDyn <- divS (S.flex <> S.itemsEnd <> S.transitionOpacity <> S.duration200) $ do
       listWithKey keyedHandMapDyn $ \_key cardDyn -> do
         let isCandidate = checkResourceCandidate <$> stagingStack <*> cardDyn
             isSelected = checkIsSelected <$> stagingStack <*> cardDyn
@@ -343,11 +343,12 @@ handCardsWidget actor stagingStack rankMoveStaging plannedAction keyMapDyn = do
 
                     -- Interaction highlights
                     extraStyle
-                      | inStaging = if sel then S.cls "staged-gold-ring" else id
-                      | inRankStaging = if discSel then FS.ringDiscard else id
-                      | otherwise = id
+                      | inStaging = if sel then S.cls "staged-gold-ring" else mempty
+                      | inRankStaging = if discSel then FS.ringDiscard else mempty
+                      | otherwise = mempty
                    in
-                    classNames $ S.relative . cardHandWidth . extraStyle . baseStyle . S.pointerEventsAuto . S.group
+                    classNames $
+                      S.relative <> cardHandWidth <> extraStyle <> baseStyle <> S.pointerEventsAuto <> S.group
 
         (e, _) <- elDynAttr' "div" (fmap ("class" =:) finalClassDyn) $ do
           dyn_ $ ffor cardDyn $ renderCoreCardWith (CardSettings CardFull) . (.content)

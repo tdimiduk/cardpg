@@ -37,7 +37,7 @@ import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer qualified as L
 
 import Data.Map.Strict qualified as Map
-import Reflex.AtomicCss.Core (Prop (..), Style)
+import Reflex.AtomicCss.Core (Prop (..), Style (..), getProps)
 import Reflex.AtomicCss.DSL qualified as S
 
 type Parser = Parsec Void Text
@@ -90,7 +90,7 @@ propsToHaskellName props =
 -- | Helper to build a static style tuple from its DSL value
 mkStatic :: Style -> (Text, [Prop])
 mkStatic style =
-  let props = style []
+  let props = getProps style
    in (propsToHaskellName props, props)
 
 -- | Static styles that don't take parameters
@@ -205,42 +205,42 @@ data ParamFn = forall a. ParamFn
 
 knownParams :: [ParamFn]
 knownParams =
-  [ ParamFn "gap" parseSize (`S.gap` [])
-  , ParamFn "p" parseSize (`S.p` [])
-  , ParamFn "px" parseSize (`S.px` [])
-  , ParamFn "py" parseSize (`S.py` [])
-  , ParamFn "pt" parseSize (`S.pt` [])
-  , ParamFn "pb" parseSize (`S.pb` [])
-  , ParamFn "pl" parseSize (`S.pl` [])
-  , ParamFn "pr" parseSize (`S.pr` [])
-  , ParamFn "mt" parseSize (`S.mt` [])
-  , ParamFn "mb" parseSize (`S.mb` [])
-  , ParamFn "ml" parseSize (`S.ml` [])
-  , ParamFn "mr" parseSize (`S.mr` [])
-  , ParamFn "bottom" parseSize (`S.bottom` [])
-  , ParamFn "left" parseSize (`S.left` [])
-  , ParamFn "right" parseSize (`S.right` [])
-  , ParamFn "top" parseSize (`S.top` [])
-  , ParamFn "fontSize" parseInt (`S.fontSize` [])
-  , ParamFn "w" parseSize (`S.w` [])
-  , ParamFn "h" parseSize (`S.h` [])
-  , ParamFn "z" parseInt (`S.z` [])
-  , ParamFn "opacity" parseFloat (`S.opacity` [])
-  , ParamFn "css" parseThreeStrings (\(n, p, v) -> S.css n p v [])
-  , ParamFn "css'" parseNameAndDecls (\(n, ds) -> S.css' n ds [])
-  , ParamFn "bg" parseColorAndTone (\(c, n) -> S.bg c n [])
-  , ParamFn "bgAlpha" parseColorToneAlpha (\(c, n, a) -> S.bgAlpha c n a [])
-  , ParamFn "text" parseColorAndTone (\(c, n) -> S.text c n [])
-  , ParamFn "border" parseColorAndTone (\(c, n) -> S.border c n [])
-  , ParamFn "ring" parseColorAndTone (\(c, n) -> S.ring c n [])
+  [ ParamFn "gap" parseSize (getProps . S.gap)
+  , ParamFn "p" parseSize (getProps . S.p)
+  , ParamFn "px" parseSize (getProps . S.px)
+  , ParamFn "py" parseSize (getProps . S.py)
+  , ParamFn "pt" parseSize (getProps . S.pt)
+  , ParamFn "pb" parseSize (getProps . S.pb)
+  , ParamFn "pl" parseSize (getProps . S.pl)
+  , ParamFn "pr" parseSize (getProps . S.pr)
+  , ParamFn "mt" parseSize (getProps . S.mt)
+  , ParamFn "mb" parseSize (getProps . S.mb)
+  , ParamFn "ml" parseSize (getProps . S.ml)
+  , ParamFn "mr" parseSize (getProps . S.mr)
+  , ParamFn "bottom" parseSize (getProps . S.bottom)
+  , ParamFn "left" parseSize (getProps . S.left)
+  , ParamFn "right" parseSize (getProps . S.right)
+  , ParamFn "top" parseSize (getProps . S.top)
+  , ParamFn "fontSize" parseInt (getProps . S.fontSize)
+  , ParamFn "w" parseSize (getProps . S.w)
+  , ParamFn "h" parseSize (getProps . S.h)
+  , ParamFn "z" parseInt (getProps . S.z)
+  , ParamFn "opacity" parseFloat (getProps . S.opacity)
+  , ParamFn "css" parseThreeStrings (\(n, p, v) -> getProps (S.css n p v))
+  , ParamFn "css'" parseNameAndDecls (\(n, ds) -> getProps (S.css' n ds))
+  , ParamFn "bg" parseColorAndTone (\(c, n) -> getProps (S.bg c n))
+  , ParamFn "bgAlpha" parseColorToneAlpha (\(c, n, a) -> getProps (S.bgAlpha c n a))
+  , ParamFn "text" parseColorAndTone (\(c, n) -> getProps (S.text c n))
+  , ParamFn "border" parseColorAndTone (\(c, n) -> getProps (S.border c n))
+  , ParamFn "ring" parseColorAndTone (\(c, n) -> getProps (S.ring c n))
   , ParamFn "media" parseMedia snd
-  , ParamFn "cls" parseStringLiteral (`S.cls` [])
-  , ParamFn "roundedS" parseSize (`S.roundedS` [])
-  , ParamFn "surface" parseInt (`S.surface` [])
-  , ParamFn "borderAlpha" parseColorToneAlpha (\(c, n, a) -> S.borderAlpha c n a [])
-  , ParamFn "minW" parseSize (`S.minW` [])
-  , ParamFn "minH" parseSize (`S.minH` [])
-  , ParamFn "shadow" parseInt (`S.shadow` [])
+  , ParamFn "cls" parseStringLiteral (getProps . S.cls)
+  , ParamFn "roundedS" parseSize (getProps . S.roundedS)
+  , ParamFn "surface" parseInt (getProps . S.surface)
+  , ParamFn "borderAlpha" parseColorToneAlpha (\(c, n, a) -> getProps (S.borderAlpha c n a))
+  , ParamFn "minW" parseSize (getProps . S.minW)
+  , ParamFn "minH" parseSize (getProps . S.minH)
+  , ParamFn "shadow" parseInt (getProps . S.shadow)
   ]
 
 staticStylesMap :: Map.Map Text [Prop]
@@ -262,7 +262,7 @@ parseStyleExpr = do
 
 parseStyleDotChain :: Parser [Prop]
 parseStyleDotChain = do
-  terms <- sepBy1 parseStyleTerm (try (space *> char '.' *> space))
+  terms <- sepBy1 parseStyleTerm (try (space *> string "<>" *> space))
   return $ concat terms
 
 parseDecls :: Parser [(Text, Text)]
@@ -307,8 +307,7 @@ parseStyleTerm = do
               space1
               selector <- parseStringLiteral
               space1
-              decls <- parseDecls
-              return $ S.customSelector name selector decls []
+              getProps . S.customSelector name selector <$> parseDecls
           | otherwise -> case Map.lookup ident staticStylesMap of
               Just props -> return props
               Nothing -> case Map.lookup ident knownParamsMap of

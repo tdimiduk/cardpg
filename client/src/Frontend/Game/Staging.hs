@@ -101,18 +101,18 @@ stagingStatusHeader
   => Dynamic t PlanValidation
   -> m ()
 stagingStatusHeader validation = do
-  divS (S.flexCol . S.itemsCenter . S.gap S.S2) $ do
+  divS (S.flexCol <> S.itemsCenter <> S.gap S.S2) $ do
     elAttr
       "div"
       ( testId "staging-status"
           <> "class"
             =: classNames
               ( S.cls "fantasy-font"
-                  . S.textSm
-                  . S.fontBold
-                  . textGoldBright
-                  . S.uppercase
-                  . S.trackingWider
+                  <> S.textSm
+                  <> S.fontBold
+                  <> textGoldBright
+                  <> S.uppercase
+                  <> S.trackingWider
               )
       )
       $ do
@@ -127,7 +127,7 @@ stagedCardsRow
   => Dynamic t ActionStack
   -> m (Event t (), Event t CardInstanceId)
 stagedCardsRow actionStackDyn = do
-  divS (S.flex . S.justifyCenter) $ do
+  divS (S.flex <> S.justifyCenter) $ do
     let stagedResourcesDyn = fmap (.resources) actionStackDyn
         stagedActionDyn = fmap (.actionCard) actionStackDyn
 
@@ -144,7 +144,7 @@ stagedCardsRow actionStackDyn = do
             <$> stagedResourcesDyn
             <*> resourceKeyMapDyn
 
-    rowWith (S.itemsCenter . plannedCardOverlap) $ do
+    rowWith (S.itemsCenter <> plannedCardOverlap) $ do
       clickResourceMapDyn <- listWithKey stagedResourceMapDyn $ \_key rDyn -> do
         let stagedResourceCls = classNames stagedResourceCard
         (eRes, _) <- elDynAttr'
@@ -172,7 +172,7 @@ stagingControls
   => Dynamic t PlanValidation
   -> m (Event t (), Event t ())
 stagingControls validation = do
-  divS (S.flex . S.gap S.S2 . S.wFull) $ do
+  divS (S.flex <> S.gap S.S2 <> S.wFull) $ do
     let cfg = def{extraStyle = S.flex1, size = SizeSmall}
     -- Cancel Button (Secondary)
     cancelEvt <-
@@ -201,6 +201,6 @@ stagingStats stackDyn = do
             resStats = mconcat $ map (toSum . (.content.stats)) planStack.resources
          in fromSum (actionStats <> resStats)
 
-  divS (S.flex . S.gap S.S2 . S.itemsCenter . S.textWhite) $ do
+  divS (S.flex <> S.gap S.S2 <> S.itemsCenter <> S.textWhite) $ do
     dyn_ $ ffor totalStats $ \s ->
       renderStatsWith (StatsSettings StatsRow IconBlock) s

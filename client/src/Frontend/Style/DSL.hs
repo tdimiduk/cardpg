@@ -76,14 +76,14 @@ h8mm = h (Mm 8)
 altarStagingPanel :: Style
 altarStagingPanel =
   flexCol
-    . pointerEventsAuto
-    . itemsCenter
-    . gap S3
-    . minW (Px 320)
-    . cls "altar-glowing-gold"
-    . backdropBlurMd
-    . roundedXl
-    . p S4
+    <> pointerEventsAuto
+    <> itemsCenter
+    <> gap S3
+    <> minW (Px 320)
+    <> cls "altar-glowing-gold"
+    <> backdropBlurMd
+    <> roundedXl
+    <> p S4
 
 ringDiscard :: Style
 ringDiscard = css "ring-discard" "box-shadow" "0 0 0 3px #ef4444"

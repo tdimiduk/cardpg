@@ -3,18 +3,19 @@
 -- | Core types and functions for the purpose-built CSS system.
 --
 -- This module provides the foundational types for composable, type-safe
--- CSS utilities. Styles compose with (.) and produce utility CSS classes.
+-- CSS utilities. Styles compose with (<>) and produce utility CSS classes.
 --
 -- @
 -- cardStyle :: Style
--- cardStyle = flexCol . (S.bg S.Gray 10) . roundedXl . shadowXl
+-- cardStyle = flexCol <> (S.bg S.Gray 10) <> roundedXl <> shadowXl
 --
 -- widget = divS cardStyle $ text "Hello"
 -- @
 module Reflex.AtomicCss.Core
   ( -- * Core Types
-    Prop (propClassName, propSelector, propDecls, propMediaQuery)
-  , Style
+    Prop (..)
+  , Style (..)
+  , getProps
 
     -- * Atomic Constructors
   , css
@@ -65,13 +66,23 @@ data Prop = Prop
   }
   deriving (Show, Eq)
 
--- | A composable style transformer. Compose with (.) and apply to []:
+-- | A composable collection of CSS properties. Compose with (<>):
 --
 -- @
--- myStyle = flexCol . gap 4 . (S.bg S.Gray 10)
+-- myStyle = flexCol <> gap 4 <> (S.bg S.Gray 10)
 -- classes = classNames myStyle   -- "flex-col gap-4 bg-slate-800"
 -- @
-type Style = [Prop] -> [Prop]
+newtype Style = Style [Prop]
+  deriving (Show, Eq)
+
+getProps :: Style -> [Prop]
+getProps (Style props) = props
+
+instance Semigroup Style where
+  Style a <> Style b = Style (a <> b)
+
+instance Monoid Style where
+  mempty = Style []
 
 --------------------------------------------------------------------------------
 -- Atomic Constructors
@@ -84,20 +95,20 @@ type Style = [Prop] -> [Prop]
 -- (S.bg S.Gray 10) = css "bg-slate-800" "background-color" "#1e293b"
 -- @
 css :: Text -> Text -> Text -> Style
-css name property value = (Prop name ("." <> escapeCss name) [(property, value)] Nothing :)
+css name property value = Style [Prop name ("." <> escapeCss name) [(property, value)] Nothing]
 
 -- | Define a multi-property atomic style.
 css' :: Text -> [(Text, Text)] -> Style
-css' name decls = (Prop name ("." <> escapeCss name) decls Nothing :)
+css' name decls = Style [Prop name ("." <> escapeCss name) decls Nothing]
 
 -- | Define a custom selector style with custom class name, selector and declarations.
 customSelector :: Text -> Text -> [(Text, Text)] -> Style
-customSelector name selector decls = (Prop name selector decls Nothing :)
+customSelector name selector decls = Style [Prop name selector decls Nothing]
 
 -- | An external class name with no generated CSS.
 -- Use for classes defined elsewhere (e.g. "action", "scaler-target").
 cls :: Text -> Style
-cls name = (Prop name ("." <> name) [] Nothing :)
+cls name = Style [Prop name ("." <> name) [] Nothing]
 
 --------------------------------------------------------------------------------
 -- Modifiers
@@ -109,7 +120,7 @@ cls name = (Prop name ("." <> name) [] Nothing :)
 -- cardHover = hover (S.bg S.Gray 9)
 -- @
 hover :: Style -> Style
-hover inner rest = map hoverProp (inner []) ++ rest
+hover (Style props) = Style (map hoverProp props)
 
 -- | Add hover styling to a single Prop. Useful for GenCss generation.
 hoverProp :: Prop -> Prop
@@ -121,7 +132,7 @@ hoverProp p =
 
 -- | Apply a style only on :active.
 active :: Style -> Style
-active inner rest = map activeProp (inner []) ++ rest
+active (Style props) = Style (map activeProp props)
 
 -- | Add active styling to a single Prop. Useful for GenCss generation.
 activeProp :: Prop -> Prop
@@ -137,7 +148,7 @@ activeProp p =
 -- focusVisible = pseudo "focus-visible" ((S.ring S.Blue 5) . ring2)
 -- @
 pseudo :: Text -> Style -> Style
-pseudo pseudoClass inner rest = map (pseudoProp pseudoClass) (inner []) ++ rest
+pseudo pseudoClass (Style props) = Style (map (pseudoProp pseudoClass) props)
 
 -- | Add pseudo-class styling to a single Prop.
 pseudoProp :: Text -> Prop -> Prop
@@ -155,7 +166,7 @@ pseudoProp pseudoClass p =
 -- responsive = media "(min-width: 768px)" (fontSize 18)
 -- @
 media :: Text -> Style -> Style
-media query inner rest = map (mediaProp query) (inner []) ++ rest
+media query (Style props) = Style (map (mediaProp query) props)
 
 -- | Add media query styling to a single Prop.
 mediaProp :: Text -> Prop -> Prop
@@ -171,9 +182,7 @@ mediaProp q p =
 
 -- | Apply a style to the last child.
 lastChild :: Style -> Style
-lastChild style rest =
-  let props = style []
-   in map lastChildProp props ++ rest
+lastChild (Style props) = Style (map lastChildProp props)
 
 -- | Add last-child styling to a single Prop.
 lastChildProp :: Prop -> Prop
@@ -189,7 +198,7 @@ lastChildProp prop =
 
 -- | Extract the space-separated class names from a Style.
 classNames :: Style -> Text
-classNames style = T.unwords $ map (.propClassName) (style [])
+classNames (Style props) = T.unwords $ map (.propClassName) props
 
 -- | Render a list of Props to CSS text (for file generation).
 -- Deduplicates by class name.

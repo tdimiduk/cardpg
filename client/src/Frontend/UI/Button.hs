@@ -66,15 +66,15 @@ instance (Reflex t) => Default (ButtonConfig t) where
       , disabled = constDyn False
       , fullWidth = False
       , testId = Nothing
-      , extraStyle = id
+      , extraStyle = mempty
       , attributes = mempty
       }
 
 sizeStyle :: ButtonSize -> Style
 sizeStyle = \case
-  SizeSmall -> px S2 . py S1 . textSm
-  SizeMedium -> px S4 . py S2 . textBase
-  SizeLarge -> px S6 . py S3 . textLg
+  SizeSmall -> px S2 <> py S1 <> textSm
+  SizeMedium -> px S4 <> py S2 <> textBase
+  SizeLarge -> px S6 <> py S3 <> textLg
 
 variantStyle :: ButtonVariant -> Style
 variantStyle = \case
@@ -86,28 +86,28 @@ variantStyle = \case
     S.cls "btn-fantasy-destructive"
   VariantGhost ->
     bgTransparent
-      . S.text S.Gray 4
+      <> S.text S.Gray 4
   VariantOutline ->
     bgTransparent
-      . S.text S.Gray 2
-      . S.border1
-      . S.border S.Gray 8
+      <> S.text S.Gray 2
+      <> S.border1
+      <> S.border S.Gray 8
 
 -- | Base styles shared by all buttons
 baseStyle :: Style
 baseStyle =
   flex
-    . itemsCenter
-    . justifyCenter
-    . rounded
-    . fontBold
-    . transitionColors
-    . duration200
-    . selectNone
+    <> itemsCenter
+    <> justifyCenter
+    <> rounded
+    <> fontBold
+    <> transitionColors
+    <> duration200
+    <> selectNone
 
 -- | Disabled state styling
 disabledStyle :: Style
-disabledStyle = opacity50 . cursorNotAllowed
+disabledStyle = opacity50 <> cursorNotAllowed
 
 -- | A unified button widget
 button
@@ -118,14 +118,14 @@ button
   -> m (Event t ())
 button cfg label = do
   -- Width handling
-  let widthStyle = if cfg.fullWidth then wFull else id
+  let widthStyle = if cfg.fullWidth then wFull else mempty
       sz = sizeStyle cfg.size
       var = variantStyle cfg.variant
 
   let dynClassText = do
         dis <- cfg.disabled
         let interaction = if dis then disabledStyle else cursorPointer
-            fullStyle = baseStyle . widthStyle . cfg.extraStyle . var . interaction . sz
+            fullStyle = baseStyle <> widthStyle <> cfg.extraStyle <> var <> interaction <> sz
         pure $ classNames fullStyle
 
   let attrs = ffor2 dynClassText cfg.disabled $ \clsText dis ->

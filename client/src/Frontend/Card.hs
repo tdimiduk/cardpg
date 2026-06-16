@@ -96,28 +96,28 @@ instance Default StatsSettings where
 
 cardClasses :: CardSettings -> Style
 cardClasses settings = case settings.displayMode of
-  CardFull -> Style.cardBase . Style.cardScreen
-  CardPrint -> Style.cardBase . Style.cardPrint
+  CardFull -> Style.cardBase <> Style.cardScreen
+  CardPrint -> Style.cardBase <> Style.cardPrint
 
 artClasses :: CardSettings -> Style
 artClasses settings = case settings.displayMode of
-  CardFull -> Style.artBase . Style.artScreen
-  CardPrint -> Style.artBase . Style.artPrint
+  CardFull -> Style.artBase <> Style.artScreen
+  CardPrint -> Style.artBase <> Style.artPrint
 
 nameClasses :: CardSettings -> Style
 nameClasses settings = case settings.displayMode of
-  CardFull -> Style.nameBase . Style.nameScreen
-  CardPrint -> Style.nameBase . Style.namePrint
+  CardFull -> Style.nameBase <> Style.nameScreen
+  CardPrint -> Style.nameBase <> Style.namePrint
 
 costClasses :: CardSettings -> Style
 costClasses settings = case settings.displayMode of
-  CardFull -> Style.costBase . Style.costScreen
-  CardPrint -> Style.costBase . Style.costPrint
+  CardFull -> Style.costBase <> Style.costScreen
+  CardPrint -> Style.costBase <> Style.costPrint
 
 textboxClasses :: CardSettings -> Style
 textboxClasses settings = case settings.displayMode of
-  CardFull -> Style.textboxBase . Style.textboxScreen
-  CardPrint -> Style.textboxBase . Style.textboxPrint
+  CardFull -> Style.textboxBase <> Style.textboxScreen
+  CardPrint -> Style.textboxBase <> Style.textboxPrint
 
 --------------------------------------------------------------------------------
 -- Stats Rendering
@@ -129,14 +129,14 @@ renderStatsWith settings s =
   let layoutStyle = case settings.statsLayout of
         StatsCol ->
           S.flexCol
-            . S.justifyBetween
-            . S.gap S.S1
-            . S.wFit
-            . S.hFull
-            . S.pr S.S1
-            . S.pb S.S1
-            . S.itemsCenter
-        StatsRow -> S.flex . S.gap S.S1
+            <> S.justifyBetween
+            <> S.gap S.S1
+            <> S.wFit
+            <> S.hFull
+            <> S.pr S.S1
+            <> S.pb S.S1
+            <> S.itemsCenter
+        StatsRow -> S.flex <> S.gap S.S1
    in componentS "stats" layoutStyle $
         mapM_
           (renderStatValue settings.statsIconMode . flip getStatValue s)
@@ -157,7 +157,7 @@ renderCoreCardWith settings c = divS (cardClasses settings) $ do
     componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
     spacer
     maybe blank (\c' -> renderHexagon (costClasses settings) (Just $ tshow c')) c.cost
-  componentS "top" (S.flexRow . S.grow0 . S.shrink0 . S.h2_5) $ do
+  componentS "top" (S.flexRow <> S.grow0 <> S.shrink0 <> S.h2_5) $ do
     renderStatsWith (StatsSettings StatsCol IconResponsive) c.stats
     componentS "art" (artClasses settings) blank
   componentS "rules" (textboxClasses settings) $ do

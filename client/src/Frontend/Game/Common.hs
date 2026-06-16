@@ -23,7 +23,7 @@ staticActionStackWidget
   -> m (Event t a, Event t b)
   -- ^ (Resource Click Event, Action Click Event)
 staticActionStackWidget renderResource renderAction resources action = do
-  rowWith (S.itemsCenter . plannedCardOverlap) $ do
+  rowWith (S.itemsCenter <> plannedCardOverlap) $ do
     -- Resources
     -- Reverse the list so the first resource is rendered last (visually on the right/bottom)
     resourceEvts <- mapM renderResource (reverse resources)
