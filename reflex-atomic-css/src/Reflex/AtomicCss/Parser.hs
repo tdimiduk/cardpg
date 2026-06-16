@@ -37,7 +37,7 @@ import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer qualified as L
 
 import Data.Map.Strict qualified as Map
-import Reflex.AtomicCss.Core (Prop (..))
+import Reflex.AtomicCss.Core (Prop (..), Style)
 import Reflex.AtomicCss.DSL qualified as S
 
 type Parser = Parsec Void Text
@@ -88,110 +88,112 @@ propsToHaskellName props =
         _ -> error $ "Unknown or unhandled compound style: " ++ show classNamesList
 
 -- | Helper to build a static style tuple from its DSL value
-mkStatic :: [Prop] -> (Text, [Prop])
-mkStatic props = (propsToHaskellName props, props)
+mkStatic :: Style -> (Text, [Prop])
+mkStatic style =
+  let props = style []
+   in (propsToHaskellName props, props)
 
 -- | Static styles that don't take parameters
 staticStyles :: [(Text, [Prop])]
 staticStyles =
   map
     mkStatic
-    [ S.flex []
-    , S.flexRow []
-    , S.flexCol []
-    , S.itemsCenter []
-    , S.itemsEnd []
-    , S.itemsStretch []
-    , S.justifyStart []
-    , S.justifyCenter []
-    , S.justifyBetween []
-    , S.justifyAround []
-    , S.grow []
-    , S.grow0 []
-    , S.shrink0 []
-    , S.absolute []
-    , S.relative []
-    , S.fixed []
-    , S.hidden []
-    , S.overflowHidden []
-    , S.overflowYAuto []
-    , S.cursorPointer []
-    , S.cursorNotAllowed []
-    , S.pointerEventsNone []
-    , S.pointerEventsAuto []
-    , S.group []
-    , S.inlineBlock []
-    , S.alignTextBottom []
-    , S.flexWrap []
-    , S.contentStart []
-    , S.wFull []
-    , S.hFull []
-    , S.wFit []
-    , S.hScreen []
-    , S.h2_5 []
-    , S.bottom0 []
-    , S.left0 []
-    , S.right0 []
-    , S.inset0 []
-    , S.bgWhite []
-    , S.bgTransparent []
-    , S.textBlack []
-    , S.textWhite []
-    , S.borderBlack []
-    , S.borderTransparent []
-    , S.border1 []
-    , S.border0 []
-    , S.border2 []
-    , S.borderB []
-    , S.borderT []
-    , S.borderL []
-    , S.borderR []
-    , S.border02mm []
-    , S.rounded []
-    , S.roundedNone []
-    , S.roundedXl []
-    , S.rounded3Xl []
-    , S.roundedFull []
-    , S.fontBold []
-    , S.textSm []
-    , S.textXs []
-    , S.textXl []
-    , S.text2Xl []
-    , S.textLg []
-    , S.textBase []
-    , S.textCenter []
-    , S.leadingTight []
-    , S.uppercase []
-    , S.trackingWider []
-    , S.whitespaceNowrap []
-    , S.textTruncate []
-    , S.textLeft []
-    , S.shadow2Xl []
-    , S.shadowXl []
-    , S.shadowLg []
-    , S.shadowSm []
-    , S.grayscale []
-    , S.grayscale50 []
-    , S.opacity75 []
-    , S.opacity50 []
-    , S.backdropBlurMd []
-    , S.aspect43 []
-    , S.aspectSquare []
-    , S.spaceY2 []
-    , S.transitionAll []
-    , S.transitionTransform []
-    , S.transitionColors []
-    , S.duration200 []
-    , S.easeOut []
-    , S.selectNone []
-    , S.ring2 []
-    , S.ringOffset2 []
-    , S.flex1 []
-    , S.full []
-    , S.mb0 []
-    , S.minW0 []
-    , S.minH0 []
-    , S.fontMono []
+    [ S.flex
+    , S.flexRow
+    , S.flexCol
+    , S.itemsCenter
+    , S.itemsEnd
+    , S.itemsStretch
+    , S.justifyStart
+    , S.justifyCenter
+    , S.justifyBetween
+    , S.justifyAround
+    , S.grow
+    , S.grow0
+    , S.shrink0
+    , S.absolute
+    , S.relative
+    , S.fixed
+    , S.hidden
+    , S.overflowHidden
+    , S.overflowYAuto
+    , S.cursorPointer
+    , S.cursorNotAllowed
+    , S.pointerEventsNone
+    , S.pointerEventsAuto
+    , S.group
+    , S.inlineBlock
+    , S.alignTextBottom
+    , S.flexWrap
+    , S.contentStart
+    , S.wFull
+    , S.hFull
+    , S.wFit
+    , S.hScreen
+    , S.h2_5
+    , S.bottom0
+    , S.left0
+    , S.right0
+    , S.inset0
+    , S.bgWhite
+    , S.bgTransparent
+    , S.textBlack
+    , S.textWhite
+    , S.borderBlack
+    , S.borderTransparent
+    , S.border1
+    , S.border0
+    , S.border2
+    , S.borderB
+    , S.borderT
+    , S.borderL
+    , S.borderR
+    , S.border02mm
+    , S.rounded
+    , S.roundedNone
+    , S.roundedXl
+    , S.rounded3Xl
+    , S.roundedFull
+    , S.fontBold
+    , S.textSm
+    , S.textXs
+    , S.textXl
+    , S.text2Xl
+    , S.textLg
+    , S.textBase
+    , S.textCenter
+    , S.leadingTight
+    , S.uppercase
+    , S.trackingWider
+    , S.whitespaceNowrap
+    , S.textTruncate
+    , S.textLeft
+    , S.shadow2Xl
+    , S.shadowXl
+    , S.shadowLg
+    , S.shadowSm
+    , S.grayscale
+    , S.grayscale50
+    , S.opacity75
+    , S.opacity50
+    , S.backdropBlurMd
+    , S.aspect43
+    , S.aspectSquare
+    , S.spaceY2
+    , S.transitionAll
+    , S.transitionTransform
+    , S.transitionColors
+    , S.duration200
+    , S.easeOut
+    , S.selectNone
+    , S.ring2
+    , S.ringOffset2
+    , S.flex1
+    , S.full
+    , S.mb0
+    , S.minW0
+    , S.minH0
+    , S.fontMono
     ]
 
 -- | Parameterized functions
