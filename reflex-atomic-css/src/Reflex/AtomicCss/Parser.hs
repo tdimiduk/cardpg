@@ -28,7 +28,7 @@ module Reflex.AtomicCss.Parser
   , parseDecl
   ) where
 
-import Data.Char (isAlphaNum)
+import Data.Char (isAlphaNum, toUpper)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Void (Void)
@@ -37,111 +37,162 @@ import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer qualified as L
 
 import Data.Map.Strict qualified as Map
-import Reflex.AtomicCss.Core (Prop)
+import Reflex.AtomicCss.Core (Prop (..))
 import Reflex.AtomicCss.DSL qualified as S
 
 type Parser = Parsec Void Text
 
+-- | Convert a CSS class name back to its Haskell DSL identifier name.
+classNameToHaskell :: Text -> Text
+classNameToHaskell = \case
+  -- Semantic / Custom aliases
+  "bg-gray-0" -> "bgWhite"
+  "bg-transparent" -> "bgTransparent"
+  "text-gray-12" -> "textBlack"
+  "text-gray-0" -> "textWhite"
+  "border-gray-12" -> "borderBlack"
+  "border-transparent" -> "borderTransparent"
+  "truncate" -> "textTruncate"
+  "h-pct-40" -> "h2_5"
+  "border-0.2mm" -> "border02mm"
+  "aspect-4/3" -> "aspect43"
+  "w-pct-100" -> "wFull"
+  "h-pct-100" -> "hFull"
+  "h-vh-100" -> "hScreen"
+  "border" -> "border1" -- S.border1 [] uses class name "border"
+
+  -- Fallback to standard camelCase translation
+  className ->
+    let parts = T.splitOn "-" className
+     in case parts of
+          [] -> ""
+          (x : xs) -> T.concat (x : map capitalize xs)
+  where
+    capitalize w =
+      case T.uncons w of
+        Nothing -> ""
+        Just (c, rest) ->
+          let c' = toUpper c
+           in if
+                | c' == '3' && rest == "xl" -> "3Xl"
+                | c' == '2' && rest == "xl" -> "2Xl"
+                | otherwise -> T.cons c' rest
+
+-- | Extract Haskell identifier name from a list of Props
+propsToHaskellName :: [Prop] -> Text
+propsToHaskellName props =
+  let classNamesList = map (.propClassName) props
+   in case classNamesList of
+        ["w-pct-100", "h-pct-100"] -> "full" -- Special compound style 'full'
+        [clsName] -> classNameToHaskell clsName
+        _ -> error $ "Unknown or unhandled compound style: " ++ show classNamesList
+
+-- | Helper to build a static style tuple from its DSL value
+mkStatic :: [Prop] -> (Text, [Prop])
+mkStatic props = (propsToHaskellName props, props)
+
 -- | Static styles that don't take parameters
 staticStyles :: [(Text, [Prop])]
 staticStyles =
-  [ ("flex", S.flex [])
-  , ("flexRow", S.flexRow [])
-  , ("flexCol", S.flexCol [])
-  , ("itemsCenter", S.itemsCenter [])
-  , ("itemsEnd", S.itemsEnd [])
-  , ("itemsStretch", S.itemsStretch [])
-  , ("justifyStart", S.justifyStart [])
-  , ("justifyCenter", S.justifyCenter [])
-  , ("justifyBetween", S.justifyBetween [])
-  , ("justifyAround", S.justifyAround [])
-  , ("grow", S.grow [])
-  , ("grow0", S.grow0 [])
-  , ("shrink0", S.shrink0 [])
-  , ("absolute", S.absolute [])
-  , ("relative", S.relative [])
-  , ("fixed", S.fixed [])
-  , ("hidden", S.hidden [])
-  , ("overflowHidden", S.overflowHidden [])
-  , ("overflowYAuto", S.overflowYAuto [])
-  , ("cursorPointer", S.cursorPointer [])
-  , ("cursorNotAllowed", S.cursorNotAllowed [])
-  , ("pointerEventsNone", S.pointerEventsNone [])
-  , ("pointerEventsAuto", S.pointerEventsAuto [])
-  , ("group", S.group [])
-  , ("inlineBlock", S.inlineBlock [])
-  , ("alignTextBottom", S.alignTextBottom [])
-  , ("flexWrap", S.flexWrap [])
-  , ("contentStart", S.contentStart [])
-  , ("wFull", S.wFull [])
-  , ("hFull", S.hFull [])
-  , ("wFit", S.wFit [])
-  , ("hScreen", S.hScreen [])
-  , ("h2_5", S.h2_5 [])
-  , ("bottom0", S.bottom0 [])
-  , ("left0", S.left0 [])
-  , ("right0", S.right0 [])
-  , ("inset0", S.inset0 [])
-  , ("bgWhite", S.bgWhite [])
-  , ("bgTransparent", S.bgTransparent [])
-  , ("textBlack", S.textBlack [])
-  , ("textWhite", S.textWhite [])
-  , ("borderBlack", S.borderBlack [])
-  , ("borderTransparent", S.borderTransparent [])
-  , ("border1", S.border1 [])
-  , ("border0", S.border0 [])
-  , ("border2", S.border2 [])
-  , ("borderB", S.borderB [])
-  , ("borderT", S.borderT [])
-  , ("borderL", S.borderL [])
-  , ("borderR", S.borderR [])
-  , ("border02mm", S.border02mm [])
-  , ("rounded", S.rounded [])
-  , ("roundedNone", S.roundedNone [])
-  , ("roundedXl", S.roundedXl [])
-  , ("rounded3Xl", S.rounded3Xl [])
-  , ("roundedFull", S.roundedFull [])
-  , ("fontBold", S.fontBold [])
-  , ("textSm", S.textSm [])
-  , ("textXs", S.textXs [])
-  , ("textXl", S.textXl [])
-  , ("text2Xl", S.text2Xl [])
-  , ("textLg", S.textLg [])
-  , ("textBase", S.textBase [])
-  , ("textCenter", S.textCenter [])
-  , ("leadingTight", S.leadingTight [])
-  , ("uppercase", S.uppercase [])
-  , ("trackingWider", S.trackingWider [])
-  , ("whitespaceNowrap", S.whitespaceNowrap [])
-  , ("textTruncate", S.textTruncate [])
-  , ("textLeft", S.textLeft [])
-  , ("shadow2Xl", S.shadow2Xl [])
-  , ("shadowXl", S.shadowXl [])
-  , ("shadowLg", S.shadowLg [])
-  , ("shadowSm", S.shadowSm [])
-  , ("grayscale", S.grayscale [])
-  , ("grayscale50", S.grayscale50 [])
-  , ("opacity75", S.opacity75 [])
-  , ("opacity50", S.opacity50 [])
-  , ("backdropBlurMd", S.backdropBlurMd [])
-  , ("aspect43", S.aspect43 [])
-  , ("aspectSquare", S.aspectSquare [])
-  , ("spaceY2", S.spaceY2 [])
-  , ("transitionAll", S.transitionAll [])
-  , ("transitionTransform", S.transitionTransform [])
-  , ("transitionColors", S.transitionColors [])
-  , ("duration200", S.duration200 [])
-  , ("easeOut", S.easeOut [])
-  , ("selectNone", S.selectNone [])
-  , ("ring2", S.ring2 [])
-  , ("ringOffset2", S.ringOffset2 [])
-  , ("flex1", S.flex1 [])
-  , ("full", S.full [])
-  , ("mb0", S.mb0 [])
-  , ("minW0", S.minW0 [])
-  , ("minH0", S.minH0 [])
-  , ("fontMono", S.fontMono [])
-  ]
+  map
+    mkStatic
+    [ S.flex []
+    , S.flexRow []
+    , S.flexCol []
+    , S.itemsCenter []
+    , S.itemsEnd []
+    , S.itemsStretch []
+    , S.justifyStart []
+    , S.justifyCenter []
+    , S.justifyBetween []
+    , S.justifyAround []
+    , S.grow []
+    , S.grow0 []
+    , S.shrink0 []
+    , S.absolute []
+    , S.relative []
+    , S.fixed []
+    , S.hidden []
+    , S.overflowHidden []
+    , S.overflowYAuto []
+    , S.cursorPointer []
+    , S.cursorNotAllowed []
+    , S.pointerEventsNone []
+    , S.pointerEventsAuto []
+    , S.group []
+    , S.inlineBlock []
+    , S.alignTextBottom []
+    , S.flexWrap []
+    , S.contentStart []
+    , S.wFull []
+    , S.hFull []
+    , S.wFit []
+    , S.hScreen []
+    , S.h2_5 []
+    , S.bottom0 []
+    , S.left0 []
+    , S.right0 []
+    , S.inset0 []
+    , S.bgWhite []
+    , S.bgTransparent []
+    , S.textBlack []
+    , S.textWhite []
+    , S.borderBlack []
+    , S.borderTransparent []
+    , S.border1 []
+    , S.border0 []
+    , S.border2 []
+    , S.borderB []
+    , S.borderT []
+    , S.borderL []
+    , S.borderR []
+    , S.border02mm []
+    , S.rounded []
+    , S.roundedNone []
+    , S.roundedXl []
+    , S.rounded3Xl []
+    , S.roundedFull []
+    , S.fontBold []
+    , S.textSm []
+    , S.textXs []
+    , S.textXl []
+    , S.text2Xl []
+    , S.textLg []
+    , S.textBase []
+    , S.textCenter []
+    , S.leadingTight []
+    , S.uppercase []
+    , S.trackingWider []
+    , S.whitespaceNowrap []
+    , S.textTruncate []
+    , S.textLeft []
+    , S.shadow2Xl []
+    , S.shadowXl []
+    , S.shadowLg []
+    , S.shadowSm []
+    , S.grayscale []
+    , S.grayscale50 []
+    , S.opacity75 []
+    , S.opacity50 []
+    , S.backdropBlurMd []
+    , S.aspect43 []
+    , S.aspectSquare []
+    , S.spaceY2 []
+    , S.transitionAll []
+    , S.transitionTransform []
+    , S.transitionColors []
+    , S.duration200 []
+    , S.easeOut []
+    , S.selectNone []
+    , S.ring2 []
+    , S.ringOffset2 []
+    , S.flex1 []
+    , S.full []
+    , S.mb0 []
+    , S.minW0 []
+    , S.minH0 []
+    , S.fontMono []
+    ]
 
 -- | Parameterized functions
 data ParamFn = forall a. ParamFn
