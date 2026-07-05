@@ -18,9 +18,8 @@ import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
 import Frontend.Editor (editorWidget)
 import Frontend.Style.DSL qualified as S
-import Frontend.UI.Button (ButtonConfig (..), ButtonSize (..), ButtonVariant (..), button)
-import Reflex.Dom.Core hiding (button)
-import Reflex.Dom.GadtApi.WebSocket (tagRequests)
+import Reflex.Dom.Core
+import Reflex.Dom.GadtApi.WebSocket (TaggedResponse, tagRequests)
 
 import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
 import Api.Request qualified as Req
@@ -42,10 +41,10 @@ import Frontend.Game.Hand (handWidget)
 import Frontend.Game.MapBoard (mapBoardWidget)
 
 import Frontend.Game.Planning (StagingState)
-import Frontend.Game.Sidebar (sidebarWidget)
+import Frontend.Game.Sidebar (ViewMode (..), sidebarWidget)
 import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
 
-import Frontend.Style.Common (Style, componentS, divS, elS)
+import Frontend.Style.Common (Style, componentS, divS)
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
@@ -59,64 +58,87 @@ appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
 appWidget wsBaseUrl clientId = do
   rec -- RequesterT loop
       -- TODO: Load initial actor from local storage
-      let sessionState = SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn
+      sessionState <- makeSessionState pushEvt
       (_, requests) <-
         runRequesterT (runGameT sessionState (uiWidget Nothing Nothing)) responses
       (taggedReqs, responses) <- tagRequests requests taggedResps
 
       let reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
-
-      let wsConfig =
-            def
-              { _webSocketConfig_send = reqsEncoded
-              }
-
-      ws <- webSocket wsUrl wsConfig
-
-      -- Decode incoming messages, logging any parse failures
-      let rawMsg = _webSocket_recv ws
-          decodeResult = eitherDecode . BL.fromStrict <$> rawMsg
-          wsMsg = fmapMaybe (either (const Nothing) Just) decodeResult
-          decodeErrors = fmapMaybe (either Just (const Nothing)) decodeResult
-          pushEvt = fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
-          taggedResps = fmapMaybe (\case WsMsgResponse r -> Just r; _ -> Nothing) wsMsg
-
-      -- Log decode errors to console (visible in browser dev tools)
-      performEvent_ $ ffor decodeErrors $ \err ->
-        liftIO $ putStrLn $ "WS Decode Error: " <> err
-
-      let updateActors (PushWelcome{game = a}) _ = a.actors
-          updateActors (PushUpdate{game = a}) _ = a.actors
-          updateActors _ old = old
-
-      actorsMapDyn <- foldDyn updateActors (Map.empty :: Map.Map ActorId ActorState) pushEvt
-
-      let updateLogs (PushNewLogs newLogs) logs = newLogs ++ logs
-          updateLogs (PushWelcome{history = h}) _ = reverse h
-          updateLogs (PushError _) logs = logs -- Errors handled separately or should be?
-          updateLogs _ logs = logs
-
-      logsDyn <- foldDyn updateLogs ([] :: [LogEntry]) pushEvt
-
-      let updatePhase (PushWelcome{phase = p}) _ = p
-          updatePhase (PushUpdate{newPhase = Just p}) _ = p
-          updatePhase _ old = old
-
-      phaseDyn <- holdUniqDyn =<< foldDyn updatePhase Planning pushEvt
-
-      let updateMapMode (PushWelcome{game = a}) _ = fromMaybe MapModeGrid a.mapMode
-          updateMapMode (PushUpdate{game = a}) _ = fromMaybe MapModeGrid a.mapMode
-          updateMapMode _ old = old
-
-      mapModeDyn <- holdUniqDyn =<< foldDyn updateMapMode MapModeGrid pushEvt
+      (pushEvt, taggedResps) <- connectWebSocket wsUrl reqsEncoded
 
   pure ()
   where
     wsUrl = wsBaseUrl <> "?clientId=" <> T.pack (show clientId)
 
+-- | Establishes the WebSocket connection and decodes messages into Push/Response events.
+connectWebSocket
+  :: (MonadWidget t m)
+  => T.Text
+  -> Event t [T.Text]
+  -> m (Event t ServerPush, Event t TaggedResponse)
+connectWebSocket wsUrl sendEvt = do
+  let wsConfig = def{_webSocketConfig_send = sendEvt}
+  ws <- webSocket wsUrl wsConfig
+  let rawMsg = _webSocket_recv ws
+      decodeResult = eitherDecode . BL.fromStrict <$> rawMsg
+      wsMsg = fmapMaybe (either (const Nothing) Just) decodeResult
+      decodeErrors = fmapMaybe (either Just (const Nothing)) decodeResult
+      pushEvt = fmapMaybe (\case WsMsgPush p -> Just p; _ -> Nothing) wsMsg
+      taggedResps = fmapMaybe (\case WsMsgResponse r -> Just r; _ -> Nothing) wsMsg
+
+  performEvent_ $ ffor decodeErrors $ \err ->
+    liftIO $ putStrLn $ "WS Decode Error: " <> err
+
+  pure (pushEvt, taggedResps)
+
+-- | Pure update helpers for foldDyn
+updateActors :: ServerPush -> Map.Map ActorId ActorState -> Map.Map ActorId ActorState
+updateActors (PushWelcome{game = a}) _ = a.actors
+updateActors (PushUpdate{game = a}) _ = a.actors
+updateActors _ old = old
+
+updateLogs :: ServerPush -> [LogEntry] -> [LogEntry]
+updateLogs (PushNewLogs newLogs) logs = newLogs ++ logs
+updateLogs (PushWelcome{history = h}) _ = reverse h
+updateLogs (PushError _) logs = logs
+updateLogs _ logs = logs
+
+updatePhase :: ServerPush -> Phase -> Phase
 updatePhase (PushWelcome{phase = p}) _ = p
 updatePhase (PushUpdate{newPhase = Just p}) _ = p
 updatePhase _ old = old
+
+updateMapMode :: ServerPush -> MapMode -> MapMode
+updateMapMode (PushWelcome{game = a}) _ = fromMaybe MapModeGrid a.mapMode
+updateMapMode (PushUpdate{game = a}) _ = fromMaybe MapModeGrid a.mapMode
+updateMapMode _ old = old
+
+-- | Constructs the session state by folding incoming server push events.
+makeSessionState
+  :: (Reflex t, MonadHold t m, MonadFix m)
+  => Event t ServerPush
+  -> m (SessionState t)
+makeSessionState pushEvt = do
+  actorsMapDyn <- foldDyn updateActors Map.empty pushEvt
+  logsDyn <- foldDyn updateLogs [] pushEvt
+  phaseDyn <- holdUniqDyn =<< foldDyn updatePhase Planning pushEvt
+  mapModeDyn <- holdUniqDyn =<< foldDyn updateMapMode MapModeGrid pushEvt
+  pure $ SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn
+
+data ViewModeChange
+  = UserChange ViewMode
+  | ServerMapModeChange MapMode
+
+applyChange :: ViewModeChange -> ViewMode -> ViewMode
+applyChange (UserChange vm) _ = vm
+applyChange (ServerMapModeChange mm) currentMode =
+  case currentMode of
+    ViewCardEditor -> ViewCardEditor
+    _ -> mapModeToViewMode mm
+
+mapModeToViewMode :: MapMode -> ViewMode
+mapModeToViewMode MapModeGrid = ViewGridMap
+mapModeToViewMode MapModeRank = ViewRanksMode
 
 uiWidget
   :: ( DomBuilder t m
@@ -135,140 +157,201 @@ uiWidget
   -- ^ Initial active actor
   -> m ()
 uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol <> S.hScreen <> S.overflowHidden) $ do
-  -- Developer Header Bar with toggle button
-  editorActiveDyn <- divS
-    ( S.flexRow
-        <> S.wFull
-        <> S.bg S.Gray 10
-        <> S.borderB
-        <> S.border S.Gray 9
-        <> S.p S.S2
-        <> S.itemsCenter
-        <> S.justifyBetween
-        <> S.shrink0
-    )
-    $ do
-      elS "span" (S.textXs <> S.fontBold <> S.text S.Gray 4 <> S.trackingWider <> S.uppercase) $
-        text "CardPG Game Console"
+  mapModeDyn <- askMapMode
+  rec -- View mode state handling
+      let changeEvt =
+            leftmost
+              [ UserChange <$> viewModeUserEvt
+              , ServerMapModeChange <$> updated mapModeDyn
+              ]
+      initialMapMode <- sample (current mapModeDyn)
+      currentViewModeDyn <- foldDyn applyChange (mapModeToViewMode initialMapMode) changeEvt
 
-      rec toggleClick <- button
-            def
-              { variant = VariantGhost
-              , size = SizeSmall
-              , extraStyle = S.text S.Yellow 5 <> S.hover (S.text S.Yellow 4) <> S.cls "fantasy-font"
-              }
-            $ dynText
-            $ ffor activeDyn
-            $ \active -> if active then "Exit Card Editor" else "Open Card Editor"
-          activeDyn <- foldDyn (\_ val -> not val) False toggleClick
-      return activeDyn
+      -- Trigger server map mode update if user selected Grid Map or Ranks Mode
+      let mapModeRequestEvt =
+            fmapMaybe
+              ( \case
+                  UserChange ViewGridMap -> Just (Req.SetMapMode MapModeGrid)
+                  UserChange ViewRanksMode -> Just (Req.SetMapMode MapModeRank)
+                  _ -> Nothing
+              )
+              changeEvt
+      _ <- requestGame mapModeRequestEvt
 
-  dyn_ $ ffor editorActiveDyn $ \case
-    True -> editorWidget
-    False -> divS appRoot $ do
-      rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
-          (sidebarActiveChange, resumeDefenseEvt) <- sidebarWidget selectedActorId
+      viewModeUserEvt <- divS appRoot $ do
+        rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
+            (sidebarActiveChange, resumeDefenseEvt, viewModeUserEvt') <-
+              sidebarWidget selectedActorId currentViewModeDyn
+            mapActiveChange <- mainContentWidget mStaging selectedActorId currentViewModeDyn
 
-          mapActiveChange <- componentS "main-content" mainContent $ do
-            rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
+        -- Right Sidebar — now returns Event t DefenseTarget from challenge clicks
+        openDefenseEvt <- sidebarRightWidget selectedActorId
 
-                actorsMapDyn <- askActors
-                let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
-                      case mId >>= \aid -> identifiedLookup aid actors of
-                        Nothing -> Map.empty
-                        Just (Identified i c) -> Map.singleton i c
+        -- Render defense modal overlay and handle defense actions
+        defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEvt
 
-                stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
-                  handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
+        return viewModeUserEvt'
+  pure ()
 
-                stagingStateDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
-                  case Map.elems m of
-                    [] -> constDyn Nothing
-                    (d : _) -> fst d
-
-                rankMoveStagingDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
-                  case Map.elems m of
-                    [] -> constDyn Nothing
-                    (d : _) -> snd d
-
-            return mapChange
-
-      -- Right Sidebar — now returns Event t DefenseTarget from challenge clicks
-      openDefenseEvt <- sidebarRightWidget selectedActorId
+-- | Interactive map board and hand widget feedback loop.
+mapWidget
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     , MonadGame t m
+     , MonadGame t (Client m)
+     )
+  => Maybe StagingState
+  -> Dynamic t (Maybe ActorId)
+  -> m (Event t (Maybe ActorId))
+mapWidget mStaging selectedActorId = do
+  rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
 
       actorsMapDyn <- askActors
-      logsDyn <- askLogs
+      let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
+            case mId >>= \aid -> identifiedLookup aid actors of
+              Nothing -> Map.empty
+              Just (Identified i c) -> Map.singleton i c
 
-      rec let closePanelEvt = ffilter (\case ClosePanel -> True; EndDefense -> True; _ -> False) defenseWidgetEvt
+      stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
+        handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
 
-          let actorSelectedEvt = updated selectedActorId
-          pb <- getPostBuild
-          let actorSelectedOrBuildEvt = leftmost [actorSelectedEvt, initialActorId <$ pb]
-              autoOpenEvt =
-                attachWith
-                  (\(actorsMap, history) mActorId -> getActiveDefenseTarget mActorId actorsMap history)
-                  (current (zipDyn actorsMapDyn logsDyn))
-                  actorSelectedOrBuildEvt
+      stagingStateDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
+        case Map.elems m of
+          [] -> constDyn Nothing
+          (d : _) -> fst d
 
-              manualResumeEvt =
-                attachWith
-                  (\(actorsMap, history) actorId -> getActiveDefenseTarget (Just actorId) actorsMap history)
-                  (current (zipDyn actorsMapDyn logsDyn))
-                  resumeDefenseEvt
+      rankMoveStagingDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
+        case Map.elems m of
+          [] -> constDyn Nothing
+          (d : _) -> snd d
 
-          -- Defense modal state: Nothing = closed, Just target = open
-          --
-          -- When a challenge is clicked, we check if the selected actor already has
-          -- an active defense. If so, we redirect to that defense (conflict detection).
-          defenseTargetDyn <-
-            foldDyn applyDefenseEvent Nothing $
-              leftmost
-                [ Just
-                    <$> attachWith
-                      ( \(mActorId, actorsMap) newTarget ->
-                          -- Conflict detection: if actor is already defending a different challenge,
-                          -- open that defense instead.
-                          let mActiveDefense = do
-                                actorId <- mActorId
-                                actorState <- Map.lookup actorId actorsMap
-                                _defending <- actorState.coreState.defending
-                                pure (actorState, _defending)
-                           in case mActiveDefense of
-                                Just (_actorState, defending) ->
-                                  if defending.activeChallenge.id /= newTarget.challenge.id
-                                    then -- Actor is defending a different challenge — keep active defense
-                                      newTarget{challenge = defending.activeChallenge}
-                                    else newTarget
-                                Nothing -> newTarget
-                      )
-                      (current (zipDyn selectedActorId actorsMapDyn))
-                      openDefenseEvt
-                , autoOpenEvt
-                , manualResumeEvt
-                , Nothing <$ closePanelEvt
-                ]
+  return mapChange
 
-          -- Render defense widget when active, routing actions to API requests
-          widgetActionEvt <- dyn $
-            ffor (zipDyn defenseTargetDyn (zipDyn selectedActorId actorsMapDyn)) $
-              \(mTarget, (mActorId, actorsMap)) ->
-                case (mTarget, mActorId, mActorId >>= \aid -> Map.lookup aid actorsMap) of
-                  (Just target, Just actorId, Just actorState) -> do
-                    let actorStateDyn = ffor actorsMapDyn $ \m ->
-                          fromMaybe actorState (Map.lookup actorId m)
+-- | Main content wrapper hosting card editor or map widget.
+mainContentWidget
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     , MonadGame t m
+     , MonadGame t (Client m)
+     )
+  => Maybe StagingState
+  -> Dynamic t (Maybe ActorId)
+  -> Dynamic t ViewMode
+  -> m (Event t (Maybe ActorId))
+mainContentWidget mStaging selectedActorId currentViewModeDyn = componentS "main-content" mainContent $ do
+  let mapWidgetBranch = mapWidget mStaging selectedActorId
+      editorWidgetBranch = do
+        editorWidget
+        return never
 
-                    actionEvt <- defenseWidget (constDyn target) actorStateDyn
+  let viewSelectorDyn = (== ViewCardEditor) <$> currentViewModeDyn
+  initialViewIsEditor <- sample (current viewSelectorDyn)
+  let initialWidget = if initialViewIsEditor then editorWidgetBranch else mapWidgetBranch
+  widgetHoldDyn <-
+    widgetHold
+      initialWidget
+      ( ffor (updated viewSelectorDyn) $ \case
+          True -> editorWidgetBranch
+          False -> mapWidgetBranch
+      )
+  return (switch (current widgetHoldDyn))
 
-                    -- Route DefenseAction events to API requests
-                    let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
-                    _ <- requestGame defenseReqs
+-- | Handles the defense modal overlay and maps defense actions to API requests.
+defenseModalWidget
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , MonadGame t m
+     )
+  => Maybe ActorId
+  -> Dynamic t (Maybe ActorId)
+  -> Event t ActorId
+  -> Event t DefenseTarget
+  -> m ()
+defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEvt = do
+  actorsMapDyn <- askActors
+  logsDyn <- askLogs
+  rec let closePanelEvt = ffilter (\case ClosePanel -> True; EndDefense -> True; _ -> False) defenseWidgetEvt
 
-                    return actionEvt
-                  _ -> return never
+      let actorSelectedEvt = updated selectedActorId
+      pb <- getPostBuild
+      let actorSelectedOrBuildEvt = leftmost [actorSelectedEvt, initialActorId <$ pb]
+          autoOpenEvt =
+            attachWith
+              (\(actorsMap, history) mActorId -> getActiveDefenseTarget mActorId actorsMap history)
+              (current (zipDyn actorsMapDyn logsDyn))
+              actorSelectedOrBuildEvt
 
-          defenseWidgetEvt <- switchHold never widgetActionEvt
-      pure ()
+          manualResumeEvt =
+            attachWith
+              (\(actorsMap, history) actorId -> getActiveDefenseTarget (Just actorId) actorsMap history)
+              (current (zipDyn actorsMapDyn logsDyn))
+              resumeDefenseEvt
 
+      -- Defense modal state: Nothing = closed, Just target = open
+      --
+      -- When a challenge is clicked, we check if the selected actor already has
+      -- an active defense. If so, we redirect to that defense (conflict detection).
+      defenseTargetDyn <-
+        foldDyn applyDefenseEvent Nothing $
+          leftmost
+            [ Just
+                <$> attachWith
+                  ( \(mActorId, actorsMap) newTarget ->
+                      -- Conflict detection: if actor is already defending a different challenge,
+                      -- open that defense instead.
+                      let mActiveDefense = do
+                            actorId <- mActorId
+                            actorState <- Map.lookup actorId actorsMap
+                            _defending <- actorState.coreState.defending
+                            pure (actorState, _defending)
+                       in case mActiveDefense of
+                            Just (_actorState, defending) ->
+                              if defending.activeChallenge.id /= newTarget.challenge.id
+                                then -- Actor is defending a different challenge — keep active defense
+                                  newTarget{challenge = defending.activeChallenge}
+                                else newTarget
+                            Nothing -> newTarget
+                  )
+                  (current (zipDyn selectedActorId actorsMapDyn))
+                  openDefenseEvt
+            , autoOpenEvt
+            , manualResumeEvt
+            , Nothing <$ closePanelEvt
+            ]
+
+      -- Render defense widget when active, routing actions to API requests
+      widgetActionEvt <- dyn $
+        ffor (zipDyn defenseTargetDyn (zipDyn selectedActorId actorsMapDyn)) $
+          \(mTarget, (mActorId, actorsMap)) ->
+            case (mTarget, mActorId, mActorId >>= \aid -> Map.lookup aid actorsMap) of
+              (Just target, Just actorId, Just actorState) -> do
+                let actorStateDyn = ffor actorsMapDyn $ \m ->
+                      fromMaybe actorState (Map.lookup actorId m)
+
+                actionEvt <- defenseWidget (constDyn target) actorStateDyn
+
+                -- Route DefenseAction events to API requests
+                let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
+                _ <- requestGame defenseReqs
+
+                return actionEvt
+              _ -> return never
+
+      defenseWidgetEvt <- switchHold never widgetActionEvt
   pure ()
   where
     -- \| Route a DefenseAction to the appropriate API request.

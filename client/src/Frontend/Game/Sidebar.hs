@@ -5,7 +5,7 @@ module Frontend.Game.Sidebar where
 
 import Control.Monad.Fix (MonadFix)
 import Core.Primitives (ActorId)
-import Core.State (ActorState (..))
+import Core.State (ActorState (..), MapMode (..))
 import Data.Map qualified as Map
 import Data.Text qualified as T
 import Reflex.Dom.Core hiding (button)
@@ -62,6 +62,33 @@ avatar =
 actorListContainer' :: Style
 actorListContainer' = S.flex1 <> S.overflowYAuto <> S.p S.S4 <> S.flexCol <> S.gap S.S2
 
+data ViewMode
+  = ViewGridMap
+  | ViewRanksMode
+  | ViewCardEditor
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+
+-- | Styled view mode dropdown menu
+viewModeDropdownStyle :: Style
+viewModeDropdownStyle =
+  S.css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
+    <> S.border1
+    <> S.border S.Gray 10
+    <> S.rounded
+    <> S.px S.S2
+    <> S.py S.S1
+    <> S.textXs
+    <> S.text S.Yellow 5
+    <> S.fontBold
+    <> S.cls "fantasy-font"
+    <> S.cursorPointer
+    <> S.css "focus:outline-none" "outline" "none"
+    <> S.pseudo "focus" (S.border S.Yellow 7)
+
+mapModeToViewMode :: MapMode -> ViewMode
+mapModeToViewMode MapModeGrid = ViewGridMap
+mapModeToViewMode MapModeRank = ViewRanksMode
+
 sidebarWidget
   :: ( DomBuilder t m
      , PostBuild t m
@@ -72,22 +99,56 @@ sidebarWidget
      , MonadGame t m
      )
   => Dynamic t (Maybe ActorId)
-  -> m (Event t (Maybe ActorId), Event t ActorId)
-sidebarWidget selectedActorId = do
+  -> Dynamic t ViewMode
+  -> m (Event t (Maybe ActorId), Event t ActorId, Event t ViewMode)
+sidebarWidget selectedActorId currentViewMode = do
   actorsMapDyn <- askActors
+  mapModeDyn <- askMapMode
+  initialViewMode <- sample (current currentViewMode)
   divS (S.flexCol <> sidebarContainer) $ do
     -- Sidebar Header
-    divS sidebarHeader $ do
+    ddChange <- divS (sidebarHeader <> S.flexRow <> S.justifyBetween <> S.itemsCenter) $ do
       elS
         "h1"
         ( S.textXl
             <> S.fontBold
             <> S.cls "fantasy-font"
             <> textGoldBright
-            <> S.mb S.S2
         )
         $ text "CardPG"
-      divS (S.flex <> S.gap S.S2 <> S.textXs <> S.fontBold <> S.trackingWider <> S.cls "fantasy-font") $ do
+
+      let viewModeOptions =
+            Map.fromList
+              [ (ViewGridMap, "Grid Map")
+              , (ViewRanksMode, "Ranks Mode")
+              , (ViewCardEditor, "Card Editor")
+              ]
+      dd <-
+        dropdown initialViewMode (constDyn viewModeOptions) $
+          def
+            & dropdownConfig_setValue
+            .~ fmap mapModeToViewMode (updated mapModeDyn)
+            & dropdownConfig_attributes
+            .~ constDyn
+              ( "class" =: classNames viewModeDropdownStyle
+                  <> "data-testid" =: "view-mode-select"
+              )
+      return (_dropdown_change dd)
+
+    -- Links row
+    divS
+      ( S.px S.S6
+          <> S.py S.S2
+          <> S.borderB
+          <> S.border S.Gray 10
+          <> S.flex
+          <> S.gap S.S2
+          <> S.textXs
+          <> S.fontBold
+          <> S.trackingWider
+          <> S.cls "fantasy-font"
+      )
+      $ do
         let linkStyle =
               S.text S.Gray 5
                 <> S.hover textGoldBright
@@ -175,4 +236,4 @@ sidebarWidget selectedActorId = do
     let selectionChange = switchDyn (fmap fst contentEvents)
         resumeDefense = switchDyn (fmap snd contentEvents)
 
-    return (selectionChange, resumeDefense)
+    return (selectionChange, resumeDefense, ddChange)

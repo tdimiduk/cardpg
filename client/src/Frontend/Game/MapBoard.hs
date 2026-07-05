@@ -380,8 +380,6 @@ mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn = componentS "
   phaseDyn <- askPhase
   mapModeDyn <- askMapMode
 
-  renderModeToggle mapModeDyn
-
   let serverSide = do
         divS mapBoardContainer $ do
           dyn_ $ ffor mapModeDyn $ \case
@@ -394,9 +392,13 @@ mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn = componentS "
           let gridWidget = (,never) <$> renderInteractiveGridBoard selectedActorId actorsMapDyn phaseDyn
               rankWidget =
                 renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn actorsMapDyn phaseDyn
+          initialMode <- sample (current mapModeDyn)
+          let initialWidget = case initialMode of
+                MapModeGrid -> gridWidget
+                MapModeRank -> rankWidget
           rankWidgetDyn <-
             widgetHold
-              gridWidget
+              initialWidget
               ( ffor (updated mapModeDyn) $ \case
                   MapModeGrid -> gridWidget
                   MapModeRank -> rankWidget
@@ -409,60 +411,6 @@ mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn = componentS "
   let selectEvt = switch (current (fmap fst evDyn))
       rankMoveEvt = switch (current (fmap snd evDyn))
   return (selectEvt, rankMoveEvt)
-
--- | Renders the mode toggle bar at the top of the map area
-renderModeToggle
-  :: (DomBuilder t m, PostBuild t m, MonadGame t m)
-  => Dynamic t MapMode
-  -> m ()
-renderModeToggle mapModeDyn = do
-  divS
-    ( S.flexRow
-        <> S.justifyBetween
-        <> S.itemsCenter
-        <> S.p S.S2
-        <> S.css "bg-slate-900" "background-color" "#0f172a"
-        <> S.css "border-b-slate-800" "border-bottom" "1px solid #1e293b"
-    )
-    $ do
-      divS (S.text S.Gray 3 <> S.fontBold <> S.css "text-md" "font-size" "1rem") $ text "VTT Arena"
-      divS (S.flexRow <> S.gap S.S2) $ do
-        let btnStyle active =
-              S.px S.S3
-                <> S.py S.S1
-                <> S.rounded
-                <> S.text S.Gray (if active then 1 else 4)
-                <> S.css "transition-colors" "transition" "color 0.2s, background-color 0.2s"
-                <> if active
-                  then S.css "bg-blue-600" "background-color" "#2563eb" <> S.text S.White 0
-                  else
-                    S.css "bg-slate-800" "background-color" "#1e293b"
-                      <> S.hover (S.css "bg-slate-700" "background-color" "#334155")
-                      <> S.cursorPointer
-
-        (eGridBtn, _) <-
-          elDynAttr'
-            "button"
-            ( ffor mapModeDyn $ \m ->
-                "class" =: classNames (btnStyle (m == MapModeGrid))
-                  <> "type" =: "button"
-                  <> "data-testid" =: "toggle-grid-mode"
-            )
-            $ text "Grid Map"
-        (eRankBtn, _) <-
-          elDynAttr'
-            "button"
-            ( ffor mapModeDyn $ \m ->
-                "class" =: classNames (btnStyle (m == MapModeRank))
-                  <> "type" =: "button"
-                  <> "data-testid" =: "toggle-ranks-mode"
-            )
-            $ text "Ranks Mode"
-
-        let toggleGridEv = Req.SetMapMode MapModeGrid <$ domEvent Click eGridBtn
-            toggleRankEv = Req.SetMapMode MapModeRank <$ domEvent Click eRankBtn
-        _ <- requestGame (leftmost [toggleGridEv, toggleRankEv])
-        return ()
 
 -- | Renders the static Grid map board (for SSR)
 renderStaticGridBoard
