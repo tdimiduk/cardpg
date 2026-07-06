@@ -99,8 +99,8 @@ updateActors (PushUpdate{game = a}) _ = a.actors
 updateActors _ old = old
 
 updateLogs :: ServerPush -> [LogEntry] -> [LogEntry]
-updateLogs (PushNewLogs newLogs) logs = newLogs ++ logs
-updateLogs (PushWelcome{history = h}) _ = reverse h
+updateLogs (PushNewLogs newLogs) logs = logs ++ newLogs
+updateLogs (PushWelcome{history = h}) _ = h
 updateLogs (PushError _) logs = logs
 updateLogs _ logs = logs
 

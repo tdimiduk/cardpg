@@ -131,9 +131,7 @@ buildDefenseLogsMap logs =
   let foldFn acc entry = case entry.payload of
         LogDefense{challengeId} ->
           let key = tshow challengeId
-           in if Map.member key acc
-                then acc
-                else Map.insert key entry acc
+           in Map.insert key entry acc
         _ -> acc
    in foldl foldFn Map.empty logs
 
