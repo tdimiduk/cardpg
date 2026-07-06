@@ -18,6 +18,7 @@ import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
 import Frontend.Editor (editorWidget)
 import Frontend.Style.DSL qualified as S
+import Frontend.Util (widgetHoldE)
 import Reflex.Dom.Core
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse, tagRequests)
 
@@ -141,16 +142,7 @@ mapModeToViewMode MapModeGrid = ViewGridMap
 mapModeToViewMode MapModeRank = ViewRanksMode
 
 uiWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , Adjustable t m
-     , MonadIO m
-     , Prerender t m
-     , MonadGame t m
-     , MonadGame t (Client m)
-     )
+  :: (GameWidgetIO t m)
   => Maybe StagingState
   -- ^ Optional initial staging state
   -> Maybe ActorId
@@ -195,16 +187,7 @@ uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol <> S.hS
 
 -- | Interactive map board and hand widget feedback loop.
 mapWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , Adjustable t m
-     , MonadIO m
-     , Prerender t m
-     , MonadGame t m
-     , MonadGame t (Client m)
-     )
+  :: (GameWidgetIO t m)
   => Maybe StagingState
   -> Dynamic t (Maybe ActorId)
   -> m (Event t (Maybe ActorId))
@@ -212,38 +195,33 @@ mapWidget mStaging selectedActorId = do
   rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
 
       actorsMapDyn <- askActors
-      let activeActorMap = ffor2 selectedActorId actorsMapDyn $ \mId actors ->
-            case mId >>= \aid -> identifiedLookup aid actors of
-              Nothing -> Map.empty
-              Just (Identified i c) -> Map.singleton i c
+      initialSelectedActorId <- sample (current selectedActorId)
+      initialActorsMap <- sample (current actorsMapDyn)
 
-      stagingStateDynMap <- listWithKey activeActorMap $ \k vDyn ->
-        handWidget mStaging rankMoveClickEvt (Identified k <$> vDyn)
+      let initialWidget = case initialSelectedActorId >>= \aid -> identifiedLookup aid initialActorsMap of
+            Nothing -> return (constDyn Nothing, constDyn Nothing)
+            Just (Identified i c) -> do
+              let actorDyn = ffor actorsMapDyn $ \actors ->
+                    fromMaybe (Identified i c) (identifiedLookup i actors)
+              handWidget mStaging rankMoveClickEvt actorDyn
 
-      stagingStateDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
-        case Map.elems m of
-          [] -> constDyn Nothing
-          (d : _) -> fst d
+      let triggerEvt = attach (current actorsMapDyn) (updated selectedActorId)
+      handWidgetResDyn <- widgetHold initialWidget $ ffor triggerEvt $ \(actorsMap, mId) ->
+        case mId >>= \aid -> identifiedLookup aid actorsMap of
+          Nothing -> return (constDyn Nothing, constDyn Nothing)
+          Just (Identified i c) -> do
+            let actorDyn = ffor actorsMapDyn $ \actors ->
+                  fromMaybe (Identified i c) (identifiedLookup i actors)
+            handWidget mStaging rankMoveClickEvt actorDyn
 
-      rankMoveStagingDyn <- holdUniqDyn $ join $ ffor stagingStateDynMap $ \m ->
-        case Map.elems m of
-          [] -> constDyn Nothing
-          (d : _) -> snd d
+      stagingStateDyn <- holdUniqDyn (fst =<< handWidgetResDyn)
+      rankMoveStagingDyn <- holdUniqDyn (snd =<< handWidgetResDyn)
 
   return mapChange
 
 -- | Main content wrapper hosting card editor or map widget.
 mainContentWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , Adjustable t m
-     , MonadIO m
-     , Prerender t m
-     , MonadGame t m
-     , MonadGame t (Client m)
-     )
+  :: (GameWidgetIO t m)
   => Maybe StagingState
   -> Dynamic t (Maybe ActorId)
   -> Dynamic t ViewMode
@@ -268,14 +246,7 @@ mainContentWidget mStaging selectedActorId currentViewModeDyn = componentS "main
 
 -- | Handles the defense modal overlay and maps defense actions to API requests.
 defenseModalWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , Adjustable t m
-     , MonadIO m
-     , MonadGame t m
-     )
+  :: (GameWidget t m, Adjustable t m, MonadIO m)
   => Maybe ActorId
   -> Dynamic t (Maybe ActorId)
   -> Event t ActorId
@@ -304,9 +275,9 @@ defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEv
       -- Defense modal state: Nothing = closed, Just target = open
       --
       -- When a challenge is clicked, we check if the selected actor already has
-      -- an active defense. If so, we redirect to that defense (conflict detection).
+      -- an active defense. If so, we redirect to that defense (conflict detection)
       defenseTargetDyn <-
-        foldDyn applyDefenseEvent Nothing $
+        holdDyn Nothing $
           leftmost
             [ Just
                 <$> attachWith
@@ -333,25 +304,32 @@ defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEv
             , Nothing <$ closePanelEvt
             ]
 
-      -- Render defense widget when active, routing actions to API requests
-      widgetActionEvt <- dyn $
-        ffor (zipDyn defenseTargetDyn (zipDyn selectedActorId actorsMapDyn)) $
-          \(mTarget, (mActorId, actorsMap)) ->
-            case (mTarget, mActorId, mActorId >>= \aid -> Map.lookup aid actorsMap) of
-              (Just target, Just actorId, Just actorState) -> do
-                let actorStateDyn = ffor actorsMapDyn $ \m ->
-                      fromMaybe actorState (Map.lookup actorId m)
+      let triggerDyn = zipDyn defenseTargetDyn selectedActorId
+          triggerWithMapEvt = attach (current actorsMapDyn) (updated triggerDyn)
 
-                actionEvt <- defenseWidget (constDyn target) actorStateDyn
+      initialTrigger <- sample (current triggerDyn)
+      initialActorsMap <- sample (current actorsMapDyn)
 
-                -- Route DefenseAction events to API requests
-                let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
-                _ <- requestGame defenseReqs
+      let renderDefense target actorId actorState = do
+            let actorStateDyn = ffor actorsMapDyn $ \m ->
+                  fromMaybe actorState (Map.lookup actorId m)
+            actionEvt <- defenseWidget (constDyn target) actorStateDyn
+            let defenseReqs = fmapMaybe (toDefenseRequest actorId target) actionEvt
+            _ <- requestGame defenseReqs
+            return actionEvt
 
-                return actionEvt
-              _ -> return never
+      let initialWidget = case initialTrigger of
+            (Just target, Just actorId)
+              | Just actorState <- Map.lookup actorId initialActorsMap ->
+                  renderDefense target actorId actorState
+            _ -> return never
 
-      defenseWidgetEvt <- switchHold never widgetActionEvt
+      defenseWidgetEvt <- widgetHoldE initialWidget $ ffor triggerWithMapEvt $ \(actorsMap, (mTarget, mActorId)) ->
+        case (mTarget, mActorId) of
+          (Just target, Just actorId)
+            | Just actorState <- Map.lookup actorId actorsMap ->
+                renderDefense target actorId actorState
+          _ -> return never
   pure ()
   where
     -- \| Route a DefenseAction to the appropriate API request.
@@ -364,9 +342,6 @@ defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEv
         Just (Req.EndDefense actorId)
       ClosePanel ->
         Nothing -- UI-only: no API call
-
-    -- \| Apply a defense open/close event to the current state.
-    applyDefenseEvent mNew _old = mNew
 
 headWidget :: (DomBuilder t m) => m ()
 headWidget = do

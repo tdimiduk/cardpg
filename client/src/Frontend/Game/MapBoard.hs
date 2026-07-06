@@ -362,15 +362,7 @@ renderStaticSvg actorsMapDyn = do
 
 -- | Map VTT Battlemap board widget
 mapBoardWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadIO m
-     , Prerender t m
-     , MonadGame t m
-     , MonadGame t (Client m)
-     )
+  :: (GameWidgetIO t m)
   => Dynamic t (Maybe ActorId) -- Selected Actor
   -> Dynamic t (Maybe StagingState) -- Active Staging State
   -> Dynamic t (Maybe RankMoveStaging) -- Active Rank Move Staging State
@@ -590,16 +582,10 @@ getRankBoardClick ev = liftJSM $ do
 -- | Renders the interactive Ranks board
 renderInteractiveRankBoard
   :: forall t m
-   . ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadIO m
-     , MonadGame t m
+   . ( GameWidgetIO t m
      , PerformEvent t m
      , TriggerEvent t m
      , MonadJSM (Performable m)
-     , MonadGame t (Client m)
      )
   => Dynamic t (Maybe ActorId)
   -> Dynamic t (Maybe StagingState)
@@ -788,16 +774,10 @@ renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn ac
 
 -- | Renders the fully interactive grid board with JSM events and dispatch triggers
 renderInteractiveGridBoard
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadIO m
-     , MonadGame t m
+  :: ( GameWidgetIO t m
      , PerformEvent t m
      , TriggerEvent t m
      , MonadJSM (Performable m)
-     , MonadGame t (Client m)
      )
   => Dynamic t (Maybe ActorId)
   -> Dynamic t (Map.Map ActorId ActorState)

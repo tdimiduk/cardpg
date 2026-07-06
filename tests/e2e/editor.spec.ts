@@ -7,12 +7,12 @@ test("can open editor and save a card with validation checks", async ({
   await page.goto("/");
 
   // Verify the header is visible
-  await expect(page.locator("text=CardPG Game Console")).toBeVisible();
+  await expect(page.locator("text=CardPG")).toBeVisible();
 
-  // Click "Open Card Editor"
-  const openEditorButton = page.locator("text=Open Card Editor");
-  await expect(openEditorButton).toBeVisible();
-  await openEditorButton.click();
+  // Open Card Editor via the view mode dropdown
+  const viewModeSelect = page.getByTestId("view-mode-select");
+  await expect(viewModeSelect).toBeVisible();
+  await viewModeSelect.selectOption({ label: "Card Editor" });
 
   // Expect the card editor is visible
   await expect(page.locator("text=Card Authoring Tool")).toBeVisible();

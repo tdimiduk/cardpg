@@ -20,12 +20,7 @@ import Frontend.UI.Button
 
 phaseDisplayWidget
   :: forall t m
-   . ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadGame t m
-     )
+   . (GameWidget t m)
   => m ()
 phaseDisplayWidget = do
   phaseDyn <- askPhase
@@ -55,12 +50,7 @@ phaseDisplayWidget = do
 
 planningControls
   :: forall t m
-   . ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadGame t m
-     )
+   . (GameWidget t m)
   => m ()
 planningControls = do
   readyCountDyn <- askReadyCount
@@ -79,7 +69,7 @@ planningControls = do
 
 resolutionControls
   :: forall t m
-   . (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
+   . (GameWidget t m)
   => m ()
 resolutionControls = do
   divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do

@@ -6,10 +6,20 @@ import Data.Set qualified as Set
 import Data.Text (Text)
 import Reflex.Dom.Core
 
-import Api.Request
+-- | widgetHold that automatically flattens inner events.
+widgetHoldE
+  :: (Reflex t, Adjustable t m, MonadHold t m)
+  => m (Event t a)
+  -> Event t (m (Event t a))
+  -> m (Event t a)
+widgetHoldE initial change = switch . current <$> widgetHold initial change
 
-type ApiRequester t m = (ApiRequester' t m, ApiRequester' t (Client m))
-type ApiRequester' t m = (Requester t m, Request m ~ ApiRequest, Response m ~ Either Text)
+-- | dyn that automatically flattens inner events.
+dynE
+  :: (Reflex t, Adjustable t m, NotReady t m, PostBuild t m, MonadHold t m)
+  => Dynamic t (m (Event t a))
+  -> m (Event t a)
+dynE d = dyn d >>= switchHold never
 
 -- | Statefully maps a list of items to stable, monotonic sequence numbers.
 -- Preserves the sequence number for items already in the list, and appends

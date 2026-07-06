@@ -23,13 +23,7 @@ import Frontend.Style.Layout
 import Frontend.UI.Button
 
 consequencesWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , Adjustable t m
-     , MonadGame t m
-     )
+  :: (GameWidget t m, Adjustable t m)
   => ActorId
   -> Dynamic t ActorState
   -> m ()

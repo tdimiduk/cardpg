@@ -90,14 +90,7 @@ mapModeToViewMode MapModeGrid = ViewGridMap
 mapModeToViewMode MapModeRank = ViewRanksMode
 
 sidebarWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , Adjustable t m
-     , Prerender t m
-     , MonadGame t m
-     )
+  :: (GameWidget t m, Adjustable t m, Prerender t m)
   => Dynamic t (Maybe ActorId)
   -> Dynamic t ViewMode
   -> m (Event t (Maybe ActorId), Event t ActorId, Event t ViewMode)

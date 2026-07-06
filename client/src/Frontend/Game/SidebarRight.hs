@@ -28,6 +28,7 @@ import Frontend.Render.Common (IconMode (..), renderResourceType)
 import Frontend.Style.Common (Style, classNames, divS, elS, testId, textGoldBright)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
+import Frontend.Util (dynE)
 
 -- | Sidebar container (Right)
 sidebarRightContainer :: Style
@@ -73,17 +74,11 @@ chatArea =
 -- | Main sidebar widget. Now returns an Event t DefenseTarget for when
 -- the user clicks a challenge log entry to open the defense panel.
 sidebarRightWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadGame t m
-     )
+  :: (GameWidget t m)
   => Dynamic t (Maybe ActorId)
   -> m (Event t DefenseTarget)
 sidebarRightWidget selectedActorId = do
   logsDyn <- askLogs
-  actorsMapDyn <- askActors
   divS sidebarRightContainer $ do
     -- Phase Display
     phaseDisplayWidget
@@ -110,10 +105,12 @@ sidebarRightWidget selectedActorId = do
         -- filter defense logs from the main list.
         groupedLogsDyn = fmap filterDefenseLogs logsDyn
 
+    let defenseLogsMapDyn = fmap buildDefenseLogsMap logsDyn
+
     openDefenseEvt <- elAttr "div" ("class" =: logAreaCls <> testId "game-log") $ do
       -- Render each log entry, collecting any "open defense" events.
       openEvtsDyn <- simpleList groupedLogsDyn $ \logEntryDyn ->
-        renderLogEntry logsDyn actorsMapDyn logEntryDyn
+        renderLogEntry defenseLogsMapDyn logEntryDyn
       return $ switchDyn (fmap leftmost openEvtsDyn)
 
     divS chatArea $ chatInputRequesting selectedActorId
@@ -128,16 +125,17 @@ filterDefenseLogs = filter (not . isDefenseLog)
       LogDefense{} -> True
       _ -> False
 
--- | Find the most recent LogDefense entry for a given challenge ID.
-findLatestDefenseLog :: [LogEntry] -> T.Text -> Maybe LogEntry
-findLatestDefenseLog logs challengeIdText =
-  case filter matchesChallenge logs of
-    [] -> Nothing
-    (latest : _) -> Just latest
-  where
-    matchesChallenge entry = case entry.payload of
-      LogDefense{challengeId} -> tshow challengeId == challengeIdText
-      _ -> False
+-- | Build a lookup map of challenge ID to the latest LogDefense entry.
+buildDefenseLogsMap :: [LogEntry] -> Map.Map T.Text LogEntry
+buildDefenseLogsMap logs =
+  let foldFn acc entry = case entry.payload of
+        LogDefense{challengeId} ->
+          let key = tshow challengeId
+           in if Map.member key acc
+                then acc
+                else Map.insert key entry acc
+        _ -> acc
+   in foldl foldFn Map.empty logs
 
 -- | Render a single log entry. Challenge entries are clickable and return
 -- an Event t DefenseTarget for opening the defense panel.
@@ -146,107 +144,90 @@ renderLogEntry
      , PostBuild t m
      , MonadHold t m
      )
-  => Dynamic t [LogEntry]
-  -- ^ All logs (for finding defense logs related to challenges)
-  -> Dynamic t (Map.Map ActorId ActorState)
-  -- ^ Actor map (for resolving attacker names and card stacks)
+  => Dynamic t (Map.Map T.Text LogEntry)
+  -- ^ Defense logs lookup map
   -> Dynamic t LogEntry
   -> m (Event t DefenseTarget)
-renderLogEntry allLogsDyn actorsMapDyn logDyn =
-  dyn (ffor (zipDyn logDyn (zipDyn allLogsDyn actorsMapDyn)) renderOneEntry)
-    >>= switchHold never
-  where
-    renderOneEntry (logEntry, (allLogs, actorsMap)) = case logEntry.payload of
-      -- Challenge entries: clickable, return DefenseTarget
-      LogChallenge challenge plannedAction -> do
-        let actorId = senderActorId logEntry.sender
-            attackerName = senderName logEntry.sender
-            -- Resolve the actual card stack from the attacker's state
-            attackStack = case actorId >>= \aid -> Map.lookup aid actorsMap of
-              Just _ -> plannedActionCards plannedAction
-              Nothing -> []
-            defenseTarget =
-              DefenseTarget
-                { challenge = challenge
-                , attackStack = attackStack
-                , attackerName = attackerName
-                }
-            -- Look up associated defense log for inline display
-            mDefenseLog = findLatestDefenseLog allLogs (tshow challenge.id)
+renderLogEntry defenseLogsMapDyn logDyn = do
+  dynE $ ffor logDyn $ \logEntry -> case logEntry.payload of
+    LogChallenge challenge plannedAction -> do
+      let attackerName = senderName logEntry.sender
+          attackStack = plannedActionCards plannedAction
+          defenseTarget =
+            DefenseTarget
+              { challenge = challenge
+              , attackStack = attackStack
+              , attackerName = attackerName
+              }
+          challengeIdText = tshow challenge.id
+          defenseLogDyn = fmap (Map.lookup challengeIdText) defenseLogsMapDyn
 
-        challengeLogItem defenseTarget mDefenseLog
-
-      -- Defense entries: rendered inline, skip here
-      LogDefense{} ->
-        return never
-      -- Info entries
-      LogInfo c -> do
-        divS
-          ( S.textXs
-              <> S.text S.Gray 5
-              <> S.italic
+      challengeLogItem defenseTarget defenseLogDyn
+    LogDefense{} ->
+      return never
+    LogInfo c -> do
+      divS
+        ( S.textXs
+            <> S.text S.Gray 5
+            <> S.italic
+            <> S.p S.S2
+            <> S.borderB
+            <> S.border S.Gray 10
+        )
+        $ text c
+      return never
+    LogChat c -> do
+      let chatStyle =
+            S.bgAlpha S.Gray 10 50
+              <> S.rounded
               <> S.p S.S2
-              <> S.borderB
-              <> S.border S.Gray 10
-          )
-          $ text c
-        return never
-
-      -- Chat entries
-      LogChat c -> do
-        let chatStyle =
-              S.bgAlpha S.Gray 10 50
-                <> S.rounded
-                <> S.p S.S2
-                <> S.css "animate-fade-in" "animation" "fadeIn 0.2s"
+              <> S.css "animate-fade-in" "animation" "fadeIn 0.2s"
+              <> S.flex
+              <> S.gap S.S2
+          chatCls = classNames chatStyle
+      elAttr
+        "div"
+        ( "class" =: chatCls
+            <> testId "log-entry-chat"
+        )
+        $ do
+          elS
+            "div"
+            ( S.w S.S6
+                <> S.h S.S6
+                <> S.roundedFull
+                <> S.bg S.Gray 9
                 <> S.flex
-                <> S.gap S.S2
-        let chatCls = classNames chatStyle
-        elAttr
-          "div"
-          ( "class" =: chatCls
-              <> testId "log-entry-chat"
-          )
-          $ do
+                <> S.itemsCenter
+                <> S.justifyCenter
+                <> S.shrink0
+            )
+            $ text "Bot"
+          divS S.flex1 $ do
             elS
               "div"
-              ( S.w S.S6
-                  <> S.h S.S6
-                  <> S.roundedFull
-                  <> S.bg S.Gray 9
-                  <> S.flex
-                  <> S.itemsCenter
-                  <> S.justifyCenter
-                  <> S.shrink0
+              ( S.fontSize 10
+                  <> S.fontBold
+                  <> S.text S.Gray 5
+                  <> S.mb S.S0
               )
-              $ text "Bot"
-            divS S.flex1 $ do
-              elS
-                "div"
-                ( S.fontSize 10
-                    <> S.fontBold
-                    <> S.text S.Gray 5
-                    <> S.mb S.S0
-                )
-                $ text (renderSender logEntry.sender)
-              let msgCls = classNames (S.textSm <> S.text S.Gray 2)
-              elAttr "div" ("class" =: msgCls <> testId "log-entry-message") $
-                text c
-        return never
-
-      -- Error entries
-      LogError c -> do
-        divS
-          ( S.textXs
-              <> S.textWhite
-              <> S.bgAlpha S.Red 11 50
-              <> S.fontBold
-              <> S.p S.S2
-              <> S.borderB
-              <> S.border S.Red 10
-          )
-          $ text c
-        return never
+              $ text (renderSender logEntry.sender)
+            let msgCls = classNames (S.textSm <> S.text S.Gray 2)
+            elAttr "div" ("class" =: msgCls <> testId "log-entry-message") $
+              text c
+      return never
+    LogError c -> do
+      divS
+        ( S.textXs
+            <> S.textWhite
+            <> S.bgAlpha S.Red 11 50
+            <> S.fontBold
+            <> S.p S.S2
+            <> S.borderB
+            <> S.border S.Red 10
+        )
+        $ text c
+      return never
 
 -- | Render a clickable challenge log entry.
 -- Shows the attack details and any associated defense summary inline.
@@ -254,9 +235,9 @@ renderLogEntry allLogsDyn actorsMapDyn logDyn =
 challengeLogItem
   :: (DomBuilder t m, PostBuild t m)
   => DefenseTarget
-  -> Maybe LogEntry
+  -> Dynamic t (Maybe LogEntry)
   -> m (Event t DefenseTarget)
-challengeLogItem defenseTarget mDefenseLog = do
+challengeLogItem defenseTarget mDefenseLogDyn = do
   let challenge = defenseTarget.challenge
 
   -- Challenge container — clickable, styled as a red-accented dark stone slab
@@ -307,7 +288,9 @@ challengeLogItem defenseTarget mDefenseLog = do
       text ("By: " <> defenseTarget.attackerName)
 
     -- Inline defense summary (if there is one)
-    maybe blank renderInlineDefenseSummary mDefenseLog
+    dyn_ $ ffor mDefenseLogDyn $ \case
+      Nothing -> blank
+      Just defLog -> renderInlineDefenseSummary defLog
 
     -- Hover hint
     divS
@@ -391,7 +374,7 @@ renderInlineDefenseSummary defLog = case defLog.payload of
   _ -> blank
 
 chatInputRequesting
-  :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m, MonadGame t m)
+  :: (GameWidget t m)
   => Dynamic t (Maybe ActorId) -> m ()
 chatInputRequesting selectedActorId = do
   let classListCls = classNames classList

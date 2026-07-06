@@ -16,6 +16,7 @@ processes:
       timeout_seconds: 5
     availability:
       restart: "no"
+      exit_on_end: true
     ready_log_line: "Starting CardPG Server on port 3001"
 
   caddy:
@@ -28,6 +29,7 @@ processes:
       timeout_seconds: 5
     availability:
       restart: "no"
+      exit_on_end: true
     readiness_probe:
       http_get:
         host: 127.0.0.1

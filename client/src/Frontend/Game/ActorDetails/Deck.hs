@@ -21,13 +21,7 @@ import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
 
 deckWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , Prerender t m
-     , MonadFix m
-     , MonadGame t m
-     )
+  :: (GameWidget t m, Prerender t m)
   => ActorId
   -> Dynamic t ActorState
   -> m ()
@@ -85,9 +79,10 @@ deckWidget actorId actorState = do
 
         elS "div" countStyle $ dynText $ fmap (tshow . length . (.discard)) cs
 
-        widgetHold_ buttonSpacer $ ffor (updated cs) $ \s -> case s.discard of
-          [] -> buttonSpacer
-          _ -> reshuffleButtonRequesting actorId
+        hasDiscardsDyn <- holdUniqDyn $ fmap (not . null . (.discard)) cs
+        dyn_ $ ffor hasDiscardsDyn $ \case
+          False -> buttonSpacer
+          True -> reshuffleButtonRequesting actorId
 
         pure viewDiscardClick'
 

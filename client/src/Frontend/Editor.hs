@@ -1,6 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecursiveDo #-}
 
 module Frontend.Editor
   ( editorWidget
@@ -40,7 +39,7 @@ import Frontend.Card
   , renderNatureCardWith
   , renderTalentCardWith
   )
-import Frontend.Game.Class (MonadGame (..))
+import Frontend.Game.Class (GameWidget, MonadGame (..))
 import Frontend.Style (Style)
 import Frontend.Style qualified as Style
 import Frontend.Style.Common (classNames, componentS, divS, elS)
@@ -105,110 +104,105 @@ parseSingleRule = parseText
 -- | Visual Card Editor
 editorWidget
   :: forall t m
-   . ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadGame t m
-     )
+   . (GameWidget t m)
   => m ()
 editorWidget = componentS
   "card-editor"
   (S.flexRow <> S.hFull <> S.gap S.S4 <> S.p S.S4 <> S.cls "cursed-lava-stone")
   $ do
-    rec -- Left Form Panel
-        (saveTriggerEvt, cardDyn) <- colWith
-          ( S.w (S.Rem 28)
-              <> S.gap S.S3
-              <> S.overflowYAuto
-              <> S.pr S.S2
-              <> S.cls "obsidian-panel"
-              <> S.p S.S4
-              <> S.rounded
+    -- Left Form Panel
+    (saveTriggerEvt, cardDyn) <- colWith
+      ( S.w (S.Rem 28)
+          <> S.gap S.S3
+          <> S.overflowYAuto
+          <> S.pr S.S2
+          <> S.cls "obsidian-panel"
+          <> S.p S.S4
+          <> S.rounded
+      )
+      $ do
+        elS
+          "h1"
+          ( S.textLg
+              <> S.fontBold
+              <> S.cls "fantasy-font"
+              <> S.css "text-gold-bright" "color" "var(--color-gold-bright)"
           )
-          $ do
-            elS
-              "h1"
-              ( S.textLg
-                  <> S.fontBold
-                  <> S.cls "fantasy-font"
-                  <> S.css "text-gold-bright" "color" "var(--color-gold-bright)"
-              )
-              $ text "Card Authoring Tool"
+          $ text "Card Authoring Tool"
 
-            -- Category selector
-            elS "label" (S.textSm <> S.fontBold <> S.text S.Gray 5 <> S.mb S.S1) $ text "Card Type"
-            let categories =
-                  Map.fromList
-                    [ (CatCore, "Core Card")
-                    , (CatItem, "Item Card")
-                    , (CatNature, "Nature Card")
-                    , (CatTalent, "Talent Card")
-                    , (CatEncounter, "Encounter Card")
-                    , (CatConsequence, "Consequence Card")
-                    ]
-            catDropdown <-
-              dropdown CatCore (constDyn categories) $
-                def
-                  & dropdownConfig_attributes
-                  .~ constDyn ("class" =: classNames inputStyle)
-            let catDyn = _dropdown_value catDropdown
+        -- Category selector
+        elS "label" (S.textSm <> S.fontBold <> S.text S.Gray 5 <> S.mb S.S1) $ text "Card Type"
+        let categories =
+              Map.fromList
+                [ (CatCore, "Core Card")
+                , (CatItem, "Item Card")
+                , (CatNature, "Nature Card")
+                , (CatTalent, "Talent Card")
+                , (CatEncounter, "Encounter Card")
+                , (CatConsequence, "Consequence Card")
+                ]
+        catDropdown <-
+          dropdown CatCore (constDyn categories) $
+            def
+              & dropdownConfig_attributes
+              .~ constDyn ("class" =: classNames inputStyle)
+        let catDyn = _dropdown_value catDropdown
 
-            -- Common Fields
-            nameDyn <- textField "Card Name" "e.g., Strike"
-            sourceFileDyn <- textField "Target File Path" "e.g., pc/vallhach.yaml"
+        -- Common Fields
+        nameDyn <- textField "Card Name" "e.g., Strike"
+        sourceFileDyn <- textField "Target File Path" "e.g., pc/vallhach.yaml"
 
-            -- Render sub-form reactively
-            cardFieldsDyn <- widgetHold (coreFieldsWidget nameDyn) $ ffor (updated catDyn) $ \case
-              CatCore -> coreFieldsWidget nameDyn
-              CatItem -> itemFieldsWidget nameDyn
-              CatNature -> natureFieldsWidget nameDyn
-              CatTalent -> talentFieldsWidget nameDyn
-              CatEncounter -> encounterFieldsWidget nameDyn
-              CatConsequence -> consequenceFieldsWidget nameDyn
+        -- Render sub-form reactively
+        cardFieldsDyn <- widgetHold (coreFieldsWidget nameDyn) $ ffor (updated catDyn) $ \case
+          CatCore -> coreFieldsWidget nameDyn
+          CatItem -> itemFieldsWidget nameDyn
+          CatNature -> natureFieldsWidget nameDyn
+          CatTalent -> talentFieldsWidget nameDyn
+          CatEncounter -> encounterFieldsWidget nameDyn
+          CatConsequence -> consequenceFieldsWidget nameDyn
 
-            let customCardDyn = fst =<< cardFieldsDyn
-                hasErrorDyn = snd =<< cardFieldsDyn
+        let customCardDyn = fst =<< cardFieldsDyn
+            hasErrorDyn = snd =<< cardFieldsDyn
 
-            -- Save Button
-            saveClick <-
-              button
-                (def :: ButtonConfig t)
-                  { variant = VariantPrimary
-                  , fullWidth = True
-                  , size = SizeMedium
-                  , extraStyle = S.mt S.S4
-                  , disabled = hasErrorDyn
-                  }
-                $ text "Save Card to DB"
+        -- Save Button
+        saveClick <-
+          button
+            (def :: ButtonConfig t)
+              { variant = VariantPrimary
+              , fullWidth = True
+              , size = SizeMedium
+              , extraStyle = S.mt S.S4
+              , disabled = hasErrorDyn
+              }
+            $ text "Save Card to DB"
 
-            let jsonCardDyn = fmap toJSON customCardDyn
-                saveEvt = tag (current (zipDyn jsonCardDyn sourceFileDyn)) saveClick
+        let jsonCardDyn = fmap toJSON customCardDyn
+            saveEvt = tag (current (zipDyn jsonCardDyn sourceFileDyn)) saveClick
 
-            return (saveEvt, customCardDyn)
+        return (saveEvt, customCardDyn)
 
-        -- Right Preview Panel
-        colWith
-          ( S.flex1
-              <> S.flexCol
-              <> S.itemsCenter
-              <> S.justifyCenter
-              <> S.bgAlpha S.Black 12 50
-              <> S.rounded
-              <> S.p S.S4
-          )
-          $ do
-            elS "h2" (S.textSm <> S.fontBold <> S.text S.Gray 5 <> S.uppercase <> S.mb S.S4 <> S.trackingWider) $
-              text "Live Preview"
-            divS Style.standardCardSize $ do
-              dyn_ $ ffor cardDyn $ \card -> do
-                case card of
-                  CustomCore cc -> renderCoreCardWith def cc
-                  CustomItem ic -> renderItemCardWith def ic
-                  CustomNature nc -> renderNatureCardWith def nc
-                  CustomTalent tc -> renderTalentCardWith def tc
-                  CustomConsequence cc -> renderConsequenceCardWith def cc
-                  CustomEncounter ec -> renderEncounterCardWith def ec
+    -- Right Preview Panel
+    colWith
+      ( S.flex1
+          <> S.flexCol
+          <> S.itemsCenter
+          <> S.justifyCenter
+          <> S.bgAlpha S.Black 12 50
+          <> S.rounded
+          <> S.p S.S4
+      )
+      $ do
+        elS "h2" (S.textSm <> S.fontBold <> S.text S.Gray 5 <> S.uppercase <> S.mb S.S4 <> S.trackingWider) $
+          text "Live Preview"
+        divS Style.standardCardSize $ do
+          dyn_ $ ffor cardDyn $ \card -> do
+            case card of
+              CustomCore cc -> renderCoreCardWith def cc
+              CustomItem ic -> renderItemCardWith def ic
+              CustomNature nc -> renderNatureCardWith def nc
+              CustomTalent tc -> renderTalentCardWith def tc
+              CustomConsequence cc -> renderConsequenceCardWith def cc
+              CustomEncounter ec -> renderEncounterCardWith def ec
 
     -- Network Response handler
     responses <- requestGame $ uncurry SaveCustomCard <$> saveTriggerEvt

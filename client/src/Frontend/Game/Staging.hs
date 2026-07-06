@@ -49,12 +49,7 @@ data StagingEvents t = StagingEvents
 -- | The Staging Widget handles the UI for building a plan (ACTION + RESOURCE + TARGETS)
 -- It appears as an overlay when an action card is selected.
 stagingWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadGame t m
-     )
+  :: (GameWidget t m)
   => ActorId
   -> Dynamic t ActionStack
   -> Dynamic t PlanValidation
@@ -147,20 +142,20 @@ stagedCardsRow actionStackDyn = do
     rowWith (S.itemsCenter <> plannedCardOverlap) $ do
       clickResourceMapDyn <- listWithKey stagedResourceMapDyn $ \_key rDyn -> do
         let stagedResourceCls = classNames stagedResourceCard
-        (eRes, _) <- elDynAttr'
+        (eRes, _) <- elAttr'
           "div"
-          (constDyn ("class" =: stagedResourceCls <> testId "staged-resource"))
+          ("class" =: stagedResourceCls <> testId "staged-resource")
           $ do
             dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) rDyn
-        return (switchDyn $ fmap (\r -> tag (constant r.id) (domEvent Click eRes)) rDyn)
+        return (tag (current ((.id) <$> rDyn)) (domEvent Click eRes))
 
       let clickResource = switchDyn (leftmost . Map.elems <$> clickResourceMapDyn)
 
       -- Action card (top/right)
       let stagedActionCls = classNames stagedActionCard
-      (eAct, _) <- elDynAttr'
+      (eAct, _) <- elAttr'
         "div"
-        (constDyn ("class" =: stagedActionCls <> testId "staged-action"))
+        ("class" =: stagedActionCls <> testId "staged-action")
         $ do
           dyn_ $ fmap (renderCoreCardWith (CardSettings CardFull) . (.content)) stagedActionDyn
       let clickAction = domEvent Click eAct

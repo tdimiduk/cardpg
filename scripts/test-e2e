@@ -21,9 +21,16 @@ while [[ $# -gt 0 ]]; do
 done
 
 if $MANAGE_SERVERS; then
+  if [ ! -d "result" ]; then
+    echo "ERROR: 'result' directory not found."
+    echo "The E2E test stack runs against the production Nix build, which is served by Caddy."
+    echo "Please build the production frontend before running E2E tests:"
+    echo "  nix build .#reflex-client-prod"
+    exit 1
+  fi
   echo "Starting E2E test stack with process-compose..."
   # Run process-compose, exit when playwright finishes
-  export PLAYWRIGHT_ARGS="${@}"
+  export PLAYWRIGHT_ARGS="${*}"
   exec process-compose up -f tests/e2e/process-compose.yaml -t=false --no-server
 else
   echo "Running Playwright tests (expecting servers already running)..."

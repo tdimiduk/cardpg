@@ -39,7 +39,7 @@ import Api.Types (Phase (..))
 import Frontend.Style qualified as FS
 import Frontend.Style.Common (Style, classNames, componentS, divS, textGoldBright)
 import Frontend.Style.DSL qualified as S
-import Frontend.Util (buildStableKeyMap)
+import Frontend.Util (buildStableKeyMap, dynE)
 
 -- | Styles for hand card hover interactions (transformer style)
 cardHoverStyle :: Style
@@ -61,13 +61,7 @@ resourceCandidateStyle =
     <> S.cursorPointer
 
 handWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadIO m
-     , MonadGame t m
-     )
+  :: (GameWidget t m, MonadIO m)
   => Maybe StagingState
   -- ^ Optional initial staging state
   -> Event t BattleRank
@@ -91,16 +85,15 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
           (leftmost [clearEvt, void rankMoveClickEvt])
 
       -- Rank Move Staging logic
-      rec rankMoveUpdateEvt <-
-            return $
-              leftmost
-                [ StartRankMove <$> rankMoveClickEvt
-                , SelectDiscardId <$> discardEvt
-                , ClearRankMove <$ cancelRankMoveEvt
-                , ClearRankMove <$ commitRankMoveEvt
-                , ClearRankMove <$ selectEvt
-                ]
-          rankMoveStaging <- foldDyn applyRankMoveUpdate Nothing rankMoveUpdateEvt
+      let rankMoveUpdateEvt =
+            leftmost
+              [ StartRankMove <$> rankMoveClickEvt
+              , SelectDiscardId <$> discardEvt
+              , ClearRankMove <$ cancelRankMoveEvt
+              , ClearRankMove <$ commitRankMoveEvt
+              , ClearRankMove <$ selectEvt
+              ]
+      rankMoveStaging <- foldDyn applyRankMoveUpdate Nothing rankMoveUpdateEvt
 
       -- Derived View Models
       let plannedActionDyn = (.coreState.planned) <$> safeActor
@@ -126,8 +119,8 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
             -- Layer 1: Main Layout (Flex Row) merged into parent
             (sel, tog, disc, overlayEvts, rankMoveOverlayEvts) <- do
               -- Left: Planned Action or No Action Button
-              noActionClickDyn <- divS (S.flex1 <> S.flex <> S.justifyCenter) $ do
-                dyn $ ffor ((,,,) <$> actorId <*> plannedActionDyn <*> stagingState <*> phaseDyn) $ \case
+              noActionClick <- divS (S.flex1 <> S.flex <> S.justifyCenter) $ do
+                dynE $ ffor ((,,,) <$> actorId <*> plannedActionDyn <*> stagingState <*> phaseDyn) $ \case
                   (_, Nothing, Nothing, Planning) -> do
                     button
                       def
@@ -146,8 +139,6 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
                   _ -> do
                     blank
                     return never
-
-              noActionClick <- switchHold never noActionClickDyn
 
               -- Dispatch Pass request when "No Action" clicked
               let passReq = attachWith (\aid _ -> Req.Pass aid) (current actorId) noActionClick
@@ -176,15 +167,11 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
 
               return (s, t, d, oEvts, rmsOverlay)
 
-            -- Flatten events
-            cancel <- switchHold never (fmap (.cancel) overlayEvts)
-            unstageResource' <- switchHold never (fmap (.unstage) overlayEvts)
-            commit <- switchHold never (fmap (.commit) overlayEvts)
-
-            (cancelRankMove, commitRankMove) <- do
-              c1 <- switchHold never (fmap fst rankMoveOverlayEvts)
-              c2 <- switchHold never (fmap snd rankMoveOverlayEvts)
-              return (c1, c2)
+            cancel <- switchHold never ((.cancel) <$> overlayEvts)
+            unstageResource' <- switchHold never ((.unstage) <$> overlayEvts)
+            commit <- switchHold never ((.commit) <$> overlayEvts)
+            cancelRankMove <- switchHold never (fst <$> rankMoveOverlayEvts)
+            commitRankMove <- switchHold never (snd <$> rankMoveOverlayEvts)
 
             return
               ( sel
@@ -198,7 +185,7 @@ handWidget mInitialStaging rankMoveClickEvt actorDyn = do
   return (stagingState, rankMoveStaging)
 
 rankMoveStagingWidget
-  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
+  :: (GameWidget t m)
   => ActorId
   -> Dynamic t RankMoveStaging
   -> Dynamic t ActorState

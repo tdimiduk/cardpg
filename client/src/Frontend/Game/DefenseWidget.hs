@@ -194,12 +194,7 @@ severityMiniBtn =
 --   - Rendering this widget conditionally (when there is an active DefenseTarget)
 --   - Routing DefenseAction events to API requests
 defenseWidget
-  :: ( DomBuilder t m
-     , PostBuild t m
-     , MonadHold t m
-     , MonadFix m
-     , MonadGame t m
-     )
+  :: (GameWidget t m)
   => Dynamic t DefenseTarget
   -- ^ The challenge being defended against
   -> Dynamic t ActorState
@@ -236,7 +231,7 @@ defenseWidget targetDyn actorDyn = do
 
 -- | Header with title and close button.
 widgetHeader
-  :: (DomBuilder t m, PostBuild t m, MonadGame t m, MonadHold t m, MonadFix m) => m (Event t ())
+  :: (GameWidget t m) => m (Event t ())
 widgetHeader = divS headerBar $ do
   divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
     divS (S.w S.S4 <> S.h S.S4 <> S.text S.Blue 4) iconDefense
@@ -457,7 +452,7 @@ renderDefenseCardChip (Identified _ card) =
 
 -- | Two-column action bar: Flip Card + Take Consequence.
 defenseActionBar
-  :: (DomBuilder t m, PostBuild t m, MonadGame t m, MonadHold t m, MonadFix m)
+  :: (GameWidget t m)
   => Dynamic t ActorState
   -> m (Event t DefenseAction)
 defenseActionBar _actorDyn = do
@@ -514,7 +509,7 @@ defenseActionBar _actorDyn = do
 
 -- | Footer with "Clear / End" link.
 defenseFooter
-  :: (DomBuilder t m, PostBuild t m, MonadGame t m, MonadHold t m, MonadFix m)
+  :: (GameWidget t m)
   => m (Event t DefenseAction)
 defenseFooter = do
   divS

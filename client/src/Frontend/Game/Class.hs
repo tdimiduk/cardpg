@@ -13,6 +13,8 @@
 module Frontend.Game.Class
   ( SessionState (SessionState)
   , MonadGame (..)
+  , GameWidget
+  , GameWidgetIO
   , GameT (..)
   , runGameT
   , askReadyCount
@@ -52,6 +54,10 @@ class (Monad m) => MonadGame t m | m -> t where
   askPhase :: m (Dynamic t Phase)
   askMapMode :: m (Dynamic t MapMode)
   requestGame :: Event t (ApiRequest a) -> m (Event t (Either Text a))
+
+type GameWidget t m = (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
+type GameWidgetIO t m =
+  (GameWidget t m, MonadIO m, Adjustable t m, Prerender t m, MonadGame t (Client m))
 
 -- | Auto-derived derived stats
 askReadyCount :: (MonadGame t m, Reflex t) => m (Dynamic t Int)

@@ -21,8 +21,8 @@ main = do
   let clientId = read "00000000-0000-0000-0000-000000000001"
 
   mainWidgetWithHead headWidget $ do
-    protocol <- liftJSM $ valToText =<< eval "window.location.protocol"
-    host <- liftJSM $ valToText =<< eval "window.location.host"
+    protocol <- liftJSM $ valToText =<< eval ("window.location.protocol" :: String)
+    host <- liftJSM $ valToText =<< eval ("window.location.host" :: String)
     let wsProtocol = if protocol == "https:" then "wss:" else "ws:"
         wsUrl = wsProtocol <> "//" <> host <> "/api"
     appWidget wsUrl clientId
