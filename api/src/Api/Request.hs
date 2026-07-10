@@ -13,10 +13,11 @@ import Core.State (BattleRank, MapMode)
 import Core.Stats (ResourceType)
 import Data.Aeson (Value)
 
-import Api.Types (StateUpdate)
+import Api.Types (ClientRole, StateUpdate)
 
 data ApiRequest a where
   Join :: Text -> ApiRequest (Either Text UUID)
+  SetRole :: ClientRole -> ApiRequest (Either Text ())
   SendChat :: Maybe ActorId -> Text -> ApiRequest () -- We'll get the message we sent as a push
   -- Game Actions (Mirrors Command enum)
   DrawCards :: ActorId -> ApiRequest (Either Text [StateUpdate])

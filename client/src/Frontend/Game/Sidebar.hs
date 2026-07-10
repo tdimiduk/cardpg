@@ -3,10 +3,13 @@
 
 module Frontend.Game.Sidebar where
 
+import Api.Types (ClientRole (..))
 import Control.Monad.Fix (MonadFix)
-import Core.Primitives (ActorId)
+import Control.Monad.IO.Class (MonadIO, liftIO)
+import Core.Primitives (ActorId (..))
 import Core.State (ActorState (..), MapMode (..))
 import Data.Map qualified as Map
+import Data.Text (Text)
 import Data.Text qualified as T
 import Reflex.Dom.Core hiding (button)
 
@@ -90,11 +93,22 @@ mapModeToViewMode MapModeGrid = ViewGridMap
 mapModeToViewMode MapModeRank = ViewRanksMode
 
 sidebarWidget
-  :: (GameWidget t m, Adjustable t m, Prerender t m)
+  :: (GameWidget t m, Adjustable t m, Prerender t m, MonadIO m)
   => Dynamic t (Maybe ActorId)
   -> Dynamic t ViewMode
+  -> (Maybe (Text, ClientRole) -> IO ())
+  -> Dynamic t (Maybe (Text, ClientRole))
   -> m (Event t (Maybe ActorId), Event t ActorId, Event t ViewMode)
-sidebarWidget selectedActorId currentViewMode = do
+sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn = do
+  let effectiveSelectedActorIdDyn =
+        zipDynWith
+          ( \mIdent userSel ->
+              case mIdent of
+                Just (_, RolePlayer claimedActorId) -> Just claimedActorId
+                _ -> userSel
+          )
+          identityDyn
+          selectedActorId
   actorsMapDyn <- askActors
   mapModeDyn <- askMapMode
   initialViewMode <- sample (current currentViewMode)
@@ -110,23 +124,54 @@ sidebarWidget selectedActorId currentViewMode = do
         )
         $ text "CardPG"
 
-      let viewModeOptions =
-            Map.fromList
-              [ (ViewGridMap, "Grid Map")
-              , (ViewRanksMode, "Ranks Mode")
-              , (ViewCardEditor, "Card Editor")
-              ]
-      dd <-
-        dropdown initialViewMode (constDyn viewModeOptions) $
-          def
-            & dropdownConfig_setValue
-            .~ fmap mapModeToViewMode (updated mapModeDyn)
-            & dropdownConfig_attributes
-            .~ constDyn
-              ( "class" =: classNames viewModeDropdownStyle
-                  <> "data-testid" =: "view-mode-select"
-              )
-      return (_dropdown_change dd)
+      let isGMDyn = ffor identityDyn $ \case
+            Just (_, RoleGM) -> True
+            _ -> False
+
+      changeEvt <- dyn $ ffor isGMDyn $ \case
+        True -> do
+          let viewModeOptions =
+                Map.fromList
+                  [ (ViewGridMap, "Grid Map")
+                  , (ViewRanksMode, "Ranks Mode")
+                  , (ViewCardEditor, "Card Editor")
+                  ]
+          dd <-
+            dropdown initialViewMode (constDyn viewModeOptions) $
+              def
+                & dropdownConfig_setValue
+                .~ fmap mapModeToViewMode (updated mapModeDyn)
+                & dropdownConfig_attributes
+                .~ constDyn
+                  ( "class" =: classNames viewModeDropdownStyle
+                      <> "data-testid" =: "view-mode-select"
+                  )
+          return (_dropdown_change dd)
+        False -> return never
+
+      switchHold never changeEvt
+
+    -- Profile Info Subheader
+    divS (S.px S.S6 <> S.py S.S3 <> S.bg S.Gray 11 <> S.borderB <> S.border S.Gray 10 <> S.flexCol) $ do
+      dyn_ $ ffor identityDyn $ \case
+        Nothing -> blank
+        Just (name, role) -> do
+          divS S.flexCol $ do
+            elS "span" (S.textXs <> S.text S.Gray 3 <> S.fontBold) $ text name
+            dyn_ $ ffor actorsMapDyn $ \actors ->
+              case role of
+                RoleGM ->
+                  elS "span" (S.fontSize 10 <> S.text S.Yellow 5 <> S.uppercase <> S.trackingWider <> S.fontBold) $
+                    text "Game Master"
+                RoleUnassigned ->
+                  elS "span" (S.fontSize 10 <> S.text S.Gray 5 <> S.uppercase <> S.trackingWider <> S.fontBold) $
+                    text "Unassigned"
+                RolePlayer actorId ->
+                  let actorName = case Map.lookup actorId actors of
+                        Just act -> act.name
+                        Nothing -> "Claimed Character"
+                   in elS "span" (S.fontSize 10 <> S.text S.Green 5 <> S.uppercase <> S.trackingWider <> S.fontBold) $
+                        text ("Player (" <> actorName <> ")")
 
     -- Links row
     divS
@@ -157,7 +202,7 @@ sidebarWidget selectedActorId currentViewMode = do
         elAttr "a" (linkAttrs "colors.html") $ text "Colors"
 
     -- Dynamic Content: List or Details
-    dyContent <- dyn $ ffor selectedActorId $ \case
+    dyContent <- dyn $ ffor effectiveSelectedActorIdDyn $ \case
       Nothing -> do
         -- No selection: Show List
         divS (S.p S.S4 <> S.textCenter <> S.text S.Gray 5 <> S.italic <> S.textSm) $
@@ -180,49 +225,62 @@ sidebarWidget selectedActorId currentViewMode = do
 
           return (Just <$> switchDyn (fmap (leftmost . Map.elems) selectClick), never)
       Just aid -> do
-        -- Fetch the initial state from current actors map to boot the UI cleanly.
-        actorsMap <- sample (current actorsMapDyn)
-        case Map.lookup aid actorsMap of
-          Nothing -> return (never, never)
-          Just initialActorState -> do
-            -- Dynamic ActorState from the map to ensure it receives updates.
-            let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe initialActorState (Map.lookup aid m)
+        let mActorStateDyn = fmap (Map.lookup aid) actorsMapDyn
+            widgetSelector = ffor mActorStateDyn $ \case
+              Nothing -> do
+                divS (S.p S.S4 <> S.textCenter <> S.text S.Gray 5 <> S.italic <> S.textSm) $
+                  text "Loading character details..."
+                return (never, never)
+              Just initialActorState -> do
+                let actorStateDyn = ffor actorsMapDyn $ \m -> fromMaybe initialActorState (Map.lookup aid m)
+                (minHeader, _) <- elS' "div" (S.cursorPointer <> S.hover (S.bg S.Gray 10) <> activeActorHeader) Map.empty $ do
+                  let nameDyn = (.name) <$> actorStateDyn
+                  divS avatar $ dynText $ T.take 1 <$> nameDyn
+                  divS (S.flex1 <> S.overflowHidden) $ do
+                    elS "div" (S.fontBold <> S.text S.Gray 1 <> S.textTruncate) $ dynText nameDyn
+                    elS "div" (S.textXs <> S.text S.Gray 5 <> S.uppercase) $ text "Player"
+                  divS
+                    ( S.roundedFull
+                        <> S.w S.S8
+                        <> S.h S.S8
+                        <> S.p S.S0
+                        <> S.flex
+                        <> S.itemsCenter
+                        <> S.justifyCenter
+                        <> S.text S.Gray 4
+                        <> S.hover (S.text S.Gray 2)
+                    )
+                    iconClose
 
-            -- Header (Click anywhere to deselect)
-            (minHeader, _) <- elS' "div" (S.cursorPointer <> S.hover (S.bg S.Gray 10) <> activeActorHeader) Map.empty $ do
-              let nameDyn = (.name) <$> actorStateDyn
-              divS avatar $ dynText $ T.take 1 <$> nameDyn
+                let deselectEvent = Nothing <$ domEvent Click minHeader
+                let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
+                let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
 
-              divS (S.flex1 <> S.overflowHidden) $ do
-                elS "div" (S.fontBold <> S.text S.Gray 1 <> S.textTruncate) $ dynText nameDyn
-                elS "div" (S.textXs <> S.text S.Gray 5 <> S.uppercase) $ text "Player"
+                resumeEvt <-
+                  divS (S.flex1 <> S.overflowYAuto <> S.p S.S2) $
+                    actorDetailsWidget aid actorStateDyn
 
-              -- Close indicator (decorative - header click handles deselection)
-              divS
-                ( S.roundedFull
-                    <> S.w S.S8
-                    <> S.h S.S8
-                    <> S.p S.S0
-                    <> S.flex
-                    <> S.itemsCenter
-                    <> S.justifyCenter
-                    <> S.text S.Gray 4
-                    <> S.hover (S.text S.Gray 2)
-                )
-                iconClose
+                return (leftmost [deselectEvent, actorLostEvent], aid <$ resumeEvt)
 
-            -- Header click deselects
-            let deselectEvent = Nothing <$ domEvent Click minHeader
+        dyContent2 <- dyn widgetSelector
+        contentEvents2 <- holdDyn (never, never) dyContent2
+        let selectionChange2 = switchDyn (fmap fst contentEvents2)
+            resumeDefense2 = switchDyn (fmap snd contentEvents2)
+        return (selectionChange2, resumeDefense2)
 
-            -- Auto-deselect if the actor is removed from the map
-            let actorExistsDyn = ffor actorsMapDyn $ \m -> Map.member aid m
-            let actorLostEvent = Nothing <$ ffilter not (updated actorExistsDyn)
+    -- Switch Profile button at the bottom
+    switchProfileClick <- divS (S.p S.S4 <> S.borderT <> S.border S.Gray 10 <> S.shrink0) $ do
+      button
+        def
+          { variant = VariantSecondary
+          , size = SizeSmall
+          , fullWidth = True
+          }
+        $ text "Switch Profile"
 
-            resumeEvt <-
-              divS (S.flex1 <> S.overflowYAuto <> S.p S.S2) $
-                actorDetailsWidget aid actorStateDyn
-
-            return (leftmost [deselectEvent, actorLostEvent], aid <$ resumeEvt)
+    prerender_ (pure ()) $ do
+      performEvent_ $ ffor switchProfileClick $ \_ -> do
+        liftIO $ triggerIdentityUpdate Nothing
 
     -- Extract events
     contentEvents <- holdDyn (never, never) dyContent

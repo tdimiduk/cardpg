@@ -43,13 +43,15 @@ import Server.Types
   )
 
 import Api.Reflex
-  ( ErrorMessage (..)
+  ( ClientInfo (..)
+  , ErrorMessage (..)
   , ErrorType (..)
   , GameView (..)
   , ServerPush (..)
   , WsMessage (..)
   )
 import Api.Request qualified as Req
+import Api.Types (ClientRole (..))
 
 application :: MVar ServerState -> ServerApp
 application state pending = do
@@ -94,14 +96,19 @@ application state pending = do
           Just existing ->
             (existing{clientConns = existing.clientConns ++ [connectedSocket]}, False)
           Nothing ->
-            (Client finalClientId newName [connectedSocket], True)
+            (Client finalClientId newName RoleUnassigned [connectedSocket], True)
     let s' = addClient c s
     return (s', (c, isNew))
 
   -- Send Welcome
   (msgs, _) <-
     readMVar state >>= \s -> do
-      let view = GameView{actors = s.gameState.actors, mapMode = s.gameState.mapMode}
+      let view =
+            GameView
+              { actors = s.gameState.actors
+              , mapMode = s.gameState.mapMode
+              , activeClients = getClientInfoMap s.clients
+              }
       let ph = s.gameState.phase
       return ([PushWelcome finalClientId view s.gameState.history ph], s.clients)
 
@@ -110,6 +117,16 @@ application state pending = do
   if isNew
     then T.putStrLn $ "Client Joined: " <> (client.clientName)
     else T.putStrLn $ "Client reconnected: " <> (client.clientName)
+
+  -- Broadcast update to others because activeClients changed
+  readMVar state >>= \s -> do
+    let view =
+          GameView
+            { actors = s.gameState.actors
+            , mapMode = s.gameState.mapMode
+            , activeClients = getClientInfoMap s.clients
+            }
+    broadcastReflex (PushUpdate view Nothing) s.clients
 
   withPingThread conn 30 (return ()) $ do
     flip finally (disconnect finalClientId socketId state) $ do
@@ -120,6 +137,16 @@ disconnect clientId socketId state = do
   modifyMVar_ state $ \s -> do
     return $ removeClient clientId socketId s
   T.putStrLn $ "Client disconnected: " <> T.pack (show clientId)
+
+  -- Broadcast updated client list
+  s <- readMVar state
+  let view =
+        GameView
+          { actors = s.gameState.actors
+          , mapMode = s.gameState.mapMode
+          , activeClients = getClientInfoMap s.clients
+          }
+  broadcastReflex (PushUpdate view Nothing) s.clients
 
 broadcastReflex :: ServerPush -> Map.Map UUID Client -> IO ()
 broadcastReflex msg clients = do
@@ -149,46 +176,147 @@ talk client socket state = forever $ do
         (socket.socketConn)
         (encode $ WsMsgPush $ PushError (ErrorMessage "Invalid message" ErrorValidation))
 
+getClientInfoMap :: Map.Map UUID Client -> Map.Map UUID ClientInfo
+getClientInfoMap = Map.map (\c -> ClientInfo{name = c.clientName, role = c.clientRole})
+
 handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
 handleJoin client name state = do
   modifyMVar_ state $ \s -> do
     let s' = s{clients = Map.adjust (\c -> c{clientName = name}) (client.clientId) (s.clients)}
     pure s'
   T.putStrLn $ "Client renamed: " <> name
+
+  -- Broadcast updated client list
+  s <- readMVar state
+  let view =
+        GameView
+          { actors = s.gameState.actors
+          , mapMode = s.gameState.mapMode
+          , activeClients = getClientInfoMap s.clients
+          }
+  broadcastReflex (PushUpdate view Nothing) s.clients
+
   pure (Right client.clientId)
 
+handleSetRole :: Client -> ClientRole -> MVar ServerState -> IO (Either Text ())
+handleSetRole client role state = do
+  modifyMVar_ state $ \s -> do
+    let s' = s{clients = Map.adjust (\c -> c{clientRole = role}) (client.clientId) (s.clients)}
+    pure s'
+  T.putStrLn $ "Client " <> client.clientName <> " set role to: " <> T.pack (show role)
+
+  -- Broadcast updated client list
+  s <- readMVar state
+  let view =
+        GameView
+          { actors = s.gameState.actors
+          , mapMode = s.gameState.mapMode
+          , activeClients = getClientInfoMap s.clients
+          }
+  broadcastReflex (PushUpdate view Nothing) s.clients
+
+  pure (Right ())
+
+checkPermission :: ClientRole -> Req.ApiRequest a -> Bool
+checkPermission role cmd =
+  case role of
+    RoleGM -> True
+    RoleUnassigned ->
+      case cmd of
+        Req.Join _ -> True
+        Req.SetRole _ -> True
+        _ -> False
+    RolePlayer actorId ->
+      case cmd of
+        Req.Join _ -> True
+        Req.SetRole _ -> True
+        Req.SendChat maybeAid _ -> maybeAid == Just actorId
+        Req.DrawCards aid -> aid == actorId
+        Req.Defend aid _ -> aid == actorId
+        Req.PlanMove aid _ _ -> aid == actorId
+        Req.PlanRankMove aid _ _ -> aid == actorId
+        Req.PlanAction aid _ _ -> aid == actorId
+        Req.PlanNarrative aid _ _ -> aid == actorId
+        Req.CancelPlan aid -> aid == actorId
+        Req.EndDefense aid -> aid == actorId
+        Req.Reshuffle aid -> aid == actorId
+        Req.AddStatus aid _ _ -> aid == actorId
+        Req.DestroyStatus aid _ _ -> aid == actorId
+        Req.AddConsequence aid _ -> aid == actorId
+        Req.DestroyConsequence aid _ -> aid == actorId
+        Req.DiscardCards aid _ -> aid == actorId
+        Req.ReturnToDeck aid _ -> aid == actorId
+        Req.Pass aid -> aid == actorId
+        Req.SetMapMode _ -> False
+        Req.StartResolution -> False
+        Req.EndRound -> False
+        Req.SaveCustomCard _ _ -> False
+
 handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
-handleGameCommand client state cmd =
-  case cmd of
-    Req.Join name -> handleJoin client name state
-    Req.SaveCustomCard cardVal file -> do
-      s <- readMVar state
-      let backend = s.dbPool
-          author = client.clientName
-      case fromJSON cardVal of
-        Success card -> saveCustomCard backend card file author
-        Error err -> return $ Left $ T.pack err
-    _ -> do
-      (ret, newLog) <- modifyMVar state $ \s -> do
-        let game = s.gameState
-        let rng = s.rng
-        let ((newGame, ret, _, newLogs), newRng) = runState (processCommand cmd game) rng
+handleGameCommand client state cmd = do
+  sCurrent <- readMVar state
+  let mClient = Map.lookup (client.clientId) (sCurrent.clients)
+      clientRole = maybe RoleUnassigned (.clientRole) mClient
 
-        let s' = s{gameState = newGame, rng = newRng}
-        return (s', (ret, newLogs))
+  if not (checkPermission clientRole cmd)
+    then do
+      T.putStrLn $ "Permission denied for client " <> client.clientName <> " attempting GADT command."
+      case cmd of
+        Req.Join _ -> pure (Left "Permission denied")
+        Req.SetRole _ -> pure (Left "Permission denied")
+        Req.SendChat _ _ -> pure ()
+        Req.DrawCards _ -> pure (Left "Permission denied")
+        Req.Defend _ _ -> pure (Left "Permission denied")
+        Req.PlanMove{} -> pure (Left "Permission denied")
+        Req.PlanRankMove{} -> pure (Left "Permission denied")
+        Req.SetMapMode _ -> pure (Left "Permission denied")
+        Req.PlanAction{} -> pure (Left "Permission denied")
+        Req.PlanNarrative{} -> pure (Left "Permission denied")
+        Req.CancelPlan _ -> pure (Left "Permission denied")
+        Req.StartResolution -> pure (Left "Permission denied")
+        Req.EndDefense _ -> pure (Left "Permission denied")
+        Req.Reshuffle _ -> pure (Left "Permission denied")
+        Req.AddStatus{} -> pure (Left "Permission denied")
+        Req.DestroyStatus{} -> pure (Left "Permission denied")
+        Req.AddConsequence _ _ -> pure (Left "Permission denied")
+        Req.DestroyConsequence _ _ -> pure (Left "Permission denied")
+        Req.DiscardCards _ _ -> pure (Left "Permission denied")
+        Req.ReturnToDeck _ _ -> pure (Left "Permission denied")
+        Req.EndRound -> pure (Left "Permission denied")
+        Req.Pass _ -> pure (Left "Permission denied")
+        Req.SaveCustomCard _ _ -> pure (Left "Permission denied")
+    else case cmd of
+      Req.Join name -> handleJoin client name state
+      Req.SetRole role -> handleSetRole client role state
+      Req.SaveCustomCard cardVal file -> do
+        s <- readMVar state
+        let backend = s.dbPool
+            author = client.clientName
+        case fromJSON cardVal of
+          Success card -> saveCustomCard backend card file author
+          Error err -> return $ Left $ T.pack err
+      _ -> do
+        (ret, newLog) <- modifyMVar state $ \s -> do
+          let game = s.gameState
+          let rng = s.rng
+          let ((newGame, ret, _, newLogs), newRng) = runState (processCommand cmd game) rng
 
-      -- Broadcast updates to others
-      readMVar state >>= \s -> do
-        broadcastReflex
-          ( PushUpdate
-              (GameView{actors = s.gameState.actors, mapMode = s.gameState.mapMode})
-              (Just s.gameState.phase)
-          )
-          s.clients
+          let s' = s{gameState = newGame, rng = newRng}
+          return (s', (ret, newLogs))
 
-      -- Broadcast new logs
-      T.putStrLn $ "Processing " <> T.pack (show (length newLog)) <> " new logs."
-      unless (null newLog) $ do
-        readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
+        -- Broadcast updates to others
+        readMVar state >>= \s -> do
+          let view =
+                GameView
+                  { actors = s.gameState.actors
+                  , mapMode = s.gameState.mapMode
+                  , activeClients = getClientInfoMap s.clients
+                  }
+          broadcastReflex (PushUpdate view (Just s.gameState.phase)) s.clients
 
-      pure ret
+        -- Broadcast new logs
+        T.putStrLn $ "Processing " <> T.pack (show (length newLog)) <> " new logs."
+        unless (null newLog) $ do
+          readMVar state >>= \s -> broadcastReflex (PushNewLogs newLog) s.clients
+
+        pure ret

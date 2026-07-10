@@ -7,13 +7,23 @@ import Data.UUID.Types (UUID)
 import GHC.Generics (Generic)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 
-import Api.Types (LogEntry, Phase)
+import Api.Types (ClientRole, LogEntry, Phase)
 import Core.Primitives (ActorId)
 import Core.State (ActorState, MapMode)
+
+data ClientInfo = ClientInfo
+  { name :: Text
+  , role :: ClientRole
+  }
+  deriving (Show, Eq, Generic)
+
+instance FromJSON ClientInfo
+instance ToJSON ClientInfo
 
 data GameView = GameView
   { actors :: Map ActorId ActorState
   , mapMode :: Maybe MapMode
+  , activeClients :: Map UUID ClientInfo
   }
   deriving (Show, Eq, Generic)
 

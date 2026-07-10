@@ -11,7 +11,8 @@ import Reflex.Dom.Core
 
 import Api.Request (ApiRequest (..))
 import Api.Types
-  ( LogEntry (..)
+  ( ClientRole (..)
+  , LogEntry (..)
   , LogPayload (..)
   , LogSender (..)
   )
@@ -76,12 +77,13 @@ chatArea =
 sidebarRightWidget
   :: (GameWidget t m)
   => Dynamic t (Maybe ActorId)
+  -> Dynamic t (Maybe (T.Text, ClientRole))
   -> m (Event t DefenseTarget)
-sidebarRightWidget selectedActorId = do
+sidebarRightWidget selectedActorId identityDyn = do
   logsDyn <- askLogs
   divS sidebarRightContainer $ do
     -- Phase Display
-    phaseDisplayWidget
+    phaseDisplayWidget identityDyn
 
     -- Header
     divS sidebarHeader $ do

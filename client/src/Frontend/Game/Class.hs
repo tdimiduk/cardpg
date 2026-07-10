@@ -34,10 +34,12 @@ import Reflex.Dom.Core
 import Reflex.Host.Class (MonadReflexCreateTrigger)
 import Unsafe.Coerce (unsafeCoerce)
 
+import Api.Reflex (ClientInfo)
 import Api.Request (ApiRequest)
-import Api.Types (LogEntry, Phase)
+import Api.Types (ClientRole, LogEntry, Phase)
 import Core.Primitives (ActorId)
 import Core.State (ActorState, MapMode, isActorPC, isActorReady)
+import Data.UUID.Types (UUID)
 
 -- | SessionState packages all fine-grained Dynamics folded from WS events.
 data SessionState t = SessionState
@@ -45,6 +47,8 @@ data SessionState t = SessionState
   , logs :: Dynamic t [LogEntry]
   , phase :: Dynamic t Phase
   , mapMode :: Dynamic t MapMode
+  , activeClients :: Dynamic t (Map.Map UUID ClientInfo)
+  , identity :: Dynamic t (Maybe (Text, ClientRole))
   }
 
 -- | Type-safe context class that abstracts state reads and request dispatching.
@@ -53,6 +57,8 @@ class (Monad m) => MonadGame t m | m -> t where
   askLogs :: m (Dynamic t [LogEntry])
   askPhase :: m (Dynamic t Phase)
   askMapMode :: m (Dynamic t MapMode)
+  askActiveClients :: m (Dynamic t (Map.Map UUID ClientInfo))
+  askIdentity :: m (Dynamic t (Maybe (Text, ClientRole)))
   requestGame :: Event t (ApiRequest a) -> m (Event t (Either Text a))
 
 type GameWidget t m = (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
@@ -146,4 +152,6 @@ instance
   askLogs = GameT $ asks (.logs)
   askPhase = GameT $ asks (.phase)
   askMapMode = GameT $ asks (.mapMode)
+  askActiveClients = GameT $ asks (.activeClients)
+  askIdentity = GameT $ asks (.identity)
   requestGame = lift . requesting

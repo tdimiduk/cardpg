@@ -41,6 +41,7 @@ import System.Random (StdGen)
 
 import Api.Types
   ( ActorGameEvent (..)
+  , ClientRole (..)
   , LogEntry (..)
   , LogId (..)
   , LogPayload (..)
@@ -86,6 +87,7 @@ instance Show ConnectedSocket where
 data Client = Client
   { clientId :: UUID
   , clientName :: Text
+  , clientRole :: ClientRole
   , clientConns :: [ConnectedSocket]
   }
 
@@ -134,7 +136,11 @@ addClient client state =
         Nothing -> state{clients = Map.insert (client.clientId) client clientMap}
         Just existing ->
           let merged =
-                existing{clientName = client.clientName, clientConns = existing.clientConns ++ client.clientConns}
+                existing
+                  { clientName = client.clientName
+                  , clientRole = client.clientRole
+                  , clientConns = existing.clientConns ++ client.clientConns
+                  }
            in state{clients = Map.insert (client.clientId) merged clientMap}
 
 -- | Removes a specific connection. If client has no more connections, removes the client.

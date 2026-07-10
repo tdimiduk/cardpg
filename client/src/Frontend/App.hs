@@ -3,29 +3,32 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecursiveDo #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TupleSections #-}
 
 module Frontend.App (appWidget, headWidget, uiWidget) where
 
-import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (eitherDecode, encode)
 import Data.ByteString.Lazy qualified as BL
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust)
+import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8)
 import Data.UUID.Types (UUID)
+import Data.UUID.Types qualified as UUID
 import Frontend.Editor (editorWidget)
 import Frontend.Style.DSL qualified as S
 import Frontend.Util (widgetHoldE)
-import Reflex.Dom.Core
+import Reflex.Dom.Core hiding (button)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse, tagRequests)
 
-import Api.Reflex (GameView (..), ServerPush (..), WsMessage (..))
+import Api.Reflex (ClientInfo (..), GameView (..), ServerPush (..), WsMessage (..))
 import Api.Request qualified as Req
-import Api.Types (LogEntry, Phase (..))
-import Core.Primitives (ActorId, Identified (..))
+import Api.Types (ClientRole (..), LogEntry, Phase (..))
+import Core.Primitives (ActorId (..), Identified (..))
 import Core.State
   ( ActiveChallenge (..)
   , ActiveDefense (..)
@@ -34,18 +37,19 @@ import Core.State
   , MapMode (..)
   , identifiedLookup
   )
-
 import Frontend.Game.Class
 import Frontend.Game.Defense (DefenseAction (..), DefenseTarget (..))
 import Frontend.Game.DefenseWidget (defenseWidget)
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.MapBoard (mapBoardWidget)
+import Language.Javascript.JSaddle (eval, liftJSM, valToText)
 
 import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (ViewMode (..), sidebarWidget)
 import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
 
-import Frontend.Style.Common (Style, componentS, divS)
+import Frontend.Style.Common (Style, classNames, componentS, divS, elS, textGoldBright)
+import Frontend.UI.Button
 
 -- | Root layout for the app (full-screen row)
 appRoot :: Style
@@ -55,28 +59,133 @@ appRoot = S.flexRow <> S.hScreen <> S.bgTransparent <> S.text1 <> S.overflowHidd
 mainContent :: Style
 mainContent = S.flexCol <> S.flex1 <> S.relative <> S.bgTransparent <> S.css "min-w-0" "min-width" "0"
 
-appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> UUID -> m ()
-appWidget wsBaseUrl clientId = do
-  rec -- RequesterT loop
-      -- TODO: Load initial actor from local storage
-      sessionState <- makeSessionState pushEvt
-      (_, requests) <-
-        runRequesterT (runGameT sessionState (uiWidget Nothing Nothing)) responses
-      (taggedReqs, responses) <- tagRequests requests taggedResps
+appWidget :: (MonadWidget t m, Prerender t m) => T.Text -> m ()
+appWidget wsBaseUrl = do
+  profileDyn <- prerender (pure Nothing) $ liftJSM $ do
+    cidVal <-
+      eval
+        ( "(function() { \
+          \ var id = localStorage.getItem('cardpg_client_id'); \
+          \ if (!id) { \
+          \   id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : \
+          \     'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { \
+          \       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); \
+          \       return v.toString(16); \
+          \     }); \
+          \   localStorage.setItem('cardpg_client_id', id); \
+          \ } \
+          \ return id; \
+          \})()"
+            :: String
+        )
+    cidStr <- valToText cidVal
 
-      let reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
-      (pushEvt, taggedResps) <- connectWebSocket wsUrl reqsEncoded
+    nameVal <- eval ("localStorage.getItem('cardpg_client_name') || ''" :: String)
+    nameStr <- valToText nameVal
 
+    roleVal <- eval ("localStorage.getItem('cardpg_client_role') || ''" :: String)
+    roleStr <- valToText roleVal
+
+    let mCid = UUID.fromText cidStr
+        role =
+          if
+            | roleStr == "GM" -> RoleGM
+            | "player:" `T.isPrefixOf` roleStr ->
+                case UUID.fromText (T.drop 7 roleStr) of
+                  Just rId -> RolePlayer (ActorId rId)
+                  Nothing -> RoleUnassigned
+            | otherwise -> RoleUnassigned
+
+    case mCid of
+      Nothing -> return Nothing
+      Just clientId -> return $ Just (clientId, if T.null nameStr then Nothing else Just nameStr, role)
+
+  pb <- getPostBuild
+  let clientReadyEvt = fmapMaybe id $ leftmost [current profileDyn <@ pb, updated profileDyn]
+  _ <- widgetHold (divS (S.p S.S4 <> S.textCenter <> S.text S.Gray 5) (text "Loading Profile...")) $ ffor clientReadyEvt $ \(clientId, mName, initialRole) -> do
+    (identityUpdateEvt, triggerIdentityUpdate) <- newTriggerEvent
+    identityDyn <- holdDyn (fmap (,initialRole) mName) identityUpdateEvt
+
+    (openEvt, triggerOpen) <- newTriggerEvent
+
+    performEvent_ $ ffor (updated identityDyn) $ \case
+      Nothing -> liftJSM $ do
+        _ <- eval ("localStorage.removeItem('cardpg_client_name')" :: String)
+        _ <- eval ("localStorage.removeItem('cardpg_client_role')" :: String)
+        pure ()
+      Just (name, role) -> liftJSM $ do
+        _ <- eval ("localStorage.setItem('cardpg_client_name', " <> show name <> ")" :: String)
+        let roleStr = case role of
+              RoleGM -> "GM"
+              RoleUnassigned -> "unassigned"
+              RolePlayer (ActorId uuid) -> "player:" <> show uuid
+        _ <- eval ("localStorage.setItem('cardpg_client_role', " <> show roleStr <> ")" :: String)
+        pure ()
+
+    rec let wsUrl = wsBaseUrl <> "?clientId=" <> T.pack (show clientId)
+            reqsEncoded = fmap (map (decodeUtf8 . BL.toStrict . encode)) taggedReqs
+        (wsOpenEvt, pushEvt, taggedResps) <- connectWebSocket wsUrl reqsEncoded
+
+        sessionState <- makeSessionState pushEvt identityDyn
+
+        (_, requests) <-
+          runRequesterT
+            (runGameT sessionState (appMainWidget mName initialRole triggerIdentityUpdate openEvt identityDyn))
+            responses
+        (taggedReqs, responses) <- tagRequests requests taggedResps
+
+    prerender_ (pure ()) $ do
+      performEvent_ $ ffor wsOpenEvt $ \_ -> do
+        liftIO $ triggerOpen ()
+    pure ()
   pure ()
-  where
-    wsUrl = wsBaseUrl <> "?clientId=" <> T.pack (show clientId)
+
+appMainWidget
+  :: (GameWidgetIO t m)
+  => Maybe Text
+  -> ClientRole
+  -> (Maybe (Text, ClientRole) -> IO ())
+  -> Event t ()
+  -> Dynamic t (Maybe (Text, ClientRole))
+  -> m ()
+appMainWidget initialName initialRole triggerIdentityUpdate openEvt identityDyn = do
+  actorsMapDyn <- askActors
+  activeClientsDyn <- askActiveClients
+
+  -- Auto-sync profile when identity changes or connection is established
+  let welcomeSyncEvt = attach (current identityDyn) openEvt
+      syncDataEvt =
+        leftmost
+          [ fmapMaybe fst welcomeSyncEvt
+          , fmapMaybe id (updated identityDyn)
+          ]
+      joinReq = fmap (\(name, _) -> Req.Join name) syncDataEvt
+      roleReq = fmap (\(_, role) -> Req.SetRole role) syncDataEvt
+
+  _ <- requestGame joinReq
+  _ <- requestGame roleReq
+
+  let widgetSelector = ffor identityDyn $ \case
+        Nothing -> do
+          submitEvt <- setupOverlayWidget actorsMapDyn activeClientsDyn
+          prerender_ (pure ()) $ do
+            performEvent_ $ ffor submitEvt $ \mIdent -> do
+              liftIO $ triggerIdentityUpdate mIdent
+        Just (_, role) -> do
+          let initialActor = case role of
+                RolePlayer actorId -> Just actorId
+                _ -> Nothing
+          uiWidget Nothing initialActor triggerIdentityUpdate identityDyn
+
+  _ <- dyn widgetSelector
+  pure ()
 
 -- | Establishes the WebSocket connection and decodes messages into Push/Response events.
 connectWebSocket
   :: (MonadWidget t m)
   => T.Text
   -> Event t [T.Text]
-  -> m (Event t ServerPush, Event t TaggedResponse)
+  -> m (Event t (), Event t ServerPush, Event t TaggedResponse)
 connectWebSocket wsUrl sendEvt = do
   let wsConfig = def{_webSocketConfig_send = sendEvt}
   ws <- webSocket wsUrl wsConfig
@@ -90,41 +199,40 @@ connectWebSocket wsUrl sendEvt = do
   performEvent_ $ ffor decodeErrors $ \err ->
     liftIO $ putStrLn $ "WS Decode Error: " <> err
 
-  pure (pushEvt, taggedResps)
-
--- | Pure update helpers for foldDyn
-updateActors :: ServerPush -> Map.Map ActorId ActorState -> Map.Map ActorId ActorState
-updateActors (PushWelcome{game = a}) _ = a.actors
-updateActors (PushUpdate{game = a}) _ = a.actors
-updateActors _ old = old
-
-updateLogs :: ServerPush -> [LogEntry] -> [LogEntry]
-updateLogs (PushNewLogs newLogs) logs = logs ++ newLogs
-updateLogs (PushWelcome{history = h}) _ = h
-updateLogs (PushError _) logs = logs
-updateLogs _ logs = logs
-
-updatePhase :: ServerPush -> Phase -> Phase
-updatePhase (PushWelcome{phase = p}) _ = p
-updatePhase (PushUpdate{newPhase = Just p}) _ = p
-updatePhase _ old = old
-
-updateMapMode :: ServerPush -> MapMode -> MapMode
-updateMapMode (PushWelcome{game = a}) _ = fromMaybe MapModeGrid a.mapMode
-updateMapMode (PushUpdate{game = a}) _ = fromMaybe MapModeGrid a.mapMode
-updateMapMode _ old = old
+  pure (_webSocket_open ws, pushEvt, taggedResps)
 
 -- | Constructs the session state by folding incoming server push events.
 makeSessionState
   :: (Reflex t, MonadHold t m, MonadFix m)
   => Event t ServerPush
+  -> Dynamic t (Maybe (Text, ClientRole))
   -> m (SessionState t)
-makeSessionState pushEvt = do
-  actorsMapDyn <- foldDyn updateActors Map.empty pushEvt
-  logsDyn <- foldDyn updateLogs [] pushEvt
-  phaseDyn <- holdUniqDyn =<< foldDyn updatePhase Planning pushEvt
-  mapModeDyn <- holdUniqDyn =<< foldDyn updateMapMode MapModeGrid pushEvt
-  pure $ SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn
+makeSessionState pushEvt identityDyn = do
+  let gameEvt =
+        fmapMaybe
+          (\case PushWelcome{game = g} -> Just g; PushUpdate{game = g} -> Just g; _ -> Nothing)
+          pushEvt
+  actorsMapDyn <- holdDyn Map.empty (fmap (.actors) gameEvt)
+  logsDyn <-
+    foldDyn
+      (flip ++)
+      []
+      ( leftmost
+          [ fmapMaybe (\case PushWelcome{history = h} -> Just h; _ -> Nothing) pushEvt
+          , fmapMaybe (\case PushNewLogs l -> Just l; _ -> Nothing) pushEvt
+          ]
+      )
+  phaseDyn <-
+    holdDyn
+      Planning
+      ( leftmost
+          [ fmapMaybe (\case PushWelcome{phase = p} -> Just p; _ -> Nothing) pushEvt
+          , fmapMaybe (\case PushUpdate{newPhase = Just p} -> Just p; _ -> Nothing) pushEvt
+          ]
+      )
+  mapModeDyn <- holdDyn MapModeGrid (fmap (fromMaybe MapModeGrid . (.mapMode)) gameEvt)
+  activeClientsDyn <- holdDyn Map.empty (fmap (.activeClients) gameEvt)
+  pure $ SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn activeClientsDyn identityDyn
 
 data ViewModeChange
   = UserChange ViewMode
@@ -147,8 +255,12 @@ uiWidget
   -- ^ Optional initial staging state
   -> Maybe ActorId
   -- ^ Initial active actor
+  -> (Maybe (Text, ClientRole) -> IO ())
+  -- ^ Trigger callback
+  -> Dynamic t (Maybe (Text, ClientRole))
+  -- ^ Identity dynamic
   -> m ()
-uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol <> S.hScreen <> S.overflowHidden) $ do
+uiWidget mStaging initialActorId triggerIdentityUpdate identityDyn = componentS "app-container" (S.flexCol <> S.hScreen <> S.overflowHidden) $ do
   mapModeDyn <- askMapMode
   rec -- View mode state handling
       let changeEvt =
@@ -169,21 +281,179 @@ uiWidget mStaging initialActorId = componentS "app-container" (S.flexCol <> S.hS
               )
               changeEvt
       _ <- requestGame mapModeRequestEvt
-
       viewModeUserEvt <- divS appRoot $ do
         rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
             (sidebarActiveChange, resumeDefenseEvt, viewModeUserEvt') <-
-              sidebarWidget selectedActorId currentViewModeDyn
-            mapActiveChange <- mainContentWidget mStaging selectedActorId currentViewModeDyn
+              sidebarWidget selectedActorId currentViewModeDyn triggerIdentityUpdate identityDyn
+            mapActiveChange <- mainContentWidget mStaging selectedActorId currentViewModeDyn identityDyn
 
         -- Right Sidebar — now returns Event t DefenseTarget from challenge clicks
-        openDefenseEvt <- sidebarRightWidget selectedActorId
+        let effectiveSelectedActorIdDyn =
+              zipDynWith
+                ( \mIdent userSel ->
+                    case mIdent of
+                      Just (_, RolePlayer claimedActorId) -> Just claimedActorId
+                      _ -> userSel
+                )
+                identityDyn
+                selectedActorId
+        openDefenseEvt <- sidebarRightWidget effectiveSelectedActorIdDyn identityDyn
 
         -- Render defense modal overlay and handle defense actions
-        defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEvt
+        defenseModalWidget initialActorId effectiveSelectedActorIdDyn resumeDefenseEvt openDefenseEvt
 
         return viewModeUserEvt'
   pure ()
+
+setupOverlayWidget
+  :: forall t m
+   . (GameWidget t m, Prerender t m)
+  => Dynamic t (Map.Map ActorId ActorState)
+  -> Dynamic t (Map.Map UUID ClientInfo)
+  -> m (Event t (Maybe (Text, ClientRole)))
+setupOverlayWidget actorsMapDyn activeClientsDyn = componentS
+  "setup-overlay"
+  ( S.flexCol
+      <> S.itemsCenter
+      <> S.justifyCenter
+      <> S.hScreen
+      <> S.wFull
+      <> S.css "bg-slate-950" "background-color" "#020617"
+  )
+  $ do
+    divS
+      ( S.cls "obsidian-panel"
+          <> S.p S.S8
+          <> S.roundedS (S.Px 8)
+          <> S.border1
+          <> S.border S.Yellow 10
+          <> S.w (S.Px 450)
+          <> S.flexCol
+          <> S.gap S.S6
+          <> S.css "backdrop-blur-md" "backdrop-filter" "blur(12px)"
+          <> S.css "bg-opacity-80" "background-color" "rgba(15, 23, 42, 0.8)"
+      )
+      $ do
+        elS "h1" (S.text2Xl <> S.fontBold <> S.textCenter <> S.cls "fantasy-font" <> textGoldBright) $
+          text "CardPG - Enter Scenario"
+
+        divS (S.flexCol <> S.gap S.S2) $ do
+          elS "label" (S.textXs <> S.fontBold <> S.text S.Gray 4 <> S.uppercase <> S.trackingWider) $
+            text "Display Name"
+          nameInput <-
+            inputElement $
+              def & initialAttributes .~ ("placeholder" =: "Your name..." <> "class" =: classNames inputStyle)
+          let nameValDyn = _inputElement_value nameInput
+
+          elS
+            "label"
+            (S.textXs <> S.fontBold <> S.text S.Gray 4 <> S.uppercase <> S.trackingWider <> S.mt S.S2)
+            $ text "Choose Your Identity"
+
+          rec selectedRoleDyn <- holdDyn RoleUnassigned roleSelectEvt
+              gmClick <-
+                roleCard
+                  "Game Master"
+                  "Control monsters, advance rounds, and edit scenario."
+                  (constDyn RoleGM)
+                  selectedRoleDyn
+                  (constDyn False)
+
+              elS "div" (S.textXs <> S.text S.Gray 5 <> S.mt S.S2 <> S.cls "fantasy-font") $
+                text "Available Characters"
+
+              let pcsDyn = fmap (Map.filter (\as -> as.actorType == "PC")) actorsMapDyn
+              pcClicks <- listWithKey pcsDyn $ \aid actorDyn -> do
+                let isClaimedDyn = ffor2 activeClientsDyn actorDyn $ \clients actor ->
+                      let matches = Map.filter (\c -> c.role == RolePlayer aid) clients
+                       in if Map.null matches
+                            then Nothing
+                            else Just (head (Map.elems matches)).name
+                    isDisabledDyn = fmap isJust isClaimedDyn
+                    claimTextDyn = ffor isClaimedDyn $ \case
+                      Nothing -> "Click to claim character"
+                      Just cName -> "Claimed by " <> cName
+                nameDyn <- holdUniqDyn $ fmap (.name) actorDyn
+                click <- roleCard nameDyn claimTextDyn (constDyn (RolePlayer aid)) selectedRoleDyn isDisabledDyn
+                return (RolePlayer aid <$ click)
+
+              let pcClickEvt = switchDyn (leftmost . Map.elems <$> pcClicks)
+                  roleSelectEvt = leftmost [RoleGM <$ gmClick, pcClickEvt]
+
+          let isSubmitDisabledDyn = ffor2 nameValDyn selectedRoleDyn $ \name role ->
+                T.null (T.strip name) || role == RoleUnassigned
+
+          btnClick <-
+            button
+              (def :: ButtonConfig t)
+                { variant = VariantPrimary
+                , fullWidth = True
+                , disabled = isSubmitDisabledDyn
+                , extraStyle = S.mt S.S4
+                }
+              $ text "Begin Adventure"
+
+          let submitEvt = current ((,) <$> nameValDyn <*> selectedRoleDyn) <@ btnClick
+          return $ Just <$> submitEvt
+  where
+    inputStyle =
+      S.wFull
+        <> S.css "bg-slate-900" "background-color" "#0f172a"
+        <> S.border1
+        <> S.border S.Gray 10
+        <> S.rounded
+        <> S.px S.S3
+        <> S.py S.S2
+        <> S.textSm
+        <> S.textWhite
+        <> S.css "focus:outline-none" "outline" "none"
+        <> S.pseudo "focus" (S.border S.Yellow 5)
+
+roleCard
+  :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
+  => Dynamic t Text
+  -> Dynamic t Text
+  -> Dynamic t ClientRole
+  -> Dynamic t ClientRole
+  -> Dynamic t Bool
+  -> m (Event t ())
+roleCard titleDyn descDyn cardRoleDyn selectedRoleDyn isDisabledDyn = do
+  let isSelectedDyn = (==) <$> cardRoleDyn <*> selectedRoleDyn
+      cardStyleDyn = ffor3 isSelectedDyn isDisabledDyn cardRoleDyn $ \isSelected isDisabled role ->
+        let base =
+              S.wFull
+                <> S.p S.S3
+                <> S.rounded
+                <> S.border1
+                <> S.flexCol
+                <> S.gap S.S1
+                <> S.relative
+
+            stateStyle =
+              if
+                | isDisabled ->
+                    S.css "bg-slate-900" "background-color" "#0f172a"
+                      <> S.css "border-slate-800" "border-color" "#1e293b"
+                      <> S.opacity50
+                      <> S.css "cursor-not-allowed" "cursor" "not-allowed"
+                | isSelected ->
+                    S.css "bg-slate-800" "background-color" "#1e293b"
+                      <> S.border S.Yellow 5
+                      <> S.css "shadow-yellow" "box-shadow" "0 0 10px rgba(250,204,21,0.2)"
+                      <> S.cursorPointer
+                | otherwise ->
+                    S.css "bg-slate-900" "background-color" "#0f172a"
+                      <> S.border S.Gray 10
+                      <> S.hover (S.css "bg-slate-800" "background-color" "#1e293b")
+                      <> S.cursorPointer
+         in base <> stateStyle
+
+  (cardEl, _) <- elDynAttr' "div" (ffor cardStyleDyn $ \s -> "class" =: classNames s) $ do
+    elS "div" (S.fontBold <> S.textSm <> S.textWhite) $ dynText titleDyn
+    elS "div" (S.fontSize 10 <> S.text S.Gray 5) $ dynText descDyn
+
+  let clickEvt = domEvent Click cardEl
+  return $ gate (not <$> current isDisabledDyn) clickEvt
 
 -- | Interactive map board and hand widget feedback loop.
 mapWidget
@@ -195,18 +465,16 @@ mapWidget mStaging selectedActorId = do
   rec (mapChange, rankMoveClickEvt) <- mapBoardWidget selectedActorId stagingStateDyn rankMoveStagingDyn
 
       actorsMapDyn <- askActors
-      initialSelectedActorId <- sample (current selectedActorId)
-      initialActorsMap <- sample (current actorsMapDyn)
-
-      let initialWidget = case initialSelectedActorId >>= \aid -> identifiedLookup aid initialActorsMap of
-            Nothing -> return (constDyn Nothing, constDyn Nothing)
-            Just (Identified i c) -> do
-              let actorDyn = ffor actorsMapDyn $ \actors ->
-                    fromMaybe (Identified i c) (identifiedLookup i actors)
-              handWidget mStaging rankMoveClickEvt actorDyn
-
-      let triggerEvt = attach (current actorsMapDyn) (updated selectedActorId)
-      handWidgetResDyn <- widgetHold initialWidget $ ffor triggerEvt $ \(actorsMap, mId) ->
+      pb <- getPostBuild
+      let welcomeArrivalEvt = Control.Monad.void (ffilter (not . Map.null) (updated actorsMapDyn))
+          triggerEvt =
+            attach (current actorsMapDyn) $
+              leftmost
+                [ updated selectedActorId
+                , current selectedActorId <@ welcomeArrivalEvt
+                , current selectedActorId <@ pb
+                ]
+      handWidgetResDyn <- widgetHold (return (constDyn Nothing, constDyn Nothing)) $ ffor triggerEvt $ \(actorsMap, mId) ->
         case mId >>= \aid -> identifiedLookup aid actorsMap of
           Nothing -> return (constDyn Nothing, constDyn Nothing)
           Just (Identified i c) -> do
@@ -225,9 +493,19 @@ mainContentWidget
   => Maybe StagingState
   -> Dynamic t (Maybe ActorId)
   -> Dynamic t ViewMode
+  -> Dynamic t (Maybe (Text, ClientRole))
   -> m (Event t (Maybe ActorId))
-mainContentWidget mStaging selectedActorId currentViewModeDyn = componentS "main-content" mainContent $ do
-  let mapWidgetBranch = mapWidget mStaging selectedActorId
+mainContentWidget mStaging selectedActorId currentViewModeDyn identityDyn = componentS "main-content" mainContent $ do
+  let effectiveSelectedActorIdDyn =
+        zipDynWith
+          ( \mIdent userSel ->
+              case mIdent of
+                Just (_, RolePlayer claimedActorId) -> Just claimedActorId
+                _ -> userSel
+          )
+          identityDyn
+          selectedActorId
+      mapWidgetBranch = mapWidget mStaging effectiveSelectedActorIdDyn
       editorWidgetBranch = do
         editorWidget
         return never

@@ -98,8 +98,8 @@ test("new messages appear at the bottom of the log", async ({ loadedPage }) => {
     .allTextContents();
 
   // Find indexes of msg1 and msg2 in the message log
-  const index1 = messages.indexOf(msg1);
-  const index2 = messages.indexOf(msg2);
+  const index1 = messages.findIndex((m) => m.includes(msg1));
+  const index2 = messages.findIndex((m) => m.includes(msg2));
 
   // Both should be present, and msg1 should appear before msg2 (smaller index)
   expect(index1).toBeGreaterThan(-1);

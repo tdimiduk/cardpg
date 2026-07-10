@@ -360,10 +360,17 @@ mockGameWidget mStaging initialActorId gameState phaseSetting = do
   let baseActors = gameState.actors
   actorsDyn <- holdDyn baseActors never
   let logsDyn = constDyn gameState.history
-      sessionState = SessionState actorsDyn logsDyn (constDyn phaseSetting) (constDyn MapModeGrid)
+      sessionState =
+        SessionState
+          actorsDyn
+          logsDyn
+          (constDyn phaseSetting)
+          (constDyn MapModeGrid)
+          (constDyn Map.empty)
+          (constDyn Nothing)
   rec (_, _) <-
         runRequesterT
-          (runGameT sessionState (uiWidget mStaging initialActorId))
+          (runGameT sessionState (uiWidget mStaging initialActorId (const (pure ())) (constDyn Nothing)))
           never
   return ()
 

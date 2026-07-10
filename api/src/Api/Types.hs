@@ -5,6 +5,7 @@ module Api.Types
     Phase (..)
   , StateUpdate (..)
   , ActorGameEvent (..)
+  , ClientRole (..)
 
     -- * Logging
   , LogId (..)
@@ -96,3 +97,11 @@ data StateUpdate = StateUpdate
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''StateUpdate)
+
+data ClientRole
+  = RoleUnassigned
+  | RoleGM
+  | RolePlayer ActorId
+  deriving (Show, Eq, Ord, Generic)
+
+$(deriveJSON cardpgJsonDef ''ClientRole)
