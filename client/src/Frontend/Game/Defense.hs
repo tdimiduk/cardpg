@@ -1,21 +1,17 @@
 module Frontend.Game.Defense
   ( DefenseTarget (..)
   , DefenseAction (..)
-  , resolveAttackStack
   , defensePreview
   ) where
 
 import Data.Text (Text)
 
-import Api.Types (LogEntry (..), LogPayload (..))
 import Core.Card (CardInstance, CoreCard)
 import Core.Logic.Combat (computeDefenseDetails)
-import Core.Primitives (ActorId)
 import Core.State
   ( ActiveChallenge
   , ActorState
   , DefenseDetails
-  , plannedActionCards
   )
 
 -- | The challenge that is being actively defended against, bundled with
@@ -39,28 +35,6 @@ data DefenseAction
     EndDefense
   | -- | Close the panel UI without ending the defense
     ClosePanel
-
--- | Reconstruct the attacker's card stack from a challenge log entry and actor state.
--- Used to populate the visual display of what we're defending against.
---
--- Returns the planned action's cards if the log entry is a LogChallenge.
--- Falls back to empty list for any other log type.
-resolveAttackStack
-  :: LogEntry
-  -- ^ The LogChallenge entry
-  -> ActorId
-  -- ^ The attacker's actor ID (unused but kept for call-site symmetry)
-  -> ActorState
-  -- ^ The attacker's actor state (for looking up card instances)
-  -> [CardInstance CoreCard]
-resolveAttackStack logEntry _attackerId _actorState =
-  case logEntry.payload of
-    LogChallenge _ plannedAction ->
-      -- plannedActionCards is defined in Core.State; it extracts the card instances
-      -- from the planned action directly (action card + resources for Standard,
-      -- all cards for Narrative, empty for Pass).
-      plannedActionCards plannedAction
-    _ -> []
 
 -- | Compute live defense preview from the actor's current state.
 --

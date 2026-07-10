@@ -61,9 +61,6 @@ sepArrow = "→"
 sepColon :: Text
 sepColon = ":"
 
-sepSpace :: Text
-sepSpace = " "
-
 sepOpenParen :: Text
 sepOpenParen = "("
 

@@ -8,17 +8,18 @@ roots = [
   "^ClientMain.main$",
   "server:exe:server",
   "server:exe:server-devel",
-  "client-reflex:exe:client-reflex",
-  "client-reflex:exe:cardpg-static",
+  "client:exe:client",
+  "client:exe:cardpg-static",
 
   # Tests are entry points
   "core:test:core-test",
   "server:test:server-test",
-  "client-reflex:test:client-reflex-test",
+  "client:test:client-test",
 
   # Library Public APIs (protect core and api layers)
   "^Core\\..*$",
   "^Api\\..*$",
+  "^Reflex\\.AtomicCss\\..*$",
 
   # Development and Testing helper patterns
   "^Frontend\\.Devel\\..*$",

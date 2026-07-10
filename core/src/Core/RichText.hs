@@ -9,7 +9,6 @@ module Core.RichText
   , getInlines
   , mkRichText
   , unsafeSimpleString
-  , simpleString
   , richTextParser
   , richTextParserWith
   )
@@ -111,10 +110,6 @@ stripBoundaryWhitespace xs =
 -- | Unsafe constructor for literals.
 unsafeSimpleString :: Text -> RichText
 unsafeSimpleString t = RichText (TextRun Nothing (unsafeNonEmptyText t) NE.:| [])
-
--- | Safe constructor
-simpleString :: Text -> Maybe RichText
-simpleString t = mkRichText [TextRun Nothing (unsafeNonEmptyText t)]
 
 instance Semigroup RichText where
   (RichText a) <> (RichText b) =

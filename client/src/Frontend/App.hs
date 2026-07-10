@@ -12,6 +12,7 @@ import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (eitherDecode, encode)
 import Data.ByteString.Lazy qualified as BL
+import Data.Functor (void)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe, isJust)
 import Data.Text (Text)
@@ -215,7 +216,7 @@ makeSessionState pushEvt identityDyn = do
   actorsMapDyn <- holdDyn Map.empty (fmap (.actors) gameEvt)
   logsDyn <-
     foldDyn
-      (flip ++)
+      (flip (++))
       []
       ( leftmost
           [ fmapMaybe (\case PushWelcome{history = h} -> Just h; _ -> Nothing) pushEvt
@@ -466,7 +467,7 @@ mapWidget mStaging selectedActorId = do
 
       actorsMapDyn <- askActors
       pb <- getPostBuild
-      let welcomeArrivalEvt = Control.Monad.void (ffilter (not . Map.null) (updated actorsMapDyn))
+      let welcomeArrivalEvt = void (ffilter (not . Map.null) (updated actorsMapDyn))
           triggerEvt =
             attach (current actorsMapDyn) $
               leftmost

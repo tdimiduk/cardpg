@@ -1,5 +1,29 @@
 #!/usr/bin/env bash
 set -e
-# Run hlint on source directories
 hlint api client core server tools reflex-atomic-css
-weeder
+
+# Run weeder using only HIE files matching the active GHC version
+ghc_ver=$(ghc --numeric-version)
+hie_dirs=(dist-newstyle/build/*/ghc-"$ghc_ver")
+hie_dir=""
+for d in "${hie_dirs[@]}"; do
+  if [ -d "$d" ]; then
+    hie_dir="$d"
+    break
+  fi
+done
+
+if [ -n "$hie_dir" ]; then
+  echo "Running weeder using HIE files in: $hie_dir"
+  hie_args=()
+  for pkg_dir in "$hie_dir"/*-0.1.0.0; do
+    if [ -d "$pkg_dir" ]; then
+      hie_args+=(--hie-directory "$pkg_dir")
+    fi
+  done
+  weeder "${hie_args[@]}" +RTS -A64m -RTS
+else
+  echo "No compilation artifacts found for GHC $ghc_ver. Running weeder in default mode."
+  weeder
+fi
+
