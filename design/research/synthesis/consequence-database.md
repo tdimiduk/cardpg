@@ -46,6 +46,10 @@ When brainstorming new entries, the AI must align its ratings with the calibrati
 > [!IMPORTANT]
 > **Baseline Recovery Assumptions**: Ratings assume that recovery efforts occur under standard conditions (e.g., access to basic field tools, local village resources, clean water, or safe rest periods). If stranded in extreme wilderness or hostile territory, the effective Recovery Difficulty scales upward by **+20**.
 
+> **Magic can modify these assumptions** In the Heroic setting, no consequence is truely permanent. It may be a whole quest to access the magic to do so for more severe consequences
+
+> **Magic does not trivialize recovery** Magic can allow recovery where it would not otherwise be possible, accelerate the course, and shift the const around, but it does not just _poof_ injuries away.
+
 ---
 
 ## Canonical Tag Taxonomy

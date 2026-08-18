@@ -1,0 +1,70 @@
+- name: Near Miss
+  severity: 1
+  rules:
+    - return this with no further effect
+  escalation: If you draw another Near Miss, return it and draw a severity 2 consequence
+- name: Poor Footing
+  severity: 1
+  tags:
+    - positioning
+  rules:
+    - Action: place a card from your and under this. If you have two cards under it, expend them and remove this.
+      passive: Impact of your defenses is increased by 1
+  escalation: If you draw a `positioning` consequence return it and draw a consequence of severity + 2
+- name: Out of Breath
+  severity: 1
+  tags:
+    - fatigue
+  rules:
+    - place a `fatigue` card on top of your deck and return this
+  escalation: If you draw a `fatigue` consequence, draw one additional consequence
+- name: Slightly Battered
+  severity: 1
+  rules:
+    - Place a `Pain` status card on top of your deck and an `Injury` in your expended pile, remove this
+  escalation:
+    - When you would draw a consequence of severity 2 or less, increase the severity by 1
+- name: Out of Position
+  severity: 1
+  tags:
+    - positioning
+  rules:
+    - Action: Remove this
+    - Passive: You may not attack
+  escalation: When you draw a `positioning` consequence, return it and draw two more
+- name: Concussion
+  severity: 5
+  rules:
+    - passive: Replace your upkeep draw with "Draw 1, expend 1 from the top of your deck."
+    - task: Bed Rest (Time 1 week) -> Replace this with Mild Concussion
+  escalation: Increase the severity of a consequence draw by 1
+- name: Mild Concussion
+  severity: 3
+  rules:
+    - passive: While you have at least 5 cards in your hand, replace your upkeep draw with "Draw 1, expend 1 from the top of your deck."
+  escalation: Increase the severity of a consequence draw by 1 max 4
+- name: Knocked Prone
+  rules:
+    - passive: can only crawl, you must expend 1 from hand to attack or move
+    - passive: Armor pierce against you is doubled
+    - action: put a card from your hand under this
+    - action: Remove this and expend the cards under it. You may only take this action if you have more cards under this than your `Burden`
+- name: Afraid
+  severity: 2
+  tags:
+    - fear
+    - mental
+  rules:
+    - passive: You must expend 1 from hand to make a melee attack or move closer to a foe
+    - action: Snap out of it (Spend {Red} 15) -> remove this
+    - task: center yourself (Check {Blue} 8; Time 1 min) -> remove this
+  escalation: If you take a fear consequence of severity 2, instead replace this with Terrified
+- name: Terrified
+  severity: 3
+  tags:
+    - fear
+    - mental
+  rules:
+    - passive: you must expend 2 from hand to make an attack
+    - passive: you cannot willing move closer to a foe
+    - action: Snap out of it (Spend {Red} 15) -> remove this

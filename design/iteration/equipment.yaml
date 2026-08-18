@@ -1,0 +1,9 @@
+- name: full harness
+  burden: 2
+  rules:
+    - passive: Your consequence pool size is 4. An attack with pierce 6 can ignore this passive
+    - passive; Your consequence pool size is 3. An attack with pierce 12 can ignore this passive.
+- name: Gambeson and Maile
+  burden: 1
+  rules:
+    - passive: Your consequence pool size is 3. An attack with pierce 4 can ignore this passive.

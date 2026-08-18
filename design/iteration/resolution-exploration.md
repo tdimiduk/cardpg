@@ -45,7 +45,7 @@ In that system there was no defense or resilience stat, the severity of conseque
 
 1. Having to spend cards you had saved up to play an action to defend yourself ended up being a "feel bad" moment, especially for younger players.
 2. Big attacks felt a bit underwhelming because usually what the defender would do is scrape their way up to half the strength and just accept a minor consequence
-3. Fights were hard to close out because with two cards to defend it was pretty easy to stay above the strength/4 which was the knock out condition.
+3. Fights were hard to close out because each turn's draw often gave enough to stay above the strength/4 which was the knock out condition.
 4. Monsters could end up "stun locked". They were able to vaguely defend themselves spending their card draws each turn on defense and gradually accumulating consequences but hitting a point where it was clear as long as you kept pressuring them they would never attack again in the combat.
 5. Noob trap of spending all your cards to play an attack and then being extremely vulnerable to an attack against you.
 6. Weird dynamics around multiple attacks against the same character in the same turn, how to resolve them and unintended anti-synergies.
