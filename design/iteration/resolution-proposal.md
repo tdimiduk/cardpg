@@ -14,11 +14,13 @@ You need to meet the `Strength` of the attack against you. You may play **Defend
 
 ### Build a Consequence Pool
 
-The defender needs to give the attacker a pool of 2 consequences to choose from (unless modified by table cards or existing consequences).
+The defender needs to give the attacker a pool of consequences to choose from. The defender's table cards will set the size of the pool. An unarmored hero has a pool size of 2, a "minion" has a pool size of 1, and typically light armor is 3 and heavy armor 4.
 
 The attacker "Spends" impact from the attack to draw consequence cards and then picks two to hand to the defender. If the attacker cannot pick 2 cards, the pool is implicitly filled with "No Consequence".
 
 "Buying" a consequence draw costs 1 impact per severity level of the consequence. Remember you need at least 2 consequences in the pool to actually impose a consequence.
+
+If multiple attacks happen in the same round, the attackers build a consequence pool together, each spending their own `Impact`.
 
 #### Escalation
 
@@ -36,53 +38,14 @@ From the two options offered to them, the defender picks 1 to suffer. Accumulate
 
 Consequences are grouped by severity ranging from 1 (often fleeting minor setbacks or accelerated fatigue and wear) to 6 (incapacitating, risk of death, serious recovery journey)
 
-# Supporting Content
-
-## Table Cards
-
-### Armor
-
-Armor will usually modify the consequence pool construction. The most fundamental way it does so is by increasing it's size, forcing the attacker to give you additional options to choose from.
-
-- When taking a physical harm consequence your consequence pool size is 3
-- The first escalation triggered in each consquence pool has no effect (it still counts as used for that consequence)
-- The first time a consequence pool would include a card of severity 4 or higher, damage (flip) this armor instead and the attacker must choose a different consequence
-
-## Consequences
-
-### Escalation
-
-Some random examples of what escalaction clauses on cards migth look like
-
-- Instead of drawing a severity 1 consequence, draw a severity 2 consequence
-- If you draw a `Legs` keyword consequence return it and intead draw a consequence of 2 severity higher.
-- Draw an additional severity 1 consequences
-
-# Open questions/Concerns
-
-## Batch consequences
-
-Should we just build once consequnce pool each round if multiple attacks happen instead of forming a seperate pool per attack?
-
-- Advantages: more streamlined at the table (probably?)
-- Disdvantages: groups things together in a way that may reduce verisitimilitude? Could create ambiguity in the "controlling player" for a consquence pool (how much does that matter?)
-
-# Evaluation
-
-of this system, as compared to our existing ones
-
-## Advantages
-
-- Offers more dynamicism in how consequences resolve
-- Means we are not forced into a single escalation track for unrelated consequences
-- Potentially reduced core rules presence (don't need `Defense` and `Resiliance` stats)
-- gives the attacker and defender more agency in how a given attack plays out's
-
-## Disadvantages
-
-- More table time (two extra decision steps for every attack)
-- More complexity on the consequence cards
-- Does it solve the "alpha strike" problem?
+| Severity | Category                               | Description & Gameplay Effect                                                                   | Examples                                                          |
+| :------: | :------------------------------------- | :---------------------------------------------------------------------------------------------- | :---------------------------------------------------------------- |
+|  **1**   | **Minor Friction / Wear**              | Fleeting setbacks, positioning slips, or minor stamina costs. Easily pushed through or cleared. | `Near Miss`, `Poor Footing`, `Out of Breath`, `Slightly Battered` |
+|  **2**   | **Tactical Constraint / Minor Injury** | Specific tactical hindrances that limit actions or make you vulnerable to follow-up strikes.    | `Breached Guard`, `Staggered`, `Afraid`, `Strained Offense`       |
+|  **3**   | **Significant Impediment**             | Severe tactical disruptions or meaningful physical wounds requiring mid-combat attention.       | `Mild Concussion`, `Terrified`, `Hamstrung`, `Knocked Prone`      |
+|  **4**   | **Major Trauma**                       | Structural failure of defense or severe bodily injury. Forces a major tactical shift.           | `Broken Arm`, `Armor Shattered`, `Dislocated Knee`                |
+|  **5**   | **Critical Injury**                    | Life-threatening trauma or near-total collapse. One step from defeat.                           | `Severe Concussion`, `Arterial Bleed`, `Crushed Ribs`             |
+|  **6**   | **Taken Out**                          | Incapacitated, unconscious, dying, or completely removed from the conflict.                     | `Unconscious`, `Mortal Wound`, `Catatonic`                        |
 
 # Document Purpose
 
