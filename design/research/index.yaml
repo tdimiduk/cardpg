@@ -511,35 +511,3 @@ design_process_and_research:
           "core-concept:action-resolution",
           "core-concept:verisimilitude",
         ]
-  ideation:
-    - name: "Design Sketchbook"
-      id: "design-sketchbook"
-      path: "iteration/design-sketchbook.md"
-      source_type: "local_file"
-      purpose: "A collection of specific mechanic ideas and explorations, look here to see if we have a good idea we just haven't formalized."
-      type: "Ideation"
-      status: "Canon"
-      tags: ["doc-type:ideation", "audience:designer-facing"]
-    - name: "Defense Action Iteration"
-      id: "ideation-defense-action"
-      path: "iteration/defense-action.md"
-      source_type: "local_file"
-      purpose: "Exploration of defense action mechanics."
-      type: "Ideation"
-      status: "Leading-Edge"
-      tags: ["doc-type:ideation", "core-concept:defense"]
-  archived_research:
-    - name: "Armor Research"
-      id: "synthesis-armor-old"
-      path: "research/synthesis/armor-old.md"
-      source_type: "local_file"
-      purpose: "A specific research summary on historical armor, used for designing related mechanics."
-      type: "Research Synthesis"
-      status: "Archived"
-      tags:
-        [
-          "doc-type:research-synthesis",
-          "audience:designer-facing",
-          "core-concept:armor",
-          "core-concept:verisimilitude",
-        ]

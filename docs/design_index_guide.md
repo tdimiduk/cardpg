@@ -6,10 +6,12 @@ This document outlines the step-by-step instructions to synchronize the systems 
 
 The design registry is split hierarchically:
 
-1.  **[`design/index.yaml`](file:///home/tdimiduk/cardpg/design/index.yaml)**: The root index containing game system rules, guidelines, philosophies, VTT registries, and active templates.
-2.  **[`design/research/index.yaml`](file:///home/tdimiduk/cardpg/design/research/index.yaml)**: The sub-index mapping empirical research reports, verisimilitude sources, and research syntheses.
+1.  **[`design/index.yaml`](file:///home/tdimiduk/cardpg/design/index.yaml)**: The root index containing game system rules, guidelines, philosophies, VTT registries, and pointers to sub-indexes.
+2.  **[`design/iteration/index.yaml`](file:///home/tdimiduk/cardpg/design/iteration/index.yaml)**: The sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches.
+3.  **[`design/research/index.yaml`](file:///home/tdimiduk/cardpg/design/research/index.yaml)**: The sub-index mapping empirical research reports, verisimilitude sources, and research syntheses.
+4.  **[`design/archive/index.yaml`](file:///home/tdimiduk/cardpg/design/archive/index.yaml)**: The sub-index preserving archived playtest content, legacy spreadsheets, and superseded research.
 
-The audit script recursively parses both files.
+The audit script recursively parses the root index and all declared sub-indexes.
 
 ---
 
