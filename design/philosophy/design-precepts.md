@@ -55,6 +55,18 @@ When our research describes a defense as "Functionally Immune," this is modeled 
 
 **Rationale:** This precept implements our "Casual Realism" and "Player Agency" principles. It ensures clever tactical maneuvers are rewarded while still providing a "desperate retreat" option as a safety valve.
 
+### Respect the 10x Rule of Core Complexity
+
+**Core Principle:** Complexity in the core rulebook costs **10x** as much as complexity distributed on specific cards. The core engine procedures in `core-rules.md` must remain minimal, tactile, and intuitive to teach in two minutes. Nuance, situational mechanics, weapon dynamics, and recovery arcs should live on self-contained cards (Consequence cards, Action cards, Stance/Item cards) rather than extensive rulebook glossaries.
+
+**Rationale:** This precept enforces our **Mechanical Elegance** and **Modular Design** guiding principles. It keeps the barrier to entry low while allowing physical cards to carry rich tactical depth and verisimilitude.
+
+### Design for Tabletop Ergonomics and Low Cognitive Load
+
+**Core Principle:** Resolution mechanics must be physically tactile and computationally lightweight at the table. Avoid mechanics that reward players for tracking the exact remaining card composition of their 24-card deck (card-counting), calculating complex probability curves during mid-turn choices (Anti-Analysis Paralysis), or converting multiple layers of fractional math and token currencies.
+
+**Rationale:** This directly supports our **Casual Realism** and **Fun** principles. It ensures that player attention stays focused on dramatic tactical choices and narrative stakes rather than mental arithmetic and procedural bookkeeping.
+
 ---
 
 ## Content & Experience Design
