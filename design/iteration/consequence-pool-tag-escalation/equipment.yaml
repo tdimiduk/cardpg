@@ -1,0 +1,43 @@
+# caRdPG Armor and Protective Gear (Two-Sided Item Cards)
+# Reference: design/iteration/resolution-proposal.md
+
+- name: Full Harness
+  intact:
+    burden: 2
+    tags:
+      - Equipped
+      - armored
+      - heavy armor
+    rules:
+      - passive: Your consequence pool size is 4. An attack with Pierce 6 or greater ignores this passive.
+      - passive: Your consequence pool size is 3. An attack with Pierce 12 or greater ignores this passive.
+      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 4 or higher, flip this armor to its Damaged side instead and negate that consequence.
+  damaged:
+    burden: 3
+    tags:
+      - Equipped
+      - armored
+      - damaged
+    rules:
+      - passive: Your consequence pool size is 2.
+      - task: Master Smith Repair (Check {Red} 60, Check {Blue} 45; Time 1 week; Requires Forge & Anvil; Cost Raw Steel & Replacement Rivets) -> Flip to Intact side.
+
+- name: Gambeson and Maile
+  intact:
+    burden: 1
+    tags:
+      - Equipped
+      - armored
+      - medium armor
+    rules:
+      - passive: Your consequence pool size is 3. An attack with Pierce 4 or greater ignores this passive.
+      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 4 or higher, flip this armor to its Damaged side instead and negate that consequence.
+  damaged:
+    burden: 2
+    tags:
+      - Equipped
+      - armored
+      - damaged
+    rules:
+      - passive: Your consequence pool size is 2.
+      - task: Field Armoring (Check {Red} 40, Check {Yellow} 30; Time 2 days; Requires Repair Tools; Cost Replacement Rings & Leather) -> Flip to Intact side.
