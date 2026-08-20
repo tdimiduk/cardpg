@@ -87,6 +87,10 @@ These explorations are built upon a set of core caRdPG baseline assumptions that
 
 ## Exploration
 
+### Consequence Pool with Tag Escalation
+
+Full proposal in consequence-pool-tag-escalation
+
 ### Declared Defense Effort
 
 Goal: increase defender interactivity
@@ -146,62 +150,6 @@ At any point, the defender faces a choice regarding how to handle the incoming `
 1. Analysis paralysis. Less high stakes large probability calculation than `Declared Defense Effort`, but still incentivizes tracking your deck and doing some mild probability calculations **every** defensive flip.
 2. Slows down defenses (math + decision point every flip).
 3. Requires an expanded severity ladder (e.g., max severity of 5 or 10 rather than the standard 3) to prevent the severity-bump math of buy-offs from causing instant knockouts.
-
-### "I Cut, You Choose" Consequence Selection
-
-Goal: increase feeling of agency (for attacker and defender)
-
-#### The Concept
-
-When a character is forced to take a Consequence card, the agency is split between the attacker and the defender to prevent the "punching bag" stall tactic where a defender always chooses optimal penalties.
-
-- The attacker draws a small pool of Consequence cards (maybe impact/2, min 2?) of the appropriate numeric Severity level.
-- The attacker selects two options and presents them to the defender.
-- The defender makes the final choice of which Condition to suffer.
-
-#### Critiques
-
-1. Extra step and decision (but only at the point of actually taking a consequence).
-2. Potential for significant game slowdown at the physical table due to two layers of active decision-making (attacker filters/selects two, defender chooses one).
-
-#### Alternative brainstorming: Blind Draft ("Draw 2, Choose 1")
-
-To mitigate the physical slowdown of "I Cut, You Choose" while preserving defender agency:
-
-- The attacker draws exactly 2 Consequence cards of the appropriate Severity and hands them directly to the defender.
-- The defender chooses one and discards/returns the other.
-- **Tradeoff:** Speeds up play significantly by eliminating the attacker's active decision loop, but loses the thematic element of the attacker targeting the defender's specific weaknesses.
-
-### Keyword-Driven Redundancy Escalation
-
-Goal: Replace the fixed severity escalation system and resiliance stat
-
-#### The Concept
-
-This system is intended to replace the resilience system entirely. Instead of generating multiple independent consequences, `Impact` would directly dictate the base severity of the wound (e.g., meeting two defense increments results in a single Severity 2 consequence instead of two Severity 1 consequences).
-
-Maintain the numeric Severity tracks (e.g., Severity 1 through 4), but offload the momentum of the downward spiral onto the cards themselves using physiological and structural tags (e.g., `Legs`, `Arms`, `Core`, `Head`, `Armor`).
-
-Escalation happens mechanically via these tags combined with the numeric severities. If a character takes a consequence bearing a tag they already possess, it triggers an immediate jump in severity.
-
-This pairs naturally with attacker-agency mechanics (like "I Cut, You Choose"), allowing the attacker to strategically target tags the defender already has on the table.
-
-- _Example Text:_ A Severity 1 `Legs` Condition might read: "If you would take another Severity 1 `Legs` consequence, instead draw two Severity 2 `Legs` consequences and pick one."
-
-#### Advantages
-
-1. If done right could increase ludonarrative harmony and "Casual Realism" (taking a hit on the arm that has already been wounded naturally puts you in a worse situation).
-2. Can live almost entirely on consequence cards. Requires little to no core rules support.
-3. Naturally supports different domains of consequences.
-4. Allows character traits (e.g., "Thick-Skinned" or "Redundant Systems") to slow down the tag escalation climb for naturally durable characters. On the flip side, monsters meant as disposable minions could have a trait that causes them to not check keyword matches and escalate severity automatically (replicating the Resilience 1 behavior from the current rules).
-5. Pairs beautifully with the double-sided [Layered Condition Card](design-sketchbook.md#L83) concept, allowing physical condition tags to have simple tactical fronts and complex treatment backs.
-
-#### Critiques
-
-1. Requires a family of keywords and looking up what you have with what keyword at the table.
-2. Designer burden (more moving pieces when writing consequence cards and more pieces we have to balance correctly).
-3. Cascading rules will require high clarity. Since these rules will live on the consequence cards themselves, they may end up being case-by-case dependent (based on balancing and ludonarrative harmony for what the specific wounds are and how they escalate).
-4. **Distributed vs. Focused Damage Swinginess:** A character could accumulate several different Severity 1 conditions across different tags (e.g., `Legs`, `Arms`, `Mind`) without escalating, making them feel extremely resilient. However, if an opponent focuses fire on a single tag, the character will escalate and drop rapidly. This alters combat pacing significantly compared to a global severity track. Fully implementing this system would require a deep re-examination of the combat pacing ladder and careful tuning of damage distribution and swinginess (which is not yet fully explored in this document).
 
 ---
 
