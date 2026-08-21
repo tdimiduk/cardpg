@@ -21,7 +21,6 @@ A campaign's **Power Level** is a separate dial from its tonal setting. It defin
 
 - **Core Concept & Inspirations:** Models the harsh realities of a pre-modern world where survival is the primary victory. Adheres strictly to the findings of our research documents (`physical-harm-and-trauma.md`, etc.).
 - **Inspirations:** _Darkest Dungeon_, _Torchbearer_, The Black Company Series, Berserk, Alien (1979). _Thematic Intent: To capture a tone of costly attrition and psychological toll, where protagonists are often worn down by their struggles rather than purely empowered._
-  - _Darkest Dungeon_, _Torchbearer_, The Black Company Series, Berserk, Alien (1979).
 - **Narrative Focus:** Survival, attrition, the high cost of violence. A "successful" character is one who lives to retire, often permanently scarred.
 - **Tuning the Dials:**
   - **Consequences:** Severe and often permanent. The default Consequence Deck is used, featuring `Condition Cards` like `Compound Fracture` or `Sepsis`. The full, terrifying text on the "Prognosis Side" of Layered Condition cards is the norm.
@@ -34,7 +33,6 @@ A campaign's **Power Level** is a separate dial from its tonal setting. It defin
 
 - **Core Concept & Inspirations:** The game's intended default experience. Balances gritty reality with heroic fantasy, where characters are defined by their ability to overcome otherwise insurmountable odds.
 - **Inspirations:** The Lord of the Rings, _The Witcher_, _A Song of Ice and Fire_, Samurai Cinema, Blades in the Dark. _Thematic Intent: To model a heroism defined by perseverance. The protagonists are exceptional, but their victories are earned through enduring tangible costs and consequences._
-- **Inspirations:** The Lord of the Rings, _The Witcher_, _A Song of Ice and Fire_, Samurai Cinema, Blades in the Dark.
 - **Narrative Focus:** Earned victories, perseverance, facing meaningful consequences. A grievous wound isn't just a penalty; it can become the central plot of an entire side quest, making the eventual hard-won recovery feel all the sweeter.
 - **Tuning the Dials:**
   - **Consequences:** The same harsh Consequence Deck as the Grim Simulationist setting is used. However, players have access to heroic tools to manage these outcomes.

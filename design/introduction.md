@@ -8,7 +8,7 @@ _caRdPG_ is a roleplaying game about grounded heroes, earned victories, and the 
 
 Traditional tabletop games ask you to sit passively while the Game Master rolls dice to see if a monster hits your character. _caRdPG_ rejects this passivity. Here, the defender is the active agent.
 
-When a threat strikes, the GM doesn’t roll to hit you. Instead, they set the attack's `Strength`, and **you** resolve the defense. <TODO> some verbage about how that plays out once we have a system in place where the defender has more meaningful interaction in the defense </TODO>
+When a threat strikes, the GM doesn’t roll to hit you. Instead, they set the attack's `Strength`, and **you** resolve the defense—choosing how much effort and focus to commit, deciding which blows to absorb, and enduring the resulting tactical fallout.
 
 ---
 

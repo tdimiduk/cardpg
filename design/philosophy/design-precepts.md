@@ -95,11 +95,27 @@ These precepts guide the design of player-facing content like cards, consequence
 
 ### Enforce Action on Zero-Value Cards
 
-Enforce Action on Zero-Value Cards
-
 **Core Principle:** Any Status Card with zero stats (0/0/0) should generally have a mechanic that forces it out of the player's hand (for example the Minor Wound card).
 
 **Rationale:** This prevents the "optimal play" problem where players hoard useless cards to keep their draw deck thin and efficient. It ensures that drawing a "dead" card is always an immediate tactical hindrance that must be dealt with, reinforcing the Deck as Life pattern.
+
+### Treat Removing Cards from Cycling as an Active Cost
+
+**Core Principle:** Taking cards out of a character's cycling deck into other zones (holding them in hand, placing them in ongoing tableaus, or attaching them to targets) actively shrinks the draw pile and accelerates fatigue / risks defensive collapse. Removing cards from circulation is fundamentally an _active cost and systemic liability_ for that character.
+
+**Rationale:** Card designs, items, and resolution mechanics should only remove cards from circulation when deliberately intending to impose an endurance cost or high-stakes trade-off on a character, never as a superficial bookkeeping shorthand.
+
+### Use "Cards as Fuel" for Basic Tactical Recoveries in Content
+
+**Core Principle:** When designing recovery tasks or tactical maneuvers on Condition Cards or specific actions (e.g., getting up from prone or clearing an immediate hindrance), specify costs as placing or expending generic cards from hand (e.g., _"Place a card from your hand into your expended pile to stand up"_).
+
+**Rationale:** This gives players a viable tactical use for `Fatigue` or low-value cards in hand while maintaining ludonarrative harmony (an exhausted hero spends their remaining effort to struggle back to their feet). It embeds tactical flexibility directly into card content without cluttering the core rulebook with a rigid list of global basic action rules.
+
+### Core vs. Modular Design (The Pillars of Play Metric)
+
+**Core Principle:** A mechanic belongs in the **Core Rules** if its removal would fundamentally break or diminish one of the four established Pillars of Play (Combat, Exploration, Social, Downtime). A mechanic belongs in an **Optional Module** if it adds a self-contained layer of depth or flavor to a pillar that already functions without it (e.g., `Clocks & Fronts`, `Snap Checks`).
+
+**Rationale:** This maintains the project's focus on **Mechanical Elegance** and **Modular Design**, keeping the core engine minimal while allowing groups to curate their desired level of granularity.
 
 ---
 

@@ -4,8 +4,6 @@ Your deck is more than a resource; it's the story of your character's current st
 
 ### Your Hand is Your Agency
 
-### Your Hand is Your Agency
-
 An `Action Card` in your hand doesn't just represent your ability to do something; it represents a fleeting **tactical opening** that your character has perceived. Holding a `Trip` card means you are anticipating a moment of weakness. When you play that card, you are not asking the GM if you can trip someone; you are spending your agency to declare, "The opening to trip this foe happens _now_."
 
 Your hand is a set of narrative possibilities that you have the power to unleash. The cards you play to fuel an action are just as important. Each one represents a different opportunity—a feint, a parry, a quick step—that you are consciously sacrificing to channel all your effort into a single, decisive maneuver.

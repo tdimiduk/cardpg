@@ -1,26 +1,13 @@
-# Provide "Card-as-Fuel" Actions for Core Maneuvers
+# Exploratory Concept: "Cards-as-Fuel" in Content Design
 
-# Core Principle
+## Core Concept
 
-Core tactical maneuvers, especially those related to movement and disengagement, should have an option to be paid for by expending a set number of cards from hand, regardless of their stats or text. This ensures that even "useless" `Status Cards` have value as a resource for basic actions.
+Tactical recoveries and maneuvers on cards (such as getting up from prone, shaking off a stagger, or disengaging) can specify costs paid by placing or expending generic cards from hand regardless of their stats or text (e.g., _"Place a card from your hand into your expended pile to regain your footing"_). This ensures that even `Status Cards` like `Fatigue` have tactical utility as fuel for basic recoveries without requiring a separate, rigid "Basic Action" rules subsystem in the core rulebook.
 
-## Rationale
+### Rationale & Application
 
-This precept directly supports several of our `Guiding Principles`. It enhances **"Fun"** and player agency by preventing "feel-bad" moments of total paralysis when a player draws a hand consisting solely of `Fatigue` or other non-actionable cards. It transforms a moment of powerlessness into a meaningful, high-stakes choice. Furthermore, it reinforces the **"telegraphed downward spiral"** by providing players with a concrete, mechanical way to act on the "signal of exhaustion"—giving them the means to retreat when they realize they can no longer fight effectively.
-
-## Implementation Guide
-
-When designing rules for movement, disengagement, or other universal basic actions:
-
-1. **Define a set of "Basic Maneuvers"** (e.g., Disengage, Take Cover, Regain Footing) that should always be available to a character.
-2. **Assign a fixed card cost** to these maneuvers, such as "Expend 2 cards from your hand."
-3. **Ensure this cost is purely quantitative.** The rule should explicitly state that any cards can be expended to pay this cost, ignoring their `Color`, value, or text. This is what gives `Fatigue` cards a secondary purpose.
-
-## Case Study Example: Solving the "Hand of Fatigue" Problem
-
-- **The Problem:** We identified a scenario where a character becomes so exhausted that they draw a hand of two `Fatigue` cards. Under a traditional action system, this would paralyze the player, forcing them to essentially skip their turn.
-- **The Flawed Solution:** Our first instinct was to create a special rule to mitigate this "feel-bad" moment, such as allowing a free redraw.
-- **The Elegant Solution:** By applying this precept, we create a far more interesting outcome. The player is indeed unable to perform a powerful attack or complex action. However, they can use those two "useless" `Fatigue` cards as fuel to pay the cost of a **"Disengage"** action. The mechanical state (expending fatigue) perfectly mirrors the narrative state (a character who is too tired to fight uses their last reserves of energy to retreat). This creates a desperate, narrative-rich choice instead of a frustrating, skipped turn.
+- **Solves the "Hand of Fatigue" paralysis:** A player whose hand is flooded with `Fatigue` cannot execute powerful strikes, but can burn those fatigue cards to stagger to their feet or withdraw.
+- **Embedded in Content, Not Bloated Core Rules:** Rather than writing an extensive list of global basic actions into `core-rules.md`, card text and condition cards specify these costs organically where relevant.
 
 # The Flexible Resolution Scale is the Game's Identity
 
@@ -53,7 +40,10 @@ Mechanical elegance is not a pure measure of rules quantity, but of a design's f
   - An ogre's attack would be devastating to all but the best armor. It could have a special rule like: "If this attack's defense results in a consequence of `Severity 2` or higher, the defender's armor is automatically moved to its `Damaged` state."
   - **Design Application:** This rule interacts with the armor tiers realistically. A **Brigandine** might barely prevent a lethal wound but be destroyed in the process. A **Full Harness**, with its superior stats, has a much better chance of weathering the blow _and_ remaining intact, justifying its elite status.
 
-# Unified "Encumbrance" Mechanic for Armor
+# Exploratory Idea: Two-Tiered Armor Exertion (Per-Action Discard + Burden)
+
+> [!NOTE]
+> Canonical equipment uses the **`Burden`** keyword (adding extra `Fatigue` cards per cycle). The concept below is an exploratory ideation sketch investigating whether heavy armor should also impose per-action card discards. It is **not** canonical rules.
 
 ## Core Principle
 

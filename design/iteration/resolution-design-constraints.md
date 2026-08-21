@@ -16,7 +16,7 @@ These are foundational rules of _caRdPG_ that resolution systems must build upon
 
 - **Single Resource Substrate:** A character's 24-card deck represents training, immediate focus, and physical/mental endurance. There are no separate resource pools (spell slots, HP, action points).
 - **Tri-Color Anatomy:** _Every single card_ in the deck has numerical values for all three Core Colors: `Red` (Force/Endurance/Dominion), `Yellow` (Speed/Precision/Finesse), and `Blue` (Intellect/Planning/Discipline).
-- **Strict Deck Economy:** Player deck size and circulation must remain closed and stable. A resolution mechanic must **not** permanently tie up player deck cards as injury markers on enemies or external tableaus (with rare, thematic exceptions for active concentration spells).
+- **Removing Cards from Cycling is an Active Cost:** Taking cards out of a character's cycling deck into other zones (holding them in hand, placing them in ongoing tableaus, or attaching them to targets) actively shrinks the draw pile and accelerates fatigue / risks defensive collapse. Removing cards from circulation is fundamentally an _active cost and systemic liability_ for that character. Resolution mechanics and card designs should only remove cards from circulation when deliberately intending to impose an endurance cost or high-stakes trade-off on a character, never as a superficial bookkeeping shorthand.
 - **The Fatigue Cycle:** Running out of cards is a natural fatigue mechanic (add 2 Fatigue cards + Burden to discard, reshuffle). Resolution mechanics must treat mid-action reshuffling as a dramatic moment of near-exhaustion, not an error state.
 - **Dead-Card Prevention:** Zero-stat cards (`0/0/0` like `Minor Wound`) must have active mechanics that force them out of hand, ensuring "dead" cards cannot be safely hoarded.
 
@@ -88,10 +88,9 @@ Harm is modeled through two distinct, tangible layers:
 
 ### 3.3. Equipment & Metabolic Costs
 
-- **Burden & Encumbrance:** Armor protection must interface cleanly with the physical toll of wearing it:
-  - `Burden`: Adds extra `Fatigue` cards per Fatigue Cycle.
-  - `Encumbrance`: Causes card discards during strenuous maneuvers.
-  - Defensive stats (e.g., `Defense`, `Resilience`, or `Pool Size`) absorb incoming Impact.
+- **Burden & Armor Protection:** Armor protection must interface cleanly with the physical toll of wearing it:
+  - `Burden`: Adds extra `Fatigue` cards per Fatigue Cycle, reflecting the aerobic strain and metabolic cost of heavy gear.
+  - Defensive stats (e.g., `Defense`, `Resilience`, or `Pool Size`) absorb incoming Impact or mitigate consequences.
 
 ---
 

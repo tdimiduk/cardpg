@@ -104,14 +104,6 @@ project_foundation:
       type: "Meta Document"
       status: "Canon"
       tags: ["doc-type:meta", "audience:designer-facing"]
-    - name: "Design Methodology"
-      id: "design-methodology"
-      path: "methodology/design-methodology.md"
-      source_type: "local_file"
-      purpose: "Defines the high-level principles for how we structure the project's design, such as the distinction between core rules and optional modules."
-      type: "Meta Document"
-      status: "Canon"
-      tags: ["doc-type:meta", "audience:designer-facing"]
     - name: "Tag Glossary"
       id: "tag-glossary"
       path: "methodology/tag-glossary.md"
