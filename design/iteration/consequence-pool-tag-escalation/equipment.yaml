@@ -7,7 +7,7 @@
     tags:
       - Equipped
       - armored
-      - heavy armor
+      - plate harness
     rules:
       - passive: Your consequence pool size is 4. An attack with Pierce 6 or greater ignores this passive.
       - passive: Your consequence pool size is 3. An attack with Pierce 12 or greater ignores this passive.
@@ -28,7 +28,7 @@
     tags:
       - Equipped
       - armored
-      - medium armor
+      - maille harness
     rules:
       - passive: Your consequence pool size is 3. An attack with Pierce 4 or greater ignores this passive.
       - passive: The first time a consequence pool forces you to suffer a consequence of Severity 4 or higher, flip this armor to its Damaged side instead and negate that consequence.

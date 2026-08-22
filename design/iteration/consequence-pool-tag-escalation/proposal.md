@@ -21,7 +21,7 @@ You must meet the `Strength` of each incoming attack declared against you:
 
 ---
 
-### 2. Draw Candidate Consequences & Resolve Escalations
+### 2. Draw Candidate Consequences
 
 Attackers spend the defender's Total Round Impact as currency to draw a hand of candidate consequences from the severity decks:
 
@@ -32,38 +32,23 @@ Attackers spend the defender's Total Round Impact as currency to draw a hand of 
 
 Attackers may spend their Impact across any combination of severities they can afford. If multiple attackers targeted the defender in the round, they pool their generated Impact and draw candidates together.
 
-#### Resolving Escalations
-
-As each candidate card is drawn, check its tags against:
-
-1. **Active Table Conditions** already in play in front of the defender.
-2. **Candidate Cards** already drawn into the attacker's hand during this resolution.
-
-If the newly drawn card matches an escalation condition on an active table condition or an earlier candidate card:
-
-- Follow the card's printed escalation instructions (e.g., return the drawn card and draw a card of Severity $+2$, or replace it with a specific higher-tier card).
-- **Once Per Source Limit**: Each condition card (on the table or in the candidate hand) can only trigger its escalation **once per round**. Turn table conditions sideways (90 degrees) when used.
-
 ---
 
-### 3. Curate the Consequence Pool
+### 3. Curate the Consequence Pool (The "I Cut" Step)
 
-The defender's traits and equipped gear set the **Consequence Pool Size ($N$)**:
+The defender's traits and equipped gear define their **Consequence Pool Size ($N$)** (typically 2 for unarmored heroes, 3–4 for armored combatants, and 1 for minions).
 
-- **Minions / Mooks**: Pool Size **1** (instant hit; no drafting choice).
-- **Unarmored Heroes**: Base Pool Size **2** (standard heroic drafting choice).
-- **Light Armor (Gambeson & Maile)**: Pool Size **3** (Pierce 4 reduces to 2).
-- **Heavy Armor (Full Harness)**: Pool Size **4** (Pierce 6 reduces to 3; Pierce 12 reduces to 2).
+#### Tactical Pool Curation
 
-#### The "I Cut" Curation Step
+From their hand of drawn candidate cards, the attackers **choose exactly $N$ cards** to form the final Consequence Pool. All unchosen candidate cards are returned to their respective decks.
 
-From their hand of drawn and escalated candidate cards, the attackers **choose exactly $N$ cards** to form the final Consequence Pool. All unchosen candidate cards are returned to their respective decks.
+- **Targeting Existing Vulnerabilities:** Attackers examine the **Active Conditions** already in play in front of the defender. If the attackers offer a card that matches an active condition's category/tag (e.g., offering a `[Position]` card to a defender who is already `Off-Balance`), they create a stacking escalation threat.
 
 #### Implicit "No Consequence" Blanks
 
 If the attackers drew fewer than $N$ candidate cards (e.g., they could not afford $N$ cards or chose to buy fewer, more expensive cards), any unfilled slots in the pool of $N$ are **implicitly filled with "No Consequence"**.
 
-- _Armor Soak Threshold_: To guarantee inflicting a consequence of Severity $S$, attackers must produce at least $N$ candidate cards of at least Severity $S$, requiring at least $N \times S$ Impact (or lucky escalations). If fewer than $N$ cards are offered, "No Consequence" will be available for the defender to pick.
+- _Armor Soak Threshold_: To guarantee inflicting a consequence of Severity $S$, attackers must produce at least $N$ candidate cards of at least Severity $S$, requiring at least $N \times S$ Impact. If fewer than $N$ cards are offered, "No Consequence" will be available for the defender to pick.
 
 ---
 
@@ -72,7 +57,10 @@ If the attackers drew fewer than $N$ candidate cards (e.g., they could not affor
 1. The curated pool of $N$ cards (along with any "No Consequence" blanks) is presented to the defender.
 2. The defender **chooses exactly 1 option** from the pool to suffer.
 3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped from their deck.
-4. The chosen card is placed into play in front of the defender and takes effect immediately. All other cards in the pool are returned to their respective decks.
+4. **Applying the Consequence & Table Stacking:**
+   - **Novel Condition:** If the defender has no active condition sharing this card's category/tag, place the card in play in front of the defender as a new active condition.
+   - **Stacking / Ladder Upgrade:** If the defender already has an active condition with a matching category/tag (e.g., suffering `Off-Balance` and choosing another `[Position]` card; or suffering `Bruised` and choosing another `[Blunt]` card), the chosen card **stacks onto and upgrades** the existing condition to the next severity tier on that condition's progression ladder. Discard the lower-tier card and put the upgraded condition into play.
+5. All unchosen cards in the pool are returned to their respective decks.
 
 ---
 

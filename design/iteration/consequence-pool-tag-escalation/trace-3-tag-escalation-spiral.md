@@ -4,7 +4,7 @@
 
 - **Setting**: Muddy alleyway skirmish following an earlier brawl.
 - **Attacker**: Cutthroat Duelist (Agile Yellow/Red build, exploiting defender's compromised state).
-- **Defender**: Veteran Mercenary (Pool Size: **2**, light armor already compromised).
+- **Defender**: Veteran Mercenary (Pool Size: **2**, armor already damaged/compromised).
 
 ### Existing Table State on Defender
 

@@ -164,16 +164,22 @@ Resolution mechanics must build upon these foundational systems without redesign
 
 ### 5.3. Consequence Progression Ladders & Escalation Dynamics
 
-- **Harm Ladders (Structured Scales):** Natural mechanical and narrative escalation should follow clear progression paths within distinct categories of harm:
-  - _Fear / Morale:_ `Scared` $\to$ `Terrified` $\to$ `Fleeing` $\to$ `Catatonic / Broken`
-  - _Blunt Trauma / Stagger:_ `Bruised` $\to$ `Battered` $\to$ `Fractured` $\to$ `Shattered / Collapsed`
-  - _Laceration / Bleed:_ `Glancing Nick` $\to$ `Bleeding` $\to$ `Arterial Gash` $\to$ `Mortal Hemorrhage`
-  - _Position / Guard:_ `Off-Balance` $\to$ `Knocked Prone` $\to$ `Pinned` $\to$ `Helpless`
-- **In-Category Upgrades:** When an incoming consequence matches an active condition's category/tag, it directly upgrades the existing condition to the next severity step on that ladder, advancing the fight toward resolution.
-- **Handling Cross-Category / Novel Harm:** When an incoming attack introduces a different kind of harm (e.g., a character who is `Bruised` takes incoming `Fire` or `Fear`), the system must handle the interaction cleanly:
-  - _Parallel Condition Tracks:_ Open a distinct condition track on the table without artificially bleeding unrelated physical/social trauma together.
-  - _Compound Fragility:_ Extreme high-tier trauma (e.g., severe concussion or exhaustion) may broadly reduce defensive soak across multiple categories without merging their specific tracks.
-- **Physical vs. Digital Delivery:** In digital play, condition upgrading and card replacement is completely frictionless. For physical play, design space includes multi-tier cards with tracking clips/markers, slider sleeves, or direct deck swaps.
+- **Anatomical & Physiological Coherence (Avoiding the "Vanishing Wound" Pitfall):**
+  - Upgrades and card replacements must strictly preserve verisimilitude. A condition can only upgrade an existing condition if they share the **exact same anatomical locus or systemic state**.
+  - _Pitfall to Avoid:_ A blow to the chest causing `Cracked Ribs` must **never** replace or erase an active `Mild Concussion` on the head. A character does not stop being concussed because their ribs broke.
+  - If incoming harm targets a new anatomical location, it opens a parallel localized condition rather than overwriting an existing wound.
+- **Harm Ladders by Type:**
+  - _Systemic & Tactical States (Continuous Escalation):_
+    - _Position / Guard:_ `Off-Balance` $\to$ `Knocked Prone` $\to$ `Pinned` $\to$ `Helpless`
+    - _Fear / Morale:_ `Uneasy` $\to$ `Afraid` $\to$ `Terrified` $\to$ `Panicked Fleeing` $\to$ `Catatonic / Broken`
+  - _Localized Anatomical Trauma (Site-Specific Escalation):_
+    - _Head / Neurological:_ `Rattled Helm` $\to$ `Mild Concussion` $\to$ `Severe TBI` $\to$ `Traumatic Coma / Unconscious`
+    - _Thoracic / Ribs:_ `Bruised Ribs` $\to$ `Cracked Ribs` $\to$ `Flail Chest / Punctured Lung` $\to$ `Tension Pneumothorax`
+    - _Limb / Arm:_ `Strained Arm` $\to$ `Dislocated Shoulder` $\to$ `Fractured Forearm` $\to$ `Severed / Mangled Limb`
+- **Differing Escalation Dynamics (Tissue vs. Tactical):**
+  - Tactical/positional states escalate smoothly with consecutive pressure.
+  - Tissue trauma and bleeding may accumulate as discrete injuries or volume rather than small scratches magically morphing into severed arteries; severe vascular trauma is typically the result of direct heavy piercing/slashing strikes or specific targeted maneuvers.
+- **Physical vs. Digital Delivery:** In digital play, condition upgrading and parallel card state management is completely frictionless. For physical play, design space includes multi-tier cards with tracking clips/markers, slider sleeves, or direct deck swaps.
 
 ---
 

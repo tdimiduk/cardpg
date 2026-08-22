@@ -104,9 +104,9 @@ Consequence cards must **never** narrate standalone modifications to a character
 
 ---
 
-## 6. Tag Taxonomy & Escalation Clauses
+## 6. Tag Taxonomy & Condition Escalation Ladders
 
-Tag escalation is the engine of the downward spiral and dynamic pool drafting. When an attacker spends Impact to draw candidate cards, if a drawn card matches an escalation condition on an **active table condition** (on the defender) or on an **earlier candidate card** in the current draft hand, it escalates without costing extra Impact.
+Tag escalation is the engine of the downward spiral and dynamic pool curation. When a chosen consequence shares a tag with an **active condition already in front of the defender**, it stacks onto and **upgrades** the condition along its designated progression ladder.
 
 ### 6.1. Canonical Tags
 
@@ -115,17 +115,25 @@ Tag escalation is the engine of the downward spiral and dynamic pool drafting. W
 - **Environmental / Arcane**: `fire`, `cold`, `arcane`, `alchemical`, `environmental`.
 - **Gear**: `equipment`, `armor`, `wear`, `supply`.
 
-### 6.2. Standard Escalation Grammar
+### 6.2. Standard Escalation Ladders & Anatomical Coherence
 
-Always use one of the canonical escalation templates:
+To preserve grounded verisimilitude, cards can only upgrade an active condition if they share the **exact same anatomical locus or systemic state** (a chest strike must never replace an active head concussion).
 
-- **Tag Synergy Escalation**:
-  `escalation: If a [tag] consequence is drawn, return it and draw a consequence of Severity + 2.`
-- **Duplicate Card Escalation**:
-  `escalation: If another [Card Name] is drawn, return it and draw a Severity 2 consequence.`
-- **Severe Morph / Evolution Escalation**:
-  `escalation: If a [tag] consequence is drawn, replace this with [Higher Tier Card Name] (Severity X).`
-- **Once-Per-Round Limit**: Each source card (table condition or candidate card) can only trigger its escalation **once per round** (track by rotating table conditions 90 degrees).
+1. **`[positioning]` Ladder (Tactical / Systemic)**:
+   `Poor Footing` (Sev 1) $\to$ `Off-Balance` (Sev 2) $\to$ `Knocked Prone` (Sev 3) $\to$ `Pinned & Helpless` (Sev 4)
+2. **`[injury: head]` Ladder (Localized Trauma)**:
+   `Rattled Helm` (Sev 1) $\to$ `Dazed` (Sev 2) $\to$ `Mild Concussion` (Sev 3) $\to$ `Severe TBI` (Sev 4) $\to$ `Traumatic Coma` (Sev 6)
+3. **`[injury: torso]` Ladder (Localized Trauma)**:
+   `Winded` (Sev 1) $\to$ `Bruised Ribs` (Sev 2) $\to$ `Cracked Ribs` (Sev 3) $\to$ `Flail Chest / Punctured Lung` (Sev 4) $\to$ `Tension Pneumothorax` (Sev 5)
+4. **`[fear]` Ladder (Psychological / Morale)**:
+   `Uneasy` (Sev 1) $\to$ `Afraid` (Sev 2) $\to$ `Terrified` (Sev 3) $\to$ `Panicked Fleeing` (Sev 4) $\to$ `Catatonic Mind Void` (Sev 6)
+
+### 6.3. Table Stacking Resolution
+
+When a consequence card is selected by the defender:
+
+- **Novel Locus / Tag:** If the defender has no active condition sharing that specific locus/tag, place the card into play as a new active condition.
+- **Stacking Upgrade:** If an active condition with the exact matching anatomical locus or state is already in play, the incoming card upgrades the existing condition to the next severity tier on that ladder. Discard the lower-tier card and put the upgraded condition card into play.
 
 ---
 

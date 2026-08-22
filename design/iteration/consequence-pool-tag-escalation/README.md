@@ -34,9 +34,9 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 flowchart TD
     A["1. Incoming Attacks Declared (Simultaneous Resolve Step)"] --> B["2. Defender Meets Strength for Each Attack (Hand Defend + Deck Flips)"]
     B --> C["3. Sum Total Round Impact = Sum of all cards flipped this round"]
-    C --> D["4. Attackers Draw Candidate Cards with Impact Budget (Dual Escalations Trigger)"]
-    D --> E["5. Attackers Curate Final Pool (Pick N Cards, where N = Defender's Pool Size)"]
-    E --> F["6. Defender Selects and Suffers Exactly 1 Consequence from the Pool"]
+    C --> D["4. Attackers Draw Candidate Cards with Impact Budget (1 Impact = 1 Severity)"]
+    D --> E["5. Attackers Curate Final Pool (Pick N Cards)"]
+    E --> F["6. Defender Selects 1 Consequence -> Novel enters play; Matching Tag Upgrades/Stacks"]
 ```
 
 ### Step 1: Meet Strength & Accumulate Round Impact
@@ -45,64 +45,52 @@ flowchart TD
 2. **Flip from Deck**: If the attack's Strength is not fully met from hand, flip cards from the top of the deck one by one until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
 3. **Accumulate Impact**: Sum the total number of cards flipped across **all** attacks against that defender in the round. This total is the **`Total Round Impact`**.
 
-### Step 2: Draw Candidate Consequences & Resolve Escalations
+### Step 2: Draw Candidate Consequences
 
 1. **Spend Impact as Currency**:
-   - Attackers spend Total Round Impact to draw candidate cards from the severity decks:
+   - Attackers spend Total Round Impact to draw candidate cards directly from the severity decks:
      - **Severity 1** costs **1 Impact**
      - **Severity 2** costs **2 Impact**
      - **Severity 3** costs **3 Impact**
      - **Severity $S$** costs **$S$ Impact**
-   - Attackers may draw candidates in any combination of severities they can afford. If multiple attackers attacked the same target, they share the budget and draw candidates together.
-2. **Dual-Source Escalations**:
-   - As each candidate card is drawn, check its tags against:
-     - (a) **Active Table Conditions** already on the defender.
-     - (b) **Prior Candidate Cards** drawn into the attacker's hand during this resolution.
-   - If an escalation matches, return the drawn card, draw the upgraded replacement card, and mark the source card as used. Each condition can only trigger an escalation **once per round** (turn table conditions sideways 90°).
+   - Attackers may draw candidates in any combination of severities they can afford. If multiple attackers attacked the same target, they build a pool together but each spend their own impact.
 
 ### Step 3: Curate the Consequence Pool (The "I Cut" Step)
 
-1. **Determine Pool Size ($N$)**:
-   - **Minions / Mooks**: Pool Size **1** (no drafting choice; instant hit).
-   - **Unarmored Heroes**: Base Pool Size **2** (base heroic drafting choice).
-   - **Light Armor (Gambeson & Maile)**: Consequence Pool Size **3** (Pierce 4 ignores to 2).
-   - **Heavy Armor (Full Harness)**: Consequence Pool Size **4** (Pierce 6 ignores to 3; Pierce 12 ignores to 2).
+1. **Check Pool Size ($N$)**:
+   - The defender's traits and equipped gear set the **Consequence Pool Size ($N$)** (typically 1 for minions, 2 for unarmored heroes, 3 for maille/brigandine, 4 for full plate; see Section 3 for full breakdown).
 2. **Pick $N$ Cards for the Final Pool**:
    - The attackers select exactly $N$ cards from their candidate hand to present to the defender.
+   - **Targeting Active Vulnerabilities:** Attackers look at the conditions already in front of the defender and curate cards that match active tags to force a dangerous condition stack/upgrade.
    - Unselected candidate cards are returned to their decks.
 3. **Implicit "No Consequence" Blanks**:
    - If attackers drew fewer than $N$ candidate cards, any unfilled slots in the pool of $N$ are **implicitly filled with "No Consequence"**.
    - _Mathematical Formula to Guarantee Severity $S$_:
      $$\text{Impact Required} = \text{Pool Size } (N) \times S$$
-     If total Impact/escalations fall below this threshold, at least one slot will contain a lower severity or "No Consequence", which the defender can choose.
+     If total Impact falls below this threshold, at least one slot will contain a lower severity or "No Consequence", which the defender can choose.
 
 ### Step 4: Defender Suffers Exactly 1 Consequence (The "You Choose" Step)
 
 1. The curated pool of $N$ cards (and any "No Consequence" blanks) is presented to the defender.
 2. The defender **chooses exactly 1 consequence** from the pool to suffer.
 3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped.
-4. The chosen card takes effect immediately according to its rules. All unchosen cards in the pool are returned to their decks.
+4. **Resolution & Table Stacking:**
+   - **Novel Condition:** If the defender has no matching condition, place the card into play.
+   - **Stacking / Ladder Upgrade:** If the defender already has an active condition sharing that tag/category (e.g., suffering `Off-Balance` and taking another `[Position]` card, or suffering `Bruised` and taking another `[Blunt]` card), the chosen card **stacks onto and upgrades** the active condition to the next severity tier on that condition's progression ladder.
+5. All unchosen cards in the pool are returned to their decks.
 
 ---
 
 ## 3. Character Tiers & Pool Size Architecture
 
-```
-+-----------------------------------------------------------------------------------+
-| MINIONS (Pool Size 1)                                                             |
-| - Attacker spends Impact -> Draws 1 Card -> Minion suffers it immediately.         |
-| - Zero GM decision time; 3-4 Impact takes them out cleanly.                       |
-+-----------------------------------------------------------------------------------+
-| UNARMORED HEROES (Pool Size 2)                                                    |
-| - Attacker spends Impact across 2 slots -> Defender chooses 1.                    |
-| - Requires 2 Impact for Sev 1; 4 Impact for Sev 2; 12 Impact for Sev 6 (KO).      |
-+-----------------------------------------------------------------------------------+
-| ARMORED COMBATANTS (Pool Size 3 - 4)                                              |
-| - Light Armor (Pool 3): Needs 3 Impact for Sev 1; 6 for Sev 2; 18 for Sev 6.      |
-| - Heavy Armor (Pool 4): Needs 4 Impact for Sev 1; 8 for Sev 2; 24 for Sev 6.      |
-| - Pierce reduces effective pool size back down toward 2.                          |
-+-----------------------------------------------------------------------------------+
-```
+An entity's **Consequence Pool Size ($N$)** is determined by their Nature and equipped Armor cards, defining the number of consequence slots the attacker must fill to guarantee harm.
+
+| Archetype / Armor                  | Pool Size ($N$) |          Soak Threshold (Sev 1)          | Pierce Interactions                           | Tactical Profile                                                                 |
+| :--------------------------------- | :-------------: | :--------------------------------------: | :-------------------------------------------- | :------------------------------------------------------------------------------- |
+| **Minions / Mooks**                |      **1**      |         Instant Hit ($I \ge 1$)          | N/A                                           | No drafting choice; 2+ Impact defeats cleanly.                                   |
+| **Unarmored / Lightly Armored**    |      **2**      | $I \le 1$ ($2\text{ Impact for Sev } 1$) | N/A                                           | Base heroic drafting choice ($2 \times S$).                                      |
+| **Maille & Gambeson / Brigandine** |      **3**      | $I \le 2$ ($3\text{ Impact for Sev } 1$) | Pierce 4 reduces to 2                         | Soaks diffuse strikes; requires concentrated thrusts or percussive force.        |
+| **Full Plate Harness**             |      **4**      | $I \le 3$ ($4\text{ Impact for Sev } 1$) | Pierce 6 reduces to 3; Pierce 12 reduces to 2 | Walking fortress; requires dedicated power attacks or heavy gap-seeking strikes. |
 
 ### Symmetrical Minion Design
 
