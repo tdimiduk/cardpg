@@ -39,7 +39,7 @@ Resolution mechanics must build upon these foundational systems without redesign
 ### 1.5. Dual Harm Structure & Non-Instant Death
 
 - **In-Deck Status Cards (`Fatigue`, `Minor Wound`):** Dilute deck efficiency and drag down future draws.
-- **On-Table Condition Cards (`Rattled Guard`, `Arm Injury`):** Impose persistent tactical constraints and feature actionable **Task checks** (`Task: ...`) for removal during or after combat.
+- **On-Table Condition Cards (`Rattled Guard`, `Arm Injury`):** Impose persistent tactical constraints. Fleeting tactical hindrances feature **`Action:`** recoveries (seconds, playable in Crisis Time); physiological trauma features **`Task:`** checks (minutes/hours/days, strictly during Adventuring Time or Downtime).
 - **Healing via Transformation:** Downtime gradually transforms severe trauma into manageable fatigue; crisis healing only provides temporary mitigation.
 - **No Instant Death:** Character death is never a sudden single-attack wipe. Reaching maximum severity inflicts an actionable, persistent "Taken Out / Dying" condition (`Bleeding Out`, `Unconscious`, `Trapped`) that acts as an urgent rescue clock for allies.
 
@@ -48,6 +48,12 @@ Resolution mechanics must build upon these foundational systems without redesign
 - **Crisis Time (Rounds):** High-stakes, simultaneous rounds (Plan Step $\rightarrow$ Resolve Step). Ending Crisis Time discards/expends all cards remaining in hand.
 - **Adventuring Time (Ready Hand):** Players hold a 4-card face-down **Ready Hand** refreshed periodically via **Effort Cycles**. Transitioning to Crisis Time begins by picking up the Ready Hand.
 - **General Actions:** Fast single-resolution tasks where success is default and mechanics calculate resource cost/consequences using shared math.
+
+### 1.7. Conflict Conclusion & Harm Efficacy (Fatigue Alone is Insufficient)
+
+- **Timescale of Combat:** Tactical conflicts must drive to meaningful conclusion or de-escalation within 3–6 rounds.
+- **Discard Inefficacy:** Fatigue cards added to a discard pile have zero mechanical effect until an entity reshuffles. In-deck status dilution is a long-term endurance clock, not an immediate combat finisher.
+- **Immediate Escalation Required:** Successful attacks that penetrate defenses must generate on-table tactical constraints, vulnerability tags, or physical conditions that visibly alter the tactical landscape and accelerate fight resolution. Resolution mechanics cannot rely solely on fatigue or deck dilution to close out fights.
 
 ---
 
@@ -73,6 +79,20 @@ Resolution mechanics must build upon these foundational systems without redesign
 
 - **Universal Engine:** PCs, Bosses, and Minions share the same core rules. Minion fragility is achieved through stats (e.g., `Resilience 0/1` or `Pool Size 1`), not special-case rules.
 
+### 2.5. Digital-First Playtesting & Physical Ergonomics Freedom
+
+- **Digital Freedom in Active Iteration:** Near-term playtesting will occur primarily in digital tooling. Therefore, we do **not** need to prematurely rule out mechanics merely because they would be unwieldy at a physical table (e.g., managing $6 \times N$ consequence decks, dynamic candidate generation, or deep card pools).
+- **Design Philosophy:** Build and validate the richest, most expressive resolution and escalation engine first. Once we observe how the math and psychological choices feel in play, we will explore physical streamlining techniques (e.g., multi-tier card layouts with markers, slider sleeves, consolidated decks, or automated digital companion tools).
+- **Anti-Swing Severity Invariant:** Regardless of medium, the system must maintain telegraphed severity progression and prevent catastrophic RNG spikes (e.g., preventing a fresh hero from suffering a lethal "Punctured Lung" on round 1 from a minor goblin hit).
+
+### 2.6. Attacker vs. Defender Decision Space
+
+- **Agency Distribution is Open:** The exact allocation of decisions between attacker and defender is an active exploration space:
+  - _"I Cut, You Choose":_ Attacker curates a candidate pool of $N$ cards; defender selects their poison.
+  - _Defender-Led Filtering:_ Defender draws candidate cards and uses Armor discards to filter their outcome.
+  - _Attacker-Driven Direct Selection:_ Attacker spends Impact directly to choose specific consequences.
+- **Requirement:** Whichever distribution is used, resolution must keep the character at risk emotionally engaged, minimize idle downtime for both players, and cleanly define all edge cases (e.g., when $\text{Impact} > \text{Armor Pool}$ vs. $\text{Impact} \le \text{Armor Pool}$).
+
 ---
 
 ## 3. Ergonomics, Content Patterns & Complexity Budget
@@ -85,15 +105,37 @@ Resolution mechanics must build upon these foundational systems without redesign
 
 - **Low-Math Tabletop Play:** Use intuitive math (e.g., grouping or 1-for-1 spending) rather than continuous division tables or fractional matrices.
 - **No Card-Counting Incentives:** Avoid mechanics that reward calculating exact remaining deck odds or mid-turn probability optimization. Minimize extra token tracking and shuffling.
+- **Decision Pacing in Flips:** Avoid requiring a fresh tactical decision on every individual card flip during defense (which drags play); keep decision points grouped or tied to clear milestone triggers.
 
-### 3.3. "Cards as Fuel" for Tactical Recoveries
+### 3.3. Grounded Verisimilitude & Consequence Removal Lifecycle
 
-- **Recovery Pattern:** Condition cards and maneuvers (e.g., standing from prone) should cost expending generic cards from hand as fuel (e.g., _"Place a card from hand into expended pile to stand up"_), avoiding global action-menu bloat.
+- **Timescale Reality (1–10 Second Rounds):** Combat rounds represent rapid, split-second action (approx. 1–10 seconds). In-combat recovery via **`Action:`** or "Cards as Fuel" is strictly limited to fleeting tactical adjustments (e.g., standing from prone, resetting broken guard, calming sudden panic, or steadying footing).
+- **Trauma Cannot Be Healed Mid-Combat:** Significant physical trauma (cracked ribs, broken limbs, concussions, severe bleeding) cannot be healed or removed during Crisis Time without exceptionally rare, high-cost magic.
+- **Action vs. Task Distinction:**
+  - **`Action:` (Crisis Time / Seconds):** Instantaneous in-combat tactical adjustments and guard resets.
+  - **`Task:` (Adventuring Time / Minutes to Hours):** Non-combat procedures with real duration (field dressings, stabilizing dying allies, repairing sundered shields). Cannot be performed while actively engaged in combat.
+- **Recovery Hierarchy:**
+  - _In-Combat (`Action:`, Seconds):_ Clear tactical positioning tags and fleeting conditions (`Off-Balance`, `Shaken Guard`).
+  - _Adventuring Time (`Task:`, Minutes/Hours):_ Field triage to halt worsening dying clocks or convert severe bleeding into bandaged fatigue.
+  - _Downtime (Days/Weeks):_ Long-term biological healing transforming severe trauma into manageable deck fatigue.
 
 ### 3.4. Equipment & Metabolic Costs
 
 - **Burden:** Heavy armor adds extra `Fatigue` cards per Fatigue Cycle.
 - **Defensive Stats:** Armor/traits absorb Impact or mitigate consequence severity.
+
+### 3.5. Modular Attack-Printed Stakes vs. Core Universality
+
+- **Modular Enhancement, Not Core Replacement:** Action Cards carrying their own consequence tables (e.g., specific spell effects or boss maneuvers) are great modular tools, but cannot serve as the sole universal engine. Core rules must provide a universal resolution fallback for Narrative Actions, diverse weapon tags, and non-combat tasks without requiring GM fiat.
+
+### 3.6. Inherent Tag Chaining vs. Mid-Draw Candidate Searches
+
+- **Physical Card Reality:** Double-sided cards cannot function in randomized draw decks.
+- **Tabletop Tag Chaining:** Tag escalation is best handled through inherent card upgrade triggers (e.g., _"If you take another Fear consequence, upgrade this to Terrified"_) or table condition state changes, rather than candidate-pool search mechanics during resolution.
+
+### 3.7. Reactive Hand Defense via Equipment & Specialized Cards
+
+- **Equipment-Gated Hand Defense:** Universal "defend from hand" creates card-hoarding and feel-bad resource spending. However, allowing _Defend from Hand + Flip to Finish_ as a specific mechanical benefit of gear (e.g., Shields, Parrying Daggers) or specialized `Defend` cards provides rich tactical design space without warping baseline play.
 
 ---
 
@@ -120,22 +162,37 @@ Resolution mechanics must build upon these foundational systems without redesign
 
 - In General Actions and non-combat tasks, success is the baseline assumption. Mechanics determine the stamina cost and fallout; outright failure is an exceptional result from specific high-severity cards.
 
+### 5.3. Consequence Progression Ladders & Escalation Dynamics
+
+- **Harm Ladders (Structured Scales):** Natural mechanical and narrative escalation should follow clear progression paths within distinct categories of harm:
+  - _Fear / Morale:_ `Scared` $\to$ `Terrified` $\to$ `Fleeing` $\to$ `Catatonic / Broken`
+  - _Blunt Trauma / Stagger:_ `Bruised` $\to$ `Battered` $\to$ `Fractured` $\to$ `Shattered / Collapsed`
+  - _Laceration / Bleed:_ `Glancing Nick` $\to$ `Bleeding` $\to$ `Arterial Gash` $\to$ `Mortal Hemorrhage`
+  - _Position / Guard:_ `Off-Balance` $\to$ `Knocked Prone` $\to$ `Pinned` $\to$ `Helpless`
+- **In-Category Upgrades:** When an incoming consequence matches an active condition's category/tag, it directly upgrades the existing condition to the next severity step on that ladder, advancing the fight toward resolution.
+- **Handling Cross-Category / Novel Harm:** When an incoming attack introduces a different kind of harm (e.g., a character who is `Bruised` takes incoming `Fire` or `Fear`), the system must handle the interaction cleanly:
+  - _Parallel Condition Tracks:_ Open a distinct condition track on the table without artificially bleeding unrelated physical/social trauma together.
+  - _Compound Fragility:_ Extreme high-tier trauma (e.g., severe concussion or exhaustion) may broadly reduce defensive soak across multiple categories without merging their specific tracks.
+- **Physical vs. Digital Delivery:** In digital play, condition upgrading and card replacement is completely frictionless. For physical play, design space includes multi-tier cards with tracking clips/markers, slider sleeves, or direct deck swaps.
+
 ---
 
 ## 6. Settled Invariants vs. Active Exploration Space
 
-| Dimension                | Settled Invariant (DO NOT Change)                                                                            | Open Exploration Space (Design Freedom)                                                                            |
-| :----------------------- | :----------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
-| **Deck Substrate**       | 24-card deck, tri-color stats on every card, fatigue cycles on exhaustion.                                   | Sleeve overlay cards vs. adding fatigue cards (if cycling/collapse math works).                                    |
-| **Action Generation**    | Action Stacking (Action Card + Resource Cost stack summing Color + mod; Narrative Actions with GM mod).      | Specific card actions, secondary effects, and modifier ranges.                                                     |
-| **Movement**             | Movement integrated into action intent; no separate move economy. Disengagement is a tactical obstacle.      | Positional tags, reach modifiers, or movement bonuses on specific cards.                                           |
-| **Round Flow**           | Simultaneous Plan & Resolve steps; Rest/hoard turns cleanly handled.                                         | Timing and resolution sequence of multi-target attacks during Resolve Step.                                        |
-| **Harm Anatomy**         | Dual-layer harm: In-deck Status vs. On-table Conditions with actionable Tasks.                               | Specific condition mechanics, recovery times, and tag taxonomies.                                                  |
-| **Defeat & Death**       | No instant death; max severity triggers an actionable dying condition/clock (`Bleeding Out`, `Unconscious`). | Exact severity ladder depth (e.g., 3-tier canon vs. 6-tier expanded ladder).                                       |
-| **Defender Role**        | Defender is active agent; deck flips = stamina cost; Defend cards from hand mitigate flips.                  | Specific math of how Armor/Stats mitigate Impact (`Defense`/`Resilience` vs. `Pool Size` $N$ vs. Declared Effort). |
-| **Consequence Delivery** | Consequences stem from unmitigated Impact and follow a telegraphed downward spiral.                          | Drafting dynamics (direct draw, "I Cut, You Choose" pool curation, or push-your-luck buy-offs).                    |
-| **Multi-Attacker Scale** | Dogpiling must not cause degenerate alpha-strike wipes; skirmish play remains fast and entity-centric.       | Round Impact pooling vs. grouped defense vs. threshold scaling for multiple attackers.                             |
-| **Pillar Generality**    | Universal math across Combat, Social, Exploration; domain decoupling prevents harm bleed.                    | Specialized consequence decks tailored by domain, damage type, or environment.                                     |
+| Dimension                  | Settled Invariant (DO NOT Change)                                                                            | Open Exploration Space (Design Freedom)                                                                            |
+| :------------------------- | :----------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Deck Substrate**         | 24-card deck, tri-color stats on every card, fatigue cycles on exhaustion.                                   | Sleeve overlay cards vs. adding fatigue cards (if cycling/collapse math works).                                    |
+| **Action Generation**      | Action Stacking (Action Card + Resource Cost stack summing Color + mod; Narrative Actions with GM mod).      | Specific card actions, secondary effects, and modifier ranges.                                                     |
+| **Movement**               | Movement integrated into action intent; no separate move economy. Disengagement is a tactical obstacle.      | Positional tags, reach modifiers, or movement bonuses on specific cards.                                           |
+| **Round Flow**             | Simultaneous Plan & Resolve steps; Rest/hoard turns cleanly handled.                                         | Timing and resolution sequence of multi-target attacks during Resolve Step.                                        |
+| **Harm Anatomy**           | Dual-layer harm: In-deck Status vs. On-table Conditions with Action vs Task lifecycle.                       | Progression ladders, specific condition mechanics, recovery costs, and tag taxonomies.                             |
+| **Defeat & Death**         | No instant death; max severity triggers an actionable dying condition/clock (`Bleeding Out`, `Unconscious`). | Exact severity ladder depth (e.g., 3-tier canon vs. 6-tier expanded ladder).                                       |
+| **Defender Role**          | Defender is active agent; deck flips = stamina cost; Defend cards from hand mitigate flips.                  | Specific math of how Armor/Stats mitigate Impact (`Defense`/`Resilience` vs. `Pool Size` $N$ vs. Declared Effort). |
+| **Consequence Delivery**   | Consequences stem from unmitigated Impact and follow a telegraphed downward spiral.                          | Drafting dynamics ("I Cut, You Choose" pool curation, defender filtering, or direct spend).                        |
+| **Multi-Attacker Scale**   | Dogpiling must not cause degenerate alpha-strike wipes; skirmish play remains fast and entity-centric.       | Round Impact pooling vs. grouped defense vs. threshold scaling for multiple attackers.                             |
+| **Pillar Generality**      | Universal math across Combat, Social, Exploration; domain decoupling prevents harm bleed.                    | Specialized consequence decks tailored by domain, damage type, or environment.                                     |
+| **Harm Attrition Pace**    | In-deck Fatigue alone cannot close fights; on-table tactical/physiological escalation is required.           | Condition progression ladders vs. tag escalation vs. threshold consequence tracks across domains.                  |
+| **Deck Footprint & Tiers** | Balance severity progression vs. table deck count; prevent 1-hit lethal spikes against fresh targets.        | 6-tier expanded pool vs. digital card pools vs. multi-threshold cards vs. consolidated decks.                      |
 
 ---
 
