@@ -104,36 +104,36 @@ Consequence cards must **never** narrate standalone modifications to a character
 
 ---
 
-## 6. Tag Taxonomy & Condition Escalation Ladders
+## 6. Condition Escalation & Upgrade Rules
 
-Tag escalation is the engine of the downward spiral and dynamic pool curation. When a chosen consequence shares a tag with an **active condition already in front of the defender**, it stacks onto and **upgrades** the condition along its designated progression ladder.
+Escalation is the mechanical engine of the downward spiral and dynamic pool curation. Escalation occurs **when the defender selects and suffers a consequence** that matches an **active condition already in play** in front of them.
 
-### 6.1. Canonical Tags
+### 6.1. The Three Strict Escalation Criteria
 
-- **Anatomy**: `arms`, `legs`, `torso`, `head`, `eyes`, `hands`, `lung`, `internal`.
-- **Trauma / State**: `bleeding`, `positioning`, `fatigue`, `exertion`, `injury`, `fear`, `mental`, `cognitive`, `sensory`, `critical`, `fatal`.
-- **Environmental / Arcane**: `fire`, `cold`, `arcane`, `alchemical`, `environmental`.
-- **Gear**: `equipment`, `armor`, `wear`, `supply`.
+To preserve grounded verisimilitude and mechanical integrity, a condition card should only have an explicit `escalate:` path if **all three** of the following conditions are met:
 
-### 6.2. Standard Escalation Ladders & Anatomical Coherence
+1. **Narratively Worse:** The upgraded condition represents a direct, progressive worsening of the exact same physiological or psychological state.
+2. **Hit-Triggered Realism:** Narratively, it makes clear sense that taking another hit/trauma of that type causes the existing injury to worsen (e.g., striking an off-balance foe knocks them prone; re-hitting a concussed head causes a severe cranial contusion; striking damaged armor sunders it).
+3. **Mechanically Subsuming:** The upgraded condition's passive effect must **strictly subsume (be strictly worse than)** the active condition's passive effect. Discarding the active card upon upgrade must never accidentally grant the character a mechanical reprieve.
 
-To preserve grounded verisimilitude, cards can only upgrade an active condition if they share the **exact same anatomical locus or systemic state** (a chest strike must never replace an active head concussion).
+### 6.2. Transient vs. Persistent Consequences
 
-1. **`[positioning]` Ladder (Tactical / Systemic)**:
-   `Poor Footing` (Sev 1) $\to$ `Off-Balance` (Sev 2) $\to$ `Knocked Prone` (Sev 3) $\to$ `Pinned & Helpless` (Sev 4)
-2. **`[injury: head]` Ladder (Localized Trauma)**:
-   `Rattled Helm` (Sev 1) $\to$ `Dazed` (Sev 2) $\to$ `Mild Concussion` (Sev 3) $\to$ `Severe TBI` (Sev 4) $\to$ `Traumatic Coma` (Sev 6)
-3. **`[injury: torso]` Ladder (Localized Trauma)**:
-   `Winded` (Sev 1) $\to$ `Bruised Ribs` (Sev 2) $\to$ `Cracked Ribs` (Sev 3) $\to$ `Flail Chest / Punctured Lung` (Sev 4) $\to$ `Tension Pneumothorax` (Sev 5)
-4. **`[fear]` Ladder (Psychological / Morale)**:
-   `Uneasy` (Sev 1) $\to$ `Afraid` (Sev 2) $\to$ `Terrified` (Sev 3) $\to$ `Panicked Fleeing` (Sev 4) $\to$ `Catatonic Mind Void` (Sev 6)
+- **Transient Consequences (Many Severity 1s)**:
+  - Small slips, superficial capillary nicks, and breathlessness (e.g. `Near Miss`, `Out of Breath`, `Shallow Laceration`) resolve immediately: they pollute the deck (`Fatigue`), add cards to the expended pile (`Minor Wound`), or absorb a minimum pool spend, and are then **immediately discarded**.
+  - They leave no persistent card on the table and have no `escalate:` paths. This prevents table bloat.
+- **Persistent Conditions**:
+  - Tactical constraints, ongoing injuries, and fears remain in play in front of the defender until cleared via an in-combat `action:` or out-of-combat `task:`.
+  - While in play, they expose explicit escalation triggers.
 
-### 6.3. Table Stacking Resolution
+### 6.3. Table Escalation Resolution
 
-When a consequence card is selected by the defender:
+When a consequence card is selected by the defender from the curated pool:
 
-- **Novel Locus / Tag:** If the defender has no active condition sharing that specific locus/tag, place the card into play as a new active condition.
-- **Stacking Upgrade:** If an active condition with the exact matching anatomical locus or state is already in play, the incoming card upgrades the existing condition to the next severity tier on that ladder. Discard the lower-tier card and put the upgraded condition card into play.
+1. **Novel Condition**: If no active condition on the table matches the chosen card's tags, place the chosen card into play as a new active condition.
+2. **Explicit Escalation Trigger**: If an active condition has an `escalate:` clause matching an incoming consequence tag:
+   - Discard the lower-tier active condition.
+   - Put the upgraded condition specified in `replace_with:` into play.
+   - _Nuance_: If the consequence chosen from the pool is already equal to or higher severity than the upgrade target, simply discard the lower active card and put the chosen higher-tier card into play.
 
 ---
 
@@ -142,25 +142,28 @@ When a consequence card is selected by the defender:
 When authoring cards in `consequences.yaml`, use the following exact structure:
 
 ```yaml
-- name: Example Consequence Name
-  severity: 3 # Integer 1 to 6
+- name: Example Persistent Condition
+  severity: 2 # Integer 1 to 6
   tags:
     - physical
     - arms
-    - bleeding
+    - combat
   rules:
-    # 1. Continual passive effect
+    # 1. Continual passive effect (must subsume lower tiers on the same track)
     - passive: You must expend 1 card from hand whenever you declare an Attack action.
 
     # 2. In-combat Action (Difficult spend, card covering, or tradeoff)
-    - action: Force Through Pain (Spend {Red} 25) -> Downgrade to Minor Strain (Severity 1).
-    - when downgraded (via Action): Place 1 Fatigue card on top of your deck.
+    - action: Force Through Spasm (Spend {Red} 20) -> Remove this.
+    - when removed (via Action): Place 1 Fatigue card on top of your deck.
 
     # 3. Out-of-combat Task (Calibrated check, time, tools)
-    - task: Suture & Splint (Check {Blue} 30, Check {Yellow} 25; Time 2 hours; Requires Surgical Kit; Cost Suture & Antiseptic) -> Remove this.
+    - task: First Aid & Muscle Wrap (Check {Blue} 15; Time 1 hour; Cost Bandage; Requires Splint) -> Remove this.
     - when removed: Place 1 Minor Wound in your expended pile.
 
-  escalation: If you draw an `arms` or `bleeding` consequence, return it and draw a consequence of Severity + 2.
+  # Explicit on-suffer escalation triggers (omit entirely for transient cards or peak-of-track conditions)
+  escalate:
+    - if_suffer: arms
+      replace_with: Broken Arm (Colles' Fracture)
 
   notes: >
     Physiological / Biomechanical Basis: Deep clinical description explaining why this tissue trauma
@@ -181,5 +184,6 @@ Before committing any consequence card, verify:
 - [ ] Is the in-combat `action:` sufficiently difficult, card-taxing, or trade-off heavy?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with the GM Guide (Routine 5-10 through Legendary 100+)?
-- [ ] Does the card have an escalation clause matching one or more of its tags?
+- [ ] If the card has an `escalate:` block, does it meet all 3 criteria (Narratively worse, Hit-triggered, Mechanically subsuming)?
+- [ ] If the card is a transient Sev 1, does it resolve and return/discard immediately without leaving table clutter?
 - [ ] Does the `notes:` field articulate the physiological/biomechanical basis?

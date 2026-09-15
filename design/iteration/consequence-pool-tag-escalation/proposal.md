@@ -5,9 +5,9 @@ Update to `design/rules/core-rules.md`. Replaces `## Defend Actions`.
 ## Action Resolution (Crisis Time)
 
 1. **Determine Impact**: The defender meets incoming attack Strength and tallies cards flipped.
-2. **Attacker Draws Candidates & Resolves Escalations**: Attackers spend accumulated Impact to draw candidate consequences from the severity decks, resolving escalations as cards are drawn.
+2. **Attacker Draws Candidate Consequences**: Attackers spend accumulated Impact directly as currency to draw candidate consequences from the severity decks (1 Impact = 1 Severity).
 3. **Attacker Curates the Consequence Pool**: The attackers select $N$ cards from their candidates (where $N$ is the defender's Pool Size) to present to the defender.
-4. **Defender Suffers a Consequence**: The defender selects and suffers exactly 1 consequence from the curated pool.
+4. **Defender Suffers a Consequence**: The defender selects and suffers exactly 1 consequence from the curated pool, triggering explicit condition escalations if matching active vulnerabilities.
 
 ---
 
@@ -57,9 +57,10 @@ If the attackers drew fewer than $N$ candidate cards (e.g., they could not affor
 1. The curated pool of $N$ cards (along with any "No Consequence" blanks) is presented to the defender.
 2. The defender **chooses exactly 1 option** from the pool to suffer.
 3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped from their deck.
-4. **Applying the Consequence & Table Stacking:**
-   - **Novel Condition:** If the defender has no active condition sharing this card's category/tag, place the card in play in front of the defender as a new active condition.
-   - **Stacking / Ladder Upgrade:** If the defender already has an active condition with a matching category/tag (e.g., suffering `Off-Balance` and choosing another `[Position]` card; or suffering `Bruised` and choosing another `[Blunt]` card), the chosen card **stacks onto and upgrades** the existing condition to the next severity tier on that condition's progression ladder. Discard the lower-tier card and put the upgraded condition into play.
+4. **Applying the Consequence & Table Escalation:**
+   - **Transient Consequence:** If the chosen card is a transient effect (e.g., `Out of Breath`, `Shallow Laceration`, `Near Miss`), apply its immediate deck/status effect and discard/return it immediately.
+   - **Novel Condition:** If the chosen card is a persistent condition and the defender has no active condition with an `escalate:` trigger matching this card's tags, place the card into play in front of the defender as a new active condition.
+   - **Condition Escalation:** If an active condition in play in front of the defender has an `escalate:` trigger matching the chosen card's tag, discard the active condition and place the upgraded condition into play. (If the chosen consequence is already equal to or higher severity than the upgrade target, discard the lower active condition and put the chosen card into play).
 5. All unchosen cards in the pool are returned to their respective decks.
 
 ---

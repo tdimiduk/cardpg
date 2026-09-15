@@ -74,9 +74,10 @@ flowchart TD
 1. The curated pool of $N$ cards (and any "No Consequence" blanks) is presented to the defender.
 2. The defender **chooses exactly 1 consequence** from the pool to suffer.
 3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped.
-4. **Resolution & Table Stacking:**
-   - **Novel Condition:** If the defender has no matching condition, place the card into play.
-   - **Stacking / Ladder Upgrade:** If the defender already has an active condition sharing that tag/category (e.g., suffering `Off-Balance` and taking another `[Position]` card, or suffering `Bruised` and taking another `[Blunt]` card), the chosen card **stacks onto and upgrades** the active condition to the next severity tier on that condition's progression ladder.
+4. **Resolution & Table Escalation:**
+   - **Transient Consequence:** If the chosen card is a transient effect (e.g., `Out of Breath`, `Shallow Laceration`, `Near Miss`), apply its immediate deck/status effect and discard/return it immediately.
+   - **Novel Condition:** If the defender has no active condition with an `escalate:` trigger matching the chosen card's tags, place the chosen card into play as a new active condition.
+   - **Condition Escalation:** If an active condition in play in front of the defender has an `escalate:` trigger matching the chosen card's tag, discard the active condition and place the upgraded condition into play. (If the chosen consequence is already equal to or higher severity than the upgrade target, discard the lower active condition and put the chosen card into play).
 5. All unchosen cards in the pool are returned to their decks.
 
 ---
@@ -118,9 +119,9 @@ Under the $\text{Impact} = \text{Pool Size} \times \text{Severity}$ formula:
 
 True 1-hit kills are mathematically impossible in opening rounds without prior setup. Instead, combat follows a **2–3 round telegraphed downward spiral**:
 
-1. **Round 1**: Attackers land a 4-Impact strike $\to$ inflicts a Severity 1 or 2 condition (e.g., `Poor Footing` [tag: `positioning`]).
-2. **Round 2**: Attackers exploit that positioning vulnerability. A modest 4-Impact strike triggers a $+2$ Tag Escalation, spiking the drawn card from Severity 2 to **Severity 4** (`Dislocated Knee`).
-3. **Round 3**: With multiple tags compromised, subsequent pressure easily cascades into **Severity 5** or **Severity 6**.
+1. **Round 1**: Attackers land a 4-Impact strike against an unarmored defender ($N=2$) $\to$ offers Sev 2 `Afraid` and Sev 2 `Off Balance`. Defender takes `Afraid` (enters play).
+2. **Round 2**: Attackers land another 4-Impact strike and deliberately offer Sev 2 `Afraid` (fearing tag) and Sev 2 `Off Balance`. Defender chooses `Afraid`, which triggers active `Afraid`'s `escalate:` clause, upgrading to **Severity 3** (`Terrified`).
+3. **Round 3**: With multiple vulnerabilities exposed, subsequent strikes easily cascade into **Severity 4** (`Acute Panic Attack`) and terminal collapse.
 
 ---
 
