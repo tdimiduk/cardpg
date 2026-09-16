@@ -18,18 +18,16 @@ Consequence cards are the mechanical engine of caRdPG's **"Default to Success at
 
 ---
 
-## 2. The 6-Tier Severity Scale
+## 2. The 4-Tier Severity Scale
 
-caRdPG uses a 6-tier severity scale calibrated against the **Consequence Pool Drafting Engine** ($\text{Impact Required} = \text{Pool Size} \times \text{Severity}$).
+caRdPG uses a 4-tier severity scale calibrated against the **Consequence Pool Drafting Engine** ($\text{Impact Required} = \text{Pool Size} \times \text{Severity}$).
 
-| Severity | Category                    | Typical In-Combat Effect                                                                    | Narrative & Recovery Scope                                                               |
-| :------: | :-------------------------- | :------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------- |
-|  **1**   | **Minor Friction / Wear**   | Small stance slip, footing penalty, blinded hand defense, momentary singe.                  | Easily shaken off; Routine out-of-combat fixes (seconds to minutes).                     |
-|  **2**   | **Tactical Constraint**     | Card tax to swing/advance, loosened armor straps, fear, alchemical nausea.                  | Forces tactical adjustments; Challenging field care (minutes to hours).                  |
-|  **3**   | **Significant Impediment**  | Concussion (mill on large hands), hamstring (no moves), pyric burn, knocked prone.          | Severe combat hindrance; Difficult clinical treatment (hours to days).                   |
-|  **4**   | **Major Structural Trauma** | Broken limb (drop items), sundered armor, acute panic, deep puncture, dislocated joint.     | Structural bodily failure; Very Difficult surgery/orthopedics (weeks).                   |
-|  **5**   | **Critical Trauma**         | Severe contusion, pneumothorax (deck bleed), compound fracture (Pool Size 1), mana burnout. | Life-threatening trauma; Near-Legendary intensive care (weeks to months).                |
-|  **6**   | **Taken Out / Mortal**      | Traumatic coma, arterial bleedout, catatonic mind void, surrender/subdued.                  | Incapacitating; character is removed from the fight or requires emergency resuscitation. |
+| Severity | Category                               | Typical In-Combat Effect                                                        | Narrative & Recovery Scope                                                               |
+| :------: | :------------------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------- |
+|  **1**   | **Minor Friction / Wear**              | Small stance slip, footing penalty, blinded hand defense, momentary singe.      | Easily shaken off; Routine out-of-combat fixes (seconds to minutes).                     |
+|  **2**   | **Tactical Impairment / Minor Injury** | Card tax to swing/advance, loosened armor straps, fear, bleeding cut, nausea.   | Forces tactical adjustments; Challenging field care (minutes to hours).                  |
+|  **3**   | **Severe / Structural Trauma**         | Concussion, broken limb (drop items), hamstring, sundered armor, knocked prone. | Structural bodily/gear failure; Difficult to Very Difficult clinical surgery (weeks).    |
+|  **4**   | **Taken Out / Incapacitated**          | Traumatic coma, arterial bleedout, catatonic panic, surrender/subdued.          | Incapacitating; character is removed from the fight or requires emergency resuscitation. |
 
 ---
 
@@ -42,7 +40,7 @@ Every consequence card should strictly separate **desperate in-combat mitigation
 | IN-COMBAT ACTIONS (action:)                                                             |
 | - High friction, high spend, card taxes, or severe tradeoffs.                           |
 | - Used in the heat of melee to survive the next round.                                  |
-| - Severe wounds (Sev 4-6) generally cannot be cured mid-combat, only suppressed/delayed.|
+| - Severe wounds (Sev 3-4) generally cannot be cured mid-combat, only suppressed/delayed.|
 +-----------------------------------------------------------------------------------------+
 | OUT-OF-COMBAT TASKS (task:)                                                             |
 | - Calm, methodical, and reliable medical/crafting care during Adventuring/Downtime.     |
@@ -69,12 +67,10 @@ In combat, clearing a condition is hurried and dangerous. Design actions around 
 
 Out of combat, treatment is performed with care. Difficulty must strictly align with [gamemaster-guide.md](../../rules/gamemaster-guide.md):
 
-- **Routine (Strength 5–10 | Seconds to Minutes)**: _Severity 1_ (e.g., eye wash, catching balance).
-- **Challenging (Strength 15–25 | Minutes to Hours)**: _Severity 2_ (e.g., first-aid splints, harness tightening, centering breath).
-- **Difficult (Strength 30–45 | Hours to Days)**: _Severity 3_ (e.g., tendon suturing, burn dressing, pastoral counseling).
-- **Very Difficult (Strength 50–75 | Weeks to Months)**: _Severity 4_ (e.g., orthopedic bone setting, master forge reconstruction, deep cavity packing).
-- **Near-Legendary (Strength 75–100 | Months)**: _Severity 5_ (e.g., thoracic decompression, complex bone traction, ley-line cleansing).
-- **Legendary (Strength 100+ | Multi-Stage / Quest)**: _Severity 6_ (e.g., trauma resuscitation, arterial clamping, planar mind mending).
+- **Routine (Strength 5–10 | Seconds to Minutes)**: _Severity 1_ (e.g., eye wash, catching balance, breathing recovery).
+- **Challenging (Strength 15–25 | Minutes to Hours)**: _Severity 2_ (e.g., first-aid splints, harness tightening, centering breath, bandaging cuts).
+- **Difficult to Very Difficult (Strength 35–60 | Days to Weeks)**: _Severity 3_ (e.g., orthopedic bone setting, tendon suturing, treating severe concussions, master forge reconstruction).
+- **Legendary / Emergency Resuscitation (Strength 75–100+ | Weeks to Months)**: _Severity 4_ (e.g., trauma resuscitation, arterial clamping, trepanning/coma recovery, planar mind restoration).
 
 > [!NOTE]
 > The printed `task:` difficulty is the **unassisted General Action baseline**. In actual play, players will use specialized doctor/healer cards, medical toolkits (+20–30 Blue), or restorative magic to bypass or assist these checks.

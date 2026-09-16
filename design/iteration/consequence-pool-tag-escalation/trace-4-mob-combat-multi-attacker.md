@@ -4,7 +4,7 @@
 
 - **Setting**: Ambush in a cramped dungeon corridor.
 - **Attackers**: 3 Goblin Skirmishers (Low-strength Red swarm attacks acting simultaneously in Crisis Time).
-- **Defender**: Squire (Agile Red/Yellow deck, equipped with **Gambeson & Maile**, Consequence Pool Size: **3**).
+- **Defender**: Squire (Agile Red/Yellow deck, equipped with **Padded Gambeson**, Consequence Pool Size: **3**).
 
 ---
 
@@ -48,7 +48,7 @@ The Squire has no active defense cards in hand and resolves each attack in seque
 
 Because all three attacks targeted the Squire during the same Crisis round, the attackers draw candidates using a single shared budget.
 
-- **Defender's Consequence Pool Size ($N$)**: **3** (set by Gambeson & Maile).
+- **Defender's Consequence Pool Size ($N$)**: **3** (set by Padded Gambeson).
 - **Attackers' Shared Budget**: **6 Impact**.
 
 ### Candidate Draws
@@ -89,7 +89,7 @@ The GM (controlling the goblins) spends 6 Impact to draw 3 candidate cards from 
 - **Defender's Tactical Choice**:
   - The Squire weighs the options: `Strained Offense` would cripple offensive tempo, and `Afraid` would prevent pressing the attack against the goblins.
   - The Squire chooses **`Rattled Guard`** (Severity 2).
-  - The card is placed directly onto the Squire's **Gambeson & Maile** card on the table.
+  - The card is placed directly onto the Squire's **Padded Gambeson** card on the table.
   - The remaining unselected cards (`Strained Offense`, `Afraid`) are returned to the Severity 2 deck.
 
 ---

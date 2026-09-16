@@ -19,11 +19,11 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 | :----------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **[proposal.md](proposal.md)**                                                       | **The Core Rules Patch**: The concise, focused replacement text for `## Defend Actions` in `core-rules.md`.                                                                     |
 | **[guide-to-writing-consequences.md](guide-to-writing-consequences.md)**             | **Authoring & Style Guide**: Rules for future agent runs (Continual Passives, Action vs. Task Duality, `Requires:` vs. `Cost:`, color qualifiers, ban on "damage" terminology). |
-| **[consequences.yaml](consequences.yaml)**                                           | **Prototype Card Database**: 27 fully drafted cards across Severities 1–6 with rules, in-combat actions, downtime tasks, escalation clauses, and clinical/biomechanical notes.  |
-| **[equipment.yaml](equipment.yaml)**                                                 | **Item & Armor Architecture**: Two-sided armor models (`Intact` vs. `Damaged`), Pool Size passives, and Pierce mechanics.                                                       |
+| **[consequences.yaml](consequences.yaml)**                                           | **Prototype Card Database**: Fully drafted cards across Severities 1–4 with rules, in-combat actions, downtime tasks, escalation clauses, and clinical/biomechanical notes.     |
+| **[equipment.yaml](equipment.yaml)**                                                 | **Item & Armor Architecture**: Two-sided armor models (`Intact` vs. `Damaged`), 1–5 Pool Size spectrum, and stepped Pierce mechanics.                                           |
 | **[trace-1-unarmored-skirmish.md](trace-1-unarmored-skirmish.md)**                   | **Play Trace 1**: Unarmored duel (Pool Size 2) showing 3 Impact spend ($2+1$) and defender drafting.                                                                            |
-| **[trace-2-armored-knight-power-strike.md](trace-2-armored-knight-power-strike.md)** | **Play Trace 2**: Full Harness (Pool Size 4) vs. Pierce 4 and Pierce 6 heavy strikes.                                                                                           |
-| **[trace-3-tag-escalation-spiral.md](trace-3-tag-escalation-spiral.md)**             | **Play Trace 3**: Multi-round tag escalation cascade (`Poor Footing` + `Afraid` $\to$ Sev 4).                                                                                   |
+| **[trace-2-armored-knight-power-strike.md](trace-2-armored-knight-power-strike.md)** | **Play Trace 2**: Full Harness (Pool Size 5) vs. Pierce 4 and Pierce 8 heavy strikes.                                                                                           |
+| **[trace-3-tag-escalation-spiral.md](trace-3-tag-escalation-spiral.md)**             | **Play Trace 3**: Multi-round tag escalation cascade (`Poor Footing` + `Afraid` $\to$ Sev 3 $\to$ Sev 4 defeat).                                                                |
 | **[trace-4-mob-combat-multi-attacker.md](trace-4-mob-combat-multi-attacker.md)**     | **Play Trace 4**: 3 Goblins vs. Armored PC; demonstrates canonical Batched Round Consequence Pool resolution.                                                                   |
 
 ---
@@ -86,42 +86,43 @@ flowchart TD
 
 An entity's **Consequence Pool Size ($N$)** is determined by their Nature and equipped Armor cards, defining the number of consequence slots the attacker must fill to guarantee harm.
 
-| Archetype / Armor                  | Pool Size ($N$) |          Soak Threshold (Sev 1)          | Pierce Interactions                           | Tactical Profile                                                                 |
-| :--------------------------------- | :-------------: | :--------------------------------------: | :-------------------------------------------- | :------------------------------------------------------------------------------- |
-| **Minions / Mooks**                |      **1**      |         Instant Hit ($I \ge 1$)          | N/A                                           | No drafting choice; 2+ Impact defeats cleanly.                                   |
-| **Unarmored / Lightly Armored**    |      **2**      | $I \le 1$ ($2\text{ Impact for Sev } 1$) | N/A                                           | Base heroic drafting choice ($2 \times S$).                                      |
-| **Maille & Gambeson / Brigandine** |      **3**      | $I \le 2$ ($3\text{ Impact for Sev } 1$) | Pierce 4 reduces to 2                         | Soaks diffuse strikes; requires concentrated thrusts or percussive force.        |
-| **Full Plate Harness**             |      **4**      | $I \le 3$ ($4\text{ Impact for Sev } 1$) | Pierce 6 reduces to 3; Pierce 12 reduces to 2 | Walking fortress; requires dedicated power attacks or heavy gap-seeking strikes. |
+| Archetype / Armor                           | Pool Size ($N$) |          Soak Threshold (Sev 1)          | Pierce Interactions                                          | Tactical Profile                                                                |
+| :------------------------------------------ | :-------------: | :--------------------------------------: | :----------------------------------------------------------- | :------------------------------------------------------------------------------ |
+| **Minions / Mooks**                         |      **1**      |         Instant Hit ($I \ge 1$)          | N/A                                                          | No drafting choice; 2+ Impact forces tactical harm; 4 Impact defeats cleanly.   |
+| **Unarmored Heroes / Light Monsters**       |      **2**      | $I \le 1$ ($2\text{ Impact for Sev } 1$) | N/A                                                          | Base heroic drafting choice ($2 \times S$); requires active hand defense.       |
+| **Light Armor (Gambeson / Boiled Leather)** |      **3**      | $I \le 2$ ($3\text{ Impact for Sev } 1$) | Pierce 4 reduces to 2                                        | Reliable frontline baseline; soaks stray blows ($3 \times S$).                  |
+| **War Armor (Maille Hauberk / Brigandine)** |      **4**      | $I \le 3$ ($4\text{ Impact for Sev } 1$) | Pierce 4 reduces to 3; Pierce 8 reduces to 2                 | Heavy battlefield protection; cushions swarms and power strikes ($4 \times S$). |
+| **Full Plate Harness / Giant Monsters**     |      **5**      | $I \le 4$ ($5\text{ Impact for Sev } 1$) | Pierce 4 reduces to 4; Pierce 8 reduces to 3; Pierce 12 to 2 | Walking fortress; immune to diffuse hits; requires tag setup or armor-piercing. |
 
 ### Symmetrical Minion Design
 
-Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs attack a minion and generate 2 Impact, the attacker simply spends 2 Impact to draw 1 Severity 2 card. There is no second slot. The minion takes the card. If the minion is defeated at Severity 2, it drops instantly. This eliminates GM drafting overhead while making mook-cleaving fast and satisfying.
+Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs attack a minion and generate 2 Impact, the attacker simply spends 2 Impact to draw 1 Severity 2 card. There is no second slot. The minion takes the card. If the minion is defeated at Severity 4 (or a lower threshold printed on fragile mooks, e.g. Severity 2), it drops instantly. This eliminates GM drafting overhead while making mook-cleaving fast and satisfying.
 
 ---
 
-## 4. The 6-Tier Severity Scale & Anti-Alpha Strike Mathematics
+## 4. The 4-Tier Severity Scale & Combat Pacing Mathematics
 
-| Severity | Category                   | Description & Gameplay Effect                                                                   | Examples                                                                 |
-| :------: | :------------------------- | :---------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
-|  **1**   | **Minor Friction / Wear**  | Fleeting setbacks, positioning slips, or minor stamina costs. Easily pushed through or cleared. | `Near Miss`, `Poor Footing`, `Out of Breath`, `Slightly Battered`        |
-|  **2**   | **Tactical Constraint**    | Specific tactical hindrances that limit actions or make you vulnerable to follow-up strikes.    | `Rattled Guard`, `Strained Offense`, `Afraid`, `Off Balance`             |
-|  **3**   | **Significant Impediment** | Severe tactical disruptions or meaningful physical wounds requiring mid-combat attention.       | `Mild Concussion`, `Terrified`, `Hamstrung`, `Knocked Prone`             |
-|  **4**   | **Major Trauma**           | Structural failure of defense or severe bodily injury. Forces a major tactical shift.           | `Broken Arm`, `Sundered Armor`, `Dislocated Knee`, `Deep Puncture Wound` |
-|  **5**   | **Critical Injury**        | Life-threatening trauma or near-total collapse. One step from defeat.                           | `Severe Concussion`, `Sucking Chest Wound`, `Compound Leg Fracture`      |
-|  **6**   | **Taken Out**              | Incapacitated, unconscious, dying, or completely removed from the conflict.                     | `Unconscious`, `Mortal Bleedout`, `Mind Void`, `Taken Out (Surrendered)` |
+| Severity | Category                               | Description & Gameplay Effect                                                                   | Examples                                                                           |
+| :------: | :------------------------------------- | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
+|  **1**   | **Minor Friction / Wear**              | Fleeting setbacks, positioning slips, or minor stamina costs. Easily pushed through or cleared. | `Near Miss`, `Poor Footing`, `Out of Breath`, `Dust in Eyes`, `Shallow Laceration` |
+|  **2**   | **Tactical Impairment / Minor Injury** | Specific tactical hindrances that limit actions or make you vulnerable to follow-up strikes.    | `Rattled Guard`, `Strained Offense`, `Afraid`, `Off Balance`, `Bleeding Cut`       |
+|  **3**   | **Severe / Structural Trauma**         | Structural failure of defense, deep wounds, broken bones, or severe concussions.                | `Broken Arm`, `Mild Concussion`, `Hamstrung`, `Knocked Prone`, `Sundered Armor`    |
+|  **4**   | **Taken Out / Incapacitated**          | Incapacitated, unconscious, dying, or completely removed from the conflict.                     | `Unconscious`, `Mortal Bleedout`, `Mind Void`, `Taken Out (Surrendered)`           |
 
-### Why 6 Severities Solves the "Alpha Strike" Problem
+### Anti-Alpha Strike & Downward Spiral Mathematics
 
-Under the $\text{Impact} = \text{Pool Size} \times \text{Severity}$ formula:
+Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Severity } (S)$ formula:
 
-- **To One-Shot an Unarmored Hero (Sev 6)**: Attackers need $2 \times 6 = \mathbf{12\text{ Impact}}$ (requiring $\sim 30\text{ Strength}$).
-- **To One-Shot an Armored Hero (Sev 6 in Full Harness)**: Attackers need $4 \times 6 = \mathbf{24\text{ Impact}}$ (requiring $\sim 60\text{ Strength}$).
+- **To One-Shot an Unarmored Hero ($N=2$, Sev 4)**: Attackers need $2 \times 4 = \mathbf{8\text{ Impact}}$ ($\sim 16\text{ unmet Strength}$ undefended). Fresh PCs with defensive cards in hand easily absorb or parry incoming Strength, preventing opening-turn defeats unless caught completely unprepared and undefended.
+- **To One-Shot a Combatant in Light Armor ($N=3$, Sev 4)**: Attackers need $3 \times 4 = \mathbf{12\text{ Impact}}$ ($\sim 24\text{ unmet Strength}$).
+- **To One-Shot a Warrior in War Armor ($N=4$, Sev 4)**: Attackers need $4 \times 4 = \mathbf{16\text{ Impact}}$ ($\sim 32\text{ unmet Strength}$).
+- **To One-Shot a Knight in Full Plate ($N=5$, Sev 4)**: Attackers need $5 \times 4 = \mathbf{20\text{ Impact}}$ ($\sim 40\text{ unmet Strength}$).
 
-True 1-hit kills are mathematically impossible in opening rounds without prior setup. Instead, combat follows a **2–3 round telegraphed downward spiral**:
+True 1-hit kills are mathematically impossible against prepared combatants without prior setup. Instead, combat follows a tense, urgent **2–4 round telegraphed downward spiral**:
 
 1. **Round 1**: Attackers land a 4-Impact strike against an unarmored defender ($N=2$) $\to$ offers Sev 2 `Afraid` and Sev 2 `Off Balance`. Defender takes `Afraid` (enters play).
-2. **Round 2**: Attackers land another 4-Impact strike and deliberately offer Sev 2 `Afraid` (fearing tag) and Sev 2 `Off Balance`. Defender chooses `Afraid`, which triggers active `Afraid`'s `escalate:` clause, upgrading to **Severity 3** (`Terrified`).
-3. **Round 3**: With multiple vulnerabilities exposed, subsequent strikes easily cascade into **Severity 4** (`Acute Panic Attack`) and terminal collapse.
+2. **Round 2**: Attackers land another 4-Impact strike and deliberately offer Sev 2 `Afraid` (fearing tag) and Sev 2 `Off Balance`. Defender chooses `Afraid`, triggering active `Afraid`'s `escalate:` clause $\to$ upgrades to **Severity 3** (`Terrified`).
+3. **Round 3**: With multiple vulnerabilities exposed and defenses depleted, follow-up strikes cascade into **Severity 4** (`Mind Void / Catatonic Panic` or physical trauma) and terminal defeat.
 
 ---
 

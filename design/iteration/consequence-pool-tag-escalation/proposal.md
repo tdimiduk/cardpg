@@ -36,7 +36,7 @@ Attackers may spend their Impact across any combination of severities they can a
 
 ### 3. Curate the Consequence Pool (The "I Cut" Step)
 
-The defender's traits and equipped gear define their **Consequence Pool Size ($N$)** (typically 2 for unarmored heroes, 3–4 for armored combatants, and 1 for minions).
+The defender's traits and equipped gear define their **Consequence Pool Size ($N$)** (ranging from 1 for minions, 2 for unarmored heroes, 3 for light armor/protective garments, 4 for war armor/maille, to 5 for full plate harness).
 
 #### Tactical Pool Curation
 
@@ -67,11 +67,9 @@ If the attackers drew fewer than $N$ candidate cards (e.g., they could not affor
 
 ### Severity Reference
 
-| Severity | Category                               | Description & Gameplay Effect                                                                   | Examples                                                                 |
-| :------: | :------------------------------------- | :---------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
-|  **1**   | **Minor Friction / Wear**              | Fleeting setbacks, positioning slips, or minor stamina costs. Easily pushed through or cleared. | `Near Miss`, `Poor Footing`, `Out of Breath`, `Slightly Battered`        |
-|  **2**   | **Tactical Constraint / Minor Injury** | Specific tactical hindrances that limit actions or make you vulnerable to follow-up strikes.    | `Rattled Guard`, `Strained Offense`, `Afraid`, `Off Balance`             |
-|  **3**   | **Significant Impediment**             | Severe tactical disruptions or meaningful physical wounds requiring mid-combat attention.       | `Mild Concussion`, `Terrified`, `Hamstrung`, `Knocked Prone`             |
-|  **4**   | **Major Trauma**                       | Structural failure of defense or severe bodily injury. Forces a major tactical shift.           | `Broken Arm`, `Sundered Armor`, `Dislocated Knee`, `Deep Puncture Wound` |
-|  **5**   | **Critical Injury**                    | Life-threatening trauma or near-total collapse. One step from defeat.                           | `Severe Concussion`, `Sucking Chest Wound`, `Compound Leg Fracture`      |
-|  **6**   | **Taken Out**                          | Incapacitated, unconscious, dying, or completely removed from the conflict.                     | `Unconscious`, `Mortal Bleedout`, `Mind Void`, `Taken Out (Surrendered)` |
+| Severity | Category                               | Description & Gameplay Effect                                                                   | Examples                                                                        |
+| :------: | :------------------------------------- | :---------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------ |
+|  **1**   | **Minor Friction / Wear**              | Fleeting setbacks, positioning slips, or minor stamina costs. Easily pushed through or cleared. | `Near Miss`, `Poor Footing`, `Out of Breath`, `Slightly Battered`               |
+|  **2**   | **Tactical Impairment / Minor Injury** | Specific tactical hindrances that limit actions or make you vulnerable to follow-up strikes.    | `Rattled Guard`, `Strained Offense`, `Afraid`, `Off Balance`                    |
+|  **3**   | **Severe / Structural Trauma**         | Structural failure of defense, deep wounds, broken bones, or severe concussions.                | `Broken Arm`, `Mild Concussion`, `Hamstrung`, `Knocked Prone`, `Sundered Armor` |
+|  **4**   | **Taken Out / Incapacitated**          | Incapacitated, unconscious, dying, or completely removed from the conflict.                     | `Unconscious`, `Mortal Bleedout`, `Mind Void`, `Taken Out (Surrendered)`        |

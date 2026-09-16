@@ -11,9 +11,10 @@
 - **Full Harness**:
   - Burden: 2
   - Rules:
-    - _Passive 1_: Your consequence pool size is 4. An attack with Pierce 6 can ignore this passive.
-    - _Passive 2_: Your consequence pool size is 3. An attack with Pierce 12 can ignore this passive.
-    - _Armor Integrity Rule_: The first time a consequence pool would include a card of severity 4 or higher, damage (flip) this armor instead and the attacker must choose a different consequence.
+    - _Passive 1_: Your consequence pool size is 5. An attack with Pierce 4 can ignore this passive.
+    - _Passive 2_: Your consequence pool size is 4. An attack with Pierce 8 can ignore this passive.
+    - _Passive 3_: Your consequence pool size is 3. An attack with Pierce 12 can ignore this passive.
+    - _Armor Integrity Rule_: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
 
 ---
 
@@ -40,7 +41,7 @@
 ### 3. Draw Candidate Consequences & Curate Pool
 
 - **Full Harness Check against Pierce 4**:
-  - Pierce is 4 (< 6). Passive 1 holds: **Defender Pool Size ($N$) = 4**.
+  - Attack has Pierce 4. Passive 1 is ignored; Passive 2 holds $\to$ **Defender Pool Size ($N$) = 4**.
 - **Attacker Budget**: **3 Impact**.
 - **Candidate Draws**:
   - Attacker spends 3 Impact to draw 3 candidate cards from Severity 1: `[Near Miss (Sev 1), Poor Footing (Sev 1), Out of Breath (Sev 1)]`.
@@ -52,19 +53,19 @@
 ### 4. Defender Suffers a Consequence (The "You Choose" Step)
 
 - Knight chooses **No Consequence**.
-- **Narrative & Tactical Outcome**: The greatmaul crashes violently against the fluted steel plate, ringing the knight's ears and expending 3 cards of stamina/endurance, but the armor's structural coverage (Pool Size 4) prevents any debilitating wound or condition from landing.
+- **Narrative & Tactical Outcome**: The greatmaul crashes violently against the fluted steel plate, ringing the knight's ears and expending 3 cards of stamina/endurance, but the armor's structural coverage (Pool Size 4 after Pierce 4) prevents any debilitating wound or condition from landing.
 
 ---
 
-## Exchange B: Overwhelming Sunder Strike (Pierce 6)
+## Exchange B: Overwhelming Sunder Strike (Pierce 8)
 
 In the subsequent round, the Orc Chieftain commits everything to a specialized anti-armor blow.
 
 ### 1. Attack Declaration
 
 - Orc Chieftain plays `Overhead Skull-Cracker`:
-  - Attack: {Red} Str = {Red} + 5; **Pierce 6**; Cost: 3
-  - Stack: Top card ({Red: 4}) + 3 Resources ({Red: 3, Red: 3, Red: 4}) + 5 modifier = **19 Red (Pierce 6)**.
+  - Attack: {Red} Str = {Red} + 5; **Pierce 8**; Cost: 3
+  - Stack: Top card ({Red: 4}) + 3 Resources ({Red: 3, Red: 3, Red: 4}) + 5 modifier = **19 Red (Pierce 8)**.
 
 ### 2. Defense & Impact
 
@@ -80,9 +81,9 @@ In the subsequent round, the Orc Chieftain commits everything to a specialized a
 
 ### 3. Draw Candidate Consequences & Curate Pool
 
-- **Full Harness Check against Pierce 6**:
-  - Pierce 6 meets the Pierce 6 threshold! Passive 1 is **ignored**.
-  - Passive 2 remains active (Pierce 6 < 12) -> **Defender Pool Size ($N$) drops to 3**.
+- **Full Harness Check against Pierce 8**:
+  - Pierce 8 meets both Passive 1 (Pierce 4) and Passive 2 (Pierce 8)! Both are ignored.
+  - Passive 3 remains active (Pierce 8 < 12) -> **Defender Pool Size ($N$) drops to 3**.
 - **Attacker Budget**: **5 Impact**.
 - **Candidate Draws (Spend 5 Impact)**:
   - Spend 2 Impact: Draws from Severity 2 deck $\to$ `Rattled Guard` (Severity 2, Tags: `combat`, `equipment`, `armor`).
@@ -114,8 +115,8 @@ In the subsequent round, the Orc Chieftain commits everything to a specialized a
 
 1. **Armor as Pool Expansion is Elegant and Intuitive**:
    - Instead of tracking an abstract arithmetic divisor like `floor(Impact / Defense)`, armor directly acts as **insulation against concentrated harm**.
-   - With Pool Size 4, an attacker needs at least 4 Impact to deal even a Sev 1 wound, and 8 Impact to force a Sev 2 wound.
-2. **Pierce Translates Naturally**:
-   - Pierce thresholds (e.g. Pierce 6) reduce the pool size directly (from 4 down to 3, or down to 2), shrinking the defender's buffer and allowing the attacker to concentrate Impact into fewer, higher-severity slots.
+   - With base Pool Size 5, an attacker needs at least 5 Impact to deal even a Sev 1 wound, 10 Impact for Sev 2, 15 for Sev 3, and 20 to take the knight out.
+2. **Stepped Pierce Translates Naturally**:
+   - Stepped Pierce thresholds (Pierce 4, 8, 12) reduce the pool size directly (from 5 down to 4, 3, or 2), peeling away the defender's buffer and allowing the attacker to concentrate Impact into fewer, higher-severity slots.
 3. **Player Agency Under Pressure**:
-   - The defender always has a choice among the offered consequences, allowing the knight to trade off deck pollution (`Pain`/`Injury`) against debilitating tactical conditions (`Breached Guard`).
+   - The defender always has a choice among the offered consequences, allowing the knight to trade off deck wear against debilitating tactical conditions.
