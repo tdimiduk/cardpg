@@ -178,13 +178,23 @@ While **Batched Resolution** is the standard default for Crisis Time, groups or 
 
 ## 8. Suggested Next Steps for Future Threads
 
-When opening a new conversation, the next priorities are:
+### Settled Decisions from 5-Tier Migration
+
+- **5-Tier Severity Scale**: Firmly settled (1: Fleeting Friction, 2: Tactical Impairment, 3: Platform Ceilings & Moderate Trauma, 4: Severe Structural Trauma, 5: Taken Out / Incapacitation).
+- **The Organic Asymmetry Standard**: Escalation tracks must reflect narrative and clinical reality rather than forced 5-step symmetry. Platform tracks have ceilings at Sev 3 (`Knocked Prone`) and Sev 4 (`Sundered Armor`) triggering Anvil wildcards; vascular cuts coexist in parallel; head trauma follows clinical neurotrauma stages.
+- **Symmetrical Minions**: Minions with `Pool Size 1` are inherently fragile (no blank slots to dilute harm); printed early defeat thresholds remain speculative design space.
+
+### Open Questions for Exploration
+
+- **Tier 5 Implementation**: Does Tier 5 function best as a physical candidate card deck drawn when spending 5 Impact, or as an emergent, narrative exit state (_"describe how this foe is dispatched"_ when terminal conditions or compounded trauma trigger)?
+
+### Next Action Priorities
 
 1. **Core Rules Integration**:
    - Draft the formal replacement section for `design/rules/core-rules.md` (replacing `## Defend Actions` using [proposal.md](proposal.md)).
    - Update `design/rules/players-guide.md` and `design/rules/gamemaster-guide.md` to reflect Consequence Pool drafting.
 2. **Expanding Domain Consequence Decks**:
-   - Author specialized decks following [guide-to-writing-consequences.md](guide-to-writing-consequences.md) for:
+   - Author specialized decks following [guide-to-writing-consequences.md](guide-to-writing-consequences.md) and the Organic Asymmetry Standard for:
      - _Exploration & Environmental Trauma_ (`Cold`, `Heat`, `Dehydration`, `Trench Foot`).
      - _Social & Relational Fallout_ (`Status`, `Ostracized`, `Exposed Lie`, `Blackmail`).
      - _Arcane & Alchemical Backdrafts_ (`Mana Burn`, `Crystallization`, `Planar Distortion`).
