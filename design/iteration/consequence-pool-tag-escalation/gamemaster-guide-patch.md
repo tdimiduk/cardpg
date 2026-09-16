@@ -22,8 +22,8 @@ Different monster types and combat roles should spend their Impact and curate th
 
 - **High Impact, Low Multiplicity**: Brutes often land attacks that generate 3–5 Impact on their own.
 - **The Ceiling vs. Saturation Choice**:
-  - _Against Unarmored/Light Targets ($N \le 2$)_: Spend 3 or 4 Impact on a single high-tier card (**Severity 3 or 4**). A single devastating blow can cripple or knock out a fragile combatant.
-  - _Against Armored Tanks ($N \ge 3$)_: If the brute attacks alone, spending 4 Impact on a single Severity 4 card leaves 2 slots empty as "No Consequence" against a knight in full plate ($N = 5$). The knight will simply absorb the blow with their armor. The brute should instead spend 4 Impact as **$2 + 2$** (two Severity 2 cards like `Sundered Armor` or `Rattled Guard`) to break the armor down.
+  - _Against Unarmored/Light Targets ($N \le 2$)_: Spend 3 to 5 Impact on a single high-tier card (**Severity 3, 4, or 5**). A single devastating blow can cripple or knock out a fragile combatant.
+  - _Against Armored Tanks ($N \ge 3$)_: If the brute attacks alone, spending 4 or 5 Impact on a single high-tier card leaves multiple slots empty as "No Consequence" against a knight in full plate ($N = 5$). The knight will simply absorb the blow with their armor. The brute should instead spend Impact across multiple lower cards (e.g. two Severity 2 cards like `Rattled Guard` and `Off Balance`) to break the knight's stance and armor down.
 
 ### The Swarm / Pack (e.g., Goblins, Dire Wolves, Giant Rats)
 

@@ -1,5 +1,5 @@
 # caRdPG Consequence Card Database (Exploration & Prototype)
-# Structured under the 4-Tier Severity Scale and Condition-Based Escalation Engine.
+# Structured under the 5-Tier Severity Scale and Condition-Based Escalation Engine.
 # Calibrated against General Action Difficulty (design/rules/gamemaster-guide.md)
 # and clinical/biomechanical research (design/research/synthesis/consequence-database.md).
 #
@@ -11,10 +11,11 @@
 #   3. Suppression Mechanics: Uses "Place X cards on top of this to cover its passive and suppress its effect..."
 #   4. Requires vs. Cost: Tools/facilities are 'Requires'; consumable resources are 'Cost'.
 #   5. Lingering Attrition: Field removals often include 'When removed → Place status card in deck/expended pile'.
-#   6. Explicit Escalation Pointers:
-#      - Condition cards specify 'escalate:' triggers matching tags of incoming consequences.
-#      - An escalation triggers only when the defender chooses a consequence sharing that tag.
-#      - When triggered, the active card is discarded and replaced by the upgraded condition.
+#   6. Explicit Escalation Pointers & Organic Asymmetry:
+#      - Condition cards specify 'escalate:' triggers matching specific Leaf Tags (e.g. 'head', 'fear', 'positioning', 'bleeding', 'armor'). Root tags ('physical', 'injury') are banned from escalation blocks.
+#      - Organic Asymmetry: Escalation chains vary in length based on narrative/clinical reality. No forced 5-step ladders.
+#      - Platform conditions at their ceiling (Knocked Prone at Sev 3, Sundered Armor at Sev 4) define Anvil Principle wildcards and progress setback clauses.
+#      - Progressive pathologies (head trauma, bleeding) support parallel accumulation before triggering terminal Severity 5 collapse.
 #      - Severity 1 cards are often transient (deck pollution / soft soaks) with no persistent presence or escalation.
 #   7. Priority Ratings: Every card includes an integer 'priority: 1-5' representing aggregate threat/badness within its tier for fast default curation and VTT automation.
 
@@ -97,13 +98,10 @@
     - bleeding
   rules:
     - Put 1 `Minor Wound` status card into your expended pile, then return this card.
-  escalate:
-    - if_suffer: bleeding
-      replace_with: Bleeding Cut
   notes: >
     Clinical Basis: Class I Hemorrhage (<15% blood volume loss). Superficial epidermal breach that causes stinging
     pain and a slow capillary bleed. Adds long-term deck pollution (`Minor Wound`) directly to the expended pile.
-    Transient / Lingering: Resolves immediately into deck wear unless escalated.
+    Transient: Resolves immediately upon card placement into expended pile; does not enter play on the table.
 
 - name: Singed Sleeves
   severity: 1
@@ -116,11 +114,12 @@
     - action: Pat Out Smolder (Spend {Yellow} 15) -> Remove this.
     - task: Brush Off Ash (Time 30 sec) -> Remove this.
   escalate:
-    - if_suffer: fire
+    - if_suffer: fire (Severity 2+)
       replace_with: Pyric Backdraft (Second-Degree Burn)
   notes: >
     Physical Basis: Residual smoldering of garments/sleeves from magical sparks or heat bloom. Distracts the caster
     during somatic casting motions, imposing a fatigue cost until patted out.
+    Escalation: Sustaining a genuine secondary burst of flame (Sev 2+) ignites clothing into second-degree burns.
 
 - name: Rattled Nerves
   severity: 1
@@ -150,12 +149,10 @@
     - passive: The Impact of all future defenses against you is increased by 1.
     - action: Shake Off Impact (Spend {Red} 15) -> Remove this.
     - task: Catch Breath & Tend Bruises (Time 5 min) -> Remove this.
-  escalate:
-    - if_suffer: injury
-      replace_with: Strained Offense
   notes: >
     Physiological Basis: Superficial muscle contusion and soft-tissue microtrauma. General soreness increases defensive
     reaction latency (+1 Impact). Easily shaken off with exertion or a 5-minute breather.
+    Persistent: Remains in play until cleared. General contusions do not escalate to broken limbs or tendon tears.
 
 # ==============================================================================
 # SEVERITY 2: TACTICAL IMPAIRMENTS & MINOR TRAUMA
@@ -168,7 +165,7 @@
     - positioning
     - combat
   rules:
-    - passive: You cannot take Move actions or play Defend cards from hand.
+    - passive: The Impact of your defenses is increased by 1. You cannot take Move actions or play Defend cards from hand.
     - action: Regain Center (Spend {Yellow} 20) -> Remove this.
     - task: Recover Footing (Time 10 sec) -> Remove this.
   escalate:
@@ -177,6 +174,7 @@
   notes: >
     Biomechanical Basis: Dynamic equilibrium loss. The vestibular system is intact, but the kinetic chain is completely
     broken, preventing directional evasion or braced weapon parries until posture is deliberately reset.
+    Subsumes +1 Impact from Poor Footing.
     Escalation: Further balance loss knocks the combatant completely prone.
 
 - name: Afraid
@@ -191,8 +189,6 @@
     - task: Center Yourself (Check {Blue} 15; Time 5 min) -> Remove this.
   escalate:
     - if_suffer: fear
-      replace_with: Terrified
-    - if_suffer: mental
       replace_with: Terrified
   notes: >
     Psychological Basis: Acute stress reaction. Amygdala activation suppresses offensive motor initiation, requiring
@@ -233,12 +229,10 @@
   escalate:
     - if_suffer: arms
       replace_with: Broken Arm (Colles' Fracture)
-    - if_suffer: injury
-      replace_with: Broken Arm (Colles' Fracture)
   notes: >
     Physiological Basis: Grade I muscle strain / tendon hyper-extension in the forearm or rotator cuff. Explosive weapon
     acceleration triggers protective neuromuscular inhibition, forcing hand card loss when attacking.
-    Escalation: Continued structural trauma to the arm breaks the limb completely.
+    Escalation: Continued structural trauma strictly to the arm breaks the limb completely.
 
 - name: Bleeding Cut
   severity: 2
@@ -246,7 +240,6 @@
   tags:
     - physical
     - bleeding
-    - injury
   rules:
     - passive: Whenever you flip 3 or more cards from your deck to defend an attack, expend 1 additional card from the top of your deck.
     - action: Apply Field Tourniquet/Pressure (Spend {Red} 20) -> Remove this.
@@ -254,12 +247,18 @@
     - task: Thorough Wound Cleaning & Suture (Check {Blue} 20; Time 30 min; Cost Bandage & Antiseptic) -> Remove this.
     - when removed (via Task): Place 1 `Minor Wound` into your expended pile.
   escalate:
-    - if_suffer: bleeding
-      replace_with: Deep Puncture Wound
+    - if_suffer: bleeding (Severity 4)
+      replace_with: Arterial Hemorrhage
+    - if_suffer: bleeding (Severity 2-3)
+      replace_with: Deep Laceration
+      rule: >
+        If you ALREADY have an active Arterial Hemorrhage in play, compounding blood loss
+        triggers acute hemorrhagic shock: discard both bleeding cards and replace them
+        with Mortal Bleedout (Exsanguination) (Severity 5).
   notes: >
     Clinical Basis: Class II Hemorrhage through a deep dermal/muscular laceration. High cardiac output from vigorous defense
-    causes renewed arterial bleeding bursts, expending extra deck cards.
-    Escalation: Continued bleeding elevates to a Deep Puncture Wound.
+    causes renewed arterial bleeding bursts, expending extra deck cards. Multiple cuts may exist in parallel.
+    Escalation: Continued bleeding elevates to Deep Laceration (Severity 3) or Arterial Hemorrhage (Severity 4).
 
 - name: Dazed
   severity: 2
@@ -275,127 +274,18 @@
   escalate:
     - if_suffer: head
       replace_with: Mild Concussion
+      rule: >
+        If you ALREADY have an active Mild Concussion in play, compounding cranial trauma
+        triggers severe neurotrauma: discard Dazed and replace Mild Concussion with
+        Severe Concussion (Severity 4).
   notes: >
     Neurological Basis: Transient blunt force jar to the skull. Temporary disruption of vestibular and cognitive tracking
-    prevents executing complex, multi-card combos until cleared.
-    Escalation: Another blow to the head triggers a Mild Concussion (Severity 3).
+    prevents executing complex, multi-card combos until cleared. Can enter play in parallel alongside Mild Concussion.
+    Escalation: Another blow to the head triggers a Mild Concussion (Severity 3) or Severe Concussion (Severity 4).
 
 # ==============================================================================
-# SEVERITY 3: SEVERE & STRUCTURAL TRAUMA (MAJOR WOUNDS & CRISIS CONDITIONS)
+# SEVERITY 3: PLATFORM CEILINGS & MODERATE BODILY TRAUMA
 # ==============================================================================
-
-- name: Broken Arm (Colles' Fracture)
-  severity: 3
-  priority: 4
-  tags:
-    - physical
-    - arms
-    - injury
-  rules:
-    - passive: You immediately drop any item held in that hand. You cannot wield two-handed weapons or shields.
-    - passive: Whenever you perform an action with {Red} strength, suffer 2 Fatigue.
-    - task: Orthopedic Reduction & Rigid Splinting (Check {Blue} 45, Check {Red} 30; Time 6 weeks; Requires Splint & Bone Cast Tools) -> Remove this.
-    - when removed: Place 2 `Injury` cards in your expended pile.
-  escalate:
-    - if_suffer: arms
-      replace_with: Unconscious (Traumatic Coma)
-    - if_suffer: injury
-      replace_with: Mortal Bleedout (Exsanguination)
-  notes: >
-    Orthopedic Basis: Complete transverse fracture of the distal radius/ulna. Total loss of structural skeletal integrity.
-    Muscular contractions in the arm cause bone ends to grind against periosteal nerves, inducing systemic shock on heavy exertion.
-    No in-combat action exists. Requires orthopedic bone setting and 6 weeks of immobilization out of combat.
-    Escalation: Further arm or traumatic injury leads to systemic shock or lethal vascular tears.
-
-- name: Sundered Armor
-  severity: 3
-  priority: 5
-  tags:
-    - equipment
-    - armor
-  rules:
-    - passive: Flip your equipped armor to its Damaged side. (If your armor is already Damaged, expend it).
-    - passive: Place this card on your armor.
-    - task: Master Blacksmith Forge Reconstruction (Check {Red} 50, Check {Blue} 35; Time 1 week; Requires Forge & Anvil; Cost Raw Steel & Replacement Rivets) -> Remove this and flip armor to Intact side.
-  escalate:
-    - if_suffer: armor
-      replace_with: Taken Out (Subdued & Surrendered)
-  notes: >
-    Materials Science Basis: Structural shear failure of breastplate plate joints or complete tearing of maille rings
-    under crushing or piercing overmatch. Flips the armor card to its Damaged side.
-    Requires 1 week of forge reconstruction out of combat.
-    Escalation: Striking an armor-depleted foe forces collapse or surrender.
-
-- name: Terrified
-  severity: 3
-  priority: 4
-  tags:
-    - fear
-    - mental
-    - cognitive
-  rules:
-    - passive: You must expend 2 cards from hand to declare an Attack; you cannot willingly move closer to a foe.
-    - action: Desperate Rally (Spend {Red} 35) -> Downgrade to `Afraid` (Severity 2).
-    - when downgraded (via Action): Place 2 `Fatigue` on top of your deck.
-    - task: Guided Calming & Pastoral Counseling (Check {Blue} 30; Time 1 hour) -> Remove this.
-  escalate:
-    - if_suffer: fear
-      replace_with: Mind Void (Catatonic Shatter)
-    - if_suffer: mental
-      replace_with: Mind Void (Catatonic Shatter)
-  notes: >
-    Psychiatric Basis: Severe acute panic reaction. Prefrontal cortical control is overwhelmed by sympathetic hyper-arousal,
-    requiring massive conscious effort (2 cards expended) to initiate aggressive action.
-    In combat, a desperate rally costs Red 35 and inflicts 2 Fatigue just to downgrade to Afraid; out of combat, 1 hour of
-    calming pastoral counseling clears the panic.
-    Escalation: Further psychological shock collapses the psyche into catatonic mind void.
-
-- name: Deep Puncture Wound
-  severity: 3
-  priority: 5
-  tags:
-    - physical
-    - torso
-    - bleeding
-    - injury
-  rules:
-    - passive: At the start of each Crisis Time round, place 1 `Blood Loss` status card into your active hand.
-    - action: Hold Direct Pressure (Place 2 cards from your hand on top of this to cover and suppress its passive. If you declare an Attack or Sprint, expend those cards and resume the passive).
-    - task: Deep Cavity Packing & Suture (Check {Blue} 45, Check {Yellow} 30; Time 3 hours; Requires Surgical Kit; Cost Suture & Antiseptic) -> Remove this.
-    - when removed: Place 2 `Injury` cards in your expended pile.
-  escalate:
-    - if_suffer: bleeding
-      replace_with: Mortal Bleedout (Exsanguination)
-    - if_suffer: torso
-      replace_with: Mortal Bleedout (Exsanguination)
-  notes: >
-    Clinical Basis: Class II/III Hemorrhage (15–30% blood loss) through deep muscular penetration into the thoracic
-    or abdominal wall. Ongoing internal bleeding steadily dilutes the active hand with urgent physiological distress cards.
-    In combat, placing 2 cards on top of this card covers the text and suppresses blood loss so long as you don't swing
-    a weapon or run; out of combat, 3 hours of surgery fully resolves the wound.
-    Escalation: Further vascular or torso trauma induces hemorrhagic shock and arterial bleedout.
-
-- name: Hamstrung
-  severity: 3
-  priority: 4
-  tags:
-    - physical
-    - legs
-    - bleeding
-  rules:
-    - passive: You cannot take Move actions. Whenever you are forced to move, suffer 1 Fatigue.
-    - task: Suture & Bind Tendon (Check {Yellow} 35, Check {Blue} 30; Time 2 hours; Requires Suture Kit & Splint; Cost Antiseptic) -> Remove this.
-    - when removed: Place 1 `Minor Wound` in your expended pile.
-  escalate:
-    - if_suffer: legs
-      replace_with: Taken Out (Subdued & Surrendered)
-    - if_suffer: positioning
-      replace_with: Taken Out (Subdued & Surrendered)
-  notes: >
-    Anatomical Basis: Partial transection or severe longitudinal tearing of the biceps femoris/semitendinosus muscle
-    belly. The knee joint cannot achieve active flexion or bear sudden eccentric loads without excruciating pain.
-    Requires 2 hours of surgical suturing and splinting out of combat.
-    Escalation: Further trauma to the compromised legs forces complete physical collapse.
 
 - name: Knocked Prone
   severity: 3
@@ -411,15 +301,20 @@
     - action: Athletic Kip-Up (Spend {Yellow} 30) -> Remove this.
     - task: Stand Up (Time 5 seconds) -> Remove this.
   escalate:
-    - if_suffer: positioning
-      replace_with: Taken Out (Subdued & Surrendered)
-    - if_suffer: physical
-      replace_with: Taken Out (Subdued & Surrendered)
+    - if_suffer: positioning (Severity 3+)
+      text: >
+        You are already prone. The kinetic force slams you against the unyielding ground:
+        Draw and suffer 1 Severity 3 Physical Injury card from the deck.
+    - if_suffer: positioning (Severity 1-2)
+      text: >
+        You are kicked and pinned in the dirt:
+        Expend 1 card from hand, and discard all cards currently tucked under this card.
   notes: >
     Biomechanical Basis: Total loss of upright stance under heavy kinetic impact. Subsumes +1 Impact from prior positioning wear.
     In combat, getting up in heavy gear requires building mechanical leverage (tucking cards equal to Burden)
     or executing an explosive Yellow 30 acrobatic leap. Out of combat, standing up is instantaneous.
-    Escalation: Being trampled or pinned while prone takes the character out of the fight.
+    Escalation: Suffering a Severity 3 positioning blow slams you against the ground (Anvil Principle), inflicting a fresh
+    Severity 3 injury. Minor positioning blows (Sev 1-2) disrupt standing progress and expend a card from hand.
 
 - name: Mild Concussion
   severity: 3
@@ -430,15 +325,104 @@
     - head
   rules:
     - passive: While you have at least 5 cards in your hand, replace your upkeep draw with "Draw 1, expend 1 from top of deck".
-    - task: Strict Cognitive Rest & Darkness (Check {Blue} 35; Time 1 day; Requires Darkened Shelter) -> Remove this.
+    - task: Strict Cognitive Rest & Darkness (Check {Blue} 30; Time 1 day; Requires Darkened Shelter) -> Remove this.
   escalate:
-    - if_suffer: head
-      replace_with: Unconscious (Traumatic Coma)
+    - if_suffer: head (Severity 3+)
+      replace_with: Severe Concussion
+      rule: >
+        If you ALREADY have an active Severe Concussion in play, compounding cranial trauma
+        triggers Second Impact Syndrome: discard both and put Unconscious (Traumatic Coma) (Severity 5) into play.
   notes: >
     Neurological Basis: Transient neurological dysfunction caused by biomechanical acceleration/deceleration forces
     of the brain within the skull. Disrupts complex multi-tasking and cognitive synthesis, penalizing large hand holding.
-    No in-combat action can reset brain contusions; recovery requires 1 day of cognitive rest (Blue 35).
-    Escalation: Second Impact Syndrome. Another head strike worsens the contusion into traumatic unconsciousness.
+    No in-combat action can reset brain contusions; recovery requires 1 day of cognitive rest (Blue 30).
+    Escalation: Sustaining another moderate head strike elevates the trauma to Severe Concussion (Severity 4).
+    Lesser head strikes (Sev 2 Dazed) enter play in parallel.
+
+- name: Cracked Ribs
+  severity: 3
+  priority: 4
+  tags:
+    - physical
+    - torso
+    - injury
+  rules:
+    - passive: Whenever you flip cards from your deck to defend, or perform an action with printed cost of 2 or higher, suffer 1 Fatigue.
+    - task: Torso Splinting & Rest (Check {Blue} 30, Check {Red} 20; Time 2 weeks; Requires Clean Wraps) -> Remove this.
+    - when removed: Place 1 `Minor Wound` in your expended pile.
+  escalate:
+    - if_suffer: torso (Severity 4)
+      text: >
+        Severe blunt overmatch drives broken rib fragments inward, puncturing the thoracic cavity:
+        Draw and suffer 1 Severity 4 Physical Injury card from the deck.
+  notes: >
+    Clinical Basis: Simple non-displaced fracture of 1-2 ribs without hemothorax/pneumothorax. Deep thoracic expansion
+    and heavy muscular engagement cause sharp pleuritic pain, penalizing heavy defenses and multi-card actions.
+    Escalation: Severe localized trauma risks penetrating internal organs.
+
+- name: Deep Laceration
+  severity: 3
+  priority: 4
+  tags:
+    - physical
+    - bleeding
+    - injury
+  rules:
+    - passive: Whenever you flip cards to defend, expend 1 additional card from the top of your deck.
+    - action: Direct Compression (Place 1 card from hand on top of this to cover and suppress its passive. If you declare an Attack or Sprint, expend that card and resume the passive).
+    - task: Layered Wound Suturing (Check {Blue} 35; Time 1 hour; Cost Suture & Antiseptic; Requires Suture Kit) -> Remove this.
+    - when removed: Place 1 `Minor Wound` in your expended pile.
+  escalate:
+    - if_suffer: bleeding (Severity 4)
+      replace_with: Arterial Hemorrhage
+  notes: >
+    Clinical Basis: Deep muscular laceration penetrating subcutaneous fascia without major trunk arterial transection.
+    Constant venous and capillary oozing demands active physical compression to prevent steady deck depletion.
+    Escalation: Severe cutting trauma penetrates vascular trunks, escalating to Arterial Hemorrhage (Severity 4).
+
+- name: Terrified
+  severity: 3
+  priority: 4
+  tags:
+    - fear
+    - mental
+    - cognitive
+  rules:
+    - passive: You must expend 2 cards from hand to declare an Attack; you cannot willingly move closer to a foe.
+    - action: Desperate Rally (Spend {Red} 35) -> Downgrade to `Afraid` (Severity 2).
+    - when downgraded (via Action): Place 2 `Fatigue` on top of your deck.
+    - task: Guided Calming & Pastoral Counseling (Check {Blue} 30; Time 1 hour) -> Remove this.
+  escalate:
+    - if_suffer: fear (Severity 3+)
+      replace_with: Mind Void (Catatonic Shatter)
+  notes: >
+    Psychiatric Basis: Severe acute panic reaction. Prefrontal cortical control is overwhelmed by sympathetic hyper-arousal,
+    requiring massive conscious effort (2 cards expended) to initiate aggressive action.
+    In combat, a desperate rally costs Red 35 and inflicts 2 Fatigue just to downgrade to Afraid; out of combat, 1 hour of
+    calming pastoral counseling clears the panic.
+    Escalation: Sustaining genuine secondary terror (Sev 3+) collapses the psyche into catatonic mind void.
+
+- name: Hamstrung
+  severity: 3
+  priority: 4
+  tags:
+    - physical
+    - legs
+    - bleeding
+  rules:
+    - passive: You cannot take Move actions. Whenever you are forced to move, suffer 1 Fatigue.
+    - task: Suture & Bind Tendon (Check {Yellow} 35, Check {Blue} 30; Time 2 hours; Requires Suture Kit & Splint; Cost Antiseptic) -> Remove this.
+    - when removed: Place 1 `Minor Wound` in your expended pile.
+  escalate:
+    - if_suffer: legs (Severity 3+)
+      text: >
+        The compromised leg suffers complete structural collapse:
+        You are knocked prone, and expend 2 cards from your hand.
+  notes: >
+    Anatomical Basis: Partial transection or severe longitudinal tearing of the biceps femoris/semitendinosus muscle
+    belly. The knee joint cannot achieve active flexion or bear sudden eccentric loads without excruciating pain.
+    Requires 2 hours of surgical suturing and splinting out of combat.
+    Escalation: Repeated severe trauma to the hamstrung leg causes immediate collapse to the ground.
 
 - name: Pyric Backdraft (Second-Degree Burn)
   severity: 3
@@ -457,11 +441,102 @@
     Requires 1 day of clinical burn management out of combat.
 
 # ==============================================================================
-# SEVERITY 4: TAKEN OUT, UNCONSCIOUSNESS, MORTAL PERIL & DEFEAT
+# SEVERITY 4: SEVERE STRUCTURAL TRAUMA & CRITICAL EMERGENCIES
+# ==============================================================================
+
+- name: Broken Arm (Colles' Fracture)
+  severity: 4
+  priority: 4
+  tags:
+    - physical
+    - arms
+    - injury
+  rules:
+    - passive: You immediately drop any item held in that hand. You cannot wield two-handed weapons or shields.
+    - passive: Whenever you perform an action with {Red} strength, suffer 2 Fatigue.
+    - task: Orthopedic Reduction & Rigid Splinting (Check {Blue} 50, Check {Red} 35; Time 6 weeks; Requires Splint & Bone Cast Tools) -> Remove this.
+    - when removed: Place 2 `Injury` cards in your expended pile.
+  escalate:
+    - if_suffer: arms (Severity 4)
+      text: >
+        Your arm is already fractured. A crushing blow shears the broken bone ends into surrounding tissue:
+        collapse into acute neurogenic shock and expend 3 cards from your hand.
+  notes: >
+    Orthopedic Basis: Complete transverse fracture of the distal radius/ulna. Total loss of structural skeletal integrity.
+    Muscular contractions in the arm cause bone ends to grind against periosteal nerves, inducing systemic shock on heavy exertion.
+    No in-combat action exists. Requires orthopedic bone setting and 6 weeks of immobilization out of combat.
+    Escalation: Repeated direct trauma to the broken limb triggers acute neurogenic shock.
+
+- name: Sundered Armor
+  severity: 4
+  priority: 5
+  tags:
+    - equipment
+    - armor
+  rules:
+    - passive: Flip your equipped armor to its Damaged side. (If your armor is already Damaged, expend it).
+    - passive: Place this card on your armor.
+    - task: Master Blacksmith Forge Reconstruction (Check {Red} 55, Check {Blue} 40; Time 1 week; Requires Forge & Anvil; Cost Raw Steel & Replacement Rivets) -> Remove this and flip armor to Intact side.
+  escalate:
+    - if_suffer: armor (Severity 4)
+      text: >
+        Your armor is already ruined. The blow punches straight through the wreckage into bare flesh:
+        Draw and suffer 1 Severity 4 Physical Injury card from the deck.
+  notes: >
+    Materials Science Basis: Structural shear failure of breastplate plate joints or complete tearing of maille rings
+    under crushing or piercing overmatch. Flips the armor card to its Damaged side, reducing its pool size.
+    Requires 1 week of forge reconstruction out of combat.
+    Escalation: Once armor is destroyed, follow-up armor-piercing strikes overmatch directly into bare flesh.
+
+- name: Arterial Hemorrhage
+  severity: 4
+  priority: 5
+  tags:
+    - physical
+    - bleeding
+  rules:
+    - passive: At the start of each Crisis Time round, place 1 `Blood Loss` status card into your active hand.
+    - action: Hold Direct Pressure (Place 2 cards from your hand on top of this to cover and suppress its passive. If you declare an Attack or Sprint, expend those cards and resume the passive).
+    - setback: "If you suffer a positioning or physical consequence while cards are on top of this, jarring impact breaks your compress: expend those cards and resume the passive immediately."
+    - task: Deep Cavity Packing & Suture (Check {Blue} 55, Check {Yellow} 35; Time 3 hours; Requires Surgical Kit; Cost Suture & Antiseptic) -> Remove this.
+    - when removed: Place 2 `Injury` cards in your expended pile.
+  escalate:
+    - if_suffer: bleeding (Severity 4+)
+      replace_with: Mortal Bleedout (Exsanguination)
+  notes: >
+    Clinical Basis: Class II/III Hemorrhage (15–30% blood loss) through deep vascular laceration or arterial branch puncture.
+    Ongoing internal bleeding steadily dilutes the active hand with urgent physiological distress cards.
+    In combat, placing 2 cards on top of this card covers the text and suppresses blood loss so long as you don't swing
+    a weapon or run; jarring impacts break the hold.
+    Escalation: Compounding arterial bleeding triggers hypovolemic shock and exsanguination (Severity 5).
+
+- name: Severe Concussion
+  severity: 4
+  priority: 5
+  tags:
+    - cognitive
+    - sensory
+    - head
+  rules:
+    - passive: You cannot hold more than 3 cards in your hand. (Immediately expend excess cards from hand).
+    - passive: You cannot declare {Blue} actions.
+    - task: Clinical Neurological Convalescence (Check {Blue} 50; Time 2 weeks; Requires Darkened Infirmary) -> Remove this.
+    - when removed: Replace with `Mild Concussion` (Severity 3).
+  escalate:
+    - if_suffer: head
+      replace_with: Unconscious (Traumatic Coma)
+  notes: >
+    Neurological Basis: Grade III cerebral concussion with profound axonal strain, vestibulo-ocular disruption,
+    nausea, and severe retrograde amnesia. Hand capacity is severely degraded to 3 cards; complex intellectual/magical
+    planning is blocked.
+    Escalation: Any subsequent cranial impact collapses the nervous system into Unconscious (Traumatic Coma) (Severity 5).
+
+# ==============================================================================
+# SEVERITY 5: TAKEN OUT, UNCONSCIOUSNESS, MORTAL PERIL & DEFEAT
 # ==============================================================================
 
 - name: Unconscious (Traumatic Coma)
-  severity: 4
+  severity: 5
   priority: 5
   tags:
     - physical
@@ -470,7 +545,7 @@
     - fatal
   rules:
     - passive: You are completely unconscious and out of the fight. You cannot take actions, hold cards in hand, or defend.
-    - task: Intensive Trauma Resuscitation (Check {Blue} 80; Time 1 day; Requires Surgery Suite; Cost Life-Support Elixirs) -> Stabilized; awakens in 1d6 days with `Mild Concussion` (Severity 3).
+    - task: Intensive Trauma Resuscitation (Check {Blue} 85; Time 1 day; Requires Surgery Suite; Cost Life-Support Elixirs) -> Stabilized; awakens in 1d6 days with `Severe Concussion` (Severity 4).
   notes: >
     Clinical Basis: Reticular Activating System (RAS) suppression due to massive blunt force cranial acceleration,
     hypoxia, or severe metabolic shock. The character is completely incapacitated and at the mercy of the scene.
@@ -478,7 +553,7 @@
     Terminal: No further escalation.
 
 - name: Mortal Bleedout (Exsanguination)
-  severity: 4
+  severity: 5
   priority: 5
   tags:
     - physical
@@ -488,17 +563,17 @@
   rules:
     - passive: You collapse into hemorrhagic shock. You cannot act or defend. If not stabilized within 3 rounds (or 5 minutes), the character dies.
     - action: Ally Emergency Hemostasis (An adjacent ally places 2 cards from their hand on top of this to cover this card. As long as those cards remain on top of this, the bleedout round timer is paused).
-    - task: Emergency Arterial Clamp & Transfusion (Check {Blue} 85, Check {Yellow} 65; Time 1 min; Requires Hemostatic Clamps; Cost Blood/Plasma Transfusion) -> Stabilize and replace with `Deep Puncture Wound` (Severity 3).
+    - task: Emergency Arterial Clamp & Transfusion (Check {Blue} 85, Check {Yellow} 65; Time 1 min; Requires Hemostatic Clamps; Cost Blood/Plasma Transfusion) -> Stabilize and replace with `Arterial Hemorrhage` (Severity 4).
   notes: >
     Clinical Basis: Class IV Hemorrhage (>40% blood volume loss) from transection of major arterial trunks (femoral,
     brachial, carotid). Mean arterial pressure drops below critical perfusion thresholds, leading to irreversible
     cellular hypoxia and cardiac arrest within minutes.
     In combat, an ally can place 2 cards over the card to physically cover the bleedout text and pause the timer;
-    out of combat, a 1-minute emergency arterial clamp stabilizes the character at Severity 3.
+    out of combat, a 1-minute emergency arterial clamp stabilizes the character at Severity 4.
     Terminal: No further escalation.
 
 - name: Mind Void (Catatonic Shatter)
-  severity: 4
+  severity: 5
   priority: 5
   tags:
     - mental
@@ -515,7 +590,7 @@
     Terminal: No further escalation.
 
 - name: Taken Out (Subdued & Surrendered)
-  severity: 4
+  severity: 5
   priority: 4
   tags:
     - general

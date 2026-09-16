@@ -103,5 +103,5 @@ The attacker presents both cards to the defender. By examining the defender's ac
    - The defender sees both the incoming choices and their active conditions' explicit `escalate:` clauses, making the trade-off clear, high-stakes, andtactically meaningful.
 4. **Clean Board State (No Redundant Cards)**:
    - When a condition escalates, the lower-tier card is discarded upon upgrade. The player only tracks the active, upgraded condition.
-5. **Decisive 4-Tier Runway**:
-   - The defender has reached **`Terrified` (Severity 3)**. Under the 4-tier model, suffering one more fear-tagged consequence will trigger its `escalate:` clause directly into **`Mind Void / Catatonic Panic` (Severity 4)**, removing the mercenary from the fight. The stakes for subsequent rounds are immediate and unmistakable.
+5. **Decisive 5-Tier Runway**:
+   - The defender has reached **`Terrified` (Severity 3)**. Under the 5-tier model, suffering further compounding fear consequences triggers its `escalate:` clause directly toward terminal psychological collapse (**`Mind Void / Catatonic Panic`**), removing the mercenary from the fight. The stakes for subsequent rounds are immediate and unmistakable.

@@ -22,7 +22,7 @@ When your attack forces an opponent to flip cards from their deck, each card fli
 A critical tactical decision is how to spend your Impact when you generate a high number (such as 3, 4, or 5 Impact):
 
 - **The High-Ceiling Strike (Concentrated Severity)**:
-  - _Example_: Spending 4 Impact to draw a single **Severity 4** card (`Unconscious`, `Mortal Bleedout`).
+  - _Example_: Spending 5 Impact to draw a single **Severity 5** card (`Unconscious`, `Mortal Bleedout`).
   - _Tactical Value_: Enormous if the defender's pool is small or already filled by allies. However, against an armored defender with Pool Size $N = 3$ or higher, drawing only one card leaves the remaining slots implicitly filled with **"No Consequence"**—allowing the defender to simply ignore the blow!
 - **Pool Saturation (Guaranteed Floor)**:
   - _Example_: An attacker who generated 4 Impact against an armored foe ($N = 3$) chooses to spend it as **$2 + 2$** (two Severity 2 cards) rather than a single Severity 4.
