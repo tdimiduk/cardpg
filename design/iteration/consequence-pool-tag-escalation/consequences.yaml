@@ -16,6 +16,7 @@
 #      - An escalation triggers only when the defender chooses a consequence sharing that tag.
 #      - When triggered, the active card is discarded and replaced by the upgraded condition.
 #      - Severity 1 cards are often transient (deck pollution / soft soaks) with no persistent presence or escalation.
+#   7. Priority Ratings: Every card includes an integer 'priority: 1-5' representing aggregate threat/badness within its tier for fast default curation and VTT automation.
 
 # ==============================================================================
 # SEVERITY 1: MINOR FRICTION, POSITIONING SLIPS & FLEETING WEAR
@@ -23,6 +24,7 @@
 
 - name: Near Miss
   severity: 1
+  priority: 1
   tags:
     - combat
     - positioning
@@ -36,6 +38,7 @@
 
 - name: Poor Footing
   severity: 1
+  priority: 4
   tags:
     - positioning
     - physical
@@ -54,6 +57,7 @@
 
 - name: Out of Breath
   severity: 1
+  priority: 3
   tags:
     - fatigue
     - exertion
@@ -67,6 +71,7 @@
 
 - name: Dust in Eyes
   severity: 1
+  priority: 5
   tags:
     - sensory
     - eyes
@@ -86,6 +91,7 @@
 
 - name: Shallow Laceration
   severity: 1
+  priority: 2
   tags:
     - physical
     - bleeding
@@ -101,6 +107,7 @@
 
 - name: Singed Sleeves
   severity: 1
+  priority: 2
   tags:
     - arcane
     - fire
@@ -117,6 +124,7 @@
 
 - name: Rattled Nerves
   severity: 1
+  priority: 3
   tags:
     - fear
     - mental
@@ -134,6 +142,7 @@
 
 - name: Slightly Battered
   severity: 1
+  priority: 2
   tags:
     - physical
     - injury
@@ -154,6 +163,7 @@
 
 - name: Off Balance
   severity: 2
+  priority: 4
   tags:
     - positioning
     - combat
@@ -171,6 +181,7 @@
 
 - name: Afraid
   severity: 2
+  priority: 3
   tags:
     - fear
     - mental
@@ -190,6 +201,7 @@
 
 - name: Rattled Guard
   severity: 2
+  priority: 5
   tags:
     - combat
     - equipment
@@ -208,6 +220,7 @@
 
 - name: Strained Offense
   severity: 2
+  priority: 3
   tags:
     - physical
     - arms
@@ -229,6 +242,7 @@
 
 - name: Bleeding Cut
   severity: 2
+  priority: 4
   tags:
     - physical
     - bleeding
@@ -249,6 +263,7 @@
 
 - name: Dazed
   severity: 2
+  priority: 4
   tags:
     - sensory
     - head
@@ -271,6 +286,7 @@
 
 - name: Broken Arm (Colles' Fracture)
   severity: 3
+  priority: 4
   tags:
     - physical
     - arms
@@ -293,6 +309,7 @@
 
 - name: Sundered Armor
   severity: 3
+  priority: 5
   tags:
     - equipment
     - armor
@@ -311,6 +328,7 @@
 
 - name: Terrified
   severity: 3
+  priority: 4
   tags:
     - fear
     - mental
@@ -334,6 +352,7 @@
 
 - name: Deep Puncture Wound
   severity: 3
+  priority: 5
   tags:
     - physical
     - torso
@@ -358,6 +377,7 @@
 
 - name: Hamstrung
   severity: 3
+  priority: 4
   tags:
     - physical
     - legs
@@ -379,6 +399,7 @@
 
 - name: Knocked Prone
   severity: 3
+  priority: 5
   tags:
     - positioning
     - combat
@@ -402,6 +423,7 @@
 
 - name: Mild Concussion
   severity: 3
+  priority: 3
   tags:
     - cognitive
     - sensory
@@ -420,6 +442,7 @@
 
 - name: Pyric Backdraft (Second-Degree Burn)
   severity: 3
+  priority: 3
   tags:
     - arcane
     - fire
@@ -439,6 +462,7 @@
 
 - name: Unconscious (Traumatic Coma)
   severity: 4
+  priority: 5
   tags:
     - physical
     - head
@@ -455,6 +479,7 @@
 
 - name: Mortal Bleedout (Exsanguination)
   severity: 4
+  priority: 5
   tags:
     - physical
     - bleeding
@@ -474,6 +499,7 @@
 
 - name: Mind Void (Catatonic Shatter)
   severity: 4
+  priority: 5
   tags:
     - mental
     - cognitive
@@ -490,6 +516,7 @@
 
 - name: Taken Out (Subdued & Surrendered)
   severity: 4
+  priority: 4
   tags:
     - general
     - social

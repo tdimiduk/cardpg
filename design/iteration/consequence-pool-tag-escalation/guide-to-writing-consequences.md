@@ -133,13 +133,38 @@ When a consequence card is selected by the defender from the curated pool:
 
 ---
 
-## 7. Canonical YAML Card Template
+## 7. The `priority:` Metric (Within-Tier Threat Ranking)
+
+Every consequence card includes an integer `priority:` rating (typically **1 to 5**). This number represents the designer's calibrated estimate of the consequence's **aggregate "badness" or tactical lethality within its severity tier**.
+
+### 7.1. Purpose & Use Cases
+
+1. **Fast-Paced GM Adjudication ("Without an Opinion")**:
+   When a GM draws several candidate cards within a tier (e.g., three Severity 1 cards) and has no strong narrative or tactical preference, the GM simply compares the printed priority numbers. Selecting the highest-priority cards ensures the most threatening options enter the pool in seconds, without requiring the GM to read and compare paragraphs of rules text under fire.
+2. **VTT, Digital Tools, and Solo AI Automation**:
+   Virtual tabletop software and automated enemy scripts can execute deterministic, high-quality "I Cut" pool curation using a simple sorting rule:
+   - _Step 1_: Check for matching active condition tags on the defender (top priority to trigger escalations).
+   - _Step 2_: For remaining pool slots, sort candidate cards by `severity` descending, then `priority` descending.
+   - _Step 3_: Present the top $N$ cards to the defender.
+
+### 7.2. Calibration Scale (Within-Tier Priority 1–5)
+
+- **Priority 1 (Soft / Fleeting)**: Harmless slips, clean blanks, or negligible friction that is easily ignored or quickly cleared (e.g., `Near Miss`).
+- **Priority 2 (Mild Lingering Wear)**: Superficial wounds or delayed deck pollution added to the expended pile rather than the active hand/draw deck (e.g., `Shallow Laceration`).
+- **Priority 3 (Active Resource Drain)**: Injects immediate dead cards onto the top of the draw deck, or imposes mild ongoing resource taxes on common actions (e.g., `Out of Breath`).
+- **Priority 4 (Tactical Vulnerability / Broad Penalty)**: Increases the Impact of all future defenses, penalizes primary attacks, or restricts movement/engagement (e.g., `Poor Footing`, `Strained Offense`, `Afraid`).
+- **Priority 5 (Severe Lockout / Critical Vulnerability)**: Completely shuts down core defensive avenues (like hand defense), strips armor Pierce thresholds, or exposes lethal escalation tracks (e.g., `Dust in Eyes`, `Rattled Guard`, `Sundered Armor`).
+
+---
+
+## 8. Canonical YAML Card Template
 
 When authoring cards in `consequences.yaml`, use the following exact structure:
 
 ```yaml
 - name: Example Persistent Condition
-  severity: 2 # Integer 1 to 6
+  severity: 2 # Integer 1 to 4
+  priority: 4 # Integer 1 to 5 (aggregate threat/badness within tier)
   tags:
     - physical
     - arms
@@ -169,11 +194,12 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
 
 ---
 
-## 8. Checklist for Reviewing New Consequence Cards
+## 9. Checklist for Reviewing New Consequence Cards
 
 Before committing any consequence card, verify:
 
-- [ ] Is the severity accurately calibrated (1 to 6)?
+- [ ] Is the severity accurately calibrated (1 to 4)?
+- [ ] Is the `priority:` rating (1 to 5) assigned, reflecting its aggregate threat within its severity tier?
 - [ ] Are all passives written as continual states (no "the next...")?
 - [ ] Is the word "damage" completely avoided for characters/decks? (Used "expend from deck/hand" instead?)
 - [ ] Are color requirements qualified by declared action color or numerical threshold ({Blue} >= 3)?

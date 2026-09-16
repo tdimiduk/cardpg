@@ -37,25 +37,27 @@ The Squire has no active defense cards in hand and resolves each attack in seque
    - Flip 2: {Red: 3} -> Cumulative: 6 (Met: 6 >= 5).
    - _Flipped_: 2 cards -> **2 Impact**.
 
-### Total Round Impact Tally
+### Impact by Attacker
 
 - **Total Flipped Cards**: 6 cards expended from deck.
-- **`Total Round Impact`**: $2 + 2 + 2 = \mathbf{6\text{ Impact}}$.
+- **`Goblin 1 Impact`**: 2 cards flipped -> **2 Impact**.
+- **`Goblin 2 Impact`**: 2 cards flipped -> **2 Impact**.
+- **`Goblin 3 Impact`**: 2 cards flipped -> **2 Impact**.
 
 ---
 
-## 3. Draw Candidate Consequences & Curate Pool (Single Batched Pool)
+## 3. Draw Candidate Consequences & Curate Pool (Individual Spend into Shared Pool)
 
-Because all three attacks targeted the Squire during the same Crisis round, the attackers draw candidates using a single shared budget.
+Because all three attacks targeted the Squire during the same Crisis round, their candidate draws are gathered into a single pool for curation. Each goblin spends its own individual Impact:
 
 - **Defender's Consequence Pool Size ($N$)**: **3** (set by Padded Gambeson).
-- **Attackers' Shared Budget**: **6 Impact**.
+- **Individual Budgets**: Goblin 1 (2 Impact), Goblin 2 (2 Impact), Goblin 3 (2 Impact).
 
 ### Candidate Draws
 
-The GM (controlling the goblins) spends 6 Impact to draw 3 candidate cards from the **Severity 2** deck (cost $2 + 2 + 2 = 6$):
+Each goblin spends its 2 Impact to draw 1 candidate card from the **Severity 2** deck (cost 2 Impact each):
 
-1. **Candidate 1 (Severity 2)**: `Rattled Guard` (Tags: `combat`, `equipment`, `armor`)
+1. **Goblin 1 Draw (Severity 2)**: `Rattled Guard` (Tags: `combat`, `equipment`, `armor`)
    - _Passive_: Place this card on your equipped armor. While on your armor, your armor's first Pierce threshold is ignored by all incoming attacks.
    - _Action_: Re-buckle Under Fire (Spend {Yellow} 25) -> Remove this.
    - _Task_: Refit Harness & Tighten Straps (Check {Red} 15; Time 15 min; Requires Repair Tools) -> Remove this.
@@ -103,11 +105,11 @@ The GM (controlling the goblins) spends 6 Impact to draw 3 candidate cards from 
    - This prevents the sluggish stop-and-go pattern of resolving 3 separate drafting rounds within a single turn.
 
 2. **Swarm Viability vs. Armor Soak**:
-   - Under a separate-pool model, each 2-Impact hit against Pool Size 3 would have left an unfilled slot ("No Consequence"), allowing the Squire to completely ignore all three hits without sustaining any conditions.
-   - Under **Batched Round Resolution**, the collective pressure of 3 simultaneous attackers generates 6 Impact, successfully surpassing the armor's soak threshold ($3 \times 2 = 6$) to guarantee a Severity 2 consequence.
-   - This preserves the tactical danger of mob combat and coordinated flanking.
+   - Under an unbatched per-attack resolution model, each 2-Impact hit against Pool Size 3 would have left 2 unfilled slots ("No Consequence"), allowing the Squire to completely ignore all three hits without sustaining any conditions.
+   - Under **Individual Spend into a Shared Round Pool**, each goblin's 2 Impact purchases 1 Severity 2 card. Together, the three goblins contribute three Severity 2 candidates, fully filling the Squire's Pool Size 3.
+   - This ensures that coordinated multi-attacker pressure still threatens armored targets without allowing fractional 1-Impact hits to combine into unnatural instant trauma.
 
 3. **Armor Protection is Meaningful**:
-   - Even though the goblins generated 6 Impact, the Squire's armor (Pool Size 3) forced that 6 Impact to be distributed across 3 slots ($2 + 2 + 2$).
-   - If the Squire had been unarmored (Pool Size 2), 6 Impact could have been allocated as $3 + 3$ (forcing a Severity 3 injury like `Hamstrung` or `Knocked Prone`) or $4 + 2$.
-   - The armor successfully cushioned the blow down to Severity 2.
+   - The Squire's armor (Pool Size 3) required 3 separate cards of Severity 2 to guarantee a tactical impairment.
+   - If each goblin had only generated 1 Impact (e.g. if the Squire had higher defensive card values in hand), the goblins could only have purchased Severity 1 cards, cushioning the Squire against any Severity 2 injury for that round.
+   - Conversely, if the Squire had been unarmored (Pool Size 2), two 2-Impact hits would have been sufficient to lock in Severity 2, leaving the third goblin's card as surplus curation leverage.
