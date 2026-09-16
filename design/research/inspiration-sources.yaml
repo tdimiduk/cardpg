@@ -283,3 +283,8 @@ master_source_index:
           - title: '"Calibrating Your Expectations"'
             author: "Justin Alexander (The Alexandrian)"
             description: "A good essay about casual realism in the context of D&D 3rd edition. Works through how, with some resonable assumption, situations in the game come out feeling pretty reasonable for the real world."
+          - title: '"How OSR Teaches Us That Exploration Is Logistics"'
+            author: "The RPG Gazette"
+            url: "https://therpggazette.wordpress.com/2026/09/11/how-osr-teaches-us-that-exploration-is-logistics/"
+            reading_note: "design/research/theory/readings/exploration-is-logistics.md"
+            description: "An essay analyzing why tracking torches, rations, and encumbrance creates structural tension and player agency, refuting the 'boring bookkeeping' critique. In CardPG, this informed-risk pressure is delivered via the card economy and deck dilution rather than pencil-and-paper tracking."

@@ -511,3 +511,21 @@ design_process_and_research:
           "core-concept:action-resolution",
           "core-concept:verisimilitude",
         ]
+  design_theory_and_readings:
+    - name: "Literature Note: How OSR Teaches Us That Exploration Is Logistics"
+      id: "reading-exploration-is-logistics"
+      path: "research/theory/readings/exploration-is-logistics.md"
+      source_type: "local_file"
+      purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."
+      type: "Literature Note"
+      status: "Leading-Edge"
+      tags:
+        [
+          "doc-type:literature-note",
+          "audience:designer-facing",
+          "pillar:exploration",
+          "core-concept:attrition",
+          "core-concept:fatigue",
+          "core-concept:consequences",
+          "core-concept:clocks",
+        ]
