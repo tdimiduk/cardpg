@@ -56,4 +56,5 @@ related_files:
 
 - **Style:** Objective, analytical, and concise. Prioritize structured tables, timelines, and clear metrics over conversational exposition.
 - **Quantification Standard:** When researching physical exertion, prioritize quantifiable metrics of energy expenditure. **Metabolic Equivalent of Task (METs)** is our system-agnostic standard for comparing action costs.
+- **External Archival Mandate:** Whenever an agent or researcher fetches an external paper, report, or essay, archive a clean local copy into `design/research/sources/` (`verisimilitude/`, `ludology/`, or `ephemera/`), commit it to the nested repository, and link it in the appropriate catalog via `local_archive`.
 - **Constraint:** **Do not propose specific game mechanics here.** This directory establishes facts and theoretical frameworks. Mechanic design and rule brainstorming belong in `design/iteration/` and `design/rules/`.

@@ -30,5 +30,8 @@ Use this skill to spawn isolated subagents for heavy research, mathematical mode
 When a design task involves broad searches or complex simulations:
 
 1. Define the subagent if not already registered.
-2. Launch via `invoke_subagent`.
-3. Synthesize the subagent's concise report back into the main conversation without polluting the main context window.
+2. **Parent-Mediated Resource Harvesting:**
+   - Because read-only subagents (`enable_write_tools: false`) cannot run terminal commands or save files, the parent agent must fetch external materials using CLI tools (`pdftotext`, `trafilatura`, `curl`).
+   - **Mandatory Archival:** Whenever external documents or essays are fetched, save them directly to `design/research/sources/` (`verisimilitude/`, `ludology/`, or `ephemera/`), commit them within the nested git repository, and extract text/markdown snippets into scratch files or prompts for the subagent.
+3. Launch via `invoke_subagent`. The subagent inspects local files via `view_file` or performs web research.
+4. Synthesize the subagent's concise report back into the main conversation without polluting the main context window.

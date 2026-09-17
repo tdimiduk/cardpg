@@ -26,14 +26,27 @@ Always uphold and cross-reference the project's foundational design documents:
      - _High Confidence / Human-Vetted:_ Game design must adapt or explicitly justify a conscious stylization (Casual Realism).
      - _Low Confidence / Unvetted AI Draft:_ Do not ignore the research, but do not break game mechanics to conform to an unverified claim.
    - **Trigger Investigation:** Propose or dispatch an `EmpiricalResearcher` task to trace primary sources and replace speculative drafts with verified facts.
+6. **Fetch-to-Sources Archival Policy:**
+   - Whenever an agent fetches or reads a remote document, web essay, academic paper, or dataset to inform research or design, the agent **must immediately archive a clean copy** into `design/research/sources/`:
+     - **Track A (Physical / Medical / Historical):** `design/research/sources/verisimilitude/`
+     - **Track B (Ludology / Game Design Theory):** `design/research/sources/ludology/`
+     - **Track C (Forums / Transcripts / Ephemera):** `design/research/sources/ephemera/`
+   - **Naming Convention:** Use kebab-case: `author-year-topic-description.[ext]` (e.g., `alexander-2007-calibrating-expectations.md`, `us-army-2008-body-armor-effects-ada504354.pdf`).
+   - **Nested Repository Commit:** External assets are tracked in the nested git repo at `design/research/sources/` (ignored by root git). Commit new assets inside the submodule: `git -C design/research/sources add <path> && git -C design/research/sources commit -m "..."`.
+   - **Catalog Cross-Referencing:** Always link archived copies in `design/research/verisimilitude-sources.yaml` or `design/research/ludology-sources.yaml` via the `local_archive` key.
+   - **Local-First Verification:** Before fetching from the web, agents must check `local_archive` paths to reuse existing local sources.
 
-## 3. Delegation to Subagents
+## 3. Delegation to Subagents & Tooling Protocols
 
 When a task involves deep exploration or high token volume, delegate to specialized subagents to keep the main conversation context clean:
 
 - **`EmpiricalResearcher`:** Delegate broad literature reviews, biomechanical data collection, and source analysis (with write tools disabled to protect context).
 - **`RulebookAdversary`:** Delegate stress-testing of new mechanics to find degenerate combos, exploit loops, analysis-paralysis bottlenecks, and table tracking friction.
 - **`GameSystemsDesigner`:** Delegate mathematical modeling of probability spreads, deck attrition rates, and card economy balances.
+
+### Parent-Mediated CLI & Fetch Coordination:
+
+Because subagents defined with `enable_write_tools: false` cannot run shell commands, the **parent agent** must execute CLI tools (`pdftotext`, `pdfinfo`, `trafilatura`, `curl`) to harvest remote resources into `design/research/sources/` and extract plain-text snippets before or during subagent dispatch. Subagents then inspect the extracted text via `view_file`.
 
 ## 4. Output Conventions
 
