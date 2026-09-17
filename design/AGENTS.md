@@ -34,7 +34,7 @@ Always uphold and cross-reference the project's foundational design documents:
    - **Naming Convention:** Use kebab-case: `author-year-topic-description.[ext]` (e.g., `alexander-2007-calibrating-expectations.md`, `us-army-2008-body-armor-effects-ada504354.pdf`).
    - **Nested Repository Commit:** External assets are tracked in the nested git repo at `design/research/sources/` (ignored by root git). Commit new assets inside the submodule: `git -C design/research/sources add <path> && git -C design/research/sources commit -m "..."`.
    - **Catalog Cross-Referencing:** Always link archived copies in `design/research/verisimilitude-sources.yaml` or `design/research/ludology-sources.yaml` via the `local_archive` key.
-   - **Local-First Verification:** Before fetching from the web, agents must check `local_archive` paths to reuse existing local sources.
+   - **Local-First Verification:** Before fetching from the web, agents must check `local_archive` paths in `design/research/verisimilitude-sources.yaml` and `design/research/ludology-sources.yaml` to reuse existing local sources.
 
 ## 3. Delegation to Subagents & Tooling Protocols
 
@@ -46,7 +46,14 @@ When a task involves deep exploration or high token volume, delegate to speciali
 
 ### Parent-Mediated CLI & Fetch Coordination:
 
-Because subagents defined with `enable_write_tools: false` cannot run shell commands, the **parent agent** must execute CLI tools (`pdftotext`, `pdfinfo`, `trafilatura`, `curl`) to harvest remote resources into `design/research/sources/` and extract plain-text snippets before or during subagent dispatch. Subagents then inspect the extracted text via `view_file`.
+Because subagents defined with `enable_write_tools: false` cannot run shell commands, the **parent agent** must execute CLI tools to harvest remote resources into `design/research/sources/` and extract plain-text snippets before or during subagent dispatch:
+
+- **Search text in PDF:** `pdftotext <path> - | rg -C 3 "<query>"`
+- **Dump full text for subagent reading:** `pdftotext <pdf_path> <scratch_or_txt_path>`
+- **Check metadata & page count:** `pdfinfo <path>`
+- **Clean web content capture:** `trafilatura -u <url>`
+
+The resulting text or scratch files can then be passed to `empirical_researcher` or inspected directly with `view_file`.
 
 ## 4. Output Conventions
 

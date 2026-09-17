@@ -1,0 +1,29 @@
+document_purpose: >
+  Curated catalog of secondary game design theory, essays, ludological analyses, and tabletop post-mortems.
+sources:
+  - id: "alexander-2007-calibrating-expectations"
+    title: "D&D: Calibrating Your Expectations"
+    author: "Justin Alexander (The Alexandrian)"
+    year: 2007
+    url: "https://thealexandrian.net/wordpress/587/roleplaying-games/dd-calibrating-your-expectations"
+    local_archive: "sources/ludology/alexander-2007-calibrating-expectations.md"
+    reading_note: "design/research/theory/readings/calibrating-your-expectations.md"
+    relevance_to_cardpg: "Foundational conceptual origin of 'Casual Realism' and the mortal 1st–5th level sweet spot."
+    key_concepts:
+      - "Casual realism"
+      - "Mortal vs. superhuman thresholds"
+      - "System transparency without table math"
+  - id: "rpg-gazette-2026-exploration-is-logistics"
+    title: "How OSR Teaches Us That Exploration Is Logistics"
+    author: "The RPG Gazette"
+    year: 2026
+    url: "https://therpggazette.wordpress.com/2026/09/11/how-osr-teaches-us-that-exploration-is-logistics/"
+    local_archive: "sources/ludology/rpg-gazette-2026-exploration-is-logistics.md"
+    reading_note: "design/research/theory/readings/exploration-is-logistics.md"
+    relevance_to_cardpg: "An essay analyzing why tracking torches, rations, and encumbrance creates structural tension and player agency, refuting the 'boring bookkeeping' critique. In CardPG, this informed-risk pressure is delivered via the card economy and deck dilution rather than pencil-and-paper tracking."
+    key_concepts:
+      - "Exploration as logistical attrition"
+      - "Meaningful decisions require meaningful constraints"
+      - "Compounding consequences vs. arbitrary danger"
+      - "Town-dungeon breathing loop"
+      - "Physical card economy replacing bookkeeping friction"

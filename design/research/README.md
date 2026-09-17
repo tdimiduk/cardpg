@@ -20,7 +20,8 @@ The evidence-based foundation for our "Casual Realism" guiding principle. Govern
 
 The structural analysis of how tabletop mechanics generate player dynamics, tension, and agency.
 
-- **[theory/readings/](theory/readings/)**: Analytical literature notes on substantive game design essays, post-mortems, and critical analyses (e.g., `exploration-is-logistics.md`). Analyzes how external systems work and how caRdPG adapts their insights to its card economy.
+- **[ludology-sources.yaml](ludology-sources.yaml)**: Curated catalog of secondary game design theory, analytical essays, system post-mortems, and ludological frameworks.
+- **[theory/readings/](theory/readings/)**: Analytical literature notes on substantive game design essays, post-mortems, and critical analyses (e.g., `exploration-is-logistics.md`, `calibrating-your-expectations.md`). Analyzes how external systems work and how caRdPG adapts their insights to its card economy.
 - **[inspiration-sources.yaml](inspiration-sources.yaml)**: Curated library of creative media touchstones (books, games, films) establishing a common aesthetic and thematic vocabulary.
 
 ---

@@ -19,6 +19,20 @@ design_process_and_research:
           "audience:designer-facing",
           "core-concept:inspiration",
         ]
+  ludology_library:
+    - name: "Ludology Sources"
+      id: "ludology-sources"
+      path: "research/ludology-sources.yaml"
+      source_type: "local_file"
+      purpose: "Catalog of secondary game design theory, essays, and ludological frameworks."
+      type: "Inspiration Library"
+      tags:
+        [
+          "doc-type:content-library",
+          "audience:designer-facing",
+          "core-concept:ludology",
+          "core-concept:design-theory",
+        ]
   factual_bedrock:
     - name: "Verisimilitude Sources"
       id: "verisimilitude-sources"
@@ -498,4 +512,19 @@ design_process_and_research:
           "core-concept:fatigue",
           "core-concept:consequences",
           "core-concept:clocks",
+        ]
+    - name: "Literature Note: Calibrating Your Expectations"
+      id: "reading-calibrating-expectations"
+      path: "research/theory/readings/calibrating-your-expectations.md"
+      source_type: "local_file"
+      purpose: "Analysis of Justin Alexander's Casual Realism, mortal power thresholds, and their application to CardPG's grounded heroism."
+      type: "Literature Note"
+      tags:
+        [
+          "doc-type:literature-note",
+          "audience:designer-facing",
+          "core-concept:casual-realism",
+          "core-concept:verisimilitude",
+          "core-concept:progression",
+          "core-concept:card-economy",
         ]

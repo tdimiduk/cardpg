@@ -14,7 +14,7 @@ def ignorePath(p):
     parts = p.relative_to(PROJECT_ROOT).parts
     if parts[0] in ["code", ".git", "ai"]:
         return True
-    if p.name in ["inspiration-sources.yaml", "verisimilitude-sources.yaml"]:
+    if p.name in ["inspiration-sources.yaml", "verisimilitude-sources.yaml", "ludology-sources.yaml"]:
         return True
     if parts[0] == "research":
         if len(parts) > 1 and parts[1] == "reports":
