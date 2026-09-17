@@ -1,4 +1,21 @@
-# Factual Basis for Consequences: Physical Harm & Trauma
+---
+title: "Physical Harm and Trauma"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Evidence-based mapping of hemorrhagic shock, head trauma, and structural failure to four severity tiers."
+related_files:
+  - "design/research/reports/pre-modern_battlefield_injury/report.md"
+  - "design/research/reports/catastrophic-trauma-timelines/report.md"
+  - "design/research/synthesis/catastrophic-trauma-and-lethality.md"
+  - "design/research/synthesis/consequences-combat.md"
+---
+
+# Physical Harm and Trauma
 
 This document translates the findings of our research into a practical reference for designing consequences related to physical injury, combat, and bodily duress. It is organized by the type and timeline of harm, providing quantified functional impacts and mapping specific real-world conditions to the game's four severity levels.
 

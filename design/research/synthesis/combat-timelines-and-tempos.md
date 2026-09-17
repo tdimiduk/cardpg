@@ -1,4 +1,20 @@
-# Factual Basis for Design: Combat Timelines & Tempos
+---
+title: "Combat Timelines and Tempos"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Synthesizes physiological energy system timelines, reaction-time degradation, and empirical combat action timing."
+related_files:
+  - "design/research/reports/combat-action-time/report.md"
+  - "design/research/reports/dynamics-of-the-duel/report.md"
+  - "design/research/reports/exertion-recovery-dynamics/report.md"
+---
+
+# Combat Timelines and Tempos
 
 This document is a consolidated synthesis of our research into the functional, evidence-based timescales of pre-modern combat. Its purpose is to provide a single, unified reference for designers and Gamemasters to ensure that the pacing of `Crisis Time`, the duration of actions, and the effects of fatigue are grounded in a consistent and realistic framework.
 

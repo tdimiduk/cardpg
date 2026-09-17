@@ -1,4 +1,24 @@
-# Factual Consequence Database Hub
+---
+title: "Consequence Database Hub"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "medium"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Framework calibration guide and taxonomy for all domain consequence registries."
+related_files:
+  - "design/research/synthesis/consequences-combat.md"
+  - "design/research/synthesis/consequences-exploration.md"
+  - "design/research/synthesis/consequences-social.md"
+  - "design/research/synthesis/consequences-crafting.md"
+  - "design/research/synthesis/consequences-arcane.md"
+  - "design/research/synthesis/consequences-logistics.md"
+  - "design/research/synthesis/physical-harm-and-trauma.md"
+---
+
+# Consequence Database Hub
 
 This file serves as the central hub and calibration guide for the structured, rules-independent databases of physical, cognitive, environmental, and social stress states for **caRdPG**, grounded in clinical medicine, biomechanics, wilderness survival, and historical research.
 

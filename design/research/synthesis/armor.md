@@ -1,4 +1,20 @@
-# Factual Basis for Design: The Armor Tradeoff
+---
+title: "The Armor Tradeoff"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Synthesizes empirical metabolic cost and ballistic effectiveness research into design reference tables."
+related_files:
+  - "design/research/reports/metabolic-cost-of-armor/report.md"
+  - "design/research/reports/armor_effectiveness/report.md"
+  - "design/research/synthesis/tactical-movement.md"
+---
+
+# The Armor Tradeoff
 
 This document provides an evidence-based framework for modeling armor. It translates our research findings into a practical reference for designing mechanics that capture the fundamental tradeoff of wearing armor: the balance between its protective qualities and its significant physiological cost.
 

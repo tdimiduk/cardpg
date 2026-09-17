@@ -1,3 +1,19 @@
+---
+title: "Exploration Consequence Database"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Fully cross-referenced against empirical research report on functional decline under physical hardship."
+related_files:
+  - "design/research/synthesis/consequence-database.md"
+  - "design/research/reports/functional-decline-under-physical-hardship/report.md"
+  - "design/research/synthesis/hardship-and-exertion.md"
+---
+
 # Exploration Consequence Database
 
 This file serves as a structured, rules-independent database of environmental hazards, travel-related hardship, and traversal injuries for **caRdPG**, grounded in clinical medicine, physical sciences, and wilderness research.

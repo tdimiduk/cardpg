@@ -1,4 +1,20 @@
-# Factual Basis for Consequences: Catastrophic Trauma & Lethality
+---
+title: "Catastrophic Trauma & Lethality"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Grounded in clinical trauma literature and physiological survival timelines."
+related_files:
+  - "design/research/reports/catastrophic-trauma-timelines/report.md"
+  - "design/research/synthesis/physical-harm-and-trauma.md"
+  - "design/research/synthesis/consequences-combat.md"
+---
+
+# Catastrophic Trauma & Lethality
 
 This document translates the findings of the "Quantitative Analysis of Physiological Timelines in Catastrophic Trauma" report into a practical reference for designing high-severity consequences. It provides an evidence-based framework for modeling the process of dying, reinforcing the core design precept that death is a telegraphed, narrative-rich process, not an instantaneous event.
 

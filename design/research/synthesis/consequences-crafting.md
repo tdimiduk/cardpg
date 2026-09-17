@@ -1,3 +1,18 @@
+---
+title: "Crafting and Labor Consequence Database"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "medium-low"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Unvetted AI draft. Contains placeholder citations across metallurgy burns, toxic fumes, and repetitive strain needing empirical validation."
+related_files:
+  - "design/research/synthesis/consequence-database.md"
+  - "design/research/synthesis/hardship-and-exertion.md"
+---
+
 # Crafting and Labor Consequence Database
 
 This file serves as a structured, rules-independent database of workplace accidents, industrial hazards, downtime exhaustion, and material-handling strain for **caRdPG**, grounded in historical metallurgy, chemical toxicology, and biomechanical ergonomics.

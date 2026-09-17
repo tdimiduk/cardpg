@@ -1,4 +1,20 @@
-### Report: Key Learnings from "The Dynamics of the Duel"
+---
+title: "Dynamics of the Duel"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Executive synthesis of biomechanical and tactical dynamics report on pre-modern single combat."
+related_files:
+  - "design/research/reports/dynamics-of-the-duel/report.md"
+  - "design/research/synthesis/combat-timelines-and-tempos.md"
+  - "design/research/synthesis/combat-spacing-and-reach.md"
+---
+
+# Dynamics of the Duel
 
 A recent research report, **"The Dynamics of the Duel: A Biomechanical and Tactical Analysis of Pre-Modern Combat,"** provides a data-driven model of historical combat, replacing romanticized notions with a framework grounded in modern exercise science, combat sports analysis, and historical tactical manuals.
 

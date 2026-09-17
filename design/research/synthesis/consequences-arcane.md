@@ -1,3 +1,18 @@
+---
+title: "Arcane & Alchemical Consequence Database"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "medium-low"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Unvetted AI draft applying physiological and chemical analogies to speculative arcane stressors. Contains placeholder citations needing empirical validation."
+related_files:
+  - "design/research/synthesis/consequence-database.md"
+  - "design/research/synthesis/consequences-combat.md"
+---
+
 # Arcane & Alchemical Consequence Database
 
 This file serves as a structured, rules-independent database of magical backdrafts, alchemical toxicity, elemental exposure, and runic failures for **caRdPG**, grounded in thermodynamic principles, chemical toxicity, and cognitive psychology.

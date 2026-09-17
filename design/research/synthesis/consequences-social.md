@@ -1,3 +1,17 @@
+---
+title: "Social Consequence Database"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "medium-low"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Unvetted AI draft. Contains placeholder citations across ostracism, panic responses, banishment, and outlawry jurisprudence needing empirical validation."
+related_files:
+  - "design/research/synthesis/consequence-database.md"
+---
+
 # Social Consequence Database
 
 This file serves as a structured, rules-independent database of social fallout, reputational damage, and psychological/cognitive stress states for **caRdPG**, grounded in historical sociology, interpersonal relations, and psychological dynamics.

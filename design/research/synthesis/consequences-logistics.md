@@ -1,3 +1,19 @@
+---
+title: "Logistics & Equipment Consequence Database"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "medium-low"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Unvetted AI draft. Contains placeholder citations needing empirical validation."
+related_files:
+  - "design/research/synthesis/consequence-database.md"
+  - "design/research/reports/functional-decline-under-physical-hardship/report.md"
+  - "design/research/reports/catastrophic-trauma-timelines/report.md"
+---
+
 # Logistics & Equipment Consequence Database
 
 This file serves as a structured, rules-independent database of equipment wear, transport breakdowns, supply contamination, and pack animal injuries for **caRdPG**, grounded in historical transportation, animal husbandry, metallurgy, and material science.

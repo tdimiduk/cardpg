@@ -1,4 +1,21 @@
-# Factual Basis for Design: Tactical Movement & Positioning
+---
+title: "Tactical Movement & Positioning"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Synthesizes empirical locomotion data (MET costs) and historical footwork lexicons for combat movement."
+related_files:
+  - "design/research/reports/combat-locomotion/report.md"
+  - "design/research/reports/combat-dynamics-analysis/report.md"
+  - "design/research/synthesis/combat-spacing-and-reach.md"
+  - "design/research/synthesis/armor.md"
+---
+
+# Tactical Movement & Positioning
 
 This document translates the findings from our research on historical combat locomotion into a practical, designer-facing framework. It is intended to provide a grounded, evidence-based model for tactical movement, reinforcing the "Casual Realism" guiding principle of the game.
 

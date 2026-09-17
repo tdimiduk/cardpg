@@ -1,4 +1,20 @@
-# Factual Basis for Design: Combat Spacing & The Three Measures
+---
+title: "Combat Spacing and Reach"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "medium"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Derived from historical fencing treatises (Liechtenauer tradition) and physical weapon dimension datasets."
+related_files:
+  - "design/research/reports/combat-dynamics-analysis/report.md"
+  - "design/research/synthesis/tactical-movement.md"
+  - "design/research/synthesis/combat-timelines-and-tempos.md"
+---
+
+# Combat Spacing and Reach
 
 This document translates our research on historical combat into a practical, designer-facing model for tactical spacing. It is intended to provide a grounded, evidence-based framework for adjudicating movement, positioning, and area control during `Crisis Time`, reinforcing the "Casual Realism" principle of the game.
 

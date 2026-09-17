@@ -253,7 +253,7 @@ design_process_and_research:
           prompt_file: "research/reports/armor_effectiveness/prompt.md",
         }
   research_synthesis:
-    - name: "Factual Basis for Design: The Armor Tradeoff"
+    - name: "The Armor Tradeoff"
       id: "synthesis-armor"
       path: "research/synthesis/armor.md"
       source_type: "local_file"
@@ -268,7 +268,7 @@ design_process_and_research:
           "core-concept:fatigue",
           "core-concept:verisimilitude",
         ]
-    - name: "Factual Basis for Design: Tactical Movement & Positioning"
+    - name: "Tactical Movement & Positioning"
       id: "synthesis-tactical-movement"
       path: "research/synthesis/tactical-movement.md"
       source_type: "local_file"
@@ -284,7 +284,7 @@ design_process_and_research:
           "core-concept:disengagement",
           "core-concept:verisimilitude",
         ]
-    - name: "Factual Basis for Consequences: Physical Harm & Trauma"
+    - name: "Physical Harm and Trauma"
       id: "synthesis-physical-harm"
       path: "research/synthesis/physical-harm-and-trauma.md"
       source_type: "local_file"
@@ -299,7 +299,7 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
-    - name: "Factual Consequence Database"
+    - name: "Consequence Database Hub"
       id: "synthesis-consequence-database"
       path: "research/synthesis/consequence-database.md"
       source_type: "local_file"
@@ -359,7 +359,7 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
-    - name: "Crafting Consequence Database"
+    - name: "Crafting and Labor Consequence Database"
       id: "synthesis-consequences-crafting"
       path: "research/synthesis/consequences-crafting.md"
       source_type: "local_file"
@@ -373,7 +373,7 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
-    - name: "Arcane Consequence Database"
+    - name: "Arcane & Alchemical Consequence Database"
       id: "synthesis-consequences-arcane"
       path: "research/synthesis/consequences-arcane.md"
       source_type: "local_file"
@@ -387,7 +387,7 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
-    - name: "Logistics Consequence Database"
+    - name: "Logistics & Equipment Consequence Database"
       id: "synthesis-consequences-logistics"
       path: "research/synthesis/consequences-logistics.md"
       source_type: "local_file"
@@ -402,7 +402,7 @@ design_process_and_research:
           "core-concept:verisimilitude",
         ]
 
-    - name: "Factual Basis for Consequences: Hardship & Exertion"
+    - name: "Hardship and Exertion"
       id: "synthesis-hardship-and-exertion"
       path: "research/synthesis/hardship-and-exertion.md"
       source_type: "local_file"
@@ -418,11 +418,11 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
-    - name: "Factual Basis for Consequences: Catastrophic Trauma & Lethality"
+    - name: "Catastrophic Trauma & Lethality"
       id: "synthesis-catastrophic-trauma"
       path: "research/synthesis/catastrophic-trauma-and-lethality.md"
       source_type: "local_file"
-      purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
+      purpose: "Translates quantitative research on physiological timelines of death following catastrophic trauma into an evidence-based framework for high-severity consequences and dying states."
       type: "Research Synthesis"
       tags:
         [
@@ -433,7 +433,7 @@ design_process_and_research:
           "core-concept:consequences",
           "core-concept:verisimilitude",
         ]
-    - name: "Summary: The Dynamics of the duel"
+    - name: "Dynamics of the Duel"
       id: "synthesis-dynamics-of-duel"
       path: "research/synthesis/dynamics-of-duel.md"
       source_type: "local_file"

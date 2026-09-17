@@ -1,4 +1,20 @@
-# Factual Basis for Consequences: Hardship & Exertion
+---
+title: "Hardship and Exertion"
+doc_type: "synthesis"
+track: "verisimilitude"
+origin: "Gemini 2.5 Pro"
+epistemic_status:
+  confidence: "high"
+  audited_by: "Gemini 3.8 Flash (Antigravity)"
+  vetted_by_human: false
+  vetting_notes: "Translates physiological research on forced marches, overuse injuries, and illness into consequence mechanics."
+related_files:
+  - "design/research/reports/functional-decline-under-physical-hardship/report.md"
+  - "design/research/reports/exertion-recovery-dynamics/report.md"
+  - "design/research/synthesis/consequences-exploration.md"
+---
+
+# Hardship and Exertion
 
 This document translates research findings into a practical reference for designing consequences related to exertion, environmental exposure, and deprivation. It is intended to inform the creation of consequences for athletic, survival, and other non-combat General Actions.
 
