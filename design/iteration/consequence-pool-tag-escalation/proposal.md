@@ -44,7 +44,12 @@ If multiple attackers targeted the same defender during the round:
 
 ### 3. Curate the Consequence Pool (The "I Cut" Step)
 
-The defender's traits and equipped gear define their **Consequence Pool Size ($N$)** (ranging from 1 for minions, 2 for unarmored heroes, 3 for light armor/protective garments, 4 for war armor/maille, to 5 for full plate harness).
+The defender's traits, table cards, and equipped gear define their **Consequence Pool Size ($N$)**:
+
+- **Domain-Specific Pool Sizes:**
+  - **Armor defines Pool Size for Physical Harm:** Equipped armor cards specify pool size specifically against physical attacks and trauma (e.g., 3 for light armor/padded gambeson, 4 for war armor/maille, to 5 for full plate harness).
+  - **Domain Cards & Traits:** Non-physical domains derive pool sizes from applicable training, standing, or table cards (e.g., a _Silver Tongue_ or _High Standing_ table card provides Pool Size 3 for social conflicts and composure defense; an _Iron Will_ or _Warded Mind_ card provides Pool Size 3 against mental strain or arcane backdraft).
+- **Universal Baseline Fallback ($N = 2$):** For any challenge, harm domain, or situation where a character does not possess a more specific skill, armor, trait, or table card, their Consequence Pool Size defaults to **2**. (Minions and minor threats have an inherent Consequence Pool Size of **1** across all domains).
 
 #### Tactical Pool Curation
 
@@ -71,6 +76,27 @@ If the attackers drew fewer than $N$ candidate cards (e.g., they could not affor
    - **Novel Condition:** If the chosen card is a persistent condition and the defender has no active condition with an `escalate:` trigger matching this card's leaf tags, place the card into play in front of the defender as a new active condition.
    - **Condition Escalation & Card Fallbacks:** If an active condition in play in front of the defender has an `escalate:` trigger matching the chosen card's leaf tag, follow the explicit instructions printed on the active card (upgrading to the indicated condition, entering play as an independent parallel condition, applying a setback to current mitigation progress, or resolving a kinetic overmatch wildcard if the track is already at its ceiling). When an upgrade occurs, discard the lower active condition and put the upgraded condition into play.
 5. All unchosen cards in the pool are returned to their respective decks.
+
+---
+
+### 5. General Actions & Clean Success ("Saying Yes")
+
+General Actions (non-combat tasks and exploration challenges) resolve using the exact same consequence engine:
+
+1. **Meet Strength:** The player flips cards to meet the challenge's declared Strength. The number of flipped cards equals the **Impact**.
+2. **Curate the Pool:** The GM spends that Impact (1 Impact = 1 Severity) to draw candidate consequences from the appropriate domain deck and forms a pool equal to the character's Pool Size ($N$, defaulting to 2 unless a domain-specific skill, tool, or table card applies).
+3. **Draft the Outcome:** The player selects exactly 1 consequence (or "No Consequence" if an empty slot remains).
+
+#### Single-Card Flips and Clean Success ("Saying Yes")
+
+When a task is sufficiently easy or the player's flip meets the required Strength on the **first card flipped** ($\text{Impact} = 1$):
+
+- The GM spends 1 Impact to draw one Severity 1 candidate card.
+- Against the character's baseline Pool Size ($N = 2$), the second slot is an **implicit "No Consequence" blank**.
+- The player selects "No Consequence," suffering zero complications beyond the single card expended from their deck.
+
+**Design Philosophy & GM Guidance:**
+This clean success is completely intentional. The design intent of "Success at a Cost" is that the system introduces complications rather than having the rules say "No"—but the rules are fully allowed to say "Yes." Resolving a check with a single card flip represents a character expending a tiny, routine amount of energy to succeed fully without collateral friction. In fact, if an attempt resolves cleanly in a single flip, it was borderline whether the GM even needed to call for a mechanical check at all rather than simply saying "yup" and moving the narrative forward. Complications are reserved for tasks that demand genuine strain or opposition ($\text{Impact} \ge N$).
 
 ---
 

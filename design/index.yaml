@@ -4,10 +4,6 @@
 # It functions as a focused "knowledge map" for Gemini and AI assistants.
 # The AI uses this map to navigate the design structure, rules, and research.
 #
-# Document Lifecycle & Status Guide:
-# - Canon: Current, authoritative rules, philosophies, and data. Always prioritize these.
-# - Leading-Edge: Active, draft-status ideas or proposals. Use as context for current direction.
-# - Archived: Outdated, historical playtest content. DO NOT treat as current rules, but use as design reference or examples.
 
 introductory_materials:
   - name: "Introduction"
@@ -16,7 +12,6 @@ introductory_materials:
     source_type: "local_file"
     purpose: "The primary player-facing introduction to the game. Sets the tone, theme, and core player experience before the rules are presented."
     type: "Introductory Text"
-    status: "Canon"
     tags: ["doc-type:introductory-text", "audience:player-facing"]
   - name: "Root Readme"
     id: "readme-root"
@@ -24,7 +19,6 @@ introductory_materials:
     source_type: "local_file"
     purpose: "The root orientation document for the repository."
     type: "Meta Document"
-    status: "Canon"
     tags: ["doc-type:meta", "audience:designer-facing"]
   - name: "Research Readme"
     id: "readme-research"
@@ -32,7 +26,14 @@ introductory_materials:
     source_type: "local_file"
     purpose: "Orientation for the research directory."
     type: "Meta Document"
-    status: "Canon"
+    tags: ["doc-type:meta", "audience:designer-facing"]
+
+  - name: "Agent Design Rules"
+    id: "agents-design-rules"
+    path: "AGENTS.md"
+    source_type: "local_file"
+    purpose: "Operating rules, canonical hierarchies, and subagent delegation instructions for AI assistants working in the design directory."
+    type: "Meta Document"
     tags: ["doc-type:meta", "audience:designer-facing"]
 
 project_foundation:
@@ -43,7 +44,6 @@ project_foundation:
       source_type: "local_file"
       purpose: "The 'Why.' The ultimate authority on the project's creative vision and core philosophies."
       type: "Design Philosophy"
-      status: "Canon"
       tags:
         [
           "doc-type:philosophy",
@@ -57,7 +57,6 @@ project_foundation:
       source_type: "local_file"
       purpose: "A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences, from grim realism to lighthearted adventure."
       type: "Design Philosophy"
-      status: "Canon"
       tags:
         [
           "doc-type:philosophy",
@@ -72,7 +71,6 @@ project_foundation:
       source_type: "local_file"
       purpose: "The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics."
       type: "Design Patterns"
-      status: "Canon"
       tags:
         [
           "doc-type:philosophy",
@@ -88,7 +86,6 @@ project_foundation:
       source_type: "local_file"
       purpose: "An onboarding guide for designers familiar with other TTRPGs, detailing the core assumptions they need to 'un-learn' to design for this system effectively."
       type: "Meta Document"
-      status: "Canon"
       tags:
         [
           "doc-type:meta",
@@ -102,7 +99,6 @@ project_foundation:
       source_type: "local_file"
       purpose: "The official style guide for creating and formatting all design documents in the project, ensuring clarity, consistency, and structural integrity."
       type: "Meta Document"
-      status: "Canon"
       tags: ["doc-type:meta", "audience:designer-facing"]
     - name: "Tag Glossary"
       id: "tag-glossary"
@@ -110,7 +106,6 @@ project_foundation:
       source_type: "local_file"
       purpose: "The canonical reference for the project's tagging system. Defines the scope and usage of all tags to ensure metadata consistency."
       type: "Meta Document"
-      status: "Canon"
       tags: ["doc-type:meta", "audience:designer-facing"]
 
 game_system_and_rules:
@@ -121,7 +116,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "The foundational player-facing rules. The single most important mechanics document."
       type: "Game Rules"
-      status: "Canon"
       tags:
         [
           "doc-type:rules",
@@ -141,7 +135,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "A player-facing document for strategic advice, advanced tactics, and detailed examples of play. Complements core-rules.md by providing deeper strategic insights."
       type: "Player Guide"
-      status: "Canon"
       tags:
         [
           "doc-type:guide",
@@ -156,7 +149,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "Instructions, best practices, and advanced guidance for running the game and writing adventures."
       type: "GM Procedures"
-      status: "Canon"
       tags:
         [
           "doc-type:guide",
@@ -178,7 +170,6 @@ game_system_and_rules:
       path: "rules/keyword-glossary.md"
       source_type: "local_file"
       purpose: "Reference for the keywords in the game."
-      status: "Canon"
       tags:
         ["doc-type:rules", "audience:player-facing", "core-concept:keywords"]
     - name: "Reading the Cards"
@@ -187,7 +178,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "Guide on interpreting card rules and keywords."
       type: "Game Rules"
-      status: "Canon"
       tags: ["doc-type:rules", "audience:player-facing"]
   lexicons:
     - name: "Colors of Action"
@@ -196,7 +186,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue."
       type: "Action Lexicon"
-      status: "Canon"
       tags:
         [
           "doc-type:content-library",
@@ -212,7 +201,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "Optional rules for dynamic campaign play."
       type: "Game Rules Module"
-      status: "Canon"
       tags:
         [
           "doc-type:module",
@@ -228,7 +216,6 @@ game_system_and_rules:
       source_type: "local_file"
       purpose: "Optional rules for passive checks (like perception)."
       type: "Game Rules Module"
-      status: "Canon"
       tags:
         [
           "doc-type:module",
@@ -247,16 +234,14 @@ sub_indexes:
     source_type: "local_file"
     purpose: "Sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches."
     type: "Index"
-    status: "Leading-Edge"
     tags: ["doc-type:index", "audience:designer-facing"]
 
   - name: "Research Index"
     id: "index-research"
     path: "research/index.yaml"
     source_type: "local_file"
-    purpose: "Sub-index containing empirical research reports, verisimilitude sources, and research syntheses."
+    purpose: "Sub-index mapping empirical research reports, verisimilitude sources, living research syntheses, and game design theory/ludology literature notes across the Two-Track model."
     type: "Index"
-    status: "Canon"
     tags: ["doc-type:index", "audience:designer-facing"]
 
   - name: "Archive Index"
@@ -265,7 +250,6 @@ sub_indexes:
     source_type: "local_file"
     purpose: "Sub-index preserving archived playtest content, legacy spreadsheets, and superseded research."
     type: "Index"
-    status: "Archived"
     tags: ["doc-type:index", "audience:designer-facing"]
 
 global_registries:
@@ -275,7 +259,6 @@ global_registries:
     source_type: "local_file"
     purpose: "The master index for all game objects (Cards, Items, Encounters). Used by the VTT build pipeline."
     type: "Registry"
-    status: "Canon"
     tags: ["doc-type:registry", "audience:builder"]
 
   - name: "Data Schema & Syntax"
@@ -284,7 +267,6 @@ global_registries:
     source_type: "local_file"
     purpose: "Technical documentation for the YAML schema and notation syntax used in card definitions."
     type: "Meta Document"
-    status: "Canon"
     tags: ["doc-type:meta", "audience:builder", "audience:designer-facing"]
 
 game_content_design:
@@ -295,7 +277,6 @@ game_content_design:
       source_type: "google_sheet"
       purpose: "The primary spreadsheet for consequence card design."
       type: "Cards"
-      status: "Canon"
       tags:
         [
           "doc-type:content-library",
@@ -308,17 +289,14 @@ game_content_design:
         - {
             name: "combat-general",
             purpose: "Consequences cards for direct combat action or other physical harm.",
-            status: "Canon",
           }
         - {
             name: "task-general",
             purpose: "Contains consequences for non-combat tasks.",
-            status: "Canon",
           }
         - {
             name: "Conditions",
             purpose: "Lists ongoing status effects that characters can gain.",
-            status: "Archived",
           }
     - name: "Encounters (2025)"
       id: "gdoc-encounters-2025"
@@ -326,7 +304,6 @@ game_content_design:
       source_type: "google_sheet"
       purpose: "Adventure decks from a recent playtest campaign, mostly up to date with current rules."
       type: "Cards"
-      status: "Canon"
       tags:
         [
           "doc-type:content-library",

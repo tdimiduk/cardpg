@@ -103,9 +103,15 @@ flowchart LR
     A["Player Declares Task"] --> B["GM Sets Color & Strength"]
     B --> C["Player Flips to Meet Strength -> Tallies Impact"]
     C --> D["GM Spends Impact to Draw Candidates (1 Impact = 1 Severity)"]
-    D --> E["GM Curates N Cards (Player Pool Size, Usually 2)"]
-    E --> F["Player Selects 1 Consequence (The Cost of Success)"]
+    D --> E["GM Curates N Cards (Domain Pool Size, Fallback N = 2)"]
+    E --> F["Player Selects 1 Consequence (or Blank 'No Consequence')"]
 ```
+
+### Domain Pool Sizes & The Universal Fallback
+
+- **Armor Does Not Protect Outside Its Domain:** Equipped physical armor (Full Harness, Gambeson) defines Pool Size _strictly for physical trauma and physical attacks_. It does not expand pool size when negotiating with a merchant, climbing a slippery cliff, or deciphering an ancient rune.
+- **Domain Cards & Relevant Skills:** Table cards and traits define pool sizes for their specific spheres (e.g., `Silver Tongue` or `Noble Bearing` grants Pool Size 3 for social friction and composure defense).
+- **The Universal Fallback ($N = 2$):** For any task, domain, or hazard where a character does not have a more specific skill, tool, armor, or table card in play, their Consequence Pool Size defaults to **2**.
 
 ### Thematic Consequence Decks for General Actions
 
@@ -115,7 +121,16 @@ In non-combat scenes, draw from domain-appropriate consequence decks rather than
 - **Social & Intrigue**: `Suspicion`, `Slighted Honor`, `Rumor Spread`, `Exposed Lie`, `Blackmail Marker`.
 - **Arcane & Crafting**: `Mana Burn`, `Ruined Tool`, `Crystalline Resonance`, `Volatile Residue`.
 
-### Calibrating Difficulty via Consequence Floors
+### Single-Card Flips, Clean Success, and Saying "Yes"
 
-- **Routine Tasks (Low Strength, 1–2 Flips)**: Generates 1–2 Impact. Against an unarmored character ($N = 2$), drawing one Severity 1 card leaves a "No Consequence" slot open. The player succeeds with zero collateral cost if they flipped efficiently!
-- **Dangerous Tasks (High Strength, 4–6 Flips)**: Generates 4–6 Impact. The GM can populate both slots with Severity 2 consequences (or a curated Severity 1), guaranteeing that success carries a tangible, memorable cost.
+Under a baseline Pool Size of $N = 2$, meeting a challenge's Strength with a **single card flip** produces **1 Impact**:
+
+1. The GM spends 1 Impact to draw 1 candidate card from the appropriate Severity 1 deck.
+2. The remaining slot in the pool of 2 is an **implicit "No Consequence" blank**.
+3. The player selects "No Consequence," taking no complications beyond the single card expended from their deck.
+
+#### GM Adjudication Heuristic: When to Check vs. When to Say "Yup"
+
+- **"Success at a Cost" Allows Clean Success:** The intent of our philosophy is that the system introduces complications rather than having the rules say "No"—but the rules are fully allowed to say "Yes."
+- **Borderline Checks:** If a player resolves a task in a single flip, it indicates the task was so straightforward that it was borderline whether you even needed to call for a mechanical check at all versus simply saying "yup" and letting the narrative move forward.
+- **Reserve Checks for Meaningful Friction:** Only call for General Action flips when the task carries real opposition, serious environmental friction, or genuine stakes where drawing multiple cards ($\text{Impact} \ge 2$) threatens to populate both pool slots with actual complications.

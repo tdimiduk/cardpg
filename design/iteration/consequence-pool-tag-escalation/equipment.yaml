@@ -1,5 +1,5 @@
-# caRdPG Armor and Protective Gear (Two-Sided Item Cards)
-# Reference: design/iteration/proposal.md
+# caRdPG Armor, Protective Gear & Domain Table Cards
+# Reference: design/iteration/consequence-pool-tag-escalation/proposal.md
 
 - name: Full Harness
   intact:
@@ -9,9 +9,9 @@
       - armored
       - plate harness
     rules:
-      - passive: Your consequence pool size is 5. An attack with Pierce 4 or greater ignores this passive.
-      - passive: Your consequence pool size is 4. An attack with Pierce 8 or greater ignores this passive.
-      - passive: Your consequence pool size is 3. An attack with Pierce 12 or greater ignores this passive.
+      - passive: Your consequence pool size against physical harm is 5. An attack with Pierce 4 or greater ignores this passive.
+      - passive: Your consequence pool size against physical harm is 4. An attack with Pierce 8 or greater ignores this passive.
+      - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 12 or greater ignores this passive.
       - passive: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
   damaged:
     burden: 3
@@ -20,7 +20,7 @@
       - armored
       - damaged
     rules:
-      - passive: Your consequence pool size is 3.
+      - passive: Your consequence pool size against physical harm is 3.
       - task: Master Smith Repair (Check {Red} 60, Check {Blue} 45; Time 1 week; Requires Forge & Anvil; Cost Raw Steel & Replacement Rivets) -> Flip to Intact side.
 
 - name: Maille Hauberk and Brigandine
@@ -32,8 +32,8 @@
       - war armor
       - maille harness
     rules:
-      - passive: Your consequence pool size is 4. An attack with Pierce 4 or greater ignores this passive.
-      - passive: Your consequence pool size is 3. An attack with Pierce 8 or greater ignores this passive.
+      - passive: Your consequence pool size against physical harm is 4. An attack with Pierce 4 or greater ignores this passive.
+      - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 8 or greater ignores this passive.
       - passive: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
   damaged:
     burden: 2
@@ -42,7 +42,7 @@
       - armored
       - damaged
     rules:
-      - passive: Your consequence pool size is 2.
+      - passive: Your consequence pool size against physical harm is 2.
       - task: Armorer Repair (Check {Red} 45, Check {Yellow} 30; Time 3 days; Requires Repair Tools; Cost Replacement Rings & Leather) -> Flip to Intact side.
 
 - name: Padded Gambeson
@@ -54,7 +54,7 @@
       - light armor
       - textile
     rules:
-      - passive: Your consequence pool size is 3. An attack with Pierce 4 or greater ignores this passive.
+      - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 4 or greater ignores this passive.
       - passive: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
   damaged:
     burden: 1
@@ -63,5 +63,22 @@
       - armored
       - damaged
     rules:
-      - passive: Your consequence pool size is 2.
+      - passive: Your consequence pool size against physical harm is 2.
       - task: Tailor & Patch (Check {Blue} 20, Check {Yellow} 15; Time 2 hours; Requires Sewing Needle; Cost Heavy Thread & Canvas) -> Flip to Intact side.
+
+# ==============================================================================
+# NON-COMBAT & DOMAIN TABLE CARDS (EXAMPLE DOMAIN POOL EXPANSIONS)
+# ==============================================================================
+
+- name: Silver Tongue
+  tags:
+    - Trait
+    - social
+    - rhetoric
+  rules:
+    - passive: Your consequence pool size against social friction and composure attacks is 3.
+    - action: Deflect Faux Pas (Spend {Yellow} 15) -> Suppress an active social condition until the end of the scene.
+  notes: >
+    Example domain table card. In social encounters, characters without relevant skills/standing
+    fall back to base Pool Size 2. 'Silver Tongue' provides an expanded drafting pool (N = 3)
+    allowing the character to soak social missteps or filter out scandal.

@@ -87,15 +87,19 @@ flowchart TD
 
 ## 3. Character Tiers & Pool Size Architecture
 
-An entity's **Consequence Pool Size ($N$)** is determined by their Nature and equipped Armor cards, defining the number of consequence slots the attacker must fill to guarantee harm.
+An entity's **Consequence Pool Size ($N$)** defines the number of consequence slots the attacker must fill to guarantee harm. Pool size is contextual and domain-specific:
+
+- **Armor defines Pool Size against Physical Harm:** Physical armor (gambeson, maille, full plate) increases Pool Size specifically against physical trauma and melee/ranged strikes.
+- **Domain Cards & Relevant Standing:** Table cards and traits define pool sizes for non-physical spheres (e.g., a `Silver Tongue` card gives Pool Size 3 for social debate and composure defense).
+- **Universal Baseline Fallback ($N = 2$):** For any challenge or situation where an entity does not have a specific armor, skill, or table card in play, their Consequence Pool Size defaults to **2**. Minions have an inherent Pool Size of **1** across all domains.
 
 | Archetype / Armor                           | Pool Size ($N$) |          Soak Threshold (Sev 1)          | Pierce Interactions                                          | Tactical Profile                                                                |
 | :------------------------------------------ | :-------------: | :--------------------------------------: | :----------------------------------------------------------- | :------------------------------------------------------------------------------ |
 | **Minions / Mooks**                         |      **1**      |         Instant Hit ($I \ge 1$)          | N/A                                                          | No drafting choice; single slot means every point of Impact buys harm directly. |
-| **Unarmored Heroes / Light Monsters**       |      **2**      | $I \le 1$ ($2\text{ Impact for Sev } 1$) | N/A                                                          | Base heroic drafting choice ($2 \times S$); requires active hand defense.       |
-| **Light Armor (Gambeson / Boiled Leather)** |      **3**      | $I \le 2$ ($3\text{ Impact for Sev } 1$) | Pierce 4 reduces to 2                                        | Reliable frontline baseline; soaks stray blows ($3 \times S$).                  |
-| **War Armor (Maille Hauberk / Brigandine)** |      **4**      | $I \le 3$ ($4\text{ Impact for Sev } 1$) | Pierce 4 reduces to 3; Pierce 8 reduces to 2                 | Heavy battlefield protection; cushions swarms and power strikes ($4 \times S$). |
-| **Full Plate Harness / Giant Monsters**     |      **5**      | $I \le 4$ ($5\text{ Impact for Sev } 1$) | Pierce 4 reduces to 4; Pierce 8 reduces to 3; Pierce 12 to 2 | Walking fortress; immune to diffuse hits; requires tag setup or armor-piercing. |
+| **Universal Baseline / Unarmored**          |      **2**      | $I \le 1$ ($2\text{ Impact for Sev } 1$) | N/A                                                          | Base heroic drafting choice ($2 \times S$); requires active hand defense.       |
+| **Light Armor (Gambeson / Boiled Leather)** |  **3 (Phys)**   | $I \le 2$ ($3\text{ Impact for Sev } 1$) | Pierce 4 reduces to 2                                        | Reliable frontline baseline; soaks stray blows ($3 \times S$).                  |
+| **War Armor (Maille Hauberk / Brigandine)** |  **4 (Phys)**   | $I \le 3$ ($4\text{ Impact for Sev } 1$) | Pierce 4 reduces to 3; Pierce 8 reduces to 2                 | Heavy battlefield protection; cushions swarms and power strikes ($4 \times S$). |
+| **Full Plate Harness / Giant Monsters**     |  **5 (Phys)**   | $I \le 4$ ($5\text{ Impact for Sev } 1$) | Pierce 4 reduces to 4; Pierce 8 reduces to 3; Pierce 12 to 2 | Walking fortress; immune to diffuse hits; requires tag setup or armor-piercing. |
 
 ### Symmetrical Minion Design
 
@@ -138,30 +142,31 @@ General Actions resolve using the exact same core engine without modification:
 1. The GM declares the challenge's **Color** and **Strength** (e.g. Blue 10 to pick a complex lock; Yellow 25 to leap a chasm).
 2. The player flips cards to meet the Strength.
 3. The number of flipped cards equals the **Impact**.
-4. The GM spends the Impact to build a Consequence Pool of the player's Pool Size (usually 2).
-5. The player drafts 1 consequence (representing lost time, broken lockpicks, alerted guards, or muscle strain). Success is guaranteed; the resolution determines the collateral cost.
+4. The GM spends the Impact to build a Consequence Pool of the player's domain Pool Size (fallback 2, or modified by relevant skills/tools).
+5. The player drafts 1 consequence (or "No Consequence" if an empty slot remains).
 
----
+### Single-Card Flips and Clean Success ("Saying Yes")
 
-## 6. Alternative Variant: Per-Attack Resolution
+When a player meets the required Strength with a **single card flip** ($\text{Impact} = 1$):
 
-While **Batched Resolution** is the standard default for Crisis Time, groups or specific modules may use **Per-Attack Resolution**:
+- The GM draws 1 candidate card from the appropriate domain Severity 1 deck.
+- Against the baseline Pool Size ($N = 2$), the second slot is an **implicit "No Consequence" blank**.
+- The player selects "No Consequence," succeeding cleanly with zero complications beyond the single card expended from their deck.
+
+**Design Philosophy Alignment:**
+The core intent of "Success at a Cost" is that the system introduces complications rather than having the rules say "No"—but the rules are fully allowed to say "Yes." Resolving a check with a single card flip represents a character expending a tiny bit of energy to succeed fully without complications. In fact, if a player resolves a task in a single flip, it was borderline whether the GM even needed to call for a check at all versus simply saying "yup" and moving on. Complications are reserved for genuine strain or active opposition ($\text{Impact} \ge N$).
+
+## 6. Multi-Attacker Combat & Curation Leverage
+
+When multiple attackers target the same defender during Crisis Time, their actions resolve through **Batched Round Resolution**:
 
 ### How It Works
 
-- Instead of summing Impact across the round, each attack is resolved sequentially:
-  1. Defender flips for Attack A $\to$ Attacker A builds Pool A $\to$ Defender chooses Consequence A.
-  2. Defender flips for Attack B $\to$ Attacker B builds Pool B $\to$ Defender chooses Consequence B.
-
-### Tradeoff Analysis
-
-- **When to Use Per-Attack Resolution**:
-  - **1v1 Duels**: When exactly one attack occurs per round, Batched and Per-Attack resolution are mathematically identical.
-  - **General Actions**: Solo non-combat challenges resolve as single standalone actions.
-- **Why Batched Resolution is the Primary Standard**:
-  - Eliminates repetitive drafting loops during multi-combatant scuffles.
-  - Prevents high-pool armor from rendering swarms of weaker foes completely harmless (see [trace-4-mob-combat-multi-attacker.md](trace-4-mob-combat-multi-attacker.md)).
-  - Keeps Crisis Time fast-paced, decisive, and climactic.
+1. **Individual Spending:** Each attacker spends their own generated Impact to draw candidate cards into a single combined candidate hand.
+2. **Surplus Curation Leverage:** When multiple attackers hit a target, the combined candidate hand often exceeds the defender's Pool Size ($N$). The attacking side curates down to exactly $N$ cards:
+   - **Tag Synergy Hunting:** Surplus draws dramatically increase the probability of offering a consequence that matches an active condition on the defender, accelerating dangerous tag escalations.
+   - **Filtering Soft Options:** Attackers can discard transient or mild results (e.g., `Near Miss`) and populate the pool exclusively with high-priority, situationally crippling options.
+3. **Deck Attrition as Primary Mob Danger:** Even though the defender only selects one condition from the curated pool, they were forced to flip cards to meet the Strength of every incoming attack. Defending against a swarm of 3–5 foes expends a massive portion of the defender's 24-card deck in a single round, rapidly triggering Fatigue Cycles and pushing them toward Defensive Collapse.
 
 ---
 
