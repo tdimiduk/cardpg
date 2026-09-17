@@ -5,7 +5,6 @@
 # and ideation sketches.
 #
 # Documents here represent unsettled ideas under active exploration.
-# Refer to the root `design/index.yaml` for status definitions (Canon, Leading-Edge, Archived).
 
 active_design_exploration:
   mechanical_constraints:
@@ -15,7 +14,6 @@ active_design_exploration:
       source_type: "local_file"
       purpose: "Authoritative reference for architectural constraints, tabletop ergonomics, and evaluation criteria that any proposed Core Resolution Mechanic must satisfy."
       type: "Design Constraints"
-      status: "Canon"
       tags:
         [
           "doc-type:iteration",
@@ -33,7 +31,6 @@ active_design_exploration:
       source_type: "local_file"
       purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
       type: "Design Exploration Suite"
-      status: "Leading-Edge"
       tags:
         [
           "doc-type:iteration",
@@ -52,6 +49,9 @@ active_design_exploration:
         trace_2: "iteration/consequence-pool-tag-escalation/trace-2-armored-knight-power-strike.md"
         trace_3: "iteration/consequence-pool-tag-escalation/trace-3-tag-escalation-spiral.md"
         trace_4: "iteration/consequence-pool-tag-escalation/trace-4-mob-combat-multi-attacker.md"
+        critique_and_seeds: "iteration/consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md"
+        gm_guide_patch: "iteration/consequence-pool-tag-escalation/gamemaster-guide-patch.md"
+        players_guide_patch: "iteration/consequence-pool-tag-escalation/players-guide-patch.md"
 
     - name: "Resolution Mechanic Exploration"
       id: "iteration-resolution-exploration"
@@ -59,7 +59,6 @@ active_design_exploration:
       source_type: "local_file"
       purpose: "An honest critique of legacy resolution mechanics (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.'"
       type: "Design Exploration"
-      status: "Leading-Edge"
       tags:
         [
           "doc-type:iteration",
@@ -75,7 +74,6 @@ active_design_exploration:
       source_type: "local_file"
       purpose: "Exploration of active defense action mechanics and timing."
       type: "Ideation"
-      status: "Leading-Edge"
       tags:
         [
           "doc-type:ideation",
@@ -91,7 +89,6 @@ active_design_exploration:
       source_type: "local_file"
       purpose: "A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant."
       type: "Design Exploration"
-      status: "Leading-Edge"
       tags:
         [
           "doc-type:iteration",
@@ -107,5 +104,4 @@ active_design_exploration:
       source_type: "local_file"
       purpose: "A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization."
       type: "Ideation"
-      status: "Leading-Edge"
       tags: ["doc-type:ideation", "audience:designer-facing"]

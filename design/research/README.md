@@ -36,7 +36,6 @@ doc_type: "synthesis" # report | synthesis | literature-note | card-database
 track: "verisimilitude" # verisimilitude | ludology
 origin: "Gemini 2.5 Pro" # Tool or human that laid the foundation
 epistemic_status:
-  status: "draft" # draft | reviewed | canon | superseded
   confidence: "medium-low" # speculative | medium-low | medium | high
   audited_by: "Gemini 3.8" # Optional: Set when a newer model reviews/corrects the document
   vetted_by_human: false # false | "Tom Dimiduk (YYYY-MM)"
@@ -49,7 +48,7 @@ related_files:
 ### Document Revision Rules:
 
 - **Living Syntheses (`synthesis/`):** **Update in place.** Never spawn `-v2.md` files or delete living databases, as rules, card registries, and modules link to them directly. When a newer AI model audits or expands a file, update `audited_by` or `origin`, and update `confidence`. Git permanently preserves prior revisions.
-- **Raw Reports (`reports/`):** Treat as immutable point-in-time harvesting runs. If a new deep research query produces superior data, add a new report folder and mark the older report as `Archived` / `superseded_by` in `research/index.yaml`.
+- **Raw Reports (`reports/`):** Treat as immutable point-in-time harvesting runs. If a new deep research query produces superior data, add a new report folder and mark the older report as superseded in `research/index.yaml` or archive tags.
 
 ---
 

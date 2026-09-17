@@ -6,17 +6,18 @@ These standards apply to all AI personas operating within the `cardpg` project.
 
 The `design/index.yaml` is a map of all of the documents in the `design` directory. Start here to figure out what documents you want to look at.
 
-It uses a status system to indicate which documents are how current
-
-- **Archived:** Useful as inspiration and shape, but defer to canon in case of conflicts
-- **Canon:** The generally settled thinking and rules.
-- **Leading-Edge:** New ideas and experiments. These should generally be allowed to suggest adjustments to the Canon documents.
+Active documents in the repository represent current thinking and rules, and are updated directly in place. Historical reference materials and superseded ideas are preserved in the `archive/` directory, marked with index tags, and permanently tracked in Git history.
 
 You should always be looking to keep the index up to date.
 
-## 3. Conflict Resolution
+## 3. Conflict Resolution ("Flag & Investigate")
 
-- **Design vs. Reality:** If a Design Precept conflicts with a Research Report (Reality), the Research wins. Flag the conflict and propose a realistic mechanic.
+- **Design vs. Reality:** If a Design Precept or game mechanic conflicts with research, follow the "Flag & Investigate" protocol:
+  - **Always Flag Conflicts:** Proactively report any tension between research and mechanics.
+  - **Differentiate by Confidence:**
+    - _High Confidence / Human-Vetted:_ Game design must adapt or explicitly justify a conscious stylization (Casual Realism).
+    - _Low Confidence / Unvetted AI Draft:_ Do not ignore the research, but do not break game mechanics to conform to an unverified claim.
+  - **Trigger Investigation:** Propose or dispatch an `EmpiricalResearcher` task to trace primary sources and replace speculative drafts with verified facts.
 - **Index vs. File:** If the files/filesystem conflict with the index, stop and ask for clarification.
 
 ## 4. Agent Transparency

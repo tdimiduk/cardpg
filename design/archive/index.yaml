@@ -2,11 +2,7 @@
 #
 # This file is a sub-index of the `cardpg` project's design landscape,
 # specifically preserving archived playtest content, legacy spreadsheets,
-# and superseded research documents.
-#
-# Status Note:
-# - Archived: Outdated, historical playtest content or superseded research.
-#   DO NOT treat as current rules, but use as design reference or examples.
+# and superseded documents.
 
 archive_and_legacy_materials:
   orientation:
@@ -16,7 +12,6 @@ archive_and_legacy_materials:
       source_type: "local_file"
       purpose: "Orientation and context for the archived playtest content and legacy research."
       type: "Meta Document"
-      status: "Archived"
       tags: ["doc-type:meta", "audience:designer-facing"]
 
   archived_playtest_spreadsheets:
@@ -26,7 +21,6 @@ archive_and_legacy_materials:
       source_type: "google_sheet"
       purpose: "Early playtesting character decks. Useful as few-shot examples for card structure."
       type: "Cards"
-      status: "Archived"
       tags:
         [
           "doc-type:content-library",
@@ -38,27 +32,22 @@ archive_and_legacy_materials:
         - {
             name: "Swashbuckler",
             purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.",
-            status: "Archived",
           }
         - {
             name: "Berserker",
             purpose: "Early playtesting aggressive red. More speculative, we never actually used this.",
-            status: "Archived",
           }
         - {
             name: "Squire",
             purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot.",
-            status: "Archived",
           }
         - {
             name: "Wizard",
             purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date.",
-            status: "Archived",
           }
         - {
             name: "shield-fighter",
             purpose: "Very Early playtesting defensive character.",
-            status: "Archived",
           }
     - name: "Monsters - v 0.0.4"
       id: "gdoc-monsters-v004"
@@ -66,7 +55,6 @@ archive_and_legacy_materials:
       source_type: "google_sheet"
       purpose: "Early playtesting monster decks. Useful as few-shot examples for monster design."
       type: "Cards"
-      status: "Archived"
       tags:
         [
           "doc-type:content-library",
@@ -79,27 +67,22 @@ archive_and_legacy_materials:
         - {
             name: "Monsters",
             purpose: "Early playtesting monster decks. Probably still mostly useful.",
-            status: "Archived",
           }
         - {
             name: "Campaign 2025",
             purpose: "Most recent monsters we have written",
-            status: "Canon",
           }
         - {
             name: "Vin's Monsters",
             purpose: "Early playtesting monster decks. Probably still mostly useful.",
-            status: "Archived",
           }
         - {
             name: "Peter's Monsters",
             purpose: "Early playtesting monster decks. Probably still mostly useful.",
-            status: "Archived",
           }
         - {
             name: "Kid's Campaign Monsters",
             purpose: "Early playtesting monster decks. Probably still mostly useful.",
-            status: "Archived",
           }
     - name: "Kid’s Campaign Characters"
       id: "gdoc-kids-campaign-chars"
@@ -107,7 +90,6 @@ archive_and_legacy_materials:
       source_type: "google_sheet"
       purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
       type: "Cards"
-      status: "Archived"
       tags:
         [
           "doc-type:content-library",
@@ -119,17 +101,14 @@ archive_and_legacy_materials:
         - {
             name: "Vin",
             purpose: "The oldest of the kids with the most complex characters",
-            status: "Archived",
           }
         - {
             name: "Peter",
             purpose: "The middle child with intermediate characters",
-            status: "Archived",
           }
         - {
             name: "Luke",
             purpose: "The youngest of the kids with the simplest characters",
-            status: "Archived",
           }
     - name: "Kids Events"
       id: "gdoc-kids-campaign-events"
@@ -137,26 +116,9 @@ archive_and_legacy_materials:
       source_type: "google_sheet"
       purpose: "Location, Travel and event cards from an early playtest campaign."
       type: "Cards"
-      status: "Archived"
       tags:
         [
           "doc-type:content-library",
           "audience:designer-facing",
           "core-concept:cards",
-        ]
-
-  superseded_research:
-    - name: "Armor Research (Legacy)"
-      id: "synthesis-armor-old"
-      path: "research/synthesis/armor-old.md"
-      source_type: "local_file"
-      purpose: "Early research summary on historical armor. Superseded by research/synthesis/armor.md and research/reports/metabolic-cost-of-armor/."
-      type: "Research Synthesis"
-      status: "Archived"
-      tags:
-        [
-          "doc-type:research-synthesis",
-          "audience:designer-facing",
-          "core-concept:armor",
-          "core-concept:verisimilitude",
         ]

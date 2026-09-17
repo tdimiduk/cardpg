@@ -50,7 +50,6 @@ For each file reported as `[UNINDEXED]`:
     - `name`: A descriptive, human-readable title.
     - `id`: A unique, URL-friendly slug (kebab-case).
     - `path`: The relative path from the `design/` root directory.
-    - `status`: Current lifecycle phase of the design document (typically `"Leading-Edge"` or `"Canon"`).
     - `purpose`: A brief, one-sentence explanation of the document's design role.
     - `tags`: Category labels for quick filtering (e.g., `pillar:combat`, `core-concept:armor`).
 

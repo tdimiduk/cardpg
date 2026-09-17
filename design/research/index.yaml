@@ -4,7 +4,6 @@
 # specifically mapping out empirical research reports, verisimilitude sources,
 # and research syntheses.
 #
-# Refer to the root `design/index.yaml` for status definitions (Canon, Leading-Edge, Archived).
 
 design_process_and_research:
   inspiration_library:
@@ -14,7 +13,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A curated library of media (books, games, films) and their key design lessons."
       type: "Inspiration Library"
-      status: "Canon"
       tags:
         [
           "doc-type:content-library",
@@ -28,7 +26,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A list of historical and scientific sources used to ground the game in casual realism."
       type: "Factual Bedrock"
-      status: "Canon"
       tags:
         [
           "doc-type:content-library",
@@ -40,7 +37,6 @@ design_process_and_research:
     - name: "Battlefield Injury Research"
       id: "report-battlefield-injury"
       type: "Research Report"
-      status: "Canon"
       purpose: "A detailed analysis of pre-modern battlefield trauma, its functional impacts, and progression. Used for designing injury, death, and healing mechanics."
       tags:
         [
@@ -61,7 +57,6 @@ design_process_and_research:
     - name: "Decline Under Physical Hardship"
       id: "report-physical-hardship"
       type: "Research Report"
-      status: "Canon"
       purpose: "A scientific analysis of how real-world injuries and hardship affect the human body, providing a factual basis for the game's consequence and harm mechanics."
       tags:
         [
@@ -82,7 +77,6 @@ design_process_and_research:
     - name: "Catastrophic Trauma Timelines"
       id: "report-catastrophic-trauma"
       type: "Research Report"
-      status: "Canon"
       purpose: "A quantitative analysis of the physiological timelines of death following catastrophic trauma. Provides a factual basis for designing high-severity consequences and 'dying' states with specific, evidence-based timers."
       tags:
         [
@@ -102,7 +96,6 @@ design_process_and_research:
     - name: "The Dynamics of the duel"
       id: "report-dynamics-of-duel"
       type: "Research Report"
-      status: "Canon"
       purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
       tags:
         [
@@ -123,7 +116,6 @@ design_process_and_research:
     - name: "Combat Dynamics Analysis"
       id: "report-combat-dynamics"
       type: "Research Report"
-      status: "Canon"
       purpose: "A detailed tactical and mechanical analysis of pre-modern combat. Note: Its data on armor's metabolic cost and mobility penalties has been superseded by the more detailed 'report-combat-locomotion'."
       tags:
         [
@@ -146,7 +138,6 @@ design_process_and_research:
     - name: "Combat Locomotion Analysis"
       id: "report-combat-locomotion"
       type: "Research Report"
-      status: "Canon"
       purpose: "A detailed biomechanical analysis of pre-modern combat locomotion. Its findings on movement speeds and metabolic costs are the current authority and supersede data in 'report-combat-dynamics'."
       tags:
         [
@@ -167,7 +158,6 @@ design_process_and_research:
     - name: "Combat Action Time Lexicon"
       id: "report-combat-action-time"
       type: "Research Report"
-      status: "Canon"
       purpose: "A quantitative lexicon of the time costs, in seconds, for discrete pre-modern combat actions, including ranged attacks, movement, and weapon handling. Used for designing the game's action economy and the pacing of Crisis Time."
       tags:
         [
@@ -188,7 +178,6 @@ design_process_and_research:
     - name: "Metabolic Cost of Armor"
       id: "report-metabolic-cost-armor"
       type: "Research Report"
-      status: "Canon"
       purpose: "A deep-dive research report on the metabolic and biomechanical costs of wearing replica medieval armor, providing quantitative multipliers for plate and maille."
       tags:
         [
@@ -209,7 +198,6 @@ design_process_and_research:
     - name: "Exertion and Recovery Dynamics"
       id: "report-exertion-recovery"
       type: "Research Report"
-      status: "Canon"
       purpose: "A quantitative analysis of the physiological dynamics of exertion, stress, and multi-stage recovery. Provides a factual basis for designing mechanics related to fatigue, attrition, and the cumulative cost of hardship."
       tags:
         [
@@ -230,7 +218,6 @@ design_process_and_research:
     - name: "Positional Advantage"
       id: "report-positional-advantage"
       type: "Research Report"
-      status: "Canon"
       purpose: "A biomechanical, perceptual, and cognitive analysis of positional advantage in pre-modern melee. Used for designing mechanics related to facing, angular attacks, and multi-combatant engagements."
       tags:
         [
@@ -251,7 +238,6 @@ design_process_and_research:
     - name: "Armor Effectiveness Research"
       id: "report-armor-effectiveness"
       type: "Research Report"
-      status: "Canon"
       purpose: "Research on armor effectiveness against different damage types."
       tags:
         [
@@ -273,7 +259,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A synthesis of research on historical armor, analyzing the fundamental tradeoff between protection and the physiological costs of exertion (metabolic energy, mobility, and fatigue). It provides a factual basis for designing armor mechanics."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -289,7 +274,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A synthesis of research on historical combat locomotion, providing a factual basis for designing mechanics related to tactical movement, positioning, disengagement, and retreats. It also establishes the canonical vocabulary for tactical footwork (e.g., Passing Step, Traverse Step) that should be used in all related designs."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -306,7 +290,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A synthesis of research reports on battlefield injuries and physical hardship, providing a factual basis for designing consequences related to physical harm. It maps real-world conditions to the game's severity levels."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -322,7 +305,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A central hub and calibration guide for the structured, rules-independent databases of physical, cognitive, environmental, and social stress states."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -338,7 +320,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A structured, rules-independent database of physical injuries, tactical disruptions, and combat-related trauma."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -355,7 +336,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A structured, rules-independent database of environmental hazards, travel-related hardship, and wilderness trauma."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -371,7 +351,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A structured, rules-independent database of social fallout, reputational damage, and psychological stress."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -386,7 +365,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A structured, rules-independent database of workplace accidents, industrial hazards, downtime exhaustion, and material strain."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -401,7 +379,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A structured, rules-independent database of magical backdrafts, alchemical toxicity, elemental exposure, and runic failures."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -416,7 +393,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A structured, rules-independent database of equipment wear, transport breakdowns, supply contamination, and pack animal injuries."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -432,7 +408,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A synthesis of research on the functional impact of physical hardship, providing a factual basis for designing consequences related to athletics, survival, and exploration. It maps real-world conditions to the game's severity levels."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -449,7 +424,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -465,7 +439,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "Synthesizes the key findings from 'The Dynamics of the Duel' report into a concise summary of actionable design principles for combat pacing."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -482,7 +455,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A synthesis of research on historical weapon lengths, armor, and fighting styles, providing a factual basis and reference table for modeling a combatant's tactical 'threat bubble' or area of control."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -500,7 +472,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "A consolidated synthesis of research on the timescales of combat, providing reference tables for physiological phases, performance degradation, and the duration of discrete tactical actions (e.g., firing a bow, standing from prone)."
       type: "Research Synthesis"
-      status: "Canon"
       tags:
         [
           "doc-type:research-synthesis",
@@ -518,7 +489,6 @@ design_process_and_research:
       source_type: "local_file"
       purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."
       type: "Literature Note"
-      status: "Leading-Edge"
       tags:
         [
           "doc-type:literature-note",

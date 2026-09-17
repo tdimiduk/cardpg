@@ -9,7 +9,6 @@ source:
   published_date: "2026-09-11"
 origin: "Gemini 3.8 Flash (Antigravity)"
 epistemic_status:
-  status: "draft"
   confidence: "high"
   vetted_by_human: false
   vetting_notes: "Initial analysis linking OSR logistics theory to CardPG card economy and consequence design."

@@ -39,8 +39,10 @@ Source vetting must distinguish between high-quality academic research (e.g., ex
 
 ## 3. Standard Research Artifact Formats
 
-All research outputs must utilize one of three standard formats:
+All research outputs must utilize one of the standard formats:
 
-1. **Research Report (`report.md`):** A clinical, objective, and academic review summarizing raw historical or physiological data with clear source citations.
-2. **Deep Research Prompt (`prompt.md`):** A highly specific, quantitative set of instructions and focus questions designed for harvesting empirical data on a new topic.
-3. **Source Database Entry (`YAML`):** A structured entry under `design/research/` detailing vetted publications with descriptive metadata and rigorous verisimilitude scores.
+1. **Research Report (`report.md`):** A clinical, objective, and academic review summarizing raw historical or physiological data with clear source citations. Stored under `design/research/reports/` as immutable point-in-time harvesting runs.
+2. **Living Research Synthesis (`synthesis/*.md`):** Actionable design frameworks and consequence databases (e.g., `armor.md`, `consequences-combat.md`) translating empirical data into practical gameplay reference tables. Updated in place with epistemic frontmatter.
+3. **Literature Note (`theory/readings/*.md`):** Structural, analytical notes on secondary game design theory essays, post-mortems, and critical analyses (e.g., `exploration-is-logistics.md`), analyzing how external mechanics work and adapting their insights to CardPG's card economy.
+4. **Deep Research Prompt (`prompt.md`):** A highly specific, quantitative set of instructions and focus questions designed for harvesting empirical data on a new topic.
+5. **Source Database Entry (`YAML`):** A structured entry under `design/research/` detailing vetted publications with descriptive metadata and rigorous verisimilitude scores (e.g., `verisimilitude-sources.yaml`) or game design theory touchstones.

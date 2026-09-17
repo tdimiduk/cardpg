@@ -12,7 +12,7 @@ This rule file applies to all agent activities within the `design/` directory an
 
 Always uphold and cross-reference the project's foundational design documents:
 
-1. **Index as Source of Truth:** Check `design/index.yaml` to confirm document statuses (`Canon`, `Leading-Edge`, `Archived`).
+1. **Index as Source of Truth:** Check `design/index.yaml` to navigate the design directory structure. Active documents are authoritative and updated in place; Git history and the `archive/` directory preserve historical context.
 2. **Core Philosophy:** Adhere strictly to `design/philosophy/design-precepts.md`:
    - _Default to Success at a Cost_ (Action outcomes focus on trade-offs rather than flat failure).
    - _Simultaneous Action Resolution_ in Crisis Time.
@@ -20,7 +20,12 @@ Always uphold and cross-reference the project's foundational design documents:
    - _Defender-Centric Resolution_ and _Deck as Life_.
 3. **Design Standards:** Adhere to `.agent/standards/systems_design_standards.md`.
 4. **Empirical Research Standards:** Adhere to `.agent/standards/empirical_research_standards.md` (Focus on quantifiable forces, metabolic costs, trauma timelines, and tangible materiality; reject subjective trivia/gamified tropes).
-5. **Conflict Resolution:** If a Design Precept conflicts with empirical research data, flag the conflict and ground the mechanic in reality.
+5. **Conflict Resolution ("Flag & Investigate"):**
+   - **Always Flag Conflicts:** When an agent notices a tension between research and a design precept or game mechanic, proactively report it.
+   - **Differentiate by Confidence:**
+     - _High Confidence / Human-Vetted:_ Game design must adapt or explicitly justify a conscious stylization (Casual Realism).
+     - _Low Confidence / Unvetted AI Draft:_ Do not ignore the research, but do not break game mechanics to conform to an unverified claim.
+   - **Trigger Investigation:** Propose or dispatch an `EmpiricalResearcher` task to trace primary sources and replace speculative drafts with verified facts.
 
 ## 3. Delegation to Subagents
 
