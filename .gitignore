@@ -43,6 +43,7 @@ tmp/
 build
 htmlcov
 design/export/vtt/*.json
+design/research/sources/
 
 # --- VTT (React) ---
 logs

@@ -255,7 +255,14 @@
               pkgs.git
               pkgs.rsync
               pkgs.openssh
-              pkgs.python3 # for run-client http server
+              (pkgs.python3.withPackages (ps: [
+                ps.pypdf
+                ps.beautifulsoup4
+                ps.trafilatura
+                ps.pyyaml
+              ])) # for run-client http server and research document extraction
+              pkgs.poppler-utils
+              pkgs.jq
               pkgs.ghciwatch
               pkgs.caddy
               pkgs.postgresql

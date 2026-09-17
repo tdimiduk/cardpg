@@ -165,7 +165,7 @@ def load_all_index_data(root_dir, index_path, loaded_paths=None, entries_by_path
 
 def get_repo_files(root_dir):
     files = set()
-    skip_dirs = {".git", ".gemini", "node_modules", "__pycache__"}
+    skip_dirs = {".git", ".gemini", "node_modules", "__pycache__", "sources"}
 
     for root, dirs, filenames in os.walk(root_dir):
         dirs[:] = [d for d in dirs if d not in skip_dirs]
