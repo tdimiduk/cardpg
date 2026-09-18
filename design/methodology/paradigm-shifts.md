@@ -41,6 +41,15 @@ The core resolution engine must resolve physical combat, courtroom debates, trea
 
 In Crisis Time, all participants plan and resolve actions simultaneously. The rules must cleanly resolve incoming attacks against characters who choose to rest, hoard cards, take cover, or hold reactive defenses without requiring ad-hoc edge cases. Hand hoarding is balanced naturally by the systemic risk of **Defensive Collapse** (a depleted draw pile rapidly chaining Fatigue Cycles), not by artificial hand-size caps.
 
+### DO NOT assume numerical advancement causes d20-style "level bloat" (Scale Invariance vs. Disjointed Math).
+
+Designers arriving from mainstream d20 systems often carry a justified suspicion of vertical progression. In d20 systems, vertical escalation frequently causes severe mechanical and ludonarrative breakdown because separate mathematical subsystems scale unevenly: hit point pools inflate by 20x to 30x while defenses and saving throws scale far more slowly, transforming high-level combat into protracted damage-sponge attrition slogs that shatter table pacing.
+
+In _caRdPG_, character advancement **explicitly embraces the numerical scaling of cards**. When characters grow in power, the numerical values on their cards increase, their defense thresholds improve, and they tackle higher-magnitude challenges. Crucially, this does not cause d20-style bloat because the core engine is mathematically **scale-invariant**:
+
+- **Proportional Card-Flip Pacing:** Incoming attack `Strength` is met by flipping cards until the required value is matched, with `Impact` measured directly as the _number of cards flipped_. Because card values scale alongside challenge strengths, a low-level duel (`Strength 8` met by single-digit cards of values 2–3) and an epic clash (`Strength 80` met by double-digit cards of values 20–30) both flip approximately 3 cards. Combat rounds remain equally fast, decisive, and tactile across all numerical tiers.
+- **Fractal Entity Modeling (Macro-Scale Decks):** The card engine is agnostic to physical scale. A deck is not limited to an individual human; it can represent an individual scoundrel, an elite unit, an entire army, a fortified province, or a kingdom. Giant numbers on macro-scale cards represent the coordinated efforts, pooled manpower, and systemic endurance of thousands of individuals. This allows mass warfare, siege logistics, and realm-level intrigue to be resolved seamlessly using the exact same Crisis Time and General Action procedures as a tavern brawl, without bolting on separate, clunky mass-combat subsystems.
+
 ---
 
 ## Related Documents

@@ -18,6 +18,7 @@ Always uphold and cross-reference the project's foundational design documents:
    - _Simultaneous Action Resolution_ in Crisis Time.
    - _10x Rule of Core Complexity_ (Keep core rules minimal; place nuance on modular cards).
    - _Defender-Centric Resolution_ and _Deck as Life_.
+   - _Scale Invariance & Multi-Scale Scope_ (Core mechanics function identically from single to triple digits; advancement scales cards numerically; decks can model macro entities like armies or kingdoms).
 3. **Design Standards:** Adhere to `.agent/standards/systems_design_standards.md`.
 4. **Empirical Research Standards:** Adhere to `.agent/standards/empirical_research_standards.md` (Focus on quantifiable forces, metabolic costs, trauma timelines, and tangible materiality; reject subjective trivia/gamified tropes).
 5. **Conflict Resolution ("Flag & Investigate"):**

@@ -69,6 +69,12 @@ When our research describes a defense as "Functionally Immune," this is modeled 
 
 **Rationale:** This directly supports our **Casual Realism** and **Fun** principles. It ensures that player attention stays focused on dramatic tactical choices and narrative stakes rather than mental arithmetic and procedural bookkeeping.
 
+### Ensure Scale Invariance of Core Mechanics
+
+**Core Principle:** The core engine procedures—calculating action `Strength`, meeting difficulty by flipping cards, determining `Impact` from card counts, and mapping `Impact` against `Defense` and `Resilience`—must remain mathematically sound, intuitive, and computationally lightweight whether card values are in the single digits, double digits, or triple digits. Never introduce formulas, caps, or resolution steps that assume card values will always remain in single digits.
+
+**Rationale:** The game is architected to be scale-invariant. This supports character advancement (as heroes upgrade card numbers over a campaign) as well as macro-scale resolution (where decks represent collective entities like armies, provinces, or kingdoms). Because `Impact` is measured by the _count_ of cards flipped rather than a subtracted numerical remainder, proportional scaling between attack strength and card values keeps resolution equally fast and tactile across any scale.
+
 ---
 
 ## Content & Experience Design
@@ -91,9 +97,9 @@ These precepts guide the design of player-facing content like cards, consequence
 
 ### Design Advancement and Archetypes for Tangibility
 
-**Core Principle:** Character advancement should provide tangible, exciting new tools, not just abstract numerical improvements. Core character fantasies should be supported by specific, active mechanics, not just passive stats.
+**Core Principle:** Character advancement is driven by **numerical scaling of cards** (upgrading color values, defensive ratings, and action modifiers) paired with tangible, exciting new tools (unique stances, tactical keywords, and specialized action cards). Core character fantasies should be supported by specific, active mechanics rather than _exclusively_ dry, unflavored stats, but numerical growth on cards is a fundamental and intended engine of progression.
 
-**Rationale:** This makes advancement feel more meaningful and reinforces the `Grounded Heroism` principle by rewarding players with new, dramatic capabilities.
+**Rationale:** This makes advancement feel both mechanically impactful and narratively meaningful. Upgrading card values allows characters to tackle higher-strength challenges and absorb heavier impacts within the universal card economy, while distinct card identities ensure higher-tier play feels mechanically rich rather than like an abstract math treadmill.
 
 ### Enforce Action on Zero-Value Cards
 

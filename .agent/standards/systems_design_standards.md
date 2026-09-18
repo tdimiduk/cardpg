@@ -41,6 +41,11 @@ All mechanics must adhere to the following architectural patterns. Deviations ar
   - **Hidden Info:** Shuffled decks require identical card backs.
   - **Tracking Overhead:** No complex token tracking. Avoid tracking more than 3 ongoing status tokens per player/NPC.
 
+### F. Scale-Invariance & Multi-Scale Resolution
+
+- **Definition:** Core resolution procedures (action `Strength`, defensive flips, `Impact` counting, `Defense`, and `Resilience`) must function identically across numerical orders of magnitude (single digits to triple digits).
+- **Goal:** Support character advancement through numerical card upgrades without disrupting combat speed or table math, while enabling fractal modeling of macro-scale entities (armies, fortified provinces, kingdoms) using the exact same deck engine.
+
 ---
 
 ## 3. Key References
