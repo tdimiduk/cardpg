@@ -389,3 +389,62 @@ modeling_logistics_transport_materials:
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
           summary: "Rigorous metallurgical data establishing electrochemical oxidation rates, humidity thresholds for rust film formation, and mechanical seizure dynamics of ferrous gear."
+    - type: extension_bulletin
+      title: "Horse Hoof Abscesses: Causes, Signs and Treatment"
+      author: "Martinson, K."
+      year: 2023
+      doi_or_url: "https://extension.umn.edu/horse-health/horse-hoof-abscesses"
+      local_archive: "sources/verisimilitude/umn-extension-2023-horse-hoof-abscesses.md"
+      epistemic_grade: "primary_academic"
+      publication: "University of Minnesota Extension"
+      description: >
+        Clinical veterinary extension guide on equine subsolar pododermatitis (hoof abscesses). Details anaerobic bacterial infiltration through the water-softened white line during prolonged wet terrain traversal, pressure build-up within the rigid keratin hoof capsule, acute non-weight-bearing lameness, surgical paring for ventral drainage, antiseptic poulticing, and the 7–14 day clinical recovery curve.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative clinical reference on equine foot pathology, environmental softening factors, and treatment/drainage timelines for pack beasts."
+    - type: extension_bulletin
+      title: "Aspergillus Ear Rot (BP-83-W)"
+      author: "Woloshuk, C., & Wise, K."
+      year: 2010
+      doi_or_url: "https://www.extension.purdue.edu/extmedia/bp/bp-83-w.pdf"
+      local_archive: "sources/verisimilitude/woloshuk-2010-purdue-aspergillus-ear-rot.pdf"
+      epistemic_grade: "primary_academic"
+      publication: "Purdue University Extension"
+      description: >
+        Agricultural post-harvest pathology bulletin documenting fungal colonization (Aspergillus flavus) and aflatoxin mycotoxin accumulation in stored feed grain. Details how moisture levels exceeding 15% in storage trigger rapid toxin production, organ damage, immunosuppression, and feed refusal in livestock, establishing critical grain drying thresholds (<15% moisture) to halt mold growth.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous extension research establishing safe grain storage moisture thresholds, mycotoxin toxicogenesis in livestock feeds, and storage mitigation methods."
+    - type: historical_manual
+      title: "The Wheelwright's Shop"
+      author: "Sturt, G."
+      year: 1923
+      doi_or_url: "https://archive.org/details/wheelwrightsshop00stur"
+      local_archive: "sources/verisimilitude/sturt-1923-the-wheelwrights-shop.pdf"
+      epistemic_grade: "historical_manual"
+      description: >
+        Foundational technical treatise on the engineering, timber mechanics, and repair of traditional horse-drawn wagons and carriages. Details bottom-timber structural dynamics, selection of seasoned hardwood (beech, ash, oak) for axle-beds and axle-trees to resist vertical shear and dynamic bending moments from rut shock, iron axle-tree bedding, and traditional wheelwright replacement methods.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive historical treatise on carriage axle wood mechanics, shock loading failure modes, and field-to-workshop replacement protocols."
+    - type: extension_bulletin
+      title: "Cyanobacteria Poisoning (Blue-Green Algae)"
+      author: "Meehan, M., Stokka, G., & Mostrom, M."
+      year: 2021
+      doi_or_url: "https://www.ndsu.edu/agriculture/extension/publications/cyanobacteria-poisoning-blue-green-algae"
+      local_archive: "sources/verisimilitude/ndsu-extension-2021-cyanobacteria-poisoning.md"
+      epistemic_grade: "primary_academic"
+      publication: "North Dakota State University Extension"
+      description: >
+        Veterinary toxicology bulletin detailing acute livestock poisoning from cyanobacterial blooms (Microcystis, Anabaena, Dolichospermum) in stagnant water bodies. Quantifies lethal doses (as little as 1 quart / ~1 liter of wind-concentrated surface scum fatal to large livestock), rapid neurotoxicity onset within 5–20 minutes (tremors, ataxia, respiratory arrest), acute hepatotoxicity (intrahepatic hemorrhage, liver failure within hours/days), and high mortality rates.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative toxicological data on cyanotoxin lethality curves, environmental concentration dynamics, and emergency treatment protocols for watering animals."
