@@ -513,7 +513,10 @@
     Escalation: Any subsequent cranial impact collapses the nervous system into Unconscious (Traumatic Coma) (Tier 4).
 
 # ==============================================================================
-# TIER 4: TAKEN OUT, UNCONSCIOUSNESS, MORTAL PERIL & DEFEAT (Cost: 4 Impact)
+# TIER 4: TAKEN OUT / DEFEAT (Cost: 4 Impact)
+# In baseline core rules, Tier 4 is resolved as Narrative Taken Out (slain,
+# unconscious, pinned/captured, or 3-round hemostasis clock). The prototype cards
+# below are exploratory reference states for optional high-stakes PC trauma/care.
 # ==============================================================================
 
 - name: Unconscious (Traumatic Coma)

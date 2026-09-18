@@ -22,13 +22,17 @@ When your attack forces an opponent to flip cards from their deck, each card fli
 A critical tactical decision is how to spend your Impact when you generate a high number (such as 3, 4, or 5 Impact):
 
 - **The High-Ceiling Strike (Concentrated Severity)**:
-  - _Example_: Spending 5 Impact to draw a single **Severity 5** card (`Unconscious`, `Mortal Bleedout`).
+  - _Example_: Spending 4 Impact to allocate a single **Severity 4 Narrative Defeat** candidate.
   - _Tactical Value_: Enormous if the defender's pool is small or already filled by allies. However, against an armored defender with Pool Size $N = 3$ or higher, drawing only one card leaves the remaining slots implicitly filled with **"No Consequence"**—allowing the defender to simply ignore the blow!
 - **Pool Saturation (Guaranteed Floor)**:
   - _Example_: An attacker who generated 4 Impact against an armored foe ($N = 3$) chooses to spend it as **$2 + 2$** (two Severity 2 cards) rather than a single Severity 4.
   - _Tactical Value_: When combined with an ally's 1-Impact attack (drawing a Severity 1 card), the candidate pool now contains `{Sev 2, Sev 2, Sev 1}`. All 3 slots of the armor are filled. The defender cannot pick "No Consequence" and is forced to accept at least a tactical impairment.
 
-### Intra-Tier Curation: Filtering Out the Easy Outs
+### Intra-Tier Curation: The Tapering Funnel
+
+The way you curate candidate cards changes dramatically across tiers:
+
+#### Tier 1: Filtering Out the Easy Outs
 
 Within **Tier 1 (Tactical Impairments & Setbacks)**, cards feature an intentional **dynamic range**:
 
@@ -47,6 +51,21 @@ Within **Tier 1 (Tactical Impairments & Setbacks)**, cards feature an intentiona
 When attackers generate surplus Impact above the defender's pool size ($N$), they produce **surplus candidate cards** (e.g., generating 5 Impact against $N = 3$ draws five Tier 1 cards).
 
 > **The Power of the Cut:** Having surplus draws allows the attacking team to **curate away the softer, clearable options** (like `Poor Footing` or `Winded`) and populate the pool exclusively with the most punishing, situationally crippling options (`Off Balance`, `Afraid`, `Rattled Guard`).
+
+#### Tier 2: Platform Takedown vs. Biological Attrition
+
+At Tier 2, there are no "soft outs." Your choice is operational:
+
+- Do you offer **`Knocked Prone`** (doubling incoming Pierce to set up an ally's killing strike)?
+- Or do you offer **`Cracked Ribs`** or **`Mild Concussion`** (permanent stamina/hand taxes that weaken them for the rest of the fight)?
+
+#### Tier 3: Orthogonal Pillar Collapse
+
+At Tier 3, curate candidates specifically to dismantle the opponent's core archetype:
+
+- Against heavy frontliners $\to$ force **`Broken Arm`** (cannot wield two-handed weapons) or **`Sundered Armor`** (strips pool size).
+- Against spellcasters or commanders $\to$ force **`Severe Concussion`** (caps hand size at 3).
+- Against defensive tanks $\to$ force **`Arterial Hemorrhage`** (blood loss timer).
 
 #### Defensive Hand Strategy: Curation Denial
 
