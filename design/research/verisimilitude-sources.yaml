@@ -448,3 +448,122 @@ modeling_logistics_transport_materials:
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
           summary: "Authoritative toxicological data on cyanotoxin lethality curves, environmental concentration dynamics, and emergency treatment protocols for watering animals."
+---
+modeling_crafting_materials_metallurgy:
+  description: >
+    Empirical literature supporting historical metallurgy, workshop hazards, thermal trauma, toxic chemical exposure, and repetitive craft strain.
+  sources:
+    - type: clinical_chapter
+      title: "Acute and Chronic Thermal Burn Evaluation and Management"
+      author: "Walker, N. J., & King, K. C."
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430730/"
+      local_archive: "sources/verisimilitude/walker-2023-thermal-burn-evaluation-management.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical emergency guide on thermal burn pathophysiological evaluation, tri-zonal tissue destruction (coagulation, stasis, hyperemia), Parkland/Brooke fluid resuscitation, and re-epithelialization timelines across superficial partial-thickness (10-15 days), deep partial-thickness (3-5 weeks), and full-thickness third-degree burns requiring surgical debridement and grafting.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive clinical reference for depth-specific thermal burn trauma, wound healing timelines, and hypertrophic scar contracture mechanics."
+    - type: journal_article
+      title: "Friction Blisters: A New Paradigm to Explain Causation"
+      author: "Rushton, R., & Richie, D."
+      year: 2024
+      doi_or_url: "https://doi.org/10.4085/1062-6050-0437.22"
+      local_archive: "sources/verisimilitude/rushton-2024-friction-blister-causation.md"
+      epistemic_grade: "primary_academic"
+      publication: "Journal of Athletic Training"
+      description: >
+        Biomechanics study establishing that friction blisters are caused by repetitive shear deformation rather than superficial rubbing. Quantifies intraepidermal tear thresholds in the stratum spinosum and the 2-hour fluid accumulation timeline, establishing rapid clearing curves upon shear cessation and offloading.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Modern biomechanical analysis of shear strain and epidermal cleavage dynamics under repetitive manual friction."
+    - type: clinical_chapter
+      title: "Physiology, Wound Healing"
+      author: "Ozgok Kangal, M. K., & Regan, N. L."
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK535406/"
+      local_archive: "sources/verisimilitude/ozgok-kangal-2023-physiology-wound-healing.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Comprehensive clinical physiology treatise on the four overlapping phases of cutaneous wound repair: hemostasis (minutes), inflammation (neutrophils and macrophages at 24-48h), proliferation (keratinocyte migration and granulation at 3-10 days), and remodeling. Defines re-epithelialization timelines (3-5 days for superficial wounds) and prolonged tensile scar strength recovery.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Essential physiology reference on cellular repair cascades, hemostatic clotting, and dermal re-epithelialization rates."
+    - type: government_report
+      title: "Musculoskeletal Disorders and Workplace Factors: A Critical Review of Epidemiologic Evidence for Work-Related Musculoskeletal Disorders of the Neck, Upper Extremity, and Low Back (NIOSH Pub. 97-141)"
+      author: "Bernard, B. P. (Ed.)"
+      year: 1997
+      doi_or_url: "https://stacks.cdc.gov/view/cdc/21745"
+      local_archive: "sources/verisimilitude/bernard-1997-niosh-musculoskeletal-disorders.pdf"
+      epistemic_grade: "primary_academic"
+      description: >
+        Landmark NIOSH epidemiological synthesis on occupational musculoskeletal disorders. Establishes significant causal association (OR 2.0-5.5) between high repetition, forceful exertion, and vibratory recoil on wrist/hand tendinitis, tenosynovitis, and carpal tunnel syndrome in manual and metallurgy trades, requiring multi-week immobilization.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Foundational occupational ergonomics standard for cumulative trauma disorders, tendon sheath inflammation, and rest recovery."
+    - type: journal_article
+      title: "Comprehensive analysis of hazard of ultraviolet radiation emitted during arc welding of cast iron"
+      author: "Takahashi, J., Kabayama, M., & Shimizu, N."
+      year: 2020
+      doi_or_url: "https://doi.org/10.1002/1348-9585.12102"
+      local_archive: "sources/verisimilitude/takahashi-2020-arc-welding-uv-hazard.md"
+      epistemic_grade: "primary_academic"
+      publication: "Journal of Occupational Health"
+      description: >
+        Occupational health study measuring ultraviolet irradiance emitted during metal arc welding processes (GTAW, SMAW, GMAW). Demonstrates effective UV irradiance between 0.045 and 2.2 mW/cm2 at 500 mm, causing ACGIH daily exposure thresholds (3 mJ/cm2 at 270 nm) to be exceeded in 1.4 to 67 seconds, precipitating acute photokeratitis ('arc eye') with 6-12h latency and 24-72h recovery.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous optical and occupational dosimetry data establishing rapid UV threshold exceedance and corneal desquamation kinetics."
+    - type: clinical_chapter
+      title: "Metal Fume Fever"
+      author: "Brenner, B. E., & Keyes, D."
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK583199/"
+      local_archive: "sources/verisimilitude/statpearls-2023-metal-fume-fever.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical toxicological review on metal fume fever and smelting fume inhalation. Details alveolar deposition of ultrafine metal oxide fumes (zinc oxide, copper, lead, iron), pyrogenic cytokine activation (TNF-alpha peak at 3 hours, IL-6, IL-8), latency of 4-10 hours, substernal tightness, metallic taste, rigors, and resolution in 24-48 hours with fresh air and rest.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative clinical reference on metal oxide aerosol inhalation pathophysiology, cytokine fevers, and recovery kinetics."
+    - type: clinical_chapter
+      title: "Digit Amputation"
+      author: "Frazier, W. D., & Miller, M."
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK538153/"
+      local_archive: "sources/verisimilitude/statpearls-2023-digit-amputation.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical hand surgery treatise on traumatic digit amputation, warm ischemia tolerances (12 hours digit warm ischemia; 6 hours for proximal muscular tissue), emergency hemostasis, bone contouring/shortening, and primary flap closure of traumatic finger amputations, detailing multi-week bone and scar union timelines.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Comprehensive clinical surgery benchmark on digital trauma, stump closure, ischemic timelines, and long-term functional deficit."
+    - type: clinical_chapter
+      title: "Blast Injuries"
+      author: "Garner, J., et al."
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430914/"
+      local_archive: "sources/verisimilitude/statpearls-2023-blast-injuries.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical emergency trauma guide on explosion mechanics and injury categorization: primary (shockwave overpressure barotrauma to air-filled organs including lungs and tympanic membranes), secondary (penetrating shrapnel and projectiles), tertiary (physical blunt displacement), and quaternary (thermal flash burns, chemical inhalation). Details high-pressure blast lung disruption, pneumothorax, and critical resuscitation.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive clinical resource for explosive shockwave trauma mechanisms, barotrauma pressure thresholds, and emergency stabilization."
