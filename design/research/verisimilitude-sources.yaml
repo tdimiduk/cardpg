@@ -121,6 +121,35 @@ modeling_armor_weapons_combat:
             type: "AI-Assisted Initial Vetting"
             author: "Chronicler & Artificer"
             summary: "Source is the definitive online repository for primary HEMA sources, managed by the reputable HEMA Alliance. Highly recommended as a foundational research tool."
+    biomechanics_and_trauma:
+      - type: governmental_standard
+        title: "Criteria for a Recommended Standard: Occupational Noise Exposure"
+        author: "CDC / NIOSH"
+        year: 1998
+        doi_or_url: "https://stacks.cdc.gov/view/cdc/5923/cdc_5923_DS1.pdf"
+        local_archive: "sources/verisimilitude/niosh-1998-occupational-noise-exposure-criteria.pdf"
+        epistemic_grade: "governmental_standard"
+        description: >
+          Definitive federal standard on acute and chronic acoustic trauma. Details how near-field blast overpressure and impulse impacts exceeding 140 dB SPL cause mechanical shearing of cochlear stereocilia and metabolic hair cell exhaustion, inducing acute temporary threshold shifts (TTS) and subjective tinnitus resolving over 24–72 hours.
+        vetting:
+          - date: "2026-09-17"
+            type: "empirical literature verification"
+            author: "Gemini 3.8 Flash (Antigravity)"
+            summary: "Authoritative federal acoustic trauma standard establishing decibel thresholds for stereocilia damage and acute tinnitus duration."
+      - type: clinical_chapter
+        title: "Cervical Acceleration-Deceleration (Whiplash) Injury"
+        author: "Panjabi, M. M., et al. / StatPearls"
+        year: 2023
+        doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK546644/"
+        local_archive: "sources/verisimilitude/statpearls-2023-cervical-whiplash-biomechanics.md"
+        epistemic_grade: "clinical_dataset"
+        description: >
+          Clinical biomechanics chapter on cervical acceleration-deceleration trauma resulting from rapid blunt impacts to helmets or shields. Quantifies mechanical strain on cervical facet capsular ligaments, myofascial micro-tears in sternocleidomastoid and trapezius, delayed muscle spasms peaking at 12–24 hours, and 3–6 week functional recovery curves.
+        vetting:
+          - date: "2026-09-17"
+            type: "empirical literature verification"
+            author: "Gemini 3.8 Flash (Antigravity)"
+            summary: "Definitive clinical and biomechanical treatise on cervical whiplash kinematic injury, delayed spasm onset, and progressive recovery."
 ---
 modeling_physical_costs_of_effort:
   description: >
