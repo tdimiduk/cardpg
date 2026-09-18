@@ -327,3 +327,65 @@ foundational_scientific_medical:
       publication: "Brill"
       description: >
         An essential text on the material science of historical armor. It provides the quantitative data (in joules) on the energy required to penetrate different types of armor, confirming that sword cuts are physically incapable of defeating steel plate and providing a factual basis for the game's weapon vs. armor interaction model.
+---
+modeling_logistics_transport_materials:
+  description: >
+    Empirical, agricultural, historical, and veterinary literature supporting logistics, transport, material degradation, and animal husbandry.
+  sources:
+    - type: historical_manual
+      title: "Harness Making"
+      author: "Hasluck, P. N."
+      year: 1904
+      doi_or_url: "https://archive.org/details/harnessmaking00hasl"
+      local_archive: "sources/verisimilitude/hasluck-1904-harness-making.pdf"
+      epistemic_grade: "historical_manual"
+      description: >
+        Comprehensive historical craft treatise detailing harness makers' tools, leather tensile preparation, buckle tongues, oval punches, stitching techniques, and field repair methods for draft and pack harness straps under cyclic load.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative historical reference on leather strap failure points, buckle tear stress, and field stitching/repair timelines for working harness."
+    - type: government_report
+      title: "Water Activity (aw) in Foods"
+      author: "Food and Drug Administration (FDA)"
+      year: 1984
+      doi_or_url: "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/inspection-technical-guides/water-activity-aw-foods"
+      local_archive: "sources/verisimilitude/fda-1984-water-activity-in-foods.md"
+      epistemic_grade: "primary_academic"
+      description: >
+        Technical inspection guide defining sorption isotherms, water activity measurement (a_w = ERH/100), and microbial proliferation thresholds. Establishes a_w >= 0.70 as the critical activation boundary for xerophilic molds (Aspergillus, Penicillium) and a_w >= 0.85 for rapid bacterial and low-acid food spoilage.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive physical science baseline for moisture-driven food degradation, sorption curves, and fungal germination limits on dry rations."
+    - type: historical_manual
+      title: "A Treatise on Ropemaking as Practised in Public and Private Rope-Yards"
+      author: "Chapman, R."
+      year: 1868
+      doi_or_url: "https://library.si.edu/digital-library/book/treatiseonropema00chap"
+      local_archive: "sources/verisimilitude/chapman-1868-treatise-on-ropemaking.pdf"
+      epistemic_grade: "historical_manual"
+      description: >
+        Master ropemaker's technical manual providing quantitative breaking strain formulas, weight tables, and friction wear dynamics for natural hemp (Cannabis sativa) cordage, shroud hawsers, and animal draft tethers, detailing fiber fatigue and splicing recovery methods.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Historical engineering benchmark documenting tensile failure curves, tarring effects, and structural strand unlaying under cyclic livestock traction."
+    - type: journal_article
+      title: "Marine Atmospheric Corrosion of Carbon Steel: A Review"
+      author: "Alcántara, J., de la Fuente, D., Chico, B., Simancas, J., Díaz, I., & Morcillo, M."
+      year: 2017
+      doi_or_url: "https://doi.org/10.3390/ma10040406"
+      local_archive: "sources/verisimilitude/alcantara-2017-marine-atmospheric-corrosion-carbon-steel.md"
+      epistemic_grade: "primary_academic"
+      publication: "Materials"
+      description: >
+        Comprehensive review of atmospheric corrosion mechanisms for carbon steel and ferrous alloys under varying relative humidity (critical RH 60–80%) and chloride deposition. Details rust phase formation (lepidocrocite, goethite, akaganeite), 4–6x rust volumetric expansion leading to mechanical hinge/pin seizure, and penetration rates ranging from 10–25 um/year inland to >200 um/year in marine environments.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous metallurgical data establishing electrochemical oxidation rates, humidity thresholds for rust film formation, and mechanical seizure dynamics of ferrous gear."
