@@ -46,3 +46,44 @@ All research outputs must utilize one of the standard formats:
 3. **Literature Note (`theory/readings/*.md`):** Structural, analytical notes on secondary game design theory essays, post-mortems, and critical analyses (e.g., `exploration-is-logistics.md`), analyzing how external mechanics work and adapting their insights to CardPG's card economy.
 4. **Deep Research Prompt (`prompt.md`):** A highly specific, quantitative set of instructions and focus questions designed for harvesting empirical data on a new topic.
 5. **Source Database Entry (`YAML`):** A structured entry under `design/research/` detailing vetted publications with descriptive metadata and rigorous verisimilitude scores (e.g., `verisimilitude-sources.yaml`) or game design theory touchstones.
+
+---
+
+## 4. Literature Sourcing, Ingestion Hierarchy & Human Escalation
+
+When seeking empirical grounding for consequences, mechanisms, and physiological thresholds, researchers and AI agents must follow this verified retrieval hierarchy to maximize access while avoiding CLI bot-detection blocks:
+
+### A. Automated Ingestion Hierarchy (Open-Access Tiers)
+
+1. **Internet Archive (`archive.org`):**
+   - Direct PDF curl: `curl -sL "https://archive.org/download/<id>/<id>.pdf" -o ...`
+   - Unchallenged public-domain access for historical craft treatises, early engineering manuals, and legal history (e.g., Pollock & Maitland).
+2. **University Agricultural & Veterinary Extension Bulletins:**
+   - Bulletins from land-grant universities (Purdue, UMN, NDSU, TAMU, Penn State, Iowa State) are open access and easily ingested via `curl` (PDF) or `trafilatura -u` (HTML).
+   - Ideal for toxicology, crop/grain pathology, feed spoilage, and animal husbandry.
+3. **Federal Repositories & Government Standards (CDC Stacks, FDA, USDA ARS, NIOSH, OSHA):**
+   - CDC Stacks (`stacks.cdc.gov`) provides direct PDF downloads of NIOSH occupational health monographs (e.g., NIOSH Pub. 97-141).
+   - FDA and USDA technical inspection guides extract cleanly via `trafilatura -u`.
+4. **NCBI Bookshelf (StatPearls & NLM Books):**
+   - Extract full-text clinical modules via `trafilatura -u "https://www.ncbi.nlm.nih.gov/books/NBK<ID>/"`.
+   - Comprehensive for clinical wound healing, thermal burns, amputation stump closure, psychiatric emergency panic management, and ocular photokeratitis.
+5. **PubMed Central (PMC):**
+   - Extract full-text open-access studies and reviews via `trafilatura -u "https://pmc.ncbi.nlm.nih.gov/articles/PMC<ID>/"`.
+   - **Crucial Rule:** Never attempt to curl binary PDFs from PMC directly via CLI, as PMC redirects binary PDF requests to an HTML splash/challenge page.
+
+### B. Anti-Patterns & Gate Avoidance
+- **Never curl commercial academic publishers directly:** Elsevier (ScienceDirect), SpringerLink, Wiley, MDPI, and Taylor & Francis actively block automated CLI user-agents (`curl`, `urllib`, `requests`) with HTTP 403 or Cloudflare/Akamai bot challenges.
+- **Do not burn tokens looping on blocked CLI requests:** If a direct curl fails with a 403 or CAPTCHA, switch immediately to an open-access equivalent or invoke the human escalation protocol.
+
+### C. Human-in-the-Loop Sourcing Escalation Protocol
+
+Agents are fully empowered to request human assistance when acquiring vital research documents, following these boundaries:
+
+1. **Web UI Access (Gate / CAPTCHA Bypass):**
+   - If a specific, high-value document is public or open-access but guarded by an interactive web UI gate (e.g., Cloudflare verification, interactive CAPTCHA, or complex download forms that defeat CLI tools), **the agent should ask the human to download the file**.
+   - The human can retrieve the file via a desktop browser and place it directly into `design/research/sources/verisimilitude/` (or `ludology/`).
+   - *Scale Guideline:* This is intended for specific, targeted documents that unlock key empirical verifications—not for bulk harvesting hundreds of files.
+2. **Institutional Library Access (Paywall Retrieval — Last Resort):**
+   - The human has institutional library access that can penetrate academic paywalls.
+   - *Constraint:* Because library retrieval is manual and high-friction, it is strictly a **last resort**. Agents must first exhaust open-access preprints, PMC reviews, government reports, and extension literature. Only request library retrieval if no adequate open-access substitute exists for a foundational factual requirement.
+
