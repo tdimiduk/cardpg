@@ -39,6 +39,10 @@ Always uphold and cross-reference the project's foundational design documents:
 7. **Human Vetting Invariant (`vetted_by_human`):**
    - **Never Set to True:** AI agents must **never** flip `vetted_by_human` to `true` (or assign a human reviewer string). Only human designers have the authority to mark a document as vetted by a human.
    - **Must Reset to False on Substantial Edits:** Whenever an agent makes substantial edits, structural rewrites, or conceptual additions to any document (including documents previously vetted by a human), the agent **must flip `vetted_by_human` back to `false`** and summarize the alterations in `vetting_notes` for human re-review.
+8. **Design Index & Epistemic Frontmatter Invariant:**
+   - **Frontmatter Required:** Any new or relocated markdown document under `design/` must contain valid epistemic frontmatter (`title`, `doc_type`, `track`, `origin`, `epistemic_status`).
+   - **Index Registration:** All files under `design/` must be registered in `design/index.yaml` or its appropriate sub-index.
+   - **Automated Sync:** Before concluding changes that add, move, or rename files in `design/`, run `python3 tools/audit_index.py --fix` to automatically scaffold frontmatter and synchronize index registries. (This invariant is also strictly enforced at commit-time via git pre-commit hooks).
 
 ## 3. Delegation to Subagents & Tooling Protocols
 

@@ -200,6 +200,9 @@
               cp -r ${self'.packages.cardpg-server-wrapped}/* $out/backend/
               cp -r ${self'.packages.reflex-client-prod}/* $out/frontend/
             '';
+
+            pre-commit-hooks = config.pre-commit.settings.package;
+            pre-commit-config = config.pre-commit.settings.configFile;
           };
 
           # Pre-commit hooks configuration
@@ -217,6 +220,13 @@
               nixpkgs-fmt.enable = true;
               deadnix.enable = true;
               statix.enable = true;
+              audit-index = {
+                enable = true;
+                name = "audit-index";
+                entry = "${pkgs.python3.withPackages (ps: [ ps.pyyaml ])}/bin/python3 tools/audit_index.py";
+                files = "^(design/|tools/audit_index\\.py)";
+                pass_filenames = false;
+              };
             };
           };
 

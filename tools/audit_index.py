@@ -25,6 +25,7 @@ Key checks:
 
 import argparse
 import os
+import re
 import sys
 from pathlib import Path
 import yaml
@@ -86,6 +87,28 @@ DOC_TYPE_COMPATIBILITY = {
 
 VALID_TRACKS = {"verisimilitude", "ludology"}
 VALID_CONFIDENCE_TIERS = {"speculative", "medium-low", "medium", "high"}
+
+TYPE_MAP = {
+    "synthesis": "Research Synthesis",
+    "literature-note": "Literature Note",
+    "report": "Research Report",
+    "rules": "Game Rules",
+    "iteration": "Design Exploration",
+    "ideation": "Ideation",
+    "meta": "Meta Document",
+    "introductory-text": "Introductory Text",
+}
+
+DOC_TYPE_CANONICAL_TAGS = {
+    "synthesis": "doc-type:research-synthesis",
+    "literature-note": "doc-type:literature-note",
+    "report": "doc-type:research-report",
+    "rules": "doc-type:rules",
+    "iteration": "doc-type:iteration",
+    "ideation": "doc-type:ideation",
+    "meta": "doc-type:meta",
+    "introductory-text": "doc-type:introductory-text",
+}
 
 def load_index(index_path):
     with open(index_path, "r", encoding="utf-8") as f:
@@ -323,6 +346,271 @@ def validate_related_files(fm, repo_root, design_root, abs_file_path):
 
     return errors
 
+def extract_first_paragraph(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+    except Exception:
+        return ""
+
+    fm_count = 0
+    body_lines = []
+    for line in lines:
+        if line.strip() == "---":
+            fm_count += 1
+            continue
+        if fm_count >= 2 or fm_count == 0:
+            body_lines.append(line)
+
+    para = []
+    for line in body_lines:
+        s = line.strip()
+        if not s:
+            if para:
+                break
+            continue
+        if s.startswith("#") or s.startswith("|") or s.startswith("```") or s.startswith(">"):
+            if para:
+                break
+            continue
+        para.append(s)
+
+    full_text = " ".join(para).strip()
+    if full_text:
+        if len(full_text) > 200:
+            idx = full_text.find(". ", 60)
+            if idx != -1 and idx < 250:
+                return full_text[: idx + 1]
+            return full_text[:197] + "..."
+        return full_text
+    return ""
+
+def scaffold_epistemic_frontmatter(rel_path, abs_file_path):
+    try:
+        with open(abs_file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except Exception as e:
+        return None, f"Could not read file for scaffolding: {e}"
+
+    title = None
+    for line in content.splitlines():
+        s = line.strip()
+        if s.startswith("# "):
+            title = s[2:].strip()
+            break
+
+    if not title:
+        stem = Path(rel_path).stem
+        title = stem.replace("-", " ").replace("_", " ").title()
+
+    if rel_path.startswith("research/synthesis/"):
+        doc_type = "synthesis"
+        track = "verisimilitude"
+    elif rel_path.startswith("research/theory/readings/"):
+        doc_type = "literature-note"
+        track = "ludology"
+    elif rel_path.startswith("research/reports/"):
+        doc_type = "report"
+        track = "verisimilitude"
+    elif rel_path.startswith("rules/"):
+        doc_type = "rules"
+        track = "ludology"
+    elif rel_path.startswith("iteration/"):
+        doc_type = "iteration"
+        track = "ludology"
+    elif rel_path.startswith("philosophy/"):
+        doc_type = "meta"
+        track = "ludology"
+    else:
+        doc_type = "iteration"
+        track = "ludology"
+
+    fm_data = {
+        "title": title,
+        "doc_type": doc_type,
+        "track": track,
+        "origin": "AI drafted",
+        "epistemic_status": {
+            "confidence": "medium",
+            "vetted_by_human": False,
+        },
+    }
+
+    fm_yaml = yaml.dump(fm_data, sort_keys=False, default_flow_style=False).strip()
+    new_content = f"---\n{fm_yaml}\n---\n\n{content.lstrip()}"
+
+    try:
+        with open(abs_file_path, "w", encoding="utf-8") as f:
+            f.write(new_content)
+        return fm_data, None
+    except Exception as e:
+        return None, f"Failed to write scaffolded frontmatter: {e}"
+
+def resolve_index_target(rel_path, doc_type):
+    if rel_path.startswith("research/"):
+        if rel_path.startswith("research/synthesis/"):
+            return "research/index.yaml", "research_synthesis"
+        elif rel_path.startswith("research/theory/readings/"):
+            return "research/index.yaml", "design_theory_and_readings"
+        elif rel_path.startswith("research/reports/"):
+            return "research/index.yaml", "research_reports"
+        else:
+            return "research/index.yaml", "research_synthesis"
+    elif rel_path.startswith("iteration/"):
+        return "iteration/index.yaml", "ideation_and_sketches"
+    elif rel_path.startswith("archive/"):
+        return "archive/index.yaml", "orientation"
+    elif rel_path.startswith("rules/"):
+        if rel_path.startswith("rules/modules/"):
+            return "index.yaml", "modular_rules_modules"
+        else:
+            return "index.yaml", "core_framework"
+    elif rel_path.startswith("philosophy/"):
+        return "index.yaml", "philosophy"
+    else:
+        return "index.yaml", "core_framework"
+
+def insert_entry_into_index(index_abs_path, section_key, entry):
+    if not os.path.exists(index_abs_path):
+        return False, f"Target index file {index_abs_path} does not exist"
+
+    with open(index_abs_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    section_pattern = re.compile(rf"^(\s*){re.escape(section_key)}:\s*$")
+    section_idx = -1
+    section_indent = 0
+    for i, line in enumerate(lines):
+        m = section_pattern.match(line)
+        if m:
+            section_idx = i
+            section_indent = len(m.group(1))
+            break
+
+    if section_idx == -1:
+        return False, f"Could not find section '{section_key}:' in {index_abs_path}"
+
+    insert_idx = len(lines)
+    for i in range(section_idx + 1, len(lines)):
+        line = lines[i]
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip())
+        if indent <= section_indent:
+            insert_idx = i
+            break
+
+    item_indent = " " * (section_indent + 2)
+    prop_indent = " " * (section_indent + 4)
+
+    entry_lines = []
+    entry_lines.append(f'{item_indent}- name: "{entry["name"]}"\n')
+    entry_lines.append(f'{prop_indent}id: "{entry["id"]}"\n')
+    entry_lines.append(f'{prop_indent}path: "{entry["path"]}"\n')
+    entry_lines.append(f'{prop_indent}source_type: "local_file"\n')
+    clean_purpose = entry["purpose"].replace('"', '\\"')
+    entry_lines.append(f'{prop_indent}purpose: "{clean_purpose}"\n')
+    entry_lines.append(f'{prop_indent}type: "{entry["type"]}"\n')
+    entry_lines.append(f'{prop_indent}tags:\n')
+    entry_lines.append(f'{prop_indent}  [\n')
+    for tag in entry["tags"]:
+        entry_lines.append(f'{prop_indent}    "{tag}",\n')
+    entry_lines.append(f'{prop_indent}  ]\n')
+
+    new_lines = lines[:insert_idx] + entry_lines + lines[insert_idx:]
+
+    test_content = "".join(new_lines)
+    try:
+        yaml.safe_load(test_content)
+    except Exception as e:
+        return False, f"Generated YAML is invalid: {e}"
+
+    with open(index_abs_path, "w", encoding="utf-8") as f:
+        f.writelines(new_lines)
+
+    return True, None
+
+def auto_index_unindexed_files(unindexed_files, design_root):
+    fixed_count = 0
+    for rel_path in sorted(unindexed_files):
+        if not rel_path.endswith(".md"):
+            print(f"[SKIP] Cannot auto-index non-markdown file '{rel_path}'. Manual indexing required.")
+            continue
+
+        abs_path = os.path.join(design_root, rel_path)
+        fm, err = extract_frontmatter(abs_path)
+        if err:
+            print(f"[SKIP] Cannot auto-index '{rel_path}': frontmatter error: {err}")
+            continue
+
+        if fm is None:
+            fm, s_err = scaffold_epistemic_frontmatter(rel_path, abs_path)
+            if s_err:
+                print(f"[SKIP] Failed to scaffold frontmatter for '{rel_path}': {s_err}")
+                continue
+            print(f"[FIX] Scaffolding epistemic frontmatter in '{rel_path}'")
+
+        schema_errs = validate_frontmatter_schema(fm, rel_path)
+        if schema_errs:
+            print(f"[SKIP] Frontmatter schema errors in '{rel_path}': {schema_errs}")
+            continue
+
+        doc_type = fm.get("doc_type", "iteration")
+        target_idx_rel, section_key = resolve_index_target(rel_path, doc_type)
+        target_idx_abs = os.path.join(design_root, target_idx_rel)
+
+        stem = Path(rel_path).stem
+        slug = re.sub(r"[^a-zA-Z0-9_-]", "", stem)
+        if doc_type == "synthesis" and not slug.startswith("synthesis-"):
+            entry_id = f"synthesis-{slug}"
+        elif doc_type == "report" and not slug.startswith("report-"):
+            entry_id = f"report-{slug}"
+        else:
+            entry_id = slug
+
+        purpose = fm.get("purpose") or fm.get("description")
+        if not purpose:
+            purpose = extract_first_paragraph(abs_path)
+        if not purpose:
+            purpose = f"Documentation and design specifications for {fm.get('title')}."
+
+        if "modules" in rel_path and doc_type == "rules":
+            entry_type = "Game Rules Module"
+        else:
+            entry_type = TYPE_MAP.get(doc_type, "Design Exploration")
+
+        tags = []
+        dt_tag = DOC_TYPE_CANONICAL_TAGS.get(doc_type, f"doc-type:{doc_type}")
+        tags.append(dt_tag)
+        if rel_path.startswith("rules/"):
+            tags.append("audience:player-facing")
+        else:
+            tags.append("audience:designer-facing")
+        if fm.get("track"):
+            tags.append(f"track:{fm.get('track')}")
+        for t in fm.get("tags", []):
+            if t not in tags:
+                tags.append(t)
+
+        entry = {
+            "name": fm.get("title"),
+            "id": entry_id,
+            "path": rel_path,
+            "purpose": purpose,
+            "type": entry_type,
+            "tags": tags,
+        }
+
+        ok, ins_err = insert_entry_into_index(target_idx_abs, section_key, entry)
+        if not ok:
+            print(f"[ERROR] Failed to insert '{rel_path}' into {target_idx_rel} [{section_key}]: {ins_err}")
+        else:
+            print(f"[FIX] Auto-indexed '{rel_path}' -> {target_idx_rel} [{section_key}]")
+            fixed_count += 1
+
+    return fixed_count
+
 def main():
     parser = argparse.ArgumentParser(
         description="Audit CardPG design index synchronization and frontmatter validation."
@@ -331,6 +619,11 @@ def main():
         "--strict",
         action="store_true",
         help="Treat missing frontmatter in required directories as a fatal error.",
+    )
+    parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Automatically scaffold frontmatter and register unindexed markdown files in the appropriate index.",
     )
     args = parser.parse_args()
 
@@ -362,6 +655,17 @@ def main():
         f for f in index_files if not f.startswith("..") and not os.path.isabs(f)
     }
     unindexed_in_repo = repo_files - index_files_in_design
+
+    if args.fix and unindexed_in_repo:
+        print(f"--- Auto-indexing {len(unindexed_in_repo)} unindexed file(s) ---\n")
+        fixed = auto_index_unindexed_files(unindexed_in_repo, design_root)
+        if fixed > 0:
+            index_files, entries_by_path, missing_indexes = load_all_index_data(design_root, index_path)
+            repo_files = get_repo_files(design_root)
+            index_files_in_design = {
+                f for f in index_files if not f.startswith("..") and not os.path.isabs(f)
+            }
+            unindexed_in_repo = repo_files - index_files_in_design
 
     # 2. Frontmatter Auditing
     frontmatter_checked = 0
