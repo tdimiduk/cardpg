@@ -8,10 +8,11 @@ sources:
     url: "https://thealexandrian.net/wordpress/587/roleplaying-games/dd-calibrating-your-expectations"
     local_archive: "sources/ludology/alexander-2007-calibrating-expectations.md"
     reading_note: "design/research/theory/readings/calibrating-your-expectations.md"
-    relevance_to_cardpg: "Foundational conceptual origin of 'Casual Realism' and the mortal 1st–5th level sweet spot."
+    relevance_to_cardpg: "Foundational conceptual origin of 'Casual Realism' and demographic calibration of baseline human capability, grounding low-level characters before numerical card advancement."
     key_concepts:
       - "Casual realism"
       - "Mortal vs. superhuman thresholds"
+      - "Demographic benchmarking"
       - "System transparency without table math"
   - id: "rpg-gazette-2026-exploration-is-logistics"
     title: "How OSR Teaches Us That Exploration Is Logistics"
