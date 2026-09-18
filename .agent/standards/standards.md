@@ -10,6 +10,13 @@ Active documents in the repository represent current thinking and rules, and are
 
 You should always be looking to keep the index up to date.
 
+## 2. Epistemic Status & Human Vetting (`vetted_by_human`)
+
+All AI agents must strictly respect the boundary between AI generation/auditing and human verification:
+
+- **Agents NEVER flip `vetted_by_human` to `true`:** Only human designers have the authority to mark a document as vetted by a human (setting it to `true` or `"Tom Dimiduk (YYYY-MM)"`). Even when an agent executes instructions or incorporates direct feedback from the user, the agent itself must never set this field to `true`.
+- **Agents MUST flip `vetted_by_human` to `false` upon substantial edits:** Whenever an agent performs substantial edits, structural rewrites, or conceptual additions on any document (even one previously marked as vetted), it must reset `vetted_by_human: false` and update `vetting_notes` to summarize what changed for human review.
+
 ## 3. Conflict Resolution ("Flag & Investigate")
 
 - **Design vs. Reality:** If a Design Precept or game mechanic conflicts with research, follow the "Flag & Investigate" protocol:

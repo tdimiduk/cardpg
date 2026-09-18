@@ -48,6 +48,7 @@ related_files:
 
 ### Document Revision Rules:
 
+- **Human Vetting Invariant (`vetted_by_human`):** AI agents must **never** set `vetted_by_human: true` (or assign a human reviewer identifier). Only human designers may mark a document as vetted by a human. When an agent makes substantial edits, structural rewrites, or conceptual additions to any document, the agent **must flip `vetted_by_human` to `false`** and summarize the changes in `vetting_notes` for human re-review.
 - **Living Syntheses (`synthesis/`):** **Update in place.** Never spawn `-v2.md` files or delete living databases, as rules, card registries, and modules link to them directly. When a newer AI model audits or expands a file, update `audited_by` or `origin`, and update `confidence`. Git permanently preserves prior revisions.
 - **Raw Reports (`reports/`):** Treat as immutable point-in-time harvesting runs. If a new deep research query produces superior data, add a new report folder and mark the older report as superseded in `research/index.yaml` or archive tags.
 

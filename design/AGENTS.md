@@ -36,6 +36,9 @@ Always uphold and cross-reference the project's foundational design documents:
    - **Nested Repository Commit:** External assets are tracked in the nested git repo at `design/research/sources/` (ignored by root git). Commit new assets inside the submodule: `git -C design/research/sources add <path> && git -C design/research/sources commit -m "..."`.
    - **Catalog Cross-Referencing:** Always link archived copies in `design/research/verisimilitude-sources.yaml` or `design/research/ludology-sources.yaml` via the `local_archive` key.
    - **Local-First Verification:** Before fetching from the web, agents must check `local_archive` paths in `design/research/verisimilitude-sources.yaml` and `design/research/ludology-sources.yaml` to reuse existing local sources.
+7. **Human Vetting Invariant (`vetted_by_human`):**
+   - **Never Set to True:** AI agents must **never** flip `vetted_by_human` to `true` (or assign a human reviewer string). Only human designers have the authority to mark a document as vetted by a human.
+   - **Must Reset to False on Substantial Edits:** Whenever an agent makes substantial edits, structural rewrites, or conceptual additions to any document (including documents previously vetted by a human), the agent **must flip `vetted_by_human` back to `false`** and summarize the alterations in `vetting_notes` for human re-review.
 
 ## 3. Delegation to Subagents & Tooling Protocols
 
