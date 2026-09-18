@@ -11,10 +11,13 @@ origin: "Gemini 3.8 Flash (Antigravity)"
 epistemic_status:
   confidence: "high"
   vetted_by_human: false
-  vetting_notes: "Analytical reading note linking Alexander's casual realism to CardPG's grounded heroism and card economy."
+  vetting_notes: "Initial draft in review. Sections 3 and 4 updated to reflect scale-invariance, numerical card advancement, and macro-scale decks."
 related_files:
   - "design/philosophy/guiding-principles.md"
   - "design/philosophy/design-precepts.md"
+  - "design/philosophy/game-settings.md"
+  - "design/methodology/paradigm-shifts.md"
+  - "design/rules/gamemaster-guide.md"
   - "design/research/theory/readings/exploration-is-logistics.md"
   - "design/research/ludology-sources.yaml"
 ---
@@ -76,36 +79,50 @@ Alexander highlights where 3e made deliberate design compromises:
 
 ## 3. Comparative Analysis & Application to CardPG
 
-Alexander’s insights articulate the exact design philosophy that anchors **caRdPG**, while exposing the structural limitations of d20 systems that caRdPG was created to overcome.
+Alexander’s insights articulate the design philosophy that anchors **caRdPG**, while highlighting the structural traps that d20 systems encounter when handling scaling.
 
-| Dimension               | D&D 3e (Alexander's Analysis)                                                                                                                                             | caRdPG Architecture                                                                                                                                                                                                                |
-| :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Power Progression**   | **Vertical Escalation (Levels 1–20):** Characters rapidly outgrow the mortal tier; math scales from +1 to +30; HP pools inflate from 6 to 150+.                           | **Permanent Mortal Sweet Spot:** Characters remain grounded in Alexander’s 1st–5th level tier. Progression is **horizontal** (card versatility, tactical stances, deck synergy), never vertical numerical bloat.                   |
-| **Lethality & Health**  | **Abstract HP Bloat:** A 10th-level fighter can stand naked and absorb five direct hits from heavy warhammers because HP represents luck/stamina without trauma modeling. | **Deck as Life & Granular Consequences:** Health is tied directly to deck endurance and physical consequence cards (`Bleeding`, `Fracture`, `Concussion`). A clean strike through armor gaps remains immediately life-threatening. |
-| **Tabletop Ergonomics** | **Abstracted Away to Avoid Paper Math:** 3e sacrifices gear distribution and awkwardness tracking because manual weight spreadsheets are tedious at the table.            | **Embodied Physical Artifacts:** Cards physically occupy table space, hand capacity, and deck slots. Encumbrance and awkward gear impose tangible card-hand restrictions without written arithmetic.                               |
-| **Action Resolution**   | **Unilateral Turn-Based d20:** One combatant acts completely while the other stands static, requiring abstract "Attacks of Opportunity" to simulate reaction.             | **Simultaneous Crisis Time:** Combatants commit cards simultaneously; timing, reach, initiative, and stamina depletion interact dynamically.                                                                                       |
-| **Factual Bedrock**     | **Heuristic Calibration:** Rules were derived intuitively and then reverse-engineered to match reality.                                                                   | **Empirical Research Track:** Grounded in peer-reviewed biomechanics (Williams 2003, Askew 2012, USARIEM 2008) and clinical trauma literature.                                                                                     |
+| Dimension                       | D&D 3e (Alexander's Analysis)                                                                                                                                                                                                               | caRdPG Architecture                                                                                                                                                                                                                                                                                                                                                                 |
+| :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Power Progression & Scaling** | **Disjointed Vertical Escalation:** Separate subsystems inflate at radically different rates (HP multiplies 25x while AC barely changes). Combat devolves into damage-sponge attrition slogs that shatter early-level demographic fidelity. | **Scale-Invariant Card Advancement:** Characters advance by **numerically scaling their cards** and upgrading action options. Because defense `Impact` equals the count of cards flipped to meet incoming `Strength`, resolution math functions identically whether card numbers are single digits, double digits, or triple digits—preserving crisp round pacing across all tiers. |
+| **Lethality & Health**          | **Abstract HP Bloat:** A 10th-level fighter can stand unarmored and absorb multiple direct warhammer blows because HP represents luck/stamina without anatomical or trauma modeling.                                                        | **Deck as Life & Granular Consequences:** Health is governed by deck endurance and physical consequence cards (`Bleeding`, `Fracture`, `Concussion`). A clean strike through armor gaps remains immediately life-threatening regardless of power scale.                                                                                                                             |
+| **Tabletop Ergonomics**         | **Abstracted Away to Avoid Paper Math:** 3e sacrifices gear distribution and awkwardness tracking because manual weight spreadsheets are tedious at the table.                                                                              | **Embodied Physical Artifacts:** Cards physically occupy table space, hand capacity, and deck slots. Encumbrance and awkward gear impose tangible card-hand restrictions without written arithmetic.                                                                                                                                                                                |
+| **Action Resolution**           | **Unilateral Turn-Based d20:** One combatant acts completely while the other stands static, requiring abstract "Attacks of Opportunity" to simulate reaction.                                                                               | **Simultaneous Crisis Time:** Combatants commit cards simultaneously; timing, reach, initiative, and stamina depletion interact dynamically.                                                                                                                                                                                                                                        |
+| **Factual Bedrock**             | **Heuristic Calibration:** Rules were derived intuitively and then reverse-engineered to match reality.                                                                                                                                     | **Empirical Research Track:** Grounded in peer-reviewed biomechanics (Williams 2003, Askew 2012, USARIEM 2008) and clinical trauma literature.                                                                                                                                                                                                                                      |
+
+### Casual Realism at the Baseline vs. Scale-Invariant Growth
+
+Alexander's essay is vital for calibrating our **starting, low-level characters**. The current playtest cards in the repository feature numbers in the single digits (1–5) because playtests have deliberately focused on grounded, low-level mortals. At this baseline tier, caRdPG embraces Alexander’s demographic reality: a novice fighter has real biological limits, an unarmored spear strike is lethal, and tasks are calibrated directly against empirical physics without cumbersome table math.
+
+However, caRdPG diverges fundamentally from the assumption that a game must choose between "grounded realism" and "numerical advancement":
+
+1. **Advancement via Numerical Card Scaling:** Progression in caRdPG has always been intended to scale cards numerically. When characters advance, they upgrade existing cards in their 24-card deck to higher values (or replace them with higher-tier cards) alongside acquiring versatile new stances and techniques.
+2. **Mathematical Scale Invariance:** Unlike d20 systems where high numbers break math (e.g., d20 roll variance becoming trivial against +30 modifiers, or HP pools dragging battles out over dozens of rounds), caRdPG's core loop is scale-invariant:
+   - An attack of `Strength 8` against single-digit cards (values 2–3) flips ~3 cards.
+   - An attack of `Strength 80` against double-digit cards (values 20–30) flips ~3 cards.
+   - An attack of `Strength 800` against triple-digit cards (values 200–300) flips ~3 cards.
+     In every tier, the resolution remains fast, tactile, and mathematically identical.
+3. **The Campaign Power Dial:** How much characters advance numerically is a setting and campaign choice. A gritty survival game can keep cards tightly bounded in single digits, while heroic or epic campaigns can scale into double digits, and Exalted/anime-styled sagas can push characters into triple digits.
+4. **Macro-Scale Resolution (Armies, Provinces, Kingdoms):** Because the engine is scale-invariant, a deck is not limited to an individual human. In high-level or strategic play, a deck can represent an **army**, a **province**, or an entire **kingdom**. Giant numbers on cards represent the pooled manpower, logistical capacity, and coordinated efforts of thousands of individuals, allowing mass warfare and realm-level crises to be resolved seamlessly using the exact same Crisis Time and General Action mechanics as a street duel.
 
 ### Resolving the "Bookkeeping Compromise" with Card Mechanics
 
-Alexander correctly points out that in pencil-and-paper RPGs, tracking how gear is carried or how fatigue accumulates across hours creates excessive tracking friction.
+Alexander correctly points out that in pencil-and-paper RPGs, tracking how gear is carried or how fatigue accumulates across hours creates excessive tracking friction, forcing systems like 3e to make abstract compromises.
 
-In caRdPG, we solve this without abstracting away physical verisimilitude:
+In caRdPG, we solve this without sacrificing physical verisimilitude:
 
 1. **The Hand as Active Capacity:** You can only wield what you can hold in your hand. Switching from a polearm to a sidearm is governed by card play and tempo, not abstract action-economy menus.
 2. **Deck Dilution as Progressive Attrition:** When marching under a heavy load or wearing harness, `Fatigue` cards enter the deck. Every draw brings the tactile weight of exhaustion into the player's fingers.
-3. **Casual Realism through Game Artifacts:** The player never computes foot-pounds or metabolic multipliers mid-game. The card mechanics deliver scientifically calibrated outcomes—armor deflection, blunt trauma transference, stamina depletion—simply through the natural rules of card play.
+3. **Casual Realism through Physical Game Artifacts:** The player never computes foot-pounds or metabolic multipliers mid-game. The card mechanics deliver scientifically calibrated outcomes—armor deflection, blunt trauma transference, stamina depletion—simply through the natural rules of card play.
 
 ---
 
 ## 4. Actionable Directives for caRdPG Design
 
-1. **Enforce the Grounded Heroism Anchor:**
-   - Never allow player character progression to scale into Alexander’s "Level 6+ Superhuman" domain.
-   - Master duelists and hardened veterans in caRdPG should feel like Aragorn or Miyamoto Musashi: brilliantly skilled, tactically versatile, but capable of being killed by an unlucky slip or an unarmored spear thrust.
-2. **Maintain the 24-Card Deck Ceiling:**
-   - Keep the deck small and tightly tuned. Power advancement must consist of refining deck composition, upgrading technique cards, and learning specialized stances—not increasing deck size or multiplying card power values.
-3. **Preserve System Transparency Without Table Math:**
-   - Every rule in `design/rules/` must pass Alexander's "Casual Realism" test: does the system accept real-world inputs (wearing plate armor, sprinting 100 meters, carrying a wounded ally) and produce plausible physical outcomes without forcing players to do arithmetic?
-4. **Link to Consequence & Exploration Frameworks:**
-   - Align physical consequence cards directly with Alexander's demographic benchmarks: common injuries should impair performance according to clinical reality, and recovery should demand genuine downtime and care.
+1. **Ground the Baseline Demographics:**
+   - Use Alexander’s demographic benchmarks and our empirical research track to calibrate low-level (single-digit) cards and challenges so they mirror authentic physical human limits.
+2. **Design Core Mechanics for Scale Invariance:**
+   - Ensure every core rule (Strength generation, Defend flips, Impact, Defense, Resilience, and Consequence acquisition) operates smoothly whether card values are single digits (1–9), double digits (10–99), or triple digits (100–999). Never introduce formulas or mechanics that assume numbers will always remain single digits.
+3. **Support Numerical Card Upgrades in Advancement:**
+   - Implement character advancement through the numerical scaling of cards (higher color values, increased defense/resilience thresholds) paired with tangible tactical tools (new keywords, stances, and specialized action stacks), maintaining the fixed 24-card deck size.
+4. **Architect for Macro-Scale Decks:**
+   - Ensure that encounter, faction, and campaign frameworks support collective entities (armies, settlements, kingdoms) as single deck engines whose high-magnitude numbers abstract large-scale coordinated effort into intuitive card play.
