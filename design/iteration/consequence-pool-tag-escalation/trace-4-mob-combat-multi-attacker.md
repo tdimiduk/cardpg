@@ -55,44 +55,42 @@ Because all three attacks targeted the Squire during the same Crisis round, thei
 
 ### Candidate Draws
 
-Each goblin spends its 2 Impact to draw 1 candidate card from the **Severity 2** deck (cost 2 Impact each):
+Each goblin spends its 2 Impact. In the 4-tier engine, 2 Impact can purchase a **Tier 2** platform break, or two **Tier 1** tactical cards:
 
-1. **Goblin 1 Draw (Severity 2)**: `Rattled Guard` (Tags: `combat`, `equipment`, `armor`)
-   - _Passive_: Place this card on your equipped armor. While on your armor, your armor's first Pierce threshold is ignored by all incoming attacks.
-   - _Action_: Re-buckle Under Fire (Spend {Yellow} 25) -> Remove this.
-   - _Task_: Refit Harness & Tighten Straps (Check {Red} 15; Time 15 min; Requires Repair Tools) -> Remove this.
+- **Goblin 1 (Spend 2 Impact)**: Draws one **Tier 2** candidate $\to$ **`Knocked Prone`** (Tier 2, Tags: `positioning`, `combat`, Priority 5).
+- **Goblin 2 (Spend 2 Impact)**: Draws two **Tier 1** candidates $\to$ **`Rattled Guard`** (Tier 1, Tags: `combat`, `armor`, Priority 5) and **`Winded`** (Tier 1, Tags: `fatigue`, Priority 2).
+- **Goblin 3 (Spend 2 Impact)**: Draws two **Tier 1** candidates $\to$ **`Strained Offense`** (Tier 1, Tags: `arms`, Priority 3) and **`Afraid`** (Tier 1, Tags: `fear`, Priority 4).
 
-2. **Slot 2 (Severity 2)**: `Strained Offense` (Tags: `physical`, `arms`, `combat`)
-   - _Passive_: You must expend 1 card from your hand whenever you declare an Attack Action.
-   - _Action_: Force Through Spasm (Spend {Red} 20) -> Remove this.
-   - _Task_: First Aid & Muscle Wrap (Check {Blue} 15; Time 1 hour; Cost Bandage; Requires Splint) -> Remove this.
-
-3. **Slot 3 (Severity 2)**: `Afraid` (Tags: `fear`, `mental`)
-   - _Passive_: You must expend 1 card from hand to make a melee attack or willingly move closer to a foe.
-   - _Action_: Martial Fury Surge (Spend {Red} 25) -> Remove this.
-   - _Task_: Center Yourself (Check {Blue} 15; Time 5 min) -> Remove this.
+Total candidates in the combined hand: **5 cards** (one Tier 2, four Tier 1).
 
 ---
 
-## 4. Resolve Escalations
+## 4. Attacker Curates the Consequence Pool (The "I Cut" Step)
 
-- The Squire has no prior conditions in play on the table.
-- No escalations trigger. The pool remains `{Rattled Guard, Strained Offense, Afraid}`.
+The Squire's Consequence Pool Size ($N$) is **3** (set by Padded Gambeson).
+
+- The goblins hold 5 candidates and have **surplus curation leverage** (5 candidates for 3 slots).
+- The goblins curate away the softer, clearable option (`Winded` [Priority 2]) and one offensive tax (`Strained Offense` [Priority 3]).
+- They curate a lethal, punishing 3-card pool:
+  1. `Knocked Prone` (Tier 2 — doubled pierce and movement tax)
+  2. `Rattled Guard` (Tier 1 — strips armor's first pierce threshold)
+  3. `Afraid` (Tier 1 — melee attack and approach tax)
 
 ---
 
-## 5. Defender Suffers Exactly 1 Consequence
+## 5. Defender Suffers Exactly 1 Consequence (The "You Choose" Step)
 
 - **Pool Presented to Defender**:
-  1. `Rattled Guard` (Severity 2 — Armor degradation)
-  2. `Strained Offense` (Severity 2 — Offensive hand card tax)
-  3. `Afraid` (Severity 2 — Movement and engagement penalty)
+  1. `Knocked Prone` (Tier 2)
+  2. `Rattled Guard` (Tier 1)
+  3. `Afraid` (Tier 1)
 
 - **Defender's Tactical Choice**:
-  - The Squire weighs the options: `Strained Offense` would cripple offensive tempo, and `Afraid` would prevent pressing the attack against the goblins.
-  - The Squire chooses **`Rattled Guard`** (Severity 2).
+  - The Squire recognizes that taking `Knocked Prone` would be fatal against three surrounding goblins.
+  - Between the two Tier 1 locks, `Afraid` would tax attacks against every goblin, while `Rattled Guard` loosens straps on their gambeson.
+  - The Squire chooses **`Rattled Guard`** (Tier 1).
   - The card is placed directly onto the Squire's **Padded Gambeson** card on the table.
-  - The remaining unselected cards (`Strained Offense`, `Afraid`) are returned to the Severity 2 deck.
+  - Unselected cards (`Knocked Prone`, `Afraid`) are returned to their respective decks.
 
 ---
 
@@ -100,16 +98,14 @@ Each goblin spends its 2 Impact to draw 1 candidate card from the **Severity 2**
 
 1. **Table Ergonomics & Speed**:
    - The defender made 6 flips in rapid succession during the defense step.
-   - The GM performed **a single pool construction** and drew 3 cards at once.
+   - The GM performed **a single pool construction** across all three attackers.
    - The defender made **one single decision**.
    - This prevents the sluggish stop-and-go pattern of resolving 3 separate drafting rounds within a single turn.
 
 2. **Swarm Viability vs. Armor Soak**:
    - Under an unbatched per-attack resolution model, each 2-Impact hit against Pool Size 3 would have left 2 unfilled slots ("No Consequence"), allowing the Squire to completely ignore all three hits without sustaining any conditions.
-   - Under **Individual Spend into a Shared Round Pool**, each goblin's 2 Impact purchases 1 Severity 2 card. Together, the three goblins contribute three Severity 2 candidates, fully filling the Squire's Pool Size 3.
-   - This ensures that coordinated multi-attacker pressure still threatens armored targets without allowing fractional 1-Impact hits to combine into unnatural instant trauma.
+   - Under **Individual Spend into a Shared Round Pool**, coordinated multi-attacker pressure combines candidate draws into a single pool that easily fills the Squire's Pool Size 3, generating surplus draws to curate away soft exits.
 
-3. **Armor Protection is Meaningful**:
-   - The Squire's armor (Pool Size 3) required 3 separate cards of Severity 2 to guarantee a tactical impairment.
-   - If each goblin had only generated 1 Impact (e.g. if the Squire had higher defensive card values in hand), the goblins could only have purchased Severity 1 cards, cushioning the Squire against any Severity 2 injury for that round.
-   - Conversely, if the Squire had been unarmored (Pool Size 2), two 2-Impact hits would have been sufficient to lock in Severity 2, leaving the third goblin's card as surplus curation leverage.
+3. **Intra-Tier Dynamic Range in Swarm Play**:
+   - If each goblin had generated only 1 Impact (e.g. if the Squire had played a Defend card from hand), the 3 goblins would have produced exactly three Tier 1 cards with zero surplus curation. The pool would have naturally included softer options like `Winded` or `Poor Footing`, allowing the Squire to safely absorb the blow.
+   - By generating 2 Impact each, the swarm achieved curation leverage, purging the soft options and forcing the Squire to choose between a Tier 2 platform break and two sharp tactical locks.

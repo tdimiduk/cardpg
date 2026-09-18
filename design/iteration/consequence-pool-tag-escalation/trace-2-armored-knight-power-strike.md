@@ -44,11 +44,11 @@
   - Attack has Pierce 4. Passive 1 is ignored; Passive 2 holds $\to$ **Defender Pool Size ($N$) = 4**.
 - **Attacker Budget**: **3 Impact**.
 - **Candidate Draws**:
-  - Attacker spends 3 Impact to draw 3 candidate cards from Severity 1: `[Near Miss (Sev 1), Poor Footing (Sev 1), Out of Breath (Sev 1)]`.
+  - Attacker spends 3 Impact to draw 3 candidate cards from Tier 1: `[Winded (Tier 1), Poor Footing (Tier 1), Slightly Battered (Tier 1)]`.
 - **Pool Curation (The "I Cut" Step)**:
   - The defender requires $N = 4$ cards in the pool.
   - Because the attacker only has 3 candidate cards, the 4th option is **implicitly filled with "No Consequence"**.
-  - **Pool Presented to Defender**: `[Near Miss (Sev 1), Poor Footing (Sev 1), Out of Breath (Sev 1), No Consequence]`.
+  - **Pool Presented to Defender**: `[Winded (Tier 1), Poor Footing (Tier 1), Slightly Battered (Tier 1), No Consequence]`.
 
 ### 4. Defender Suffers a Consequence (The "You Choose" Step)
 
@@ -86,28 +86,28 @@ In the subsequent round, the Orc Chieftain commits everything to a specialized a
   - Passive 3 remains active (Pierce 8 < 12) -> **Defender Pool Size ($N$) drops to 3**.
 - **Attacker Budget**: **5 Impact**.
 - **Candidate Draws (Spend 5 Impact)**:
-  - Spend 2 Impact: Draws from Severity 2 deck $\to$ `Rattled Guard` (Severity 2, Tags: `combat`, `equipment`, `armor`).
-    - _Passive_: Place this card on your equipped armor. While on your armor, your armor's first Pierce threshold is ignored by all incoming attacks.
-    - _Action_: Re-buckle Under Fire (Spend {Yellow} 25) -> Remove this.
-    - _Task_: Refit Harness & Tighten Straps (Check {Red} 15; Time 15 min; Requires Repair Tools) -> Remove this.
-  - Spend 2 Impact: Draws from Severity 2 deck $\to$ `Strained Offense` (Severity 2, Tags: `physical`, `arms`, `combat`).
-    - _Passive_: You must expend 1 card from your hand whenever you declare an Attack Action.
-    - _Action_: Force Through Spasm (Spend {Red} 20) -> Remove this.
-    - _Task_: First Aid & Muscle Wrap (Check {Blue} 15; Time 1 hour; Cost Bandage; Requires Splint) -> Remove this.
-  - Spend 1 Impact: Draws from Severity 1 deck $\to$ `Slightly Battered` (Severity 1, Tags: `physical`, `injury`).
-    - _Passive_: The Impact of all future defenses against you is increased by 1.
-    - _Action_: Shake Off Impact (Spend {Red} 15) -> Remove this.
-    - _Task_: Catch Breath & Tend Bruises (Time 5 min) -> Remove this.
+  - The Orc Chieftain spends 2 Impact to draw a heavy **Tier 2** platform break, and spends 3 Impact to draw **Tier 1** candidates:
+    - Spend 2 Impact: Draws from **Tier 2** deck $\to$ **`Knocked Prone`** (Tier 2, Tags: `positioning`, `combat`, Priority 5).
+    - Spend 1 Impact: Draws from **Tier 1** deck $\to$ **`Rattled Guard`** (Tier 1, Tags: `combat`, `equipment`, `armor`, Priority 5).
+    - Spend 1 Impact: Draws from **Tier 1** deck $\to$ **`Strained Offense`** (Tier 1, Tags: `physical`, `arms`, `combat`, Priority 3).
+    - Spend 1 Impact: Draws from **Tier 1** deck $\to$ **`Slightly Battered`** (Tier 1, Tags: `physical`, `injury`, Priority 1).
 - **Pool Curation (The "I Cut" Step)**:
   - The defender requires $N = 3$ cards.
-  - Attacker presents all 3 drawn candidate cards to the defender:
-  - **Pool Presented to Defender**: `[Rattled Guard (Sev 2), Strained Offense (Sev 2), Slightly Battered (Sev 1)]`.
+  - The attacker holds 4 candidates and curates down to 3 cards:
+    - Orc drops the softest option (`Slightly Battered` [Priority 1]) and returns it to the Tier 1 deck.
+    - Orc presents the remaining 3 cards:
+    - **Pool Presented to Defender**: `[Knocked Prone (Tier 2), Rattled Guard (Tier 1), Strained Offense (Tier 1)]`.
 
 ### 4. Defender Suffers a Consequence (The "You Choose" Step)
 
-- Knight is presented with `[Rattled Guard, Strained Offense, Slightly Battered]`.
-- Knight selects **`Slightly Battered`** (Severity 1) to avoid the debilitating offensive taxes of `Strained Offense` and the armor vulnerability of `Rattled Guard`.
-- Unselected cards (`Rattled Guard`, `Strained Offense`) are returned to the Severity 2 deck.
+- Knight is presented with `[Knocked Prone, Rattled Guard, Strained Offense]`.
+- Knight faces a high-stakes dilemma:
+  - Choosing `Knocked Prone` leaves the knight in the dirt with doubled pierce against them.
+  - Choosing `Strained Offense` taxes every subsequent swing by 1 hand card.
+  - Choosing `Rattled Guard` loosens straps and strips their armor's first pierce threshold.
+- Knight chooses **`Rattled Guard`** (Tier 1).
+- `Rattled Guard` is placed onto the Knight's **Full Harness** card on the table.
+- Unselected cards (`Knocked Prone`, `Strained Offense`) are returned to their respective decks.
 
 ---
 
@@ -115,8 +115,10 @@ In the subsequent round, the Orc Chieftain commits everything to a specialized a
 
 1. **Armor as Pool Expansion is Elegant and Intuitive**:
    - Instead of tracking an abstract arithmetic divisor like `floor(Impact / Defense)`, armor directly acts as **insulation against concentrated harm**.
-   - With base Pool Size 5, an attacker needs at least 5 Impact to deal even a Sev 1 wound, 10 Impact for Sev 2, 15 for Sev 3, and 20 to take the knight out.
-2. **Stepped Pierce Translates Naturally**:
-   - Stepped Pierce thresholds (Pierce 4, 8, 12) reduce the pool size directly (from 5 down to 4, 3, or 2), peeling away the defender's buffer and allowing the attacker to concentrate Impact into fewer, higher-severity slots.
-3. **Player Agency Under Pressure**:
-   - The defender always has a choice among the offered consequences, allowing the knight to trade off deck wear against debilitating tactical conditions.
+   - With base Pool Size 5, an attacker needs at least 5 Impact to deal even a Tier 1 condition, 10 Impact for Tier 2, 15 for Tier 3, and 20 to take the knight out.
+2. **Surplus Impact as Curation Leverage**:
+   - Generating 5 Impact against $N = 3$ gave the Orc Chieftain the leverage to discard the softer `Slightly Battered` condition and present a brutal dilemma featuring a Tier 2 platform break and two sharp Tier 1 locks.
+3. **Stepped Pierce Translates Naturally**:
+   - Stepped Pierce thresholds (Pierce 4, 8, 12) peel away the defender's buffer (from 5 down to 4, 3, or 2), allowing heavy attacks to focus Impact into fewer, higher-tier slots.
+4. **Player Agency Under Pressure**:
+   - The defender always has a choice among the offered consequences, allowing the knight to trade off offensive tempo (`Strained Offense`) against future defensive vulnerabilities (`Rattled Guard`).

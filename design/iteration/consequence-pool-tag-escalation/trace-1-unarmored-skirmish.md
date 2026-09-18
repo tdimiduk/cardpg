@@ -48,38 +48,41 @@
 
 #### Attacker's Spending & Candidate Draws
 
-The attacker has 3 Impact and decides to draw a spread of candidate consequences:
+The attacker has 3 Impact and decides to draw a spread of candidate consequences across Tier 2 and Tier 1:
 
-- **Candidate 1 (Spend 2 Impact | 1 remaining)**: Draws from Severity 2 deck $\to$ `Off Balance` (Severity 2, Tags: `positioning`, `combat`).
-  - _Passive_: You cannot take Move actions or play Defend cards from hand.
-  - _Action_: Regain Center (Spend {Yellow} 20) -> Remove this.
-- **Candidate 2 (Spend 1 Impact | 0 remaining)**: Draws from Severity 1 deck $\to$ `Near Miss` (Severity 1, Tags: `combat`, `positioning`).
-  - _Rules_: Return this card with no further effect.
+- **Candidate 1 (Spend 2 Impact | 1 remaining)**: Draws from the **Tier 2** deck $\to$ **`Knocked Prone`** (Tier 2, Tags: `positioning`, `combat`).
+  - _Passive_: You are prone. Crawl only; expend 1 card from hand to move or attack. Armor Pierce doubled.
+  - _Action_: Struggle to Feet (Tuck cards equal to Burden).
+- **Candidate 2 (Spend 1 Impact | 0 remaining)**: Draws from the **Tier 1** deck $\to$ **`Poor Footing`** (Tier 1, Tags: `positioning`, `physical`, Priority 2).
+  - _Passive_: The Impact of your defenses is increased by 1.
+  - _Action_: Regain Footing (Place a card from hand on top of this. When 2 cards are on top, expend them and remove this).
+  - _Escalate_: `if_suffer: positioning` $\to$ Replace with `Off Balance` (Tier 1).
 
 #### Curating the Pool (The "I Cut" Step)
 
 The defender's Pool Size is 2. The attacker has drawn exactly 2 candidate cards:
 
-- **Pool Presented to Defender**: `[Off Balance (Severity 2), Near Miss (Severity 1)]`.
+- **Pool Presented to Defender**: `[Knocked Prone (Tier 2), Poor Footing (Tier 1)]`.
 
 ---
 
 ### 4. Resolution: Step 3 - Defender Suffers a Consequence (The "You Choose" Step)
 
 - **Defender's Choice**:
-  - The Defender is presented with `[Off Balance, Near Miss]`.
-  - The choice is obvious: Defender chooses **`Near Miss`**.
-  - `Near Miss` effect triggers: _Return this card with no further effect._
-  - Unchosen card (`Off Balance`) is returned to the Severity 2 deck.
+  - The Defender is presented with `[Knocked Prone (Tier 2), Poor Footing (Tier 1)]`.
+  - The Defender selects **`Poor Footing`** (Tier 1).
+  - `Poor Footing` enters play in front of the Defender as an active condition.
+  - The unchosen card (`Knocked Prone`) is returned to the Tier 2 deck.
 
 ---
 
 ## Analysis of the Exchange
 
-1. **Table Ergonomics**:
-   - Calculating 3 flips was fast.
-   - Attacker spent 3 Impact as $2 + 1$, drawing two physical cards and presenting them.
-   - Defender made an instantaneous choice.
-2. **Mechanical Dynamics**:
-   - With 3 Impact and Pool Size 2, the attacker could not guarantee a Severity 2 wound (which requires $2 + 2 = 4$ Impact). The defender's reactive defense card (`Quick Step`) successfully shaved the Impact from 4 down to 3, directly saving them from guaranteed harm.
-   - This makes reactive hand defense feel impactful and tactically necessary.
+1. **Elimination of No-Ops**:
+   - In earlier iterations, the defender picked `Near Miss`, resulting in zero table impact despite sustaining 3 Impact.
+   - Under the 4-tier engine, the defender suffers **`Poor Footing`**—a tangible condition with an active $+1$ Impact penalty, clearable mid-combat, that serves as vital kindling for subsequent tag escalations.
+2. **Defensive Value of Hand Play**:
+   - With 3 Impact and Pool Size 2, the attacker could not guarantee a Tier 2 platform break (which requires $2 \times 2 = 4$ Impact).
+   - By playing `Quick Step` from hand, the defender shaved the attack down from 4 to 3 Impact, directly saving themselves from being forced to take `Knocked Prone`.
+3. **The Tactical Dilemma Ahead**:
+   - The defender now has an exposed `positioning` tag. On their upcoming turn, they must choose between sacrificing tempo to `Regain Footing` or attacking and risking an escalation to `Off Balance` or `Knocked Prone` on the next incoming blow.

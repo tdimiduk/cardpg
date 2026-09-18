@@ -12,7 +12,7 @@
       - passive: Your consequence pool size against physical harm is 5. An attack with Pierce 4 or greater ignores this passive.
       - passive: Your consequence pool size against physical harm is 4. An attack with Pierce 8 or greater ignores this passive.
       - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 12 or greater ignores this passive.
-      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
+      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 2 or higher, flip this armor to its Damaged side instead and negate that consequence.
   damaged:
     burden: 3
     tags:
@@ -34,7 +34,7 @@
     rules:
       - passive: Your consequence pool size against physical harm is 4. An attack with Pierce 4 or greater ignores this passive.
       - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 8 or greater ignores this passive.
-      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
+      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 2 or higher, flip this armor to its Damaged side instead and negate that consequence.
   damaged:
     burden: 2
     tags:
@@ -55,7 +55,7 @@
       - textile
     rules:
       - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 4 or greater ignores this passive.
-      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 3 or higher, flip this armor to its Damaged side instead and negate that consequence.
+      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 2 or higher, flip this armor to its Damaged side instead and negate that consequence.
   damaged:
     burden: 1
     tags:

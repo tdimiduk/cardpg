@@ -54,7 +54,7 @@ flowchart TD
      - **Severity 1** costs **1 Impact**
      - **Severity 2** costs **2 Impact**
      - **Severity 3** costs **3 Impact**
-     - **Severity $S$** costs **$S$ Impact**
+     - **Severity 4** costs **4 Impact**
    - Attackers may allocate their individual Impact across any combination of severities they can afford (e.g., 4 Impact can buy one Sev 4, two Sev 2s, or one Sev 3 + one Sev 1).
    - If multiple attackers targeted the same defender, each spends their own impact; leftover impact cannot be merged across attackers. All drawn cards are combined into a single candidate hand before curation.
 
@@ -64,6 +64,7 @@ flowchart TD
    - The defender's traits and equipped gear set the **Consequence Pool Size ($N$)** (typically 1 for minions, 2 for unarmored heroes, 3 for maille/brigandine, 4 for full plate; see Section 3 for full breakdown).
 2. **Pick $N$ Cards for the Final Pool**:
    - The attackers select exactly $N$ cards from their candidate hand to present to the defender.
+   - **Intra-Tier Dynamic Range & Curation Leverage:** Tier 1 contains a calibrated spectrum from softer, clearable setbacks (Priority 1–3, e.g. `Poor Footing`, `Winded`, `Dust in Eyes`) to sharp tactical locks (Priority 4–5, e.g. `Off Balance`, `Afraid`, `Rattled Guard`). Generating Impact above $N$ gives attackers the leverage to filter out soft options and present inescapable vices. Playing Defend cards to shave Impact down to $N$ denies curation control to the attacker.
    - **Targeting Active Vulnerabilities:** Attackers look at the conditions already in front of the defender and curate cards that match active tags to force a dangerous condition stack/upgrade.
    - Unselected candidate cards are returned to their decks.
 3. **Implicit "No Consequence" Blanks**:
@@ -78,7 +79,6 @@ flowchart TD
 2. The defender **chooses exactly 1 consequence** from the pool to suffer.
 3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped.
 4. **Resolution & Table Escalation:**
-   - **Transient Consequence:** If the chosen card is a transient effect (e.g., `Out of Breath`, `Shallow Laceration`, `Near Miss`), apply its immediate deck/status effect and discard/return it immediately. Transient cards do not enter play on the table and have no escalation triggers.
    - **Novel Condition:** If the defender has no active condition with an `escalate:` trigger matching the chosen card's leaf tags, place the chosen card into play as a new active condition.
    - **Condition Escalation & Card Fallbacks:** If an active condition in play in front of the defender has an `escalate:` trigger matching the chosen card's leaf tag, follow the explicit instructions printed on the active card (upgrading to the indicated condition, entering play in parallel, applying a setback to current mitigation progress, or resolving a kinetic overmatch wildcard if the track is already at its ceiling). When an upgrade occurs, discard the lower active condition and put the upgraded condition into play.
 5. All unchosen cards in the pool are returned to their decks.
@@ -103,35 +103,34 @@ An entity's **Consequence Pool Size ($N$)** defines the number of consequence sl
 
 ### Symmetrical Minion Design
 
-Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs attack a minion and generate 2 Impact, the attacker simply spends 2 Impact to draw 1 Severity 2 card. There is no second slot. The minion takes the card. Because minions have no blank slots to dilute incoming harm, even moderate attacks inflict immediate, unavoidable consequences. When an attack reaches terminal severity or compounded trauma overwhelms them, they drop cleanly. (Potential future design space: exploring specific fragile minion archetypes if needed, though Pool Size 1 already renders monsters highly vulnerable). This eliminates GM drafting overhead while making mook-cleaving fast and satisfying.
+Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs attack a minion and generate 2 Impact, the attacker simply spends 2 Impact to draw 1 Severity 2 card. There is no second slot. The minion takes the card. Because minions have no blank slots to dilute incoming harm, even moderate attacks inflict immediate, unavoidable consequences. When an attack reaches terminal severity or compounded trauma overwhelms them, they drop cleanly. This eliminates GM drafting overhead while making mook-cleaving fast and satisfying.
 
 ---
 
-## 4. The 5-Tier Severity Scale & Downward Spiral Mathematics
+## 4. The 4-Tier Severity Scale & Downward Spiral Mathematics
 
-| Severity | Category                                | Description & Gameplay Effect                                                                    | Examples                                                                           |
-| :------: | :-------------------------------------- | :----------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
-|  **1**   | **Fleeting Friction & Wear**            | Fleeting setbacks, minor startles, or brief stamina costs. Transient or easily pushed through.   | `Near Miss`, `Poor Footing`, `Out of Breath`, `Dust in Eyes`, `Shallow Laceration` |
-|  **2**   | **Tactical Impairment / Minor Injury**  | Specific tactical hindrances that limit actions or make you vulnerable to follow-up strikes.     | `Rattled Guard`, `Strained Offense`, `Afraid`, `Off Balance`, `Bleeding Cut`       |
-|  **3**   | **Platform Ceilings & Moderate Trauma** | Complete stance loss, concussive fog, cracked ribs, or deep lacerations. Major tactical crisis.  | `Knocked Prone`, `Mild Concussion`, `Cracked Ribs`, `Deep Laceration`, `Hamstrung` |
-|  **4**   | **Severe Structural Trauma**            | Structural failure of defense, bone fractures, arterial bleeding, sundered plate, severe trauma. | `Broken Arm`, `Severe Concussion`, `Sundered Armor`, `Arterial Hemorrhage`         |
-|  **5**   | **Taken Out / Incapacitated**           | Incapacitated, unconscious, dying, or completely removed from the conflict.                      | `Unconscious`, `Mortal Bleedout`, `Mind Void`, `Taken Out (Surrendered)`           |
+| Tier  | Category                                | Description & Gameplay Effect                                                                                                                         | Examples                                                                                           |
+| :---: | :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| **1** | **Tactical Impairments & Setbacks**     | Dynamic range from clearable friction (Priority 1–3) to stiff action/movement locks (Priority 4–5). Real table presence; kindling for tag escalation. | `Poor Footing`, `Dust in Eyes`, `Winded`, `Off Balance`, `Afraid`, `Rattled Guard`, `Bleeding Cut` |
+| **2** | **Platform Ceilings & Moderate Trauma** | Complete stance loss, concussive fog, cracked ribs, or deep lacerations. Major tactical crisis.                                                       | `Knocked Prone`, `Mild Concussion`, `Cracked Ribs`, `Deep Laceration`, `Terrified`, `Hamstrung`    |
+| **3** | **Severe Structural Trauma**            | Structural failure of defense, bone fractures, arterial bleeding, sundered plate, severe trauma.                                                      | `Broken Arm`, `Severe Concussion`, `Sundered Armor`, `Arterial Hemorrhage`                         |
+| **4** | **Taken Out / Incapacitated**           | Incapacitated, unconscious, dying, or completely removed from the conflict.                                                                           | `Unconscious`, `Mortal Bleedout`, `Mind Void`, `Taken Out (Surrendered)`                           |
 
 ### Anti-Alpha Strike & Downward Spiral Mathematics
 
-Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Severity } (S)$ formula:
+Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Tier } (S)$ formula:
 
-- **To One-Shot an Unarmored Hero ($N=2$, Sev 5)**: Attackers need $2 \times 5 = \mathbf{10\text{ Impact}}$ ($\sim 20\text{ unmet Strength}$ undefended). Fresh PCs with defensive cards in hand easily absorb or parry incoming Strength, preventing opening-turn defeats unless caught completely unprepared and undefended.
-- **To One-Shot a Combatant in Light Armor ($N=3$, Sev 5)**: Attackers need $3 \times 5 = \mathbf{15\text{ Impact}}$ ($\sim 30\text{ unmet Strength}$).
-- **To One-Shot a Warrior in War Armor ($N=4$, Sev 5)**: Attackers need $4 \times 5 = \mathbf{20\text{ Impact}}$ ($\sim 40\text{ unmet Strength}$).
-- **To One-Shot a Knight in Full Plate ($N=5$, Sev 5)**: Attackers need $5 \times 5 = \mathbf{25\text{ Impact}}$ ($\sim 50\text{ unmet Strength}$).
+- **To One-Shot an Unarmored Hero ($N=2$, Tier 4)**: Attackers need $2 \times 4 = \mathbf{8\text{ Impact}}$ (~16–20 unmet Strength undefended). Fresh PCs with defensive cards in hand easily absorb or parry incoming Strength, preventing opening-turn defeats unless caught completely unprepared and undefended.
+- **To One-Shot a Combatant in Light Armor ($N=3$, Tier 4)**: Attackers need $3 \times 4 = \mathbf{12\text{ Impact}}$ (~24–30 unmet Strength).
+- **To One-Shot a Warrior in War Armor ($N=4$, Tier 4)**: Attackers need $4 \times 4 = \mathbf{16\text{ Impact}}$ (~35–40 unmet Strength).
+- **To One-Shot a Knight in Full Plate ($N=5$, Tier 4)**: Attackers need $5 \times 4 = \mathbf{20\text{ Impact}}$ (~45–50 unmet Strength).
 
-Combatants rarely reach Severity 5 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by compounding vulnerabilities:
+Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by compounding vulnerabilities:
 
-1. **Round 1 (Initial Setup)**: Attackers land a 4-Impact strike against an unarmored defender ($N=2$) $\to$ offers Sev 2 `Afraid` and Sev 2 `Off Balance`. Defender takes `Afraid` (enters play).
-2. **Round 2 (Compounding Friction)**: Attackers land a 4-Impact strike and deliberately offer Sev 2 `Afraid` (fear tag) and Sev 2 `Off Balance`. Defender chooses `Afraid`, triggering active `Afraid`'s `escalate:` clause $\to$ upgrades to **Severity 3** (`Terrified`).
-3. **Round 3 (Defensive Breakdown & Trauma)**: With defenses depleted and action taxes mounting, follow-up strikes penetrate armor or exploit posture, landing **Severity 4** trauma (`Sundered Armor` flipping armor to Damaged and reducing pool size $N$, or physical bone/arterial trauma).
-4. **Round 4 (Terminal Resolution)**: Compounding impact and shrinking pool sizes allow attackers to reach **Severity 5** (`Mind Void` or `Unconscious`) to conclude the conflict decisively.
+1. **Round 1 (Initial Setup & Foothold)**: Attackers land a 4-Impact strike against an unarmored defender ($N=2$) $\to$ buys two Tier 2 cards (`Knocked Prone`, `Cracked Ribs`) or curates sharp Tier 1 cards (`Afraid`, `Off Balance`). Defender takes `Afraid`.
+2. **Round 2 (Compounding Friction)**: Attackers exploit hesitation and land follow-up impact, deliberately offering `Afraid` (fear tag). Defender suffers upgrade to **Tier 2** (`Terrified`).
+3. **Round 3 (Defensive Breakdown & Structural Trauma)**: With defenses depleted and action taxes mounting, follow-up strikes penetrate armor or exploit posture, landing **Tier 3** trauma (`Sundered Armor` flipping armor to Damaged, or `Broken Arm`).
+4. **Round 4 (Terminal Resolution)**: Compounding impact and shrinking pool sizes allow attackers to reach **Tier 4** (`Mind Void` or `Unconscious`) to conclude the conflict decisively.
 
 ---
 
@@ -183,15 +182,17 @@ When multiple attackers target the same defender during Crisis Time, their actio
 
 ## 8. Suggested Next Steps for Future Threads
 
-### Settled Decisions from 5-Tier Migration
+### Settled Decisions from 4-Tier Migration
 
-- **5-Tier Severity Scale**: Firmly settled (1: Fleeting Friction, 2: Tactical Impairment, 3: Platform Ceilings & Moderate Trauma, 4: Severe Structural Trauma, 5: Taken Out / Incapacitation).
-- **The Organic Asymmetry Standard**: Escalation tracks must reflect narrative and clinical reality rather than forced 5-step symmetry. Platform tracks have ceilings at Sev 3 (`Knocked Prone`) and Sev 4 (`Sundered Armor`) triggering Anvil wildcards; vascular cuts coexist in parallel; head trauma follows clinical neurotrauma stages.
-- **Symmetrical Minions**: Minions with `Pool Size 1` are inherently fragile (no blank slots to dilute harm); printed early defeat thresholds remain speculative design space.
+- **4-Tier Severity Scale**: Firmly settled (1: Tactical Impairments & Setbacks, 2: Platform Ceilings & Moderate Trauma, 3: Severe Structural Trauma, 4: Taken Out / Incapacitation).
+- **Elimination of Fleeting No-Ops**: Unfilled consequence pools ($N$) already handle glancing blows and complete absorption via implicit blanks. Dedicated "Near Miss" cards and transient discard dumps are removed.
+- **Intra-Tier Dynamic Range in Tier 1**: Tier 1 contains clearable setbacks (Priority 1–3: `Poor Footing`, `Winded`, `Dust in Eyes`) and stiff tactical locks (Priority 4–5: `Off Balance`, `Afraid`, `Rattled Guard`). Surplus Impact gives attackers curation leverage to filter out soft options; defending from hand denies curation leverage.
+- **The Organic Asymmetry Standard**: Escalation tracks reflect clinical and mechanical reality. Platform tracks have ceilings at Tier 2 (`Knocked Prone`) and Tier 3 (`Sundered Armor`) triggering Anvil wildcards; vascular cuts coexist in parallel; head trauma follows clinical neurotrauma stages.
+- **Symmetrical Minions**: Minions with `Pool Size 1` are inherently fragile (no blank slots to dilute harm).
 
 ### Open Questions for Exploration
 
-- **Tier 5 Implementation**: Does Tier 5 function best as a physical candidate card deck drawn when spending 5 Impact, or as an emergent, narrative exit state (_"describe how this foe is dispatched"_ when terminal conditions or compounded trauma trigger)?
+- **Tier 4 Implementation**: Does Tier 4 function best as a small physical candidate card deck drawn when spending 4 Impact, or as an emergent narrative exit state (_"describe how this foe is dispatched"_ when terminal conditions or compounded trauma trigger)?
 
 ### Next Action Priorities
 

@@ -30,21 +30,32 @@ A critical tactical decision is how to spend your Impact when you generate a hig
 
 ### Intra-Tier Curation: Filtering Out the Easy Outs
 
-Not all consequences within the same severity tier are equally harmful in every situation:
+Within **Tier 1 (Tactical Impairments & Setbacks)**, cards feature an intentional **dynamic range**:
 
-- In **Severity 1**:
-  - `Near Miss` resolves with no lingering effect.
-  - `Out of Breath` injects immediate `Fatigue` onto the draw deck.
-  - `Poor Footing` increases the Impact of all future defenses by +1.
-  - `Dust in Eyes` completely prevents playing Defend cards from hand.
-- In **Severity 2**:
-  - `Strained Offense` penalizes attacking actions.
-  - `Rattled Guard` strips armor thresholds.
-  - `Afraid` restricts forward movement and engagement.
+- **Softer / Clearable Band (Priority 1–3)**:
+  - `Poor Footing`: Increases defensive Impact by +1; clearable mid-combat by tucking 2 cards from hand.
+  - `Dust in Eyes`: Disables hand defense; clearable immediately via _Rub & Blink_ (costs 1 Pain card).
+  - `Winded`: Attack declarations cost 1 Fatigue; clearable by spending Red 10.
+  - `Rattled Nerves`: Start of round discards 1 card; clearable by spending Blue 15.
+- **Sharp / Punishing Band (Priority 4–5)**:
+  - `Off Balance`: Cannot Move or play Defend from hand; defenses suffer +1 Impact.
+  - `Afraid`: Must expend 1 card from hand to attack or move closer.
+  - `Rattled Guard`: Strips your armor's first Pierce threshold.
+  - `Strained Offense`: Must expend 1 card from hand to declare an Attack Action.
+  - `Bleeding Cut`: Heavy defenses expend extra cards from the draw deck.
 
-When multiple attackers target the same foe, their individual draws often produce **surplus candidate cards** (e.g., drawing 4 or 5 candidates when the pool size $N = 3$).
+When attackers generate surplus Impact above the defender's pool size ($N$), they produce **surplus candidate cards** (e.g., generating 5 Impact against $N = 3$ draws five Tier 1 cards).
 
-> **The Power of the Cut:** Having surplus draws allows the attacking team to **curate away "soft" options** (like `Near Miss`) and populate the pool exclusively with the most punishing, situationally crippling options. Forcing a defender to choose between two Severity 2 injuries and one hand-picked, brutal Severity 1 card (`Dust in Eyes` or `Poor Footing`) creates immense tactical pressure.
+> **The Power of the Cut:** Having surplus draws allows the attacking team to **curate away the softer, clearable options** (like `Poor Footing` or `Winded`) and populate the pool exclusively with the most punishing, situationally crippling options (`Off Balance`, `Afraid`, `Rattled Guard`).
+
+#### Defensive Hand Strategy: Curation Denial
+
+This dynamic range gives defenders a vital reason to play **Defend** cards from hand, even when an attack is too strong to soak completely:
+
+- **Scenario**: You wear Padded Gambeson ($N = 3$). An incoming strike threatens to generate **5 Impact**.
+- **If you hoard your cards**: The attack lands for 5 Impact. The attacker draws 5 candidates, discards all soft setbacks, and forces you to choose between `[Off Balance, Afraid, Rattled Guard]`. You suffer a crushing tactical lock.
+- **If you play a Defend card**: Your hand defense shaves the attack from 5 Impact down to **3 Impact**. The attacker can now only afford 3 Tier 1 candidates—**zero surplus curation**. The drawn cards are `[Poor Footing, Winded, Off Balance]`. You select `Poor Footing` and clear it on your next turn.
+- **The Takeaway:** Hand defense is not just about avoiding consequences; **it is about denying the attacker curation control and preserving your soft exits.**
 
 #### Using Printed Priority Numbers
 
@@ -58,14 +69,14 @@ Every consequence card features a printed **`Priority` rating (1 to 5)** represe
 The primary engine of lethality in CardPG is not raw severity, but **Tag Escalation**.
 
 1. **Scan Active Conditions**: Always inspect the condition cards already in play in front of the defender.
-2. **Match Incoming Tags**: If the defender is already `Off Balance` (Tag: `positioning`), offering even a Severity 1 `Poor Footing` (Tag: `positioning`) threatens an immediate escalation trigger into Severity 2 or 3.
-3. **The Dilemma Trap**: Present the defender with a matching tag alongside an alternative high-severity injury. If they pick the matching tag, their existing condition upgrades; if they pick the alternative, they take a fresh, heavy penalty.
+2. **Match Incoming Tags**: If the defender already has `Poor Footing` (Tag: `positioning`), offering another `positioning` card (`Off Balance` or even another `Poor Footing`) triggers an immediate escalation upgrade into `Off Balance` (Tier 1) or `Knocked Prone` (Tier 2).
+3. **The Dilemma Trap**: Present the defender with a matching tag alongside an alternative high-priority lock. If they pick the matching tag, their existing condition upgrades; if they pick the alternative, they take a fresh, heavy penalty.
 
 ### Coordinated Party Assaults
 
 Because each attacker spends their own Impact, party members should coordinate the types of candidate decks they draw from:
 
-- **The Vanguard (Heavy Strike)**: Generates 3–4 Impact, drawing high-severity cards or multiple Severity 2 cards.
+- **The Vanguard (Heavy Strike)**: Generates 3–4 Impact, drawing Tier 2/3 cards or multiple Tier 1 cards to saturate armor.
 - **The Skirmisher / Flanker**: Generates 1–2 Impact, drawing from specialized condition decks (Positioning, Bleeding, Sensory).
 - **The Assembly**: Together, the party pools their drawn candidates and selects the exact $N$ cards that corner the boss into an inescapable tactical bind.
 
@@ -75,24 +86,24 @@ Because each attacker spends their own Impact, party members should coordinate t
 
 When you are presented with a curated consequence pool, you must choose exactly 1 consequence to suffer (or "No Consequence" if an empty slot remains).
 
-### Evaluating Intra-Tier Costs: Transient vs. Persistent
+### Evaluating Intra-Tier Costs: Clearable vs. Stiff Locks
 
-When presented with multiple cards of the same tier (e.g., two Severity 1 cards):
+When presented with multiple Tier 1 options:
 
-1. **Transient Deck Pollution (`Out of Breath`, `Shallow Laceration`)**:
-   - These cards resolve immediately, adding `Fatigue` or `Minor Wound` to your deck or expended pile, and do not remain on the table.
-   - _Best Chosen When_: You need full tactical freedom _right now_ to finish the fight or maneuver out of danger, and your current deck can absorb a little wear before reshuffling.
-2. **Persistent Tactical Hindrance (`Poor Footing`, `Dust in Eyes`, `Rattled Guard`)**:
-   - These remain on the table, actively penalizing your actions, defenses, or card plays until cleared.
+1. **Clearable Setbacks (`Poor Footing`, `Winded`, `Dust in Eyes`)**:
+   - These impose active penalties on the table, but feature accessible in-combat recovery actions (tucking cards, rubbing eyes, taking a breath).
+   - _Best Chosen When_: You have spare actions or cards to clear them promptly before enemies can target their tags for escalation.
+2. **Stiff Tactical Locks (`Off Balance`, `Afraid`, `Rattled Guard`)**:
+   - These severely restrict your turn economy or strip defensive coverage.
    - _Best Chosen When_: The specific restriction doesn't hinder your current plan (e.g., taking `Strained Offense` if you intend to spend next round retreating or casting a spell rather than making weapon attacks).
 
 ### The Escalation Trap: When Lower Severity Is More Lethal
 
-Never choose a consequence based solely on its printed severity number. A Severity 1 card can be far more dangerous than a Severity 2 card if it triggers an **`escalate:`** clause on a condition already on the table:
+Never choose a consequence based solely on its printed severity number. A Tier 1 card can be far more dangerous than a Tier 2 card if it triggers an **`escalate:`** clause on a condition already on the table:
 
-- **Scenario**: You have an active `Bleeding Cut` (Severity 2, Tag: `bleeding`). The attacker presents `{Broken Rib (Sev 2, Blunt), Shallow Laceration (Sev 1, Bleeding)}`.
-- **The Trap**: Choosing `Shallow Laceration` because it is "only Severity 1" matches the `bleeding` tag on your active condition, immediately upgrading your injury to **`Arterial Hemorrhage` (Severity 3)**!
-- **The Correct Play**: Suffer the novel `Broken Rib` (Severity 2). You now have two distinct Severity 2 conditions, but you have successfully avoided a catastrophic Severity 3 bleedout.
+- **Scenario**: You have an active `Bleeding Cut` (Tier 1, Tag: `bleeding`). The attacker presents `{Cracked Ribs (Tier 2, Torso), Bleeding Cut (Tier 1, Bleeding)}`.
+- **The Trap**: Choosing `Bleeding Cut` because it is "only Tier 1" matches the `bleeding` tag on your active condition, immediately upgrading your injury to **`Deep Laceration` (Tier 2)** or **`Arterial Hemorrhage` (Tier 3)**!
+- **The Correct Play**: Suffer the novel `Cracked Ribs` (Tier 2). You now have two distinct conditions, but you have successfully avoided an acute vascular crisis.
 
 ### Balancing In-Combat Actions vs. Post-Combat Tasks
 

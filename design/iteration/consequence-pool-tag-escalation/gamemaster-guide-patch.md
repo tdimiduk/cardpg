@@ -20,30 +20,30 @@ Different monster types and combat roles should spend their Impact and curate th
 
 ### The Brute / Heavy Hitter (e.g., Ogre, Troll, Giant)
 
-- **High Impact, Low Multiplicity**: Brutes often land attacks that generate 3–5 Impact on their own.
+- **High Impact, Low Multiplicity**: Brutes often land attacks that generate 3–4 Impact on their own.
 - **The Ceiling vs. Saturation Choice**:
-  - _Against Unarmored/Light Targets ($N \le 2$)_: Spend 3 to 5 Impact on a single high-tier card (**Severity 3, 4, or 5**). A single devastating blow can cripple or knock out a fragile combatant.
-  - _Against Armored Tanks ($N \ge 3$)_: If the brute attacks alone, spending 4 or 5 Impact on a single high-tier card leaves multiple slots empty as "No Consequence" against a knight in full plate ($N = 5$). The knight will simply absorb the blow with their armor. The brute should instead spend Impact across multiple lower cards (e.g. two Severity 2 cards like `Rattled Guard` and `Off Balance`) to break the knight's stance and armor down.
+  - _Against Unarmored/Light Targets ($N \le 2$)_: Spend 3 to 4 Impact on high-tier cards (**Tier 2, 3, or 4**). A single devastating blow can break platforms (`Knocked Prone`), crack bones (`Cracked Ribs`), or knock out a fragile combatant.
+  - _Against Armored Tanks ($N \ge 3$)_: If the brute attacks alone, spending 4 Impact on a single Tier 4 card leaves multiple slots empty as "No Consequence" against a knight in full plate ($N = 5$). The knight will simply absorb the blow with their armor. The brute should instead spend Impact across multiple Tier 1 cards (e.g. four Tier 1 cards like `Rattled Guard`, `Off Balance`, and `Strained Offense`) to break the knight's stance and peel away armor thresholds.
 
 ### The Swarm / Pack (e.g., Goblins, Dire Wolves, Giant Rats)
 
 - **Low Impact, High Multiplicity**: Swarms generate 1–2 Impact across many simultaneous strikes.
-- **The Grinding Strategy**: Individual minions cannot purchase Severity 2 or 3 cards on their own. Instead, they flood the candidate pool with **Severity 1** cards.
-- **Intra-Tier Curation**: When 4 goblins generate candidate cards, the GM might hold:
-  `[Near Miss (harmless), Out of Breath (fatigue), Poor Footing (+1 Impact to defenses), Shallow Laceration (bleeding)]`.
-  - The GM curates out `Near Miss` and offers the cards that actively degrade the PC's defense or deck efficiency (`Poor Footing` and `Out of Breath`).
-  - Next round, the pack attacks again and targets those active tags, triggering **Tag Escalations** into Severity 2 and 3!
+- **The Grinding Strategy**: Individual minions cannot purchase Tier 2 or 3 cards on their own. Instead, they flood the candidate pool with **Tier 1** cards.
+- **Intra-Tier Dynamic Range & The Cut**: When 4 goblins generate 1 Impact each, the GM draws 4 cards from Tier 1:
+  `[Slightly Battered (Priority 1), Winded (Priority 2), Off Balance (Priority 4), Afraid (Priority 4)]`.
+  - The GM curates out the softer, easily cleared options (`Slightly Battered` and `Winded`) and offers the sharp, punishing tactical locks (`Off Balance` and `Afraid`).
+  - Next round, the pack attacks again and targets those active tags, triggering **Tag Escalations** into Tier 2 (`Knocked Prone`) and Tier 3!
 
 ### The Combined Assault (Boss + Minions)
 
 When a heavy hitter and weak minions attack the same character in the same Crisis round:
 
-- The heavy hitter can split their Impact (e.g., 4 Impact $\to$ two Severity 2 cards).
-- The minions spend their 1 Impact each on Severity 1 cards.
-- **The Curation Synergy**: The GM now holds candidate cards across both Severity 2 and Severity 1. Against a defender with Pool Size $N = 3$, the GM curates:
-  - Two Severity 2 conditions (forcing real danger).
-  - One **hand-picked, most disruptive Severity 1 condition** (filtering out the harmless blanks).
-- The player is faced with a compelling dilemma: take the dangerous Severity 2 trauma, or take the specially curated Severity 1 condition that actively sets up the enemies' next turn!
+- The heavy hitter can spend Impact on Tier 2 cards (e.g., 2 Impact $\to$ Tier 2 `Knocked Prone`).
+- The minions spend their 1 Impact each on Tier 1 cards.
+- **The Curation Synergy**: The GM now holds candidate cards across both Tier 2 and Tier 1. Against a defender with Pool Size $N = 3$, the GM curates:
+  - One Tier 2 platform break (`Knocked Prone`).
+  - Two **hand-picked, sharp Tier 1 conditions** (filtering out the soft setbacks).
+- The player is faced with a compelling dilemma: take the dangerous Tier 2 platform break, or take the specially curated Tier 1 condition that actively sets up the enemies' next turn!
 
 ---
 
@@ -56,11 +56,11 @@ To prevent multi-attacker rounds from bogging down the table, use these GM pacin
 When a group of 3–5 identical mooks (e.g., kobolds or goblins) each generate 1 Impact:
 
 1. **Do Not Make Micro-Decisions**: Do not deliberate over what each individual minion buys.
-2. **Batch Draw**: Count the total 1-Impact minions (e.g., 4) and draw that exact number of cards (4) straight off the **Severity 1** deck.
+2. **Batch Draw**: Count the total 1-Impact minions (e.g., 4) and draw that exact number of cards (4) straight off the **Tier 1** deck.
 3. **Five-Second Curation**:
    - Glance at the target's active conditions. Does any drawn card match an active tag? If yes, keep it in the pool.
-   - If not, discard the softest card (e.g., `Near Miss`) and present the remaining $N$ cards to the player.
-4. **Return the Rest**: Return unchosen candidates to the bottom of the Severity 1 deck.
+   - If not, discard the softest card (lowest Priority number) and present the remaining $N$ cards to the player.
+4. **Return the Rest**: Return unchosen candidates to the bottom of the Tier 1 deck.
 
 ### Priority Numbers & Default Curation (VTT and Zero-Friction Play)
 
@@ -74,13 +74,13 @@ When a GM is running combat without a strong tactical opinion, wants to keep the
 
 #### Example at the Table:
 
-A GM draws three Severity 1 candidate cards for a pack of wolves attacking a fighter:
+A GM draws three Tier 1 candidate cards for a pack of wolves attacking a fighter:
 
-- `Near Miss` (Priority 1)
-- `Out of Breath` (Priority 3)
-- `Poor Footing` (Priority 4)
+- `Slightly Battered` (Priority 1)
+- `Winded` (Priority 2)
+- `Off Balance` (Priority 4)
 
-If the fighter has Pool Size $N = 2$, the GM doesn't need to read the full text of all three cards. In two seconds, the GM checks for active tags (none match), keeps the highest priority cards (`Poor Footing` [4] and `Out of Breath` [3]), and tosses `Near Miss` [1] back into the deck.
+If the fighter has Pool Size $N = 2$, the GM doesn't need to read the full text of all three cards. In two seconds, the GM checks for active tags (none match), keeps the highest priority cards (`Off Balance` [4] and `Winded` [2]), and tosses `Slightly Battered` [1] back into the deck.
 
 ---
 
@@ -88,9 +88,9 @@ If the fighter has Pool Size $N = 2$, the GM doesn't need to read the full text 
 
 Remember that minions have **Consequence Pool Size: 1** printed on their Nature card:
 
-- When a player generates 2 Impact against a minion, the player spends 2 Impact to draw 1 Severity 2 card.
+- When a player generates 2 Impact against a minion, the player spends 2 Impact to draw 1 Tier 2 card.
 - There is **no curation step** and no second slot. The minion takes the card directly.
-- If the card defeats the minion (or if the minion has a trait like _Fragile: Drops at Severity 2_), the minion is removed from play immediately. This keeps minion-cleaving fast, visceral, and satisfying.
+- If the card defeats the minion (or if the minion has a trait like _Fragile: Drops at Tier 2_), the minion is removed from play immediately. This keeps minion-cleaving fast, visceral, and satisfying.
 
 ---
 
@@ -125,7 +125,7 @@ In non-combat scenes, draw from domain-appropriate consequence decks rather than
 
 Under a baseline Pool Size of $N = 2$, meeting a challenge's Strength with a **single card flip** produces **1 Impact**:
 
-1. The GM spends 1 Impact to draw 1 candidate card from the appropriate Severity 1 deck.
+1. The GM spends 1 Impact to draw 1 candidate card from the appropriate Tier 1 deck.
 2. The remaining slot in the pool of 2 is an **implicit "No Consequence" blank**.
 3. The player selects "No Consequence," taking no complications beyond the single card expended from their deck.
 
