@@ -567,3 +567,110 @@ modeling_crafting_materials_metallurgy:
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
           summary: "Definitive clinical resource for explosive shockwave trauma mechanisms, barotrauma pressure thresholds, and emergency stabilization."
+---
+modeling_social_psychology_legal:
+  description: >
+    Empirical sociology, behavioral economics, neurobiology of social stress, and historical jurisprudence supporting relational fallout, ostracism, and outlawry.
+  sources:
+    - type: journal_article
+      title: "The Trier Social Stress Test: Principles and practice"
+      author: "Allen, A. P., Kennedy, P. J., Cryan, J. F., Dinan, T. G., & Clarke, G."
+      year: 2014
+      doi_or_url: "https://doi.org/10.1016/j.ynstr.2016.11.001"
+      local_archive: "sources/verisimilitude/allen-2014-trier-social-stress-test.md"
+      epistemic_grade: "primary_academic"
+      publication: "Neurobiology of Stress"
+      description: >
+        Comprehensive methodological review of the Trier Social Stress Test (TSST) and the neurobiology of acute psychosocial stress. Quantifies how uncontrollable social-evaluative threat triggers 2- to 3-fold cortisol surges peaking at 20-30 minutes post-stressor, resolving over 60-90 minutes, accompanied by sympathetic cardiovascular excitation and transient cognitive impairment.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Gold standard experimental neurobiology benchmark for social-evaluative threat, cortisol kinetics, and acute status-threat recovery."
+    - type: book
+      title: "Interaction Ritual: Essays on Face-to-Face Behavior"
+      author: "Goffman, E."
+      year: 1967
+      doi_or_url: "https://archive.org/details/interactionritua00goff"
+      local_archive: "sources/verisimilitude/goffman-1967-interaction-ritual.pdf"
+      epistemic_grade: "primary_academic"
+      description: >
+        Foundational microsociological treatise on 'face-work' and interpersonal ceremonial rituals. Establishes the dynamics of poise, embarrassment, and conversational opening moves, detailing how communicative violations break interaction equilibrium and require immediate corrective ritual sequences or withdrawal.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative sociological framework for interpersonal greetings, conversational faux pas, and face-saving restorative acts."
+    - type: journal_article
+      title: "The neural bases of social pain: Evidence for shared representations with physical pain"
+      author: "Eisenberger, N. I."
+      year: 2012
+      doi_or_url: "https://doi.org/10.1097/PSY.0b013e3182464dd1"
+      local_archive: "sources/verisimilitude/eisenberger-2012-neural-bases-social-pain.md"
+      epistemic_grade: "primary_academic"
+      publication: "Psychosomatic Medicine"
+      description: >
+        Neuroimaging synthesis establishing that social exclusion, rejection, and ostracism engage the dorsal anterior cingulate cortex (dACC) and anterior insula—the identical neural architecture responsible for the affective distress of physical pain. Details behavioral consequences of social disconnection, depressive withdrawal, and cooperation decline.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Landmark functional neuroimaging baseline demonstrating physical-social pain overlap and cognitive effects of ostracism."
+    - type: journal_article
+      title: "Promises and Lies: Restoring Violated Trust"
+      author: "Schweitzer, M. E., Hershey, J. C., & Bradlow, E. T."
+      year: 2006
+      doi_or_url: "https://doi.org/10.1016/j.obhdp.2006.05.005"
+      local_archive: "sources/verisimilitude/schweitzer-2006-restoring-violated-trust.pdf"
+      epistemic_grade: "primary_academic"
+      publication: "Organizational Behavior and Human Decision Processes"
+      description: >
+        Experimental game theory research investigating trust destruction and repair. Demonstrates that while trust damaged by untrustworthy actions without deception can recover with apologies and consistent promises, trust violated by active deceit never fully recovers to pre-breach baselines, requiring extensive costly signaling over repeated interactions.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive behavioral economics study quantifying asymmetric trust loss and protracted recovery curves following exposed dishonesty."
+    - type: journal_article
+      title: "Brain on stress: How the social environment gets under the skin"
+      author: "McEwen, B. S."
+      year: 2012
+      doi_or_url: "https://doi.org/10.1073/pnas.1121254109"
+      local_archive: "sources/verisimilitude/mcewen-2012-brain-on-stress-social-environment.md"
+      epistemic_grade: "primary_academic"
+      publication: "Proceedings of the National Academy of Sciences"
+      description: >
+        Neurobiological review of allostasis, allostatic load, and chronic social stress. Explains how sustained social threat, anticipatory dread, and lack of control induce chronic HPA-axis hyperactivity, dendritic atrophy in hippocampus and prefrontal cortex, amygdalar hypertrophy, and impaired executive decision-making over weeks and months.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Seminal neuroendocrinology paper detailing allostatic load, chronic glucocorticoid neurotoxicity, and cognitive wear under sustained threat."
+    - type: clinical_chapter
+      title: "Panic Disorder Emergency Management"
+      author: "Maranon, R., & Patel, P."
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430973/"
+      local_archive: "sources/verisimilitude/statpearls-2023-panic-disorder-emergency.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical psychiatric emergency monograph on panic attack pathophysiology and acute intervention. Details amygdala-driven sympathetic autonomic storm, tachycardia exceeding 140 bpm, tachypnea leading to hypocapnic respiratory alkalosis (paresthesias, chest tightness, dizziness), peak intensity within 10 minutes, and 1-2 hour post-ictal exhaustion.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Essential emergency psychiatry reference on acute panic kinetics, physiological signs, and rapid resolution timelines."
+    - type: book
+      title: "The History of English Law Before the Time of Edward I (Vol. 2)"
+      author: "Pollock, F., & Maitland, F. W."
+      year: 1898
+      doi_or_url: "https://archive.org/details/historyofenglish02polluoft"
+      local_archive: "sources/verisimilitude/pollock-maitland-1898-history-english-law-vol2.pdf"
+      epistemic_grade: "historical_manual"
+      description: >
+        Definitive legal historical treatise on medieval English common law. Provides exhaustive historical analysis of outlawry (utlagaria), the doctrine of the 'wolf's head' (caput gerat lupinum), communal hue and cry, total forfeiture of chattels and land, and the formal process of abjuration of the realm (banishment to continental exile on pain of summary execution).
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Master legal historical reference on medieval criminal jurisprudence, outlawry as civil death, and banishment mechanisms."
