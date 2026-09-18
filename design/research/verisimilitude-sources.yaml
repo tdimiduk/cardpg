@@ -674,3 +674,80 @@ modeling_social_psychology_legal:
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
           summary: "Master legal historical reference on medieval criminal jurisprudence, outlawry as civil death, and banishment mechanisms."
+---
+modeling_arcane_sensory_electrotrauma:
+  description: >
+    Empirical electrical arc physics, neurotoxicology, neuro-otology, ectopic bone pathobiology, and vestibular sensory illusions providing physiological anchors for arcane discharges, potion ingestion, mana static, and dimensional distortion.
+  sources:
+    - type: governmental_standard
+      title: "Electrical Safety: Safety and Health for Electrical Trades"
+      author: "CDC / NIOSH"
+      year: 2009
+      doi_or_url: "https://www.cdc.gov/niosh/docs/2009-113/pdfs/2009-113.pdf"
+      local_archive: "sources/verisimilitude/cdc-niosh-2009-electrical-safety.pdf"
+      epistemic_grade: "governmental_standard"
+      description: >
+        NIOSH manual detailing physical hazards of electrical arcs, radiant thermal energy pulse mechanics, arc flash temperatures exceeding 5000°C, superficial contact burns, and clothing ignition/scorching thresholds across wool, linen, and synthetic fabrics.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative workplace safety standard on electrical flash discharge, thermal clothing scorch thresholds, and low-energy shock hazards."
+    - type: journal_article
+      title: "Why Is the Neurobiology of Nausea and Vomiting So Important?"
+      author: "Horn, C. C., et al."
+      year: 2014
+      doi_or_url: "https://doi.org/10.1016/j.autneu.2014.06.002"
+      local_archive: "sources/verisimilitude/horn-2014-neurobiology-nausea-vomiting.md"
+      epistemic_grade: "primary_academic"
+      publication: "Autonomic Neuroscience"
+      description: >
+        Comprehensive neurobiological review of nausea and emetic neurocircuitry. Details how systemic or ingested chemical irritants stimulate vagal afferents and trigger the area postrema (chemoreceptor trigger zone in the fourth ventricle), inducing gastric dysrhythmia, retrograde peristalsis, and autonomic emesis.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive neurobiological benchmark on toxic chemical emesis, vagal-brainstem signaling, and nausea recovery curves."
+    - type: clinical_chapter
+      title: "Acoustic Trauma, Tinnitus, and Sensory Processing"
+      author: "StatPearls"
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430809/"
+      local_archive: "sources/verisimilitude/statpearls-2023-tinnitus-auditory-processing.md"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical neuro-otology monograph on acute acoustic overstimulation, excitotoxicity, hair cell stereocilia shearing, and cortical inhibitory gating breakdown resulting in acute phantom tinnitus, phonophobia, and severe cognitive distractibility.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Essential clinical reference for acute acoustic overstimulation, sensory gating failure, and neural recovery timelines."
+    - type: journal_article
+      title: "Heterotopic Ossification: A Comprehensive Review"
+      author: "Meyers, C., et al."
+      year: 2019
+      doi_or_url: "https://doi.org/10.1002/jbm4.10172"
+      local_archive: "sources/verisimilitude/meyers-2019-heterotopic-ossification-review.md"
+      epistemic_grade: "primary_academic"
+      publication: "JBMR Plus"
+      description: >
+        In-depth review of heterotopic ossification pathophysiology—the rapid, abnormal formation of mature lamellar bone within extra-skeletal soft tissues and muscular compartments following severe blast, burn, or neurogenic trauma, detailing inflammatory signaling, joint ankylosis, and severe motor limitation.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous pathobiological framework for rapid extraskeletal calcification and joint mobility loss used to anchor magical petrification."
+    - type: governmental_standard
+      title: "Spatial Disorientation: Why You Shouldn't Fly by the Seat of Your Pants"
+      author: "Federal Aviation Administration"
+      year: 2020
+      doi_or_url: "https://www.faa.gov/pilots/safety/pilotsafetybrochures/media/spatiald.pdf"
+      local_archive: "sources/verisimilitude/faa-2020-spatial-disorientation-vestibular-illusions.pdf"
+      epistemic_grade: "governmental_standard"
+      description: >
+        Federal aeromedical treatise on vestibular illusions and spatial disorientation. Explains sensory conflicts between semicircular canal endolymph inertia and otolith gravireceptors (Coriolis illusion, graveyard spirals), triggering acute postural instability, motion sickness, sensory mismatch, and spatial agnosia.
+      vetting:
+        - date: "2026-09-17"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative human vestibular physiology benchmark for multi-axis spatial disorientation, motion sickness, and terrestrial recalibration."
