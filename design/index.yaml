@@ -6,19 +6,16 @@
 introductory_materials:
   - name: "Introduction"
     path: "introduction.md"
-    type: "Introductory Text"
     purpose: "The primary player-facing introduction to the game. Sets tone, theme, and core player experience before rules are presented."
     tags: ["doc-type:introductory-text", "audience:player-facing"]
 
   - name: "Root Readme"
     path: "README.md"
-    type: "Meta Document"
     purpose: "The root orientation document for the repository."
     tags: ["doc-type:meta", "audience:designer-facing"]
 
   - name: "Agent Design Rules"
     path: "AGENTS.md"
-    type: "Meta Document"
     purpose: "Operating rules, canonical hierarchies, and subagent delegation instructions for AI assistants working in the design directory."
     tags: ["doc-type:meta", "audience:designer-facing"]
 
@@ -26,39 +23,33 @@ project_foundation:
   philosophy:
     - name: "Guiding Principles"
       path: "philosophy/guiding-principles.md"
-      type: "Design Philosophy"
       purpose: "The 'Why.' The ultimate authority on the project's creative vision and core philosophies."
       tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:pillars-of-play"]
 
     - name: "Game Settings"
       path: "philosophy/game-settings.md"
-      type: "Design Philosophy"
       purpose: "A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences."
       tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
 
   design_patterns:
     - name: "Design Precepts"
       path: "philosophy/design-precepts.md"
-      type: "Design Patterns"
       purpose: "The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics."
       tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-patterns", "core-concept:core-mechanic", "core-concept:hand-management", "core-concept:status-cards"]
 
     - name: "Paradigm Shifts"
       path: "methodology/paradigm-shifts.md"
-      type: "Meta Document"
       purpose: "An onboarding guide for designers familiar with other TTRPGs detailing core assumptions to un-learn."
       tags: ["doc-type:meta", "audience:designer-facing", "core-concept:design-patterns"]
 
   methodology:
     - name: "Documentation Standards"
       path: "methodology/documentation-standards.md"
-      type: "Meta Document"
       purpose: "The official style guide for creating and formatting all design documents in the project."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
     - name: "Tag Glossary"
       path: "methodology/tag-glossary.md"
-      type: "Meta Document"
       purpose: "The canonical reference for the project's tagging system. Defines the scope and usage of all tags."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
@@ -66,72 +57,61 @@ game_system_and_rules:
   core_rules_and_guides:
     - name: "Core Rules"
       path: "rules/core-rules.md"
-      type: "Game Rules"
       purpose: "The foundational player-facing rules. The single most important mechanics document."
       tags: ["doc-type:rules", "audience:player-facing", "core-concept:core-mechanic", "core-concept:action-resolution", "core-concept:consequences", "core-concept:fatigue", "core-concept:harm", "pillar:combat", "pillar:exploration", "pillar:social"]
 
     - name: "Player's Guide"
       path: "rules/players-guide.md"
-      type: "Player Guide"
       purpose: "Strategic advice, advanced tactics, and detailed play examples complementing core-rules.md."
       tags: ["doc-type:guide", "audience:player-facing", "core-concept:strategy", "core-concept:fatigue", "core-concept:hand-management"]
 
     - name: "Gamemaster's Guide"
       path: "rules/gamemaster-guide.md"
-      type: "GM Procedures"
       purpose: "Instructions, best practices, and advanced guidance for running the game and writing adventures."
       tags: ["doc-type:guide", "audience:gm-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:npc-design", "core-concept:pacing", "core-concept:clocks", "core-concept:fronts", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:disengagement"]
 
     - name: "Keyword Glossary"
       path: "rules/keyword-glossary.md"
-      type: "Game Rules"
       purpose: "Reference for the keywords in the game."
       tags: ["doc-type:rules", "audience:player-facing", "core-concept:keywords"]
 
     - name: "Reading the Cards"
       path: "rules/reading-the-cards.md"
-      type: "Game Rules"
       purpose: "Guide on interpreting card rules and keywords."
       tags: ["doc-type:rules", "audience:player-facing"]
 
   lexicons:
     - name: "Colors of Action"
       path: "rules/colors-of-action.md"
-      type: "Action Lexicon"
       purpose: "An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue."
       tags: ["doc-type:content-library", "audience:player-facing", "audience:gm-facing", "core-concept:colors-of-action", "core-concept:action-resolution"]
 
   modules:
     - name: "Clocks and Fronts"
       path: "rules/modules/clocks-and-fronts.md"
-      type: "Game Rules Module"
       purpose: "Optional rules for dynamic campaign play."
       tags: ["doc-type:module", "audience:gm-facing", "pillar:downtime", "core-concept:clocks", "core-concept:fronts", "core-concept:pacing"]
 
     - name: "Snap Check"
       path: "rules/modules/snap-check.md"
-      type: "Game Rules Module"
       purpose: "Optional rules for passive checks (like perception)."
       tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing", "pillar:exploration", "pillar:social", "core-concept:passive-check", "core-concept:perception"]
 
 sub_indexes:
   - name: "Iteration Index"
     path: "iteration/index.yaml"
-    type: "Index"
     purpose: "Sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches."
     tags: ["doc-type:index", "audience:designer-facing"]
     aggregated_tags: ["audience:designer-facing", "core-concept:action-resolution", "core-concept:armor", "core-concept:consequences", "core-concept:defense", "core-concept:fatigue", "core-concept:hand-management", "core-concept:harm", "core-concept:status-cards", "doc-type:content-library", "doc-type:ideation", "doc-type:iteration", "doc-type:meta"]
 
   - name: "Research Index"
     path: "research/index.yaml"
-    type: "Index"
     purpose: "Sub-index mapping empirical research reports, verisimilitude sources, living research syntheses, and game design theory."
     tags: ["doc-type:index", "audience:designer-facing"]
     aggregated_tags: ["audience:designer-facing", "core-concept:action-resolution", "core-concept:armor", "core-concept:attrition", "core-concept:card-economy", "core-concept:casual-realism", "core-concept:clocks", "core-concept:consequences", "core-concept:design-theory", "core-concept:disengagement", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:hardship", "core-concept:harm", "core-concept:healing", "core-concept:injury", "core-concept:inspiration", "core-concept:lethality", "core-concept:ludology", "core-concept:movement", "core-concept:pacing", "core-concept:perception", "core-concept:progression", "core-concept:reach", "core-concept:research", "core-concept:spacing", "core-concept:tempo", "core-concept:verisimilitude", "doc-type:content-library", "doc-type:literature-note", "doc-type:meta", "doc-type:research-report", "doc-type:research-synthesis", "pillar:combat", "pillar:downtime", "pillar:exploration", "pillar:magic", "pillar:social"]
 
   - name: "Archive Index"
     path: "archive/index.yaml"
-    type: "Index"
     purpose: "Sub-index preserving archived playtest content, legacy spreadsheets, and superseded research."
     tags: ["doc-type:index", "audience:designer-facing"]
     aggregated_tags: ["audience:designer-facing", "core-concept:cards", "core-concept:npc-design", "doc-type:content-library", "doc-type:meta", "type:monster-deck", "type:pc-deck"]
@@ -139,13 +119,11 @@ sub_indexes:
 global_registries:
   - name: "Card Catalog"
     path: "../data/cards/_manifest.yaml"
-    type: "Registry"
     purpose: "The master index for all game objects (Cards, Items, Encounters). Used by the VTT build pipeline."
     tags: ["doc-type:registry", "audience:builder"]
 
   - name: "Data Schema & Syntax"
     path: "../data/cards/README.md"
-    type: "Meta Document"
     purpose: "Technical documentation for the YAML schema and notation syntax used in card definitions."
     tags: ["doc-type:meta", "audience:builder", "audience:designer-facing"]
 
@@ -154,7 +132,6 @@ game_content_design:
     - name: "Consequence Decks"
       path: "https://docs.google.com/spreadsheets/u/0/d/1H49JzTbhXSZzbtooRIRm5wj3Kd9GD4Yq7xeztLDoRWU/edit"
       source_type: "google_sheet"
-      type: "Cards"
       purpose: "The primary spreadsheet for consequence card design."
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards", "core-concept:consequences", "core-concept:harm"]
       sheets:
@@ -165,6 +142,5 @@ game_content_design:
     - name: "Encounters (2025)"
       path: "https://docs.google.com/spreadsheets/d/1iIy53SLPovtR9VlpGvmtJ1Q8Vmv0cUyJEx83_0iE9WI/edit?gid=0#gid=0"
       source_type: "google_sheet"
-      type: "Cards"
       purpose: "Adventure decks from a recent playtest campaign, mostly up to date with current rules."
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]

@@ -79,7 +79,6 @@ If you prefer to manually craft an entry or place it in a specialized section:
    - `id`: Unique URL-friendly slug (kebab-case).
    - `path`: Relative path from the `design/` root directory.
    - `purpose`: One-sentence explanation of the document's design role.
-   - `type`: Document category matching frontmatter `doc_type`.
    - `tags`: Category labels (e.g., `doc-type:research-synthesis`, `audience:designer-facing`).
 
 ---

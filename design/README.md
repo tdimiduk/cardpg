@@ -27,29 +27,29 @@ Your interaction with this repository is governed by two key documents and a cor
 
 ### Foundations & Philosophy
 
-| Document                                                          | Type              | Summary                                                                                                                         |
-| :---------------------------------------------------------------- | :---------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| [Guiding Principles](philosophy/guiding-principles.md)            | Design Philosophy | The 'Why.' The ultimate authority on the project's creative vision and core philosophies.                                       |
-| [Game Settings](philosophy/game-settings.md)                      | Design Philosophy | A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences.             |
-| [Design Precepts](philosophy/design-precepts.md)                  | Design Patterns   | The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics.                                    |
-| [Paradigm Shifts](methodology/paradigm-shifts.md)                 | Meta Document     | An onboarding guide for designers familiar with other TTRPGs detailing core assumptions to un-learn.                            |
-| [Documentation Standards](methodology/documentation-standards.md) | Meta Document     | The official style guide for creating and formatting all design documents in the project.                                       |
-| [Tag Glossary](methodology/tag-glossary.md)                       | Meta Document     | The canonical reference for the project's tagging system. Defines the scope and usage of all tags.                              |
-| [Introduction](introduction.md)                                   | Introductory Text | The primary player-facing introduction to the game. Sets tone, theme, and core player experience before rules are presented.    |
-| [Agent Design Rules](AGENTS.md)                                   | Meta Document     | Operating rules, canonical hierarchies, and subagent delegation instructions for AI assistants working in the design directory. |
+| Document                                                          | Summary                                                                                                                         |
+| :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| [Guiding Principles](philosophy/guiding-principles.md)            | The 'Why.' The ultimate authority on the project's creative vision and core philosophies.                                       |
+| [Game Settings](philosophy/game-settings.md)                      | A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences.             |
+| [Design Precepts](philosophy/design-precepts.md)                  | The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics.                                    |
+| [Paradigm Shifts](methodology/paradigm-shifts.md)                 | An onboarding guide for designers familiar with other TTRPGs detailing core assumptions to un-learn.                            |
+| [Documentation Standards](methodology/documentation-standards.md) | The official style guide for creating and formatting all design documents in the project.                                       |
+| [Tag Glossary](methodology/tag-glossary.md)                       | The canonical reference for the project's tagging system. Defines the scope and usage of all tags.                              |
+| [Introduction](introduction.md)                                   | The primary player-facing introduction to the game. Sets tone, theme, and core player experience before rules are presented.    |
+| [Agent Design Rules](AGENTS.md)                                   | Operating rules, canonical hierarchies, and subagent delegation instructions for AI assistants working in the design directory. |
 
 ### Rules & Mechanics
 
-| Document                                                | Type              | Summary                                                                                          |
-| :------------------------------------------------------ | :---------------- | :----------------------------------------------------------------------------------------------- |
-| [Core Rules](rules/core-rules.md)                       | Game Rules        | The foundational player-facing rules. The single most important mechanics document.              |
-| [Player's Guide](rules/players-guide.md)                | Player Guide      | Strategic advice, advanced tactics, and detailed play examples complementing core-rules.md.      |
-| [Gamemaster's Guide](rules/gamemaster-guide.md)         | GM Procedures     | Instructions, best practices, and advanced guidance for running the game and writing adventures. |
-| [Keyword Glossary](rules/keyword-glossary.md)           | Game Rules        | Reference for the keywords in the game.                                                          |
-| [Reading the Cards](rules/reading-the-cards.md)         | Game Rules        | Guide on interpreting card rules and keywords.                                                   |
-| [Colors of Action](rules/colors-of-action.md)           | Action Lexicon    | An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue.             |
-| [Clocks and Fronts](rules/modules/clocks-and-fronts.md) | Game Rules Module | Optional rules for dynamic campaign play.                                                        |
-| [Snap Check](rules/modules/snap-check.md)               | Game Rules Module | Optional rules for passive checks (like perception).                                             |
+| Document                                                | Summary                                                                                          |
+| :------------------------------------------------------ | :----------------------------------------------------------------------------------------------- |
+| [Core Rules](rules/core-rules.md)                       | The foundational player-facing rules. The single most important mechanics document.              |
+| [Player's Guide](rules/players-guide.md)                | Strategic advice, advanced tactics, and detailed play examples complementing core-rules.md.      |
+| [Gamemaster's Guide](rules/gamemaster-guide.md)         | Instructions, best practices, and advanced guidance for running the game and writing adventures. |
+| [Keyword Glossary](rules/keyword-glossary.md)           | Reference for the keywords in the game.                                                          |
+| [Reading the Cards](rules/reading-the-cards.md)         | Guide on interpreting card rules and keywords.                                                   |
+| [Colors of Action](rules/colors-of-action.md)           | An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue.             |
+| [Clocks and Fronts](rules/modules/clocks-and-fronts.md) | Optional rules for dynamic campaign play.                                                        |
+| [Snap Check](rules/modules/snap-check.md)               | Optional rules for passive checks (like perception).                                             |
 
 ### Domain Catalogs
 

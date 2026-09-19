@@ -7,52 +7,44 @@ active_design_exploration:
   orientation:
     - name: "Iteration Directory"
       path: "iteration/README.md"
-      type: "Meta Document"
       purpose: "Orientation and operating conventions for active design exploration and proposals."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
   mechanical_constraints:
     - name: "Resolution System Design Constraints"
       path: "iteration/resolution-design-constraints.md"
-      type: "Design Constraints"
       purpose: "Authoritative reference for architectural constraints, tabletop ergonomics, and evaluation criteria that any proposed Core Resolution Mechanic must satisfy."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
 
     - name: "Resolution System Pitfalls & Anti-Patterns"
       path: "iteration/resolution-pitfalls.md"
-      type: "Design Constraints"
       purpose: "Authoritative catalog of recurring mechanical failure modes, degenerate incentives, and tabletop friction points discovered across resolution iterations."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
 
   resolution_and_combat_proposals:
     - name: "Consequence Pool & Tag Escalation Engine"
       path: "iteration/consequence-pool-tag-escalation/index.yaml"
-      type: "Index"
       purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
     - name: "Resolution Mechanic Exploration"
       path: "iteration/resolution-exploration.md"
-      type: "Design Exploration"
       purpose: "An honest critique of legacy resolution mechanics (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.'"
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:hand-management"]
 
     - name: "Defense Action Iteration"
       path: "iteration/defense-action.md"
-      type: "Ideation"
       purpose: "Exploration of active defense action mechanics and timing."
       tags: ["doc-type:ideation", "audience:designer-facing", "core-concept:defense", "core-concept:action-resolution"]
 
   mechanics_and_resource_proposals:
     - name: "Fatigue Change Proposal"
       path: "iteration/fatigue-change-proposal.md"
-      type: "Design Exploration"
       purpose: "A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:fatigue", "core-concept:status-cards"]
 
   ideation_and_sketches:
     - name: "Design Sketchbook"
       path: "iteration/design-sketchbook.md"
-      type: "Ideation"
       purpose: "A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization."
       tags: ["doc-type:ideation", "audience:designer-facing"]

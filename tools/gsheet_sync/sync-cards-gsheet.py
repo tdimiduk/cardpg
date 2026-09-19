@@ -113,18 +113,18 @@ def main(key: str | None = None, sheet_name: str | None = None, all: bool = Fals
         for category in index.values():
             if isinstance(category, list):
                 for item in category:
-                    if item.get('type') == 'Cards':
+                    if item.get('source_type') == 'google_sheet' or item.get('type') == 'Cards':
                         entries_to_sync.append(item)
             elif isinstance(category, dict):
                  for subcategory in category.values():
                     if isinstance(subcategory, list):
                         for item in subcategory:
-                            if item.get('type') == 'Cards':
+                            if item.get('source_type') == 'google_sheet' or item.get('type') == 'Cards':
                                 entries_to_sync.append(item)
         
         print(f"Syncing {len(entries_to_sync)} entries to {output_dir}...")
         for entry in entries_to_sync:
-            print(f"Syncing {entry['name']} ({entry['id']})...")
+            print(f"Syncing {entry['name']} ({entry.get('id', entry['name'])})...")
             dump_index_entry(entry, output_dir=output_dir)
             
     elif key:

@@ -15,7 +15,7 @@ Key checks:
    - Deprecation alert if legacy 'status' is present.
 3. Metadata alignment:
    - Frontmatter 'title' matches index 'name'.
-   - Frontmatter 'doc_type' matches index 'type' or tags.
+   - Frontmatter 'doc_type' matches index tags.
 4. Dead link detection:
    - All paths declared in 'related_files' exist on disk.
 5. Missing frontmatter tracking:
@@ -151,7 +151,7 @@ def load_all_index_data(root_dir, index_path, loaded_paths=None, entries_by_path
                     rel_path = str(p).replace("\\", "/")
                     files.add(rel_path)
                     entries_by_path[rel_path] = current_entry
-                    if node.get("type") == "Index":
+                    if node.get("type") == "Index" or rel_path.endswith("index.yaml") or "doc-type:index" in node.get("tags", []):
                         sub_indexes_to_load.append(rel_path)
 
             if "components" in node:
@@ -328,7 +328,7 @@ def validate_metadata_alignment(fm, index_entry, rel_path):
 
         allowed_matchers = DOC_TYPE_COMPATIBILITY.get(dt_str, {dt_str})
         matched = False
-        if idx_type in allowed_matchers:
+        if idx_type and idx_type in allowed_matchers:
             matched = True
         else:
             for tag in idx_tags:
@@ -339,7 +339,7 @@ def validate_metadata_alignment(fm, index_entry, rel_path):
         if not matched:
             errors.append(
                 f"Document type mismatch: frontmatter doc_type '{doc_type}' does not align with "
-                f"index type '{index_entry.get('type')}' or tags '{index_entry.get('tags')}'"
+                f"index tags '{index_entry.get('tags')}'"
             )
 
     return errors
@@ -526,7 +526,6 @@ def insert_entry_into_index(index_abs_path, section_key, entry):
     entry_lines = []
     entry_lines.append(f'{item_indent}- name: "{entry["name"]}"\n')
     entry_lines.append(f'{prop_indent}path: "{entry["path"]}"\n')
-    entry_lines.append(f'{prop_indent}type: "{entry["type"]}"\n')
     clean_purpose = entry["purpose"].replace('"', '\\"')
     entry_lines.append(f'{prop_indent}purpose: "{clean_purpose}"\n')
     tags_formatted = ", ".join(f'"{t}"' for t in entry["tags"])
@@ -589,11 +588,6 @@ def auto_index_unindexed_files(unindexed_files, design_root):
         if not purpose:
             purpose = f"Documentation and design specifications for {fm.get('title')}."
 
-        if "modules" in rel_path and doc_type == "rules":
-            entry_type = "Game Rules Module"
-        else:
-            entry_type = TYPE_MAP.get(doc_type, "Design Exploration")
-
         tags = []
         dt_tag = DOC_TYPE_CANONICAL_TAGS.get(doc_type, f"doc-type:{doc_type}")
         tags.append(dt_tag)
@@ -612,7 +606,6 @@ def auto_index_unindexed_files(unindexed_files, design_root):
             "id": entry_id,
             "path": rel_path,
             "purpose": purpose,
-            "type": entry_type,
             "tags": tags,
         }
 
@@ -625,7 +618,7 @@ def auto_index_unindexed_files(unindexed_files, design_root):
 
     return fixed_count
 
-def clean_desc(text, max_len=140):
+def clean_desc(text, max_len=160):
     if not text:
         return ""
     s = text.replace("\n", " ").strip()
@@ -660,7 +653,7 @@ def compute_sub_index_tags(design_root, sub_index_rel_path):
         if isinstance(node, dict):
             if "tags" in node and isinstance(node["tags"], list):
                 tags.update(node["tags"])
-            if node.get("type") == "Index" and "path" in node:
+            if (node.get("type") == "Index" or node.get("path", "").endswith("index.yaml") or "doc-type:index" in node.get("tags", [])) and "path" in node:
                 child_rel = node["path"]
                 child_abs = os.path.join(design_root, child_rel)
                 if os.path.exists(child_abs) and os.path.abspath(child_abs) != os.path.abspath(sub_index_abs):
@@ -680,15 +673,15 @@ def generate_root_toc(design_root):
     foundations = []
     for sec_k in ["philosophy", "design_patterns", "methodology"]:
         for item in root_data.get("project_foundation", {}).get(sec_k, []):
-            foundations.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+            foundations.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
     for item in root_data.get("introductory_materials", []):
         if item.get("path") in ["AGENTS.md", "introduction.md"]:
-            foundations.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+            foundations.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
 
     rules = []
     for sec_k in ["core_rules_and_guides", "lexicons", "modules"]:
         for item in root_data.get("game_system_and_rules", {}).get(sec_k, []):
-            rules.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+            rules.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
 
     domains = []
     for item in root_data.get("sub_indexes", []):
@@ -700,10 +693,10 @@ def generate_root_toc(design_root):
         "## Directory Catalog",
         "",
         "### Foundations & Philosophy",
-        make_markdown_table(["Document", "Type", "Summary"], foundations),
+        make_markdown_table(["Document", "Summary"], foundations),
         "",
         "### Rules & Mechanics",
-        make_markdown_table(["Document", "Type", "Summary"], rules),
+        make_markdown_table(["Document", "Summary"], rules),
         "",
         "### Domain Catalogs",
         make_markdown_table(["Domain", "Directory / Sub-Index", "Focus & Scope"], domains),
@@ -717,7 +710,7 @@ def generate_iteration_toc(design_root):
     constraints = []
     for item in iter_data.get("active_design_exploration", {}).get("mechanical_constraints", []):
         rel_p = item["path"].replace("iteration/", "")
-        constraints.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+        constraints.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     proposals = []
     for sec_k in ["resolution_and_combat_proposals", "mechanics_and_resource_proposals"]:
@@ -725,24 +718,24 @@ def generate_iteration_toc(design_root):
             rel_p = item["path"].replace("iteration/", "")
             if rel_p.endswith("index.yaml"):
                 rel_p = rel_p.replace("index.yaml", "README.md")
-            proposals.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+            proposals.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     sketches = []
     for item in iter_data.get("active_design_exploration", {}).get("ideation_and_sketches", []):
         rel_p = item["path"].replace("iteration/", "")
-        sketches.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+        sketches.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Active Iteration Catalog",
         "",
         "### Mechanical Constraints & Frameworks",
-        make_markdown_table(["Document", "Type", "Summary"], constraints),
+        make_markdown_table(["Document", "Summary"], constraints),
         "",
         "### Active Proposals & Mechanics",
-        make_markdown_table(["Document", "Type", "Summary"], proposals),
+        make_markdown_table(["Document", "Summary"], proposals),
         "",
         "### Ideation Sketches",
-        make_markdown_table(["Document", "Type", "Summary"], sketches),
+        make_markdown_table(["Document", "Summary"], sketches),
         "",
         "*Last synced from `iteration/index.yaml` via `tools/audit_index.py`.*",
     ]
@@ -754,39 +747,39 @@ def generate_research_toc(design_root):
     for sec_k in ["factual_bedrock", "inspiration_library", "ludology_library"]:
         for item in res_data.get(sec_k, []):
             rel_p = item["path"].replace("research/", "")
-            bedrock.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+            bedrock.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     syntheses = []
     for item in res_data.get("research_synthesis", []):
         rel_p = item["path"].replace("research/", "")
-        syntheses.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+        syntheses.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     reports = []
     for item in res_data.get("research_reports", []):
         rep_f = item.get("components", {}).get("report_file", "")
         if rep_f.startswith("research/"):
             rep_f = rep_f[len("research/") :]
-        reports.append([f"[{item['name']}]({rep_f})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+        reports.append([f"[{item['name']}]({rep_f})", clean_desc(item.get("purpose", ""))])
 
     theory = []
     for item in res_data.get("design_theory_and_readings", []):
         rel_p = item["path"].replace("research/", "")
-        theory.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+        theory.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Research Catalog",
         "",
         "### Bibliographies & Bedrock",
-        make_markdown_table(["Document", "Type", "Summary"], bedrock),
+        make_markdown_table(["Document", "Summary"], bedrock),
         "",
         "### Living Research Syntheses (`synthesis/`)",
-        make_markdown_table(["Document", "Type", "Summary"], syntheses),
+        make_markdown_table(["Document", "Summary"], syntheses),
         "",
         "### Empirical Reports (`reports/`)",
-        make_markdown_table(["Report", "Type", "Summary"], reports),
+        make_markdown_table(["Report", "Summary"], reports),
         "",
         "### Game Design Theory (`theory/readings/`)",
-        make_markdown_table(["Document", "Type", "Summary"], theory),
+        make_markdown_table(["Document", "Summary"], theory),
         "",
         "*Last synced from `research/index.yaml` via `tools/audit_index.py`.*",
     ]
@@ -796,13 +789,13 @@ def generate_archive_toc(design_root):
     arch_data = load_index(os.path.join(design_root, "archive/index.yaml")).get("archive_and_legacy_materials", {})
     arch_items = []
     for item in arch_data.get("archived_playtest_spreadsheets", []):
-        arch_items.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+        arch_items.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Archived Content Catalog",
         "",
         "### Playtest Spreadsheets & Materials",
-        make_markdown_table(["Item", "Type", "Summary"], arch_items),
+        make_markdown_table(["Item", "Summary"], arch_items),
         "",
         "*Last synced from `archive/index.yaml` via `tools/audit_index.py`.*",
     ]

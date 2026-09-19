@@ -7,94 +7,79 @@ design_process_and_research:
   orientation:
     - name: "Research Directory"
       path: "research/README.md"
-      type: "Meta Document"
       purpose: "Orientation and context for the empirical research directory and Two-Track model."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
   inspiration_library:
     - name: "Inspiration Sources"
       path: "research/inspiration-sources.yaml"
-      type: "Inspiration Library"
       purpose: "A curated library of media (books, games, films) and their key design lessons."
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:inspiration"]
 
   ludology_library:
     - name: "Ludology Sources"
       path: "research/ludology-sources.yaml"
-      type: "Inspiration Library"
       purpose: "Catalog of secondary game design theory, essays, and ludological frameworks."
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:ludology", "core-concept:design-theory"]
 
   factual_bedrock:
     - name: "Verisimilitude Sources"
       path: "research/verisimilitude-sources.yaml"
-      type: "Factual Bedrock"
       purpose: "A list of historical and scientific sources used to ground the game in casual realism."
       tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:verisimilitude", "core-concept:research"]
 
   research_reports:
     - name: "Battlefield Injury Research"
-      type: "Research Report"
       purpose: "A detailed analysis of pre-modern battlefield trauma, its functional impacts, and progression. Used for designing injury, death, and healing mechanics."
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:harm", "core-concept:injury", "core-concept:healing", "core-concept:lethality", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/pre-modern_battlefield_injury/report.md", meta_file: "research/reports/pre-modern_battlefield_injury/meta.yaml", prompt_file: "research/reports/pre-modern_battlefield_injury/prompt.md" }
 
     - name: "Decline Under Physical Hardship"
-      type: "Research Report"
       purpose: "A scientific analysis of how real-world injuries and hardship affect the human body, providing a factual basis for the game's consequence and harm mechanics."
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:hardship", "core-concept:attrition", "core-concept:injury", "core-concept:fatigue", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/functional-decline-under-physical-hardship/report.md", meta_file: "research/reports/functional-decline-under-physical-hardship/meta.yaml", prompt_file: "research/reports/functional-decline-under-physical-hardship/prompt.md" }
 
     - name: "Catastrophic Trauma Timelines"
-      type: "Research Report"
       purpose: "A quantitative analysis of the physiological timelines of death following catastrophic trauma. Provides a factual basis for designing high-severity consequences and 'dying' states with specific, evidence-based timers."
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:harm", "core-concept:lethality", "core-concept:consequences", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/catastrophic-trauma-timelines/report.md", meta_file: "research/reports/catastrophic-trauma-timelines/meta.yaml", prompt_file: "research/reports/catastrophic-trauma-timelines/prompt.md" }
 
     - name: "The Dynamics of the duel"
-      type: "Research Report"
       purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:fatigue", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/dynamics-of-the-duel/report.md", meta_file: "research/reports/dynamics-of-the-duel/meta.yaml", prompt_file: "research/reports/dynamics-of-the-duel/prompt.md" }
 
     - name: "Combat Dynamics Analysis"
-      type: "Research Report"
       purpose: "A detailed tactical and mechanical analysis of pre-modern combat. Note: Its data on armor's metabolic cost and mobility penalties has been superseded by the more detailed 'report-combat-locomotion'."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:reach", "core-concept:spacing", "core-concept:armor", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/combat-dynamics-analysis/report.md", meta_file: "research/reports/combat-dynamics-analysis/meta.yaml", prompt_file: "research/reports/combat-dynamics-analysis/prompt.md" }
 
     - name: "Combat Locomotion Analysis"
-      type: "Research Report"
       purpose: "A detailed biomechanical analysis of pre-modern combat locomotion. Its findings on movement speeds and metabolic costs are the current authority and supersede data in 'report-combat-dynamics'."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/combat-locomotion/report.md", meta_file: "research/reports/combat-locomotion/meta.yaml", prompt_file: "research/reports/combat-locomotion/prompt.md" }
 
     - name: "Combat Action Time Lexicon"
-      type: "Research Report"
       purpose: "A quantitative lexicon of the time costs, in seconds, for discrete pre-modern combat actions, including ranged attacks, movement, and weapon handling. Used for designing the game's action economy and the pacing of Crisis Time."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:action-resolution", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/combat-action-time/report.md", meta_file: "research/reports/combat-action-time/meta.yaml", prompt_file: "research/reports/combat-action-time/prompt.md" }
 
     - name: "Metabolic Cost of Armor"
-      type: "Research Report"
       purpose: "A deep-dive research report on the metabolic and biomechanical costs of wearing replica medieval armor, providing quantitative multipliers for plate and maille."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:armor", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/metabolic-cost-of-armor/report.md", meta_file: "research/reports/metabolic-cost-of-armor/meta.yaml", prompt_file: "research/reports/metabolic-cost-of-armor/prompt.yaml" }
 
     - name: "Exertion and Recovery Dynamics"
-      type: "Research Report"
       purpose: "A quantitative analysis of the physiological dynamics of exertion, stress, and multi-stage recovery. Provides a factual basis for designing mechanics related to fatigue, attrition, and the cumulative cost of hardship."
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:fatigue", "core-concept:hardship", "core-concept:attrition", "core-concept:consequences", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/exertion-recovery-dynamics/report.md", meta_file: "research/reports/exertion-recovery-dynamics/meta.yaml", prompt_file: "research/reports/exertion-recovery-dynamics/prompt.md" }
 
     - name: "Positional Advantage"
-      type: "Research Report"
       purpose: "A biomechanical, perceptual, and cognitive analysis of positional advantage in pre-modern melee. Used for designing mechanics related to facing, angular attacks, and multi-combatant engagements."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:perception", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/positional-advantage/report.md", meta_file: "research/reports/positional-advantage/meta.yaml", prompt_file: "research/reports/positional-advantage/prompt.md" }
 
     - name: "Armor Effectiveness Research"
-      type: "Research Report"
       purpose: "Research on armor effectiveness against different damage types."
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:armor", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/armor_effectiveness/report.md", meta_file: "research/reports/armor_effectiveness/meta.yaml", prompt_file: "research/reports/armor_effectiveness/prompt.md" }
@@ -102,103 +87,86 @@ design_process_and_research:
   research_synthesis:
     - name: "The Armor Tradeoff"
       path: "research/synthesis/armor.md"
-      type: "Research Synthesis"
       purpose: "A synthesis of research on historical armor, analyzing the fundamental tradeoff between protection and the physiological costs of exertion (metabolic energy, mobility, and fatigue). It provides a factual basis for designing armor mechanics."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:armor", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:verisimilitude"]
 
     - name: "Tactical Movement & Positioning"
       path: "research/synthesis/tactical-movement.md"
-      type: "Research Synthesis"
       purpose: "A synthesis of research on historical combat locomotion, providing a factual basis for designing mechanics related to tactical movement, positioning, disengagement, and retreats. It also establishes the canonical vocabulary for tactical footwork (e.g., Passing Step, Traverse Step) that should be used in all related designs."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:disengagement", "core-concept:verisimilitude"]
 
     - name: "Physical Harm and Trauma"
       path: "research/synthesis/physical-harm-and-trauma.md"
-      type: "Research Synthesis"
       purpose: "A synthesis of research reports on battlefield injuries and physical hardship, providing a factual basis for designing consequences related to physical harm. It maps real-world conditions to the game's severity levels."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:harm", "core-concept:injury", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Consequence Database Hub"
       path: "research/synthesis/consequence-database.md"
-      type: "Research Synthesis"
       purpose: "A central hub and calibration guide for the structured, rules-independent databases of physical, cognitive, environmental, and social stress states."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:harm", "core-concept:injury", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Combat Consequence Database"
       path: "research/synthesis/consequences-combat.md"
-      type: "Research Synthesis"
       purpose: "A structured, rules-independent database of physical injuries, tactical disruptions, and combat-related trauma."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:harm", "core-concept:injury", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Exploration Consequence Database"
       path: "research/synthesis/consequences-exploration.md"
-      type: "Research Synthesis"
       purpose: "A structured, rules-independent database of environmental hazards, travel-related hardship, and wilderness trauma."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Social Consequence Database"
       path: "research/synthesis/consequences-social.md"
-      type: "Research Synthesis"
       purpose: "A structured, rules-independent database of social fallout, reputational damage, and psychological stress."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:social", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Crafting and Labor Consequence Database"
       path: "research/synthesis/consequences-crafting.md"
-      type: "Research Synthesis"
       purpose: "A structured, rules-independent database of workplace accidents, industrial hazards, downtime exhaustion, and material strain."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:downtime", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Arcane & Alchemical Consequence Database"
       path: "research/synthesis/consequences-arcane.md"
-      type: "Research Synthesis"
       purpose: "A structured, rules-independent database of magical backdrafts, alchemical toxicity, elemental exposure, and runic failures."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:magic", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Logistics & Equipment Consequence Database"
       path: "research/synthesis/consequences-logistics.md"
-      type: "Research Synthesis"
       purpose: "A structured, rules-independent database of equipment wear, transport breakdowns, supply contamination, and pack animal injuries."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Hardship and Exertion"
       path: "research/synthesis/hardship-and-exertion.md"
-      type: "Research Synthesis"
       purpose: "A synthesis of research on the functional impact of physical hardship, providing a factual basis for designing consequences related to athletics, survival, and exploration. It maps real-world conditions to the game's severity levels."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:attrition", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Catastrophic Trauma & Lethality"
       path: "research/synthesis/catastrophic-trauma-and-lethality.md"
-      type: "Research Synthesis"
       purpose: "Translates quantitative research on physiological timelines of death following catastrophic trauma into an evidence-based framework for high-severity consequences and dying states."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:harm", "core-concept:lethality", "core-concept:consequences", "core-concept:verisimilitude"]
 
     - name: "Dynamics of the Duel"
       path: "research/synthesis/dynamics-of-duel.md"
-      type: "Research Synthesis"
       purpose: "Synthesizes the key findings from 'The Dynamics of the Duel' report into a concise summary of actionable design principles for combat pacing."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:fatigue", "core-concept:verisimilitude"]
 
     - name: "Combat Spacing and Reach"
       path: "research/synthesis/combat-spacing-and-reach.md"
-      type: "Research Synthesis"
       purpose: "A synthesis of research on historical weapon lengths, armor, and fighting styles, providing a factual basis and reference table for modeling a combatant's tactical 'threat bubble' or area of control."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:reach", "core-concept:spacing", "core-concept:movement", "core-concept:tempo", "core-concept:verisimilitude"]
 
     - name: "Combat Timelines and Tempos"
       path: "research/synthesis/combat-timelines-and-tempos.md"
-      type: "Research Synthesis"
       purpose: "A consolidated synthesis of research on the timescales of combat, providing reference tables for physiological phases, performance degradation, and the duration of discrete tactical actions (e.g., firing a bow, standing from prone)."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:action-resolution", "core-concept:verisimilitude"]
 
   design_theory_and_readings:
     - name: "Literature Note: How OSR Teaches Us That Exploration Is Logistics"
       path: "research/theory/readings/exploration-is-logistics.md"
-      type: "Literature Note"
       purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."
       tags: ["doc-type:literature-note", "audience:designer-facing", "pillar:exploration", "core-concept:attrition", "core-concept:fatigue", "core-concept:consequences", "core-concept:clocks"]
 
     - name: "Literature Note: Calibrating Your Expectations"
       path: "research/theory/readings/calibrating-your-expectations.md"
-      type: "Literature Note"
       purpose: "Analysis of Justin Alexander's Casual Realism, mortal power thresholds, and their application to CardPG's grounded heroism."
       tags: ["doc-type:literature-note", "audience:designer-facing", "core-concept:casual-realism", "core-concept:verisimilitude", "core-concept:progression", "core-concept:card-economy"]
