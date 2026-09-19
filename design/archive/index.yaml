@@ -7,118 +7,52 @@
 archive_and_legacy_materials:
   orientation:
     - name: "Archive Readme"
-      id: "readme-archive"
       path: "archive/README.md"
-      source_type: "local_file"
-      purpose: "Orientation and context for the archived playtest content and legacy research."
       type: "Meta Document"
+      purpose: "Orientation and context for the archived playtest content and legacy research."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
   archived_playtest_spreadsheets:
     - name: "Cards - v 0.0.4"
-      id: "gdoc-cards-v004"
       path: "https://docs.google.com/spreadsheets/u/0/d/1w6SvDr2nwZcXQDvsZ97F5IUh3D7vcjAcf-V40NYrolM/edit"
       source_type: "google_sheet"
-      purpose: "Early playtesting character decks. Useful as few-shot examples for card structure."
       type: "Cards"
-      tags:
-        [
-          "doc-type:content-library",
-          "type:pc-deck",
-          "audience:designer-facing",
-          "core-concept:cards",
-        ]
+      purpose: "Early playtesting character decks. Useful as few-shot examples for card structure."
+      tags: ["doc-type:content-library", "type:pc-deck", "audience:designer-facing", "core-concept:cards"]
       sheets:
-        - {
-            name: "Swashbuckler",
-            purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant.",
-          }
-        - {
-            name: "Berserker",
-            purpose: "Early playtesting aggressive red. More speculative, we never actually used this.",
-          }
-        - {
-            name: "Squire",
-            purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot.",
-          }
-        - {
-            name: "Wizard",
-            purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date.",
-          }
-        - {
-            name: "shield-fighter",
-            purpose: "Very Early playtesting defensive character.",
-          }
+        - { name: "Swashbuckler", purpose: "Early playtesting yellow/finesse deck. Out of date but lots of it will still be relevant." }
+        - { name: "Berserker", purpose: "Early playtesting aggressive red. More speculative, we never actually used this." }
+        - { name: "Squire", purpose: "Early playtesting red heavy armor defender. Was a core playtest character but references old armor rules a lot." }
+        - { name: "Wizard", purpose: "Early playtesting blue magic character. Had some exploration of different consequences that is out of date." }
+        - { name: "shield-fighter", purpose: "Very Early playtesting defensive character." }
+
     - name: "Monsters - v 0.0.4"
-      id: "gdoc-monsters-v004"
       path: "https://docs.google.com/spreadsheets/u/0/d/1_vBIPPSB4B2Y7_icIl3v2-iKZvIJRFEYM6kfAWTLSbQ/edit"
       source_type: "google_sheet"
-      purpose: "Early playtesting monster decks. Useful as few-shot examples for monster design."
       type: "Cards"
-      tags:
-        [
-          "doc-type:content-library",
-          "type:monster-deck",
-          "audience:designer-facing",
-          "core-concept:cards",
-          "core-concept:npc-design",
-        ]
+      purpose: "Early playtesting monster decks. Useful as few-shot examples for monster design."
+      tags: ["doc-type:content-library", "type:monster-deck", "audience:designer-facing", "core-concept:cards", "core-concept:npc-design"]
       sheets:
-        - {
-            name: "Monsters",
-            purpose: "Early playtesting monster decks. Probably still mostly useful.",
-          }
-        - {
-            name: "Campaign 2025",
-            purpose: "Most recent monsters we have written",
-          }
-        - {
-            name: "Vin's Monsters",
-            purpose: "Early playtesting monster decks. Probably still mostly useful.",
-          }
-        - {
-            name: "Peter's Monsters",
-            purpose: "Early playtesting monster decks. Probably still mostly useful.",
-          }
-        - {
-            name: "Kid's Campaign Monsters",
-            purpose: "Early playtesting monster decks. Probably still mostly useful.",
-          }
+        - { name: "Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful." }
+        - { name: "Campaign 2025", purpose: "Most recent monsters we have written" }
+        - { name: "Vin's Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful." }
+        - { name: "Peter's Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful." }
+        - { name: "Kid's Campaign Monsters", purpose: "Early playtesting monster decks. Probably still mostly useful." }
+
     - name: "Kid’s Campaign Characters"
-      id: "gdoc-kids-campaign-chars"
       path: "https://docs.google.com/spreadsheets/u/0/d/1kN1ZZoWVXjpMAbjw0x33D6DWrHIYvVjaYM8qC-ViqYI/edit"
       source_type: "google_sheet"
-      purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
       type: "Cards"
-      tags:
-        [
-          "doc-type:content-library",
-          "type:pc-deck",
-          "audience:designer-facing",
-          "core-concept:cards",
-        ]
+      purpose: "Character decks from early playtest campaigns. Each sheet has two characters, the top one is older."
+      tags: ["doc-type:content-library", "type:pc-deck", "audience:designer-facing", "core-concept:cards"]
       sheets:
-        - {
-            name: "Vin",
-            purpose: "The oldest of the kids with the most complex characters",
-          }
-        - {
-            name: "Peter",
-            purpose: "The middle child with intermediate characters",
-          }
-        - {
-            name: "Luke",
-            purpose: "The youngest of the kids with the simplest characters",
-          }
+        - { name: "Vin", purpose: "The oldest of the kids with the most complex characters" }
+        - { name: "Peter", purpose: "The middle child with intermediate characters" }
+        - { name: "Luke", purpose: "The youngest of the kids with the simplest characters" }
+
     - name: "Kids Events"
-      id: "gdoc-kids-campaign-events"
       path: "https://docs.google.com/spreadsheets/u/0/d/1XH0j1CNqiYYSc4hoSCuY-9dznPsv3ZiE2cg4UrSk2Q8/edit"
       source_type: "google_sheet"
-      purpose: "Location, Travel and event cards from an early playtest campaign."
       type: "Cards"
-      tags:
-        [
-          "doc-type:content-library",
-          "audience:designer-facing",
-          "core-concept:cards",
-        ]
+      purpose: "Location, Travel and event cards from an early playtest campaign."
+      tags: ["doc-type:content-library", "audience:designer-facing", "core-concept:cards"]

@@ -26,6 +26,7 @@ Key checks:
 import argparse
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 import yaml
@@ -188,8 +189,26 @@ def load_all_index_data(root_dir, index_path, loaded_paths=None, entries_by_path
 
 def get_repo_files(root_dir):
     files = set()
-    skip_dirs = {".git", ".gemini", "node_modules", "__pycache__", "sources"}
+    try:
+        res = subprocess.run(
+            ["git", "ls-files", "."],
+            capture_output=True,
+            text=True,
+            check=True,
+            cwd=root_dir,
+        )
+        for line in res.stdout.splitlines():
+            rel = line.strip().replace("\\", "/")
+            if not rel or rel == "index.yaml" or rel.endswith("/index.yaml"):
+                continue
+            if not os.path.exists(os.path.join(root_dir, rel)):
+                continue
+            files.add(rel)
+        return files, True
+    except Exception:
+        pass
 
+    skip_dirs = {".git", ".gemini", "node_modules", "__pycache__", "sources"}
     for root, dirs, filenames in os.walk(root_dir):
         dirs[:] = [d for d in dirs if d not in skip_dirs]
 
@@ -201,7 +220,7 @@ def get_repo_files(root_dir):
             rel_path = os.path.relpath(full_path, root_dir)
             files.add(rel_path.replace("\\", "/"))
 
-    return files
+    return files, False
 
 def extract_frontmatter(file_path):
     try:
@@ -506,17 +525,12 @@ def insert_entry_into_index(index_abs_path, section_key, entry):
 
     entry_lines = []
     entry_lines.append(f'{item_indent}- name: "{entry["name"]}"\n')
-    entry_lines.append(f'{prop_indent}id: "{entry["id"]}"\n')
     entry_lines.append(f'{prop_indent}path: "{entry["path"]}"\n')
-    entry_lines.append(f'{prop_indent}source_type: "local_file"\n')
+    entry_lines.append(f'{prop_indent}type: "{entry["type"]}"\n')
     clean_purpose = entry["purpose"].replace('"', '\\"')
     entry_lines.append(f'{prop_indent}purpose: "{clean_purpose}"\n')
-    entry_lines.append(f'{prop_indent}type: "{entry["type"]}"\n')
-    entry_lines.append(f'{prop_indent}tags:\n')
-    entry_lines.append(f'{prop_indent}  [\n')
-    for tag in entry["tags"]:
-        entry_lines.append(f'{prop_indent}    "{tag}",\n')
-    entry_lines.append(f'{prop_indent}  ]\n')
+    tags_formatted = ", ".join(f'"{t}"' for t in entry["tags"])
+    entry_lines.append(f'{prop_indent}tags: [{tags_formatted}]\n')
 
     new_lines = lines[:insert_idx] + entry_lines + lines[insert_idx:]
 
@@ -611,6 +625,289 @@ def auto_index_unindexed_files(unindexed_files, design_root):
 
     return fixed_count
 
+def clean_desc(text, max_len=140):
+    if not text:
+        return ""
+    s = text.replace("\n", " ").strip()
+    if len(s) > max_len:
+        idx = s.find(". ", 40)
+        if idx != -1 and idx < max_len:
+            return s[: idx + 1]
+        return s[: max_len - 3] + "..."
+    return s
+
+def make_markdown_table(headers, rows):
+    out = []
+    out.append("| " + " | ".join(headers) + " |")
+    out.append("| " + " | ".join([":---"] * len(headers)) + " |")
+    for row in rows:
+        out.append("| " + " | ".join(row) + " |")
+    return "\n".join(out)
+
+def compute_sub_index_tags(design_root, sub_index_rel_path):
+    sub_index_abs = os.path.join(design_root, sub_index_rel_path)
+    if not os.path.exists(sub_index_abs):
+        return []
+
+    try:
+        data = load_index(sub_index_abs)
+    except Exception:
+        return []
+
+    tags = set()
+
+    def walk_tags(node):
+        if isinstance(node, dict):
+            if "tags" in node and isinstance(node["tags"], list):
+                tags.update(node["tags"])
+            if node.get("type") == "Index" and "path" in node:
+                child_rel = node["path"]
+                child_abs = os.path.join(design_root, child_rel)
+                if os.path.exists(child_abs) and os.path.abspath(child_abs) != os.path.abspath(sub_index_abs):
+                    tags.update(compute_sub_index_tags(design_root, child_rel))
+            for k, v in node.items():
+                if k != "tags":
+                    walk_tags(v)
+        elif isinstance(node, list):
+            for item in node:
+                walk_tags(item)
+
+    walk_tags(data)
+    return sorted(list(tags))
+
+def generate_root_toc(design_root):
+    root_data = load_index(os.path.join(design_root, "index.yaml"))
+    foundations = []
+    for sec_k in ["philosophy", "design_patterns", "methodology"]:
+        for item in root_data.get("project_foundation", {}).get(sec_k, []):
+            foundations.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+    for item in root_data.get("introductory_materials", []):
+        if item.get("path") in ["AGENTS.md", "introduction.md"]:
+            foundations.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    rules = []
+    for sec_k in ["core_rules_and_guides", "lexicons", "modules"]:
+        for item in root_data.get("game_system_and_rules", {}).get(sec_k, []):
+            rules.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    domains = []
+    for item in root_data.get("sub_indexes", []):
+        name = item["name"].replace(" Index", "")
+        dir_name = item["path"].split("/")[0]
+        domains.append([f"**{name}**", f"[{dir_name}/]({dir_name}/README.md) ([Index]({item['path']}))", clean_desc(item.get("purpose", ""))])
+
+    blocks = [
+        "## Directory Catalog",
+        "",
+        "### Foundations & Philosophy",
+        make_markdown_table(["Document", "Type", "Summary"], foundations),
+        "",
+        "### Rules & Mechanics",
+        make_markdown_table(["Document", "Type", "Summary"], rules),
+        "",
+        "### Domain Catalogs",
+        make_markdown_table(["Domain", "Directory / Sub-Index", "Focus & Scope"], domains),
+        "",
+        "*Last synced from `design/index.yaml` via `tools/audit_index.py`.*",
+    ]
+    return "\n".join(blocks)
+
+def generate_iteration_toc(design_root):
+    iter_data = load_index(os.path.join(design_root, "iteration/index.yaml"))
+    constraints = []
+    for item in iter_data.get("active_design_exploration", {}).get("mechanical_constraints", []):
+        rel_p = item["path"].replace("iteration/", "")
+        constraints.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    proposals = []
+    for sec_k in ["resolution_and_combat_proposals", "mechanics_and_resource_proposals"]:
+        for item in iter_data.get("active_design_exploration", {}).get(sec_k, []):
+            rel_p = item["path"].replace("iteration/", "")
+            if rel_p.endswith("index.yaml"):
+                rel_p = rel_p.replace("index.yaml", "README.md")
+            proposals.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    sketches = []
+    for item in iter_data.get("active_design_exploration", {}).get("ideation_and_sketches", []):
+        rel_p = item["path"].replace("iteration/", "")
+        sketches.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    blocks = [
+        "## Active Iteration Catalog",
+        "",
+        "### Mechanical Constraints & Frameworks",
+        make_markdown_table(["Document", "Type", "Summary"], constraints),
+        "",
+        "### Active Proposals & Mechanics",
+        make_markdown_table(["Document", "Type", "Summary"], proposals),
+        "",
+        "### Ideation Sketches",
+        make_markdown_table(["Document", "Type", "Summary"], sketches),
+        "",
+        "*Last synced from `iteration/index.yaml` via `tools/audit_index.py`.*",
+    ]
+    return "\n".join(blocks)
+
+def generate_research_toc(design_root):
+    res_data = load_index(os.path.join(design_root, "research/index.yaml")).get("design_process_and_research", {})
+    bedrock = []
+    for sec_k in ["factual_bedrock", "inspiration_library", "ludology_library"]:
+        for item in res_data.get(sec_k, []):
+            rel_p = item["path"].replace("research/", "")
+            bedrock.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    syntheses = []
+    for item in res_data.get("research_synthesis", []):
+        rel_p = item["path"].replace("research/", "")
+        syntheses.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    reports = []
+    for item in res_data.get("research_reports", []):
+        rep_f = item.get("components", {}).get("report_file", "")
+        if rep_f.startswith("research/"):
+            rep_f = rep_f[len("research/") :]
+        reports.append([f"[{item['name']}]({rep_f})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    theory = []
+    for item in res_data.get("design_theory_and_readings", []):
+        rel_p = item["path"].replace("research/", "")
+        theory.append([f"[{item['name']}]({rel_p})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    blocks = [
+        "## Research Catalog",
+        "",
+        "### Bibliographies & Bedrock",
+        make_markdown_table(["Document", "Type", "Summary"], bedrock),
+        "",
+        "### Living Research Syntheses (`synthesis/`)",
+        make_markdown_table(["Document", "Type", "Summary"], syntheses),
+        "",
+        "### Empirical Reports (`reports/`)",
+        make_markdown_table(["Report", "Type", "Summary"], reports),
+        "",
+        "### Game Design Theory (`theory/readings/`)",
+        make_markdown_table(["Document", "Type", "Summary"], theory),
+        "",
+        "*Last synced from `research/index.yaml` via `tools/audit_index.py`.*",
+    ]
+    return "\n".join(blocks)
+
+def generate_archive_toc(design_root):
+    arch_data = load_index(os.path.join(design_root, "archive/index.yaml")).get("archive_and_legacy_materials", {})
+    arch_items = []
+    for item in arch_data.get("archived_playtest_spreadsheets", []):
+        arch_items.append([f"[{item['name']}]({item['path']})", item.get("type", ""), clean_desc(item.get("purpose", ""))])
+
+    blocks = [
+        "## Archived Content Catalog",
+        "",
+        "### Playtest Spreadsheets & Materials",
+        make_markdown_table(["Item", "Type", "Summary"], arch_items),
+        "",
+        "*Last synced from `archive/index.yaml` via `tools/audit_index.py`.*",
+    ]
+    return "\n".join(blocks)
+
+def normalize_markdown_block(text):
+    lines = []
+    for line in text.strip().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line in ("<!-- BEGIN AUTO-TOC -->", "<!-- END AUTO-TOC -->"):
+            continue
+        if line.startswith("|") and line.endswith("|"):
+            cells = [c.strip() for c in line.split("|")]
+            if all(c == "" or re.match(r"^:?-+:?$", c) for c in cells):
+                lines.append("TABLE_SEP")
+            else:
+                lines.append("ROW:" + "|".join(cells))
+        else:
+            line = re.sub(r"^[\*_]Last synced(.*)[\*_]$", r"_Last synced\1_", line)
+            lines.append(line)
+    return lines
+
+def update_or_verify_readme_toc(readme_abs_path, toc_body, fix=False):
+    expected_block = f"<!-- BEGIN AUTO-TOC -->\n{toc_body.strip()}\n<!-- END AUTO-TOC -->"
+    if not os.path.exists(readme_abs_path):
+        if fix:
+            with open(readme_abs_path, "w", encoding="utf-8") as f:
+                f.write(expected_block + "\n")
+            return True, None
+        return False, f"README file {readme_abs_path} does not exist"
+
+    with open(readme_abs_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    pattern = re.compile(r"<!-- BEGIN AUTO-TOC -->.*?<!-- END AUTO-TOC -->", re.DOTALL)
+    match = pattern.search(content)
+
+    if not match:
+        if fix:
+            new_content = content.rstrip() + "\n\n" + expected_block + "\n"
+            with open(readme_abs_path, "w", encoding="utf-8") as f:
+                f.write(new_content)
+            return True, None
+        return False, "Missing <!-- BEGIN AUTO-TOC --> block"
+
+    existing_block = match.group(0).strip()
+    if normalize_markdown_block(existing_block) == normalize_markdown_block(expected_block):
+        return True, None
+
+    if fix:
+        new_content = pattern.sub(expected_block.strip(), content)
+        with open(readme_abs_path, "w", encoding="utf-8") as f:
+            f.write(new_content)
+        return True, None
+
+    return False, "Table of contents is out of date"
+
+def audit_and_sync_aggregated_tags(design_root, index_path, fix=False):
+    root_data = load_index(index_path)
+    sub_indexes = root_data.get("sub_indexes", [])
+    errors = []
+
+    tags_by_subindex = {}
+    needs_update = False
+
+    for item in sub_indexes:
+        sub_name = item.get("name")
+        sub_path = item.get("path")
+        if not sub_path:
+            continue
+        actual_tags = compute_sub_index_tags(design_root, sub_path)
+        existing_tags = item.get("aggregated_tags", [])
+        if actual_tags != existing_tags:
+            needs_update = True
+            errors.append(f"Aggregated tags for '{sub_name}' ({sub_path}) out of date")
+            tags_by_subindex[sub_name] = actual_tags
+
+    if needs_update and fix:
+        with open(index_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+
+        new_lines = []
+        curr_sub_name = None
+        for line in lines:
+            name_m = re.match(r'^\s*-\s*name:\s*"(.*?)"', line)
+            if name_m:
+                curr_sub_name = name_m.group(1)
+
+            agg_m = re.match(r'^(\s*)aggregated_tags:\s*\[.*\]', line)
+            if agg_m and curr_sub_name in tags_by_subindex:
+                indent = agg_m.group(1)
+                tags_str = ", ".join(f'"{t}"' for t in tags_by_subindex[curr_sub_name])
+                new_lines.append(f"{indent}aggregated_tags: [{tags_str}]\n")
+                continue
+
+            new_lines.append(line)
+
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.writelines(new_lines)
+        return []
+
+    return errors
+
 def main():
     parser = argparse.ArgumentParser(
         description="Audit CardPG design index synchronization and frontmatter validation."
@@ -638,7 +935,7 @@ def main():
         sys.exit(1)
 
     index_files, entries_by_path, missing_indexes = load_all_index_data(design_root, index_path)
-    repo_files = get_repo_files(design_root)
+    repo_files, is_git = get_repo_files(design_root)
 
     # 1. Directory Consistency
     missing_from_disk = set()
@@ -652,20 +949,42 @@ def main():
         missing_from_disk.add(rel_missing)
 
     index_files_in_design = {
-        f for f in index_files if not f.startswith("..") and not os.path.isabs(f)
+        f
+        for f in index_files
+        if not f.startswith("..")
+        and not os.path.isabs(f)
+        and not f.endswith("index.yaml")
+        and not f.startswith("http://")
+        and not f.startswith("https://")
     }
     unindexed_in_repo = repo_files - index_files_in_design
+    untracked_in_git = (
+        {f for f in (index_files_in_design - repo_files) if f not in missing_from_disk}
+        if is_git
+        else set()
+    )
 
     if args.fix and unindexed_in_repo:
         print(f"--- Auto-indexing {len(unindexed_in_repo)} unindexed file(s) ---\n")
         fixed = auto_index_unindexed_files(unindexed_in_repo, design_root)
         if fixed > 0:
             index_files, entries_by_path, missing_indexes = load_all_index_data(design_root, index_path)
-            repo_files = get_repo_files(design_root)
+            repo_files, is_git = get_repo_files(design_root)
             index_files_in_design = {
-                f for f in index_files if not f.startswith("..") and not os.path.isabs(f)
+                f
+                for f in index_files
+                if not f.startswith("..")
+                and not os.path.isabs(f)
+                and not f.endswith("index.yaml")
+                and not f.startswith("http://")
+                and not f.startswith("https://")
             }
             unindexed_in_repo = repo_files - index_files_in_design
+            untracked_in_git = (
+                {f for f in (index_files_in_design - repo_files) if f not in missing_from_disk}
+                if is_git
+                else set()
+            )
 
     # 2. Frontmatter Auditing
     frontmatter_checked = 0
@@ -712,6 +1031,24 @@ def main():
         if d_errs:
             dead_link_errors[rel_path] = d_errs
 
+    # 3. Sub-index Tag Rollup Auditing
+    tag_errors = audit_and_sync_aggregated_tags(design_root, index_path, fix=args.fix)
+
+    # 4. Table of Contents (TOC) Auditing
+    toc_generators = {
+        "README.md": generate_root_toc,
+        "iteration/README.md": generate_iteration_toc,
+        "research/README.md": generate_research_toc,
+        "archive/README.md": generate_archive_toc,
+    }
+    toc_errors = {}
+    for rel_readme, gen_fn in toc_generators.items():
+        readme_abs = os.path.join(design_root, rel_readme)
+        toc_body = gen_fn(design_root)
+        ok, err = update_or_verify_readme_toc(readme_abs, toc_body, fix=args.fix)
+        if not ok:
+            toc_errors[rel_readme] = err
+
     # Print Results
     print("--- Design Index & Frontmatter Audit ---\n")
 
@@ -724,6 +1061,15 @@ def main():
             print(f"  - {f}")
     else:
         print("[OK] All index files found on disk.")
+
+    if untracked_in_git:
+        has_fatal_error = True
+        print(f"[UNTRACKED IN GIT] Files registered in index but not tracked by git ({len(untracked_in_git)}):")
+        for f in sorted(untracked_in_git):
+            print(f"  - {f}")
+        print("  Run 'git add <file>' to track, or remove from index.")
+    elif is_git:
+        print("[OK] All indexed files are tracked by git.")
 
     if unindexed_in_repo:
         has_fatal_error = True
@@ -775,6 +1121,24 @@ def main():
             print(f"  - {f}")
     else:
         print("[OK] All required directories contain epistemic frontmatter.")
+
+    if tag_errors:
+        has_fatal_error = True
+        print(f"\n[TAG ROLLUP ERRORS] Sub-index aggregated_tags out of date ({len(tag_errors)}):")
+        for e in tag_errors:
+            print(f"  - {e}")
+        print("  Run 'python3 tools/audit_index.py --fix' to update.")
+    else:
+        print("[OK] Sub-index aggregated tags verified.")
+
+    if toc_errors:
+        has_fatal_error = True
+        print(f"\n[TOC ERRORS] README tables of contents out of date ({len(toc_errors)}):")
+        for f, e in sorted(toc_errors.items()):
+            print(f"  - {f}: {e}")
+        print("  Run 'python3 tools/audit_index.py --fix' to synchronize README maps.")
+    else:
+        print("[OK] All directory README tables of contents are up to date.")
 
     print("\n--- Audit Summary ---")
     if has_fatal_error:

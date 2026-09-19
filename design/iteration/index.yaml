@@ -4,6 +4,13 @@
 # and ideation sketches. Documents here represent unsettled ideas under active exploration.
 
 active_design_exploration:
+  orientation:
+    - name: "Iteration Directory"
+      path: "iteration/README.md"
+      type: "Meta Document"
+      purpose: "Orientation and operating conventions for active design exploration and proposals."
+      tags: ["doc-type:meta", "audience:designer-facing"]
+
   mechanical_constraints:
     - name: "Resolution System Design Constraints"
       path: "iteration/resolution-design-constraints.md"
@@ -16,12 +23,6 @@ active_design_exploration:
       type: "Design Constraints"
       purpose: "Authoritative catalog of recurring mechanical failure modes, degenerate incentives, and tabletop friction points discovered across resolution iterations."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
-
-    - name: "Constraints Patch"
-      path: "iteration/constraints-patch.md"
-      type: "Design Constraints"
-      purpose: "Clarifications on combat length and scale invariance design constraints from the lead designer."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:scale-invariance"]
 
   resolution_and_combat_proposals:
     - name: "Consequence Pool & Tag Escalation Engine"
@@ -50,12 +51,6 @@ active_design_exploration:
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:fatigue", "core-concept:status-cards"]
 
   ideation_and_sketches:
-    - name: "Brainstorming Evaluation"
-      path: "iteration/brainstorming-evaluation.md"
-      type: "Ideation"
-      purpose: "General critiques and failure modes observed during LLM mechanics brainstorming runs."
-      tags: ["doc-type:ideation", "audience:designer-facing"]
-
     - name: "Design Sketchbook"
       path: "iteration/design-sketchbook.md"
       type: "Ideation"

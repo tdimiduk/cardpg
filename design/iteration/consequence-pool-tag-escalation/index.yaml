@@ -65,12 +65,6 @@ documents:
     purpose: "Combat trace demonstrating batched round consequence pool resolution against multiple attackers."
     tags: ["doc-type:iteration", "audience:designer-facing"]
 
-  - name: "Critique and Brainstorming Seeds"
-    path: "iteration/consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md"
-    type: "Design Exploration"
-    purpose: "Critical analysis, potential failure points, and future brainstorming seeds."
-    tags: ["doc-type:iteration", "audience:designer-facing"]
-
   - name: "Gamemaster Guide Patch"
     path: "iteration/consequence-pool-tag-escalation/gamemaster-guide-patch.md"
     type: "Design Exploration"

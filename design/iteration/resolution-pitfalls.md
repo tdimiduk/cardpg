@@ -16,7 +16,7 @@ To understand why resolution mechanics fail, designers must first understand two
 
 - **The 24-Card Endurance Clock:** A character's 24-card deck is primarily an endurance and resource-tracking mechanism **across encounters and during exploration**, not an immediate combat finisher.
 - **The Turn Horizon:** In Crisis Time, players draw 2 cards per round. Without attacks, a fresh deck lasts 12 rounds before cycling. Even when sustaining an attack each round costing ~2 defensive flips, a combatant consumes ~4 cards per round, yielding **~6 rounds of intense combat before a single Fatigue Cycle occurs**.
-- **Discard Inefficacy:** When a Fatigue Cycle finally triggers, it adds 2 `Fatigue` cards (plus Burden) to the _discard pile_. These cards have **zero mechanical effect on the character until the deck cycles a second time**.
+- **Discard Inefficacy:** When a Fatigue Cycle finally triggers, it adds 2 `Fatigue` cards (plus Burden) to the deck. This pollutes it some, but it's more of a minor degredation than a crushing setback and characters should be able to function relatively fine through several fatigue cycles.
 - **The Math of a Single Flip:** A single card flipped from deck to defend represents $\sim 1/24\text{th}$ of an endurance cycle. It is a minor stamina expense.
 
 ### 1.2. Pacing Goal: Dynamic Flow and Decisiveness, Not Arbitrary Round Caps
