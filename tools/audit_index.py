@@ -142,7 +142,7 @@ def load_all_index_data(root_dir, index_path, loaded_paths=None, entries_by_path
     def extract_entries(node, parent_entry=None):
         if isinstance(node, dict):
             current_entry = parent_entry
-            if "name" in node or "id" in node or "path" in node:
+            if "name" in node or "id" in node or "path" in node or "components" in node:
                 current_entry = node
 
             if "path" in node:
@@ -524,8 +524,11 @@ def insert_entry_into_index(index_abs_path, section_key, entry):
     prop_indent = " " * (section_indent + 4)
 
     entry_lines = []
-    entry_lines.append(f'{item_indent}- name: "{entry["name"]}"\n')
-    entry_lines.append(f'{prop_indent}path: "{entry["path"]}"\n')
+    if entry.get("name"):
+        entry_lines.append(f'{item_indent}- name: "{entry["name"]}"\n')
+        entry_lines.append(f'{prop_indent}path: "{entry["path"]}"\n')
+    else:
+        entry_lines.append(f'{item_indent}- path: "{entry["path"]}"\n')
     clean_purpose = entry["purpose"].replace('"', '\\"')
     entry_lines.append(f'{prop_indent}purpose: "{clean_purpose}"\n')
     tags_formatted = ", ".join(f'"{t}"' for t in entry["tags"])
@@ -602,8 +605,6 @@ def auto_index_unindexed_files(unindexed_files, design_root):
                 tags.append(t)
 
         entry = {
-            "name": fm.get("title"),
-            "id": entry_id,
             "path": rel_path,
             "purpose": purpose,
             "tags": tags,
@@ -668,26 +669,92 @@ def compute_sub_index_tags(design_root, sub_index_rel_path):
     walk_tags(data)
     return sorted(list(tags))
 
+def get_item_title(design_root, item, default_path=""):
+    if item.get("name"):
+        return item["name"]
+
+    path = item.get("path") or default_path
+    if path:
+        if path.startswith("http://") or path.startswith("https://"):
+            return item.get("name", path)
+
+        abs_path = os.path.join(design_root, path)
+        if os.path.exists(abs_path):
+            fm, _ = extract_frontmatter(abs_path)
+            if fm and fm.get("title"):
+                return fm["title"]
+            if abs_path.endswith("index.yaml"):
+                readme_path = os.path.join(os.path.dirname(abs_path), "README.md")
+                if os.path.exists(readme_path):
+                    rfm, _ = extract_frontmatter(readme_path)
+                    if rfm and rfm.get("title"):
+                        return rfm["title"]
+
+        stem = Path(path).stem
+        special = {
+            "AGENTS": "Agent Design Rules",
+            "players-guide": "Player's Guide",
+            "gamemaster-guide": "Gamemaster's Guide",
+            "players-guide-patch": "Player's Guide Patch",
+            "gamemaster-guide-patch": "Gamemaster's Guide Patch",
+            "resolution-exploration": "Resolution Mechanic Exploration",
+            "fatigue-change-proposal": "Fatigue Change Proposal",
+            "defense-action": "Defense Action Iteration",
+            "design-sketchbook": "Design Sketchbook",
+            "resolution-design-constraints": "Resolution System Design Constraints",
+            "resolution-pitfalls": "Resolution System Pitfalls & Anti-Patterns",
+            "consequence-pool-tag-escalation": "Consequence Pool & Tag Escalation Engine",
+            "exploration-is-logistics": "Literature Note: How OSR Teaches Us That Exploration Is Logistics",
+            "calibrating-your-expectations": "Literature Note: Calibrating Your Expectations",
+        }
+        if stem in special:
+            return special[stem]
+        if stem in ("README", "index"):
+            parent = Path(path).parent.name
+            if parent in special:
+                return special[parent]
+            if parent:
+                return parent.replace("-", " ").replace("_", " ").title()
+            return "Root Readme"
+        return stem.replace("-", " ").replace("_", " ").title()
+
+    if "components" in item:
+        rep_f = item["components"].get("report_file", "")
+        if rep_f:
+            rep_dir = Path(rep_f).parent.name
+            special_reports = {
+                "dynamics-of-the-duel": "Dynamics of the Duel",
+                "pre-modern_battlefield_injury": "Pre-Modern Battlefield Injury",
+            }
+            if rep_dir in special_reports:
+                return special_reports[rep_dir]
+            return rep_dir.replace("-", " ").replace("_", " ").title()
+
+    return "Untitled"
+
 def generate_root_toc(design_root):
     root_data = load_index(os.path.join(design_root, "index.yaml"))
     foundations = []
     for sec_k in ["philosophy", "design_patterns", "methodology"]:
         for item in root_data.get("project_foundation", {}).get(sec_k, []):
-            foundations.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
+            title = get_item_title(design_root, item)
+            foundations.append([f"[{title}]({item['path']})", clean_desc(item.get("purpose", ""))])
     for item in root_data.get("introductory_materials", []):
         if item.get("path") in ["AGENTS.md", "introduction.md"]:
-            foundations.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
+            title = get_item_title(design_root, item)
+            foundations.append([f"[{title}]({item['path']})", clean_desc(item.get("purpose", ""))])
 
     rules = []
     for sec_k in ["core_rules_and_guides", "lexicons", "modules"]:
         for item in root_data.get("game_system_and_rules", {}).get(sec_k, []):
-            rules.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
+            title = get_item_title(design_root, item)
+            rules.append([f"[{title}]({item['path']})", clean_desc(item.get("purpose", ""))])
 
     domains = []
     for item in root_data.get("sub_indexes", []):
-        name = item["name"].replace(" Index", "")
         dir_name = item["path"].split("/")[0]
-        domains.append([f"**{name}**", f"[{dir_name}/]({dir_name}/README.md) ([Index]({item['path']}))", clean_desc(item.get("purpose", ""))])
+        domain_name = dir_name.capitalize()
+        domains.append([f"**{domain_name}**", f"[{dir_name}/]({dir_name}/README.md) ([Index]({item['path']}))", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Directory Catalog",
@@ -710,7 +777,8 @@ def generate_iteration_toc(design_root):
     constraints = []
     for item in iter_data.get("active_design_exploration", {}).get("mechanical_constraints", []):
         rel_p = item["path"].replace("iteration/", "")
-        constraints.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
+        title = get_item_title(design_root, item)
+        constraints.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     proposals = []
     for sec_k in ["resolution_and_combat_proposals", "mechanics_and_resource_proposals"]:
@@ -718,12 +786,14 @@ def generate_iteration_toc(design_root):
             rel_p = item["path"].replace("iteration/", "")
             if rel_p.endswith("index.yaml"):
                 rel_p = rel_p.replace("index.yaml", "README.md")
-            proposals.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
+            title = get_item_title(design_root, item)
+            proposals.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     sketches = []
     for item in iter_data.get("active_design_exploration", {}).get("ideation_and_sketches", []):
         rel_p = item["path"].replace("iteration/", "")
-        sketches.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
+        title = get_item_title(design_root, item)
+        sketches.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Active Iteration Catalog",
@@ -747,24 +817,28 @@ def generate_research_toc(design_root):
     for sec_k in ["factual_bedrock", "inspiration_library", "ludology_library"]:
         for item in res_data.get(sec_k, []):
             rel_p = item["path"].replace("research/", "")
-            bedrock.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
+            title = get_item_title(design_root, item)
+            bedrock.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     syntheses = []
     for item in res_data.get("research_synthesis", []):
         rel_p = item["path"].replace("research/", "")
-        syntheses.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
+        title = get_item_title(design_root, item)
+        syntheses.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     reports = []
     for item in res_data.get("research_reports", []):
         rep_f = item.get("components", {}).get("report_file", "")
         if rep_f.startswith("research/"):
             rep_f = rep_f[len("research/") :]
-        reports.append([f"[{item['name']}]({rep_f})", clean_desc(item.get("purpose", ""))])
+        title = get_item_title(design_root, item)
+        reports.append([f"[{title}]({rep_f})", clean_desc(item.get("purpose", ""))])
 
     theory = []
     for item in res_data.get("design_theory_and_readings", []):
         rel_p = item["path"].replace("research/", "")
-        theory.append([f"[{item['name']}]({rel_p})", clean_desc(item.get("purpose", ""))])
+        title = get_item_title(design_root, item)
+        theory.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Research Catalog",
@@ -789,7 +863,8 @@ def generate_archive_toc(design_root):
     arch_data = load_index(os.path.join(design_root, "archive/index.yaml")).get("archive_and_legacy_materials", {})
     arch_items = []
     for item in arch_data.get("archived_playtest_spreadsheets", []):
-        arch_items.append([f"[{item['name']}]({item['path']})", clean_desc(item.get("purpose", ""))])
+        title = get_item_title(design_root, item)
+        arch_items.append([f"[{title}]({item['path']})", clean_desc(item.get("purpose", ""))])
 
     blocks = [
         "## Archived Content Catalog",
@@ -860,11 +935,10 @@ def audit_and_sync_aggregated_tags(design_root, index_path, fix=False):
     sub_indexes = root_data.get("sub_indexes", [])
     errors = []
 
-    tags_by_subindex = {}
+    tags_by_subpath = {}
     needs_update = False
 
     for item in sub_indexes:
-        sub_name = item.get("name")
         sub_path = item.get("path")
         if not sub_path:
             continue
@@ -872,24 +946,26 @@ def audit_and_sync_aggregated_tags(design_root, index_path, fix=False):
         existing_tags = item.get("aggregated_tags", [])
         if actual_tags != existing_tags:
             needs_update = True
-            errors.append(f"Aggregated tags for '{sub_name}' ({sub_path}) out of date")
-            tags_by_subindex[sub_name] = actual_tags
+            errors.append(f"Aggregated tags for '{sub_path}' out of date")
+            tags_by_subpath[sub_path] = actual_tags
 
     if needs_update and fix:
         with open(index_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         new_lines = []
-        curr_sub_name = None
+        curr_sub_path = None
         for line in lines:
-            name_m = re.match(r'^\s*-\s*name:\s*"(.*?)"', line)
-            if name_m:
-                curr_sub_name = name_m.group(1)
+            path_m = re.match(r'^\s*-\s*path:\s*"(.*?)"', line)
+            if not path_m:
+                path_m = re.match(r'^\s*path:\s*"(.*?)"', line)
+            if path_m:
+                curr_sub_path = path_m.group(1)
 
             agg_m = re.match(r'^(\s*)aggregated_tags:\s*\[.*\]', line)
-            if agg_m and curr_sub_name in tags_by_subindex:
+            if agg_m and curr_sub_path in tags_by_subpath:
                 indent = agg_m.group(1)
-                tags_str = ", ".join(f'"{t}"' for t in tags_by_subindex[curr_sub_name])
+                tags_str = ", ".join(f'"{t}"' for t in tags_by_subpath[curr_sub_path])
                 new_lines.append(f"{indent}aggregated_tags: [{tags_str}]\n")
                 continue
 

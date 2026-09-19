@@ -74,12 +74,11 @@ For each file reported as `[MISSING]`:
 If you prefer to manually craft an entry or place it in a specialized section:
 
 1. Add the entry to [`design/index.yaml`](file:///home/tdimiduk/cardpg/design/index.yaml) or the relevant sub-index.
-2. Required fields:
-   - `name`: Descriptive, human-readable title (must match frontmatter `title`).
-   - `id`: Unique URL-friendly slug (kebab-case).
-   - `path`: Relative path from the `design/` root directory.
+2. Fields:
+   - `path`: Relative path from the `design/` root directory (or URL for remote resources).
    - `purpose`: One-sentence explanation of the document's design role.
    - `tags`: Category labels (e.g., `doc-type:research-synthesis`, `audience:designer-facing`).
+   - `name` (optional): Only needed for external resources (e.g., Google Sheets) or special titles; local documents derive their titles directly from their frontmatter or file path.
 
 ---
 

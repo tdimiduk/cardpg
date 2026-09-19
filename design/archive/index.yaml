@@ -6,8 +6,7 @@
 
 archive_and_legacy_materials:
   orientation:
-    - name: "Archive Readme"
-      path: "archive/README.md"
+    - path: "archive/README.md"
       purpose: "Orientation and context for the archived playtest content and legacy research."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
