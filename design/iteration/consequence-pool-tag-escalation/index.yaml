@@ -1,0 +1,84 @@
+# Consequence Pool & Tag Escalation Proposal Suite Index
+package:
+  name: "Consequence Pool & Tag Escalation Engine"
+  purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
+  tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
+
+documents:
+  - name: "Consequence Pool & Tag Escalation Resolution Engine"
+    path: "iteration/consequence-pool-tag-escalation/README.md"
+    type: "Design Exploration Suite"
+    purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
+
+  - name: "Consequence Pool & Tag Escalation Proposal (Core)"
+    path: "iteration/consequence-pool-tag-escalation/proposal.md"
+    type: "Design Exploration"
+    purpose: "The core rules patch replacing Defend Actions in core-rules.md."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Consequence Pool Proposal (Full)"
+    path: "iteration/consequence-pool-tag-escalation/proposal-long.md"
+    type: "Design Exploration"
+    purpose: "Extended proposal document with full rationale and mechanical details."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Guide to Writing Consequences"
+    path: "iteration/consequence-pool-tag-escalation/guide-to-writing-consequences.md"
+    type: "Design Exploration"
+    purpose: "Style and authoring guide for consequence cards under the escalation engine."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Consequence Database"
+    path: "iteration/consequence-pool-tag-escalation/consequences.yaml"
+    type: "Cards"
+    purpose: "Prototype card database for consequence cards across Severities 1-5."
+    tags: ["doc-type:content-library", "audience:designer-facing"]
+
+  - name: "Equipment Database"
+    path: "iteration/consequence-pool-tag-escalation/equipment.yaml"
+    type: "Cards"
+    purpose: "Prototype equipment and armor database for tag escalation items."
+    tags: ["doc-type:content-library", "audience:designer-facing"]
+
+  - name: "Trace 1: Unarmored Skirmish"
+    path: "iteration/consequence-pool-tag-escalation/trace-1-unarmored-skirmish.md"
+    type: "Design Exploration"
+    purpose: "Combat trace of unarmored duel demonstrating consequence drafting."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Trace 2: Armored Knight Power Strike"
+    path: "iteration/consequence-pool-tag-escalation/trace-2-armored-knight-power-strike.md"
+    type: "Design Exploration"
+    purpose: "Combat trace demonstrating full plate armor soak and pierce mechanics."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Trace 3: Tag Escalation Spiral"
+    path: "iteration/consequence-pool-tag-escalation/trace-3-tag-escalation-spiral.md"
+    type: "Design Exploration"
+    purpose: "Combat trace demonstrating multi-round condition escalation."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Trace 4: Mob Combat & Multi-Attacker"
+    path: "iteration/consequence-pool-tag-escalation/trace-4-mob-combat-multi-attacker.md"
+    type: "Design Exploration"
+    purpose: "Combat trace demonstrating batched round consequence pool resolution against multiple attackers."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Critique and Brainstorming Seeds"
+    path: "iteration/consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md"
+    type: "Design Exploration"
+    purpose: "Critical analysis, potential failure points, and future brainstorming seeds."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Gamemaster Guide Patch"
+    path: "iteration/consequence-pool-tag-escalation/gamemaster-guide-patch.md"
+    type: "Design Exploration"
+    purpose: "Proposed patch to gamemaster-guide.md integrating consequence pool tactics."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - name: "Player's Guide Patch"
+    path: "iteration/consequence-pool-tag-escalation/players-guide-patch.md"
+    type: "Design Exploration"
+    purpose: "Proposed patch to players-guide.md integrating consequence pool strategy."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
