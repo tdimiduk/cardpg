@@ -40,16 +40,17 @@ Your interaction with this repository is governed by two key documents and a cor
 
 ### Rules & Mechanics
 
-| Document                                                | Summary                                                                                          |
-| :------------------------------------------------------ | :----------------------------------------------------------------------------------------------- |
-| [Core Rules](rules/core-rules.md)                       | The foundational player-facing rules. The single most important mechanics document.              |
-| [Player's Guide](rules/players-guide.md)                | Strategic advice, advanced tactics, and detailed play examples complementing core-rules.md.      |
-| [Gamemaster's Guide](rules/gamemaster-guide.md)         | Instructions, best practices, and advanced guidance for running the game and writing adventures. |
-| [Keyword Glossary](rules/keyword-glossary.md)           | Reference for the keywords in the game.                                                          |
-| [Reading The Cards](rules/reading-the-cards.md)         | Guide on interpreting card rules and keywords.                                                   |
-| [Colors Of Action](rules/colors-of-action.md)           | An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue.             |
-| [Clocks And Fronts](rules/modules/clocks-and-fronts.md) | Optional rules for dynamic campaign play.                                                        |
-| [Snap Check](rules/modules/snap-check.md)               | Optional rules for passive checks (like perception).                                             |
+| Document                                                | Summary                                                                                               |
+| :------------------------------------------------------ | :---------------------------------------------------------------------------------------------------- |
+| [Core Rules](rules/core-rules.md)                       | The foundational player-facing rules. The single most important mechanics document.                   |
+| [Player's Guide](rules/players-guide.md)                | Strategic advice, advanced tactics, and detailed play examples complementing core-rules.md.           |
+| [Gamemaster's Guide](rules/gamemaster-guide.md)         | Instructions, best practices, and advanced guidance for running the game and writing adventures.      |
+| [Keyword Glossary](rules/keyword-glossary.md)           | Reference for the keywords in the game.                                                               |
+| [Reading The Cards](rules/reading-the-cards.md)         | Guide on interpreting card rules and keywords.                                                        |
+| [Colors Of Action](rules/colors-of-action.md)           | An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue.                  |
+| [Clocks And Fronts](rules/modules/clocks-and-fronts.md) | Optional rules for dynamic campaign play.                                                             |
+| [Snap Check](rules/modules/snap-check.md)               | Optional rules for passive checks (like perception).                                                  |
+| [The Breather](rules/modules/the-breather.md)           | This module introduces an optional rule for Adventuring Time called **The Breather** (or Short Rest). |
 
 ### Domain Catalogs
 

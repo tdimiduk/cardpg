@@ -72,9 +72,19 @@ DOC_TYPE_COMPATIBILITY = {
         "game rules",
         "game rules module",
         "rules",
+        "module",
         "doc-type:rules",
         "doc-type:rules-framework",
         "doc-type:rules-module",
+        "doc-type:module",
+    },
+    "module": {
+        "game rules module",
+        "module",
+        "rules",
+        "doc-type:module",
+        "doc-type:rules-module",
+        "doc-type:rules",
     },
     "iteration": {
         "design constraints",
@@ -94,6 +104,7 @@ TYPE_MAP = {
     "literature-note": "Literature Note",
     "report": "Research Report",
     "rules": "Game Rules",
+    "module": "Game Rules Module",
     "iteration": "Design Exploration",
     "ideation": "Ideation",
     "meta": "Meta Document",
@@ -105,6 +116,7 @@ DOC_TYPE_CANONICAL_TAGS = {
     "literature-note": "doc-type:literature-note",
     "report": "doc-type:research-report",
     "rules": "doc-type:rules",
+    "module": "doc-type:module",
     "iteration": "doc-type:iteration",
     "ideation": "doc-type:ideation",
     "meta": "doc-type:meta",
@@ -481,13 +493,15 @@ def resolve_index_target(rel_path, doc_type):
         return "archive/index.yaml", "orientation"
     elif rel_path.startswith("rules/"):
         if rel_path.startswith("rules/modules/"):
-            return "index.yaml", "modular_rules_modules"
+            return "index.yaml", "modules"
         else:
-            return "index.yaml", "core_framework"
+            return "index.yaml", "core_rules_and_guides"
     elif rel_path.startswith("philosophy/"):
         return "index.yaml", "philosophy"
+    elif rel_path.startswith("methodology/"):
+        return "index.yaml", "methodology"
     else:
-        return "index.yaml", "core_framework"
+        return "index.yaml", "core_rules_and_guides"
 
 def insert_entry_into_index(index_abs_path, section_key, entry):
     if not os.path.exists(index_abs_path):
@@ -533,6 +547,10 @@ def insert_entry_into_index(index_abs_path, section_key, entry):
     entry_lines.append(f'{prop_indent}purpose: "{clean_purpose}"\n')
     tags_formatted = ", ".join(f'"{t}"' for t in entry["tags"])
     entry_lines.append(f'{prop_indent}tags: [{tags_formatted}]\n')
+
+    if insert_idx > 0 and lines[insert_idx - 1].strip() and insert_idx != section_idx + 1:
+        entry_lines.insert(0, "\n")
+    entry_lines.append("\n")
 
     new_lines = lines[:insert_idx] + entry_lines + lines[insert_idx:]
 
@@ -592,14 +610,17 @@ def auto_index_unindexed_files(unindexed_files, design_root):
             purpose = f"Documentation and design specifications for {fm.get('title')}."
 
         tags = []
-        dt_tag = DOC_TYPE_CANONICAL_TAGS.get(doc_type, f"doc-type:{doc_type}")
+        if rel_path.startswith("rules/modules/") or doc_type == "module":
+            dt_tag = "doc-type:module"
+        else:
+            dt_tag = DOC_TYPE_CANONICAL_TAGS.get(doc_type, f"doc-type:{doc_type}")
         tags.append(dt_tag)
         if rel_path.startswith("rules/"):
             tags.append("audience:player-facing")
+            if rel_path.startswith("rules/modules/") or "gamemaster" in rel_path or "gm" in rel_path:
+                tags.append("audience:gm-facing")
         else:
             tags.append("audience:designer-facing")
-        if fm.get("track"):
-            tags.append(f"track:{fm.get('track')}")
         for t in fm.get("tags", []):
             if t not in tags:
                 tags.append(t)

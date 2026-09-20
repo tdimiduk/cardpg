@@ -80,6 +80,10 @@ game_system_and_rules:
       purpose: "Optional rules for passive checks (like perception)."
       tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing", "pillar:exploration", "pillar:social", "core-concept:passive-check", "core-concept:perception"]
 
+    - path: "rules/modules/the-breather.md"
+      purpose: "This module introduces an optional rule for Adventuring Time called **The Breather** (or Short Rest)."
+      tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing", "pillar:exploration", "pillar:downtime", "core-concept:fatigue", "core-concept:hand-management", "core-concept:pacing"]
+
 sub_indexes:
   - path: "iteration/index.yaml"
     purpose: "Sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches."

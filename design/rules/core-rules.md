@@ -82,21 +82,26 @@ A `General Action` works best when the goal is a single, resolvable task (e.g., 
 
 **Note to Gamemasters:** _If a player proposes a General Action that does not feel like it should be resolved in a single step, either suggest the player break it down or assign a prohibitively high `Strength` to the task._
 
-For a general action, a specific challenge card will give you a `Color` and `Strength` for the action or the gamemaster will tell you. Your `Defense` is provided by an applicable card you have in play. If multiple cards apply, use the best one. If none apply, your `Defense` is 1.
+For a general action, a challenge card or the gamemaster gives you a `Color` and `Strength`. Your `Defense` and `Resilience` are provided by an applicable card in play. If none apply, your `Defense` is 1.
 
-Resolution proceeds similarly to a defend action: After flipping cards to meet the `Strength`, use your `Defense` to find the number of consequences you suffer, and your `Resilience` to find their severity. If you do not have an appropriate consequence deck at hand for the kind of action you are taking your gamemaster may define an appropriate one. Note it down and place it in your consequences area as usual for tracking.
+**Resolution:**
+
+1. **Meet the Strength:** Flip cards from your deck one by one until their total value in the required `Color` meets or exceeds the `Strength`.
+   - _Committing Your Ready Hand (Optional):_ Before or during flips, you may pick up your Ready Hand and play cards from it. Cards played from hand contribute their `Color` value toward the `Strength` and resolve any applicable rules text printed on them (such as bonus Strength, modified Defense, or special effects).
+2. **Determine Impact & Consequences:** The `Impact` is the total number of cards used (cards flipped from deck plus cards played from hand). Suffer one consequence for each full multiple of your `Defense` (Consequences = round_down(`Impact` / `Defense`)). Find their severity using your `Resilience`.
+3. **Flush (if hand was picked up):** If you picked up your Ready Hand, flush your hand and draw back up to your chosen Ready Hand size (see [Adventuring Time](#adventuring-time)).
 
 # Resources and Consequences
 
 ## Running Out of Cards: The Fatigue Cycle
 
-Your deck is a finite resource. When you need to draw a card but your deck is empty, you must perform a **Fatigue Cycle**. This is a common part of the game and represents your character becoming tired as they exert themselves.
+Your deck is a finite resource. When you need to draw a card but your deck is empty, you must perform a **Fatigue Cycle**. This is a common part of the game and represents your character becoming tired as they exert themselves. You may also voluntarily trigger a Fatigue Cycle at any time to reshuffle your expended pile into your deck.
 
 **Fatigue Cycle Procedure:**
 
 1. Add 2 **Fatigue** cards (plus your **Burden**) to your expended pile.
 2. Reshuffle your expended pile to form your new deck.
-3. Draw the card you needed.
+3. Draw the card you needed (if triggered by a draw).
 
 **Fatigue** is the most common type of **Status Card**.
 
@@ -143,17 +148,30 @@ For a detailed mechanical breakdown, see the [Player's Guide](players-guide.md)
 
 Used for exploration, travel, and downtime. During Adventuring Time, you resolve tasks using **General Actions** as needed.
 
-You do not hold a hand of cards as you do in a crisis. Instead, you maintain a **Ready** hand of up to 4 cards, kept face down. This represents your character's general alertness and ability to react to sudden events.
+### The Ready Hand
 
-This vigilance is not free. Periodically, the GM will call for an **Effort Cycle** to represent the mental cost of staying alert. When this happens, you must discard your entire Ready hand and draw a new one.
+You do not hold a hand of cards in Adventuring Time. Instead, you maintain a **Ready Hand** on the table of up to 4 cards, representing your vigilance and combat readiness. You choose how many cards you keep ready (from 0 to 4).
+
+- **Face-Down Cards:** Ready cards are dealt from the top of your deck and kept face down.
+- **Face-Up Guard:** Up to 1 card in your Ready Hand may be kept face up as a known, prepared action or stance. Outside of a crisis, you may spend about one minute of preparation to search your deck for an Action card and place it face up as your guard, then shuffle your deck. If you already had a face-up guard, discard the previous card to your expended pile. You can only choose a card currently in your deck; if your desired card is in your expended pile, you must voluntarily trigger a Fatigue Cycle first to reshuffle your deck.
+
+### Flushing the Ready Hand
+
+Vigilance burns stamina over time. Periodically, the GM will call for an **Effort Cycle** to represent this cost. When an Effort Cycle is called—or whenever you pick up your Ready Hand during a General Action—you must **flush** your Ready Hand:
+
+1. **Discard:** Discard all cards in your Ready Hand to your expended pile.
+   - _Retaining a Face-Up Guard:_ If you have an unspent face-up card, you may keep it face up instead of discarding it by discarding 2 cards from the top of your deck into your expended pile.
+2. **Redraw:** Deal cards face down from your deck until your Ready Hand returns to your chosen size.
+
+If your chosen Ready Hand size is 0 (marching at ease or guard down), Effort Cycles cost you no cards.
 
 ### Transitioning to Crisis Time
 
-When exploration or travel is interrupted by a sudden threat, play shifts from Adventuring Time to Crisis Time. The nature of the encounter determines how this transition happens.
+When exploration or travel is interrupted by a sudden threat, play shifts from Adventuring Time to Crisis Time:
 
-- Mutual Awareness: If you encounter enemies and both groups become aware of each other at the same time, all characters immediately pick up their **Ready** hand. You are now in Crisis Time and will begin the first round by planning your actions.
-- **Surprise:** If one side becomes aware of the other earlier, they gain a significant advantage. The aware characters may take several rounds of Crisis Time—drawing cards and acting as normal—while the other side remains unaware.
-- **Player-Initiated Crisis:** Any player can declare their intent to enter **Crisis Time** at any point. This is the primary tool for modeling a character taking time to prepare, focus, or set up an ambush. This preparation comes at a significant cost: you must discard your hand when the crisis ends even if you don’t end up actually launching the ambush.
+- **Mutual Awareness:** If both sides become aware of each other at the same time, all characters immediately pick up their **Ready Hand** (both face-down cards and any face-up guard). This is your starting hand for Round 1.
+- **Surprise:** If one side becomes aware of the other earlier, they gain a significant advantage. If you are caught completely unaware or had your guard down (Ready Hand size of 0), you start Crisis Time with no hand and draw cards as normal when Round 1 begins. Aware characters may take several rounds of Crisis Time—drawing cards and acting as normal—while the unaware side cannot act.
+- **Player-Initiated Crisis:** Any player can declare their intent to enter **Crisis Time** at any point to prepare, focus, or set up an ambush. This preparation comes at a significant cost: you must discard your hand when the crisis ends even if you don’t end up actually launching the ambush.
 
 # Advanced Details
 
@@ -179,4 +197,4 @@ When you are working on this document always keep in your mind "does this need t
 - evocative language and discussions of how the game should feel belongs in the [Introduction](../introduction.md)
 - player facing elaboration of the rules or advanced discussion of implications [Player's Guide](players-guide.md)
 - anything that only the gamemaster needs to know belongs in the [Gamemaster's Guide](gamemaster-guide.md)
-- anything that the game can feel complete without belongs be in a `rules module` like [Snap Check](modules/snap-check.md)
+- anything that the game can feel complete without belongs be in a `rules module` like [Snap Check](modules/snap-check.md) or [The Breather](modules/the-breather.md)
