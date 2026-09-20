@@ -149,19 +149,43 @@ _(Formerly referenced as GC4)_
 
 ---
 
+### Pitfall 11: The Patchwork Trap (Complexity by Exception / Flowchart Bloat)
+
+- **The Anti-Pattern:** Attempting to solve mechanical pitfalls by layering on conditional if/then branches, anti-swing caps, saturation thresholds, and phase-timing exceptions rather than finding a simple, robust core primitive.
+- **How It Manifests:**
+  - A resolution rule that starts simply as "flip cards to meet Strength" ends up requiring sub-rules for: _What if it's the first hit? What if two hits land in the same simultaneous round? What if it's a minion? What if you already have a tactical condition? What if you take an action to clear it this turn?_
+  - The procedure requires a sprawling flowchart to follow, violating the **10x Rule of Core Complexity**.
+  - Patching an edge case for player characters (e.g., adding a cap to prevent one-shot kills) accidentally breaks resolution for monsters (making minions immune to being killed in one hit), prompting yet another exception rule.
+- **The Audit Test:** _Can a player explain the entire resolution procedure in 30 seconds at the table without consulting a flowchart, referencing special-case exceptions, or arguing over phase timing?_
+
+---
+
+### Pitfall 12: Combat-Centric Hyper-Specialization (The "Two-Game" Trap)
+
+- **The Anti-Pattern:** Designing a resolution engine around physical martial concepts (armor soak, weapon swings, poise, bodily trauma) so deeply that non-combat challenges (social negotiations, climbing icy cliffs, sneaking past sentries, surviving sandstorms) either cannot use the engine or require clumsy physical metaphors.
+- **How It Manifests:**
+  - Non-combat either gets shoved into an ad-hoc, hand-waved subsystem, or requires duplicating the rulebook with parallel decks, tracks, and bespoke terminology (carrying an automatic $\sim 2\times$ complexity penalty).
+  - Terms like "Guard," "Armor," or "Tissue Trauma" are baked into the core resolution engine rather than living modularly on equipment and condition cards.
+  - The system fails to cleanly support General Actions (where resolution determines the _cost_ of an assumed success rather than binary pass/fail).
+- **The Audit Test:** _If you replace "Attacker" with "Icy Crevasse" or "Inquisitor" and "Defender" with "Climber" or "Diplomat", does the exact same resolution loop function intuitively without renaming or re-engineering the mechanics?_
+
+---
+
 ## 3. The Resolution Proposal Audit Checklist
 
-Before any resolution mechanic is advanced to full proposal status, it must pass this 10-point audit:
+Before any resolution mechanic is advanced to full proposal status, it must pass this 12-point audit:
 
-|   #    | Check                        | Key Question                                                                                 |
-| :----: | :--------------------------- | :------------------------------------------------------------------------------------------- |
-| **1**  | **Decisive Conclusion**      | Does the mechanic cleanly drive to a conclusion without relying on infinite parry loops?     |
-| **2**  | **No Dominant Menus**        | Does it avoid offering "deck flips vs. real wounds" false dilemmas?                          |
-| **3**  | **Probing Attacks Matter**   | Do small attacks advance the combat state rather than bouncing off a static threshold?       |
-| **4**  | **Tri-Color Compliance**     | Does the mechanic respect that every card has Red, Yellow, and Blue values?                  |
-| **5**  | **Scale Invariance**         | Does the math hold if card numbers scale to double digits or army-level hundreds?            |
-| **6**  | **Equipment Decoupling**     | Can characters be disarmed or swap gear without breaking their deck's Action Cards?          |
-| **7**  | **Qualitative Harm**         | Does harm produce tangible, differentiated conditions rather than pseudo-HP counters?        |
-| **8**  | **No Combinatorial Traps**   | Does spending effort/impact avoid integer partition paradoxes where big hits deal 0 harm?    |
-| **9**  | **Zero Mid-Combat Tutoring** | Can resolution proceed without rifling through separate card decks mid-round?                |
-| **10** | **Identity Preservation**    | Does the mechanic avoid locking or deleting a player's favorite cards on early random flips? |
+|   #    | Check                               | Key Question                                                                                 |
+| :----: | :---------------------------------- | :------------------------------------------------------------------------------------------- |
+| **1**  | **Decisive Conclusion**             | Does the mechanic cleanly drive to a conclusion without relying on infinite parry loops?     |
+| **2**  | **No Dominant Menus**               | Does it avoid offering "deck flips vs. real wounds" false dilemmas?                          |
+| **3**  | **Probing Attacks Matter**          | Do small attacks advance the combat state rather than bouncing off a static threshold?       |
+| **4**  | **Tri-Color Compliance**            | Does the mechanic respect that every card has Red, Yellow, and Blue values?                  |
+| **5**  | **Scale Invariance**                | Does the math hold if card numbers scale to double digits or army-level hundreds?            |
+| **6**  | **Equipment Decoupling**            | Can characters be disarmed or swap gear without breaking their deck's Action Cards?          |
+| **7**  | **Qualitative Harm**                | Does harm produce tangible, differentiated conditions rather than pseudo-HP counters?        |
+| **8**  | **No Combinatorial Traps**          | Does spending effort/impact avoid integer partition paradoxes where big hits deal 0 harm?    |
+| **9**  | **Zero Mid-Combat Tutoring**        | Can resolution proceed without rifling through separate card decks mid-round?                |
+| **10** | **Identity Preservation**           | Does the mechanic avoid locking or deleting a player's favorite cards on early random flips? |
+| **11** | **No Flowchart Bloat (10x Rule)**   | Can the procedure be taught in 30 seconds without a web of conditional exceptions?           |
+| **12** | **Universal Non-Combat Generality** | Does the exact same engine resolve social and hazard challenges without a parallel system?   |
