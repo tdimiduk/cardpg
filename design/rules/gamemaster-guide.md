@@ -143,13 +143,17 @@ Adventuring Time is the default mode of play, covering exploration, travel, and 
 
 #### The "Ready" Hand and Effort Cycles
 
-During Adventuring Time, players do not hold a hand of cards. Instead, they maintain a **Ready** hand of up to 4 cards, kept face down. This represents their character's general state of alertness and readiness to react to sudden events.
-This vigilance is not free. It represents a low-level but constant exertion. You should call for an **Effort Cycle** periodically to represent this cost.
+During Adventuring Time, players do not hold a hand of cards. Instead, they maintain a **Ready Hand** on the table of up to 4 cards, representing their character's state of alertness and readiness to react to sudden events:
 
-- **When to Call for an Effort Cycle:** The trigger for an Effort Cycle depends on your GMing style.
-  - **Ad-Hoc Pacing:** For free-flowing adventures, a good guideline is to call for a cycle about once per hour of in-game time when characters are in a state of alert (traveling, on watch, exploring a ruin).
-  - **Structured Pacing (Advanced):** For detailed, high-stakes scenarios like a dungeon crawl, you can use pre-designed **Location Decks** (representing places and obstacles) and **Clock Decks** (representing the passage of time and external pressures). In this style, the draw of a card from the Clock Deck is the trigger for an Effort Cycle, tightly coupling the characters' exertion to the pressures of the environment.
-- **Resolving an Effort Cycle:** Each player discards their entire Ready hand and draws a new one. This simulates the mental fatigue and renewed focus of staying alert.
+- **The Vigilance Dial (0 to 4 cards):** Players choose their Ready Hand size. At peak alertness (4 cards), they are ready to react instantly to ambushes, but burn through stamina quickly. At ease (0 cards), Effort Cycles cost nothing, but the characters start Crisis Time with an empty hand and automatically fail Snap Checks.
+- **Face-Up Guard:** Outside of crisis, a character may spend about one minute of preparation to search their deck for 1 Action Card to place face up as a prepared stance or guard.
+- **Resolving an Effort Cycle:** When an Effort Cycle is called, each player flushes their Ready Hand:
+  1. _Discard:_ Discard all cards in the Ready Hand to the expended pile. A player with an unspent face-up guard may keep it face up by discarding 2 cards from the top of their deck into their expended pile instead.
+  2. _Redraw:_ Deal cards face down from the deck up to the player's chosen Ready Hand size.
+
+- **When to Call for an Effort Cycle:** The trigger for an Effort Cycle depends on your GMing style:
+  - **Ad-Hoc Pacing:** For free-flowing adventures, a good guideline is to call for a cycle about once per hour of in-game time when characters are in a state of alert (traveling, on watch, exploring a ruin). In high-tension or strenuous environments, call them more frequently (e.g., after arduous physical feats, extended searches, or tense stealth infiltrations).
+  - **Structured Pacing (Advanced):** For detailed, high-stakes scenarios like a dungeon crawl, you can use pre-designed **Location Decks** (representing places and obstacles) and **Clock Decks** (representing the passage of time and external pressures). Cards in these decks can explicitly trigger an Effort Cycle, tightly coupling the characters' exertion to the pressures of the environment.
 
 ### 2.2. Running Crisis Time
 

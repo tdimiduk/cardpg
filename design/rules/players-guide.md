@@ -86,28 +86,29 @@ However, holding a primed stance has a continuous cost: **every Effort Cycle, yo
 
 When faced with a General Action (climbing a cliff, negotiating a toll, picking a lock), you face a fundamental choice: **Casual Attempt** vs. **Committed Attempt**.
 
-#### 1. Casual Attempt (Guard Preserved)
+#### 1. Casual Attempt
 
 You do not touch your Ready Hand; you resolve the task purely by flipping cards from your deck.
 
-- **The Upside:** Your Ready Hand remains completely intact. If an ambush or trap triggers immediately after, you are at full combat vigilance.
+- **The Upside:** Your current Ready Hand remains untouched on the table, preserving any prepared face-up stance or high reaction cards you may have waiting.
 - **The Risk:** Blind flips have natural variance. If you hit low values, you may flip many cards, driving up `Impact` and taking more consequences.
 
-#### 2. Committed Attempt (Dropping Your Guard)
+#### 2. Committed Effort
 
-You pick up your Ready Hand to apply your trained capabilities directly to the problem.
+You pick up your Ready Hand, bringing your conscious focus, trained techniques, and immediate physical energy to bear on the problem.
 
-- **Why Hand Cards Count for Impact:** Every card used (from hand or deck) contributes to the task's `Impact`. If hand cards were "free" from Impact, players would dump their entire hand on every check. Because every card counts toward consequences, you must be judicious with what you play.
-- **The Golden Rule: Never Play Low-Value Cards!**
-  If a task requires `Yellow` and your Ready Hand contains a card with `Yellow 1`, **do not play it!** Playing that card adds 1 full `Impact` for only 1 Strength. A blind flip from your deck has a higher expected value.
-  Instead, only play cards from your hand that significantly beat your deck's average (e.g., `Yellow 5` or higher). Play only what you need to meet the Strength efficiently, and let the weak cards sit in your hand.
-- **The Flush:** When the action resolves, any cards remaining in your hand are flushed to your expended pile, and you deal a new Ready Hand. Committing your hand always represents breaking your vigilance to focus completely on the task.
+- **Hand Cards in the Flipped Stack:** When you add a card from your hand to the flipped stack in place of a flip, it counts toward the task's `Impact` just like a card flipped from your deck. This prevents players from dumping weak cards: playing a card with `Yellow 1` adds 1 full Impact for negligible Strength.
+- **The Golden Rule: Never Play Low-Value Cards to the Flipped Stack!**
+  A blind flip from your deck has an average value (typically ~3). If your hand holds a low-value card, let it flush away! Only add cards from your hand to the flipped stack that significantly beat your deck's average (e.g., `Yellow 5` or higher).
+- **The Flush:** When the action resolves, any cards remaining in your hand are discarded to your expended pile, and you deal a fresh Ready Hand up to your chosen size. Committing your hand doesn't leave you defenseless—your Ready Hand is redrawn immediately—but it represents cycling through your current focus and stamina to overcome the obstacle.
 
-#### Playing Specialized Cards with Rules Text
+#### Playing Printed Action Stacks
 
-In combat, you play `Defend` cards from your hand to trigger defensive abilities. Similarly, in General Actions, you can play Action Cards from your Ready Hand to resolve their printed rules text:
+If your Ready Hand contains a relevant Action Card, you can play it as an **Action Stack** (paying its printed Resource Cost with other cards from hand).
 
-- **Rules Text Integration:** A card played from hand might grant a `Strength` bonus, provide an active `Defense` rating for the task, or protect against specific consequences.
+- **Action Stacks Do Not Count for Impact:** Just as declaring an attack in combat does not inflict self-harm, cards in your Action Stack do not go into the flipped stack. Instead, the action alters the terms of the challenge: providing bonus `Strength`, establishing an active `Defense`, enabling cross-color spending, or granting specific protections.
 - **Example: Jumping the Chasm with Athletics:**
-  The Swashbuckler faces a dangerous 10-meter leap (`Strength 18 Yellow`). Rather than risking a blind leap, they spend a minute of preparation (stretching, adjusting straps, testing the stone) to **Set Guard**, searching their deck to place `Athletics` face up in their Ready Hand.
-  When they make the jump, they choose a Committed Attempt and play `Athletics`. Its rules text triggers (granting +2 Strength and providing `Defense 2` for the jump), and they play a second high-Yellow card from their hand. They meet the 18 Strength in just 2 cards (`Impact = 2`), taking only $2 / 2 = 1$ minor scrape instead of risking 5 or 6 blind flips. When the jump is complete, their hand flushes, and they deal a new Ready Hand face down.
+  The Swashbuckler faces a dangerous 10-meter leap (`Strength 18 Yellow`). Rather than risking a blind leap, they spend a minute of preparation to **Set Guard**, searching their deck to place `Athletics` (Cost 1, `Yellow 4`, text: _+2 Strength, Defense 2 on physical maneuvers_) face up in their Ready Hand.
+  When they make the jump, they choose a Committed Attempt and declare `Athletics`, paying 1 card from hand for its printed Cost. `Athletics` establishes `Defense 2` and contributes $4 + 2 = 6$ Yellow Strength.
+  To meet the remaining 12 Strength, they add one high-Yellow card (`Yellow 6`) from hand to the flipped stack in place of a flip, and flip one card from the deck (`Yellow 6`).
+  The flipped stack contains exactly 2 cards (`Impact = 2`). With `Defense 2`, they suffer $2 / 2 = 1$ minor scrape instead of risking 5 or 6 blind flips. When the jump is complete, their hand flushes, and they deal a new Ready Hand face down.

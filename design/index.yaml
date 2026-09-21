@@ -84,6 +84,10 @@ game_system_and_rules:
       purpose: "This module introduces an optional rule for Adventuring Time called **The Breather** (or Short Rest)."
       tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing", "pillar:exploration", "pillar:downtime", "core-concept:fatigue", "core-concept:hand-management", "core-concept:pacing"]
 
+    - path: "rules/modules/narrative-actions.md"
+      purpose: "This module provides rules for resolving improvised, freeform actions during **Crisis Time**."
+      tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing"]
+
 sub_indexes:
   - path: "iteration/index.yaml"
     purpose: "Sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches."

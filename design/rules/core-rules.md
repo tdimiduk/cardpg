@@ -1,200 +1,119 @@
-# Cards As your Character
+# Core Rules
 
-In other games you would have a character sheet with stats and a bag of dice. In caRdPG,
-Your character is defined by a 24 card deck that is your resource for everything you do. Every significant action costs cards; running out of cards incurs Fatigue. When you advance you upgrade cards from your deck or gain new ones. Consequences from actions add bad status cards to your deck.
+## 1. Your Deck is Your Character
 
-### The Three `Color`s
+Your character is defined by a 24-card deck that serves as your stamina, skill pool, and health. Every significant action expends cards, and exhausting your deck incurs fatigue.
 
-The three numbers along the upper left of each card are key. They represent the card’s strength in the game’s three core `Color`s:
+### The Three Colors
 
-- `Red` (Square): Force, Endurance, Presence, Passion, Dominion
-- `Yellow` (Circle): Speed, Precision, Perception, Cunning, Finesse
-- `Blue` (Diamond): Intellect, Planning, Discipline, Lore, Intrigue
+The numbers in the upper left of each card represent its strength in the game's three core Colors:
 
-See [Colors of Action](colors-of-action.md) for reference on how actions map to colors.
+- **Red (Square):** Force, Endurance, Presence, Passion, Dominion
+- **Yellow (Circle):** Speed, Precision, Perception, Cunning, Finesse
+- **Blue (Diamond):** Intellect, Planning, Discipline, Lore, Intrigue
 
-# Taking an Action
+_(See [Colors of Action](colors-of-action.md) for how skills and activities map to each color)._
 
-When you want to do something significant, you take an action. The first step is always to state your goal, like “I want to hit the goblin with my sword” or “I want to leap across the rooftop.”
+### Anatomy of a Card
 
-All actions require you to play and expend cards, representing the physical and mental effort involved. The rules resolve these actions in one of two ways, depending on the situation.
+- **Color Strengths (Upper Left):** Values for Red, Yellow, and Blue.
+- **Resource Cost (Upper Right):** Additional cards required from hand to play this card as an Action Stack.
+- **Rules Text:** Action type, modifiers, or trigger keywords (such as `Attack`, `Defend`, `Stance`, or `Passive`).
 
-The first way is with an **Attack Action** and a corresponding **Defend Action**. This pair is the fundamental building block for resolving combat and other adversarial, tense, moment-to-moment conflicts, which are played out in a structured sequence called **Crisis Time**.
+---
 
-The second way is with **General Actions**. This is the standard method for resolving any task that isn't a detailed conflict. The key assumption is that you succeed, and the rules determine the _cost_ of that success.
+## 2. Facing a Challenge
 
-This choice is a collaborative tool for controlling the game's pacing. A minor scuffle might be resolved with a single General Action, while a tense negotiation could be played out moment-by-moment using the Crisis Time rules.
+Whenever you face a challenge—whether it is an enemy attack, a crumbling ruin, or an iron door—resolution is **defender-centric**. The person facing the pressure is always the one who flips cards and absorbs the outcome:
 
-## Attack actions
+- **Facing an Enemy Attack:** When an enemy strikes, they set the **Strength**; _you_ meet the blow, absorb the **Impact**, and suffer any **Consequences**. (When _you_ attack an enemy, you set the Strength, and _they_ face it).
+- **Weathering an Environmental Hazard:** When a crumbling ledge gives way or a trap springs, the environment presents a **Strength** that you must endure.
+- **Tackling an Obstacle:** When you climb a wall, pick a lock, or sprint past guards, the task sets a **Strength** representing the physical or mental effort required to succeed.
 
-To perform an Attack Action, you play a stack of cards from your hand to generate its `Strength`.
+Whatever the challenge, facing it follows the same four steps:
 
-The primary and most effective way to do this is by playing a card with an appropriate action printed on it, like "Attack." To do this
+1. **Meet the Strength:** The threat or task presents a target **Strength** in a specific **Color**. You meet or exceed that Strength by adding together card values in that Color (playing prepared cards from hand or flipping cards from your deck).
+2. **Impact:** Your **Impact** is the number of cards in your **flipped stack**. Prepared cards played from hand (such as Defend cards or Action Stacks) do not add to your Impact.
+3. **Suffer Consequences:** If you flip cards from your deck, check your active armor or gear for your **Defense** and **Resilience** ratings (both default to **1** if unarmored):
+   - Group your flipped cards into stacks equal to your **Defense**. You suffer **1 Consequence** for each completed stack. (Leftover cards that do not complete a stack cause no harm and are discarded).
+   - Arrange your Consequence cards on the table in rows of width equal to your **Resilience**. The first row holds **Severity 1** consequences (minor friction). Filling that row escalates new consequences to **Severity 2** (serious injury/vulnerability). Filling the second row pushes you to **Severity 3** (incapacitated).
+4. **The Fatigue Cycle:** When you must draw or flip a card and your deck is empty—or voluntarily outside a resolution—perform a Fatigue Cycle: add 2 **Fatigue** cards (plus your total active **Burden** from heavy gear) to your expended pile, reshuffle it into a new deck, and draw or flip the required card.
 
-1. Play a stack: Play that card on top of a stack with additional cards (resources) equal to it's cost (the number in the upper right corner)
-2. Compute `Strength`: Add up the values of the indicated color of all the cards in the stack and add the printed modifier. This gives you the Action’s `Strength`.
-3. Declare `Color`: The colored symbol next to the Attack (or other Action) on the card tells you the action’s `Color`.
+---
 
-_A Note on Narrative Actions**:** If no specific Action Card in your hand applies, you can always perform a Narrative Action by describing what you do. Your Action Cards represent your specific training and the tactical opportunities you are prepared for, but a clever improvisation can also be potent._
+## 3. In Conflict: Crisis Time
 
-_When you perform a Narrative Action, the GM will provide a `Strength` modifier. This modifier reflects how effective your action is in the current situation. A generic attempt is likely less effective than a practiced skill, but a creative action that takes advantage of the environment could receive a powerful bonus._
+Crisis Time resolves combat, chases, and tense, second-by-second struggles. Play proceeds in simultaneous rounds.
 
-—
+### Round Structure
 
-Figure: Example of an attack action
+1. **Plan Step:** Each player draws 2 cards from their deck. Secretly choose your play for the round:
+   - **Play an Action:** Commit an Action card from hand (such as an Attack or Stance) along with any cards required to pay its resource cost.
+   - **Pass:** Take no action this round to conserve cards.
+   - _Movement:_ Narrative positioning and maneuvering are integral parts of your declared action intent.
+2. **Resolve Step:** All participants reveal their actions simultaneously:
+   - Attackers declare their targets and attack Color.
+   - Defenders resolve Defend actions to absorb incoming attacks.
+   - All declared actions resolve in parallel. Consequences take effect at the end of the Resolve Step.
+3. **Cleanup:** Discard all cards played or flipped during the round to your expended pile, unless an active card specifies otherwise (such as persistent Stances).
 
-Example Calculation: Using the attack action in the figure above:
+### Attack Actions
 
-- The action's `Color` is `Red`.
-- The calculation is: (`Red` value of top card \[3\] \+ `Red` value of second card \[3\]) \+ (Modifier from top card \[+2\]) \= `Strength` 8\*\*.
+To attack, play an Attack card from your hand into an **Action Stack** with additional cards from your hand equal to its printed Resource Cost. The colored icon on the Attack card indicates the attack's **Color**. The attack's **Strength** equals the sum of that Color on all cards in the stack, plus the top card's printed modifier. The target must then face the attack (see [Facing a Challenge](#2-facing-a-challenge)).
 
-—
+_(To improvise maneuvers without a printed Action card, see the [Narrative Actions Module](modules/narrative-actions.md))._
 
-## Defend Actions
+### Defend Actions
 
-You need to meet the `Strength` of the attack against you. You may play **Defend** cards from your hand if you have any, and then flip cards from your deck one by one until the total value in the attacks `Color` of all the cards you are defending with is equal to or greater than the attack’s `Strength`. The `Impact` of a defense is the number of cards you flipped.
+When targeted by an attack, you face the strike by meeting its Strength in the declared Color (see [Facing a Challenge](#2-facing-a-challenge)):
 
-Now determine your `Defense` and `Resilience` for this attack. They will come from an armor or other card you already have on the table in front of you. Pick the best numbers coming from a card that is applicable to the attack. If you have no relevant cards for `Defense` or `Resilience`, use a value of 1.
+1. **Defend from Hand (Optional):** You may play a Defend card from your hand, paying any printed Resource Cost from hand. It will add **Strength** to your defense or otherwise modify the resolution. Cards played from hand do not add to your Impact.
+2. **Flip from Deck:** If Strength is not yet met, flip cards from your deck one by one into a **flipped stack** until the total meets or exceeds the attack's Strength.
+3. **Suffer Consequences:** Count the cards in your flipped stack (your Impact) and resolve consequences against your Defense and Resilience as normal.
 
-Your `Defense` is the amount of `Impact` to impose one consequence on you. If you defend with less than that many cards, you take no consequences. Group the cards you flipped to defend into groups of size equal to your `Defense` value. You suffer one consequence for each completed group.
-Math: Consequences \= round_down(`Impact` / `Defense`).
+### Transitions
 
-The severity of each new consequence you take is determined by how many consequences you are already suffering. Your `Resilience` is the number of consequences you can suffer at each severity level before you step to the next severity level. To find the severity of a new consequence you can arrange your consequence cards in rows equal to your `Resilience` value. The severity is one more than the number of completed rows.
-Math: Severity \= round_up(“Existing Consequences” / `Resilience`)
+- **Entering Crisis (Mutual Awareness):** Pick up your **Ready Hand** (both face-down cards and any face-up guard) as your starting hand for Round 1.
+- **Entering Crisis (Surprise):** If caught unaware or marching at ease (Ready Hand size 0), you enter Crisis Time with an empty hand, drawing only your 2 round cards when Round 1 begins.
+- **Exiting Crisis:** When tension breaks, all characters discard any cards remaining in hand to their expended pile.
 
-### **Understanding Severity**
+---
 
-The Severity level of a consequence is more than just a number; it’s a signal about the escalating danger your character is in.
+## 4. In Exploration: Adventuring Time
 
-- **Severity 1 (Acceptable Costs):** These are the expected scrapes, bruises, and minor setbacks of a conflict. They impose friction—costing you resources or minor tactical options—but they rarely stop you from acting. They are penalties you can push through.
-- **Severity 2 (The Turning Point):** These are significant injuries or tactical disasters that make your character highly vulnerable. They impose harsh constraints or heavy costs. This is a clear signal that the tide of battle has turned against you; unless your enemies are in worse shape you might want to consider retreat or changing tactics.
-- **Severity 3 (Taken Out):** You are functionally out of the fight.
-  ** Note to Gamemasters:** You will likely only want to use the Severity 3 consequence cards for PCs or foes of significant narrative weight. For most enemies, the draw of a severity 3 consequence should be replaced by you or the attacking player narrating how the foe is taken out.
+Adventuring Time is used for travel, investigation, dungeon exploration, and downtime.
 
-## General Actions
+### The Ready Hand & Effort Cycles
 
-A **General Action** is the standard way to handle a self-contained task all at once. Success is the default assumption; the resolution determines the _cost_ of that success, not _if_ it works. Failure is a specific consequence, not the default outcome of an attempt.
+You do not hold a hand during Adventuring Time. Instead, you maintain a **Ready Hand** of 0 to 4 cards on the table, representing your vigilance:
 
-**Defining the Scope**
-A `General Action` works best when the goal is a single, resolvable task (e.g., "I want to climb the castle wall," not "I want to storm the castle"). If a stated goal is too broad, the GM has two tools: they can work with the player to identify an appropriate first step, or they can assign a prohibitively high `Strength` to the action, signaling its immense difficulty. Resolving that first step—or attempting the high-risk action—creates a new situation from which the group can decide what to do next.
+- **Face-Down Cards:** Dealt from the top of your deck and kept face down.
+- **Face-Up Guard:** Up to 1 card in your Ready Hand may be kept face up as a prepared stance or readied action (prepared via roughly one minute of quiet focus outside of crisis).
+- **Effort Cycles:** Maintaining vigilance burns stamina. Periodically, the GM will call an **Effort Cycle** to **flush** your Ready Hand:
+  1. Discard your Ready Hand to your expended pile. _(To retain a face-up guard, discard 2 cards from the top of your deck to your expended pile instead)._
+  2. Redraw face down from your deck back to your chosen Ready Hand size (0 to 4). If your chosen size is 0 (marching at ease), Effort Cycles cost you no cards.
 
-**\*Note to Players:** If the `Strength` of a task seems too high, try breaking it down into smaller steps you can more easily succeed at.\*
+### General Actions
 
-**Note to Gamemasters:** _If a player proposes a General Action that does not feel like it should be resolved in a single step, either suggest the player break it down or assign a prohibitively high `Strength` to the task._
+Tasks with meaningful stakes outside combat (climbing a cliff, picking a lock, calming a beast) are resolved as **General Actions**. You face the obstacle using the steps in [Facing a Challenge](#2-facing-a-challenge), with one key assumption: success is the default; the resolution determines the physical and stamina _cost_ of that success.
 
-For a general action, a challenge card or the gamemaster gives you a `Color` and `Strength`. Your `Defense` and `Resilience` are provided by an applicable card in play. If none apply, your `Defense` is 1.
+The GM or challenge sets the **Color** and **Strength**:
 
-**Resolution:**
+1. **Commit Ready Hand (Optional):** You may resolve the task using deck flips alone, or pick up your Ready Hand. If picked up, you may play an Action card from hand as an Action Stack (card + Cost) to modify the check (e.g. bonus Strength or Defense). Cards in the Action Stack do not count toward your flipped stack.
+2. **Meet Strength:** Flip cards from your deck into a flipped stack until the Strength is met. If you committed your Ready Hand, instead of a flip you may add a card from your **Ready Hand** to the flipped stack.
+3. **Suffer Consequences:** Count your flipped stack (your Impact) and resolve consequences against your Defense and Resilience.
+4. **Flush:** If you picked up your Ready Hand, discard remaining hand cards and flush back to your chosen Ready Hand size.
 
-1. **Meet the Strength:** Flip cards from your deck one by one until their total value in the required `Color` meets or exceeds the `Strength`.
-   - _Committing Your Ready Hand (Optional):_ Before or during flips, you may pick up your Ready Hand and play cards from it. Cards played from hand contribute their `Color` value toward the `Strength` and resolve any applicable rules text printed on them (such as bonus Strength, modified Defense, or special effects).
-2. **Determine Impact & Consequences:** The `Impact` is the total number of cards used (cards flipped from deck plus cards played from hand). Suffer one consequence for each full multiple of your `Defense` (Consequences = round_down(`Impact` / `Defense`)). Find their severity using your `Resilience`.
-3. **Flush (if hand was picked up):** If you picked up your Ready Hand, flush your hand and draw back up to your chosen Ready Hand size (see [Adventuring Time](#adventuring-time)).
+---
 
-# Resources and Consequences
+## 5. Reference: Harm Types & Keywords
 
-## Running Out of Cards: The Fatigue Cycle
+### Status Cards vs. Condition Cards
 
-Your deck is a finite resource. When you need to draw a card but your deck is empty, you must perform a **Fatigue Cycle**. This is a common part of the game and represents your character becoming tired as they exert themselves. You may also voluntarily trigger a Fatigue Cycle at any time to reshuffle your expended pile into your deck.
+- **Status Cards (In Your Deck):** Represent general systemic wear-and-tear (_Fatigue_, _Minor Wound_). They enter your expended pile, shuffle into your deck during Fatigue Cycles, and clog your draws with low Color values.
+- **Condition Cards (On the Table):** Represent acute tactical injuries or setbacks (_Sprained Ankle_, _Concussion_, _Pinned_). They sit face up on the table, imposing persistent penalties until treated or cleared through narrative recovery.
 
-**Fatigue Cycle Procedure:**
+### Keywords and Timing
 
-1. Add 2 **Fatigue** cards (plus your **Burden**) to your expended pile.
-2. Reshuffle your expended pile to form your new deck.
-3. Draw the card you needed (if triggered by a draw).
-
-**Fatigue** is the most common type of **Status Card**.
-
-_Figure: Fatigue Card_
-
-## Types of Harm: Status & Condition Cards
-
-As you face challenges, you will gain cards that represent harm, exhaustion, and other complications. These fall into two categories:
-
-**Status Cards (In Your Deck)** These represent general wear-and-tear, like `Fatigue` or `Minor Wound`.
-
-- **Where they go:** Added directly to your deck and shuffle pile.
-- **What they do:** Clog your hand and deck, making you less effective over time.
-
-**Condition Cards (On the Table)** These represent specific, serious problems, like an **Arm Injury** or being **On Fire**.
-
-- **Where they go:** Placed on the table in front of you.
-- **What they do:** Impose a persistent mechanical penalty and present a new tactical problem you must solve.
-
-# Modes of Play
-
-## Crisis Time
-
-Used for combat or other tense, moment-to-moment situations.
-
-Play proceeds in rounds.
-
-- Plan Step**:** Everyone draws two cards and secretly plans their action for the round.
-- Resolve Step**:** All actions are revealed and resolved simultaneously.
-
-### Transitioning out of Crisis Time
-
-When the threat is gone or the tension breaks, the crisis ends. Crisis Time represents a state of heightened, second-by-second focus, and the cards in hand are the immediate tactical options relevant to that specific moment.
-
-Upon leaving the crisis, all characters must discard any cards remaining in their hands. This represents letting go of those fleeting opportunities as your character's focus shifts to the new situation.
-
-### The Risk of a Large Hand
-
-There is no hard limit to your hand size, but hoarding cards is a high-risk gamble. Holding a large hand (especially more than 8-10 cards) accelerates your fatigue. At its extreme, it leaves you vulnerable to a Defensive Collapse—a catastrophic failure state that can instantly take you out of a fight.
-
-For a detailed mechanical breakdown, see the [Player's Guide](players-guide.md)
-
-## Adventuring Time
-
-Used for exploration, travel, and downtime. During Adventuring Time, you resolve tasks using **General Actions** as needed.
-
-### The Ready Hand
-
-You do not hold a hand of cards in Adventuring Time. Instead, you maintain a **Ready Hand** on the table of up to 4 cards, representing your vigilance and combat readiness. You choose how many cards you keep ready (from 0 to 4).
-
-- **Face-Down Cards:** Ready cards are dealt from the top of your deck and kept face down.
-- **Face-Up Guard:** Up to 1 card in your Ready Hand may be kept face up as a known, prepared action or stance. Outside of a crisis, you may spend about one minute of preparation to search your deck for an Action card and place it face up as your guard, then shuffle your deck. If you already had a face-up guard, discard the previous card to your expended pile. You can only choose a card currently in your deck; if your desired card is in your expended pile, you must voluntarily trigger a Fatigue Cycle first to reshuffle your deck.
-
-### Flushing the Ready Hand
-
-Vigilance burns stamina over time. Periodically, the GM will call for an **Effort Cycle** to represent this cost. When an Effort Cycle is called—or whenever you pick up your Ready Hand during a General Action—you must **flush** your Ready Hand:
-
-1. **Discard:** Discard all cards in your Ready Hand to your expended pile.
-   - _Retaining a Face-Up Guard:_ If you have an unspent face-up card, you may keep it face up instead of discarding it by discarding 2 cards from the top of your deck into your expended pile.
-2. **Redraw:** Deal cards face down from your deck until your Ready Hand returns to your chosen size.
-
-If your chosen Ready Hand size is 0 (marching at ease or guard down), Effort Cycles cost you no cards.
-
-### Transitioning to Crisis Time
-
-When exploration or travel is interrupted by a sudden threat, play shifts from Adventuring Time to Crisis Time:
-
-- **Mutual Awareness:** If both sides become aware of each other at the same time, all characters immediately pick up their **Ready Hand** (both face-down cards and any face-up guard). This is your starting hand for Round 1.
-- **Surprise:** If one side becomes aware of the other earlier, they gain a significant advantage. If you are caught completely unaware or had your guard down (Ready Hand size of 0), you start Crisis Time with no hand and draw cards as normal when Round 1 begins. Aware characters may take several rounds of Crisis Time—drawing cards and acting as normal—while the unaware side cannot act.
-- **Player-Initiated Crisis:** Any player can declare their intent to enter **Crisis Time** at any point to prepare, focus, or set up an ambush. This preparation comes at a significant cost: you must discard your hand when the crisis ends even if you don’t end up actually launching the ambush.
-
-# Advanced Details
-
-## Keywords and Timing
-
-Some cards have abilities prefixed by a **keyword** followed by a colon, such as `Resolve:`. This keyword indicates a specific and precise time that the ability triggers.
-
-**Triggered Effects** An effect with a keyword trigger is checked for at the very beginning of the corresponding step.
-
-- If the card with the keyword is in play at the start of that step, its effect is considered "active" for the entire duration of the step.
-- The effect itself resolves simultaneously with all other actions and outcomes during that step.
-- If a card with a triggered ability enters play _during_ a step, its keyword ability does not trigger until the _next_ time that step occurs in a subsequent round.
-
-**`Resolve:` Keyword** This keyword triggers during the Resolve Step. Its effect is queued at the start of the step and resolves alongside all other declared actions.
-
-# Document Purpose
-
-This is a player facing document.
-
-It’s purpose is to be the one document that players need to read and understand to play. It should be crisp and concise but clear and complete.
-When you are working on this document always keep in your mind "does this need to be in this document, or can it live elsewhere":
-
-- evocative language and discussions of how the game should feel belongs in the [Introduction](../introduction.md)
-- player facing elaboration of the rules or advanced discussion of implications [Player's Guide](players-guide.md)
-- anything that only the gamemaster needs to know belongs in the [Gamemaster's Guide](gamemaster-guide.md)
-- anything that the game can feel complete without belongs be in a `rules module` like [Snap Check](modules/snap-check.md) or [The Breather](modules/the-breather.md)
+- **`Passive:`** Continuously active while the card is in play on the table or in hand.
+- **Triggered Keywords (e.g., `Resolve:`):** Checked at the start of the matching round step. If the card is active when the step begins, its ability queues and resolves simultaneously with all declared actions in that step.
