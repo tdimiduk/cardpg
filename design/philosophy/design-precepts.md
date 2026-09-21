@@ -37,11 +37,11 @@ These precepts define the non-negotiable architectural patterns of the core game
 **Core Principle:** The most elegant design is one where the distinctiveness and power of a game element "fall out" as a natural consequence of its core numerical stats. New keywords and special rules should be reserved for representing truly unique tactical functions that the core math cannot adequately represent.
 
 **Case Study: Translating "Immunity" into High-Cost Thresholds**
-When our research describes a defense as "Functionally Immune," this is modeled with very high, but finite, numerical stats (like `Defense`), not a binary "Immune" keyword. This keeps the core mechanic consistent and creates design space for supernatural attacks to feel exceptional.
+When our research describes a defense as "Functionally Immune," this is modeled with very high, but finite, numerical stats (like [[Defense]]), not a binary "Immune" keyword. This keeps the core mechanic consistent and creates design space for supernatural attacks to feel exceptional.
 
 ### Mandate Simultaneous Action Resolution
 
-**Core Principle:** During `Crisis Time`, all player and enemy actions are declared simultaneously and resolved simultaneously. This is a non-negotiable core of the action system.
+**Core Principle:** During [[Crisis Time]], all player and enemy actions are declared simultaneously and resolved simultaneously. This is a non-negotiable core of the action system.
 
 **Rationale:** This precept is the primary mechanical support for the Combat pillar's goal of being "fast-paced and decisive" by eliminating player downtime.
 
@@ -71,9 +71,9 @@ When our research describes a defense as "Functionally Immune," this is modeled 
 
 ### Ensure Scale Invariance of Core Mechanics
 
-**Core Principle:** The core engine procedures—calculating action `Strength`, meeting difficulty by flipping cards, determining `Impact` from card counts, and mapping `Impact` against `Defense` and `Resilience`—must remain mathematically sound, intuitive, and computationally lightweight whether card values are in the single digits, double digits, or triple digits. Never introduce formulas, caps, or resolution steps that assume card values will always remain in single digits.
+**Core Principle:** The core engine procedures—calculating action [[Strength]], meeting difficulty by flipping cards, determining [[Impact]] from card counts, and mapping [[Impact]] against [[Defense]] and [[Resilience]]—must remain mathematically sound, intuitive, and computationally lightweight whether card values are in the single digits, double digits, or triple digits. Never introduce formulas, caps, or resolution steps that assume card values will always remain in single digits.
 
-**Rationale:** The game is architected to be scale-invariant. This supports character advancement (as heroes upgrade card numbers over a campaign) as well as macro-scale resolution (where decks represent collective entities like armies, provinces, or kingdoms). Because `Impact` is measured by the _count_ of cards flipped rather than a subtracted numerical remainder, proportional scaling between attack strength and card values keeps resolution equally fast and tactile across any scale.
+**Rationale:** The game is architected to be scale-invariant. This supports character advancement (as heroes upgrade card numbers over a campaign) as well as macro-scale resolution (where decks represent collective entities like armies, provinces, or kingdoms). Because [[Impact]] is measured by the _count_ of cards flipped rather than a subtracted numerical remainder, proportional scaling between attack strength and card values keeps resolution equally fast and tactile across any scale.
 
 ---
 
@@ -83,7 +83,7 @@ These precepts guide the design of player-facing content like cards, consequence
 
 ### Apply the Three Core `Color`s as a Universal Framework
 
-**Core Principle:** The three Core `Color`s are the primary framework for categorizing actions and ensuring all character archetypes have meaningful ways to contribute to any challenge across all Pillars of Play.
+**Core Principle:** The three Core [[Colors]] are the primary framework for categorizing actions and ensuring all character archetypes have meaningful ways to contribute to any challenge across all Pillars of Play.
 
 **Rationale:** This ensures that all characters can meaningfully contribute to any scene, transforming encounters into multi-faceted puzzles for the entire party.
 
@@ -117,7 +117,7 @@ These precepts guide the design of player-facing content like cards, consequence
 
 **Core Principle:** When designing recovery tasks or tactical maneuvers on Condition Cards or specific actions (e.g., getting up from prone or clearing an immediate hindrance), specify costs as placing or expending generic cards from hand (e.g., _"Place a card from your hand into your expended pile to stand up"_).
 
-**Rationale:** This gives players a viable tactical use for `Fatigue` or low-value cards in hand while maintaining ludonarrative harmony (an exhausted hero spends their remaining effort to struggle back to their feet). It embeds tactical flexibility directly into card content without cluttering the core rulebook with a rigid list of global basic action rules.
+**Rationale:** This gives players a viable tactical use for [[Fatigue]] or low-value cards in hand while maintaining ludonarrative harmony (an exhausted hero spends their remaining effort to struggle back to their feet). It embeds tactical flexibility directly into card content without cluttering the core rulebook with a rigid list of global basic action rules.
 
 ### Core vs. Modular Design (The Pillars of Play Metric)
 

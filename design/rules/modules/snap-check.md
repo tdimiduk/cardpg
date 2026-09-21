@@ -8,7 +8,7 @@ Occasionally during Adventuring Time, the GM may call for a **Snap Check** to se
 
 ### **How to Resolve a Snap Check**
 
-The GM will declare a `Color` and a `Strength` (e.g., "Make a `Yellow` 8 Snap Check"). To succeed, you must meet or exceed that `Strength` by summing the values of the declared `Color` on the cards in your **Ready Hand only** (including any face-up guard). You cannot flip additional cards from your deck.
+The GM will declare a [[Color]] and a [[Strength]] (e.g., "Make a [[Yellow]] 8 Snap Check"). To succeed, you must meet or exceed that [[Strength]] by summing the values of the declared [[Color]] on the cards in your **Ready Hand only** (including any face-up guard). You cannot flip additional cards from your deck.
 
 - **Ready Hand of 0 (Marching at Ease):** If your chosen Ready Hand size is 0, your guard is completely down; you automatically fail all Snap Checks.
 
@@ -38,18 +38,18 @@ Call for a Snap Check when you want to see if a character notices a fleeting det
 
 One of the most common uses for a Snap Check is to determine if characters notice an impending ambush. This is a key moment where the check's outcome directly influences the transition into Crisis Time.
 
-- **Example (Spotting an Ambush):** The party is traveling through a dense forest. You have a goblin ambush waiting. You call for a `Yellow` 10 Snap Check\*\* to see if anyone spots the signs.
+- **Example (Spotting an Ambush):** The party is traveling through a dense forest. You have a goblin ambush waiting. You call for a [[Yellow]] 10 Snap Check\*\* to see if anyone spots the signs.
   - **Success:** A successful character notices something amiss—a freshly broken twig, a patch of unnaturally disturbed leaves, or the faint glint of a rusty blade in the shadows. **The party gains the advantage.** They can choose to enter Crisis Time on their own terms, granting them at least one round of preparation or action before the goblins are aware they've been spotted.
   - **Failure:** The party notices nothing. **The ambushers gain the advantage.** You can either have both sides become aware of each other simultaneously (a state of "Mutual Awareness," proceeding to a standard Crisis Time round), or, for a more dangerous encounter, you can grant the goblins a full surprise round where they get to act before the players can.
 
 ### **Examples in Play**
 
-Here are examples of how to frame Snap Checks using the three Core `Color`s.
+Here are examples of how to frame Snap Checks using the three Core [[Colors]].
 
-`Yellow` (Perception, Cunning, Finesse)
+[[Yellow]] (Perception, Cunning, Finesse)
 
 - **Goal:** To spot a hidden detail under pressure.
-- **Example (Social Cue):** "The merchant insists the price is firm. Make a `Yellow` 12 Snap Check."
+- **Example (Social Cue):** "The merchant insists the price is firm. Make a [[Yellow]] 12 Snap Check."
   - **Success:** "You catch a flicker of his eyes towards a ledger on his desk. You get the sense this is more about his quarterly quota than the item's actual value." (Benefit: A new angle for negotiation).
   - **Failure:** The player takes the merchant's statement at face value.
 
@@ -60,10 +60,10 @@ Blue (Intellect, Lore, Discipline)
   - **Success:** "You recognize the stonework. It's typical of the Second Dynasty, who were notorious for placing pressure plates in front of their sarcophagi." (Benefit: Tactical information about a future trap).
   - **Failure:** The statues are just statues. The party will have to deal with the trap when they encounter it.
 
-`Red` (Presence, Endurance, Instinct)
+[[Red]] (Presence, Endurance, Instinct)
 
 - **Goal:** To notice something through a physical sensation or pure instinct.
-- **Example (Physical Instinct):** "As you cross the rope bridge, make a `Red` 9 Snap Check."
+- **Example (Physical Instinct):** "As you cross the rope bridge, make a [[Red]] 9 Snap Check."
   - **Success:** "You feel a faint, unnatural tremor through the ropes, as if from a heavy, rhythmic footstep somewhere ahead." (Benefit: Early warning of a large creature).
   - **Failure:** The bridge just feels rickety and unsafe, as expected.
 
@@ -74,7 +74,7 @@ Procedure:
 Except for any face-up guard card, it is critical that players do not know the contents of their face-down Ready Hand cards. To perform a passive check at a physical table, use one of the following methods:
 
 - **The Quick Glance:** When a check is warranted, discreetly glance at the face-down cards of each player's Ready Hand (adding any face-up guard card) to determine their totals.
-- **The Discrete Tally:** For maximum discretion, keep a small note of each player's Red, `Yellow`, and Blue totals. When they perform an Effort Cycle and draw a new Ready Hand, ask to see the cards briefly so you can update your tally for the next opportunity.
+- **The Discrete Tally:** For maximum discretion, keep a small note of each player's Red, [[Yellow]], and Blue totals. When they perform an Effort Cycle and draw a new Ready Hand, ask to see the cards briefly so you can update your tally for the next opportunity.
 
 On a **digital tabletop**, this is simpler, as the GM can view player hands without their knowledge.
-If a player's hand meets the `Strength` you've set, you provide them with the information directly ("As you walk, you notice a glint of metal under a floorboard..."). If no one succeeds, you say nothing, and the game continues.
+If a player's hand meets the [[Strength]] you've set, you provide them with the information directly ("As you walk, you notice a glint of metal under a floorboard..."). If no one succeeds, you say nothing, and the game continues.

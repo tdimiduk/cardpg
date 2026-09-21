@@ -53,4 +53,6 @@ When authoring or editing rules documents, keep their explicit purpose and targe
 
 4. **Terminology & Keywords:**
    - Use standardized game terminology (`Strength`, `Defense`, `Resilience`, `Impact`, `Fatigue`, `Burden`, `Crisis Time`, `Adventuring Time`, `Ready Hand`, `Colors`).
-   - Distinct game terms will be linked to `keyword-glossary.md` via the keyword pipeline. Avoid inline backtick abuse on standard English plurals or suffixes.
+   - Distinct game terms must be tagged using double-bracket wikilinks (e.g., `[[Strength]]`, `[[Defense]]`, `[[Colors]]`). All valid terms and their aliases are defined in `design/rules/keyword-glossary.md`.
+   - Plurals and inflections should be written inside the brackets if recognized as an alias (e.g. `[[Colors]]`, `[[Consequences]]`, `[[Action Stacks]]`) rather than splitting words with trailing suffixes.
+   - Do not use inline code backticks (`` `Term` ``) or bold tags (`**Term**`) for game keywords. Use `tools/design_utils/keyword_mod.py normalize-all` to audit and normalize.

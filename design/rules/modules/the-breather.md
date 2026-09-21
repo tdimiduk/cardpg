@@ -16,7 +16,7 @@ This module introduces an optional rule for Adventuring Time called **The Breath
 
 ### **What is a Breather?**
 
-In the core rules, a Fatigue Cycle can be triggered voluntarily at any moment to reshuffle your expended cards, but doing so always inflicts the full penalty of adding 2 `Fatigue` cards (plus your Burden) to your deck.
+In the core rules, a Fatigue Cycle can be triggered voluntarily at any moment to reshuffle your expended cards, but doing so always inflicts the full penalty of adding 2 [[Fatigue]] cards (plus your Burden) to your deck.
 
 A **Breather** is a deliberate pause of approximately **10 to 15 minutes** in a location of relative safety. During a breather, your characters sit down, catch their breath, sip water, bind scrapes, and organize their gear.
 
@@ -72,7 +72,7 @@ Whenever the party declares a Breather in an active environment (such as a dunge
 
 > The party has just survived a harrowing skirmish with cavern ghouls. The warrior has 8 cards in her expended pile and wears heavy plate (Burden 2).
 >
-> - _Under Core Rules:_ If she triggers an instant Fatigue Cycle to recover her expended cards, she adds $2 + 2 = 4$ `Fatigue` cards to her deck immediately.
+> - _Under Core Rules:_ If she triggers an instant Fatigue Cycle to recover her expended cards, she adds $2 + 2 = 4$ [[Fatigue]] cards to her deck immediately.
 > - _Using the Breather Module:_ The party barricades the iron door of a crypt and takes a 15-minute Breather. The warrior unbuckles her breastplate and sits against the sarcophagus. Because she spent fewer than 12 cards, she only adds **1 Fatigue** card, and because she unstrapped her armor, her Burden is ignored.
 >
 > However, during those 15 minutes, the GM rolls for wandering monsters. The roll indicates an encounter: ghouls outside begin scratching at the iron door. The party recovered their cards cleanly, but the dungeon did not wait for them.

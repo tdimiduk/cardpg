@@ -10,7 +10,7 @@ epistemic_status:
 
 # Rules Module: Narrative Actions
 
-This module provides rules for resolving improvised, freeform actions during **Crisis Time**. While printed Action cards represent your character's trained maneuvers and prepared tactical openings, Narrative Actions allow players to improvise creative solutions, take advantage of the environment, or act when they lack a specific Action card in hand.
+This module provides rules for resolving improvised, freeform actions during [[Crisis Time]]. While printed Action cards represent your character's trained maneuvers and prepared tactical openings, Narrative Actions allow players to improvise creative solutions, take advantage of the environment, or act when they lack a specific Action card in hand.
 
 ---
 
@@ -22,15 +22,15 @@ When you want to perform an offensive maneuver or significant tactical action du
 
 ### How to Resolve a Narrative Action
 
-1. **Describe Your Action & Declare Color:** Describe what your character attempts and declare the **Color** that matches your approach:
+1. **Describe Your Action & Declare Color:** Describe what your character attempts and declare the [[Color]] that matches your approach:
    - **Red:** Force, direct momentum, brute impact, or overpowering presence.
    - **Yellow:** Speed, precision, deft maneuvering, balance, or trickery.
    - **Blue:** Timing, tactical anticipation, discipline, or exploiting a observed pattern.
 2. **Play an Action Stack:** Choose how much effort you commit by playing a stack of **1 or more cards** from your hand face down. (The top card acts as your improvised action, and any additional cards serve as the committed effort/resource cost).
 3. **Determine Strength:** During the Resolve Step, reveal your stack:
-   - Add up the values of the declared **Color** across all cards in your stack.
+   - Add up the values of the declared [[Color]] across all cards in your stack.
    - Add the **Strength modifier** assigned by the GM based on your tactical approach.
-   - The result is your action's **Strength**.
+   - The result is your action's [[Strength]].
 4. **Resolution:** Your target defends against this Strength using standard Defend Action rules.
 5. **Expend Cards:** Once resolved, discard all cards in your stack to your expended pile.
 
@@ -62,7 +62,7 @@ Narrative actions should reward player ingenuity and environmental awareness wit
 > **Scene:** Valen is cornered by an armored guard. Valen holds no Attack cards in hand, only utility cards.
 >
 > **Player:** _"I grab the tavern bench and ram it into the guard's knees to knock him over."_  
-> **Color:** Yellow (finesse and leverage) or Red (brute force). Valen chooses **Red**.  
+> **Color:** Yellow (finesse and leverage) or Red (brute force). Valen chooses [[Red]].  
 > **Committed Stack:** Valen plays 2 cards from hand (both with a Red value of 3).  
 > **GM Ruling:** _"The guard is braced on cobblestones, but a heavy bench gives good leverage. Take a +1 modifier."_  
 > **Strength:** $3 + 3 + 1 = \mathbf{7}\text{ (Red)}$.  

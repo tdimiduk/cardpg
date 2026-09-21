@@ -14,8 +14,7 @@ This directory contains various utility scripts and tools for development, datab
 
 ### Design Utils (`design_utils/`)
 
-- **`design_utils/scripts/build_vtt_data.py`**: Exports the YAML card data source of truth into cleaned JSON artifacts for VTT ingestion (stripping design-only fields like metadata).
-- **`design_utils/keywordMod.py`** & **`design_utils/scripts/keyword_mod.py`**: Helper scripts to perform bulk keyword/action modifications across YAML card files.
+- **`design_utils/keyword_mod.py`**: Helper script to perform bulk keyword/action modifications and normalize wikilinks across markdown documentation and YAML card files.
 
 ### Database Utilities (`db_utils/`)
 

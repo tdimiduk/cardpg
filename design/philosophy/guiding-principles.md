@@ -19,7 +19,7 @@ A character's 24-card deck is their sole resource, elegantly integrating three a
 
 - **Training and Capabilities:** The skills, actions, and attributes printed on the cards represent a character's physical and mental training. When characters advance, they upgrade cards in their deck to higher numerical values, acquire new techniques, and master specialized stances, increasing their effective power while preserving the focused 24-card deck engine.
 - **Tactical Presence of Mind:** The hand of cards represents immediate focus—the fleeting opportunities, sudden openings, and split-second decisions a character can capitalize on in the heat of the moment.
-- **Endurance and Attrition:** The depth of the deck is the character's overall reserve. As they exert themselves, the deck degrades through the accumulation of Status Cards like `Fatigue` and `Minor Wound`.
+- **Endurance and Attrition:** The depth of the deck is the character's overall reserve. As they exert themselves, the deck degrades through the accumulation of Status Cards like [[Fatigue]] and `Minor Wound`.
 
 ## Fail Forward & Narrative Momentum
 
@@ -45,15 +45,15 @@ Injuries have weight, and the process of healing is a meaningful part of the gam
 
 ### Symmetrical Design
 
-By default, all characters in the game—whether player-controlled or GM-controlled—operate under the same core ruleset. NPCs and monsters have decks, stats like `Defense` and `Resilience`, and suffer consequences just as player characters do. This ensures the system is robust, fair, and internally consistent. Mooks and minions are not a special category of creature; they are simply characters with unbalanced stats, an elegant solution that emerges naturally from the core math.
+By default, all characters in the game—whether player-controlled or GM-controlled—operate under the same core ruleset. NPCs and monsters have decks, stats like [[Defense]] and [[Resilience]], and suffer consequences just as player characters do. This ensures the system is robust, fair, and internally consistent. Mooks and minions are not a special category of creature; they are simply characters with unbalanced stats, an elegant solution that emerges naturally from the core math.
 
 ### Flexible Resolution Scale
 
-The game provides two distinct resolution systems—the detailed, turn-by-turn simulation of `Crisis Time` and the faster abstraction of a `General Action`. The choice of which system to use is a collaborative decision between the GM and the players, based on the narrative stakes of the situation. This choice presents a meaningful tradeoff between the expected fatigue cost (cards spent) and the risk of more serious consequences. Resolving an encounter as a `General Action` is faster, but consolidates all risk into a single, high-variance outcome for the acting player. Engaging in a full `Crisis` is more resource-intensive, but offers players greater control to mitigate or avoid severe consequences.
+The game provides two distinct resolution systems—the detailed, turn-by-turn simulation of [[Crisis Time]] and the faster abstraction of a [[General Action]]. The choice of which system to use is a collaborative decision between the GM and the players, based on the narrative stakes of the situation. This choice presents a meaningful tradeoff between the expected fatigue cost (cards spent) and the risk of more serious consequences. Resolving an encounter as a [[General Action]] is faster, but consolidates all risk into a single, high-variance outcome for the acting player. Engaging in a full `Crisis` is more resource-intensive, but offers players greater control to mitigate or avoid severe consequences.
 
 ### Scale Invariance & Multi-Scale Resolution (Fractal Scope)
 
-The core resolution engine is mathematically scale-invariant: action `Strength`, defensive card flips, `Impact`, `Defense`, and `Resilience` operate identically whether card values are single digits (street-level/low-level mortals), double digits (seasoned adventurers, epic heroes), or triple digits (mythic or anime-tier characters).
+The core resolution engine is mathematically scale-invariant: action [[Strength]], defensive card flips, [[Impact]], [[Defense]], and [[Resilience]] operate identically whether card values are single digits (street-level/low-level mortals), double digits (seasoned adventurers, epic heroes), or triple digits (mythic or anime-tier characters).
 
 Furthermore, the deck engine is agnostic to physical entity scale. A deck can represent a lone hero, an elite strike unit, an entire army, a fortified province, or a kingdom. Macro-scale cards use giant numbers to represent the coordinated manpower, pooled wealth, and collective logistics of thousands of individuals. This enables realm-level wars, political crises, and regional projects to be resolved cleanly and smoothly using the exact same Crisis Time and General Action mechanics as a single duel, preserving mechanical elegance without bolting on disjointed mass-combat rules.
 
@@ -75,7 +75,7 @@ Exploration should be atmospheric and driven by discovery and suspense, presenti
 
 Social encounters should be mechanically interesting but not "gamey," providing all character archetypes with distinct and valuable ways to contribute.
 
-- **Key Mechanics:** The three Core `Color`s (Red, `Yellow`, Blue) as distinct approaches to interaction.
+- **Key Mechanics:** The three Core [[Colors]] (Red, [[Yellow]], Blue) as distinct approaches to interaction.
 
 ## Downtime
 

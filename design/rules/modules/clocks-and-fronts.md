@@ -28,7 +28,7 @@ Each Front is represented mechanically by its own **Clock Deck**.
 
 - **Grim Portents:** The Clock Deck is comprised of cards representing observable signs, escalations, and actions the Front takes as it progresses toward its Impending Doom. The final card in the deck is always the Impending Doom itself. These cards often serve as adventure hooks.
 - **Advancing the Clock:** A Front's Clock Deck is advanced in one of two ways:
-  - **Global Clock Trigger:** A card drawn from the Global Clock during `Downtime` instructs the GM to draw from the Front's deck.
+  - **Global Clock Trigger:** A card drawn from the Global Clock during [[Downtime]] instructs the GM to draw from the Front's deck.
   - **Narrative Trigger:** The GM can draw from the Front's deck at any time if events in the story would logically cause the threat to escalate.
 - **Player Interference:** When players succeed in an action that hinders a Front, they **add Interference Cards** to its Clock Deck. This pushes the final Impending Doom card further from being drawn, literally "buying time."
   - **Setbacks:** These represent logistical damage or delays caused to the Front. When drawn, a Setback simply consumes a "tick" of the clock.
@@ -37,12 +37,12 @@ Each Front is represented mechanically by its own **Clock Deck**.
 
 ### Player-Facing Clocks: Long-Term Projects
 
-Clocks are not just for GMs to track threats; they are also a tool for players to manage their own long-term goals during `Downtime`. When a player wants to undertake a project that takes a significant amount of time—such as crafting a unique item, researching a forgotten ritual, or establishing a network of contacts—they can create a Project Clock.
+Clocks are not just for GMs to track threats; they are also a tool for players to manage their own long-term goals during [[Downtime]]. When a player wants to undertake a project that takes a significant amount of time—such as crafting a unique item, researching a forgotten ritual, or establishing a network of contacts—they can create a Project Clock.
 
 - Creating a Project Clock: The player and GM agree on the scope of the project and create a small deck of cards to represent it. This deck might include cards for milestones, complications, and breakthroughs.
 
-- Advancing the Project: During `Downtime`, a player can choose to dedicate their time to their project. When they do, they draw a card from their Project Clock, determining their progress and facing any new challenges that arise.
+- Advancing the Project: During [[Downtime]], a player can choose to dedicate their time to their project. When they do, they draw a card from their Project Clock, determining their progress and facing any new challenges that arise.
 
 # Document Purpose
 
-This document details an optional, modular rule system for tracking the passage of time and making the world feel alive. It is primarily a GM-facing document, providing the tools and philosophy for managing a dynamic campaign. Players may also read this document to understand how their `Downtime` projects are managed.
+This document details an optional, modular rule system for tracking the passage of time and making the world feel alive. It is primarily a GM-facing document, providing the tools and philosophy for managing a dynamic campaign. Players may also read this document to understand how their [[Downtime]] projects are managed.

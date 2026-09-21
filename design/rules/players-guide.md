@@ -10,10 +10,10 @@ Your hand is a set of narrative possibilities that you have the power to unleash
 
 ### The Two Costs of Fatigue
 
-`Fatigue` is the most common enemy in the game, and it attacks you in two distinct ways, modeling the dual nature of exhaustion:
+[[Fatigue]] is the most common enemy in the game, and it attacks you in two distinct ways, modeling the dual nature of exhaustion:
 
-- **The Cognitive Cost:** The cost is the draw itself. Where you should have drawn a new tactical option or perceived a battlefield opportunity, your exhausted mind came up blank. The `Fatigue` card you put into your hand is the tangible result of that mental stumble, representing a failure to find an opening or formulate a complex plan.
-- **The Physical Cost:** When you play a `Fatigue` card as part of an action's cost or flip it during a defense, its low value (1) directly degrades the action's effectiveness. This models the physical reality of exhaustion: your mighty blow becomes weaker, your parry becomes clumsier, and your aim wavers.
+- **The Cognitive Cost:** The cost is the draw itself. Where you should have drawn a new tactical option or perceived a battlefield opportunity, your exhausted mind came up blank. The [[Fatigue]] card you put into your hand is the tangible result of that mental stumble, representing a failure to find an opening or formulate a complex plan.
+- **The Physical Cost:** When you play a [[Fatigue]] card as part of an action's cost or flip it during a defense, its low value (1) directly degrades the action's effectiveness. This models the physical reality of exhaustion: your mighty blow becomes weaker, your parry becomes clumsier, and your aim wavers.
 
 # Advanced Tactics
 
@@ -27,7 +27,7 @@ Understanding _why_ you would take this risk is key to mastering the game. It ca
 
 ### 1. Powering Up
 
-You are gathering your physical energy and mental focus for one overwhelming action. By holding many cards, you are preparing to unleash a "Mighty Blow" or a complex spell with such high `Strength` that it will dominate the round, forcing your opponent into a desperate position. This is the ultimate offensive gamble, sacrificing immediate flexibility for the chance to dictate the flow of the fight.
+You are gathering your physical energy and mental focus for one overwhelming action. By holding many cards, you are preparing to unleash a "Mighty Blow" or a complex spell with such high [[Strength]] that it will dominate the round, forcing your opponent into a desperate position. This is the ultimate offensive gamble, sacrificing immediate flexibility for the chance to dictate the flow of the fight.
 
 ### 2. Opportunistic Patience
 
@@ -35,7 +35,7 @@ You are holding a hand full of versatile answers, waiting for the perfect moment
 
 ### 3. Defensive Readiness
 
-If your large hand is full of `Defend` cards and other reactive abilities, you are not setting yourself up for a collapse—you are preparing to weather what comes. This is a calculated defensive posture. You are inviting your opponent's best shot, confident that you can absorb the blow. This leaves them overextended and vulnerable, creating an opening for you to counter-attack on the following round when their own hand is depleted.
+If your large hand is full of [[Defend]] cards and other reactive abilities, you are not setting yourself up for a collapse—you are preparing to weather what comes. This is a calculated defensive posture. You are inviting your opponent's best shot, confident that you can absorb the blow. This leaves them overextended and vulnerable, creating an opening for you to counter-attack on the following round when their own hand is depleted.
 
 ## The Art of Hand Management: Strain & Collapse
 
@@ -49,15 +49,15 @@ The core-rules.md warns of the "Risk of a Large Hand". Understanding the precise
 
 - The cards you already flipped for this defense do not get reshuffled, making your new ready deck incredibly small.
 
-- You continue flipping, but now you are drawing the new, low-value Fatigue cards, rapidly increasing the defense's `Impact`.
+- You continue flipping, but now you are drawing the new, low-value Fatigue cards, rapidly increasing the defense's [[Impact]].
 
-- If you exhaust the deck again, you will be forced to chain fatigue cycles, adding two Fatigue cards and flipping them until the attack's `Strength` is finally met.
+- If you exhaust the deck again, you will be forced to chain fatigue cycles, adding two Fatigue cards and flipping them until the attack's [[Strength]] is finally met.
 
-This will result in a massive `Impact` and devastating consequences, likely taking you out of the fight while simultaneously flooding your deck with Fatigue. Hoarding cards is the ultimate gamble—it allows you to set up the perfect move, but leaves you perilously brittle if you are caught off guard.
+This will result in a massive [[Impact]] and devastating consequences, likely taking you out of the fight while simultaneously flooding your deck with Fatigue. Hoarding cards is the ultimate gamble—it allows you to set up the perfect move, but leaves you perilously brittle if you are caught off guard.
 
 ## The Art of Vigilance: Managing Adventuring Time
 
-Outside of combat, your deck functions as your party's stamina and endurance clock. How you manage your **Ready Hand** during exploration dictates both your immediate readiness for sudden violence and your long-term stamina.
+Outside of combat, your deck functions as your party's stamina and endurance clock. How you manage your [[Ready Hand]] during exploration dictates both your immediate readiness for sudden violence and your long-term stamina.
 
 ### The Vigilance Dial (0 to 4 Cards)
 
@@ -69,7 +69,7 @@ Your Ready Hand size (from 0 to 4 cards) is not a static number—it is a dial y
 
 ### The Burden of Plate
 
-Because a Fatigue Cycle adds **2 + Burden** `Fatigue` cards to your deck, heavily armored characters pay a much steeper price for high vigilance. An unencumbered scout (Burden 0) gains 2 Fatigue per cycle, while a knight in full harness (Burden 3) gains 5 Fatigue per cycle!
+Because a Fatigue Cycle adds **2 + Burden** [[Fatigue]] cards to your deck, heavily armored characters pay a much steeper price for high vigilance. An unencumbered scout (Burden 0) gains 2 Fatigue per cycle, while a knight in full harness (Burden 3) gains 5 Fatigue per cycle!
 
 This creates a natural, historical dynamic: knights take off their helms, rest their shields on pack horses, and lower their guard when not actively anticipating combat, while light scouts take point on high alert.
 
@@ -91,22 +91,24 @@ When faced with a General Action (climbing a cliff, negotiating a toll, picking 
 You do not touch your Ready Hand; you resolve the task purely by flipping cards from your deck.
 
 - **The Upside:** Your current Ready Hand remains untouched on the table, preserving any prepared face-up stance or high reaction cards you may have waiting.
-- **The Risk:** Blind flips have natural variance. If you hit low values, you may flip many cards, driving up `Impact` and taking more consequences.
+- **The Risk:** Blind flips have natural variance. If you hit low values, you may flip many cards, driving up [[Impact]] and taking more consequences.
 
 #### 2. Committed Effort
 
 You pick up your Ready Hand, bringing your conscious focus, trained techniques, and immediate physical energy to bear on the problem.
 
-- **Hand Cards in the Flipped Stack:** When you add a card from your hand to the flipped stack in place of a flip, it counts toward the task's `Impact` just like a card flipped from your deck. This prevents players from dumping weak cards: playing a card with `Yellow 1` adds 1 full Impact for negligible Strength.
+- **Hand Cards in the Flipped Stack:** When you add a card from your hand to the flipped stack in place of a flip, it counts toward the task's [[Impact]] just like a card flipped from your deck. This prevents players from dumping weak cards: playing a card with `Yellow 1` adds 1 full Impact for negligible Strength.
 - **The Golden Rule: Never Play Low-Value Cards to the Flipped Stack!**
   A blind flip from your deck has an average value (typically ~3). If your hand holds a low-value card, let it flush away! Only add cards from your hand to the flipped stack that significantly beat your deck's average (e.g., `Yellow 5` or higher).
 - **The Flush:** When the action resolves, any cards remaining in your hand are discarded to your expended pile, and you deal a fresh Ready Hand up to your chosen size. Committing your hand doesn't leave you defenseless—your Ready Hand is redrawn immediately—but it represents cycling through your current focus and stamina to overcome the obstacle.
 
+_(Note: If your table plays with the [Selective Commitment Module](modules/selective-commitment.md), you may choose to commit a measured subset of your Ready Hand rather than picking up the entire hand)._
+
 #### Playing Printed Action Stacks
 
-If your Ready Hand contains a relevant Action Card, you can play it as an **Action Stack** (paying its printed Resource Cost with other cards from hand).
+If your Ready Hand contains a relevant Action Card, you can play it as an [[Action Stack]] (paying its printed Resource Cost with other cards from hand).
 
-- **Action Stacks Do Not Count for Impact:** Just as declaring an attack in combat does not inflict self-harm, cards in your Action Stack do not go into the flipped stack. Instead, the action alters the terms of the challenge: providing bonus `Strength`, establishing an active `Defense`, enabling cross-color spending, or granting specific protections.
+- **Action Stacks Do Not Count for Impact:** Just as declaring an attack in combat does not inflict self-harm, cards in your Action Stack do not go into the flipped stack. Instead, the action alters the terms of the challenge: providing bonus [[Strength]], establishing an active [[Defense]], enabling cross-color spending, or granting specific protections.
 - **Example: Jumping the Chasm with Athletics:**
   The Swashbuckler faces a dangerous 10-meter leap (`Strength 18 Yellow`). Rather than risking a blind leap, they spend a minute of preparation to **Set Guard**, searching their deck to place `Athletics` (Cost 1, `Yellow 4`, text: _+2 Strength, Defense 2 on physical maneuvers_) face up in their Ready Hand.
   When they make the jump, they choose a Committed Attempt and declare `Athletics`, paying 1 card from hand for its printed Cost. `Athletics` establishes `Defense 2` and contributes $4 + 2 = 6$ Yellow Strength.

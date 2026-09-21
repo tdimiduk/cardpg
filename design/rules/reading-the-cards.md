@@ -12,7 +12,7 @@ Cards use specific keywords to tell you **when** and **how** they can be used.
 
 ### 1. Crisis Actions (`Attack`, `Defend`, `Action`)
 
-These are used during **Crisis Time** (combat or tense situations). They happen instantly or within seconds.
+These are used during [[Crisis Time]] (combat or tense situations). They happen instantly or within seconds.
 
 - **`Attack {Color}: Strength = {Color} (+/- Mod)`**
   - _Example:_ `Attack {Red}: Strength = {Red} + 2`
@@ -35,11 +35,11 @@ These are used during **Crisis Time** (combat or tense situations). They happen 
 
 ### 2. Narrative Tasks (`Task`)
 
-These are used during **Adventuring Time** (exploration, downtime, or safe moments). They take minutes or hours to complete.
+These are used during [[Adventuring Time]] (exploration, downtime, or safe moments). They take minutes or hours to complete.
 
 - **`Task: [Name] ({Color} X, [Time]) -> [Effect]`**
   - **Usage:** You spend the specified `[Time]` performing the activity.
-  - **Resolution:** You must perform a **General Action** check. Flip cards from the top of your deck until their total `{Color}` value equals or exceeds `X`.
+  - **Resolution:** You must perform a [[General Action]] check. Flip cards from the top of your deck until their total `{Color}` value equals or exceeds `X`.
   - **Risk:** If you flip too many cards, you may suffer Consequences (like Fatigue or Minor Wound) based on your Defense.
   - _Example:_ `Task: First Aid ({Blue} 3, 1 min) -> Remove this card.`
 
