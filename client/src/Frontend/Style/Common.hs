@@ -19,6 +19,7 @@ module Frontend.Style.Common
   , textEmerald
   ) where
 
+import Frontend.Style.DSL (textGoldBright, textGoldMuted)
 import Frontend.Style.DSL qualified as S
 import Reflex.AtomicCss.Common
 
@@ -57,12 +58,6 @@ resourceTextBase = S.fontBold <> S.text S.Gray 2
 -- | Resource text for print (black/dark gray)
 resourceTextPrint :: Style
 resourceTextPrint = S.media "print" S.textBlack
-
-textGoldBright :: Style
-textGoldBright = S.css "text-gold-bright" "color" "var(--color-gold-bright)"
-
-textGoldMuted :: Style
-textGoldMuted = S.css "text-gold-muted" "color" "var(--color-gold-muted)"
 
 textCrimsonLight :: Style
 textCrimsonLight = S.css "text-crimson-light" "color" "#fca5a5"

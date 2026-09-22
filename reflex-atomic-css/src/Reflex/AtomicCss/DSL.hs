@@ -49,6 +49,7 @@ module Reflex.AtomicCss.DSL
   , hidden
   , overflowHidden
   , overflowYAuto
+  , overflowAuto
   , z
   , cursorPointer
   , cursorNotAllowed
@@ -91,6 +92,8 @@ module Reflex.AtomicCss.DSL
   , mb0
   , ml
   , mr
+  , mx
+  , my
   , Size (..)
   , standardSizes
   , bottom0
@@ -122,11 +125,14 @@ module Reflex.AtomicCss.DSL
   , border0
   , border2
   , borderB
+  , borderB2
   , borderT
   , borderL
+  , borderL4
   , borderR
   , border02mm
   , rounded
+  , roundedLg
   , roundedS
   , roundedNone
   , roundedXl
@@ -136,6 +142,8 @@ module Reflex.AtomicCss.DSL
     -- * Typography
   , fontBold
   , fontMono
+  , fontCinzel
+  , fontLora
   , textSm
   , textXs
   , textXl
@@ -144,12 +152,18 @@ module Reflex.AtomicCss.DSL
   , textBase
   , textCenter
   , leadingTight
+  , leadingRelaxed
   , uppercase
   , trackingWider
   , whitespaceNowrap
   , textTruncate
   , textLeft
   , italic
+  , underline
+
+    -- * Lists
+  , listDisc
+  , listDecimal
 
     -- * Sizing/Spacing types
   , sizeValue
@@ -264,6 +278,9 @@ overflowHidden = css "overflow-hidden" "overflow" "hidden"
 
 overflowYAuto :: Style
 overflowYAuto = css "overflow-y-auto" "overflow-y" "auto"
+
+overflowAuto :: Style
+overflowAuto = css "overflow-auto" "overflow" "auto"
 
 z :: Int -> Style
 z n = css ("z-" <> tshow n) "z-index" (tshow n)
@@ -464,6 +481,16 @@ ml s = css ("ml-" <> sizeName s) "margin-left" (sizeValue s)
 mr :: Size -> Style
 mr s = css ("mr-" <> sizeName s) "margin-right" (sizeValue s)
 
+mx :: Size -> Style
+mx s = css' ("mx-" <> sizeName s) [("margin-left", v), ("margin-right", v)]
+  where
+    v = sizeValue s
+
+my :: Size -> Style
+my s = css' ("my-" <> sizeName s) [("margin-top", v), ("margin-bottom", v)]
+  where
+    v = sizeValue s
+
 gap :: Size -> Style
 gap s = css ("gap-" <> sizeName s) "gap" (sizeValue s)
 
@@ -610,11 +637,17 @@ border2 = css "border-2" "border-width" "2px"
 borderB :: Style
 borderB = css "border-b" "border-bottom-width" "1px"
 
+borderB2 :: Style
+borderB2 = css "border-b-2" "border-bottom-width" "2px"
+
 borderT :: Style
 borderT = css "border-t" "border-top-width" "1px"
 
 borderL :: Style
 borderL = css "border-l" "border-left-width" "1px"
+
+borderL4 :: Style
+borderL4 = css "border-l-4" "border-left-width" "4px"
 
 borderR :: Style
 borderR = css "border-r" "border-right-width" "1px"
@@ -624,6 +657,9 @@ border02mm = css "border-0.2mm" "border-width" "0.2mm"
 
 rounded :: Style
 rounded = css "rounded" "border-radius" "var(--radius-2)"
+
+roundedLg :: Style
+roundedLg = css "rounded-lg" "border-radius" "var(--radius-3)"
 
 roundedS :: Size -> Style
 roundedS s = css ("rounded-" <> sizeName s) "border-radius" (sizeValue s)
@@ -647,6 +683,12 @@ roundedFull = css "rounded-full" "border-radius" "9999px"
 fontBold :: Style
 fontBold = css "font-bold" "font-weight" "bold"
 
+fontCinzel :: Style
+fontCinzel = css "font-cinzel" "font-family" "var(--font-fantasy)"
+
+fontLora :: Style
+fontLora = css "font-lora" "font-family" "var(--font-text)"
+
 textSm :: Style
 textSm = css "text-sm" "font-size" "var(--font-size-0)"
 
@@ -668,6 +710,9 @@ textBase = css "text-base" "font-size" "var(--font-size-1)"
 leadingTight :: Style
 leadingTight = css "leading-tight" "line-height" "var(--font-lineheight-1)"
 
+leadingRelaxed :: Style
+leadingRelaxed = css "leading-relaxed" "line-height" "1.625"
+
 textCenter :: Style
 textCenter = css "text-center" "text-align" "center"
 
@@ -688,6 +733,19 @@ textLeft = css "text-left" "text-align" "left"
 
 italic :: Style
 italic = css "italic" "font-style" "italic"
+
+underline :: Style
+underline = css "underline" "text-decoration" "underline"
+
+--------------------------------------------------------------------------------
+-- Lists
+--------------------------------------------------------------------------------
+
+listDisc :: Style
+listDisc = css "list-disc" "list-style-type" "disc"
+
+listDecimal :: Style
+listDecimal = css "list-decimal" "list-style-type" "decimal"
 
 --------------------------------------------------------------------------------
 -- Effects

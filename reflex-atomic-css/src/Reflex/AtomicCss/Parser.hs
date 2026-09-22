@@ -186,6 +186,16 @@ staticStyles =
     , S.minW0
     , S.minH0
     , S.fontMono
+    , S.overflowAuto
+    , S.borderB2
+    , S.borderL4
+    , S.roundedLg
+    , S.fontCinzel
+    , S.fontLora
+    , S.leadingRelaxed
+    , S.underline
+    , S.listDisc
+    , S.listDecimal
     ]
 
 -- | Parameterized functions
@@ -254,6 +264,8 @@ knownParams =
   , param S.mb parseSize
   , param S.ml parseSize
   , param S.mr parseSize
+  , param S.mx parseSize
+  , param S.my parseSize
   , param S.bottom parseSize
   , param S.left parseSize
   , param S.right parseSize

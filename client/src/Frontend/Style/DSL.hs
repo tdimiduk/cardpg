@@ -21,6 +21,19 @@ module Frontend.Style.DSL
   , h8mm
   , altarStagingPanel
   , ringDiscard
+
+    -- * Theme Tokens
+  , textGoldBright
+  , textGoldMuted
+  , borderGoldBright
+  , borderGoldMuted
+  , bgStoneDark
+  , borderStoneMed
+
+    -- * Tooltip & Popover Tokens
+  , groupHoverBlock
+  , bottomFull
+  , topFull
   ) where
 
 import Reflex.AtomicCss.Core (Style, css)
@@ -87,3 +100,34 @@ altarStagingPanel =
 
 ringDiscard :: Style
 ringDiscard = css "ring-discard" "box-shadow" "0 0 0 3px #ef4444"
+
+textGoldBright :: Style
+textGoldBright = css "text-gold-bright" "color" "var(--color-gold-bright)"
+
+textGoldMuted :: Style
+textGoldMuted = css "text-gold-muted" "color" "var(--color-gold-muted)"
+
+borderGoldBright :: Style
+borderGoldBright = css "border-gold-bright" "border-color" "var(--color-gold-bright)"
+
+borderGoldMuted :: Style
+borderGoldMuted = css "border-gold-muted" "border-color" "var(--color-gold-muted)"
+
+bgStoneDark :: Style
+bgStoneDark = css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
+
+borderStoneMed :: Style
+borderStoneMed = css "border-stone-med" "border-color" "var(--color-stone-med)"
+
+groupHoverBlock :: Style
+groupHoverBlock =
+  customSelector
+    "group-hover:block"
+    ".group:hover .group-hover\\:block, .group:focus-within .group-hover\\:block"
+    [("display", "block")]
+
+bottomFull :: Style
+bottomFull = css "bottom-full" "bottom" "100%"
+
+topFull :: Style
+topFull = css "top-full" "top" "100%"
