@@ -52,22 +52,7 @@ active_design_exploration:
       purpose: "Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel, Location Decks, and Effort Cycle pacing."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
 
-    - path: "iteration/gameplay-trace-standards.md"
-      name: "Specification: Multi-Resolution Gameplay Trace Standards"
-      purpose: "Establishes standard resolutions (Micro, Meso, Macro), the fractal spotlight pattern, and the character ledger format for empirical testing."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing"]
-
-    - path: "iteration/macro-gauntlet-expedition-trace.md"
-      name: "Play Trace: The Sunken Vaults of Mor-Thal (Macro Expedition Gauntlet)"
-      purpose: "Multi-resolution expedition trace testing Tier 3 macro pacing, Tier 2 meso combat, and Tier 1 micro hazard resolution with character ledgers and Burden drag analysis."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm"]
-
-    - path: "iteration/non-combat-scenarios.md"
-      name: "Non-Combat Benchmark Scenarios"
-      purpose: "Canonical, rules-agnostic non-combat test scenarios across environmental, social, and analytical domains."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "pillar:exploration", "pillar:social"]
-
-    - path: "iteration/trace-climactic-boss-8-rounds.md"
-      name: "Play Trace: The Sunken Matron (8-Round Climactic Boss Crisis)"
-      purpose: "Tier 2 Meso tactical encounter trace testing an extended 8-round boss crisis, the mid-combat Turn Horizon, fatigue dilution, and tag escalation finisher."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:consequences", "core-concept:harm", "pillar:combat"]
+    - path: "iteration/traces/index.yaml"
+      name: "Gameplay Traces & Empirical Benchmarks"
+      purpose: "Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:exploration", "pillar:social"]

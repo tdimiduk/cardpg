@@ -819,6 +819,8 @@ def generate_iteration_toc(design_root):
     macro_traces = []
     for item in iter_data.get("active_design_exploration", {}).get("macro_structure_and_traces", []):
         rel_p = item["path"].replace("iteration/", "")
+        if rel_p.endswith("index.yaml"):
+            rel_p = rel_p.replace("index.yaml", "README.md")
         title = get_item_title(design_root, item)
         macro_traces.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 

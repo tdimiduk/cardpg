@@ -1,0 +1,29 @@
+# Gameplay Traces & Empirical Benchmarks Sub-Index
+package:
+  purpose: "Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing."
+  tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:exploration", "pillar:social"]
+
+documents:
+  - path: "iteration/traces/README.md"
+    purpose: "Orientation and operational conventions for gameplay traces and empirical benchmarks."
+    tags: ["doc-type:meta", "audience:designer-facing"]
+
+  - path: "iteration/traces/gameplay-trace-standards.md"
+    name: "Specification: Multi-Resolution Gameplay Trace Standards"
+    purpose: "Establishes standard resolutions (Micro, Meso, Macro), the fractal spotlight pattern, and the character ledger format for empirical testing."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing"]
+
+  - path: "iteration/traces/macro-gauntlet-expedition-trace.md"
+    name: "Play Trace: The Sunken Vaults of Mor-Thal (Macro Expedition Gauntlet)"
+    purpose: "Multi-resolution expedition trace testing Tier 3 macro pacing, Tier 2 meso combat, and Tier 1 micro hazard resolution with character ledgers and Burden drag analysis."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm"]
+
+  - path: "iteration/traces/non-combat-scenarios.md"
+    name: "Non-Combat Benchmark Scenarios"
+    purpose: "Canonical, rules-agnostic non-combat test scenarios across environmental, social, and analytical domains."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "pillar:exploration", "pillar:social"]
+
+  - path: "iteration/traces/trace-climactic-boss-8-rounds.md"
+    name: "Play Trace: The Sunken Matron (8-Round Climactic Boss Crisis)"
+    purpose: "Tier 2 Meso tactical encounter trace testing an extended 8-round boss crisis, the mid-combat Turn Horizon, fatigue dilution, and tag escalation finisher."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:consequences", "core-concept:harm", "pillar:combat"]

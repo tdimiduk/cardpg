@@ -89,7 +89,7 @@ graph TD
 - **Primary Questions Answered:**
   - **The Expedition Endurance Budget:** Can a standard 24-card deck sustain the target adventuring workload (e.g. 1 overland march, 2 hazards, 1 skirmish, 1 boss crisis) before exhaustion?
   - **Burden Drag:** Does heavy armor (Burden 2–3) accumulate fatigue so much faster than light gear (Burden 0) that it organically limits dungeon depth without an organized supply train?
-  - **The Breather Economy:** Is taking a 15-minute [The Breather](../rules/modules/the-breather.md) worth advancing a ticking Front Clock?
+  - **The Breather Economy:** Is taking a 15-minute [The Breather](../../rules/modules/the-breather.md) worth advancing a ticking Front Clock?
   - **Domain Decoupling & Harm Bleed:** Do non-combat setbacks (fatigue, social embarrassment, lost gear) create plausible pressure in combat without lethal death spirals?
 
 ---

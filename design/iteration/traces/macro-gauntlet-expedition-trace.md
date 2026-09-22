@@ -248,7 +248,7 @@ _Narrative:_ Midway across, a sheet of wet ice shears away under his right boot.
 
 - **Resolution Tier:** **Tier 3 (Macro)**
 - **Mode:** Adventuring Time (Respite / Short Rest)
-- **Mechanic Reference:** [The Breather](../rules/modules/the-breather.md)
+- **Mechanic Reference:** [The Breather](../../rules/modules/the-breather.md)
 
 ### Tactical Context & Dilemma
 
@@ -265,7 +265,7 @@ The GM announces: _"Pausing for 15 minutes in this hostile ruin allows the enemy
 
 ### Breather Recovery Procedure
 
-Per [the-breather.md](../rules/modules/the-breather.md):
+Per [the-breather.md](../../rules/modules/the-breather.md):
 
 1. **Unbuckle Armor & Rest:** Characters rest 15 minutes. All cards in hands and discard piles are gathered and reshuffled with their remaining draw piles.
 2. **Proportional Fatigue Assessment:**
@@ -411,11 +411,11 @@ The trace demonstrated the profound mechanical impact of **Burden 2 armor**:
 
 - While Corin and Vespera accumulated **0 Fatigue cards** across the entire expedition, Carolyn accumulated **4 Fatigue cards** (2 from the overland Effort Cycle, 2 from The Breather).
 - In Scene 5, these 4 Fatigue cards produced **tangible tabletop drag**: flipping 2 dead cards in a single General Action inflated her flip count from 6 to 8 cards, directly causing her to take a Tier 2 condition (`Strained Shoulder`).
-- This achieves the core design goal of [macro-structure-and-gameplay-loop-brief.md](macro-structure-and-gameplay-loop-brief.md#tension-1-the-expedition-endurance-budget): **heavy armor makes you formidable in a 3-round fight, but severely limits how far into the dark you can march without a supply train.**
+- This achieves the core design goal of [macro-structure-and-gameplay-loop-brief.md](../macro-structure-and-gameplay-loop-brief.md#tension-1-the-expedition-endurance-budget): **heavy armor makes you formidable in a 3-round fight, but severely limits how far into the dark you can march without a supply train.**
 
 ### 3. The Breather vs. Campaign Fronts Tradeoff
 
-Tying [The Breather](../rules/modules/the-breather.md) to world clock advancement solved the classic TTRPG "5-minute adventuring day" problem:
+Tying [The Breather](../../rules/modules/the-breather.md) to world clock advancement solved the classic TTRPG "5-minute adventuring day" problem:
 
 - The players desperately needed the Breather to reset Carolyn's depleted hand and draw pile.
 - However, doing so immediately ticked the Front Clock (`[□□□□□]` $\to$ `[■□□□□]`), increasing the dread of enemy escalation. The choice felt tense and consequential rather than routine bookkeeping.
