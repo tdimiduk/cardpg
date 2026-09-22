@@ -3,6 +3,7 @@ module Main where
 import Test.Tasty
 import Test.Tasty.HUnit
 
+import PandocRenderTest qualified
 import PlanningTest qualified
 
 main :: IO ()
@@ -14,4 +15,5 @@ tests =
     "ClientReflex Tests"
     [ testCase "Sanity check" $ True @?= True
     , PlanningTest.tests
+    , PandocRenderTest.tests
     ]

@@ -13,18 +13,21 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Compile static markdown rules to static HTML
 echo "Compiling markdown rules via Pandoc..."
 pandoc "$ROOT_DIR/design/rules/core-rules.md" \
+  -f markdown+wikilinks_title_after_pipe \
   -o "$ROOT_DIR/client/static/rules.html" \
   --standalone \
   --template="$ROOT_DIR/client/static/rules-template.html" \
   --metadata title="Core Rules"
 
 pandoc "$ROOT_DIR/design/rules/keyword-glossary.md" \
+  -f markdown+wikilinks_title_after_pipe \
   -o "$ROOT_DIR/client/static/glossary.html" \
   --standalone \
   --template="$ROOT_DIR/client/static/rules-template.html" \
   --metadata title="Keyword Glossary"
 
 pandoc "$ROOT_DIR/design/rules/colors-of-action.md" \
+  -f markdown+wikilinks_title_after_pipe \
   -o "$ROOT_DIR/client/static/colors.html" \
   --standalone \
   --template="$ROOT_DIR/client/static/rules-template.html" \

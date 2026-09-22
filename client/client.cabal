@@ -43,6 +43,7 @@ library
     , http-types
     , jsaddle
     , lens
+    , pandoc-types       >=1.22 && <1.24
     , primitive
     , random
     , ref-tf
@@ -92,6 +93,7 @@ library
     Frontend.Game.Staging
     Frontend.Icons
     Frontend.Render.Common
+    Frontend.Render.Pandoc
     Frontend.Render.Rules
     Frontend.Style
     Frontend.Style.Common
@@ -141,6 +143,7 @@ executable cardpg-static
     , jsaddle
     , mtl
     , optparse-applicative
+    , pandoc-types          >=1.22 && <1.24
     , postgresql-simple
     , process
     , random
@@ -158,13 +161,18 @@ test-suite client-test
   type:           exitcode-stdio-1.0
   main-is:        Main.hs
   hs-source-dirs: tests
-  other-modules:  PlanningTest
+  other-modules:
+    PandocRenderTest
+    PlanningTest
+
   build-depends:
     , base
+    , bytestring
     , client
     , containers
     , core
     , mtl
+    , pandoc-types      >=1.22 && <1.24
     , reflex
     , reflex-dom-core
     , reflex-test-host
