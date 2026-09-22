@@ -99,22 +99,6 @@ Severe injuries are represented by two-sided `Condition Cards`.
 - **Mundane Healing** targets the explicit General Action printed on the card.
 - **Magical Healing** is designed to be a more powerful and versatile tool. It would interact with the card's **Keyword**. For example, a "Lesser Restoration" spell might say "Remove one Condition with the `Injury` keyword." This allows magic to bypass the specific skill check, providing a clean and powerful solution, reinforcing the heroic tone.
 
-# Candidate Rules Module: Selective Commitment (Ready Hand)
-
-## Core Concept
-
-In the canonical core rules, committing your Ready Hand to a General Action is an all-or-nothing proposition: you pick up the entire Ready Hand (0–4 cards), and all unplayed cards from that hand are flushed to the expended pile upon resolution.
-
-**Selective Commitment** is an optional rules module that introduces finer-grained tactical control at the cost of slight table bookkeeping:
-
-- A player declaring a Committed Effort may choose to pick up only a subset of their face-down Ready Hand (e.g., 2 cards instead of 4).
-- The remaining cards stay undisturbed on the table.
-- Upon resolution, only the unplayed picked-up cards are flushed, and the player only redraws back up to their chosen Ready Hand size.
-
-## Design Rationale & Modular Boundary
-
-This mechanic provides an ergonomic middle ground for risk-averse players or conservative scouts who want to commit some focus without flushing an entire 4-card defensive cushion. However, keeping it out of the core rules prevents decision paralysis and analysis points at casual tables.
-
 # Document Purpose
 
 A collection of specific mechanic ideas, interesting concepts, and design explorations. Also a place we can retire `Design Precepts` to if they don’t feel completely broadly applicable.

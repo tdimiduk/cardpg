@@ -88,6 +88,10 @@ game_system_and_rules:
       purpose: "This module provides rules for resolving improvised, freeform actions during **Crisis Time**."
       tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing"]
 
+    - path: "rules/modules/selective-commitment.md"
+      purpose: "Optional rules for committing a measured subset of your Ready Hand during Adventuring Time General Actions."
+      tags: ["doc-type:module", "audience:player-facing", "audience:gm-facing", "pillar:exploration", "core-concept:ready-hand", "core-concept:action-resolution", "core-concept:hand-management"]
+
 sub_indexes:
   - path: "iteration/index.yaml"
     purpose: "Sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches."
