@@ -24,7 +24,7 @@ import Data.Text qualified as T
 import Data.Vector qualified as V
 import GHC.Generics (Generic)
 
-import Text.Megaparsec (between, lookAhead, some, try)
+import Text.Megaparsec (between, lookAhead, optional, some, try)
 import Text.Megaparsec.Char (char, string)
 
 import Core.DSL (Parser, TextRep (..), choiceEnum, parseText, tryChoice)
@@ -57,6 +57,10 @@ data Inline
       { difficulty :: Difficulty
       }
   | Break
+  | Wikilink
+      { target :: NonEmptyText
+      , label :: Maybe NonEmptyText
+      }
   deriving stock (Eq, Show, Generic)
 
 newtype RichText = RichText {inlines :: NE.NonEmpty Inline}
@@ -141,6 +145,8 @@ toTextInline (TextRun Nothing content) = getRawText content
 toTextInline (ColorValue power) = toText power
 toTextInline (DifficultyValue (Difficulty a v)) = toTextResourceType a <> " " <> tshow v
 toTextInline Break = "\n"
+toTextInline (Wikilink target Nothing) = "[[" <> getRawText target <> "]]"
+toTextInline (Wikilink target (Just lbl)) = "[[" <> getRawText target <> "|" <> getRawText lbl <> "]]"
 
 wrapped :: Text -> Text -> Text
 wrapped wrapper t = wrapper <> t <> wrapper
@@ -185,11 +191,20 @@ richTextParserWith stopChars = do
 inlineParserStopAt :: [Char] -> Parser Inline
 inlineParserStopAt stopChars =
   tryChoice
-    [ formattingParser
+    [ wikilinkParser
+    , formattingParser
     , colorValueParser
     , breakParser stopChars
     , textParserStopAt stopChars
     ]
+
+wikilinkParser :: Parser Inline
+wikilinkParser = do
+  _ <- string "[["
+  tgt <- takeWhilePNonEmpty Nothing (\c -> c /= ']' && c /= '|' && c /= '\n')
+  mLbl <- optional (char '|' *> takeWhilePNonEmpty Nothing (\c -> c /= ']' && c /= '\n'))
+  _ <- string "]]"
+  pure $ Wikilink tgt mLbl
 
 breakParser :: [Char] -> Parser Inline
 breakParser stopChars = do
@@ -225,10 +240,10 @@ textParserStopAt stopChars =
     content <-
       takeWhilePNonEmpty
         Nothing
-        (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n' && c /= '{' && notElem c stopChars)
+        (\c -> c /= '*' && c /= '`' && c /= ';' && c /= '\n' && c /= '{' && c /= '[' && notElem c stopChars)
     pure $ TextRun Nothing content
     <|> do
-      -- Fallback for '{' if it wasn't a dynamic val
-      _ <- char '{'
-      let content = unsafeNonEmptyText "{" -- Safe because we know it's "{"
+      -- Fallback for '{' or '[' if it wasn't a dynamic val or wikilink
+      c <- char '{' <|> char '['
+      let content = unsafeNonEmptyText (T.singleton c)
       pure $ TextRun Nothing content

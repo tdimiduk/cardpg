@@ -89,6 +89,7 @@ instance Arbitrary Inline where
       , ColorValue <$> arbitrary
       , DifficultyValue <$> arbitrary
       , pure Break
+      , Wikilink <$> arbitrary <*> arbitrary
       ]
 
 instance Arbitrary RichText where

@@ -52,6 +52,9 @@ renderInline (TextRun style content) =
 renderInline (ColorValue v) = renderStatValue IconInline v
 renderInline (DifficultyValue d) = renderDifficulty IconInline d
 renderInline Break = el "br" $ pure ()
+renderInline (Wikilink target mLabel) =
+  let display = maybe (getRawText target) getRawText mLabel
+   in elAttr "span" ("class" =: "game-kw text-gold-bright font-bold") $ text display
 
 -- | Render a RichText as a sequence of Inlines
 renderRichText :: (DomBuilder t m) => RichText -> m ()

@@ -9,7 +9,9 @@ import System.Directory (doesFileExist)
 import Test.Tasty
 import Test.Tasty.HUnit
 
+import Core.DSL (TextRep (..), parseText)
 import Core.Glossary
+import Core.RichText (RichText)
 
 sampleGlossaryJson :: BL.ByteString
 sampleGlossaryJson =
@@ -107,4 +109,15 @@ test_glossary =
                   "Finds alias 'Action Stacks'"
                   (Just "action-stack")
                   ((\e -> e.slug) <$> lookupGlossary "Action Stacks" g)
+    , testCase "RichText parses and roundtrips [[Wikilink]] and [[Target|Label]]" $ do
+        let input1 = "Use [[Action]] to strike."
+        case parseText input1 of
+          Left err -> assertFailure ("Failed to parse wikilink: " ++ err)
+          Right (rt :: RichText) -> do
+            assertEqual "Roundtrips wikilink" input1 (toText rt)
+        let input2 = "Perform [[Crisis Time|tactical mode]] now."
+        case parseText input2 of
+          Left err -> assertFailure ("Failed to parse piped wikilink: " ++ err)
+          Right (rt :: RichText) -> do
+            assertEqual "Roundtrips piped wikilink" input2 (toText rt)
     ]
