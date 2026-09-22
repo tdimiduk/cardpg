@@ -17,7 +17,8 @@ module KeywordMod
   , Chunk (..)
   ) where
 
-import Control.Monad (forM, unless, when)
+import Control.Applicative (empty, (<|>))
+import Control.Monad (forM, unless, void, when)
 import Core.Glossary
   ( Glossary (..)
   , GlossaryEntry (..)
@@ -36,11 +37,12 @@ import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy qualified as BL
 import Data.Char (isAlphaNum)
 import Data.List (sortBy)
-import Data.Maybe (catMaybes, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
+import Data.Void (Void)
 import Options.Applicative qualified as OA
 import System.Directory
   ( canonicalizePath
@@ -57,6 +59,21 @@ import System.FilePath
   , takeFileName
   , (</>)
   )
+import Text.Megaparsec
+  ( Parsec
+  , anySingle
+  , choice
+  , eof
+  , lookAhead
+  , many
+  , manyTill
+  , optional
+  , parse
+  , takeWhile1P
+  , takeWhileP
+  , try
+  )
+import Text.Megaparsec.Char (char, eol, hspace, string)
 
 --------------------------------------------------------------------------------
 -- CLI Model
@@ -217,68 +234,91 @@ main = do
 -- Glossary Parsing
 --------------------------------------------------------------------------------
 
+type Parser = Parsec Void Text
+
+anyChar :: Parser Char
+anyChar = anySingle
+
 parseGlossaryFile :: FilePath -> IO Glossary
 parseGlossaryFile path = do
   content <- TIO.readFile path
   pure $ parseGlossaryText content
 
 parseGlossaryText :: Text -> Glossary
-parseGlossaryText input = fromList (reverse finalEntries)
-  where
-    initialState = ([], "", Nothing) -- (accEntries, currentCat, currentKw)
-    (finalEntries, _, _) = foldl' step initialState (T.lines input ++ ["## END"])
+parseGlossaryText input = case parse glossaryDocParser "" input of
+  Left _ -> fromList []
+  Right entries -> fromList entries
 
-    step (entries, currentCat, mKw) line
-      | "## " `T.isPrefixOf` line =
-          let flushed = maybe [] (flushKw currentCat) mKw
-              newCat = T.strip (T.drop 3 line)
-           in (flushed ++ entries, newCat, Nothing)
-      | "### " `T.isPrefixOf` line =
-          let flushed = maybe [] (flushKw currentCat) mKw
-              name = T.strip (T.drop 4 line)
-           in (flushed ++ entries, currentCat, Just (name, [], []))
-      | "#### " `T.isPrefixOf` line =
-          let flushed = maybe [] (flushKw currentCat) mKw
-              name = T.strip (T.drop 5 line)
-           in (flushed ++ entries, currentCat, Just (name, [], []))
-      | Just (name, aliases, summaryLines) <- mKw =
-          let stripped = T.strip line
-           in if
-                | isAliasLine stripped ->
-                    let newAliases = extractAliases stripped
-                     in (entries, currentCat, Just (name, aliases ++ newAliases, summaryLines))
-                | not (T.null stripped) && not ("#" `T.isPrefixOf` stripped) ->
-                    (entries, currentCat, Just (name, aliases, summaryLines ++ [stripped]))
-                | otherwise ->
-                    (entries, currentCat, mKw)
-      | otherwise = (entries, currentCat, mKw)
+glossaryDocParser :: Parser [GlossaryEntry]
+glossaryDocParser = do
+  _ <- manyTill anyChar (lookAhead (try (void categoryHeader)) <|> eof)
+  categories <- many (try categoryParser)
+  pure (concat categories)
 
-    isAliasLine t =
-      ("_Aliases:" `T.isPrefixOf` t || "*Aliases:" `T.isPrefixOf` t)
-        && (T.isSuffixOf "_" t || T.isSuffixOf "*" t)
+categoryHeader :: Parser Text
+categoryHeader = do
+  _ <- string "## "
+  cat <- takeWhileP (Just "category name") (\c -> c /= '\n' && c /= '\r')
+  _ <- optional eol
+  pure (T.strip cat)
 
-    extractAliases t =
-      let inner = T.dropWhile (\c -> c == '_' || c == '*' || c == ' ') t
-          afterColon = fromMaybe inner (T.stripPrefix "Aliases:" inner)
-          cleaned = T.dropWhileEnd (\c -> c == '_' || c == '*' || c == ' ') afterColon
-       in filter (not . T.null) $ map T.strip $ T.splitOn "," cleaned
+categoryParser :: Parser [GlossaryEntry]
+categoryParser = do
+  _ <- many (try (hspace *> eol))
+  cat <- categoryHeader
+  many (try (entryParser cat))
 
-    flushKw cat (name, aliases, summaryLines) =
-      let theme = case T.toLower name of
-            "red" -> Just "red"
-            "yellow" -> Just "yellow"
-            "blue" -> Just "blue"
-            _ -> Nothing
-          summary = T.unwords (filter (not . T.null) summaryLines)
-       in [ GlossaryEntry
-              { canonical = name
-              , aliases = aliases
-              , slug = toSlug name
-              , category = cat
-              , summary = summary
-              , theme = theme
-              }
-          ]
+entryHeader :: Parser Text
+entryHeader = do
+  _ <- try (string "#### ") <|> try (string "### ")
+  name <- takeWhileP (Just "entry name") (\c -> c /= '\n' && c /= '\r')
+  _ <- optional eol
+  pure (T.strip name)
+
+entryParser :: Text -> Parser GlossaryEntry
+entryParser cat = do
+  _ <- many (try (hspace *> eol))
+  name <- entryHeader
+  mAliases <- optional (try aliasLineParser)
+  let aliases = fromMaybe [] mAliases
+  summaryLines <- manyTill summaryLine (lookAhead (try isNextHeading <|> void eof))
+  let summary = T.unwords (filter (not . T.null) (map T.strip summaryLines))
+      theme = case T.toLower name of
+        "red" -> Just "red"
+        "yellow" -> Just "yellow"
+        "blue" -> Just "blue"
+        _ -> Nothing
+  pure
+    GlossaryEntry
+      { canonical = name
+      , aliases = aliases
+      , slug = toSlug name
+      , category = cat
+      , summary = summary
+      , theme = theme
+      }
+
+isNextHeading :: Parser ()
+isNextHeading = do
+  _ <- many (try (hspace *> eol))
+  _ <- string "##"
+  pure ()
+
+aliasLineParser :: Parser [Text]
+aliasLineParser = do
+  _ <- many (try (hspace *> eol))
+  _ <- char '_' <|> char '*'
+  _ <- string "Aliases:"
+  content <- takeWhile1P (Just "aliases") (\c -> c /= '_' && c /= '*' && c /= '\n' && c /= '\r')
+  _ <- char '_' <|> char '*'
+  _ <- optional eol
+  pure $ filter (not . T.null) $ map T.strip $ T.splitOn "," content
+
+summaryLine :: Parser Text
+summaryLine = do
+  line <- takeWhileP (Just "summary line") (\c -> c /= '\n' && c /= '\r')
+  _ <- optional eol
+  pure line
 
 --------------------------------------------------------------------------------
 -- Export Subcommand
@@ -313,90 +353,55 @@ data Chunk = Protected Text | Unprotected Text
   deriving stock (Show, Eq)
 
 -- | Chunk a line into protected sections (existing wikilinks, markdown links, code spans)
--- and unprotected text that is eligible for keyword substitution.
+-- and unprotected text that is eligible for keyword substitution using Megaparsec.
 chunkLine :: Text -> [Chunk]
 chunkLine txt
   | T.null txt = []
-  | otherwise =
-      case findNextSpan txt of
-        Nothing -> [Unprotected txt]
-        Just (before, spanText, after) ->
-          let beforeChunks = [Unprotected before | not (T.null before)]
-              spanChunk = Protected spanText
-           in beforeChunks ++ [spanChunk] ++ chunkLine after
-
--- | Find the earliest occurring protected span in the text.
-findNextSpan :: Text -> Maybe (Text, Text, Text)
-findNextSpan txt =
-  let candidates =
-        [ findMultiBacktick txt
-        , findWikiLink txt
-        , findMarkdownLink txt
-        ]
-      validCandidates = catMaybes candidates
-   in case sortBy (\(b1, _, _) (b2, _, _) -> compare (T.length b1) (T.length b2)) validCandidates of
-        [] -> Nothing
-        (best : _) -> Just best
-
-findMultiBacktick :: Text -> Maybe (Text, Text, Text)
-findMultiBacktick txt = do
-  let (before, matchRest) = T.breakOn "``" txt
-  if T.null matchRest
-    then Nothing
-    else do
-      let backtickRun = T.takeWhile (== '`') matchRest
-          runLen = T.length backtickRun
-          contentStart = T.drop runLen matchRest
-          (inner, closeRest) = T.breakOn backtickRun contentStart
-      if T.null closeRest
-        then Nothing
-        else do
-          let spanText = backtickRun <> inner <> backtickRun
-              after = T.drop runLen closeRest
-          Just (before, spanText, after)
-
-findWikiLink :: Text -> Maybe (Text, Text, Text)
-findWikiLink txt = do
-  let (before, matchRest) = T.breakOn "[[" txt
-  if T.null matchRest
-    then Nothing
-    else do
-      let (inner, closeRest) = T.breakOn "]]" (T.drop 2 matchRest)
-      if T.null closeRest
-        then Nothing
-        else do
-          let spanText = "[[" <> inner <> "]]"
-              after = T.drop 2 closeRest
-          Just (before, spanText, after)
-
-findMarkdownLink :: Text -> Maybe (Text, Text, Text)
-findMarkdownLink txt = scan 0
+  | otherwise = case parse lineChunksParser "" txt of
+      Left _ -> [Unprotected txt]
+      Right cs -> mergeAdjacentChunks cs
   where
-    len = T.length txt
-    scan idx
-      | idx >= len = Nothing
-      | T.index txt idx == '[' =
-          case findClose idx of
-            Just (spanText, after) ->
-              let before = T.take idx txt
-               in Just (before, spanText, after)
-            Nothing -> scan (idx + 1)
-      | otherwise = scan (idx + 1)
+    mergeAdjacentChunks [] = []
+    mergeAdjacentChunks (Unprotected a : Unprotected b : rest) =
+      mergeAdjacentChunks (Unprotected (a <> b) : rest)
+    mergeAdjacentChunks (c : rest) = c : mergeAdjacentChunks rest
 
-    findClose openBracketIdx = do
-      let rest = T.drop (openBracketIdx + 1) txt
-          (linkText, afterBracket) = T.breakOn "]" rest
-      if T.null afterBracket || not ("(" `T.isPrefixOf` T.drop 1 afterBracket)
-        then Nothing
+lineChunksParser :: Parser [Chunk]
+lineChunksParser = many (protectedChunk <|> unprotectedChunk) <* eof
+  where
+    protectedChunk =
+      Protected
+        <$> choice
+          [ try multiBacktickParser
+          , try wikiLinkParser
+          , try markdownLinkParser
+          ]
+
+    multiBacktickParser = do
+      ticks <- takeWhile1P (Just "backticks") (== '`')
+      if T.length ticks < 2
+        then empty
         else do
-          let urlRest = T.drop 2 afterBracket
-              (url, closeParenRest) = T.breakOn ")" urlRest
-          if T.null closeParenRest
-            then Nothing
-            else do
-              let spanText = "[" <> linkText <> "](" <> url <> ")"
-                  after = T.drop 1 closeParenRest
-              Just (spanText, after)
+          content <- manyTill anyChar (string ticks)
+          pure (ticks <> T.pack content <> ticks)
+
+    wikiLinkParser = do
+      _ <- string "[["
+      inner <- manyTill anyChar (string "]]")
+      pure ("[[" <> T.pack inner <> "]]")
+
+    markdownLinkParser = do
+      _ <- char '['
+      label <- manyTill anyChar (char ']')
+      _ <- char '('
+      url <- manyTill anyChar (char ')')
+      pure ("[" <> T.pack label <> "](" <> T.pack url <> ")")
+
+    unprotectedChunk =
+      Unprotected
+        <$> ( takeWhile1P (Just "unprotected") (\c -> c /= '`' && c /= '[')
+                <|> (T.singleton <$> anyChar)
+            )
 
 -- | Transform a single line of Markdown, safeguarding headers, links, and code literals.
 transformLine :: [Text] -> [(Text, Text)] -> Text -> Text

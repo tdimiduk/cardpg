@@ -33,6 +33,7 @@ library
     , core
     , directory
     , filepath
+    , megaparsec
     , optparse-applicative
     , text
     , yaml
