@@ -96,7 +96,7 @@ sub_indexes:
   - path: "iteration/index.yaml"
     purpose: "Sub-index for active design explorations, mechanical constraints, proposals, and ideation sketches."
     tags: ["doc-type:index", "audience:designer-facing"]
-    aggregated_tags: ["audience:designer-facing", "core-concept:action-resolution", "core-concept:armor", "core-concept:consequences", "core-concept:defense", "core-concept:fatigue", "core-concept:hand-management", "core-concept:harm", "core-concept:status-cards", "doc-type:content-library", "doc-type:ideation", "doc-type:iteration", "doc-type:meta"]
+    aggregated_tags: ["audience:designer-facing", "core-concept:action-resolution", "core-concept:armor", "core-concept:consequences", "core-concept:defense", "core-concept:fatigue", "core-concept:hand-management", "core-concept:harm", "core-concept:pacing", "core-concept:status-cards", "doc-type:content-library", "doc-type:ideation", "doc-type:iteration", "doc-type:meta", "pillar:combat", "pillar:downtime", "pillar:exploration", "pillar:social"]
 
   - path: "research/index.yaml"
     purpose: "Sub-index mapping empirical research reports, verisimilitude sources, living research syntheses, and game design theory."

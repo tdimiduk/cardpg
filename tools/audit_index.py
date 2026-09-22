@@ -816,6 +816,12 @@ def generate_iteration_toc(design_root):
         title = get_item_title(design_root, item)
         sketches.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
 
+    macro_traces = []
+    for item in iter_data.get("active_design_exploration", {}).get("macro_structure_and_traces", []):
+        rel_p = item["path"].replace("iteration/", "")
+        title = get_item_title(design_root, item)
+        macro_traces.append([f"[{title}]({rel_p})", clean_desc(item.get("purpose", ""))])
+
     blocks = [
         "## Active Iteration Catalog",
         "",
@@ -828,8 +834,14 @@ def generate_iteration_toc(design_root):
         "### Ideation Sketches",
         make_markdown_table(["Document", "Summary"], sketches),
         "",
-        "*Last synced from `iteration/index.yaml` via `tools/audit_index.py`.*",
     ]
+    if macro_traces:
+        blocks.extend([
+            "### Macro Structure & Gameplay Traces",
+            make_markdown_table(["Document", "Summary"], macro_traces),
+            "",
+        ])
+    blocks.append("*Last synced from `iteration/index.yaml` via `tools/audit_index.py`.*")
     return "\n".join(blocks)
 
 def generate_research_toc(design_root):

@@ -46,6 +46,17 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 | :---------------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
 | [Design Sketchbook](design-sketchbook.md) | A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization. |
 
+### Macro Structure & Gameplay Traces
+
+| Document                                                                                                                  | Summary                                                                                                                                                          |
+| :------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Design Brief: Macro Structure, Session Cadence, and Campaign Roadmap](macro-structure-and-gameplay-loop-brief.md)        | Articulates and formalizes the macro-level gameplay loop, session cadence, and campaign lifecycle connecting crisis resolution and exploration.                  |
+| [Design Brief: Exploration Procedures, Dungeon Clocks, and Location Decks](exploration-decks-and-dungeon-clocks-brief.md) | Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel, Location Decks, and Effort Cycle pacing.                                               |
+| [Specification: Multi-Resolution Gameplay Trace Standards](gameplay-trace-standards.md)                                   | Establishes standard resolutions (Micro, Meso, Macro), the fractal spotlight pattern, and the character ledger format for empirical testing.                     |
+| [Play Trace: The Sunken Vaults of Mor-Thal (Macro Expedition Gauntlet)](macro-gauntlet-expedition-trace.md)               | Multi-resolution expedition trace testing Tier 3 macro pacing, Tier 2 meso combat, and Tier 1 micro hazard resolution with character ledgers and Burden drag ... |
+| [Non-Combat Benchmark Scenarios](non-combat-scenarios.md)                                                                 | Canonical, rules-agnostic non-combat test scenarios across environmental, social, and analytical domains.                                                        |
+| [Play Trace: The Sunken Matron (8-Round Climactic Boss Crisis)](trace-climactic-boss-8-rounds.md)                         | Tier 2 Meso tactical encounter trace testing an extended 8-round boss crisis, the mid-combat Turn Horizon, fatigue dilution, and tag escalation finisher.        |
+
 _Last synced from `iteration/index.yaml` via `tools/audit_index.py`._
 
 <!-- END AUTO-TOC -->
