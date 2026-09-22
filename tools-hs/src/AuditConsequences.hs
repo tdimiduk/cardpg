@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main (main) where
+module AuditConsequences (main) where
 
 import Control.Monad (forM, forM_, unless, when)
 import Data.Aeson

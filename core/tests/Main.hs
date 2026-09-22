@@ -15,6 +15,7 @@ import Core.LogicTest (test_logic)
 import ArbitraryInstances ()
 import CardParsingTest (test_cardParsing)
 import ConsequenceParsingTest (test_consequenceParsing)
+import GlossaryTest (test_glossary)
 import PlanningTests (test_planningLogic)
 import ReadmeExamplesTest (test_readmeExamples)
 import ResolutionTests (test_resolutionCycle)
@@ -37,6 +38,7 @@ tests cardTests =
       -- , testProperty "EncounterCard Roundtrip" $ prop_jsonRoundtrip @EncounterCard
       -- , testProperty "ConsequenceCard Roundtrip" $ prop_jsonRoundtrip @ConsequenceCard
       testProperty "DSL Roundtrip" prop_dslRoundtrip
+    , test_glossary
     , test_statusParsing
     , test_consequenceParsing
     , test_readmeExamples

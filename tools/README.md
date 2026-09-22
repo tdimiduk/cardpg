@@ -12,9 +12,24 @@ This directory contains various utility scripts and tools for development, datab
   uv run gsheet_sync/sync-cards-gsheet.py --all
   ```
 
+### Haskell Design Tools (`tools-hs/`)
+
+- **`keyword-mod`**: Compiles the keyword glossary into `export/glossary.json`, standardizes and normalizes game keywords into `[[Wikilinks]]`, and supports renaming terms across design documentation.
+  ```bash
+  cabal run tools-hs:exe:keyword-mod -- export-glossary
+  cabal run tools-hs:exe:keyword-mod -- normalize-all [--dry-run]
+  cabal run tools-hs:exe:keyword-mod -- normalize <term> [--dry-run]
+  cabal run tools-hs:exe:keyword-mod -- rename <old> <new> [--dry-run]
+  ```
+- **`audit-consequences`**: Audits and verifies consequence taxonomy, tags, and decade-density summary tables.
+  ```bash
+  cabal run tools-hs:exe:audit-consequences
+  ```
+
 ### Design Utils (`design_utils/`)
 
-- **`design_utils/keyword_mod.py`**: Helper script to perform bulk keyword/action modifications and normalize wikilinks across markdown documentation and YAML card files.
+- **`design_utils/scripts/card_stats_summary.py`**: Generates statistical summaries of card distributions and balance metrics.
+- **`design_utils/scripts/build_vtt_data.py`**: Compiles card definitions for VTT integration.
 
 ### Database Utilities (`db_utils/`)
 

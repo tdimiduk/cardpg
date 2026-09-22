@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-hlint api client core server tools reflex-atomic-css
+hlint api client core server tools-hs reflex-atomic-css
 
 # Run weeder using only HIE files matching the active GHC version
 ghc_ver=$(ghc --numeric-version)

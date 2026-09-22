@@ -10,23 +10,61 @@ common project-config
   default-extensions:
     DerivingStrategies
     DuplicateRecordFields
+    MultiWayIf
     OverloadedRecordDot
     OverloadedStrings
     RecordWildCards
 
   ghc-options:        -Wall
 
+library
+  import:          project-config
+  hs-source-dirs:  src
+  exposed-modules:
+    AuditConsequences
+    KeywordMod
+
+  build-depends:
+    , aeson
+    , aeson-pretty
+    , base                  >=4.16 && <5
+    , bytestring
+    , containers
+    , core
+    , directory
+    , filepath
+    , optparse-applicative
+    , text
+    , yaml
+
 executable audit-consequences
   import:         project-config
-  hs-source-dirs: src
+  hs-source-dirs: app/audit-consequences
   main-is:        Main.hs
   ghc-options:    -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-    , aeson
-    , base        >=4.16 && <5
-    , bytestring
-    , containers
-    , directory
-    , filepath
+    , base
+    , tools-hs
+
+executable keyword-mod
+  import:         project-config
+  hs-source-dirs: app/keyword-mod
+  main-is:        Main.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+    , base
+    , tools-hs
+
+test-suite tools-hs-test
+  import:         project-config
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: tests
+  main-is:        Main.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+    , base
+    , core
+    , tasty
+    , tasty-hunit
     , text
-    , yaml
+    , tools-hs
