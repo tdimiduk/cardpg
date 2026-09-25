@@ -49,18 +49,6 @@ active_design_exploration:
       purpose: "Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics."
       tags: ["doc-type:iteration", "audience:designer-facing"]
 
-    - path: "iteration/keyword-rendering-pipeline-state-brief.md"
-      purpose: "State brief for the Reflex-native markdown and keyword rendering pipeline, covering Phase 4 completion and Phase 5 roadmap."
-      tags: ["doc-type:iteration", "audience:designer-facing"]
-
-    - path: "iteration/keyword-wikilink-standardization-brief.md"
-      purpose: "Standardize game glossary terms on wikilink syntax and update keyword_mod.py across design documentation."
-      tags: ["doc-type:iteration", "audience:designer-facing"]
-
-    - path: "iteration/in-app-rules-and-keyword-tooltips-brief.md"
-      purpose: "Execution brief for Phase 5: in-app rules/glossary viewer modal and unified card rich-text keyword tooltips."
-      tags: ["doc-type:iteration", "audience:designer-facing"]
-
   macro_structure_and_traces:
     - path: "iteration/macro-structure-and-gameplay-loop-brief.md"
       name: "Design Brief: Macro Structure, Session Cadence, and Campaign Roadmap"

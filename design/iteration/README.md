@@ -47,9 +47,6 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 | [Design Sketchbook](design-sketchbook.md)                                                                                                        | A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization.              |
 | [Brief: Inline Card Art Rendering & Embedding Pipeline](card-art-rendering-pipeline-brief.md)                                                    | Pipeline to embed live card layouts into rules documentation from data/cards/ YAML definitions using native Reflex components.    |
 | [Consequence Pool & Tag Escalation: Active Critiques & Brainstorming Seeds](consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md) | Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics. |
-| [State Brief: Keyword Rendering & Reflex Static Rules Pipeline (Phase 4 -> Phase 5)](keyword-rendering-pipeline-state-brief.md)                  | State brief for the Reflex-native markdown and keyword rendering pipeline, covering Phase 4 completion and Phase 5 roadmap.       |
-| [Brief: KeywordMod & Wikilink Standardization](keyword-wikilink-standardization-brief.md)                                                        | Standardize game glossary terms on wikilink syntax and update keyword_mod.py across design documentation.                         |
-| [Brief: In-App Rules Viewer & Interactive Keyword Tooltips (Phase 5)](in-app-rules-and-keyword-tooltips-brief.md)                                | Execution brief for Phase 5: in-app rules/glossary viewer modal and unified card rich-text keyword tooltips.                      |
 
 ### Macro Structure & Gameplay Traces
 
