@@ -87,11 +87,12 @@ Phase 4 of the unified Reflex-native markdown & keyword rendering pipeline is co
 
 ---
 
-## 4. Next Steps for Next Session
+## 4. Next Steps & Phase 5 Transition
 
-1. **Verify Nix Derivation:** Once the terminal `nix build .#reflex-client-prod` finishes, verify that `result/rules.html`, `result/glossary.html`, and `result/colors.html` are present in the output bundle.
-2. **Commit Phase 4:** Create a checkpoint commit for Phase 4 changes.
-3. **Update Design Brief:** Mark Phase 4 as `[x] COMPLETED` in [`keyword-rendering-and-interactivity-brief.md`](file:///home/tdimiduk/cardpg/cardpg/design/iteration/keyword-rendering-and-interactivity-brief.md).
-4. **Begin Phase 5 (In-App Rules & Keyword Tooltips):**
-   - Create the in-app rules viewer modal/drawer in `client/` using `RenderInteractive` mode.
-   - Hook up rich interactive tooltips to card text and rules badges across the active client UI.
+1. **Phase 4 Exit Verification:** Completed. `result/rules.html`, `result/glossary.html`, and `result/colors.html` verified in Nix build. Committed in `df1e358`.
+2. **Phase 5 Execution Brief:** Created clean, forward-looking execution spec at [`design/iteration/in-app-rules-and-keyword-tooltips-brief.md`](file:///home/tdimiduk/cardpg/cardpg/design/iteration/in-app-rules-and-keyword-tooltips-brief.md).
+3. **Execute Phase 5 in Fresh Session:**
+   - Implement `Frontend.Rules.Data` compile-time embedding.
+   - Implement `Frontend.Rules.Viewer` modal/drawer with tabbed Pandoc rendering.
+   - Wire sidebar toggle in `Frontend.Game.Sidebar` and `Frontend.App`.
+   - Upgrade `Frontend.Render.Rules.renderInline` to display interactive tooltips for card wikilinks.
