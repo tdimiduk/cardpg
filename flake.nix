@@ -130,6 +130,9 @@
             # Raw server executable from haskell.nix
             cardpg-server-raw = project.server.components.exes.server;
 
+            # Audit Index CLI
+            inherit (project.tools-hs.components.exes) audit-index;
+
             # Reflex Client (Native)
             reflex-client-native = project.client.components.exes.client;
 
@@ -214,6 +217,7 @@
             excludes = [
               "data/cards/.*"
               "design/research/reports/.*"
+              "design/.*\\.ya?ml$"
             ];
             hooks = {
               fourmolu.enable = true;
@@ -227,8 +231,8 @@
               audit-index = {
                 enable = true;
                 name = "audit-index";
-                entry = "${pkgs.python3.withPackages (ps: [ ps.pyyaml ])}/bin/python3 tools/audit_index.py";
-                files = "^(design/|tools/audit_index\\.py)";
+                entry = "${project.tools-hs.components.exes.audit-index}/bin/audit-index";
+                files = "^(design/|tools-hs/)";
                 pass_filenames = false;
               };
             };

@@ -42,7 +42,7 @@ Always uphold and cross-reference the project's foundational design documents:
 8. **Design Index & Epistemic Frontmatter Invariant:**
    - **Frontmatter Required:** Any new or relocated markdown document under `design/` must contain valid epistemic frontmatter (`title`, `doc_type`, `track`, `origin`, `epistemic_status`).
    - **Index Registration:** All files under `design/` must be registered in `design/index.yaml` or its appropriate sub-index.
-   - **Automated Sync:** Before concluding changes that add, move, or rename files in `design/`, run `python3 tools/audit_index.py --fix` to automatically scaffold frontmatter and synchronize index registries. (This invariant is also strictly enforced at commit-time via git pre-commit hooks).
+   - **Automated Sync:** Before concluding changes that add, move, or rename files in `design/`, run `cabal run tools-hs:exe:audit-index -- --fix` (or `audit-index --fix`) to automatically scaffold frontmatter and synchronize index registries. (This invariant is also strictly enforced at commit-time via git pre-commit hooks).
 
 ## 3. Delegation to Subagents & Tooling Protocols
 

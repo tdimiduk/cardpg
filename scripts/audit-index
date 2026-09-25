@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+# Run the Haskell audit-index tool via cabal
+exec cabal run -v0 tools-hs:exe:audit-index -- "$@"

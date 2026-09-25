@@ -64,7 +64,7 @@ Follow the behavior for the determined mode above.
 
 ### Index Synchronization Rule
 
-If your execution creates, renames, archives, or deletes files under `design/`, run `python3 tools/audit_index.py --fix` to ensure the registry and epistemic frontmatter are clean (enforced automatically at commit via pre-commit).
+If your execution creates, renames, archives, or deletes files under `design/`, run `cabal run tools-hs:exe:audit-index -- --fix` (or `audit-index --fix`) to ensure the registry and epistemic frontmatter are clean (enforced automatically at commit via pre-commit).
 
 ## 5. If Mode Unclear
 

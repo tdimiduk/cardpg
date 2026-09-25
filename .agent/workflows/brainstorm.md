@@ -72,7 +72,7 @@ If the subagent is not yet defined in this conversation, define it first using `
 ## 3. Register and Audit the Brainstormed Content
 
 - Save the output or updates to the appropriate domain consequence files in `design/research/synthesis/` (e.g., `design/research/synthesis/consequences-combat.md`, etc.).
-- If creating new files, run `python3 tools/audit_index.py --fix` to auto-register them in `design/research/index.yaml`.
+- If creating new files, run `cabal run tools-hs:exe:audit-index -- --fix` (or `audit-index --fix`) to auto-register them in `design/research/index.yaml`.
 - Run the consequence auditing and density tabulation tool using `cabal run audit-consequences` to:
   1. Validate that all consequence rows conform to the 10-column schema.
   2. Verify that all tags match the canonical tag taxonomy defined in `design/research/synthesis/consequence-database.md`.

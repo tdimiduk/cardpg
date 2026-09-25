@@ -22,7 +22,9 @@ The audit script recursively parses the root index and all declared sub-indexes.
 The easiest way to synchronize unindexed markdown files and scaffold missing epistemic frontmatter is using the `--fix` flag:
 
 ```bash
-python3 tools/audit_index.py --fix
+cabal run tools-hs:exe:audit-index -- --fix
+# or if built in your environment:
+audit-index --fix
 ```
 
 This command will:
@@ -40,7 +42,9 @@ This command will:
 To inspect the index without making automated changes:
 
 ```bash
-python3 tools/audit_index.py
+cabal run tools-hs:exe:audit-index
+# or:
+audit-index
 ```
 
 Options:
@@ -87,7 +91,7 @@ If you prefer to manually craft an entry or place it in a specialized section:
 Index integrity is automatically enforced prior to every commit via `git-hooks.nix`.
 When any file under `design/` is modified or staged:
 
-- The pre-commit hook runs `tools/audit_index.py`.
+- The pre-commit hook runs `audit-index` (built via Nix from `tools-hs`).
 - Any unindexed files, broken links, or frontmatter schema violations will block the commit.
 - You can also trigger this verification manually anytime alongside code formatting via:
   ```bash
