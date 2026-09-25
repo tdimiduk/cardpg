@@ -15,6 +15,7 @@ module Frontend.Render.Rules
 
 import Reflex.Dom.Core hiding (Space)
 
+import Core.Glossary (lookupGlossary)
 import Core.Language (TextStyle (..))
 import Core.Layout hiding (renderLayoutItem)
 import Core.NonEmptyText (getRawText)
@@ -24,6 +25,12 @@ import Core.Stats (Difficulty (..), StatValue (..))
 import Core.Util (tshow)
 
 import Frontend.Render.Common (IconMode (..), renderResourceType)
+import Frontend.Render.Pandoc
+  ( RenderEnv (..)
+  , RenderMode (..)
+  , renderInteractiveWikilinkText
+  )
+import Frontend.Rules.Data (embeddedGlossary)
 
 --------------------------------------------------------------------------------
 -- Core Rendering Primitives
@@ -53,8 +60,11 @@ renderInline (ColorValue v) = renderStatValue IconInline v
 renderInline (DifficultyValue d) = renderDifficulty IconInline d
 renderInline Break = el "br" $ pure ()
 renderInline (Wikilink target mLabel) =
-  let display = maybe (getRawText target) getRawText mLabel
-   in elAttr "span" ("class" =: "game-kw text-gold-bright font-bold") $ text display
+  let targetTxt = getRawText target
+      displayTxt = maybe targetTxt getRawText mLabel
+      mEntry = lookupGlossary targetTxt embeddedGlossary
+      env = RenderEnv{glossary = embeddedGlossary, renderMode = RenderInteractive}
+   in renderInteractiveWikilinkText env targetTxt displayTxt mEntry
 
 -- | Render a RichText as a sequence of Inlines
 renderRichText :: (DomBuilder t m) => RichText -> m ()

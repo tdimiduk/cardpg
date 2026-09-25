@@ -20,6 +20,8 @@ roots = [
   "^Core\\..*$",
   "^Api\\..*$",
   "^Reflex\\.AtomicCss\\..*$",
+  "^Frontend\\.Rules\\..*$",
+  "^Frontend\\.Render\\..*$",
 
   # Development and Testing helper patterns
   "^Frontend\\.Devel\\..*$",

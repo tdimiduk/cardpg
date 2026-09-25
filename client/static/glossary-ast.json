@@ -1,0 +1,1536 @@
+{
+  "pandoc-api-version": [1, 23, 1, 1],
+  "meta": {},
+  "blocks": [
+    {
+      "t": "Header",
+      "c": [
+        1,
+        ["keyword-glossary", [], []],
+        [
+          { "t": "Str", "c": "Keyword" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Glossary" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "This" },
+        { "t": "Space" },
+        { "t": "Str", "c": "document" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "quick" },
+        { "t": "Space" },
+        { "t": "Str", "c": "reference" },
+        { "t": "Space" },
+        { "t": "Str", "c": "for" },
+        { "t": "Space" },
+        { "t": "Str", "c": "core" },
+        { "t": "Space" },
+        { "t": "Str", "c": "mechanical" },
+        { "t": "Space" },
+        { "t": "Str", "c": "terms" },
+        { "t": "Space" },
+        { "t": "Str", "c": "used" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "game." },
+        { "t": "Space" },
+        { "t": "Str", "c": "These" },
+        { "t": "Space" },
+        { "t": "Str", "c": "keywords" },
+        { "t": "Space" },
+        { "t": "Str", "c": "have" },
+        { "t": "Space" },
+        { "t": "Str", "c": "specific," },
+        { "t": "Space" },
+        { "t": "Str", "c": "consistent" },
+        { "t": "Space" },
+        { "t": "Str", "c": "meanings" },
+        { "t": "Space" },
+        { "t": "Str", "c": "within" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "rules." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["the-three-colors", [], []],
+        [
+          { "t": "Str", "c": "The" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Three" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Colors" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["color", [], []], [{ "t": "Str", "c": "Color" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Colors" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "How" },
+        { "t": "Space" },
+        { "t": "Str", "c": "approaches" },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "abilities" },
+        { "t": "Space" },
+        { "t": "Str", "c": "are" },
+        { "t": "Space" },
+        { "t": "Str", "c": "classified" },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "actions" },
+        { "t": "Space" },
+        { "t": "Str", "c": "are" },
+        { "t": "Space" },
+        { "t": "Str", "c": "adjudicated." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Values" },
+        { "t": "Space" },
+        { "t": "Str", "c": "are" },
+        { "t": "Space" },
+        { "t": "Code", "c": [["", [], []], "Red"] },
+        { "t": "Str", "c": "," },
+        { "t": "Space" },
+        { "t": "Code", "c": [["", [], []], "Yellow"] },
+        { "t": "Str", "c": "," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Code", "c": [["", [], []], "Blue"] },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "See" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", [], []],
+            [
+              { "t": "Str", "c": "Colors" },
+              { "t": "Space" },
+              { "t": "Str", "c": "of" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Action" }
+            ],
+            ["colors-of-action.md", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "for" },
+        { "t": "Space" },
+        { "t": "Str", "c": "detailed" },
+        { "t": "Space" },
+        { "t": "Str", "c": "classifications." }
+      ]
+    },
+    { "t": "Header", "c": [4, ["red", [], []], [{ "t": "Str", "c": "Red" }]] },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "One" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "game’s" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Colors" }],
+            ["Colors", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "color" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Force," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Endurance," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Presence," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Passion," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Dominion." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [4, ["yellow", [], []], [{ "t": "Str", "c": "Yellow" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "One" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "game’s" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Colors" }],
+            ["Colors", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "color" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Speed," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Precision," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Perception," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Cunning," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Finesse." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [4, ["blue", [], []], [{ "t": "Str", "c": "Blue" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "One" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "game’s" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Colors" }],
+            ["Colors", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "color" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Intellect," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Planning," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Discipline," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Lore," },
+        { "t": "Space" },
+        { "t": "Str", "c": "Intrigue." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["action-resolution", [], []],
+        [
+          { "t": "Str", "c": "Action" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Resolution" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["strength", [], []], [{ "t": "Str", "c": "Strength" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "How" },
+        { "t": "Space" },
+        { "t": "Str", "c": "strong" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "powerful" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hazard" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Set" },
+        { "t": "Space" },
+        { "t": "Str", "c": "by" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "character’s" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card," },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "challenge" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card," },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "GM" },
+        { "t": "Space" },
+        { "t": "Str", "c": "adjudication." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "character" },
+        { "t": "Space" },
+        { "t": "Str", "c": "carrying" },
+        { "t": "Space" },
+        { "t": "Str", "c": "out" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "general" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "defending" },
+        { "t": "Space" },
+        { "t": "Str", "c": "against" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack" },
+        { "t": "Space" },
+        { "t": "Str", "c": "must" },
+        { "t": "Space" },
+        { "t": "Str", "c": "meet" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "strength" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "challenge" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "their" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolution." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["impact", [], []], [{ "t": "Str", "c": "Impact" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "total" },
+        { "t": "Space" },
+        { "t": "Str", "c": "number" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "flipped" },
+        { "t": "Space" },
+        { "t": "Str", "c": "from" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "deck" },
+        { "t": "Space" },
+        { "t": "Str", "c": "during" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "defense" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "general" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action." },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Impact" }],
+            ["Impact", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "divided" },
+        { "t": "Space" },
+        { "t": "Str", "c": "by" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Defense" }],
+            ["Defense", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "determine" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "number" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "consequences" },
+        { "t": "Space" },
+        { "t": "Str", "c": "suffered." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["defense", [], []], [{ "t": "Str", "c": "Defense" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "One" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "key" },
+        { "t": "Space" },
+        { "t": "Str", "c": "stats" },
+        { "t": "Space" },
+        { "t": "Str", "c": "for" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolving" },
+        { "t": "Space" },
+        { "t": "Str", "c": "actions." },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Defense" }],
+            ["Defense", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "tells" },
+        { "t": "Space" },
+        { "t": "Str", "c": "you" },
+        { "t": "Space" },
+        { "t": "Str", "c": "how" },
+        { "t": "Space" },
+        { "t": "Str", "c": "many" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Impact" }],
+            ["Impact", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "translate" },
+        { "t": "Space" },
+        { "t": "Str", "c": "into" },
+        { "t": "Space" },
+        { "t": "Str", "c": "taking" },
+        { "t": "Space" },
+        { "t": "Str", "c": "one" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Consequence" }],
+            ["Consequence", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Unarmored" },
+        { "t": "Space" },
+        { "t": "Str", "c": "characters" },
+        { "t": "Space" },
+        { "t": "Str", "c": "default" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Defense" }],
+            ["Defense", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "1." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["resilience", [], []], [{ "t": "Str", "c": "Resilience" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "number" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Consequences" }],
+            ["Consequences", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "character" },
+        { "t": "Space" },
+        { "t": "Str", "c": "can" },
+        { "t": "Space" },
+        { "t": "Str", "c": "suffer" },
+        { "t": "Space" },
+        { "t": "Str", "c": "at" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "given" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Severity" }],
+            ["Severity", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "level" },
+        { "t": "Space" },
+        { "t": "Str", "c": "before" },
+        { "t": "Space" },
+        { "t": "Str", "c": "new" },
+        { "t": "Space" },
+        { "t": "Str", "c": "consequences" },
+        { "t": "Space" },
+        { "t": "Str", "c": "escalate" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "next" },
+        { "t": "Space" },
+        { "t": "Str", "c": "severity" },
+        { "t": "Space" },
+        { "t": "Str", "c": "tier." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Defaults" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "1" },
+        { "t": "Space" },
+        { "t": "Str", "c": "if" },
+        { "t": "Space" },
+        { "t": "Str", "c": "unarmored." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["consequence", [], []], [{ "t": "Str", "c": "Consequence" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Consequences" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "suffered" },
+        { "t": "Space" },
+        { "t": "Str", "c": "from" },
+        { "t": "Space" },
+        { "t": "Str", "c": "physical" },
+        { "t": "Space" },
+        { "t": "Str", "c": "trauma," },
+        { "t": "Space" },
+        { "t": "Str", "c": "strain," },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "environmental" },
+        { "t": "Space" },
+        { "t": "Str", "c": "friction" },
+        { "t": "Space" },
+        { "t": "Str", "c": "when" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Impact" }],
+            ["Impact", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "meets" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "exceeds" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Defense" }],
+            ["Defense", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Suffix/plural" },
+        { "t": "Space" },
+        { "t": "Str", "c": "uses" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Consequences" }],
+            ["Consequences", ""]
+          ]
+        },
+        { "t": "Str", "c": "." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["severity", [], []], [{ "t": "Str", "c": "Severity" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Severity" },
+            { "t": "Space" },
+            { "t": "Str", "c": "1," },
+            { "t": "Space" },
+            { "t": "Str", "c": "Severity" },
+            { "t": "Space" },
+            { "t": "Str", "c": "2," },
+            { "t": "Space" },
+            { "t": "Str", "c": "Severity" },
+            { "t": "Space" },
+            { "t": "Str", "c": "3" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "escalation" },
+        { "t": "Space" },
+        { "t": "Str", "c": "tier" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "suffered" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Consequences" }],
+            ["Consequences", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Severity" },
+        { "t": "Space" },
+        { "t": "Str", "c": "1" },
+        { "t": "Space" },
+        { "t": "Str", "c": "represents" },
+        { "t": "Space" },
+        { "t": "Str", "c": "minor" },
+        { "t": "Space" },
+        { "t": "Str", "c": "friction/wear;" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Severity" },
+        { "t": "Space" },
+        { "t": "Str", "c": "2" },
+        { "t": "Space" },
+        { "t": "Str", "c": "represents" },
+        { "t": "Space" },
+        { "t": "Str", "c": "serious" },
+        { "t": "Space" },
+        { "t": "Str", "c": "injury/vulnerability;" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Severity" },
+        { "t": "Space" },
+        { "t": "Str", "c": "3" },
+        { "t": "Space" },
+        { "t": "Str", "c": "indicates" },
+        { "t": "Space" },
+        { "t": "Str", "c": "incapacitation." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["equipment-fatigue", [], []],
+        [
+          { "t": "Str", "c": "Equipment" },
+          { "t": "Space" },
+          { "t": "Str", "c": "&" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Fatigue" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["burden", [], []], [{ "t": "Str", "c": "Burden" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "metabolic" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cost" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "armor" },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "heavy" },
+        { "t": "Space" },
+        { "t": "Str", "c": "equipment." },
+        { "t": "Space" },
+        { "t": "Str", "c": "When" },
+        { "t": "Space" },
+        { "t": "Str", "c": "you" },
+        { "t": "Space" },
+        { "t": "Str", "c": "perform" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "Fatigue" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Cycle" }
+            ],
+            ["Fatigue Cycle", ""]
+          ]
+        },
+        { "t": "Str", "c": "," },
+        { "t": "Space" },
+        { "t": "Str", "c": "you" },
+        { "t": "Space" },
+        { "t": "Str", "c": "must" },
+        { "t": "Space" },
+        { "t": "Str", "c": "add" },
+        { "t": "Space" },
+        { "t": "Str", "c": "extra" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Fatigue" }],
+            ["Fatigue", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "deck" },
+        { "t": "Space" },
+        { "t": "Str", "c": "equal" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "total" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Burden" }],
+            ["Burden", ""]
+          ]
+        },
+        { "t": "Str", "c": "." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["fatigue", [], []], [{ "t": "Str", "c": "Fatigue" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Fatigue" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Cycle," },
+            { "t": "Space" },
+            { "t": "Str", "c": "Fatigue" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Cards" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Systemic" },
+        { "t": "Space" },
+        { "t": "Str", "c": "physical" },
+        { "t": "Space" },
+        { "t": "Str", "c": "exhaustion." },
+        { "t": "Space" },
+        { "t": "Str", "c": "When" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "deck" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "exhausted," },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "Fatigue" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Cycle" }
+            ],
+            ["Fatigue Cycle", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "adds" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Fatigue" }],
+            ["Fatigue", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "(plus" },
+        { "t": "Space" },
+        { "t": "Str", "c": "active" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Burden" }],
+            ["Burden", ""]
+          ]
+        },
+        { "t": "Str", "c": ")" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "expended" },
+        { "t": "Space" },
+        { "t": "Str", "c": "pile" },
+        { "t": "Space" },
+        { "t": "Str", "c": "before" },
+        { "t": "Space" },
+        { "t": "Str", "c": "reshuffling." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["pacing-play-modes", [], []],
+        [
+          { "t": "Str", "c": "Pacing" },
+          { "t": "Space" },
+          { "t": "Str", "c": "&" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Play" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Modes" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["crisis-time", [], []],
+        [
+          { "t": "Str", "c": "Crisis" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Time" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Turn-based," },
+        { "t": "Space" },
+        { "t": "Str", "c": "round-by-round" },
+        { "t": "Space" },
+        { "t": "Str", "c": "mode" },
+        { "t": "Space" },
+        { "t": "Str", "c": "for" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolving" },
+        { "t": "Space" },
+        { "t": "Str", "c": "combat," },
+        { "t": "Space" },
+        { "t": "Str", "c": "chases," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "tense" },
+        { "t": "Space" },
+        { "t": "Str", "c": "second-by-second" },
+        { "t": "Space" },
+        { "t": "Str", "c": "struggles." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["adventuring-time", [], []],
+        [
+          { "t": "Str", "c": "Adventuring" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Time" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Fluid" },
+        { "t": "Space" },
+        { "t": "Str", "c": "exploration" },
+        { "t": "Space" },
+        { "t": "Str", "c": "mode" },
+        { "t": "Space" },
+        { "t": "Str", "c": "used" },
+        { "t": "Space" },
+        { "t": "Str", "c": "for" },
+        { "t": "Space" },
+        { "t": "Str", "c": "travel," },
+        { "t": "Space" },
+        { "t": "Str", "c": "dungeon" },
+        { "t": "Space" },
+        { "t": "Str", "c": "navigation," },
+        { "t": "Space" },
+        { "t": "Str", "c": "investigation," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "downtime." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["downtime", [], []], [{ "t": "Str", "c": "Downtime" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Extended" },
+        { "t": "Space" },
+        { "t": "Str", "c": "periods" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "rest," },
+        { "t": "Space" },
+        { "t": "Str", "c": "crafting," },
+        { "t": "Space" },
+        { "t": "Str", "c": "project" },
+        { "t": "Space" },
+        { "t": "Str", "c": "advancement," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "long-term" },
+        { "t": "Space" },
+        { "t": "Str", "c": "recovery" },
+        { "t": "Space" },
+        { "t": "Str", "c": "between" },
+        { "t": "Space" },
+        { "t": "Str", "c": "active" },
+        { "t": "Space" },
+        { "t": "Str", "c": "adventures." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["ready-hand", [], []],
+        [
+          { "t": "Str", "c": "Ready" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Hand" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "A" },
+        { "t": "Space" },
+        { "t": "Str", "c": "pool" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "0" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "4" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "maintained" },
+        { "t": "Space" },
+        { "t": "Str", "c": "on" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "table" },
+        { "t": "Space" },
+        { "t": "Str", "c": "during" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "Adventuring" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Time" }
+            ],
+            ["Adventuring Time", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "representing" },
+        { "t": "Space" },
+        { "t": "Str", "c": "immediate" },
+        { "t": "Space" },
+        { "t": "Str", "c": "vigilance" },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "readiness." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["action-stack", [], []],
+        [
+          { "t": "Str", "c": "Action" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Stack" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Action" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Stacks" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "An" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "played" },
+        { "t": "Space" },
+        { "t": "Str", "c": "from" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hand" },
+        { "t": "Space" },
+        { "t": "Str", "c": "combined" },
+        { "t": "Space" },
+        { "t": "Str", "c": "with" },
+        { "t": "Space" },
+        { "t": "Str", "c": "additional" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "committed" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "pay" },
+        { "t": "Space" },
+        { "t": "Str", "c": "its" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resource" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cost." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["general-action", [], []],
+        [
+          { "t": "Str", "c": "General" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Action" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "General" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Actions" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Non-combat" },
+        { "t": "Space" },
+        { "t": "Str", "c": "challenges" },
+        { "t": "Space" },
+        { "t": "Str", "c": "with" },
+        { "t": "Space" },
+        { "t": "Str", "c": "meaningful" },
+        { "t": "Space" },
+        { "t": "Str", "c": "stakes" },
+        { "t": "Space" },
+        { "t": "Str", "c": "outside" },
+        { "t": "Space" },
+        { "t": "Str", "c": "combat," },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolved" },
+        { "t": "Space" },
+        { "t": "Str", "c": "defender-centric" },
+        { "t": "Space" },
+        { "t": "Str", "c": "with" },
+        { "t": "Space" },
+        { "t": "Str", "c": "success" },
+        { "t": "Space" },
+        { "t": "Str", "c": "as" },
+        { "t": "Space" },
+        { "t": "Str", "c": "default." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["action-types-card-keywords", [], []],
+        [
+          { "t": "Str", "c": "Action" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Types" },
+          { "t": "Space" },
+          { "t": "Str", "c": "&" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Card" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Keywords" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["attack", [], []], [{ "t": "Str", "c": "Attack" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Attacks" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "An" },
+        { "t": "Space" },
+        { "t": "Str", "c": "offensive" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "declared" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "Crisis" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Time" }
+            ],
+            ["Crisis Time", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "targeting" },
+        { "t": "Space" },
+        { "t": "Str", "c": "another" },
+        { "t": "Space" },
+        { "t": "Str", "c": "character," },
+        { "t": "Space" },
+        { "t": "Str", "c": "setting" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Strength" }],
+            ["Strength", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "chosen" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Color" }],
+            ["Color", ""]
+          ]
+        },
+        { "t": "Str", "c": "." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["defend", [], []], [{ "t": "Str", "c": "Defend" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Defends" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "A" },
+        { "t": "Space" },
+        { "t": "Str", "c": "defensive" },
+        { "t": "Space" },
+        { "t": "Str", "c": "reaction" },
+        { "t": "Space" },
+        { "t": "Str", "c": "played" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolved" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "absorb" },
+        { "t": "Space" },
+        { "t": "Str", "c": "incoming" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Strength" }],
+            ["Strength", ""]
+          ]
+        },
+        { "t": "Str", "c": "." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["stance", [], []], [{ "t": "Str", "c": "Stance" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "Aliases:" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Stances" }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "A" },
+        { "t": "Space" },
+        { "t": "Str", "c": "persistent" },
+        { "t": "Space" },
+        { "t": "Str", "c": "tactical" },
+        { "t": "Space" },
+        { "t": "Str", "c": "posture" },
+        { "t": "Space" },
+        { "t": "Str", "c": "remaining" },
+        { "t": "Space" },
+        { "t": "Str", "c": "active" },
+        { "t": "Space" },
+        { "t": "Str", "c": "across" },
+        { "t": "Space" },
+        { "t": "Str", "c": "rounds" },
+        { "t": "Space" },
+        { "t": "Str", "c": "until" },
+        { "t": "Space" },
+        { "t": "Str", "c": "discarded" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "replaced." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["passive", [], []], [{ "t": "Str", "c": "Passive" }]]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "A" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "property" },
+        { "t": "Space" },
+        { "t": "Str", "c": "that" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "continuously" },
+        { "t": "Space" },
+        { "t": "Str", "c": "active" },
+        { "t": "Space" },
+        { "t": "Str", "c": "while" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "play" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "held" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hand." }
+      ]
+    }
+  ]
+}

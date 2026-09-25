@@ -1,0 +1,3859 @@
+{
+  "pandoc-api-version": [1, 23, 1, 1],
+  "meta": {},
+  "blocks": [
+    {
+      "t": "Header",
+      "c": [
+        1,
+        ["core-rules", [], []],
+        [
+          { "t": "Str", "c": "Core" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Rules" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["your-deck-is-your-character", [], []],
+        [
+          { "t": "Str", "c": "1." },
+          { "t": "Space" },
+          { "t": "Str", "c": "Your" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Deck" },
+          { "t": "Space" },
+          { "t": "Str", "c": "is" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Your" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Character" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "character" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "defined" },
+        { "t": "Space" },
+        { "t": "Str", "c": "by" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "24-card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "deck" },
+        { "t": "Space" },
+        { "t": "Str", "c": "that" },
+        { "t": "Space" },
+        { "t": "Str", "c": "serves" },
+        { "t": "Space" },
+        { "t": "Str", "c": "as" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "stamina," },
+        { "t": "Space" },
+        { "t": "Str", "c": "skill" },
+        { "t": "Space" },
+        { "t": "Str", "c": "pool," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "health." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Every" },
+        { "t": "Space" },
+        { "t": "Str", "c": "significant" },
+        { "t": "Space" },
+        { "t": "Str", "c": "action" },
+        { "t": "Space" },
+        { "t": "Str", "c": "expends" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "exhausting" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "deck" },
+        { "t": "Space" },
+        { "t": "Str", "c": "incurs" },
+        { "t": "Space" },
+        { "t": "Str", "c": "fatigue." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["the-three-colors", [], []],
+        [
+          { "t": "Str", "c": "The" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Three" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Colors" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "numbers" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "upper" },
+        { "t": "Space" },
+        { "t": "Str", "c": "left" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "each" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "represent" },
+        { "t": "Space" },
+        { "t": "Str", "c": "its" },
+        { "t": "Space" },
+        { "t": "Str", "c": "strength" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "game’s" },
+        { "t": "Space" },
+        { "t": "Str", "c": "three" },
+        { "t": "Space" },
+        { "t": "Str", "c": "core" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Colors:" }
+      ]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Red" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Square):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Force," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Endurance," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Presence," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Passion," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Dominion" }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Yellow" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Circle):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Speed," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Precision," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Perception," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Cunning," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Finesse" }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Blue" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Diamond):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Intellect," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Planning," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Discipline," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Lore," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Intrigue" }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "(See" },
+            { "t": "Space" },
+            {
+              "t": "Link",
+              "c": [
+                ["", [], []],
+                [
+                  { "t": "Str", "c": "Colors" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "of" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Action" }
+                ],
+                ["colors-of-action.md", ""]
+              ]
+            },
+            { "t": "Space" },
+            { "t": "Str", "c": "for" },
+            { "t": "Space" },
+            { "t": "Str", "c": "how" },
+            { "t": "Space" },
+            { "t": "Str", "c": "skills" },
+            { "t": "Space" },
+            { "t": "Str", "c": "and" },
+            { "t": "Space" },
+            { "t": "Str", "c": "activities" },
+            { "t": "Space" },
+            { "t": "Str", "c": "map" },
+            { "t": "Space" },
+            { "t": "Str", "c": "to" },
+            { "t": "Space" },
+            { "t": "Str", "c": "each" },
+            { "t": "Space" },
+            { "t": "Str", "c": "color)." }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["anatomy-of-a-card", [], []],
+        [
+          { "t": "Str", "c": "Anatomy" },
+          { "t": "Space" },
+          { "t": "Str", "c": "of" },
+          { "t": "Space" },
+          { "t": "Str", "c": "a" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Card" }
+        ]
+      ]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Color" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Strengths" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Upper" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Left):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Values" },
+              { "t": "Space" },
+              { "t": "Str", "c": "for" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Red," },
+              { "t": "Space" },
+              { "t": "Str", "c": "Yellow," },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Blue." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Resource" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Cost" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Upper" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Right):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Additional" },
+              { "t": "Space" },
+              { "t": "Str", "c": "cards" },
+              { "t": "Space" },
+              { "t": "Str", "c": "required" },
+              { "t": "Space" },
+              { "t": "Str", "c": "from" },
+              { "t": "Space" },
+              { "t": "Str", "c": "hand" },
+              { "t": "Space" },
+              { "t": "Str", "c": "to" },
+              { "t": "Space" },
+              { "t": "Str", "c": "play" },
+              { "t": "Space" },
+              { "t": "Str", "c": "this" },
+              { "t": "Space" },
+              { "t": "Str", "c": "card" },
+              { "t": "Space" },
+              { "t": "Str", "c": "as" },
+              { "t": "Space" },
+              { "t": "Str", "c": "an" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Action" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Stack." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Rules" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Text:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Action" },
+              { "t": "Space" },
+              { "t": "Str", "c": "type," },
+              { "t": "Space" },
+              { "t": "Str", "c": "modifiers," },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "trigger" },
+              { "t": "Space" },
+              { "t": "Str", "c": "keywords" },
+              { "t": "Space" },
+              { "t": "Str", "c": "(such" },
+              { "t": "Space" },
+              { "t": "Str", "c": "as" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Attack" }],
+                  ["Attack", ""]
+                ]
+              },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Defend" }],
+                  ["Defend", ""]
+                ]
+              },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Stance" }],
+                  ["Stance", ""]
+                ]
+              },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Passive" }],
+                  ["Passive", ""]
+                ]
+              },
+              { "t": "Str", "c": ")." }
+            ]
+          }
+        ]
+      ]
+    },
+    { "t": "HorizontalRule" },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["facing-a-challenge", [], []],
+        [
+          { "t": "Str", "c": "2." },
+          { "t": "Space" },
+          { "t": "Str", "c": "Facing" },
+          { "t": "Space" },
+          { "t": "Str", "c": "a" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Challenge" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Whenever" },
+        { "t": "Space" },
+        { "t": "Str", "c": "you" },
+        { "t": "Space" },
+        { "t": "Str", "c": "face" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "challenge—whether" },
+        { "t": "Space" },
+        { "t": "Str", "c": "it" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        { "t": "Str", "c": "enemy" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack," },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "crumbling" },
+        { "t": "Space" },
+        { "t": "Str", "c": "ruin," },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        { "t": "Str", "c": "iron" },
+        { "t": "Space" },
+        { "t": "Str", "c": "door—resolution" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Strong", "c": [{ "t": "Str", "c": "defender-centric" }] },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "person" },
+        { "t": "Space" },
+        { "t": "Str", "c": "facing" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "pressure" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "always" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "one" },
+        { "t": "Space" },
+        { "t": "Str", "c": "who" },
+        { "t": "Space" },
+        { "t": "Str", "c": "flips" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "absorbs" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "outcome:" }
+      ]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Facing" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "an" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Enemy" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Attack:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "When" },
+              { "t": "Space" },
+              { "t": "Str", "c": "an" },
+              { "t": "Space" },
+              { "t": "Str", "c": "enemy" },
+              { "t": "Space" },
+              { "t": "Str", "c": "strikes," },
+              { "t": "Space" },
+              { "t": "Str", "c": "they" },
+              { "t": "Space" },
+              { "t": "Str", "c": "set" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Strength" }],
+                  ["Strength", ""]
+                ]
+              },
+              { "t": "Str", "c": ";" },
+              { "t": "Space" },
+              { "t": "Emph", "c": [{ "t": "Str", "c": "you" }] },
+              { "t": "Space" },
+              { "t": "Str", "c": "meet" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "blow," },
+              { "t": "Space" },
+              { "t": "Str", "c": "absorb" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Impact" }],
+                  ["Impact", ""]
+                ]
+              },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Str", "c": "suffer" },
+              { "t": "Space" },
+              { "t": "Str", "c": "any" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Consequences" }],
+                  ["Consequences", ""]
+                ]
+              },
+              { "t": "Str", "c": "." },
+              { "t": "Space" },
+              { "t": "Str", "c": "(When" },
+              { "t": "Space" },
+              { "t": "Emph", "c": [{ "t": "Str", "c": "you" }] },
+              { "t": "Space" },
+              { "t": "Str", "c": "attack" },
+              { "t": "Space" },
+              { "t": "Str", "c": "an" },
+              { "t": "Space" },
+              { "t": "Str", "c": "enemy," },
+              { "t": "Space" },
+              { "t": "Str", "c": "you" },
+              { "t": "Space" },
+              { "t": "Str", "c": "set" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Strength," },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Emph", "c": [{ "t": "Str", "c": "they" }] },
+              { "t": "Space" },
+              { "t": "Str", "c": "face" },
+              { "t": "Space" },
+              { "t": "Str", "c": "it)." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Weathering" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "an" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Environmental" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Hazard:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "When" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "crumbling" },
+              { "t": "Space" },
+              { "t": "Str", "c": "ledge" },
+              { "t": "Space" },
+              { "t": "Str", "c": "gives" },
+              { "t": "Space" },
+              { "t": "Str", "c": "way" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "trap" },
+              { "t": "Space" },
+              { "t": "Str", "c": "springs," },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "environment" },
+              { "t": "Space" },
+              { "t": "Str", "c": "presents" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Strength" }],
+                  ["Strength", ""]
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "that" },
+              { "t": "Space" },
+              { "t": "Str", "c": "you" },
+              { "t": "Space" },
+              { "t": "Str", "c": "must" },
+              { "t": "Space" },
+              { "t": "Str", "c": "endure." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Tackling" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "an" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Obstacle:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "When" },
+              { "t": "Space" },
+              { "t": "Str", "c": "you" },
+              { "t": "Space" },
+              { "t": "Str", "c": "climb" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "wall," },
+              { "t": "Space" },
+              { "t": "Str", "c": "pick" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "lock," },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "sprint" },
+              { "t": "Space" },
+              { "t": "Str", "c": "past" },
+              { "t": "Space" },
+              { "t": "Str", "c": "guards," },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "task" },
+              { "t": "Space" },
+              { "t": "Str", "c": "sets" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [{ "t": "Str", "c": "Strength" }],
+                  ["Strength", ""]
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "representing" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "physical" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "mental" },
+              { "t": "Space" },
+              { "t": "Str", "c": "effort" },
+              { "t": "Space" },
+              { "t": "Str", "c": "required" },
+              { "t": "Space" },
+              { "t": "Str", "c": "to" },
+              { "t": "Space" },
+              { "t": "Str", "c": "succeed." }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Whatever" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "challenge," },
+        { "t": "Space" },
+        { "t": "Str", "c": "facing" },
+        { "t": "Space" },
+        { "t": "Str", "c": "it" },
+        { "t": "Space" },
+        { "t": "Str", "c": "follows" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "same" },
+        { "t": "Space" },
+        { "t": "Str", "c": "four" },
+        { "t": "Space" },
+        { "t": "Str", "c": "steps:" }
+      ]
+    },
+    {
+      "t": "OrderedList",
+      "c": [
+        [1, { "t": "Decimal" }, { "t": "Period" }],
+        [
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Meet" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "the" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Strength:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "The" },
+                { "t": "Space" },
+                { "t": "Str", "c": "threat" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "task" },
+                { "t": "Space" },
+                { "t": "Str", "c": "presents" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "target" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Strength" }],
+                    ["Strength", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "in" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "specific" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Color" }],
+                    ["Color", ""]
+                  ]
+                },
+                { "t": "Str", "c": "." },
+                { "t": "Space" },
+                { "t": "Str", "c": "You" },
+                { "t": "Space" },
+                { "t": "Str", "c": "meet" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "exceed" },
+                { "t": "Space" },
+                { "t": "Str", "c": "that" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Strength" },
+                { "t": "Space" },
+                { "t": "Str", "c": "by" },
+                { "t": "Space" },
+                { "t": "Str", "c": "adding" },
+                { "t": "Space" },
+                { "t": "Str", "c": "together" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "values" },
+                { "t": "Space" },
+                { "t": "Str", "c": "in" },
+                { "t": "Space" },
+                { "t": "Str", "c": "that" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Color" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(playing" },
+                { "t": "Space" },
+                { "t": "Str", "c": "prepared" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipping" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck)." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                { "t": "Strong", "c": [{ "t": "Str", "c": "Impact:" }] },
+                { "t": "Space" },
+                { "t": "Str", "c": "Your" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Impact" }],
+                    ["Impact", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "is" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "number" },
+                { "t": "Space" },
+                { "t": "Str", "c": "of" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "in" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "flipped" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "stack" }
+                  ]
+                },
+                { "t": "Str", "c": "." },
+                { "t": "Space" },
+                { "t": "Str", "c": "Prepared" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "played" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(such" },
+                { "t": "Space" },
+                { "t": "Str", "c": "as" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Defend" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Action" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Stacks)" },
+                { "t": "Space" },
+                { "t": "Str", "c": "do" },
+                { "t": "Space" },
+                { "t": "Str", "c": "not" },
+                { "t": "Space" },
+                { "t": "Str", "c": "add" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Impact." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Suffer" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Consequences:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "If" },
+                { "t": "Space" },
+                { "t": "Str", "c": "you" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flip" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck," },
+                { "t": "Space" },
+                { "t": "Str", "c": "check" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "active" },
+                { "t": "Space" },
+                { "t": "Str", "c": "armor" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "gear" },
+                { "t": "Space" },
+                { "t": "Str", "c": "for" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Defense" }],
+                    ["Defense", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Resilience" }],
+                    ["Resilience", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "ratings" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(both" },
+                { "t": "Space" },
+                { "t": "Str", "c": "default" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Strong", "c": [{ "t": "Str", "c": "1" }] },
+                { "t": "Space" },
+                { "t": "Str", "c": "if" },
+                { "t": "Space" },
+                { "t": "Str", "c": "unarmored):" }
+              ]
+            },
+            {
+              "t": "BulletList",
+              "c": [
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "Group" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "flipped" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cards" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "into" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "stacks" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "equal" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      {
+                        "t": "Link",
+                        "c": [
+                          ["", ["wikilink"], []],
+                          [{ "t": "Str", "c": "Defense" }],
+                          ["Defense", ""]
+                        ]
+                      },
+                      { "t": "Str", "c": "." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "You" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "suffer" },
+                      { "t": "Space" },
+                      {
+                        "t": "Strong",
+                        "c": [
+                          { "t": "Str", "c": "1" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "Consequence" }
+                        ]
+                      },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "for" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "each" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "completed" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "stack." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(Leftover" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cards" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "that" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "do" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "not" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "complete" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "a" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "stack" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cause" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "no" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "harm" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "and" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "are" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "discarded)." }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "Arrange" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Consequence" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cards" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "on" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "the" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "table" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "in" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "rows" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "of" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "width" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "equal" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      {
+                        "t": "Link",
+                        "c": [
+                          ["", ["wikilink"], []],
+                          [{ "t": "Str", "c": "Resilience" }],
+                          ["Resilience", ""]
+                        ]
+                      },
+                      { "t": "Str", "c": "." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "The" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "first" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "row" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "holds" },
+                      { "t": "Space" },
+                      {
+                        "t": "Link",
+                        "c": [
+                          ["", ["wikilink"], []],
+                          [
+                            { "t": "Str", "c": "Severity" },
+                            { "t": "Space" },
+                            { "t": "Str", "c": "1" }
+                          ],
+                          ["Severity 1", ""]
+                        ]
+                      },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "consequences" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(minor" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "friction)." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Filling" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "that" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "row" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "escalates" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "new" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "consequences" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      {
+                        "t": "Link",
+                        "c": [
+                          ["", ["wikilink"], []],
+                          [
+                            { "t": "Str", "c": "Severity" },
+                            { "t": "Space" },
+                            { "t": "Str", "c": "2" }
+                          ],
+                          ["Severity 2", ""]
+                        ]
+                      },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(serious" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "injury/vulnerability)." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Filling" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "the" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "second" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "row" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "pushes" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "you" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      {
+                        "t": "Link",
+                        "c": [
+                          ["", ["wikilink"], []],
+                          [
+                            { "t": "Str", "c": "Severity" },
+                            { "t": "Space" },
+                            { "t": "Str", "c": "3" }
+                          ],
+                          ["Severity 3", ""]
+                        ]
+                      },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(incapacitated)." }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "The" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Fatigue" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Cycle:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "When" },
+                { "t": "Space" },
+                { "t": "Str", "c": "you" },
+                { "t": "Space" },
+                { "t": "Str", "c": "must" },
+                { "t": "Space" },
+                { "t": "Str", "c": "draw" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flip" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck" },
+                { "t": "Space" },
+                { "t": "Str", "c": "is" },
+                { "t": "Space" },
+                { "t": "Str", "c": "empty—or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "voluntarily" },
+                { "t": "Space" },
+                { "t": "Str", "c": "outside" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "resolution—perform" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Fatigue" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Cycle:" },
+                { "t": "Space" },
+                { "t": "Str", "c": "add" },
+                { "t": "Space" },
+                { "t": "Str", "c": "2" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Fatigue" }],
+                    ["Fatigue", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(plus" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "total" },
+                { "t": "Space" },
+                { "t": "Str", "c": "active" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Burden" }],
+                    ["Burden", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "heavy" },
+                { "t": "Space" },
+                { "t": "Str", "c": "gear)" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "expended" },
+                { "t": "Space" },
+                { "t": "Str", "c": "pile," },
+                { "t": "Space" },
+                { "t": "Str", "c": "reshuffle" },
+                { "t": "Space" },
+                { "t": "Str", "c": "it" },
+                { "t": "Space" },
+                { "t": "Str", "c": "into" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "new" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck," },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "draw" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flip" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "required" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card." }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    { "t": "HorizontalRule" },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["in-conflict-crisis-time", [], []],
+        [
+          { "t": "Str", "c": "3." },
+          { "t": "Space" },
+          { "t": "Str", "c": "In" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Conflict:" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Crisis" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Time" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Crisis" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Time" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolves" },
+        { "t": "Space" },
+        { "t": "Str", "c": "combat," },
+        { "t": "Space" },
+        { "t": "Str", "c": "chases," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "tense," },
+        { "t": "Space" },
+        { "t": "Str", "c": "second-by-second" },
+        { "t": "Space" },
+        { "t": "Str", "c": "struggles." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Play" },
+        { "t": "Space" },
+        { "t": "Str", "c": "proceeds" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "simultaneous" },
+        { "t": "Space" },
+        { "t": "Str", "c": "rounds." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["round-structure", [], []],
+        [
+          { "t": "Str", "c": "Round" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Structure" }
+        ]
+      ]
+    },
+    {
+      "t": "OrderedList",
+      "c": [
+        [1, { "t": "Decimal" }, { "t": "Period" }],
+        [
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Plan" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Step:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "Each" },
+                { "t": "Space" },
+                { "t": "Str", "c": "player" },
+                { "t": "Space" },
+                { "t": "Str", "c": "draws" },
+                { "t": "Space" },
+                { "t": "Str", "c": "2" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "their" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck." },
+                { "t": "Space" },
+                { "t": "Str", "c": "Secretly" },
+                { "t": "Space" },
+                { "t": "Str", "c": "choose" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "play" },
+                { "t": "Space" },
+                { "t": "Str", "c": "for" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "round:" }
+              ]
+            },
+            {
+              "t": "BulletList",
+              "c": [
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      {
+                        "t": "Strong",
+                        "c": [
+                          { "t": "Str", "c": "Play" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "an" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "Action:" }
+                        ]
+                      },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Commit" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "an" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Action" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "card" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "from" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "hand" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(such" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "as" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "an" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Attack" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "or" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Stance)" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "along" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "with" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "any" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cards" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "required" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "pay" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "its" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "resource" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cost." }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Strong", "c": [{ "t": "Str", "c": "Pass:" }] },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Take" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "no" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "action" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "this" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "round" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "conserve" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cards." }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Emph", "c": [{ "t": "Str", "c": "Movement:" }] },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Narrative" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "positioning" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "and" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "maneuvering" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "are" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "integral" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "parts" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "of" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "declared" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "action" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "intent." }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Resolve" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Step:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "All" },
+                { "t": "Space" },
+                { "t": "Str", "c": "participants" },
+                { "t": "Space" },
+                { "t": "Str", "c": "reveal" },
+                { "t": "Space" },
+                { "t": "Str", "c": "their" },
+                { "t": "Space" },
+                { "t": "Str", "c": "actions" },
+                { "t": "Space" },
+                { "t": "Str", "c": "simultaneously:" }
+              ]
+            },
+            {
+              "t": "BulletList",
+              "c": [
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "Attackers" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "declare" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "their" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "targets" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "and" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "attack" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Color." }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "Defenders" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "resolve" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Defend" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "actions" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "absorb" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "incoming" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "attacks." }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "All" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "declared" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "actions" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "resolve" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "in" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "parallel." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Consequences" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "take" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "effect" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "at" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "the" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "end" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "of" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "the" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Resolve" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Step." }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                { "t": "Strong", "c": [{ "t": "Str", "c": "Cleanup:" }] },
+                { "t": "Space" },
+                { "t": "Str", "c": "Discard" },
+                { "t": "Space" },
+                { "t": "Str", "c": "all" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "played" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipped" },
+                { "t": "Space" },
+                { "t": "Str", "c": "during" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "round" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "expended" },
+                { "t": "Space" },
+                { "t": "Str", "c": "pile," },
+                { "t": "Space" },
+                { "t": "Str", "c": "unless" },
+                { "t": "Space" },
+                { "t": "Str", "c": "an" },
+                { "t": "Space" },
+                { "t": "Str", "c": "active" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "specifies" },
+                { "t": "Space" },
+                { "t": "Str", "c": "otherwise" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(such" },
+                { "t": "Space" },
+                { "t": "Str", "c": "as" },
+                { "t": "Space" },
+                { "t": "Str", "c": "persistent" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Stances)." }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["attack-actions", [], []],
+        [
+          { "t": "Str", "c": "Attack" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Actions" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "To" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack," },
+        { "t": "Space" },
+        { "t": "Str", "c": "play" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Attack" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "from" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hand" },
+        { "t": "Space" },
+        { "t": "Str", "c": "into" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "Action" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Stack" }
+            ],
+            ["Action Stack", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "with" },
+        { "t": "Space" },
+        { "t": "Str", "c": "additional" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "from" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hand" },
+        { "t": "Space" },
+        { "t": "Str", "c": "equal" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "its" },
+        { "t": "Space" },
+        { "t": "Str", "c": "printed" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Resource" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Cost." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "colored" },
+        { "t": "Space" },
+        { "t": "Str", "c": "icon" },
+        { "t": "Space" },
+        { "t": "Str", "c": "on" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Attack" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card" },
+        { "t": "Space" },
+        { "t": "Str", "c": "indicates" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack’s" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Color" }],
+            ["Color", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack’s" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Strength" }],
+            ["Strength", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "equals" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "sum" },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "that" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Color" },
+        { "t": "Space" },
+        { "t": "Str", "c": "on" },
+        { "t": "Space" },
+        { "t": "Str", "c": "all" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "stack," },
+        { "t": "Space" },
+        { "t": "Str", "c": "plus" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "top" },
+        { "t": "Space" },
+        { "t": "Str", "c": "card’s" },
+        { "t": "Space" },
+        { "t": "Str", "c": "printed" },
+        { "t": "Space" },
+        { "t": "Str", "c": "modifier." },
+        { "t": "Space" },
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "target" },
+        { "t": "Space" },
+        { "t": "Str", "c": "must" },
+        { "t": "Space" },
+        { "t": "Str", "c": "then" },
+        { "t": "Space" },
+        { "t": "Str", "c": "face" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack" },
+        { "t": "Space" },
+        { "t": "Str", "c": "(see" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", [], []],
+            [
+              { "t": "Str", "c": "Facing" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Challenge" }
+            ],
+            ["#2-facing-a-challenge", ""]
+          ]
+        },
+        { "t": "Str", "c": ")." }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        {
+          "t": "Emph",
+          "c": [
+            { "t": "Str", "c": "(To" },
+            { "t": "Space" },
+            { "t": "Str", "c": "improvise" },
+            { "t": "Space" },
+            { "t": "Str", "c": "maneuvers" },
+            { "t": "Space" },
+            { "t": "Str", "c": "without" },
+            { "t": "Space" },
+            { "t": "Str", "c": "a" },
+            { "t": "Space" },
+            { "t": "Str", "c": "printed" },
+            { "t": "Space" },
+            { "t": "Str", "c": "Action" },
+            { "t": "Space" },
+            { "t": "Str", "c": "card," },
+            { "t": "Space" },
+            { "t": "Str", "c": "see" },
+            { "t": "Space" },
+            { "t": "Str", "c": "the" },
+            { "t": "Space" },
+            {
+              "t": "Link",
+              "c": [
+                ["", [], []],
+                [
+                  { "t": "Str", "c": "Narrative" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Actions" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Module" }
+                ],
+                ["modules/narrative-actions.md", ""]
+              ]
+            },
+            { "t": "Str", "c": ")." }
+          ]
+        }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["defend-actions", [], []],
+        [
+          { "t": "Str", "c": "Defend" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Actions" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "When" },
+        { "t": "Space" },
+        { "t": "Str", "c": "targeted" },
+        { "t": "Space" },
+        { "t": "Str", "c": "by" },
+        { "t": "Space" },
+        { "t": "Str", "c": "an" },
+        { "t": "Space" },
+        { "t": "Str", "c": "attack," },
+        { "t": "Space" },
+        { "t": "Str", "c": "you" },
+        { "t": "Space" },
+        { "t": "Str", "c": "face" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "strike" },
+        { "t": "Space" },
+        { "t": "Str", "c": "by" },
+        { "t": "Space" },
+        { "t": "Str", "c": "meeting" },
+        { "t": "Space" },
+        { "t": "Str", "c": "its" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Strength" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "declared" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Color" },
+        { "t": "Space" },
+        { "t": "Str", "c": "(see" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", [], []],
+            [
+              { "t": "Str", "c": "Facing" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Challenge" }
+            ],
+            ["#2-facing-a-challenge", ""]
+          ]
+        },
+        { "t": "Str", "c": "):" }
+      ]
+    },
+    {
+      "t": "OrderedList",
+      "c": [
+        [1, { "t": "Decimal" }, { "t": "Period" }],
+        [
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Defend" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "from" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Hand" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "(Optional):" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "You" },
+                { "t": "Space" },
+                { "t": "Str", "c": "may" },
+                { "t": "Space" },
+                { "t": "Str", "c": "play" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Defend" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand," },
+                { "t": "Space" },
+                { "t": "Str", "c": "paying" },
+                { "t": "Space" },
+                { "t": "Str", "c": "any" },
+                { "t": "Space" },
+                { "t": "Str", "c": "printed" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Resource" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Cost" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand." },
+                { "t": "Space" },
+                { "t": "Str", "c": "It" },
+                { "t": "Space" },
+                { "t": "Str", "c": "will" },
+                { "t": "Space" },
+                { "t": "Str", "c": "add" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [{ "t": "Str", "c": "Strength" }],
+                    ["Strength", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "defense" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "otherwise" },
+                { "t": "Space" },
+                { "t": "Str", "c": "modify" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "resolution." },
+                { "t": "Space" },
+                { "t": "Str", "c": "Cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "played" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand" },
+                { "t": "Space" },
+                { "t": "Str", "c": "do" },
+                { "t": "Space" },
+                { "t": "Str", "c": "not" },
+                { "t": "Space" },
+                { "t": "Str", "c": "add" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Impact." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Flip" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "from" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Deck:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "If" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Strength" },
+                { "t": "Space" },
+                { "t": "Str", "c": "is" },
+                { "t": "Space" },
+                { "t": "Str", "c": "not" },
+                { "t": "Space" },
+                { "t": "Str", "c": "yet" },
+                { "t": "Space" },
+                { "t": "Str", "c": "met," },
+                { "t": "Space" },
+                { "t": "Str", "c": "flip" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck" },
+                { "t": "Space" },
+                { "t": "Str", "c": "one" },
+                { "t": "Space" },
+                { "t": "Str", "c": "by" },
+                { "t": "Space" },
+                { "t": "Str", "c": "one" },
+                { "t": "Space" },
+                { "t": "Str", "c": "into" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "flipped" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "stack" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "until" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "total" },
+                { "t": "Space" },
+                { "t": "Str", "c": "meets" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "exceeds" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "attack’s" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Strength." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Suffer" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Consequences:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "Count" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "in" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipped" },
+                { "t": "Space" },
+                { "t": "Str", "c": "stack" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Impact)" },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "resolve" },
+                { "t": "Space" },
+                { "t": "Str", "c": "consequences" },
+                { "t": "Space" },
+                { "t": "Str", "c": "against" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Defense" },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Resilience" },
+                { "t": "Space" },
+                { "t": "Str", "c": "as" },
+                { "t": "Space" },
+                { "t": "Str", "c": "normal." }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [3, ["transitions", [], []], [{ "t": "Str", "c": "Transitions" }]]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Entering" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Crisis" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Mutual" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Awareness):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Pick" },
+              { "t": "Space" },
+              { "t": "Str", "c": "up" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              {
+                "t": "Link",
+                "c": [
+                  ["", ["wikilink"], []],
+                  [
+                    { "t": "Str", "c": "Ready" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Hand" }
+                  ],
+                  ["Ready Hand", ""]
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "(both" },
+              { "t": "Space" },
+              { "t": "Str", "c": "face-down" },
+              { "t": "Space" },
+              { "t": "Str", "c": "cards" },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Str", "c": "any" },
+              { "t": "Space" },
+              { "t": "Str", "c": "face-up" },
+              { "t": "Space" },
+              { "t": "Str", "c": "guard)" },
+              { "t": "Space" },
+              { "t": "Str", "c": "as" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "starting" },
+              { "t": "Space" },
+              { "t": "Str", "c": "hand" },
+              { "t": "Space" },
+              { "t": "Str", "c": "for" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Round" },
+              { "t": "Space" },
+              { "t": "Str", "c": "1." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Entering" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Crisis" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(Surprise):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "If" },
+              { "t": "Space" },
+              { "t": "Str", "c": "caught" },
+              { "t": "Space" },
+              { "t": "Str", "c": "unaware" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "marching" },
+              { "t": "Space" },
+              { "t": "Str", "c": "at" },
+              { "t": "Space" },
+              { "t": "Str", "c": "ease" },
+              { "t": "Space" },
+              { "t": "Str", "c": "(Ready" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Hand" },
+              { "t": "Space" },
+              { "t": "Str", "c": "size" },
+              { "t": "Space" },
+              { "t": "Str", "c": "0)," },
+              { "t": "Space" },
+              { "t": "Str", "c": "you" },
+              { "t": "Space" },
+              { "t": "Str", "c": "enter" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Crisis" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Time" },
+              { "t": "Space" },
+              { "t": "Str", "c": "with" },
+              { "t": "Space" },
+              { "t": "Str", "c": "an" },
+              { "t": "Space" },
+              { "t": "Str", "c": "empty" },
+              { "t": "Space" },
+              { "t": "Str", "c": "hand," },
+              { "t": "Space" },
+              { "t": "Str", "c": "drawing" },
+              { "t": "Space" },
+              { "t": "Str", "c": "only" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "2" },
+              { "t": "Space" },
+              { "t": "Str", "c": "round" },
+              { "t": "Space" },
+              { "t": "Str", "c": "cards" },
+              { "t": "Space" },
+              { "t": "Str", "c": "when" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Round" },
+              { "t": "Space" },
+              { "t": "Str", "c": "1" },
+              { "t": "Space" },
+              { "t": "Str", "c": "begins." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Exiting" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Crisis:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "When" },
+              { "t": "Space" },
+              { "t": "Str", "c": "tension" },
+              { "t": "Space" },
+              { "t": "Str", "c": "breaks," },
+              { "t": "Space" },
+              { "t": "Str", "c": "all" },
+              { "t": "Space" },
+              { "t": "Str", "c": "characters" },
+              { "t": "Space" },
+              { "t": "Str", "c": "discard" },
+              { "t": "Space" },
+              { "t": "Str", "c": "any" },
+              { "t": "Space" },
+              { "t": "Str", "c": "cards" },
+              { "t": "Space" },
+              { "t": "Str", "c": "remaining" },
+              { "t": "Space" },
+              { "t": "Str", "c": "in" },
+              { "t": "Space" },
+              { "t": "Str", "c": "hand" },
+              { "t": "Space" },
+              { "t": "Str", "c": "to" },
+              { "t": "Space" },
+              { "t": "Str", "c": "their" },
+              { "t": "Space" },
+              { "t": "Str", "c": "expended" },
+              { "t": "Space" },
+              { "t": "Str", "c": "pile." }
+            ]
+          }
+        ]
+      ]
+    },
+    { "t": "HorizontalRule" },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["in-exploration-adventuring-time", [], []],
+        [
+          { "t": "Str", "c": "4." },
+          { "t": "Space" },
+          { "t": "Str", "c": "In" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Exploration:" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Adventuring" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Time" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Adventuring" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Time" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "used" },
+        { "t": "Space" },
+        { "t": "Str", "c": "for" },
+        { "t": "Space" },
+        { "t": "Str", "c": "travel," },
+        { "t": "Space" },
+        { "t": "Str", "c": "investigation," },
+        { "t": "Space" },
+        { "t": "Str", "c": "dungeon" },
+        { "t": "Space" },
+        { "t": "Str", "c": "exploration," },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "downtime." }
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["the-ready-hand-effort-cycles", [], []],
+        [
+          { "t": "Str", "c": "The" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Ready" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Hand" },
+          { "t": "Space" },
+          { "t": "Str", "c": "&" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Effort" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Cycles" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "You" },
+        { "t": "Space" },
+        { "t": "Str", "c": "do" },
+        { "t": "Space" },
+        { "t": "Str", "c": "not" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hold" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "hand" },
+        { "t": "Space" },
+        { "t": "Str", "c": "during" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Adventuring" },
+        { "t": "Space" },
+        { "t": "Str", "c": "Time." },
+        { "t": "Space" },
+        { "t": "Str", "c": "Instead," },
+        { "t": "Space" },
+        { "t": "Str", "c": "you" },
+        { "t": "Space" },
+        { "t": "Str", "c": "maintain" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "Ready" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Hand" }
+            ],
+            ["Ready Hand", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "0" },
+        { "t": "Space" },
+        { "t": "Str", "c": "to" },
+        { "t": "Space" },
+        { "t": "Str", "c": "4" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cards" },
+        { "t": "Space" },
+        { "t": "Str", "c": "on" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "table," },
+        { "t": "Space" },
+        { "t": "Str", "c": "representing" },
+        { "t": "Space" },
+        { "t": "Str", "c": "your" },
+        { "t": "Space" },
+        { "t": "Str", "c": "vigilance:" }
+      ]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Face-Down" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Cards:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Dealt" },
+              { "t": "Space" },
+              { "t": "Str", "c": "from" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "top" },
+              { "t": "Space" },
+              { "t": "Str", "c": "of" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "deck" },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Str", "c": "kept" },
+              { "t": "Space" },
+              { "t": "Str", "c": "face" },
+              { "t": "Space" },
+              { "t": "Str", "c": "down." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Face-Up" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Guard:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Up" },
+              { "t": "Space" },
+              { "t": "Str", "c": "to" },
+              { "t": "Space" },
+              { "t": "Str", "c": "1" },
+              { "t": "Space" },
+              { "t": "Str", "c": "card" },
+              { "t": "Space" },
+              { "t": "Str", "c": "in" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Ready" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Hand" },
+              { "t": "Space" },
+              { "t": "Str", "c": "may" },
+              { "t": "Space" },
+              { "t": "Str", "c": "be" },
+              { "t": "Space" },
+              { "t": "Str", "c": "kept" },
+              { "t": "Space" },
+              { "t": "Str", "c": "face" },
+              { "t": "Space" },
+              { "t": "Str", "c": "up" },
+              { "t": "Space" },
+              { "t": "Str", "c": "as" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "prepared" },
+              { "t": "Space" },
+              { "t": "Str", "c": "stance" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "readied" },
+              { "t": "Space" },
+              { "t": "Str", "c": "action" },
+              { "t": "Space" },
+              { "t": "Str", "c": "(prepared" },
+              { "t": "Space" },
+              { "t": "Str", "c": "via" },
+              { "t": "Space" },
+              { "t": "Str", "c": "roughly" },
+              { "t": "Space" },
+              { "t": "Str", "c": "one" },
+              { "t": "Space" },
+              { "t": "Str", "c": "minute" },
+              { "t": "Space" },
+              { "t": "Str", "c": "of" },
+              { "t": "Space" },
+              { "t": "Str", "c": "quiet" },
+              { "t": "Space" },
+              { "t": "Str", "c": "focus" },
+              { "t": "Space" },
+              { "t": "Str", "c": "outside" },
+              { "t": "Space" },
+              { "t": "Str", "c": "of" },
+              { "t": "Space" },
+              { "t": "Str", "c": "crisis)." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Effort" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Cycles:" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Maintaining" },
+              { "t": "Space" },
+              { "t": "Str", "c": "vigilance" },
+              { "t": "Space" },
+              { "t": "Str", "c": "burns" },
+              { "t": "Space" },
+              { "t": "Str", "c": "stamina." },
+              { "t": "Space" },
+              { "t": "Str", "c": "Periodically," },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "GM" },
+              { "t": "Space" },
+              { "t": "Str", "c": "will" },
+              { "t": "Space" },
+              { "t": "Str", "c": "call" },
+              { "t": "Space" },
+              { "t": "Str", "c": "an" },
+              { "t": "Space" },
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Effort" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Cycle" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "to" },
+              { "t": "Space" },
+              { "t": "Strong", "c": [{ "t": "Str", "c": "flush" }] },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Ready" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Hand:" }
+            ]
+          },
+          {
+            "t": "OrderedList",
+            "c": [
+              [1, { "t": "Decimal" }, { "t": "Period" }],
+              [
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "Discard" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Ready" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Hand" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "expended" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "pile." },
+                      { "t": "Space" },
+                      {
+                        "t": "Emph",
+                        "c": [
+                          { "t": "Str", "c": "(To" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "retain" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "a" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "face-up" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "guard," },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "discard" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "2" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "cards" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "from" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "the" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "top" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "of" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "your" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "deck" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "to" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "your" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "expended" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "pile" },
+                          { "t": "Space" },
+                          { "t": "Str", "c": "instead)." }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "t": "Plain",
+                    "c": [
+                      { "t": "Str", "c": "Redraw" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "face" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "down" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "from" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "deck" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "back" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "chosen" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Ready" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Hand" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "size" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(0" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "to" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "4)." },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "If" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "your" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "chosen" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "size" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "is" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "0" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "(marching" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "at" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "ease)," },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Effort" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Cycles" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cost" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "you" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "no" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "cards." }
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["general-actions", [], []],
+        [
+          { "t": "Str", "c": "General" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Actions" }
+        ]
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "Tasks" },
+        { "t": "Space" },
+        { "t": "Str", "c": "with" },
+        { "t": "Space" },
+        { "t": "Str", "c": "meaningful" },
+        { "t": "Space" },
+        { "t": "Str", "c": "stakes" },
+        { "t": "Space" },
+        { "t": "Str", "c": "outside" },
+        { "t": "Space" },
+        { "t": "Str", "c": "combat" },
+        { "t": "Space" },
+        { "t": "Str", "c": "(climbing" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "cliff," },
+        { "t": "Space" },
+        { "t": "Str", "c": "picking" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "lock," },
+        { "t": "Space" },
+        { "t": "Str", "c": "calming" },
+        { "t": "Space" },
+        { "t": "Str", "c": "a" },
+        { "t": "Space" },
+        { "t": "Str", "c": "beast)" },
+        { "t": "Space" },
+        { "t": "Str", "c": "are" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolved" },
+        { "t": "Space" },
+        { "t": "Str", "c": "as" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [
+              { "t": "Str", "c": "General" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Actions" }
+            ],
+            ["General Actions", ""]
+          ]
+        },
+        { "t": "Str", "c": "." },
+        { "t": "Space" },
+        { "t": "Str", "c": "You" },
+        { "t": "Space" },
+        { "t": "Str", "c": "face" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "obstacle" },
+        { "t": "Space" },
+        { "t": "Str", "c": "using" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "steps" },
+        { "t": "Space" },
+        { "t": "Str", "c": "in" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", [], []],
+            [
+              { "t": "Str", "c": "Facing" },
+              { "t": "Space" },
+              { "t": "Str", "c": "a" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Challenge" }
+            ],
+            ["#2-facing-a-challenge", ""]
+          ]
+        },
+        { "t": "Str", "c": "," },
+        { "t": "Space" },
+        { "t": "Str", "c": "with" },
+        { "t": "Space" },
+        { "t": "Str", "c": "one" },
+        { "t": "Space" },
+        { "t": "Str", "c": "key" },
+        { "t": "Space" },
+        { "t": "Str", "c": "assumption:" },
+        { "t": "Space" },
+        { "t": "Str", "c": "success" },
+        { "t": "Space" },
+        { "t": "Str", "c": "is" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "default;" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "resolution" },
+        { "t": "Space" },
+        { "t": "Str", "c": "determines" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        { "t": "Str", "c": "physical" },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        { "t": "Str", "c": "stamina" },
+        { "t": "Space" },
+        { "t": "Emph", "c": [{ "t": "Str", "c": "cost" }] },
+        { "t": "Space" },
+        { "t": "Str", "c": "of" },
+        { "t": "Space" },
+        { "t": "Str", "c": "that" },
+        { "t": "Space" },
+        { "t": "Str", "c": "success." }
+      ]
+    },
+    {
+      "t": "Para",
+      "c": [
+        { "t": "Str", "c": "The" },
+        { "t": "Space" },
+        { "t": "Str", "c": "GM" },
+        { "t": "Space" },
+        { "t": "Str", "c": "or" },
+        { "t": "Space" },
+        { "t": "Str", "c": "challenge" },
+        { "t": "Space" },
+        { "t": "Str", "c": "sets" },
+        { "t": "Space" },
+        { "t": "Str", "c": "the" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Color" }],
+            ["Color", ""]
+          ]
+        },
+        { "t": "Space" },
+        { "t": "Str", "c": "and" },
+        { "t": "Space" },
+        {
+          "t": "Link",
+          "c": [
+            ["", ["wikilink"], []],
+            [{ "t": "Str", "c": "Strength" }],
+            ["Strength", ""]
+          ]
+        },
+        { "t": "Str", "c": ":" }
+      ]
+    },
+    {
+      "t": "OrderedList",
+      "c": [
+        [1, { "t": "Decimal" }, { "t": "Period" }],
+        [
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Commit" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Ready" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Hand" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "(Optional):" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "You" },
+                { "t": "Space" },
+                { "t": "Str", "c": "may" },
+                { "t": "Space" },
+                { "t": "Str", "c": "resolve" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "task" },
+                { "t": "Space" },
+                { "t": "Str", "c": "using" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flips" },
+                { "t": "Space" },
+                { "t": "Str", "c": "alone," },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "pick" },
+                { "t": "Space" },
+                { "t": "Str", "c": "up" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Ready" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Hand." },
+                { "t": "Space" },
+                { "t": "Str", "c": "If" },
+                { "t": "Space" },
+                { "t": "Str", "c": "picked" },
+                { "t": "Space" },
+                { "t": "Str", "c": "up," },
+                { "t": "Space" },
+                { "t": "Str", "c": "you" },
+                { "t": "Space" },
+                { "t": "Str", "c": "may" },
+                { "t": "Space" },
+                { "t": "Str", "c": "play" },
+                { "t": "Space" },
+                { "t": "Str", "c": "an" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Action" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand" },
+                { "t": "Space" },
+                { "t": "Str", "c": "as" },
+                { "t": "Space" },
+                { "t": "Str", "c": "an" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Action" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Stack" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "+" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Cost)" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "modify" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "check" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(e.g. bonus" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Strength" },
+                { "t": "Space" },
+                { "t": "Str", "c": "or" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Defense)." },
+                { "t": "Space" },
+                { "t": "Str", "c": "Cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "in" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Action" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Stack" },
+                { "t": "Space" },
+                { "t": "Str", "c": "do" },
+                { "t": "Space" },
+                { "t": "Str", "c": "not" },
+                { "t": "Space" },
+                { "t": "Str", "c": "count" },
+                { "t": "Space" },
+                { "t": "Str", "c": "toward" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipped" },
+                { "t": "Space" },
+                { "t": "Str", "c": "stack." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Meet" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Strength:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "Flip" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "deck" },
+                { "t": "Space" },
+                { "t": "Str", "c": "into" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipped" },
+                { "t": "Space" },
+                { "t": "Str", "c": "stack" },
+                { "t": "Space" },
+                { "t": "Str", "c": "until" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Strength" },
+                { "t": "Space" },
+                { "t": "Str", "c": "is" },
+                { "t": "Space" },
+                { "t": "Str", "c": "met." },
+                { "t": "Space" },
+                { "t": "Str", "c": "If" },
+                { "t": "Space" },
+                { "t": "Str", "c": "you" },
+                { "t": "Space" },
+                { "t": "Str", "c": "committed" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Ready" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Hand," },
+                { "t": "Space" },
+                { "t": "Str", "c": "instead" },
+                { "t": "Space" },
+                { "t": "Str", "c": "of" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flip" },
+                { "t": "Space" },
+                { "t": "Str", "c": "you" },
+                { "t": "Space" },
+                { "t": "Str", "c": "may" },
+                { "t": "Space" },
+                { "t": "Str", "c": "add" },
+                { "t": "Space" },
+                { "t": "Str", "c": "a" },
+                { "t": "Space" },
+                { "t": "Str", "c": "card" },
+                { "t": "Space" },
+                { "t": "Str", "c": "from" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                {
+                  "t": "Link",
+                  "c": [
+                    ["", ["wikilink"], []],
+                    [
+                      { "t": "Str", "c": "Ready" },
+                      { "t": "Space" },
+                      { "t": "Str", "c": "Hand" }
+                    ],
+                    ["Ready Hand", ""]
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "the" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipped" },
+                { "t": "Space" },
+                { "t": "Str", "c": "stack." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                {
+                  "t": "Strong",
+                  "c": [
+                    { "t": "Str", "c": "Suffer" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Consequences:" }
+                  ]
+                },
+                { "t": "Space" },
+                { "t": "Str", "c": "Count" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flipped" },
+                { "t": "Space" },
+                { "t": "Str", "c": "stack" },
+                { "t": "Space" },
+                { "t": "Str", "c": "(your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Impact)" },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "resolve" },
+                { "t": "Space" },
+                { "t": "Str", "c": "consequences" },
+                { "t": "Space" },
+                { "t": "Str", "c": "against" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Defense" },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Resilience." }
+              ]
+            }
+          ],
+          [
+            {
+              "t": "Plain",
+              "c": [
+                { "t": "Strong", "c": [{ "t": "Str", "c": "Flush:" }] },
+                { "t": "Space" },
+                { "t": "Str", "c": "If" },
+                { "t": "Space" },
+                { "t": "Str", "c": "you" },
+                { "t": "Space" },
+                { "t": "Str", "c": "picked" },
+                { "t": "Space" },
+                { "t": "Str", "c": "up" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Ready" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Hand," },
+                { "t": "Space" },
+                { "t": "Str", "c": "discard" },
+                { "t": "Space" },
+                { "t": "Str", "c": "remaining" },
+                { "t": "Space" },
+                { "t": "Str", "c": "hand" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cards" },
+                { "t": "Space" },
+                { "t": "Str", "c": "and" },
+                { "t": "Space" },
+                { "t": "Str", "c": "flush" },
+                { "t": "Space" },
+                { "t": "Str", "c": "back" },
+                { "t": "Space" },
+                { "t": "Str", "c": "to" },
+                { "t": "Space" },
+                { "t": "Str", "c": "your" },
+                { "t": "Space" },
+                { "t": "Str", "c": "chosen" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Ready" },
+                { "t": "Space" },
+                { "t": "Str", "c": "Hand" },
+                { "t": "Space" },
+                { "t": "Str", "c": "size." }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    { "t": "HorizontalRule" },
+    {
+      "t": "Header",
+      "c": [
+        2,
+        ["reference-harm-types-keywords", [], []],
+        [
+          { "t": "Str", "c": "5." },
+          { "t": "Space" },
+          { "t": "Str", "c": "Reference:" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Harm" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Types" },
+          { "t": "Space" },
+          { "t": "Str", "c": "&" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Keywords" }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["status-cards-vs.-condition-cards", [], []],
+        [
+          { "t": "Str", "c": "Status" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Cards" },
+          { "t": "Space" },
+          { "t": "Str", "c": "vs. Condition" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Cards" }
+        ]
+      ]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Status" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Cards" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(In" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Your" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Deck):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Represent" },
+              { "t": "Space" },
+              { "t": "Str", "c": "general" },
+              { "t": "Space" },
+              { "t": "Str", "c": "systemic" },
+              { "t": "Space" },
+              { "t": "Str", "c": "wear-and-tear" },
+              { "t": "Space" },
+              { "t": "Str", "c": "(" },
+              { "t": "Emph", "c": [{ "t": "Str", "c": "Fatigue" }] },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              {
+                "t": "Emph",
+                "c": [
+                  { "t": "Str", "c": "Minor" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Wound" }
+                ]
+              },
+              { "t": "Str", "c": ")." },
+              { "t": "Space" },
+              { "t": "Str", "c": "They" },
+              { "t": "Space" },
+              { "t": "Str", "c": "enter" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "expended" },
+              { "t": "Space" },
+              { "t": "Str", "c": "pile," },
+              { "t": "Space" },
+              { "t": "Str", "c": "shuffle" },
+              { "t": "Space" },
+              { "t": "Str", "c": "into" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "deck" },
+              { "t": "Space" },
+              { "t": "Str", "c": "during" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Fatigue" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Cycles," },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Str", "c": "clog" },
+              { "t": "Space" },
+              { "t": "Str", "c": "your" },
+              { "t": "Space" },
+              { "t": "Str", "c": "draws" },
+              { "t": "Space" },
+              { "t": "Str", "c": "with" },
+              { "t": "Space" },
+              { "t": "Str", "c": "low" },
+              { "t": "Space" },
+              { "t": "Str", "c": "Color" },
+              { "t": "Space" },
+              { "t": "Str", "c": "values." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Condition" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Cards" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(On" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "the" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Table):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Represent" },
+              { "t": "Space" },
+              { "t": "Str", "c": "acute" },
+              { "t": "Space" },
+              { "t": "Str", "c": "tactical" },
+              { "t": "Space" },
+              { "t": "Str", "c": "injuries" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "setbacks" },
+              { "t": "Space" },
+              { "t": "Str", "c": "(" },
+              {
+                "t": "Emph",
+                "c": [
+                  { "t": "Str", "c": "Sprained" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Ankle" }
+                ]
+              },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              { "t": "Emph", "c": [{ "t": "Str", "c": "Concussion" }] },
+              { "t": "Str", "c": "," },
+              { "t": "Space" },
+              { "t": "Emph", "c": [{ "t": "Str", "c": "Pinned" }] },
+              { "t": "Str", "c": ")." },
+              { "t": "Space" },
+              { "t": "Str", "c": "They" },
+              { "t": "Space" },
+              { "t": "Str", "c": "sit" },
+              { "t": "Space" },
+              { "t": "Str", "c": "face" },
+              { "t": "Space" },
+              { "t": "Str", "c": "up" },
+              { "t": "Space" },
+              { "t": "Str", "c": "on" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "table," },
+              { "t": "Space" },
+              { "t": "Str", "c": "imposing" },
+              { "t": "Space" },
+              { "t": "Str", "c": "persistent" },
+              { "t": "Space" },
+              { "t": "Str", "c": "penalties" },
+              { "t": "Space" },
+              { "t": "Str", "c": "until" },
+              { "t": "Space" },
+              { "t": "Str", "c": "treated" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "cleared" },
+              { "t": "Space" },
+              { "t": "Str", "c": "through" },
+              { "t": "Space" },
+              { "t": "Str", "c": "narrative" },
+              { "t": "Space" },
+              { "t": "Str", "c": "recovery." }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "t": "Header",
+      "c": [
+        3,
+        ["keywords-and-timing", [], []],
+        [
+          { "t": "Str", "c": "Keywords" },
+          { "t": "Space" },
+          { "t": "Str", "c": "and" },
+          { "t": "Space" },
+          { "t": "Str", "c": "Timing" }
+        ]
+      ]
+    },
+    {
+      "t": "BulletList",
+      "c": [
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [{ "t": "Code", "c": [["", [], []], "Passive:"] }]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Continuously" },
+              { "t": "Space" },
+              { "t": "Str", "c": "active" },
+              { "t": "Space" },
+              { "t": "Str", "c": "while" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "card" },
+              { "t": "Space" },
+              { "t": "Str", "c": "is" },
+              { "t": "Space" },
+              { "t": "Str", "c": "in" },
+              { "t": "Space" },
+              { "t": "Str", "c": "play" },
+              { "t": "Space" },
+              { "t": "Str", "c": "on" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "table" },
+              { "t": "Space" },
+              { "t": "Str", "c": "or" },
+              { "t": "Space" },
+              { "t": "Str", "c": "in" },
+              { "t": "Space" },
+              { "t": "Str", "c": "hand." }
+            ]
+          }
+        ],
+        [
+          {
+            "t": "Plain",
+            "c": [
+              {
+                "t": "Strong",
+                "c": [
+                  { "t": "Str", "c": "Triggered" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "Keywords" },
+                  { "t": "Space" },
+                  { "t": "Str", "c": "(e.g.," },
+                  { "t": "Space" },
+                  { "t": "Code", "c": [["", [], []], "Resolve:"] },
+                  { "t": "Str", "c": "):" }
+                ]
+              },
+              { "t": "Space" },
+              { "t": "Str", "c": "Checked" },
+              { "t": "Space" },
+              { "t": "Str", "c": "at" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "start" },
+              { "t": "Space" },
+              { "t": "Str", "c": "of" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "matching" },
+              { "t": "Space" },
+              { "t": "Str", "c": "round" },
+              { "t": "Space" },
+              { "t": "Str", "c": "step." },
+              { "t": "Space" },
+              { "t": "Str", "c": "If" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "card" },
+              { "t": "Space" },
+              { "t": "Str", "c": "is" },
+              { "t": "Space" },
+              { "t": "Str", "c": "active" },
+              { "t": "Space" },
+              { "t": "Str", "c": "when" },
+              { "t": "Space" },
+              { "t": "Str", "c": "the" },
+              { "t": "Space" },
+              { "t": "Str", "c": "step" },
+              { "t": "Space" },
+              { "t": "Str", "c": "begins," },
+              { "t": "Space" },
+              { "t": "Str", "c": "its" },
+              { "t": "Space" },
+              { "t": "Str", "c": "ability" },
+              { "t": "Space" },
+              { "t": "Str", "c": "queues" },
+              { "t": "Space" },
+              { "t": "Str", "c": "and" },
+              { "t": "Space" },
+              { "t": "Str", "c": "resolves" },
+              { "t": "Space" },
+              { "t": "Str", "c": "simultaneously" },
+              { "t": "Space" },
+              { "t": "Str", "c": "with" },
+              { "t": "Space" },
+              { "t": "Str", "c": "all" },
+              { "t": "Space" },
+              { "t": "Str", "c": "declared" },
+              { "t": "Space" },
+              { "t": "Str", "c": "actions" },
+              { "t": "Space" },
+              { "t": "Str", "c": "in" },
+              { "t": "Space" },
+              { "t": "Str", "c": "that" },
+              { "t": "Space" },
+              { "t": "Str", "c": "step." }
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

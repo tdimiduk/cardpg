@@ -52,7 +52,7 @@
                 baseName == "docs" ||
                 baseName == "design" ||
                 baseName == "deploy" ||
-                baseName == "static" ||
+                (baseName == "static" && !(pkgs.lib.hasSuffix "client/static" name)) ||
                 baseName == "tests" ||
                 baseName == ".agent"
               )) &&
@@ -145,6 +145,7 @@
               
               # Copy static assets (excluding template)
               cp -r ${./client/static}/* $out/ || true
+              chmod -R +w $out
               rm -f $out/rules-template.html
               
               # Generate atomic.css dynamically using gen-css
@@ -156,7 +157,7 @@
               cp client/static/atomic.css $out/atomic.css
 
               # Export glossary JSON and build AST JSON
-              ${project.tools-hs.components.exes.keyword-mod}/bin/keyword-mod export-glossary --output $out/glossary.json
+              ${project.tools-hs.components.exes.keyword-mod}/bin/keyword-mod export-glossary --input ${./design/rules/keyword-glossary.md} --output $out/glossary.json
               pandoc -f markdown+wikilinks_title_after_pipe ${./design/rules/core-rules.md} -t json -o $out/rules.json
               pandoc -f markdown+wikilinks_title_after_pipe ${./design/rules/keyword-glossary.md} -t json -o $out/glossary-ast.json
               pandoc -f markdown+wikilinks_title_after_pipe ${./design/rules/colors-of-action.md} -t json -o $out/colors.json

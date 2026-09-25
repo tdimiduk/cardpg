@@ -5,6 +5,7 @@ import Test.Tasty.HUnit
 
 import PandocRenderTest qualified
 import PlanningTest qualified
+import RulesViewerTest qualified
 
 main :: IO ()
 main = defaultMain tests
@@ -16,4 +17,5 @@ tests =
     [ testCase "Sanity check" $ True @?= True
     , PlanningTest.tests
     , PandocRenderTest.tests
+    , RulesViewerTest.tests
     ]

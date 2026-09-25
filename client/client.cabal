@@ -1,11 +1,16 @@
-cabal-version: 3.4
-name:          client
-version:       0.1.0.0
-synopsis:      Reflex-DOM frontend for CardPG
-license:       MIT
-author:        Antigravity
-maintainer:    antigravity@example.com
-build-type:    Simple
+cabal-version:      3.4
+name:               client
+version:            0.1.0.0
+synopsis:           Reflex-DOM frontend for CardPG
+license:            MIT
+author:             Antigravity
+maintainer:         antigravity@example.com
+build-type:         Simple
+extra-source-files:
+  static/colors.json
+  static/glossary-ast.json
+  static/glossary.json
+  static/rules.json
 
 common project-config
   default-language:   GHC2021
@@ -38,6 +43,7 @@ library
     , data-default
     , dependent-map
     , dependent-sum
+    , file-embed
     , foreign-store
     , generic-lens
     , http-types
@@ -95,6 +101,8 @@ library
     Frontend.Render.Common
     Frontend.Render.Pandoc
     Frontend.Render.Rules
+    Frontend.Rules.Data
+    Frontend.Rules.Viewer
     Frontend.Style
     Frontend.Style.Common
     Frontend.Style.DSL
@@ -164,6 +172,7 @@ test-suite client-test
   other-modules:
     PandocRenderTest
     PlanningTest
+    RulesViewerTest
 
   build-depends:
     , base

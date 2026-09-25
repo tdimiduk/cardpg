@@ -20,6 +20,7 @@ module Frontend.Render.Pandoc
   , renderWikilink
   , renderStaticWikilink
   , renderInteractiveWikilink
+  , renderInteractiveWikilinkText
   , renderCardBlock
   , headerStyle
   , paraStyle
@@ -526,6 +527,12 @@ renderInteractiveWikilink env target inlines mEntry = do
         elS "span" (S.textXs <> S.text S.Gray 4 <> S.uppercase <> S.trackingWider) (text catName)
       forM_ mActionColor renderActionColorChip
       divS (S.fontLora <> S.text S.Gray 2 <> S.leadingRelaxed <> S.textSm) (text summaryTxt)
+
+-- | Interactive mode rendering helper for plain text display labels.
+renderInteractiveWikilinkText
+  :: (DomBuilder t m) => RenderEnv -> Text -> Text -> Maybe GlossaryEntry -> m ()
+renderInteractiveWikilinkText env target dispText =
+  renderInteractiveWikilink env target [Str dispText]
 
 -- | Render a list of Pandoc inlines.
 renderInlines :: (DomBuilder t m) => RenderEnv -> [Inline] -> m ()

@@ -5,7 +5,6 @@
 /client/static/colors.html
 /client/static/glossary.html
 /client/static/rules.html
-/client/static/*.json
 *.yaml.reformatted
 cardpg.code-workspace
 catalog.*

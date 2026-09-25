@@ -48,6 +48,7 @@ import Language.Javascript.JSaddle (eval, liftJSM, valToText)
 import Frontend.Game.Planning (StagingState)
 import Frontend.Game.Sidebar (ViewMode (..), sidebarWidget)
 import Frontend.Game.SidebarRight (getActiveDefenseTarget, sidebarRightWidget)
+import Frontend.Rules.Viewer (rulesViewerModalWithTab)
 
 import Frontend.Style.Common (Style, classNames, componentS, divS, elS, textGoldBright)
 import Frontend.UI.Button
@@ -284,7 +285,7 @@ uiWidget mStaging initialActorId triggerIdentityUpdate identityDyn = componentS 
       _ <- requestGame mapModeRequestEvt
       viewModeUserEvt <- divS appRoot $ do
         rec selectedActorId <- holdDyn initialActorId (leftmost [sidebarActiveChange, mapActiveChange])
-            (sidebarActiveChange, resumeDefenseEvt, viewModeUserEvt') <-
+            (sidebarActiveChange, resumeDefenseEvt, viewModeUserEvt', openRulesTabEvt) <-
               sidebarWidget selectedActorId currentViewModeDyn triggerIdentityUpdate identityDyn
             mapActiveChange <- mainContentWidget mStaging selectedActorId currentViewModeDyn identityDyn
 
@@ -302,6 +303,9 @@ uiWidget mStaging initialActorId triggerIdentityUpdate identityDyn = componentS 
 
         -- Render defense modal overlay and handle defense actions
         defenseModalWidget initialActorId effectiveSelectedActorIdDyn resumeDefenseEvt openDefenseEvt
+
+        -- Render in-app rules viewer modal overlay
+        rulesViewerModalWithTab (Just <$> openRulesTabEvt)
 
         return viewModeUserEvt'
   pure ()

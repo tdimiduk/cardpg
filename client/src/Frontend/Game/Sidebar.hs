@@ -21,6 +21,7 @@ import Frontend.Game.ActorDetails (actorDetailsWidget)
 import Frontend.Game.Class
 
 import Frontend.Icons (iconClose)
+import Frontend.Rules.Data (RulesTab (..))
 import Frontend.UI.Button
 
 -- | Sidebar container styles
@@ -98,7 +99,7 @@ sidebarWidget
   -> Dynamic t ViewMode
   -> (Maybe (Text, ClientRole) -> IO ())
   -> Dynamic t (Maybe (Text, ClientRole))
-  -> m (Event t (Maybe ActorId), Event t ActorId, Event t ViewMode)
+  -> m (Event t (Maybe ActorId), Event t ActorId, Event t ViewMode, Event t RulesTab)
 sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn = do
   let effectiveSelectedActorIdDyn =
         zipDynWith
@@ -174,7 +175,7 @@ sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn 
                         text ("Player (" <> actorName <> ")")
 
     -- Links row
-    divS
+    rulesRowClick <- divS
       ( S.px S.S6
           <> S.py S.S2
           <> S.borderB
@@ -185,21 +186,32 @@ sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn 
           <> S.fontBold
           <> S.trackingWider
           <> S.cls "fantasy-font"
+          <> S.itemsCenter
       )
       $ do
-        let linkStyle =
+        let btnStyle =
               S.text S.Gray 5
                 <> S.hover textGoldBright
-                <> S.css "transition-colors" "transition-property" "color"
-            linkAttrs href =
-              "href" =: href
-                <> "target" =: "_blank"
-                <> "class" =: classNames linkStyle
-        elAttr "a" (linkAttrs "rules.html") $ text "Rules"
+                <> S.cursorPointer
+                <> S.bgTransparent
+                <> S.p S.S0
+                <> S.fontBold
+                <> S.cls "fantasy-font"
+            btnAttrs tid =
+              "type" =: "button"
+                <> "class" =: classNames btnStyle
+                <> "data-testid" =: tid
+        (rulesEl, _) <- elAttr' "button" (btnAttrs "rules-btn") $ text "Rules"
         elS "span" (S.text S.Gray 8) $ text "|"
-        elAttr "a" (linkAttrs "glossary.html") $ text "Glossary"
+        (glossaryEl, _) <- elAttr' "button" (btnAttrs "glossary-btn") $ text "Glossary"
         elS "span" (S.text S.Gray 8) $ text "|"
-        elAttr "a" (linkAttrs "colors.html") $ text "Colors"
+        (colorsEl, _) <- elAttr' "button" (btnAttrs "colors-btn") $ text "Colors"
+        pure $
+          leftmost
+            [ TabCoreRules <$ domEvent Click rulesEl
+            , TabGlossary <$ domEvent Click glossaryEl
+            , TabColors <$ domEvent Click colorsEl
+            ]
 
     -- Dynamic Content: List or Details
     dyContent <- dyn $ ffor effectiveSelectedActorIdDyn $ \case
@@ -268,15 +280,36 @@ sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn 
             resumeDefense2 = switchDyn (fmap snd contentEvents2)
         return (selectionChange2, resumeDefense2)
 
-    -- Switch Profile button at the bottom
-    switchProfileClick <- divS (S.p S.S4 <> S.borderT <> S.border S.Gray 10 <> S.shrink0) $ do
-      button
-        def
-          { variant = VariantSecondary
-          , size = SizeSmall
-          , fullWidth = True
-          }
-        $ text "Switch Profile"
+    -- Footer with Rules & Reference and Switch Profile buttons
+    (rulesRefClick, switchProfileClick) <-
+      divS (S.p S.S4 <> S.borderT <> S.border S.Gray 10 <> S.shrink0 <> S.flexCol <> S.gap S.S2) $ do
+        refClick <-
+          button
+            def
+              { variant = VariantGhost
+              , size = SizeSmall
+              , fullWidth = True
+              , extraStyle =
+                  S.text S.Gray 4
+                    <> S.hover textGoldBright
+                    <> S.cls "fantasy-font"
+                    <> S.border1
+                    <> S.border S.Gray 10
+                    <> S.rounded
+              , attributes = "data-testid" =: "rules-reference-btn"
+              }
+            $ text "Rules & Reference"
+
+        profClick <-
+          button
+            def
+              { variant = VariantSecondary
+              , size = SizeSmall
+              , fullWidth = True
+              }
+            $ text "Switch Profile"
+
+        pure (refClick, profClick)
 
     prerender_ (pure ()) $ do
       performEvent_ $ ffor switchProfileClick $ \_ -> do
@@ -286,5 +319,6 @@ sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn 
     contentEvents <- holdDyn (never, never) dyContent
     let selectionChange = switchDyn (fmap fst contentEvents)
         resumeDefense = switchDyn (fmap snd contentEvents)
+        openRulesTabEvt = leftmost [rulesRowClick, TabCoreRules <$ rulesRefClick]
 
-    return (selectionChange, resumeDefense, ddChange)
+    return (selectionChange, resumeDefense, ddChange, openRulesTabEvt)
