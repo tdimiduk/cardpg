@@ -71,11 +71,10 @@ The envisioned table structure uses modular physical decks:
 
 ---
 
-## 3. Evaluated Exploration Procedures & Selected Baseline
+## 3. Evaluated Exploration Procedures & Candidate Baseline
 
-### Model A: The 6-Tick Dungeon Clock (The "Turn Wheel") — [SELECTED BASELINE]
+### Model A: The 6-Tick Dungeon Clock (The "Turn Wheel") — [ACTIVE PROPOSAL]
 
-- **Empirical Validation:** Tested successfully in [macro-gauntlet-expedition-trace.md](traces/macro-gauntlet-expedition-trace.md).
 - The GM maintains a small 6-tick tracker (d6 die or 6-card Clock Deck).
 - Every major exploratory activity (traversing/searching a room, resolving a General Action, picking a vault lock, or taking a Breather) ticks the clock by 1.
 - **At Tick 6:**
@@ -95,5 +94,4 @@ The envisioned table structure uses modular physical decks:
 
 - [ ] **1. Rulebook Section:** Formalize the 6-Tick Turn Wheel and exploration procedures in [gamemaster-guide.md](../rules/gamemaster-guide.md#21-running-adventuring-time).
 - [ ] **2. Card Anatomy Prototype:** Define standard card layouts and keywords for a physical **Location Card** and a **Clock/Encounter Card**.
-- [x] **3. Pacing Benchmark Walkthrough (COMPLETED):**
-  - Delivered via [macro-gauntlet-expedition-trace.md](traces/macro-gauntlet-expedition-trace.md) (Multi-scene gauntlet tracking 3 PCs through an overland march, chasm crossing, skirmish, Breather, and flooded vault).
+- [ ] **3. Pacing Benchmark Walkthrough:** Validate exploration pacing and clock mechanisms via verified gameplay traces.

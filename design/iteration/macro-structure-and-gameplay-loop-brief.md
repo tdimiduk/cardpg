@@ -51,18 +51,17 @@ graph TD
 
 ---
 
-## 2. Key Tensions & Settled Findings from Empirical Traces
+## 2. Key Tensions & Working Hypotheses
 
-### Tension 1: The Expedition Endurance Budget — [SETTLED]
+### Tension 1: The Expedition Endurance Budget — [ACTIVE HYPOTHESIS]
 
-- **Finding:** Validated in [macro-gauntlet-expedition-trace.md](traces/macro-gauntlet-expedition-trace.md) and [trace-climactic-boss-8-rounds.md](traces/trace-climactic-boss-8-rounds.md).
-- A standard 24-card deck sustains **40–55 cards of churn per adventuring day** (1 overland march, 1–2 obstacles, 1 skirmish, 1 Breather, and 1 climactic crisis).
-- **The Fatigue Baseline:** A hard day naturally pushes **every character through 1 to 2 Fatigue Cycles** (or Heavy Exertion Breathers):
+- **Design Target:** A standard 24-card deck is hypothesized to sustain **40–55 cards of churn per adventuring day** (1 overland march, 1–2 obstacles, 1 skirmish, 1 Breather, and 1 climactic crisis).
+- **The Fatigue Baseline:** A hard day is intended to push characters through **1 to 2 Fatigue Cycles** (or Heavy Exertion Breathers):
   - **Burden 0 (Light/Unarmored):** Ends the day with **2–4 Fatigue cards** (~10–15% deck dilution).
   - **Burden 2 (Heavy Armor):** Incurs $+ \text{Burden}$ on every cycle, ending with **5–8 Fatigue cards** (~25–30% deck dilution).
-- **Exploration Gating:** Heavy armor provides high tactical combat resilience (Pool Size 4), but organically limits expedition depth without an organized supply train.
+- **Exploration Gating:** Heavy armor provides strong tactical defense, but organically limits expedition depth without an organized supply train.
 
-### Tension 2: Recovery, Downtime, and Harm Healing — [SETTLED]
+### Tension 2: Recovery, Downtime, and Harm Healing — [PROPOSED TARGETS]
 
 - **Status Cards (In-Deck):**
   - _Fatigue Cards:_ Represent transient physical stamina. Cleared completely overnight in a **Safe Haven** (tavern, permanent camp, warm meal).
@@ -71,7 +70,7 @@ graph TD
   - _Tier 1 Conditions (`Bruised Shins`, `Mental Strain`):_ Clear with 1 night of restful sleep.
   - _Tier 2 Conditions (`Strained Shoulder`, `Severed Tendon`):_ Require 2–3 days of dedicated medical/bonesetter care in a Safe Haven.
 
-### Tension 3: The Campaign Fronts & World Clock Integration — [SETTLED]
+### Tension 3: The Campaign Fronts & World Clock Integration — [PROPOSED TARGETS]
 
 - **The Breather Economy:** Taking a 15-minute [The Breather](../rules/modules/the-breather.md) to reset decks advances the campaign **Front Clock by 1 tick**.
 - **Retreat Cost:** Retreating early from an expedition to recover advances the enemy Front Clock by **2 ticks**, creating meaningful strategic pressure.
@@ -84,10 +83,11 @@ graph TD
 
 ## 3. Scope and Next Actions
 
-With empirical models completed, the roadmap moves directly to formalizing rules:
+Next steps to formalize the macro framework:
 
 1. **Rulebook Framework:** Draft `design/rules/expeditions-and-downtime.md` codifying the macro loop, Safe Haven procedures, and recovery timelines.
 2. **GM Campaign Guide Expansion:** Formalize Front advancement pacing tables in [gamemaster-guide.md](../rules/gamemaster-guide.md) Part 3.
+3. **Trace Validation:** Construct mathematically verified gameplay traces to benchmark these targets.
 
 ---
 

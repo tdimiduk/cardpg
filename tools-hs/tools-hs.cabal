@@ -22,6 +22,11 @@ library
   hs-source-dirs:  src
   exposed-modules:
     AuditConsequences
+    Design.Audit
+    Design.Frontmatter
+    Design.Index
+    Design.TOC
+    Design.Types
     KeywordMod
 
   build-depends:
@@ -35,7 +40,9 @@ library
     , filepath
     , megaparsec
     , optparse-applicative
+    , process
     , text
+    , vector
     , yaml
 
 executable audit-consequences
@@ -54,6 +61,19 @@ executable keyword-mod
   ghc-options:    -threaded -rtsopts -with-rtsopts=-N
   build-depends:
     , base
+    , tools-hs
+
+executable audit-index
+  import:         project-config
+  hs-source-dirs: app/audit-index
+  main-is:        Main.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+    , base
+    , containers
+    , directory
+    , filepath
+    , optparse-applicative
     , tools-hs
 
 test-suite tools-hs-test

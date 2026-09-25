@@ -25,6 +25,10 @@ This directory contains various utility scripts and tools for development, datab
   ```bash
   cabal run tools-hs:exe:audit-consequences
   ```
+- **`audit-index`**: Audits and verifies design index consistency, epistemic frontmatter schema, metadata alignment, and README tables of contents.
+  ```bash
+  cabal run tools-hs:exe:audit-index [--strict] [--fix]
+  ```
 
 ### Design Utils (`design_utils/`)
 

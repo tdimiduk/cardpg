@@ -196,6 +196,11 @@ staticStyles =
     , S.underline
     , S.listDisc
     , S.listDecimal
+    , S.minHScreen
+    , S.maxW4Xl
+    , S.mxAuto
+    , S.bgStone900
+    , S.textStone100
     ]
 
 -- | Parameterized functions

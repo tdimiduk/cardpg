@@ -404,6 +404,8 @@ def extract_first_paragraph(file_path):
             if para:
                 break
             continue
+        if s.startswith("**Context Date:") or s.startswith("**Related Design Brief:"):
+            continue
         para.append(s)
 
     full_text = " ".join(para).strip()
@@ -643,7 +645,9 @@ def auto_index_unindexed_files(unindexed_files, design_root):
 def clean_desc(text, max_len=160):
     if not text:
         return ""
-    s = text.replace("\n", " ").strip()
+    # Strip markdown links e.g. [text](url) -> text
+    s = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    s = s.replace("\n", " ").strip()
     if len(s) > max_len:
         idx = s.find(". ", 40)
         if idx != -1 and idx < max_len:
@@ -789,7 +793,7 @@ def generate_root_toc(design_root):
         "### Domain Catalogs",
         make_markdown_table(["Domain", "Directory / Sub-Index", "Focus & Scope"], domains),
         "",
-        "*Last synced from `design/index.yaml` via `tools/audit_index.py`.*",
+        "_Last synced from `design/index.yaml` via `tools/audit_index.py`._",
     ]
     return "\n".join(blocks)
 
@@ -843,7 +847,7 @@ def generate_iteration_toc(design_root):
             make_markdown_table(["Document", "Summary"], macro_traces),
             "",
         ])
-    blocks.append("*Last synced from `iteration/index.yaml` via `tools/audit_index.py`.*")
+    blocks.append("_Last synced from `iteration/index.yaml` via `tools/audit_index.py`._")
     return "\n".join(blocks)
 
 def generate_research_toc(design_root):
@@ -890,7 +894,7 @@ def generate_research_toc(design_root):
         "### Game Design Theory (`theory/readings/`)",
         make_markdown_table(["Document", "Summary"], theory),
         "",
-        "*Last synced from `research/index.yaml` via `tools/audit_index.py`.*",
+        "_Last synced from `research/index.yaml` via `tools/audit_index.py`._",
     ]
     return "\n".join(blocks)
 
@@ -907,7 +911,7 @@ def generate_archive_toc(design_root):
         "### Playtest Spreadsheets & Materials",
         make_markdown_table(["Item", "Summary"], arch_items),
         "",
-        "*Last synced from `archive/index.yaml` via `tools/audit_index.py`.*",
+        "_Last synced from `archive/index.yaml` via `tools/audit_index.py`._",
     ]
     return "\n".join(blocks)
 
@@ -924,7 +928,8 @@ def normalize_markdown_block(text):
             if all(c == "" or re.match(r"^:?-+:?$", c) for c in cells):
                 lines.append("TABLE_SEP")
             else:
-                lines.append("ROW:" + "|".join(cells))
+                norm_cells = [c.replace(r"\*", "*").replace(r"\_", "_") for c in cells]
+                lines.append("ROW:" + "|".join(norm_cells))
         else:
             line = re.sub(r"^[\*_]Last synced(.*)[\*_]$", r"_Last synced\1_", line)
             lines.append(line)

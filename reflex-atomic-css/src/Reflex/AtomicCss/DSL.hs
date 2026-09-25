@@ -69,6 +69,8 @@ module Reflex.AtomicCss.DSL
   , hFull
   , wFit
   , hScreen
+  , minHScreen
+  , maxW4Xl
   , h2_5
   , minW
   , minH
@@ -93,6 +95,7 @@ module Reflex.AtomicCss.DSL
   , ml
   , mr
   , mx
+  , mxAuto
   , my
   , Size (..)
   , standardSizes
@@ -111,8 +114,10 @@ module Reflex.AtomicCss.DSL
   , ring
   , bgWhite
   , bgTransparent
+  , bgStone900
   , textBlack
   , textWhite
+  , textStone100
   , borderBlack
   , borderTransparent
   , canvas
@@ -422,6 +427,12 @@ wFit = css "w-fit" "width" "fit-content"
 hScreen :: Style
 hScreen = css "h-screen" "height" "100vh"
 
+minHScreen :: Style
+minHScreen = css "min-h-screen" "min-height" "100vh"
+
+maxW4Xl :: Style
+maxW4Xl = css "max-w-4xl" "max-width" "56rem"
+
 h2_5 :: Style
 h2_5 = h (Percent 40)
 
@@ -485,6 +496,9 @@ mx :: Size -> Style
 mx s = css' ("mx-" <> sizeName s) [("margin-left", v), ("margin-right", v)]
   where
     v = sizeValue s
+
+mxAuto :: Style
+mxAuto = css' "mx-auto" [("margin-left", "auto"), ("margin-right", "auto")]
 
 my :: Size -> Style
 my s = css' ("my-" <> sizeName s) [("margin-top", v), ("margin-bottom", v)]
@@ -593,11 +607,17 @@ bgWhite = css "bg-white" "background-color" "var(--gray-0)"
 bgTransparent :: Style
 bgTransparent = css "bg-transparent" "background-color" "transparent"
 
+bgStone900 :: Style
+bgStone900 = css "bg-stone-900" "background-color" "var(--color-stone-dark)"
+
 textBlack :: Style
 textBlack = css "text-black" "color" "var(--gray-12)"
 
 textWhite :: Style
 textWhite = css "text-white" "color" "var(--gray-0)"
+
+textStone100 :: Style
+textStone100 = css "text-stone-100" "color" "var(--color-silver-bright)"
 
 borderBlack :: Style
 borderBlack = css "border-black" "border-color" "var(--gray-12)"

@@ -10,14 +10,16 @@ import Control.Exception (SomeException, catch)
 import Control.Monad (forM, forM_, unless, when)
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
-import Data.Aeson (Result (..), Value (..), fromJSON, toJSON)
+import Data.Aeson (Result (..), Value (..), eitherDecodeFileStrict, fromJSON, toJSON)
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as BL
 import Data.Char (isAlphaNum)
 import Data.List qualified as List
 import Data.Map qualified as Map
 import Data.Pool (withResource)
+import Data.Text (Text)
 import Data.Text qualified as T
+import Data.Text.Encoding qualified as TE
 import Data.Time (getCurrentTime)
 import Data.Yaml qualified as Yaml
 import Database.Beam
@@ -32,6 +34,7 @@ import System.Directory
   , doesPathExist
   , getCurrentDirectory
   , listDirectory
+  , makeAbsolute
   , pathIsSymbolicLink
   , removePathForcibly
   )
@@ -86,16 +89,21 @@ import Server.Config (loadDbConfig)
 import Server.DB (CustomCardRecord, CustomCardT (..), cardpgDb, customCards, initDB)
 import Server.Types (StorageBackend (..))
 
+import Core.Glossary (mkGlossary)
+import Frontend.Render.Pandoc (RenderEnv (..), RenderMode (..), renderPandoc)
 import Frontend.Style.Common
+import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 import Server.Game (GameState (..))
 import Server.Scenario (loadSavedGame, loadScenario)
+import Text.Pandoc.Definition (Pandoc)
 
 -- | CLI Options
 data Mode
   = Catalog {noSnapshot :: Bool}
   | Deck {deckPath :: FilePath, noSnapshot :: Bool}
   | Game {scenarioPath :: FilePath, noSnapshot :: Bool}
+  | Rules {noSnapshot :: Bool, outputDirOverride :: Maybe FilePath}
   | SyncExport
   | SyncImport
 
@@ -145,6 +153,21 @@ optionsParser =
                 (OA.progDesc "Generate game snapshot")
             )
           <> OA.command
+            "rules"
+            ( OA.info
+                ( Rules
+                    <$> OA.switch (OA.long "no-snapshot" <> OA.help "Skip snapshot generation")
+                    <*> OA.optional
+                      ( OA.strOption
+                          ( OA.long "output-dir"
+                              <> OA.metavar "DIR"
+                              <> OA.help "Output directory for generated files"
+                          )
+                      )
+                )
+                (OA.progDesc "Generate static rules documentation HTML and snapshots via Reflex DOM")
+            )
+          <> OA.command
             "sync-export"
             ( OA.info
                 (pure SyncExport)
@@ -161,13 +184,27 @@ optionsParser =
 main :: IO ()
 main = do
   opts <- OA.execParser optsInfo
-  setupOutputDir opts.outputDir
   case opts.mode of
-    Catalog ns -> generateCatalog opts ns
-    Deck path ns -> generateDeck opts path ns
-    Game path ns -> generateGame opts path ns
-    SyncExport -> runSyncExport opts
-    SyncImport -> runSyncImport opts
+    Catalog ns -> do
+      setupOutputDir opts.outputDir
+      generateCatalog opts ns
+    Deck path ns -> do
+      setupOutputDir opts.outputDir
+      generateDeck opts path ns
+    Game path ns -> do
+      setupOutputDir opts.outputDir
+      generateGame opts path ns
+    Rules ns mOutDir -> do
+      let outDir = fromMaybe opts.outputDir mOutDir
+          opts' = opts{outputDir = outDir}
+      setupOutputDir outDir
+      generateRules opts' ns
+    SyncExport -> do
+      setupOutputDir opts.outputDir
+      runSyncExport opts
+    SyncImport -> do
+      setupOutputDir opts.outputDir
+      runSyncImport opts
   where
     optsInfo =
       OA.info
@@ -182,16 +219,26 @@ setupOutputDir :: FilePath -> IO ()
 setupOutputDir outDir = do
   createDirectoryIfMissing True outDir
 
-  let linkFile name = do
-        let target = ".." </> "client" </> "static" </> name
-            linkPath = outDir </> name
-        isSym <- pathIsSymbolicLink linkPath `catch` (\(_ :: SomeException) -> return False)
-        exists <- doesPathExist linkPath
-        when (isSym || exists) $ removePathForcibly linkPath
-        createFileLink target linkPath
+  currentDir <- getCurrentDirectory
+  let staticDir = currentDir </> "client" </> "static"
+  absOutDir <- makeAbsolute outDir
+  absStaticDir <- makeAbsolute staticDir
 
-  linkFile "base.css"
-  linkFile "atomic.css"
+  -- Only link base.css/atomic.css if outDir is not client/static itself
+  unless (absOutDir == absStaticDir) $ do
+    let linkFile name = do
+          let target = staticDir </> name
+              linkPath = outDir </> name
+          hasTarget <- doesPathExist target
+          when hasTarget $ do
+            isSym <- pathIsSymbolicLink linkPath `catch` (\(_ :: SomeException) -> return False)
+            exists <- doesPathExist linkPath
+            unless (exists && not isSym) $ do
+              when isSym $ removePathForcibly linkPath
+              createFileLink target linkPath `catch` (\(_ :: SomeException) -> return ())
+
+    linkFile "base.css"
+    linkFile "atomic.css"
 
 -- | Snapshot Helpers
 takeScreenshot :: FilePath -> FilePath -> Int -> Int -> IO ()
@@ -544,6 +591,135 @@ deckWidget actor = do
     mapM_ (renderNatureCardWith printSettings) actor.nature
     mapM_ (renderItemCardWith printSettings) actor.items
     mapM_ (renderCoreCardWith printSettings) actor.deck
+
+data RuleDoc = RuleDoc
+  { docTitle :: Text
+  , astJsonPath :: FilePath
+  , outHtmlName :: FilePath
+  }
+
+ruleDocs :: [RuleDoc]
+ruleDocs =
+  [ RuleDoc "Core Rules" "rules.json" "rules.html"
+  , RuleDoc "Keyword Glossary" "glossary-ast.json" "glossary.html"
+  , RuleDoc "Colors of Action" "colors.json" "colors.html"
+  ]
+
+generateRules :: Options -> Bool -> IO ()
+generateRules opts skipSnapshot = do
+  unless opts.quiet $ putStrLn "Generating static rules documentation..."
+
+  -- 1. Load Glossary
+  let glossaryCandidates =
+        [ opts.outputDir </> "glossary.json"
+        , "client" </> "static" </> "glossary.json"
+        , "export" </> "glossary.json"
+        ]
+  mGlossaryPath <- findFirstFile glossaryCandidates
+  loadedGlossary <- case mGlossaryPath of
+    Nothing -> do
+      putStrLn "Warning: No glossary.json found in candidate paths; using empty glossary."
+      pure (mkGlossary mempty)
+    Just path -> do
+      res <- eitherDecodeFileStrict path
+      case res of
+        Left err -> do
+          putStrLn $ "Warning: Failed to decode glossary from " <> path <> ": " <> err
+          pure (mkGlossary mempty)
+        Right g -> do
+          unless opts.quiet $ putStrLn $ "Loaded glossary from " <> path
+          pure g
+
+  -- 2. Render each document
+  let env = RenderEnv{glossary = loadedGlossary, renderMode = RenderStatic}
+  forM_ ruleDocs $ \doc -> do
+    let astCandidates =
+          [ opts.outputDir </> doc.astJsonPath
+          , "client" </> "static" </> doc.astJsonPath
+          , doc.astJsonPath
+          ]
+    mAstPath <- findFirstFile astCandidates
+    case mAstPath of
+      Nothing -> do
+        putStrLn $
+          "Error: AST JSON not found for " <> T.unpack doc.docTitle <> " (" <> doc.astJsonPath <> ")"
+      Just astPath -> do
+        mAst <- eitherDecodeFileStrict astPath
+        case mAst of
+          Left err -> do
+            putStrLn $ "Error decoding AST JSON from " <> astPath <> ": " <> err
+          Right (ast :: Pandoc) -> do
+            unless opts.quiet $ putStrLn $ "Rendering " <> T.unpack doc.docTitle <> "..."
+            (_, bodyBytes) <- renderStatic (renderPandoc env ast)
+            let outPath = opts.outputDir </> doc.outHtmlName
+                pageHtml = renderDocPage doc.docTitle bodyBytes
+            BL.writeFile outPath pageHtml
+            unless opts.quiet $ putStrLn $ "Wrote " <> outPath
+
+            unless skipSnapshot $ do
+              unless opts.quiet $ putStrLn $ "Taking screenshot for " <> T.unpack doc.docTitle <> "..."
+              currentDir <- getCurrentDirectory
+              let absHtml = currentDir </> outPath
+                  outPng = opts.outputDir </> takeBaseName doc.outHtmlName <> ".png"
+              takeScreenshot absHtml outPng 1200 1600
+              unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
+
+findFirstFile :: [FilePath] -> IO (Maybe FilePath)
+findFirstFile [] = pure Nothing
+findFirstFile (p : ps) = do
+  exists <- doesPathExist p
+  if exists then pure (Just p) else findFirstFile ps
+
+renderDocPage :: Text -> BS.ByteString -> BL.ByteString
+renderDocPage docTitle renderedBody =
+  BL.fromStrict (TE.encodeUtf8 prefix)
+    <> BL.fromStrict renderedBody
+    <> BL.fromStrict (TE.encodeUtf8 suffix)
+  where
+    bodyClass =
+      classNames
+        (S.bgStone900 <> S.textStone100 <> S.fontLora <> S.minHScreen <> S.p S.S4 <> S.overflowYAuto)
+    navClass =
+      classNames
+        ( S.maxW4Xl
+            <> S.mxAuto
+            <> S.mb S.S8
+            <> S.pb S.S4
+            <> S.borderB
+            <> S.borderGoldMuted
+            <> S.flex
+            <> S.gap S.S4
+            <> S.textSm
+            <> S.fontCinzel
+        )
+    navLinkClass = classNames (S.textGoldBright <> S.hover S.underline)
+    mainClass = classNames (S.maxW4Xl <> S.mxAuto)
+    prefix =
+      T.unlines
+        [ "<!DOCTYPE html>"
+        , "<html lang=\"en\">"
+        , "<head>"
+        , "  <meta charset=\"utf-8\">"
+        , "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+        , "  <title>" <> docTitle <> " - CardPG</title>"
+        , "  <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lora:ital,wght@0,400;0,700;1,400&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&display=swap\">"
+        , "  <link rel=\"stylesheet\" href=\"base.css\">"
+        , "  <link rel=\"stylesheet\" href=\"atomic.css\">"
+        , "</head>"
+        , "<body class=\"" <> bodyClass <> "\">"
+        , "  <nav class=\"" <> navClass <> "\">"
+        , "    <a href=\"rules.html\" class=\"" <> navLinkClass <> "\">Core Rules</a>"
+        , "    <a href=\"glossary.html\" class=\"" <> navLinkClass <> "\">Keyword Glossary</a>"
+        , "    <a href=\"colors.html\" class=\"" <> navLinkClass <> "\">Colors of Action</a>"
+        , "  </nav>"
+        , "  <main class=\"" <> mainClass <> "\">"
+        ]
+    suffix =
+      T.unlines
+        [ "  </main>"
+        , "</body>"
+        , "</html>"
+        ]
 
 wrapHtml :: BS.ByteString -> BS.ByteString -> BL.ByteString
 wrapHtml headHtml body =

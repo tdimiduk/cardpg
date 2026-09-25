@@ -5,6 +5,11 @@ module Main (main) where
 
 import Core.Glossary
 import Data.Text (Text)
+import Data.Text qualified as T
+import Design.Frontmatter
+import Design.Index
+import Design.TOC
+import Design.Types
 import KeywordMod hiding (main)
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -20,6 +25,10 @@ tests =
     , test_chunking
     , test_normalization
     , test_renaming
+    , test_frontmatter
+    , test_scaffolding
+    , test_indexOps
+    , test_tocNormalization
     ]
 
 sampleMarkdown :: Text
@@ -126,4 +135,107 @@ test_renaming =
             (newContent, count) = renameContent "OldKw" "NewKw" content
         assertEqual "Changes" 1 count
         assertEqual "Result" "Use [[NewKw]] and [[NewKw]] and [[NewKw]]." newContent
+    ]
+
+test_frontmatter :: TestTree
+test_frontmatter =
+  testGroup
+    "Frontmatter Parsing & Schema"
+    [ testCase "Extracts valid frontmatter and body" $ do
+        let sample =
+              "---\ntitle: Test Doc\ndoc_type: rules\ntrack: ludology\norigin: Human authored\nepistemic_status:\n  confidence: high\n  vetted_by_human: true\n---\n\n# Body heading\nBody text."
+        case extractFrontmatterText sample of
+          Left err -> assertFailure err
+          Right Nothing -> assertFailure "Expected frontmatter"
+          Right (Just (yamlText, bodyText)) -> do
+            assertBool "Body contains heading" ("# Body heading" `T.isInfixOf` bodyText)
+            case parseFrontmatter yamlText of
+              Left err -> assertFailure err
+              Right (fm, errs) -> do
+                assertEqual "Schema errors" [] errs
+                assertEqual "Title" "Test Doc" fm.title
+                assertEqual "DocType" "rules" fm.docType
+                assertEqual "Track" (Just Ludology) fm.track
+                assertEqual "Origin" (Just "Human authored") fm.origin
+                case fm.epistemicStatus of
+                  Nothing -> assertFailure "Expected epistemicStatus"
+                  Just es -> do
+                    assertEqual "Confidence" High es.confidence
+                    assertEqual "Vetted" (VettedBool True) es.vettedByHuman
+    , testCase "Catches obsolete 'status' in epistemic_status" $ do
+        let sampleYaml =
+              "title: Obsolete Test\ndoc_type: rules\ntrack: ludology\norigin: test\nepistemic_status:\n  status: active\n  confidence: high\n  vetted_by_human: true\n"
+        case parseFrontmatter sampleYaml of
+          Left err -> assertFailure err
+          Right (_, errs) -> do
+            assertBool "Contains obsolete status error" (any ("Obsolete field 'status'" `isInfixOfStr`) errs)
+    , testCase "Catches invalid confidence tier" $ do
+        let sampleYaml =
+              "title: Bad Conf\ndoc_type: rules\ntrack: ludology\norigin: test\nepistemic_status:\n  confidence: ultra-high\n  vetted_by_human: true\n"
+        case parseFrontmatter sampleYaml of
+          Left err -> assertFailure err
+          Right (_, errs) -> do
+            assertBool "Contains invalid confidence error" (any ("Invalid 'confidence'" `isInfixOfStr`) errs)
+    ]
+  where
+    isInfixOfStr needle haystack = needle `T.isInfixOf` T.pack haystack
+
+test_scaffolding :: TestTree
+test_scaffolding =
+  testGroup
+    "Frontmatter Scaffolding"
+    [ testCase "Scaffolds synthesis doc under research/synthesis" $ do
+        let content = "# Dynamic Injury Mechanics\n\nFirst paragraph of text."
+            (fm, newContent) = scaffoldFrontmatter "research/synthesis/injury-mechanics.md" content
+        assertEqual "Title from heading" "Dynamic Injury Mechanics" fm.title
+        assertEqual "DocType" "synthesis" fm.docType
+        assertEqual "Track" (Just Verisimilitude) fm.track
+        assertBool "Contains --- fence" ("---\n" `T.isPrefixOf` newContent)
+        assertBool "Contains body" ("First paragraph" `T.isInfixOf` newContent)
+    ]
+
+test_indexOps :: TestTree
+test_indexOps =
+  testGroup
+    "Index Operations"
+    [ testCase "Extracts leading comment header" $ do
+        let yamlContent = "# Header line 1\n# Header line 2\n\nroot_key:\n  child: value\n"
+            (header, rest) = extractHeaderComments yamlContent
+        assertEqual "Header comments" "# Header line 1\n# Header line 2\n\n" header
+        assertEqual "Rest" "root_key:\n  child: value\n" rest
+    , testCase "Resolves index target based on path" $ do
+        assertEqual
+          "synthesis target"
+          ("research/index.yaml", ["design_process_and_research", "research_synthesis"])
+          (resolveIndexTarget "research/synthesis/foo.md" "synthesis")
+        assertEqual
+          "readings target"
+          ("research/index.yaml", ["design_process_and_research", "design_theory_and_readings"])
+          (resolveIndexTarget "research/theory/readings/bar.md" "literature-note")
+        assertEqual
+          "iteration target"
+          ("iteration/index.yaml", ["active_design_exploration", "ideation_and_sketches"])
+          (resolveIndexTarget "iteration/sketch.md" "iteration")
+        assertEqual
+          "module target"
+          ("index.yaml", ["game_system_and_rules", "modules"])
+          (resolveIndexTarget "rules/modules/mod.md" "module")
+    ]
+
+test_tocNormalization :: TestTree
+test_tocNormalization =
+  testGroup
+    "TOC Normalization"
+    [ testCase "Normalizes table separators and synced footers" $ do
+        let block1 =
+              "<!-- BEGIN AUTO-TOC -->\n| Col1 | Col2 |\n| :--- | :--- |\n| A | B |\n\n_Last synced from `design/index.yaml` via `tools/audit_index.py`._\n<!-- END AUTO-TOC -->"
+            block2 =
+              "<!-- BEGIN AUTO-TOC -->\n| Col1 | Col2 |\n| :--- | :--- |\n| A | B |\n\n*Last synced from `design/index.yaml` via `audit-index`.*\n<!-- END AUTO-TOC -->"
+        assertEqual "Normalized equality" (normalizeMarkdownBlock block1) (normalizeMarkdownBlock block2)
+    , testCase "Normalizes escaped markdown asterisks and underscores in cells" $ do
+        let block1 =
+              "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | \\*\\*Bold\\*\\* and \\_under\\_ |\n\n_Last synced from `design/index.yaml` via `tools/audit_index.py`._\n<!-- END AUTO-TOC -->"
+            block2 =
+              "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | **Bold** and _under_ |\n\n_Last synced from `design/index.yaml` via `tools/audit_index.py`._\n<!-- END AUTO-TOC -->"
+        assertEqual "Normalized equality" (normalizeMarkdownBlock block1) (normalizeMarkdownBlock block2)
     ]

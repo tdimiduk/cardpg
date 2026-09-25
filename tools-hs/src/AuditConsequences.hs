@@ -19,6 +19,7 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Text.IO qualified as Text
 import Data.Yaml (ParseException, decodeFileEither)
+import Design.Types (IndexItem (..))
 import System.Directory (doesFileExist)
 import System.Exit (exitFailure)
 import System.FilePath (takeFileName, (</>))
@@ -134,12 +135,9 @@ extractConsequencePaths = parseEither parseIndex
     parseIndex = withObject "root" $ \obj -> do
       dp <- obj .: "design_process_and_research"
       rs <- dp .: "research_synthesis"
-      paths <- mapM parseItem rs
-      return $ filter isConsequencesFile paths
-
-    parseItem = withObject "item" $ \item -> do
-      pathText <- item .: "path"
-      return $ Text.unpack pathText
+      (items :: [IndexItem]) <- mapM parseJSON rs
+      let paths = [p | item <- items, Just p <- [item.path], isConsequencesFile p]
+      return paths
 
     isConsequencesFile path =
       let filename = takeFileName path

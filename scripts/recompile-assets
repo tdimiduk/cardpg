@@ -10,27 +10,22 @@ fi
 # Get workspace root directory
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# Compile static markdown rules to static HTML
-echo "Compiling markdown rules via Pandoc..."
+# 1. Export keyword glossary JSON
+echo "Exporting keyword glossary JSON..."
+cabal run tools-hs:exe:keyword-mod -- export-glossary --output "$ROOT_DIR/client/static/glossary.json"
+cp "$ROOT_DIR/client/static/glossary.json" "$ROOT_DIR/export/glossary.json"
+
+# 2. Compile Markdown to Pandoc AST JSON with native wikilinks flag
+echo "Compiling markdown rules to Pandoc AST JSON..."
 pandoc "$ROOT_DIR/design/rules/core-rules.md" \
-  -f markdown+wikilinks_title_after_pipe \
-  -o "$ROOT_DIR/client/static/rules.html" \
-  --standalone \
-  --template="$ROOT_DIR/client/static/rules-template.html" \
-  --metadata title="Core Rules"
-
+  -f markdown+wikilinks_title_after_pipe -t json -o "$ROOT_DIR/client/static/rules.json"
 pandoc "$ROOT_DIR/design/rules/keyword-glossary.md" \
-  -f markdown+wikilinks_title_after_pipe \
-  -o "$ROOT_DIR/client/static/glossary.html" \
-  --standalone \
-  --template="$ROOT_DIR/client/static/rules-template.html" \
-  --metadata title="Keyword Glossary"
-
+  -f markdown+wikilinks_title_after_pipe -t json -o "$ROOT_DIR/client/static/glossary-ast.json"
 pandoc "$ROOT_DIR/design/rules/colors-of-action.md" \
-  -f markdown+wikilinks_title_after_pipe \
-  -o "$ROOT_DIR/client/static/colors.html" \
-  --standalone \
-  --template="$ROOT_DIR/client/static/rules-template.html" \
-  --metadata title="Colors of Action"
+  -f markdown+wikilinks_title_after_pipe -t json -o "$ROOT_DIR/client/static/colors.json"
+
+# 3. Generate static HTML via cardpg-static
+echo "Generating Reflex-native static rules HTML..."
+cabal run client:exe:cardpg-static -- rules --output-dir "$ROOT_DIR/client/static" --no-snapshot
 
 echo "Asset recompilation complete."

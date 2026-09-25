@@ -1,9 +1,11 @@
 /scratch
+/self_correction_tool/
 /data/cards/raw
 /client/static/atomic.css
 /client/static/colors.html
 /client/static/glossary.html
 /client/static/rules.html
+/client/static/*.json
 *.yaml.reformatted
 cardpg.code-workspace
 catalog.*
@@ -82,3 +84,5 @@ client-dist
 # Playwright E2E
 tests/e2e/playwright-report/
 tests/e2e/test-results/
+/test-results/
+/playwright-report/

@@ -155,11 +155,14 @@
               ${project.reflex-atomic-css.components.exes.gen-css}/bin/gen-css
               cp client/static/atomic.css $out/atomic.css
 
-              # Compile static markdown rules to static HTML
-              echo "Compiling markdown rules via Pandoc..."
-              pandoc ${./design/rules/core-rules.md} -o $out/rules.html --standalone --template=${./client/static/rules-template.html} --metadata title="Core Rules"
-              pandoc ${./design/rules/keyword-glossary.md} -o $out/glossary.html --standalone --template=${./client/static/rules-template.html} --metadata title="Keyword Glossary"
-              pandoc ${./design/rules/colors-of-action.md} -o $out/colors.html --standalone --template=${./client/static/rules-template.html} --metadata title="Colors of Action"
+              # Export glossary JSON and build AST JSON
+              ${project.tools-hs.components.exes.keyword-mod}/bin/keyword-mod export-glossary --output $out/glossary.json
+              pandoc -f markdown+wikilinks_title_after_pipe ${./design/rules/core-rules.md} -t json -o $out/rules.json
+              pandoc -f markdown+wikilinks_title_after_pipe ${./design/rules/keyword-glossary.md} -t json -o $out/glossary-ast.json
+              pandoc -f markdown+wikilinks_title_after_pipe ${./design/rules/colors-of-action.md} -t json -o $out/colors.json
+
+              # Run cardpg-static rules to generate static documentation HTML
+              ${project.client.components.exes.cardpg-static}/bin/cardpg-static rules --output-dir $out --no-snapshot
             '';
 
 
@@ -305,9 +308,20 @@
 
               # Warn about GC rooting for GHCJS compiler
               GC_ROOT="/nix/var/nix/gcroots/per-user/$USER/cardpg-ghcjs"
+              EXPECTED_PATH="${builtins.unsafeDiscardStringContext self'.packages.js-ghc.outPath}"
+              EXPECTED_NAME="${self'.packages.js-ghc.name}"
+
               if [ ! -L "$GC_ROOT" ]; then
                 echo ""
                 echo "⚠️  GHCJS cross-compiler is NOT GC-protected!"
+                echo "   GC root does not exist."
+                echo "   Run: root-ghcjs"
+                echo ""
+              elif [ "$(readlink -f "$GC_ROOT")" != "$EXPECTED_PATH" ]; then
+                echo ""
+                echo "⚠️  GHCJS cross-compiler GC root is OUTDATED!"
+                echo "   Current root: $(readlink -f "$GC_ROOT")"
+                echo "   Expected:     $EXPECTED_PATH ($EXPECTED_NAME)"
                 echo "   Run: root-ghcjs"
                 echo ""
               fi
