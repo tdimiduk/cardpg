@@ -199,7 +199,7 @@ generateRootToc designRoot = do
             , "### Domain Catalogs"
             , makeMarkdownTable ["Domain", "Directory / Sub-Index", "Focus & Scope"] domainRows
             , ""
-            , "_Last synced from `design/index.yaml` via `tools/audit_index.py`._"
+            , "_Last synced from `design/index.yaml` via `audit-index`._"
             ]
       pure $ T.intercalate "\n" blocks
     _ -> pure "Invalid root index.yaml format"
@@ -265,7 +265,7 @@ generateIterationToc designRoot = do
                        , ""
                        ]
                  )
-              ++ ["_Last synced from `iteration/index.yaml` via `tools/audit_index.py`._"]
+              ++ ["_Last synced from `iteration/index.yaml` via `audit-index`._"]
       pure $ T.intercalate "\n" blocks
     _ -> pure "Invalid iteration/index.yaml format"
   where
@@ -330,7 +330,7 @@ generateResearchToc designRoot = do
             , "### Game Design Theory (`theory/readings/`)"
             , makeMarkdownTable ["Document", "Summary"] theoryRows
             , ""
-            , "_Last synced from `research/index.yaml` via `tools/audit_index.py`._"
+            , "_Last synced from `research/index.yaml` via `audit-index`._"
             ]
       pure $ T.intercalate "\n" blocks
     _ -> pure "Invalid research/index.yaml format"
@@ -377,7 +377,7 @@ generateArchiveToc designRoot = do
             , "### Playtest Spreadsheets & Materials"
             , makeMarkdownTable ["Item", "Summary"] itemsRows
             , ""
-            , "_Last synced from `archive/index.yaml` via `tools/audit_index.py`._"
+            , "_Last synced from `archive/index.yaml` via `audit-index`._"
             ]
       pure $ T.intercalate "\n" blocks
     _ -> pure "Invalid archive/index.yaml format"
@@ -455,7 +455,7 @@ updateOrVerifyReadmeToc readmeAbsPath expectedTocBody fix = do
                       let currentBlock = beginTag <> innerBlock <> endTag
                           normCurrent = normalizeMarkdownBlock currentBlock
                           normExpected = normalizeMarkdownBlock expectedBlock
-                      if normCurrent == normExpected
+                      if currentBlock == expectedBlock
                         then pure (Right (), False)
                         else
                           if fix
@@ -464,4 +464,7 @@ updateOrVerifyReadmeToc readmeAbsPath expectedTocBody fix = do
                                   newContent = before <> expectedBlock <> remainder
                               TIO.writeFile readmeAbsPath newContent
                               pure (Right (), True)
-                            else pure (Left "Table of contents is out of date", False)
+                            else
+                              if normCurrent == normExpected
+                                then pure (Right (), False)
+                                else pure (Left "Table of contents is out of date", False)

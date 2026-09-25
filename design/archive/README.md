@@ -17,6 +17,6 @@ These documents are preserved for design history, examples, and contextual refer
 | [Kid’s Campaign Characters](https://docs.google.com/spreadsheets/u/0/d/1kN1ZZoWVXjpMAbjw0x33D6DWrHIYvVjaYM8qC-ViqYI/edit) | Character decks from early playtest campaigns. Each sheet has two characters, the top one is older. |
 | [Kids Events](https://docs.google.com/spreadsheets/u/0/d/1XH0j1CNqiYYSc4hoSCuY-9dznPsv3ZiE2cg4UrSk2Q8/edit)               | Location, Travel and event cards from an early playtest campaign.                                   |
 
-_Last synced from `archive/index.yaml` via `tools/audit_index.py`._
+_Last synced from `archive/index.yaml` via `audit-index`._
 
 <!-- END AUTO-TOC -->

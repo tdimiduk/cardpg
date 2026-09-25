@@ -234,8 +234,8 @@ test_tocNormalization =
         assertEqual "Normalized equality" (normalizeMarkdownBlock block1) (normalizeMarkdownBlock block2)
     , testCase "Normalizes escaped markdown asterisks and underscores in cells" $ do
         let block1 =
-              "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | \\*\\*Bold\\*\\* and \\_under\\_ |\n\n_Last synced from `design/index.yaml` via `tools/audit_index.py`._\n<!-- END AUTO-TOC -->"
+              "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | \\*\\*Bold\\*\\* and \\_under\\_ |\n\n_Last synced from `design/index.yaml` via `audit-index`._\n<!-- END AUTO-TOC -->"
             block2 =
-              "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | **Bold** and _under_ |\n\n_Last synced from `design/index.yaml` via `tools/audit_index.py`._\n<!-- END AUTO-TOC -->"
+              "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | **Bold** and _under_ |\n\n_Last synced from `design/index.yaml` via `audit-index`._\n<!-- END AUTO-TOC -->"
         assertEqual "Normalized equality" (normalizeMarkdownBlock block1) (normalizeMarkdownBlock block2)
     ]

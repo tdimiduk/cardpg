@@ -62,6 +62,6 @@ Your interaction with this repository is governed by two key documents and a cor
 | **Research**  | [research/](research/README.md) ([Index](research/index.yaml))    | Sub-index mapping empirical research reports, verisimilitude sources, living research syntheses, and game design theory. |
 | **Archive**   | [archive/](archive/README.md) ([Index](archive/index.yaml))       | Sub-index preserving archived playtest content, legacy spreadsheets, and superseded research.                            |
 
-_Last synced from `design/index.yaml` via `tools/audit_index.py`._
+_Last synced from `design/index.yaml` via `audit-index`._
 
 <!-- END AUTO-TOC -->

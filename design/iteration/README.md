@@ -56,6 +56,6 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 | [Design Brief: Exploration Procedures, Dungeon Clocks, and Location Decks](exploration-decks-and-dungeon-clocks-brief.md) | Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel, Location Decks, and Effort Cycle pacing.                              |
 | [Gameplay Traces & Empirical Benchmarks](traces/README.md)                                                                | Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing.          |
 
-_Last synced from `iteration/index.yaml` via `tools/audit_index.py`._
+_Last synced from `iteration/index.yaml` via `audit-index`._
 
 <!-- END AUTO-TOC -->

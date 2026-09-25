@@ -125,6 +125,6 @@ related_files:
 | [Literature Note: How OSR Teaches Us That Exploration Is Logistics](theory/readings/exploration-is-logistics.md) | Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing.                    |
 | [Literature Note: Calibrating Your Expectations](theory/readings/calibrating-your-expectations.md)               | Analysis of Justin Alexander's Casual Realism, mortal power thresholds, and their application to CardPG's grounded heroism. |
 
-_Last synced from `research/index.yaml` via `tools/audit_index.py`._
+_Last synced from `research/index.yaml` via `audit-index`._
 
 <!-- END AUTO-TOC -->
