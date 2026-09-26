@@ -9,7 +9,6 @@ build-type:         Simple
 extra-source-files:
   static/colors.json
   static/glossary-ast.json
-  static/glossary.json
   static/rules.json
 
 common project-config

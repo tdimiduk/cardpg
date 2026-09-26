@@ -109,6 +109,16 @@ test_glossary =
                   "Finds alias 'Action Stacks'"
                   (Just "action-stack")
                   ((\e -> e.slug) <$> lookupGlossary "Action Stacks" g)
+    , testCase "Canonical compiled glossary is populated" $ do
+        assertBool "Has at least 20 entries" (length (allEntries glossary) >= 20)
+        assertEqual
+          "Finds 'Crisis Time'"
+          (Just "crisis-time")
+          ((\e -> e.slug) <$> lookupGlossary "Crisis Time" glossary)
+        assertEqual
+          "Finds alias 'Action Stacks'"
+          (Just "action-stack")
+          ((\e -> e.slug) <$> lookupGlossary "Action Stacks" glossary)
     , testCase "RichText parses and roundtrips [[Wikilink]] and [[Target|Label]]" $ do
         let input1 = "Use [[Action]] to strike."
         case parseText input1 of

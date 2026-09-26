@@ -15,7 +15,7 @@ module Frontend.Render.Rules
 
 import Reflex.Dom.Core hiding (Space)
 
-import Core.Glossary (lookupGlossary)
+import Core.Glossary (glossary, lookupGlossary)
 import Core.Language (TextStyle (..))
 import Core.Layout hiding (renderLayoutItem)
 import Core.NonEmptyText (getRawText)
@@ -30,7 +30,6 @@ import Frontend.Render.Pandoc
   , RenderMode (..)
   , renderInteractiveWikilinkText
   )
-import Frontend.Rules.Data (embeddedGlossary)
 
 --------------------------------------------------------------------------------
 -- Core Rendering Primitives
@@ -62,9 +61,11 @@ renderInline Break = el "br" $ pure ()
 renderInline (Wikilink target mLabel) =
   let targetTxt = getRawText target
       displayTxt = maybe targetTxt getRawText mLabel
-      mEntry = lookupGlossary targetTxt embeddedGlossary
-      env = RenderEnv{glossary = embeddedGlossary, renderMode = RenderInteractive}
+      mEntry = lookupGlossary targetTxt glossary
+      env = RenderEnv{glossary = glossary, renderMode = RenderInteractive}
    in renderInteractiveWikilinkText env targetTxt displayTxt mEntry
+renderInline (MarkdownLink target label) =
+  elAttr "a" ("href" =: getRawText target) $ text (getRawText label)
 
 -- | Render a RichText as a sequence of Inlines
 renderRichText :: (DomBuilder t m) => RichText -> m ()

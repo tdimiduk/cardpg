@@ -50,6 +50,8 @@ library
     Core.Card
     Core.DSL
     Core.Glossary
+    Core.Glossary.Generated
+    Core.Glossary.Types
     Core.Hardcoded
     Core.Json
     Core.Language

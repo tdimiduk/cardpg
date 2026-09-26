@@ -90,6 +90,7 @@ instance Arbitrary Inline where
       , DifficultyValue <$> arbitrary
       , pure Break
       , Wikilink <$> arbitrary <*> arbitrary
+      , MarkdownLink <$> arbitrary <*> arbitrary
       ]
 
 instance Arbitrary RichText where

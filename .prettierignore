@@ -1,2 +1,9 @@
 # Prettier ignore
 design/**/index.yaml
+
+# Generated static assets, ASTs, and exports
+client/static/*.json
+client/static/*.html
+client/static/atomic.css
+export/**
+core/src/Core/Glossary/Generated.hs

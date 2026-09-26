@@ -7,7 +7,6 @@
 module Frontend.Rules.Data
   ( RulesTab (..)
   , DocId
-  , embeddedGlossary
   , embeddedRulesDoc
   , embeddedGlossaryDoc
   , embeddedColorsDoc
@@ -25,17 +24,12 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Text.Pandoc.Definition (Pandoc (..), nullMeta)
 
-import Core.Glossary (Glossary, mkGlossary)
-
 -- | Tab identifiers for in-app rules viewer.
 data RulesTab = TabCoreRules | TabGlossary | TabColors
   deriving stock (Eq, Ord, Enum, Bounded, Show)
 
 -- | Type alias for document identification matching the design brief.
 type DocId = RulesTab
-
-glossaryRaw :: ByteString
-glossaryRaw = $(makeRelativeToProject "static/glossary.json" >>= embedFile)
 
 rulesRaw :: ByteString
 rulesRaw = $(makeRelativeToProject "static/rules.json" >>= embedFile)
@@ -45,12 +39,6 @@ glossaryAstRaw = $(makeRelativeToProject "static/glossary-ast.json" >>= embedFil
 
 colorsRaw :: ByteString
 colorsRaw = $(makeRelativeToProject "static/colors.json" >>= embedFile)
-
--- | Canonical keyword glossary eagerly decoded at compile time.
-embeddedGlossary :: Glossary
-embeddedGlossary = case eitherDecodeStrict' glossaryRaw of
-  Left _err -> mkGlossary mempty
-  Right g -> g
 
 -- | Core rules Pandoc AST eagerly decoded at compile time.
 embeddedRulesDoc :: Pandoc

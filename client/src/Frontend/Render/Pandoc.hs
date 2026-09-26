@@ -36,6 +36,7 @@ module Frontend.Render.Pandoc
   ) where
 
 import Control.Monad (forM_, unless)
+import Data.List.NonEmpty qualified as NE
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
@@ -49,8 +50,16 @@ import Core.Glossary
   , canonicalSlug
   , lookupGlossary
   , mkGlossary
+  , summaryText
   , toSlug
   )
+import Core.Language (TextStyle (..))
+import Core.NonEmptyText (getRawText)
+import Core.RichText (RichText, getInlines)
+import Core.RichText qualified as CoreRichText
+import Core.Stats (Difficulty (..), StatValue (..))
+import Core.Util (tshow)
+import Frontend.Render.Common (IconMode (..), renderResourceType)
 import Frontend.Style.Common (classNames, divS, elS)
 import Frontend.Style.DSL qualified as S
 import Frontend.Svg (renderCircle, renderDiamond, renderSquare)
@@ -489,7 +498,7 @@ renderStaticWikilink
 renderStaticWikilink env target inlines mEntry = do
   let slug = maybe (canonicalSlug target env.glossary) (.slug) mEntry
       catSlug = maybe "general" (toSlug . (.category)) mEntry
-      summary = maybe target (.summary) mEntry
+      summary = maybe target summaryText mEntry
       classes = "game-kw kw-" <> catSlug <> " " <> classNames kwStaticStyle
       attrs =
         "class" =: classes
@@ -500,13 +509,40 @@ renderStaticWikilink env target inlines mEntry = do
       then text target
       else renderInlines env inlines
 
+-- | Render RichText inside a tooltip hover card, rendering keyword references
+-- as styled highlight spans rather than spawning nested interactive popovers.
+renderTooltipRichText :: (DomBuilder t m) => RichText -> m ()
+renderTooltipRichText rt = mapM_ renderTooltipInline (NE.toList (getInlines rt))
+
+renderTooltipInline :: (DomBuilder t m) => CoreRichText.Inline -> m ()
+renderTooltipInline = \case
+  CoreRichText.TextRun mStyle content ->
+    case mStyle of
+      Nothing -> text (getRawText content)
+      Just Bold -> elS "strong" strongStyle $ text (getRawText content)
+      Just Italic -> el "em" $ text (getRawText content)
+      Just GameKeyword -> elS "code" inlineCodeStyle $ text (getRawText content)
+  CoreRichText.Wikilink target mLabel ->
+    let displayTxt = maybe (getRawText target) getRawText mLabel
+     in elS "span" (S.textGoldBright <> S.fontBold) (text displayTxt)
+  CoreRichText.MarkdownLink target label ->
+    elAttr
+      "a"
+      ("href" =: getRawText target <> "class" =: classNames linkStyle)
+      (text (getRawText label))
+  CoreRichText.Break ->
+    el "br" (pure ())
+  CoreRichText.ColorValue v ->
+    renderResourceType IconInline v.color (Just (tshow v.value))
+  CoreRichText.DifficultyValue d ->
+    renderResourceType IconInline d.attribute (Just (tshow d.value))
+
 -- | Interactive mode rendering: emits an interactive popover / tooltip component
 -- with an inline badge chip and a hover/focus-revealed tooltip card.
 renderInteractiveWikilink
   :: (DomBuilder t m) => RenderEnv -> Text -> [Inline] -> Maybe GlossaryEntry -> m ()
 renderInteractiveWikilink env target inlines mEntry = do
   let catName = maybe "Keyword" (.category) mEntry
-      summaryTxt = maybe ("Rules keyword: " <> target) (.summary) mEntry
       mActionColor = termActionColor target mEntry
       wrapStyle =
         S.relative
@@ -526,7 +562,10 @@ renderInteractiveWikilink env target inlines mEntry = do
         elS "span" (S.fontCinzel <> S.textGoldBright <> S.textSm <> S.fontBold) (text displayName)
         elS "span" (S.textXs <> S.text S.Gray 4 <> S.uppercase <> S.trackingWider) (text catName)
       forM_ mActionColor renderActionColorChip
-      divS (S.fontLora <> S.text S.Gray 2 <> S.leadingRelaxed <> S.textSm) (text summaryTxt)
+      divS (S.fontLora <> S.text S.Gray 2 <> S.leadingRelaxed <> S.textSm) $ do
+        case mEntry of
+          Just entry -> renderTooltipRichText entry.summary
+          Nothing -> text ("Rules keyword: " <> target)
 
 -- | Interactive mode rendering helper for plain text display labels.
 renderInteractiveWikilinkText

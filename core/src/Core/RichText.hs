@@ -19,6 +19,7 @@ import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON)
 import Data.Aeson.TH (deriveJSON)
 import Data.Aeson.Types qualified as Aeson
 import Data.List.NonEmpty qualified as NE
+import Data.String (IsString (..))
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Vector qualified as V
@@ -60,6 +61,10 @@ data Inline
   | Wikilink
       { target :: NonEmptyText
       , label :: Maybe NonEmptyText
+      }
+  | MarkdownLink
+      { linkTarget :: NonEmptyText
+      , linkLabel :: NonEmptyText
       }
   deriving stock (Eq, Show, Generic)
 
@@ -139,6 +144,11 @@ instance TextRep RichText where
   toText rt = T.concat $ toTextInline <$> NE.toList (getInlines rt)
   textParser = richTextParser
 
+instance IsString RichText where
+  fromString s = case parseText (T.pack s) of
+    Right rt -> rt
+    Left _ -> unsafeSimpleString (T.pack s)
+
 toTextInline :: Inline -> Text
 toTextInline (TextRun (Just s) content) = wrapped (styleDelimiter s) $ getRawText content
 toTextInline (TextRun Nothing content) = getRawText content
@@ -147,6 +157,7 @@ toTextInline (DifficultyValue (Difficulty a v)) = toTextResourceType a <> " " <>
 toTextInline Break = "\n"
 toTextInline (Wikilink target Nothing) = "[[" <> getRawText target <> "]]"
 toTextInline (Wikilink target (Just lbl)) = "[[" <> getRawText target <> "|" <> getRawText lbl <> "]]"
+toTextInline (MarkdownLink target lbl) = "[" <> getRawText lbl <> "](" <> getRawText target <> ")"
 
 wrapped :: Text -> Text -> Text
 wrapped wrapper t = wrapper <> t <> wrapper
@@ -192,6 +203,7 @@ inlineParserStopAt :: [Char] -> Parser Inline
 inlineParserStopAt stopChars =
   tryChoice
     [ wikilinkParser
+    , markdownLinkParser
     , formattingParser
     , colorValueParser
     , breakParser stopChars
@@ -205,6 +217,16 @@ wikilinkParser = do
   mLbl <- optional (char '|' *> takeWhilePNonEmpty Nothing (\c -> c /= ']' && c /= '\n'))
   _ <- string "]]"
   pure $ Wikilink tgt mLbl
+
+markdownLinkParser :: Parser Inline
+markdownLinkParser = do
+  _ <- char '['
+  lbl <- takeWhilePNonEmpty Nothing (\c -> c /= ']' && c /= '\n')
+  _ <- char ']'
+  _ <- char '('
+  tgt <- takeWhilePNonEmpty Nothing (\c -> c /= ')' && c /= '\n')
+  _ <- char ')'
+  pure $ MarkdownLink tgt lbl
 
 breakParser :: [Char] -> Parser Inline
 breakParser stopChars = do

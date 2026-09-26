@@ -189,6 +189,13 @@ main = do
       putStrLn "  Run 'audit-index --fix' to synchronize README maps."
     else putStrLn "[OK] All directory README tables of contents are up to date."
 
+  -- 10. Keyword Glossary sync
+  case res.glossaryError of
+    Just err -> do
+      putStrLn $ "\n[GLOSSARY ERROR] " ++ err
+      putStrLn "  Run 'audit-index --fix' or 'keyword-mod codegen' to synchronize."
+    Nothing -> putStrLn "[OK] Keyword glossary and generated Haskell definitions are in sync."
+
   putStrLn "\n--- Audit Summary ---"
   if res.hasFatalError
     then do

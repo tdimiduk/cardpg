@@ -10,10 +10,10 @@ fi
 # Get workspace root directory
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# 1. Export keyword glossary JSON
-echo "Exporting keyword glossary JSON..."
-cabal run tools-hs:exe:keyword-mod -- export-glossary --output "$ROOT_DIR/client/static/glossary.json"
-cp "$ROOT_DIR/client/static/glossary.json" "$ROOT_DIR/export/glossary.json"
+# 1. Generate Haskell keyword glossary and export JSON
+echo "Generating Haskell keyword glossary and JSON export..."
+cabal run tools-hs:exe:keyword-mod -- codegen --fix
+cabal run tools-hs:exe:keyword-mod -- export-glossary --output "$ROOT_DIR/export/glossary.json"
 
 # 2. Compile Markdown to Pandoc AST JSON with native wikilinks flag
 echo "Compiling markdown rules to Pandoc AST JSON..."

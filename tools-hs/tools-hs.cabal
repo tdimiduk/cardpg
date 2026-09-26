@@ -24,6 +24,7 @@ library
     AuditConsequences
     Design.Audit
     Design.Frontmatter
+    Design.Glossary
     Design.Index
     Design.TOC
     Design.Types

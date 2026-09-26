@@ -17,12 +17,12 @@ import Control.Monad.Fix (MonadFix)
 import Data.Text (Text)
 import Reflex.Dom.Core hiding (button)
 
+import Core.Glossary (glossary)
 import Frontend.Icons (iconClose)
 import Frontend.Render.Pandoc (RenderEnv (..), RenderMode (..), renderPandoc)
 import Frontend.Rules.Data
   ( RulesTab (..)
   , allRulesTabs
-  , embeddedGlossary
   , lookupDoc
   , rulesTabTitle
   )
@@ -164,7 +164,7 @@ rulesViewerWidgetWithInitialTab initialTab externalClose = do
             )
             $ do
               divS (S.maxW4Xl <> S.mxAuto) $ do
-                let env = RenderEnv{glossary = embeddedGlossary, renderMode = RenderInteractive}
+                let env = RenderEnv{glossary = glossary, renderMode = RenderInteractive}
                 dyn_ $ ffor activeTabDyn $ \tab -> do
                   let docAst = lookupDoc tab
                   renderPandoc env docAst

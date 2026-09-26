@@ -1,7 +1,9 @@
 {
   "action-stack": {
     "canonical": "Action Stack",
-    "aliases": ["Action Stacks"],
+    "aliases": [
+      "Action Stacks"
+    ],
     "slug": "action-stack",
     "category": "Pacing & Play Modes",
     "summary": "An Action card played from hand combined with additional cards committed to pay its resource cost.",
@@ -17,7 +19,9 @@
   },
   "attack": {
     "canonical": "Attack",
-    "aliases": ["Attacks"],
+    "aliases": [
+      "Attacks"
+    ],
     "slug": "attack",
     "category": "Action Types & Card Keywords",
     "summary": "An offensive action declared in [[Crisis Time]] targeting another character, setting a [[Strength]] in a chosen [[Color]].",
@@ -41,7 +45,9 @@
   },
   "color": {
     "canonical": "Color",
-    "aliases": ["Colors"],
+    "aliases": [
+      "Colors"
+    ],
     "slug": "color",
     "category": "The Three Colors",
     "summary": "How approaches and abilities are classified and actions are adjudicated. Values are `Red`, `Yellow`, and `Blue`. See [Colors of Action](colors-of-action.md) for detailed classifications.",
@@ -49,7 +55,9 @@
   },
   "consequence": {
     "canonical": "Consequence",
-    "aliases": ["Consequences"],
+    "aliases": [
+      "Consequences"
+    ],
     "slug": "consequence",
     "category": "Action Resolution",
     "summary": "Cards suffered from physical trauma, strain, or environmental friction when [[Impact]] meets or exceeds [[Defense]]. Suffix/plural uses [[Consequences]].",
@@ -65,7 +73,9 @@
   },
   "defend": {
     "canonical": "Defend",
-    "aliases": ["Defends"],
+    "aliases": [
+      "Defends"
+    ],
     "slug": "defend",
     "category": "Action Types & Card Keywords",
     "summary": "A defensive reaction played or resolved to absorb incoming [[Strength]].",
@@ -89,7 +99,10 @@
   },
   "fatigue": {
     "canonical": "Fatigue",
-    "aliases": ["Fatigue Cycle", "Fatigue Cards"],
+    "aliases": [
+      "Fatigue Cycle",
+      "Fatigue Cards"
+    ],
     "slug": "fatigue",
     "category": "Equipment & Fatigue",
     "summary": "Systemic physical exhaustion. When your deck is exhausted, a [[Fatigue Cycle]] adds [[Fatigue]] cards (plus active [[Burden]]) to your expended pile before reshuffling.",
@@ -97,7 +110,9 @@
   },
   "general-action": {
     "canonical": "General Action",
-    "aliases": ["General Actions"],
+    "aliases": [
+      "General Actions"
+    ],
     "slug": "general-action",
     "category": "Pacing & Play Modes",
     "summary": "Non-combat challenges with meaningful stakes outside combat, resolved defender-centric with success as default.",
@@ -145,15 +160,21 @@
   },
   "severity": {
     "canonical": "Severity",
-    "aliases": ["Severity 1", "Severity 2", "Severity 3"],
+    "aliases": [
+      "Severity 1",
+      "Severity 2",
+      "Severity 3"
+    ],
     "slug": "severity",
     "category": "Action Resolution",
-    "summary": "The escalation tier of suffered [[Consequences]]. Severity 1 represents minor friction/wear; Severity 2 represents serious injury/vulnerability; Severity 3 indicates incapacitation.",
+    "summary": "The escalation tier of suffered [[Consequences]]. Severity 1 represents minor friction/wear\n Severity 2 represents serious injury/vulnerability\n Severity 3 indicates incapacitation.",
     "theme": null
   },
   "stance": {
     "canonical": "Stance",
-    "aliases": ["Stances"],
+    "aliases": [
+      "Stances"
+    ],
     "slug": "stance",
     "category": "Action Types & Card Keywords",
     "summary": "A persistent tactical posture remaining active across rounds until discarded or replaced.",

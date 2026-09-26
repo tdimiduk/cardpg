@@ -14,7 +14,7 @@ import Control.Monad (forM, unless)
 import Data.List (isPrefixOf, isSuffixOf, sort)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
-import Data.Maybe (catMaybes)
+import Data.Maybe (catMaybes, isJust)
 import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.Text qualified as T
@@ -25,6 +25,11 @@ import Design.Frontmatter
   , parseFrontmatter
   , scaffoldFrontmatter
   , validateFrontmatterSchema
+  )
+import Design.Glossary
+  ( glossaryHaskellRelPath
+  , glossaryMarkdownRelPath
+  , updateOrVerifyGlossary
   )
 import Design.Index
   ( IndexData (..)
@@ -73,6 +78,7 @@ data AuditResult = AuditResult
   , missingFrontmatter :: [FilePath]
   , tagErrors :: [String]
   , tocErrors :: Map FilePath String
+  , glossaryError :: Maybe String
   , frontmatterChecked :: Int
   }
   deriving stock (Show, Eq)
@@ -206,6 +212,14 @@ runAudit opts = do
       Right () -> pure Nothing
   let tocErrs = Map.fromList (catMaybes tocResults)
 
+  -- Check Keyword Glossary sync
+  let mdGlossaryPath = opts.designRoot </> glossaryMarkdownRelPath
+      hsGlossaryPath = opts.repoRoot </> glossaryHaskellRelPath
+  (glossaryRes, _) <- updateOrVerifyGlossary mdGlossaryPath hsGlossaryPath opts.fix
+  let glossaryErr = case glossaryRes of
+        Left err -> Just err
+        Right () -> Nothing
+
   let hasFatal =
         not (Set.null missingFromDisk)
           || not (Set.null untrackedInGit)
@@ -216,6 +230,7 @@ runAudit opts = do
           || (opts.strict && not (null missingFm))
           || not (null tagErrs)
           || not (Map.null tocErrs)
+          || isJust glossaryErr
 
   pure
     AuditResult
@@ -229,6 +244,7 @@ runAudit opts = do
       , missingFrontmatter = missingFm
       , tagErrors = tagErrs
       , tocErrors = tocErrs
+      , glossaryError = glossaryErr
       , frontmatterChecked = fmChecked
       }
   where

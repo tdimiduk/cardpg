@@ -3,10 +3,16 @@
 
 module Main (main) where
 
+import Core.DSL (toText)
 import Core.Glossary
 import Data.Text (Text)
 import Data.Text qualified as T
 import Design.Frontmatter
+import Design.Glossary
+  ( generateGlossaryHaskellSource
+  , parseGlossaryEntries
+  , validateGlossaryReferences
+  )
 import Design.Index
 import Design.TOC
 import Design.Types
@@ -22,6 +28,7 @@ tests =
   testGroup
     "tools-hs tests"
     [ test_glossaryParser
+    , test_glossaryCodegen
     , test_chunking
     , test_normalization
     , test_renaming
@@ -64,7 +71,7 @@ test_glossaryParser =
             assertEqual "Slug" "color" e.slug
             assertEqual "Aliases" ["Colors"] e.aliases
             assertEqual "Category" "The Three Colors" e.category
-            assertEqual "Summary" "How approaches are classified." e.summary
+            assertEqual "Summary" "How approaches are classified." (toText e.summary)
             assertEqual "Theme is Nothing" Nothing e.theme
 
         case lookupGlossary "Red" g of
@@ -72,6 +79,37 @@ test_glossaryParser =
           Just e -> do
             assertEqual "Canonical" "Red" e.canonical
             assertEqual "Theme is red" (Just "red") e.theme
+    ]
+
+test_glossaryCodegen :: TestTree
+test_glossaryCodegen =
+  testGroup
+    "Glossary Codegen & Validation"
+    [ testCase "Validates keyword cross-references in sample markdown" $ do
+        case parseGlossaryEntries sampleMarkdown of
+          Left err -> assertFailure ("Parse error: " ++ err)
+          Right entries -> do
+            let refErrors = validateGlossaryReferences entries
+            assertEqual "No invalid references" [] refErrors
+    , testCase "Catches unknown keyword reference" $ do
+        let badMarkdown =
+              "# Glossary\n\n## Cat\n\n### Attack\n\nAn attack during [[Crissis Time]]!\n"
+        case parseGlossaryEntries badMarkdown of
+          Left err -> assertFailure ("Parse error: " ++ err)
+          Right entries -> do
+            let refErrors = validateGlossaryReferences entries
+            assertEqual "Finds 1 error" 1 (length refErrors)
+            case refErrors of
+              (firstErr : _) -> assertBool "Mentions Crissis Time" ("Crissis Time" `T.isInfixOf` T.pack firstErr)
+              [] -> assertFailure "Expected refErrors"
+    , testCase "Generates compilable Haskell source containing entries" $ do
+        case parseGlossaryEntries sampleMarkdown of
+          Left err -> assertFailure ("Parse error: " ++ err)
+          Right entries -> do
+            let src = generateGlossaryHaskellSource entries
+            assertBool "Contains module header" ("module Core.Glossary.Generated" `T.isInfixOf` src)
+            assertBool "Contains Color" ("canonical = \"Color\"" `T.isInfixOf` src)
+            assertBool "Contains Red" ("canonical = \"Red\"" `T.isInfixOf` src)
     ]
 
 test_chunking :: TestTree

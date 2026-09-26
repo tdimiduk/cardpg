@@ -51,6 +51,7 @@ import System.Directory
   , doesFileExist
   , listDirectory
   )
+import System.Exit (exitFailure)
 import System.FilePath
   ( normalise
   , splitDirectories
@@ -58,6 +59,12 @@ import System.FilePath
   , takeExtension
   , takeFileName
   , (</>)
+  )
+
+import Design.Glossary
+  ( parseGlossaryFile
+  , parseGlossaryText
+  , updateOrVerifyGlossary
   )
 import Text.Megaparsec
   ( Parsec
@@ -84,6 +91,14 @@ data Command
   | CmdNormalizeAll NormalizeOptions
   | CmdNormalize NormalizeSingleOptions
   | CmdRename RenameOptions
+  | CmdCodegen CodegenOptions
+
+data CodegenOptions = CodegenOptions
+  { check :: Bool
+  , fix :: Bool
+  , input :: FilePath
+  , output :: FilePath
+  }
 
 data ExportOptions = ExportOptions
   { input :: FilePath
@@ -112,11 +127,17 @@ commandParser :: OA.Parser Command
 commandParser =
   OA.hsubparser
     ( OA.command
-        "export-glossary"
+        "codegen"
         ( OA.info
-            (CmdExportGlossary <$> exportParser)
-            (OA.progDesc "Compile keyword-glossary.md into export/glossary.json")
+            (CmdCodegen <$> codegenParser)
+            (OA.progDesc "Generate or check core/src/Core/Glossary/Generated.hs from keyword-glossary.md")
         )
+        <> OA.command
+          "export-glossary"
+          ( OA.info
+              (CmdExportGlossary <$> exportParser)
+              (OA.progDesc "Compile keyword-glossary.md into export/glossary.json")
+          )
         <> OA.command
           "normalize-all"
           ( OA.info
@@ -136,6 +157,32 @@ commandParser =
               (OA.progDesc "Rename a keyword across markdown documentation")
           )
     )
+
+codegenParser :: OA.Parser CodegenOptions
+codegenParser =
+  CodegenOptions
+    <$> OA.switch
+      ( OA.long "check"
+          <> OA.help "Verify that generated Haskell file is up to date without modifying files"
+      )
+    <*> OA.switch
+      ( OA.long "fix"
+          <> OA.help "Regenerate and overwrite the Haskell file if out of date"
+      )
+    <*> OA.strOption
+      ( OA.long "input"
+          <> OA.short 'i'
+          <> OA.value "design/rules/keyword-glossary.md"
+          <> OA.showDefault
+          <> OA.help "Path to keyword glossary markdown file"
+      )
+    <*> OA.strOption
+      ( OA.long "output"
+          <> OA.short 'o'
+          <> OA.value "core/src/Core/Glossary/Generated.hs"
+          <> OA.showDefault
+          <> OA.help "Destination path for generated Haskell source file"
+      )
 
 exportParser :: OA.Parser ExportOptions
 exportParser =
@@ -225,100 +272,28 @@ main = do
         (commandParser OA.<**> OA.helper)
         (OA.fullDesc <> OA.progDesc "Keyword normalization and glossary management tool for CardPG")
   case cmd of
+    CmdCodegen opts -> runCodegen opts
     CmdExportGlossary opts -> runExportGlossary opts
     CmdNormalizeAll opts -> runNormalizeAll opts
     CmdNormalize opts -> runNormalizeSingle opts
     CmdRename opts -> runRename opts
 
 --------------------------------------------------------------------------------
--- Glossary Parsing
+-- Codegen Subcommand
 --------------------------------------------------------------------------------
 
-type Parser = Parsec Void Text
-
-anyChar :: Parser Char
-anyChar = anySingle
-
-parseGlossaryFile :: FilePath -> IO Glossary
-parseGlossaryFile path = do
-  content <- TIO.readFile path
-  pure $ parseGlossaryText content
-
-parseGlossaryText :: Text -> Glossary
-parseGlossaryText input = case parse glossaryDocParser "" input of
-  Left _ -> fromList []
-  Right entries -> fromList entries
-
-glossaryDocParser :: Parser [GlossaryEntry]
-glossaryDocParser = do
-  _ <- manyTill anyChar (lookAhead (try (void categoryHeader)) <|> eof)
-  categories <- many (try categoryParser)
-  pure (concat categories)
-
-categoryHeader :: Parser Text
-categoryHeader = do
-  _ <- string "## "
-  cat <- takeWhileP (Just "category name") (\c -> c /= '\n' && c /= '\r')
-  _ <- optional eol
-  pure (T.strip cat)
-
-categoryParser :: Parser [GlossaryEntry]
-categoryParser = do
-  _ <- many (try (hspace *> eol))
-  cat <- categoryHeader
-  many (try (entryParser cat))
-
-entryHeader :: Parser Text
-entryHeader = do
-  _ <- try (string "#### ") <|> try (string "### ")
-  name <- takeWhileP (Just "entry name") (\c -> c /= '\n' && c /= '\r')
-  _ <- optional eol
-  pure (T.strip name)
-
-entryParser :: Text -> Parser GlossaryEntry
-entryParser cat = do
-  _ <- many (try (hspace *> eol))
-  name <- entryHeader
-  mAliases <- optional (try aliasLineParser)
-  let aliases = fromMaybe [] mAliases
-  summaryLines <- manyTill summaryLine (lookAhead (try isNextHeading <|> void eof))
-  let summary = T.unwords (filter (not . T.null) (map T.strip summaryLines))
-      theme = case T.toLower name of
-        "red" -> Just "red"
-        "yellow" -> Just "yellow"
-        "blue" -> Just "blue"
-        _ -> Nothing
-  pure
-    GlossaryEntry
-      { canonical = name
-      , aliases = aliases
-      , slug = toSlug name
-      , category = cat
-      , summary = summary
-      , theme = theme
-      }
-
-isNextHeading :: Parser ()
-isNextHeading = do
-  _ <- many (try (hspace *> eol))
-  _ <- string "##"
-  pure ()
-
-aliasLineParser :: Parser [Text]
-aliasLineParser = do
-  _ <- many (try (hspace *> eol))
-  _ <- char '_' <|> char '*'
-  _ <- string "Aliases:"
-  content <- takeWhile1P (Just "aliases") (\c -> c /= '_' && c /= '*' && c /= '\n' && c /= '\r')
-  _ <- char '_' <|> char '*'
-  _ <- optional eol
-  pure $ filter (not . T.null) $ map T.strip $ T.splitOn "," content
-
-summaryLine :: Parser Text
-summaryLine = do
-  line <- takeWhileP (Just "summary line") (\c -> c /= '\n' && c /= '\r')
-  _ <- optional eol
-  pure line
+runCodegen :: CodegenOptions -> IO ()
+runCodegen opts = do
+  let shouldFix = opts.fix || not opts.check
+  (res, modified) <- updateOrVerifyGlossary opts.input opts.output shouldFix
+  case res of
+    Left err -> do
+      putStrLn $ "Error: " ++ err
+      exitFailure
+    Right () ->
+      if modified
+        then putStrLn $ "Successfully generated " ++ opts.output ++ " from " ++ opts.input
+        else putStrLn $ "[OK] " ++ opts.output ++ " is in sync with " ++ opts.input
 
 --------------------------------------------------------------------------------
 -- Export Subcommand
@@ -351,6 +326,11 @@ runExportGlossary opts = do
 
 data Chunk = Protected Text | Unprotected Text
   deriving stock (Show, Eq)
+
+type Parser = Parsec Void Text
+
+anyChar :: Parser Char
+anyChar = anySingle
 
 -- | Chunk a line into protected sections (existing wikilinks, markdown links, code spans)
 -- and unprotected text that is eligible for keyword substitution using Megaparsec.

@@ -89,7 +89,7 @@ import Server.Config (loadDbConfig)
 import Server.DB (CustomCardRecord, CustomCardT (..), cardpgDb, customCards, initDB)
 import Server.Types (StorageBackend (..))
 
-import Core.Glossary (mkGlossary)
+import Core.Glossary (glossary)
 import Frontend.Render.Pandoc (RenderEnv (..), RenderMode (..), renderPandoc)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
@@ -609,29 +609,7 @@ generateRules :: Options -> Bool -> IO ()
 generateRules opts skipSnapshot = do
   unless opts.quiet $ putStrLn "Generating static rules documentation..."
 
-  -- 1. Load Glossary
-  let glossaryCandidates =
-        [ opts.outputDir </> "glossary.json"
-        , "client" </> "static" </> "glossary.json"
-        , "export" </> "glossary.json"
-        ]
-  mGlossaryPath <- findFirstFile glossaryCandidates
-  loadedGlossary <- case mGlossaryPath of
-    Nothing -> do
-      putStrLn "Warning: No glossary.json found in candidate paths; using empty glossary."
-      pure (mkGlossary mempty)
-    Just path -> do
-      res <- eitherDecodeFileStrict path
-      case res of
-        Left err -> do
-          putStrLn $ "Warning: Failed to decode glossary from " <> path <> ": " <> err
-          pure (mkGlossary mempty)
-        Right g -> do
-          unless opts.quiet $ putStrLn $ "Loaded glossary from " <> path
-          pure g
-
-  -- 2. Render each document
-  let env = RenderEnv{glossary = loadedGlossary, renderMode = RenderStatic}
+  let env = RenderEnv{glossary = glossary, renderMode = RenderStatic}
   forM_ ruleDocs $ \doc -> do
     let astCandidates =
           [ opts.outputDir </> doc.astJsonPath

@@ -11,7 +11,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 import Text.Pandoc.Definition (Pandoc (..))
 
-import Core.Glossary (lookupGlossary)
+import Core.Glossary (glossary, lookupGlossary)
 import Core.NonEmptyText (unsafeNonEmptyText)
 import Core.RichText (Inline (..))
 import Frontend.Render.Rules (renderInline)
@@ -23,19 +23,19 @@ tests =
   testGroup
     "Frontend.Rules and Keyword Tooltips (Phase 5)"
     [ testGroup
-        "Frontend.Rules.Data (Compile-Time Embedding)"
-        [ testCase "embeddedGlossary has canonical entries" $ do
-            let mAttack = lookupGlossary "Attack" embeddedGlossary
+        "Frontend.Rules.Data and Canonical Glossary"
+        [ testCase "glossary has canonical entries" $ do
+            let mAttack = lookupGlossary "Attack" glossary
             assertBool "Attack entry exists" (isJust mAttack)
-            let mActionStack = lookupGlossary "Action Stack" embeddedGlossary
+            let mActionStack = lookupGlossary "Action Stack" glossary
             assertBool "Action Stack entry exists" (isJust mActionStack)
-            let mCrisis = lookupGlossary "Crisis Time" embeddedGlossary
+            let mCrisis = lookupGlossary "Crisis Time" glossary
             assertBool "Crisis Time entry exists" (isJust mCrisis)
-            let mRed = lookupGlossary "Red" embeddedGlossary
+            let mRed = lookupGlossary "Red" glossary
             assertBool "Red entry exists" (isJust mRed)
-            let mYellow = lookupGlossary "Yellow" embeddedGlossary
+            let mYellow = lookupGlossary "Yellow" glossary
             assertBool "Yellow entry exists" (isJust mYellow)
-            let mBlue = lookupGlossary "Blue" embeddedGlossary
+            let mBlue = lookupGlossary "Blue" glossary
             assertBool "Blue entry exists" (isJust mBlue)
         , testCase "embeddedDocs has valid non-empty ASTs for all tabs" $ do
             let (Pandoc _ rBlocks) = lookupDoc TabCoreRules
@@ -112,5 +112,14 @@ tests =
             let html = decodeUtf8 htmlBytes
             assertBool "Contains game-kw-interactive wrapper" ("game-kw-interactive" `T.isInfixOf` html)
             assertBool "Displays unknown term text" ("UnknownTerm" `T.isInfixOf` html)
+        , testCase "Tooltip renders referenced keywords as styled spans without [[...]] brackets" $ do
+            (_, htmlBytes) <- renderStatic (renderInline (Wikilink (unsafeNonEmptyText "Attack") Nothing))
+            let html = decodeUtf8 htmlBytes
+            assertBool "Does not contain raw [[Crisis Time]]" (not ("[[Crisis Time]]" `T.isInfixOf` html))
+            assertBool "Does not contain raw [[Strength]]" (not ("[[Strength]]" `T.isInfixOf` html))
+            assertBool "Does not contain raw [[Color]]" (not ("[[Color]]" `T.isInfixOf` html))
+            assertBool "Renders Crisis Time text" ("Crisis Time" `T.isInfixOf` html)
+            assertBool "Renders Strength text" ("Strength" `T.isInfixOf` html)
+            assertBool "Renders Color text" ("Color" `T.isInfixOf` html)
         ]
     ]

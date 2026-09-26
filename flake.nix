@@ -218,6 +218,9 @@
               "data/cards/.*"
               "design/research/reports/.*"
               "design/.*\\.ya?ml$"
+              "client/static/.*"
+              "export/.*"
+              "core/src/Core/Glossary/Generated\\.hs$"
             ];
             hooks = {
               fourmolu.enable = true;
