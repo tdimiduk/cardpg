@@ -200,6 +200,13 @@ staticStyles =
     , S.maxW4Xl
     , S.mxAuto
     , S.bgStone900
+    , S.bgStoneDark
+    , S.bgStoneMed
+    , S.borderStoneMed
+    , S.textGoldBright
+    , S.textGoldMuted
+    , S.borderGoldBright
+    , S.borderGoldMuted
     , S.textStone100
     ]
 
@@ -239,6 +246,7 @@ deriveParamName style =
        in case parts of
             ("min" : "w" : _) -> "minW"
             ("min" : "h" : _) -> "minH"
+            ("border" : _ : _) -> "border"
             (x : _) -> classNameToHaskell x
             _ -> error $ "Could not derive param name from class: " ++ show cls
     _ -> error "Empty style in deriveParamName"

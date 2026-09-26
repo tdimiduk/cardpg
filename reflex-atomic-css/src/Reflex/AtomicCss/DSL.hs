@@ -115,6 +115,13 @@ module Reflex.AtomicCss.DSL
   , bgWhite
   , bgTransparent
   , bgStone900
+  , bgStoneDark
+  , bgStoneMed
+  , borderStoneMed
+  , textGoldBright
+  , textGoldMuted
+  , borderGoldBright
+  , borderGoldMuted
   , textBlack
   , textWhite
   , textStone100
@@ -609,6 +616,27 @@ bgTransparent = css "bg-transparent" "background-color" "transparent"
 
 bgStone900 :: Style
 bgStone900 = css "bg-stone-900" "background-color" "var(--color-stone-dark)"
+
+bgStoneDark :: Style
+bgStoneDark = css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
+
+bgStoneMed :: Style
+bgStoneMed = css "bg-stone-med" "background-color" "var(--color-stone-med)"
+
+borderStoneMed :: Style
+borderStoneMed = css "border-stone-med" "border-color" "var(--color-stone-med)"
+
+textGoldBright :: Style
+textGoldBright = css "text-gold-bright" "color" "var(--color-gold-bright)"
+
+textGoldMuted :: Style
+textGoldMuted = css "text-gold-muted" "color" "var(--color-gold-muted)"
+
+borderGoldBright :: Style
+borderGoldBright = css "border-gold-bright" "border-color" "var(--color-gold-bright)"
+
+borderGoldMuted :: Style
+borderGoldMuted = css "border-gold-muted" "border-color" "var(--color-gold-muted)"
 
 textBlack :: Style
 textBlack = css "text-black" "color" "var(--gray-12)"

@@ -16,7 +16,7 @@ import Api.Types
   , LogPayload (..)
   , LogSender (..)
   )
-import Core.Card (CoreCard (..), Identified (..))
+import Core.Card (ConsequenceCard (..), CoreCard (..), Identified (..))
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId)
 import Core.State
@@ -131,7 +131,7 @@ filterDefenseLogs = filter (not . isDefenseLog)
 buildDefenseLogsMap :: [LogEntry] -> Map.Map T.Text LogEntry
 buildDefenseLogsMap logs =
   let foldFn acc entry = case entry.payload of
-        LogDefense{challengeId} ->
+        LogDefense{defenseChallengeId = challengeId} ->
           let key = tshow challengeId
            in Map.insert key entry acc
         _ -> acc
@@ -227,6 +227,29 @@ renderLogEntry defenseLogsMapDyn logDyn = do
             <> S.border S.Red 10
         )
         $ text c
+      return never
+    LogConsequence _ _ consequence -> do
+      divS
+        ( S.textXs
+            <> S.text S.Gray 5
+            <> S.italic
+            <> S.p S.S2
+            <> S.borderB
+            <> S.border S.Gray 10
+        )
+        $ text
+          (renderSender logEntry.sender <> " gained consequence: " <> getRawText consequence.content.name)
+      return never
+    LogCardDrawn _ card -> do
+      divS
+        ( S.textXs
+            <> S.text S.Gray 5
+            <> S.italic
+            <> S.p S.S2
+            <> S.borderB
+            <> S.border S.Gray 10
+        )
+        $ text (renderSender logEntry.sender <> " drew " <> getRawText card.content.name)
       return never
 
 -- | Render a clickable challenge log entry.

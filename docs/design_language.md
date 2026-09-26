@@ -54,6 +54,9 @@ We use a carefully chosen three-tiered typography system to balance high readabi
 1. **Card Titles & Headers (`Cinzel`)**
    - **Vibe**: Legendary, chiseled stone-slab Roman capitals.
    - **Usage**: Used for main section headers, sidebar titles, and uppercase card names (`uppercase`, `letter-spacing: 0.05em`).
+   - **Micro-Scale Constraints**: `Cinzel` has delicate hairlines and thin serifs. Do not use it below `textSm` (14px) for long or body text. When used at `textXs` for compact UI labels or tab items:
+     - Prefer the atomic DSL atom `fontCinzel` over the blanket class `.fantasy-font` (which applies a 4px blur text-shadow that smudges small letterforms).
+     - Pair with `uppercase`, `trackingWider`, and high contrast (`text S.Gray 3` or brighter) against dark stone panels.
 2. **Rules & Body Text (`Lora`)**
    - **Vibe**: Traditional scholarly print, comfortable on the eyes over long play sessions.
    - **Usage**: Used for card rules, text descriptions, history logs, and standard UI instructions.
@@ -116,3 +119,11 @@ When designing new components, follow these architectural styles:
 - Carved as solid granite slabs.
 - Equipped items sit inside warm gold-inlaid borders (`--color-gold-muted`).
 - Active debuffs/consequences render as **cracked, cursed lava-stones** (crimson borders, soft red text, glowing red box shadows representing physical corruption).
+
+### 4. Buttons, Controls & Navigation Tabs
+
+- **CSS Reset**: `<button>` elements have default `background-color: transparent; border: none; padding: 0;` via `base.css`. Always explicitly apply border or background utilities when creating buttons.
+- **Segmented Sub-Nav Controls**: Do not use raw ASCII pipe separators (`|`) or unpadded text buttons for inline navigation. Group related sub-navigation tabs into a cohesive **segmented stone pill**:
+  - Outer container: `bgStoneDark`, `border1`, `border S.Gray 10`, `rounded`, `p S1`, `gap S1`.
+  - Inner tabs: `flex1`, `textCenter`, `py S1`, `px S2`, `rounded`, `text S.Gray 3`, `hover (textGoldBright <> bgStoneMed)`.
+- **Hit Targets**: All interactive elements must maintain comfortable hit areas (minimum `py S1 px S2` for compact controls).

@@ -180,31 +180,29 @@ sidebarWidget selectedActorId currentViewMode triggerIdentityUpdate identityDyn 
           <> S.py S.S2
           <> S.borderB
           <> S.border S.Gray 10
+          <> S.bg S.Gray 11
           <> S.flex
           <> S.gap S.S2
-          <> S.textXs
-          <> S.fontBold
-          <> S.trackingWider
-          <> S.cls "fantasy-font"
           <> S.itemsCenter
       )
       $ do
         let btnStyle =
-              S.text S.Gray 5
-                <> S.hover textGoldBright
-                <> S.cursorPointer
-                <> S.bgTransparent
-                <> S.p S.S0
+              S.cls "btn-fantasy-secondary"
+                <> S.flex1
+                <> S.textCenter
+                <> S.py S.S1
+                <> S.px S.S1
+                <> S.textXs
                 <> S.fontBold
-                <> S.cls "fantasy-font"
+                <> S.trackingWider
+                <> S.rounded
+                <> S.cursorPointer
             btnAttrs tid =
               "type" =: "button"
                 <> "class" =: classNames btnStyle
                 <> "data-testid" =: tid
         (rulesEl, _) <- elAttr' "button" (btnAttrs "rules-btn") $ text "Rules"
-        elS "span" (S.text S.Gray 8) $ text "|"
         (glossaryEl, _) <- elAttr' "button" (btnAttrs "glossary-btn") $ text "Glossary"
-        elS "span" (S.text S.Gray 8) $ text "|"
         (colorsEl, _) <- elAttr' "button" (btnAttrs "colors-btn") $ text "Colors"
         pure $
           leftmost
