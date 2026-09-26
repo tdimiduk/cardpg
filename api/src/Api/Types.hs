@@ -23,7 +23,7 @@ import Data.UUID.Types (UUID)
 import GHC.Generics (Generic)
 import System.Random.Stateful (Uniform (..), uniformM)
 
-import Core.Card (CardInstance, CoreCard)
+import Core.Card (CardInstance, ConsequenceCard, CoreCard)
 import Core.Json (cardpgJsonDef)
 import Core.Primitives (ActorId, ChallengeId)
 import Core.State (ActiveChallenge, ActorState, DefenseDetails, GameEvent, PlannedAction)
@@ -52,10 +52,19 @@ data LogPayload
       }
   | LogDefense
       { defenseActorId :: ActorId
-      , challengeId :: ChallengeId
+      , defenseChallengeId :: ChallengeId
       , details :: Maybe DefenseDetails
       , cards :: Maybe [CardInstance CoreCard] -- Summary
       , ended :: Bool
+      }
+  | LogConsequence
+      { actorId :: ActorId
+      , challengeId :: Maybe ChallengeId
+      , consequence :: CardInstance ConsequenceCard
+      }
+  | LogCardDrawn
+      { actorId :: ActorId
+      , card :: CardInstance CoreCard
       }
   | LogError {content :: Text}
   deriving (Show, Eq, Generic)
@@ -82,7 +91,7 @@ data LogEntry = LogEntry
 $(deriveJSON cardpgJsonDef ''LogEntry)
 
 data ActorGameEvent = ActorGameEvent
-  { actorId :: ActorId
+  { actorId :: Maybe ActorId
   , event :: GameEvent
   }
   deriving (Show, Eq, Generic)

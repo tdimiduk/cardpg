@@ -24,13 +24,13 @@ import Server.Types
   , LogPayload (..)
   )
 
-eventToLogs :: ActorId -> GameEvent -> GameState -> [(LogPayload, Maybe ActorId)]
-eventToLogs actorId event game =
-  let actorName = case Map.lookup actorId game.actors of
+eventToLogs :: Maybe ActorId -> GameEvent -> GameState -> [(LogPayload, Maybe ActorId)]
+eventToLogs maybeActorId event game =
+  let actorName = case maybeActorId >>= flip Map.lookup game.actors of
         Just a -> a.name
         Nothing -> "Unknown"
 
-      mkSystemLog payload = (payload, Just actorId)
+      mkSystemLog payload = (payload, maybeActorId)
    in case event of
         ActionRevealed plan effect -> case effect of
           REChallenge challenge ->
@@ -38,27 +38,40 @@ eventToLogs actorId event game =
           REPass -> [mkSystemLog (LogInfo $ actorName <> " passed.")]
           REInvalid msg -> [mkSystemLog (LogInfo $ "Invalid Action for " <> actorName <> ": " <> msg)]
         IllegalAction (IllegalActionDetails _ (Just reason)) -> [mkSystemLog (LogError $ "Illegal Action for " <> actorName <> ": " <> reason)]
-        CardDrawn _ -> [mkSystemLog (LogInfo $ actorName <> " drew a card.")]
-        CardDefended challenge _ ->
-          -- Lookup current defense state to show live progress
-          let maybeDefense = do
-                actorState <- Map.lookup actorId game.actors
-                activeDefense <- actorState.coreState.defending
-                -- Ensure we are defending against this specific challenge
-                if activeDefense.activeChallenge.id == challenge.id
-                  then Just (activeDefense, actorState)
-                  else Nothing
+        CardDrawn card -> case maybeActorId of
+          Just actorId -> [mkSystemLog (LogCardDrawn actorId card)]
+          Nothing -> [mkSystemLog (LogInfo "A card was drawn.")]
+        CardDefended challenge _ -> case maybeActorId of
+          Just actorId ->
+            -- Lookup current defense state to show live progress
+            let maybeDefense = do
+                  actorState <- Map.lookup actorId game.actors
+                  activeDefense <- actorState.coreState.defending
+                  -- Ensure we are defending against this specific challenge
+                  if activeDefense.activeChallenge.id == challenge.id
+                    then Just (activeDefense, actorState)
+                    else Nothing
 
-              (details, logCards) = case maybeDefense of
-                Just (ActiveDefense _ cards, actorState) ->
-                  let d = computeDefenseDetails actorState
-                   in (Just d, Just cards)
-                Nothing -> (Nothing, Nothing)
-           in [mkSystemLog (LogDefense actorId challenge.id details logCards False)]
-        DefenseEnded (ActiveDefense challenge cards) details ->
-          [mkSystemLog (LogDefense actorId challenge.id (Just details) (Just cards) True)]
+                (details, logCards) = case maybeDefense of
+                  Just (ActiveDefense _ cards, actorState) ->
+                    let d = computeDefenseDetails actorState
+                     in (Just d, Just cards)
+                  Nothing -> (Nothing, Nothing)
+             in [mkSystemLog (LogDefense actorId challenge.id details logCards False)]
+          Nothing -> []
+        DefenseEnded (ActiveDefense challenge cards) details -> case maybeActorId of
+          Just actorId ->
+            [mkSystemLog (LogDefense actorId challenge.id (Just details) (Just cards) True)]
+          Nothing -> []
         DeckShuffled -> [mkSystemLog (LogInfo $ actorName <> " reshuffled their deck.")]
-        ConsequenceAdded _ -> [mkSystemLog (LogInfo $ actorName <> " gained a consequence.")]
+        ConsequenceAdded consequence -> case maybeActorId of
+          Just actorId ->
+            let maybeChallengeId = do
+                  actorState <- Map.lookup actorId game.actors
+                  activeDefense <- actorState.coreState.defending
+                  Just activeDefense.activeChallenge.id
+             in [mkSystemLog (LogConsequence actorId maybeChallengeId consequence)]
+          Nothing -> [mkSystemLog (LogInfo "A consequence was gained.")]
         ConsequenceRemoved _ -> [mkSystemLog (LogInfo $ actorName <> " removed consequence.")]
         StatusAdded st dest ->
           [mkSystemLog (LogInfo $ actorName <> " added status " <> st <> " to " <> T.pack (show dest))]
@@ -69,4 +82,6 @@ eventToLogs actorId event game =
           let friendlyRank FrontRank = "front rank"
               friendlyRank BackRank = "back rank"
            in [mkSystemLog (LogInfo $ actorName <> " moved to the " <> friendlyRank rank <> ".")]
+        RoundStarted roundNum ->
+          [mkSystemLog (LogInfo $ "Round " <> T.pack (show roundNum) <> " started.")]
         _ -> []

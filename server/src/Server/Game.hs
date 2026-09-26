@@ -18,6 +18,7 @@ emptyGame env =
     , phase = Planning
     , history = []
     , mapMode = Just MapModeGrid
+    , roundNumber = 1
     }
 
 addActor :: ActorId -> ActorState -> GameState -> GameState

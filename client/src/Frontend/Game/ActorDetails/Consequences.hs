@@ -81,6 +81,6 @@ consequencesWidget actorId actorState = do
             }
           $ text "+ Add Consequence"
 
-      let addReq = Req.AddConsequence actorId Nothing <$ addClick
+      let addReq = Req.AddConsequence actorId Nothing Nothing <$ addClick
 
       void $ requestGame $ leftmost [addReq, switchDyn $ fmap leftmost removeEvents]

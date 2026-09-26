@@ -35,7 +35,8 @@ data ApiRequest a where
   Reshuffle :: ActorId -> ApiRequest (Either Text [StateUpdate])
   AddStatus :: ActorId -> Text -> CardLocation -> ApiRequest (Either Text [StateUpdate])
   DestroyStatus :: ActorId -> Text -> Maybe CardInstanceId -> ApiRequest (Either Text [StateUpdate])
-  AddConsequence :: ActorId -> Maybe Int -> ApiRequest (Either Text [StateUpdate])
+  AddConsequence
+    :: ActorId -> Maybe Int -> Maybe ChallengeId -> ApiRequest (Either Text [StateUpdate])
   DestroyConsequence :: ActorId -> CardInstanceId -> ApiRequest (Either Text [StateUpdate])
   DiscardCards :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
   ReturnToDeck :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])

@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -6,7 +7,9 @@ module GameTest where
 
 import Control.Lens
 import Control.Monad.State (runState)
+import Data.Aeson (encode)
 import Data.Generics.Labels ()
+import Data.List (isInfixOf)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromJust)
 import Data.Text (Text)
@@ -14,7 +17,7 @@ import System.Random (mkStdGen)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 
-import Core.Card (CoreCard (..), Identified (..), Stats (..))
+import Core.Card (ConsequenceCard (..), CoreCard (..), Identified (..), Stats (..))
 import Core.Logic.Deck (drawCard)
 import Core.NonEmptyText (mkNonEmptyText)
 import Core.Primitives
@@ -113,7 +116,7 @@ test_game =
 
         case actions of
           [evt] -> do
-            evt.actorId @?= actorId
+            evt.actorId @?= Just actorId
             case evt.event of
               CardDrawn c -> c.id @?= cid1
               _ -> assertBool "Expected CardDrawn event" False
@@ -140,7 +143,7 @@ test_game =
 
         case actions2 of
           [evt2] -> do
-            evt2.actorId @?= actorId
+            evt2.actorId @?= Just actorId
             case evt2.event of
               CardDefended _ c -> c.id @?= cid2
               _ -> assertBool "Expected CardDefended event" False
@@ -220,8 +223,23 @@ test_game =
 
         let game1 = addActor actorId actorState game0
 
+        game1.roundNumber @?= 1
+
         -- Run concludeRound
-        let ((game2, updatesResult, _, _), _) = runState (processCommand Req.EndRound game1) gen
+        let ((game2, updatesResult, roundActions, _), gen2) = runState (processCommand Req.EndRound game1) gen
+
+        -- Verify Round Number incremented and RoundStarted event was emitted
+        game2.roundNumber @?= 2
+        assertBool
+          "Expected RoundStarted 2 event"
+          (any (\case ActorGameEvent Nothing (RoundStarted 2) -> True; _ -> False) roundActions)
+
+        -- Run next EndRound to verify sequential increment
+        let ((game3, _, roundActions2, _), _) = runState (processCommand Req.EndRound game2) gen2
+        game3.roundNumber @?= 3
+        assertBool
+          "Expected RoundStarted 3 event"
+          (any (\case ActorGameEvent Nothing (RoundStarted 3) -> True; _ -> False) roundActions2)
 
         -- Verify Updates
         let updates = case updatesResult of
@@ -236,7 +254,6 @@ test_game =
         case actorSt' of
           Nothing -> assertBool "Actor state lost" False
           Just st -> do
-            -- Defense should be cleared
             -- Defense should be cleared
             (st ^. #coreState . #defending) @?= Nothing
             -- Card should be in discard
@@ -335,9 +352,74 @@ test_game =
               [res] -> res.id @?= resCid
               _ -> assertBool "Expected one resource" False
           _ -> assertBool "Expected ActionPlanned event with one action" False
+    , testCase "Lossless Consequence and Card Telemetry" $ do
+        let consCard = mockConsCard "Bleeding" 1
+        let env =
+              GameEnv
+                { fatigueCardTemplate = mockCard "fatigue"
+                , statusCardTemplates = Map.empty
+                , consequenceCardTemplates = Map.singleton "Bleeding" consCard
+                }
+        let gen = mkStdGen 42
+        let game0 = emptyGame env
+
+        let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
+        let cardId = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+        let drawCardItem = Identified cardId (mockCard "Strike")
+        let actorState = emptyActorState & #coreState . #deck .~ [drawCardItem]
+        let game1 = addActor actorId actorState game0
+
+        let challengeId = ChallengeId (read "00000000-0000-0000-0000-000000000099")
+
+        -- 1. AddConsequence carrying ChallengeId
+        let ((game2, _, _, newLogs), gen2) =
+              runState (processCommand (Req.AddConsequence actorId (Just 1) (Just challengeId)) game1) gen
+
+        case filter (\l -> case l.payload of LogConsequence{} -> True; _ -> False) newLogs of
+          [conseqLog] -> do
+            case conseqLog.payload of
+              LogConsequence aid mCid c -> do
+                aid @?= actorId
+                mCid @?= Just challengeId
+                c.content.name @?= fromJust (mkNonEmptyText "Bleeding")
+                c.content.severity @?= 1
+                -- Verify JSON serialization includes structured fields
+                assertBool "JSON contains challengeId" ("challengeId" `isInfixOf` show (encode conseqLog.payload))
+                assertBool
+                  "JSON contains logConsequence"
+                  ("logConsequence" `isInfixOf` show (encode conseqLog.payload))
+              _ -> assertBool "Expected LogConsequence" False
+          _ -> assertBool "Expected LogConsequence in newLogs" False
+
+        -- 2. DrawCards emits LogCardDrawn with actorId and full card
+        let ((_, _, _, drawLogs), _) =
+              runState (processCommand (Req.DrawCards actorId) game2) gen2
+
+        case filter (\l -> case l.payload of LogCardDrawn{} -> True; _ -> False) drawLogs of
+          [drawLog] -> do
+            case drawLog.payload of
+              LogCardDrawn aid c -> do
+                aid @?= actorId
+                c.id @?= cardId
+                c.content.name @?= fromJust (mkNonEmptyText "Strike")
+                assertBool "JSON contains logCardDrawn" ("logCardDrawn" `isInfixOf` show (encode drawLog.payload))
+              _ -> assertBool "Expected LogCardDrawn" False
+          _ -> assertBool "Expected LogCardDrawn in drawLogs" False
     ]
 
 -- Helpers
+
+mockConsCard :: Text -> Int -> ConsequenceCard
+mockConsCard name' sev =
+  ConsequenceCard
+    { name = fromJust (mkNonEmptyText name')
+    , tags = Nothing
+    , passive = Nothing
+    , effects = Nothing
+    , severity = sev
+    , notes = Nothing
+    , rules = Nothing
+    }
 
 -- Helper to match constructor names for easier assertion
 toConstr :: GameEvent -> String

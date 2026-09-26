@@ -242,7 +242,7 @@ checkPermission role cmd =
         Req.Reshuffle aid -> aid == actorId
         Req.AddStatus aid _ _ -> aid == actorId
         Req.DestroyStatus aid _ _ -> aid == actorId
-        Req.AddConsequence aid _ -> aid == actorId
+        Req.AddConsequence aid _ _ -> aid == actorId
         Req.DestroyConsequence aid _ -> aid == actorId
         Req.DiscardCards aid _ -> aid == actorId
         Req.ReturnToDeck aid _ -> aid == actorId
@@ -278,7 +278,7 @@ handleGameCommand client state cmd = do
         Req.Reshuffle _ -> pure (Left "Permission denied")
         Req.AddStatus{} -> pure (Left "Permission denied")
         Req.DestroyStatus{} -> pure (Left "Permission denied")
-        Req.AddConsequence _ _ -> pure (Left "Permission denied")
+        Req.AddConsequence{} -> pure (Left "Permission denied")
         Req.DestroyConsequence _ _ -> pure (Left "Permission denied")
         Req.DiscardCards _ _ -> pure (Left "Permission denied")
         Req.ReturnToDeck _ _ -> pure (Left "Permission denied")

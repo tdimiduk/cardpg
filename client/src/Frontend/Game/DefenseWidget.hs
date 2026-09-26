@@ -222,7 +222,7 @@ defenseWidget targetDyn actorDyn = do
       -- 5. Action Bar
       actionEvts <-
         divS actionBar $
-          defenseActionBar actorDyn
+          defenseActionBar targetDyn actorDyn
 
       -- 6. Footer
       endEvt <- defenseFooter
@@ -453,10 +453,12 @@ renderDefenseCardChip (Identified _ card) =
 -- | Two-column action bar: Flip Card + Take Consequence.
 defenseActionBar
   :: (GameWidget t m)
-  => Dynamic t ActorState
+  => Dynamic t DefenseTarget
+  -> Dynamic t ActorState
   -> m (Event t DefenseAction)
-defenseActionBar _actorDyn = do
+defenseActionBar targetDyn _actorDyn = do
   let nextSevDyn = ffor _actorDyn (computeNextSeverity . (.tableState))
+      cidDyn = fmap (\t -> t.challenge.id) targetDyn
 
   -- Flip Card button (primary defense action)
   flipEvt <-
@@ -488,6 +490,8 @@ defenseActionBar _actorDyn = do
             text "Sev "
             dynText (fmap tshow nextSevDyn)
 
+    let takeAutoConsEvt = tagPromptlyDyn (fmap (TakeConsequence Nothing . Just) cidDyn) mainConsEvt
+
     -- Severity override mini-buttons [3, 2, 1]
     sevEvts <- divS (S.flexCol <> S.w S.S5) $ do
       evts <-
@@ -498,12 +502,12 @@ defenseActionBar _actorDyn = do
                   "button"
                   ("class" =: classNames severityMiniBtn)
                   $ text (tshow sev)
-              return (TakeConsequence (Just sev) <$ domEvent Click e)
+              return (tagPromptlyDyn (fmap (TakeConsequence (Just sev) . Just) cidDyn) (domEvent Click e))
           )
           [3 :: Int, 2, 1]
       return (leftmost evts)
 
-    return $ leftmost [TakeConsequence Nothing <$ mainConsEvt, sevEvts]
+    return $ leftmost [takeAutoConsEvt, sevEvts]
 
   return $ leftmost [FlipCard <$ flipEvt, conseqEvts]
 

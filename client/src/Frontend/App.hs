@@ -619,8 +619,8 @@ defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEv
     toDefenseRequest actorId target = \case
       FlipCard ->
         Just (Req.Defend actorId target.challenge.id)
-      TakeConsequence mSev ->
-        Just (Req.AddConsequence actorId mSev)
+      TakeConsequence mSev mCid ->
+        Just (Req.AddConsequence actorId mSev mCid)
       EndDefense ->
         Just (Req.EndDefense actorId)
       ClosePanel ->

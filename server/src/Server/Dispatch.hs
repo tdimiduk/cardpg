@@ -3,6 +3,7 @@ module Server.Dispatch
   ) where
 
 import Control.Monad.State (State, state)
+import Data.Bifunctor (first)
 import Data.Map.Strict qualified as Map
 import System.Random (StdGen)
 import System.Random.Stateful (uniform)
@@ -16,6 +17,7 @@ import Core.State
   ( ActiveChallenge (..)
   , ActorState (..)
   , ChallengeSource (..)
+  , GameEvent (..)
   , PlannedAction (PPass)
   )
 import Data.Text (Text, pack)
@@ -63,14 +65,16 @@ processCommand cmd game =
     EndRound -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
-      let newGameWithPhase = gameWithPlan{phase = Planning}
+      let newRound = game.roundNumber + 1
+      let newGameWithPhase = gameWithPlan{phase = Planning, roundNumber = newRound}
+      let roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
       let payloads =
             concatMap
-              (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGame)
-              roundEvents
+              (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGameWithPhase)
+              (roundEvents ++ [roundStartEvent])
       newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
       let finalGame = newGameWithPhase{history = game.history ++ newLogs}
-      return (finalGame, Right updates, planEvents ++ roundEvents, newLogs)
+      return (finalGame, Right updates, planEvents ++ roundEvents ++ [roundStartEvent], newLogs)
     SendChat maybeAid content -> do
       case parseChatCommand content of
         CmdChallenge (ChallengeDetails color val name desc) -> do
@@ -146,7 +150,31 @@ processCommand cmd game =
     Reshuffle tid -> runStandard tid Logic.reshuffleDeck
     AddStatus tid st dest -> runStandard tid (Logic.addStatus st dest)
     DestroyStatus tid st cid -> runStandard tid (Logic.destroyStatus st cid)
-    AddConsequence tid sev -> runStandard tid (Logic.addConsequence sev)
+    AddConsequence tid sev maybeCid -> do
+      (maybeEvents, newGame) <- runActorAction tid (Logic.addConsequence sev) game
+      case maybeEvents of
+        Nothing -> return (game, Right [], [], []) -- Actor missing or no action
+        Just events -> do
+          let
+            updatedActorState = case Map.lookup tid newGame.actors of
+              Just a -> a
+              Nothing -> error "Actor missing after update"
+
+            actorEvents = map (ActorGameEvent (Just tid)) events
+            stateUpdates = [StateUpdate tid updatedActorState]
+
+            overrideCid (LogConsequence aid Nothing c) | aid == tid = LogConsequence aid maybeCid c
+            overrideCid p = p
+
+            payloads =
+              map (first overrideCid) $
+                concatMap (\evt -> eventToLogs (Just tid) evt newGame) events
+
+          newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
+
+          let finalGame = newGame{history = game.history ++ newLogs}
+
+          return (finalGame, Right stateUpdates, actorEvents, newLogs)
     DestroyConsequence tid cid -> runStandard tid (Logic.destroyConsequence cid)
     ReturnToDeck tid cids -> runStandard tid (Logic.returnCardsToDeck cids)
     Pass tid -> runStandard tid Logic.passAction
@@ -166,10 +194,10 @@ processCommand cmd game =
               Just a -> a
               Nothing -> error "Actor missing after update"
 
-            actorEvents = map (ActorGameEvent targetId) events
+            actorEvents = map (ActorGameEvent (Just targetId)) events
             stateUpdates = [StateUpdate targetId updatedActorState]
 
-            payloads = concatMap (\evt -> eventToLogs targetId evt newGame) events
+            payloads = concatMap (\evt -> eventToLogs (Just targetId) evt newGame) events
 
           newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
 

@@ -8,6 +8,7 @@ import Data.Text (Text)
 
 import Core.Card (CardInstance, CoreCard)
 import Core.Logic.Combat (computeDefenseDetails)
+import Core.Primitives (ChallengeId)
 import Core.State
   ( ActiveChallenge
   , ActorState
@@ -29,8 +30,8 @@ data DefenseTarget = DefenseTarget
 data DefenseAction
   = -- | Flip the top card of the deck as a defense card
     FlipCard
-  | -- | Accept consequences; optional severity override
-    TakeConsequence (Maybe Int)
+  | -- | Accept consequences; optional severity override and challenge id
+    TakeConsequence (Maybe Int) (Maybe ChallengeId)
   | -- | Finalize and end the active defense
     EndDefense
   | -- | Close the panel UI without ending the defense

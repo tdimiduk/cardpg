@@ -217,6 +217,8 @@ data GameEvent
     ConsequenceAdded (CardInstance ConsequenceCard)
   | -- | Card ID/Name
     ConsequenceRemoved Text
+  | -- | Round number
+    RoundStarted Int
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)

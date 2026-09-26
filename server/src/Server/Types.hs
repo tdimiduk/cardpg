@@ -69,6 +69,7 @@ data GameState = GameState
   , phase :: Phase
   , history :: [LogEntry]
   , mapMode :: Maybe MapMode
+  , roundNumber :: Int
   }
   deriving (Show, Generic)
 
