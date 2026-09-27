@@ -221,7 +221,7 @@ tests =
           "Contains th and td"
           ("<th" `T.isInfixOf` html && "<td" `T.isInfixOf` html && "Attack" `T.isInfixOf` html)
     , testCase "Interactive mode executes cleanly" $ do
-        let env = RenderEnv{glossary = mkGlossary mempty, renderMode = RenderInteractive}
+        let env = RenderEnv{glossary = mkGlossary mempty, renderMode = RenderInteractive, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env samplePandocDoc)
         let html = decodeUtf8 htmlBytes
         assertBool "Renders content in interactive mode" ("Core Rules" `T.isInfixOf` html)
@@ -241,7 +241,7 @@ tests =
                     , Str "."
                     ]
                 ]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env doc)
         let html = decodeUtf8 htmlBytes
         assertBool
@@ -265,7 +265,7 @@ tests =
                     , Str "!"
                     ]
                 ]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env doc)
         let html = decodeUtf8 htmlBytes
         assertBool
@@ -287,7 +287,7 @@ tests =
                     , Str "."
                     ]
                 ]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env doc)
         let html = decodeUtf8 htmlBytes
         assertBool
@@ -311,7 +311,7 @@ tests =
                     , Str ")."
                     ]
                 ]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env doc)
         let html = decodeUtf8 htmlBytes
         assertBool "Keyword link has comma outside tag" (">Keyword</a>," `T.isInfixOf` html)
@@ -336,7 +336,7 @@ tests =
                     , Str "."
                     ]
                 ]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderStatic, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env doc)
         let html = decodeUtf8 htmlBytes
         assertBool
@@ -349,7 +349,7 @@ tests =
               Pandoc
                 nullMeta
                 [Para [Str "Activate", Space, Link ("", ["wikilink"], []) [Str "Action"] ("Action", ""), Str "."]]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderInteractive}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderInteractive, activeKeyword = Nothing}
         (_, htmlBytes) <- renderStatic (renderPandoc env doc)
         let html = decodeUtf8 htmlBytes
         assertBool "Contains game-kw-interactive wrap" ("game-kw-interactive" `T.isInfixOf` html)
@@ -381,7 +381,7 @@ tests =
               Pandoc
                 nullMeta
                 [Para [Str "Uses", Space, Link ("", ["wikilink"], []) [Str "Blue"] ("Blue", ""), Str "."]]
-            env = RenderEnv{glossary = testGlossary, renderMode = RenderInteractive}
+            env = RenderEnv{glossary = testGlossary, renderMode = RenderInteractive, activeKeyword = Nothing}
         (_, htmlRedBytes) <- renderStatic (renderPandoc env docRed)
         (_, htmlYellowBytes) <- renderStatic (renderPandoc env docYellow)
         (_, htmlBlueBytes) <- renderStatic (renderPandoc env docBlue)

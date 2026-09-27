@@ -8,6 +8,7 @@ module Frontend.Rules.Viewer
   ( RulesTab (..)
   , rulesViewerWidget
   , rulesViewerWidgetWithInitialTab
+  , rulesViewerWidgetWithConfig
   , rulesViewerModal
   , rulesViewerModalWithTab
   ) where
@@ -52,7 +53,21 @@ rulesViewerWidgetWithInitialTab
   => RulesTab
   -> Event t ()
   -> m (Event t ())
-rulesViewerWidgetWithInitialTab initialTab externalClose = do
+rulesViewerWidgetWithInitialTab initialTab =
+  rulesViewerWidgetWithConfig initialTab Nothing
+
+-- | Rules viewer modal with a specified initial active tab and optional mock active keyword.
+rulesViewerWidgetWithConfig
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     )
+  => RulesTab
+  -> Maybe Text
+  -> Event t ()
+  -> m (Event t ())
+rulesViewerWidgetWithConfig initialTab mActiveKw externalClose = do
   let overlayStyle =
         S.fixed
           <> S.inset0
@@ -164,7 +179,7 @@ rulesViewerWidgetWithInitialTab initialTab externalClose = do
             )
             $ do
               divS (S.maxW4Xl <> S.mxAuto) $ do
-                let env = RenderEnv{glossary = glossary, renderMode = RenderInteractive}
+                let env = RenderEnv{glossary = glossary, renderMode = RenderInteractive, activeKeyword = mActiveKw}
                 dyn_ $ ffor activeTabDyn $ \tab -> do
                   let docAst = lookupDoc tab
                   renderPandoc env docAst

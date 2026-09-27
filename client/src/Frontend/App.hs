@@ -641,3 +641,48 @@ headWidget = do
   elAttr "link" ("rel" =: "stylesheet" <> "href" =: "https://unpkg.com/open-props") blank
   elAttr "link" ("href" =: "base.css" <> "rel" =: "stylesheet") blank
   elAttr "link" ("href" =: "atomic.css" <> "rel" =: "stylesheet") blank
+  el "script" $
+    text
+      "(function() {\n\
+      \  function adjustKw(kw) {\n\
+      \    if (!kw) return;\n\
+      \    var tooltip = kw.querySelector('.game-kw-tooltip');\n\
+      \    if (!tooltip) return;\n\
+      \    var container = kw.closest('.rules-content') || kw.closest('.obsidian-panel') || document.body;\n\
+      \    var kwRect = kw.getBoundingClientRect();\n\
+      \    var cRect = container.getBoundingClientRect();\n\
+      \    var tooltipWidth = tooltip.offsetWidth || 288;\n\
+      \    if (kwRect.left + tooltipWidth > cRect.right - 16) {\n\
+      \      kw.classList.add('kw-align-right');\n\
+      \    } else {\n\
+      \      kw.classList.remove('kw-align-right');\n\
+      \    }\n\
+      \    if (kwRect.top - (tooltip.offsetHeight || 150) < cRect.top + 16) {\n\
+      \      kw.classList.add('kw-align-bottom');\n\
+      \    } else {\n\
+      \      kw.classList.remove('kw-align-bottom');\n\
+      \    }\n\
+      \  }\n\
+      \  document.addEventListener('mouseover', function(e) {\n\
+      \    var kw = e.target.closest('.game-kw-interactive');\n\
+      \    if (kw) adjustKw(kw);\n\
+      \  }, { passive: true });\n\
+      \  document.addEventListener('focusin', function(e) {\n\
+      \    var kw = e.target.closest('.game-kw-interactive');\n\
+      \    if (kw) adjustKw(kw);\n\
+      \  }, { passive: true });\n\
+      \  function adjustAllActive() {\n\
+      \    document.querySelectorAll('.game-kw-interactive.active-kw').forEach(adjustKw);\n\
+      \  }\n\
+      \  if (document.readyState === 'loading') {\n\
+      \    document.addEventListener('DOMContentLoaded', adjustAllActive);\n\
+      \  } else {\n\
+      \    adjustAllActive();\n\
+      \  }\n\
+      \  if (typeof MutationObserver !== 'undefined') {\n\
+      \    var obs = new MutationObserver(function() {\n\
+      \      adjustAllActive();\n\
+      \    });\n\
+      \    obs.observe(document.documentElement, { childList: true, subtree: true });\n\
+      \  }\n\
+      \})();"

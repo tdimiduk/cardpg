@@ -62,7 +62,7 @@ renderInline (Wikilink target mLabel) =
   let targetTxt = getRawText target
       displayTxt = maybe targetTxt getRawText mLabel
       mEntry = lookupGlossary targetTxt glossary
-      env = RenderEnv{glossary = glossary, renderMode = RenderInteractive}
+      env = RenderEnv{glossary = glossary, renderMode = RenderInteractive, activeKeyword = Nothing}
    in renderInteractiveWikilinkText env targetTxt displayTxt mEntry
 renderInline (MarkdownLink target label) =
   elAttr "a" ("href" =: getRawText target) $ text (getRawText label)

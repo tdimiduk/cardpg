@@ -28,7 +28,6 @@ module Frontend.Style.DSL
   , topFull
   ) where
 
-import Reflex.AtomicCss.Core (Style, css)
 import Reflex.AtomicCss.DSL
 
 wCard :: Style
@@ -97,7 +96,7 @@ groupHoverBlock :: Style
 groupHoverBlock =
   customSelector
     "group-hover:block"
-    ".group:hover .group-hover\\:block, .group:focus-within .group-hover\\:block"
+    ".group:hover .group-hover\\:block, .group:focus-within .group-hover\\:block, .group.active-kw .group-hover\\:block"
     [("display", "block")]
 
 bottomFull :: Style

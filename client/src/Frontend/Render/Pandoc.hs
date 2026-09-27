@@ -74,6 +74,7 @@ data RenderMode = RenderStatic | RenderInteractive
 data RenderEnv = RenderEnv
   { glossary :: Glossary
   , renderMode :: RenderMode
+  , activeKeyword :: Maybe Text
   }
   deriving (Show, Eq)
 
@@ -83,6 +84,7 @@ defaultRenderEnv mode =
   RenderEnv
     { glossary = mkGlossary mempty
     , renderMode = mode
+    , activeKeyword = Nothing
     }
 
 --------------------------------------------------------------------------------
@@ -272,7 +274,8 @@ kwBadgeStyle =
 
 tooltipCardStyle :: S.Style
 tooltipCardStyle =
-  S.absolute
+  S.cls "game-kw-tooltip"
+    <> S.absolute
     <> S.z 50
     <> S.hidden
     <> S.groupHoverBlock
@@ -544,11 +547,16 @@ renderInteractiveWikilink
 renderInteractiveWikilink env target inlines mEntry = do
   let catName = maybe "Keyword" (.category) mEntry
       mActionColor = termActionColor target mEntry
+      isActive = case env.activeKeyword of
+        Nothing -> False
+        Just "all" -> True
+        Just kw -> kw == target
       wrapStyle =
         S.relative
           <> S.inlineBlock
           <> S.cls "group"
           <> S.cursorPointer
+          <> (if isActive then S.cls "active-kw" else mempty)
       displayName = case mEntry of
         Just entry | entry.canonical /= target -> entry.canonical <> " (" <> target <> ")"
         _ -> target

@@ -7,7 +7,7 @@
 module Main where
 
 import Control.Exception (SomeException, catch)
-import Control.Monad (forM, forM_, unless, when)
+import Control.Monad (forM, forM_, unless, void, when)
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO)
 import Data.Aeson (Result (..), Value (..), eitherDecodeFileStrict, fromJSON, toJSON)
@@ -91,6 +91,8 @@ import Server.Types (StorageBackend (..))
 
 import Core.Glossary (glossary)
 import Frontend.Render.Pandoc (RenderEnv (..), RenderMode (..), renderPandoc)
+import Frontend.Rules.Data (RulesTab (..))
+import Frontend.Rules.Viewer (rulesViewerWidgetWithConfig)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
@@ -198,7 +200,7 @@ main = do
       let outDir = fromMaybe opts.outputDir mOutDir
           opts' = opts{outputDir = outDir}
       setupOutputDir outDir
-      generateRules opts' ns
+      generateRules opts' ns (isJust mOutDir)
     SyncExport -> do
       setupOutputDir opts.outputDir
       runSyncExport opts
@@ -374,6 +376,9 @@ generateGame opts path skipSnapshot = do
     genWith (mockGameWidgetWithDeckView gameState) (playerActorName <> "_deckview")
     genWith (mockGameWidgetWithDiscardView gameState) (playerActorName <> "_discardview")
     genWith (mockGameWidgetWithDefense gameState) (playerActorName <> "_defense")
+    genWith
+      (mockGameWidgetWithRulesView gameState TabCoreRules (Just "Passive"))
+      (playerActorName <> "_rulesview")
 
   -- 1. No Actor Selected (both phases)
   gen "none_planning" Nothing Planning
@@ -584,6 +589,33 @@ mockGameWidgetWithDefense gameState = do
 
       mockGameWidget Nothing (Just aid) gameState' Resolution
 
+-- | Specialized mock widget that overlays the Rules Viewer modal with an optional active keyword popup
+mockGameWidgetWithRulesView
+  :: ( DomBuilder t m
+     , PostBuild t m
+     , MonadHold t m
+     , MonadFix m
+     , Adjustable t m
+     , MonadIO m
+     , Prerender t m
+     )
+  => GameState
+  -> RulesTab
+  -> Maybe Text
+  -> m ()
+mockGameWidgetWithRulesView gameState tab mActiveKw = do
+  let mVallhach = List.find (\(_, a) -> a.name == "vallhach" || a.name == "Vallhach") (Map.toList gameState.actors)
+      mFirstActor = List.uncons (Map.toList gameState.actors)
+      (actorId, _) = case mVallhach of
+        Just (aid, a) -> (Just aid, a)
+        Nothing -> case mFirstActor of
+          Just ((aid, a), _) -> (Just aid, a)
+          Nothing -> (Nothing, error "No actors found in game state for rules view preview")
+
+  mockGameWidget Nothing actorId gameState Planning
+  _ <- rulesViewerWidgetWithConfig tab mActiveKw never
+  return ()
+
 deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
 deckWidget actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
@@ -605,11 +637,11 @@ ruleDocs =
   , RuleDoc "Colors of Action" "colors.json" "colors.html"
   ]
 
-generateRules :: Options -> Bool -> IO ()
-generateRules opts skipSnapshot = do
+generateRules :: Options -> Bool -> Bool -> IO ()
+generateRules opts skipSnapshot isCustomOutDir = do
   unless opts.quiet $ putStrLn "Generating static rules documentation..."
 
-  let env = RenderEnv{glossary = glossary, renderMode = RenderStatic}
+  let env = RenderEnv{glossary = glossary, renderMode = RenderStatic, activeKeyword = Nothing}
   forM_ ruleDocs $ \doc -> do
     let astCandidates =
           [ opts.outputDir </> doc.astJsonPath
@@ -641,6 +673,20 @@ generateRules opts skipSnapshot = do
                   outPng = opts.outputDir </> takeBaseName doc.outHtmlName <> ".png"
               takeScreenshot absHtml outPng 1200 1600
               unless opts.quiet $ putStrLn $ "Snapshot saved to " <> outPng
+
+  -- Also generate an in-app rules viewer modal snapshot with the active keyword popup when not compiling docs to static
+  unless isCustomOutDir $ do
+    let modalOutHtml = opts.outputDir </> "rules_viewer_modal.html"
+        modalOutPng = opts.outputDir </> "rules_viewer_modal.png"
+    writeStaticPage
+      modalOutHtml
+      (void (rulesViewerWidgetWithConfig TabCoreRules (Just "Passive") never))
+    unless skipSnapshot $ do
+      unless opts.quiet $ putStrLn "Taking screenshot for rules viewer modal..."
+      currentDir <- getCurrentDirectory
+      let absHtml = currentDir </> modalOutHtml
+      takeScreenshot absHtml modalOutPng 1920 1080
+      unless opts.quiet $ putStrLn $ "Snapshot saved to " <> modalOutPng
 
 findFirstFile :: [FilePath] -> IO (Maybe FilePath)
 findFirstFile [] = pure Nothing

@@ -71,6 +71,11 @@ tests =
             (_, htmlBytes) <- renderStatic (rulesViewerModal =<< getPostBuild)
             let html = decodeUtf8 htmlBytes
             assertBool "Renders modal on open event" ("rules-viewer-modal" `T.isInfixOf` html)
+        , testCase "rulesViewerWidgetWithConfig marks target keyword active-kw with game-kw-tooltip" $ do
+            (_, htmlBytes) <- renderStatic (rulesViewerWidgetWithConfig TabCoreRules (Just "Passive") never)
+            let html = decodeUtf8 htmlBytes
+            assertBool "Contains active-kw on target keyword" ("active-kw" `T.isInfixOf` html)
+            assertBool "Contains game-kw-tooltip class" ("game-kw-tooltip" `T.isInfixOf` html)
         ]
     , testGroup
         "Frontend.Render.Rules (Card Keyword Tooltip Unification)"
