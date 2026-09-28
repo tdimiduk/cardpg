@@ -7,6 +7,7 @@ module Server.Session where
 import Data.Map qualified as Map
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
+import System.FilePath (takeBaseName)
 import System.Random (StdGen, mkStdGen, newStdGen)
 
 import Core.Card (ConsequenceCard (..), CoreCard (..))
@@ -21,12 +22,13 @@ import Server.Types (CardLibrary (..), GameState (..), StorageBackend)
 -- If `forceReset` is True, it will ignore DB state and load from scenario/saved-game.
 initGame :: StorageBackend -> Config -> CardLibrary -> Bool -> IO (GameState, StdGen)
 initGame backend config lib forceReset = do
-  let defaultGameId = "default-game"
+  let gId = config.gameId
+      scenario = T.pack (takeBaseName config.scenarioFile)
 
   maybeLoaded <-
     if forceReset
       then return Nothing
-      else loadGame backend defaultGameId
+      else loadGame backend gId
 
   let hydrate gs =
         let env = gs.env
@@ -37,7 +39,7 @@ initGame backend config lib forceReset = do
 
   case maybeLoaded of
     Just loadedGs -> do
-      T.putStrLn "Loaded persisted game state."
+      T.putStrLn $ "Loaded persisted game state for session: " <> gId
       rng <- case config.seed of
         Just s -> return $ mkStdGen s
         Nothing -> newStdGen
@@ -58,5 +60,5 @@ initGame backend config lib forceReset = do
       let newGs = hydrate initialGs
 
       -- Persist key initial state
-      saveGame backend defaultGameId newGs
+      saveGame backend gId scenario newGs
       return (newGs, rng)

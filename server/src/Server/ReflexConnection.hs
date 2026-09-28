@@ -30,7 +30,10 @@ import Network.WebSockets
 import Data.ByteString.Lazy.Char8 qualified as BSL
 import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), mkTaggedResponse)
 
-import Server.DB (saveCustomCard)
+import System.FilePath (takeBaseName)
+
+import Server.Config (Config (..))
+import Server.DB (saveCustomCard, saveGame, saveGameEvents)
 import Server.Dispatch (processCommand)
 import Server.Types
   ( Client (..)
@@ -299,9 +302,17 @@ handleGameCommand client state cmd = do
         (ret, newLog) <- modifyMVar state $ \s -> do
           let game = s.gameState
           let rng = s.rng
-          let ((newGame, ret, _, newLogs), newRng) = runState (processCommand cmd game) rng
+          let ((newGame, ret, events, newLogs), newRng) = runState (processCommand cmd game) rng
 
           let s' = s{gameState = newGame, rng = newRng}
+
+          -- Persist events and latest game state
+          let backend = s.dbPool
+              gId = s.gameId
+              scenario = T.pack (takeBaseName s.config.scenarioFile)
+          saveGameEvents backend gId newGame.roundNumber events newLogs
+          saveGame backend gId scenario newGame
+
           return (s', (ret, newLogs))
 
         -- Broadcast updates to others

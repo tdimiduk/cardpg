@@ -33,6 +33,7 @@ library
     Server.ChatParser
     Server.Config
     Server.DB
+    Server.DB.Schema
     Server.Dispatch
     Server.Engine
     Server.Game

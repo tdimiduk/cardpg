@@ -2,7 +2,11 @@ module Server.Config where
 
 import Data.Char (toLower)
 import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+import Data.Text qualified as T
+import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import System.Environment (lookupEnv)
+import System.FilePath (takeBaseName)
 import System.IO (hPutStrLn, stderr)
 
 data DBConfig = DBConfig
@@ -22,6 +26,7 @@ data Config = Config
   , useInMemoryDB :: Bool
   , useGargoyle :: Bool
   , seed :: Maybe Int
+  , gameId :: Text
   }
   deriving (Show, Eq)
 
@@ -58,7 +63,17 @@ loadConfig = do
         Just s | map toLower s == "true" -> True
         _ -> False
 
+  -- Session ID Config
+  gameIdEnv <- lookupEnv "CARDPG_GAME_ID"
+  now <- getCurrentTime
+  let defaultSessionId =
+        T.pack (takeBaseName sFile)
+          <> "-"
+          <> T.pack (formatTime defaultTimeLocale "%Y%m%d-%H%M" now)
+      gId = maybe defaultSessionId T.pack gameIdEnv
+
   hPutStrLn stderr "Config Loaded:"
+  hPutStrLn stderr $ "  GAME_ID: " ++ T.unpack gId
   hPutStrLn stderr $ "  PORT: " ++ show port
   hPutStrLn stderr $ "  USE_IN_MEMORY_DB: " ++ show useInMem ++ " (env: " ++ show inMem ++ ")"
   hPutStrLn stderr $ "  USE_GARGOYLE: " ++ show useGargoyleVal ++ " (env: " ++ show gargoyle ++ ")"
@@ -79,4 +94,5 @@ loadConfig = do
       , useInMemoryDB = useInMem
       , useGargoyle = useGargoyleVal
       , seed = seedVal
+      , gameId = gId
       }

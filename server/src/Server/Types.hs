@@ -18,6 +18,7 @@ module Server.Types
   , addClient
   , removeClient
   , StorageBackend (..)
+  , InMemoryStorage (..)
   ) where
 
 import Data.Aeson
@@ -60,7 +61,8 @@ import Core.Card
 import Core.Json (cardpgJsonDef)
 import Core.Primitives (ActorId)
 import Core.State (ActorState, GameEnv, MapMode)
-import Server.Config (Config)
+import Server.Config (Config (..))
+import Server.DB.Schema (Game, GameEventRecord)
 
 -- | GameState depends on Phase and LogEntry from Api.Types
 data GameState = GameState
@@ -116,14 +118,29 @@ data ServerState = ServerState
   , dbPool :: StorageBackend
   , rng :: StdGen
   , config :: Config
+  , gameId :: Text
+  }
+
+data InMemoryStorage = InMemoryStorage
+  { inMemoryGames :: Map Text (GameState, Game)
+  , inMemoryEvents :: Map Text [GameEventRecord]
   }
 
 data StorageBackend
   = PostgresBackend (Pool Pg.Connection)
-  | InMemoryBackend (IORef (Map Text GameState))
+  | InMemoryBackend (IORef InMemoryStorage)
 
 newServerState :: StorageBackend -> GameState -> StdGen -> Config -> ServerState
-newServerState backend gs = ServerState Map.empty (CardLibrary [] [] [] [] []) gs backend
+newServerState backend gs rng cfg =
+  ServerState
+    { clients = Map.empty
+    , library = CardLibrary [] [] [] [] []
+    , gameState = gs
+    , dbPool = backend
+    , rng = rng
+    , config = cfg
+    , gameId = cfg.gameId
+    }
 
 -- | Helpers for managing server state
 clientExists :: UUID -> ServerState -> Bool

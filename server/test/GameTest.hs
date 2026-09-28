@@ -42,6 +42,16 @@ import Core.State
 import Core.Stats (ResourceType (..), StackPower (..))
 
 import Api.Request qualified as Req
+import Server.DB
+  ( SqlSerial (..)
+  , initInMemoryDB
+  , loadGame
+  , loadGameEvents
+  , loadGameRecord
+  , saveGame
+  , saveGameEvents
+  )
+import Server.DB.Schema (GameEventRecordT (..), GameT (..))
 import Server.Dispatch (processCommand)
 import Server.Engine (runActorAction)
 import Server.Game (GameState (..), addActor, emptyGame)
@@ -405,6 +415,80 @@ test_game =
                 assertBool "JSON contains logCardDrawn" ("logCardDrawn" `isInfixOf` show (encode drawLog.payload))
               _ -> assertBool "Expected LogCardDrawn" False
           _ -> assertBool "Expected LogCardDrawn in drawLogs" False
+    , testCase "State Persistence and Append-Only Event Table" $ do
+        let env =
+              GameEnv
+                { fatigueCardTemplate = mockCard "fatigue"
+                , statusCardTemplates = Map.empty
+                , consequenceCardTemplates = Map.empty
+                }
+        let gen = mkStdGen 100
+        let game0 = emptyGame env
+
+        let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
+        let cardId = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+        let card1 = Identified cardId (mockCard "c1")
+        let actorState = emptyActorState & #coreState . #deck .~ [card1]
+        let game1 = addActor actorId actorState game0
+
+        backend <- initInMemoryDB
+        let sessionId = "starter-20260926-0715"
+
+        -- 1. Initial save at session boot
+        saveGame backend sessionId "starter.yaml" game1
+
+        -- 2. Process command (Draw)
+        let ((game2, _, drawActions, drawLogs), gen2) = runState (processCommand (Req.DrawCards actorId) game1) gen
+        saveGameEvents backend sessionId game2.roundNumber drawActions drawLogs
+        saveGame backend sessionId "starter.yaml" game2
+
+        -- 3. Process command (EndRound -> increments round to 2)
+        let ((game3, _, roundActions, roundLogs), _) = runState (processCommand Req.EndRound game2) gen2
+        saveGameEvents backend sessionId game3.roundNumber roundActions roundLogs
+        saveGame backend sessionId "starter.yaml" game3
+
+        -- 4. Verify Server Restart: load latest state from DB
+        mLoaded <- loadGame backend sessionId
+        case mLoaded of
+          Nothing -> assertBool "Failed to load persisted game after restart" False
+          Just loadedGs -> do
+            loadedGs.roundNumber @?= 2
+            let loadedActor = loadedGs ^. #actors . at actorId
+            case loadedActor of
+              Nothing -> assertBool "Actor not found in loaded game" False
+              Just st -> do
+                assertBool "Drawn card is present in hand" (any (\c -> c.id == cardId) (st ^. #coreState . #hand))
+                length (st ^. #coreState . #hand) @?= 3
+
+        -- 5. Verify Game Record Metadata
+        mRec <- loadGameRecord backend sessionId
+        case mRec of
+          Nothing -> assertBool "Failed to load game record" False
+          Just gameRec -> do
+            gameRec.gameId @?= sessionId
+            gameRec.scenarioName @?= "starter.yaml"
+            gameRec.gameStatus @?= "Active"
+            gameRec.currentRound @?= 2
+
+        -- 6. Verify sequential events in append-only table
+        evts <- loadGameEvents backend sessionId
+        assertBool "Expected at least 2 events" (length evts >= 2)
+
+        -- Check first event is from round 1 (CardDrawn)
+        case evts of
+          firstEvt : _ -> do
+            firstEvt.eventId @?= SqlSerial 1
+            firstEvt.gameId @?= sessionId
+            firstEvt.roundNumber @?= 1
+            firstEvt.eventType @?= "CardDrawn"
+          [] -> assertBool "Expected events list to be non-empty" False
+
+        -- Check round 2 event (RoundStarted)
+        let round2Evts = filter (\e -> e.eventType == "RoundStarted") evts
+        case round2Evts of
+          [rEvt] -> do
+            rEvt.roundNumber @?= 2
+          _ -> assertBool "Expected exactly one RoundStarted event in round 2" False
     ]
 
 -- Helpers
