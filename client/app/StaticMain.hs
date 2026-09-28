@@ -71,7 +71,7 @@ import Core.State
   , PlannedAction (..)
   )
 import Core.Stats (ResourceType (..))
-import Data.Maybe (catMaybes, fromMaybe, listToMaybe)
+import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
 import Data.Set qualified as Set
 import Frontend.App (headWidget, uiWidget)
 import Frontend.Card

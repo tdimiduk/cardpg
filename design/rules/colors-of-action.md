@@ -1,8 +1,8 @@
-Every significant action in the game is associated with one of three [[Colors]]: Red, [[Yellow]], or Blue. This [[Color]] represents the core approach of the action—be it forceful, finessed, or planned. When you perform an action, its [[Color]] tells you which value on your cards to use. Use this document as a comprehensive guide to determine the [[Color]] of any action you wish to take.
+Every significant action in the game is associated with one of three [[Colors]]: [[Red]], [[Yellow]], or [[Blue]]. This [[Color]] represents the core approach of the action—be it forceful, finessed, or planned. When you perform an action, its [[Color]] tells you which value on your cards to use. Use this document as a comprehensive guide to determine the [[Color]] of any action you wish to take.
 
-- [[Red]]: Force, Endurance, Presence, Passion, Dominion
-- [[Yellow]]: Speed, Precision, Perception, Cunning, Finesse
-- [[Blue]]: Intellect, Planning, Discipline, Lore, Intrigue
+- [[Red]]\: Force, Endurance, Presence, Passion, Dominion
+- [[Yellow]]\: Speed, Precision, Perception, Cunning, Finesse
+- [[Blue]]\: Intellect, Planning, Discipline, Lore, Intrigue
 
 ### **Combat Pillar**
 
