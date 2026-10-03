@@ -16,10 +16,12 @@ widgetHoldE initial change = switch . current <$> widgetHold initial change
 
 -- | dyn that automatically flattens inner events.
 dynE
-  :: (Reflex t, Adjustable t m, NotReady t m, PostBuild t m, MonadHold t m)
+  :: (Reflex t, Adjustable t m, MonadHold t m, MonadSample t m)
   => Dynamic t (m (Event t a))
   -> m (Event t a)
-dynE d = dyn d >>= switchHold never
+dynE d = do
+  initial <- sample (current d)
+  widgetHoldE initial (updated d)
 
 -- | Statefully maps a list of items to stable, monotonic sequence numbers.
 -- Preserves the sequence number for items already in the list, and appends

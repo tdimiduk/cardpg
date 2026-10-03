@@ -3,7 +3,7 @@
 module Server.ReflexConnection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
-import Control.Exception (finally, try)
+import Control.Exception (SomeException, finally, try)
 import Control.Monad (forM_, forever, unless)
 import Control.Monad.State (runState)
 import Data.Aeson (Result (..), decode, encode, fromJSON)
@@ -28,7 +28,7 @@ import Network.WebSockets
   )
 
 import Data.ByteString.Lazy.Char8 qualified as BSL
-import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), mkTaggedResponse)
+import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), TaggedResponse, mkTaggedResponse)
 
 import System.FilePath (takeBaseName)
 
@@ -167,10 +167,17 @@ talk client socket state = forever $ do
   msgBytes <- receiveData (socket.socketConn)
   case decode msgBytes of
     Just taggedReq@(TaggedRequest _ _) -> do
-      result <- mkTaggedResponse taggedReq $ \r -> handleGameCommand client state r
-      case result of
-        Right resp -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
-        Left err ->
+      res <-
+        try (mkTaggedResponse taggedReq $ \r -> handleGameCommand client state r)
+          :: IO (Either SomeException (Either String TaggedResponse))
+      case res of
+        Left ex -> do
+          T.putStrLn $ "CRITICAL ERROR in handleGameCommand: " <> T.pack (show ex)
+          sendTextData
+            (socket.socketConn)
+            (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack (show ex)) ErrorSystem))
+        Right (Right resp) -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
+        Right (Left err) ->
           sendTextData
             (socket.socketConn)
             (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack err) ErrorSystem))

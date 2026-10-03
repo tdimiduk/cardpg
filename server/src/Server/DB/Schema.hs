@@ -99,7 +99,22 @@ data CardPGDB f = CardPGDB
   deriving anyclass (Database be)
 
 cardpgDb :: DatabaseSettings be CardPGDB
-cardpgDb = defaultDbSettings
+cardpgDb =
+  defaultDbSettings
+    `withDbModification` dbModification
+      { gameEvents =
+          setEntityName "events"
+            <> modifyTableFields
+              tableModification
+                { eventId = fieldNamed "id"
+                , gameId = fieldNamed "game_id"
+                , roundNumber = fieldNamed "round_number"
+                , eventTimestamp = fieldNamed "timestamp"
+                , actorId = fieldNamed "actor_id"
+                , eventType = fieldNamed "type"
+                , eventData = fieldNamed "data"
+                }
+      }
 
 annotatedDb :: AnnotatedDatabaseSettings Postgres CardPGDB
 annotatedDb = defaultAnnotatedDbSettings cardpgDb
