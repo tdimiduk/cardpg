@@ -19,6 +19,7 @@ module Server.Types
   , removeClient
   , StorageBackend (..)
   , InMemoryStorage (..)
+  , appendHistoryEntry
   ) where
 
 import Data.Aeson
@@ -77,6 +78,9 @@ data GameState = GameState
 
 $(deriveJSON cardpgJsonDef ''GameState)
 
+appendHistoryEntry :: LogEntry -> GameState -> GameState
+appendHistoryEntry entry gs = gs{history = gs.history ++ [entry]}
+
 -- | A wrapper for a WebSocket connection with a unique ID for management
 data ConnectedSocket = ConnectedSocket
   { socketId :: UUID
@@ -119,19 +123,21 @@ data ServerState = ServerState
   , rng :: StdGen
   , config :: Config
   , gameId :: Text
+  , checkpoints :: [GameState]
   }
 
 data InMemoryStorage = InMemoryStorage
   { inMemoryGames :: Map Text (GameState, Game)
   , inMemoryEvents :: Map Text [GameEventRecord]
+  , inMemorySnapshots :: Map Text [GameState]
   }
 
 data StorageBackend
   = PostgresBackend (Pool Pg.Connection)
   | InMemoryBackend (IORef InMemoryStorage)
 
-newServerState :: StorageBackend -> GameState -> StdGen -> Config -> ServerState
-newServerState backend gs rng cfg =
+newServerState :: StorageBackend -> GameState -> StdGen -> Config -> [GameState] -> ServerState
+newServerState backend gs rng cfg cps =
   ServerState
     { clients = Map.empty
     , library = CardLibrary [] [] [] [] []
@@ -140,6 +146,7 @@ newServerState backend gs rng cfg =
     , rng = rng
     , config = cfg
     , gameId = cfg.gameId
+    , checkpoints = cps
     }
 
 -- | Helpers for managing server state

@@ -420,6 +420,7 @@ mockGameWidget mStaging initialActorId gameState phaseSetting = do
           (constDyn MapModeGrid)
           (constDyn Map.empty)
           (constDyn Nothing)
+          (constDyn False)
   rec (_, _) <-
         runRequesterT
           (runGameT sessionState (uiWidget mStaging initialActorId (const (pure ())) (constDyn Nothing)))

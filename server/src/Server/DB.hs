@@ -16,9 +16,12 @@ module Server.DB
   , loadGameEvents
   , saveCustomCard
   , gameEventTypeName
+  , saveSnapshot
+  , loadSnapshots
+  , deleteLatestSnapshot
   ) where
 
-import Control.Monad (unless)
+import Control.Monad (forM_, unless)
 import Data.Aeson (Result (..), Value (..), fromJSON, toJSON)
 import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Int (Int32)
@@ -72,7 +75,7 @@ withGargoyleDB dbPath f = withDb dbPath $ \pool -> do
   f $ PostgresBackend pool
 
 initInMemoryDB :: IO StorageBackend
-initInMemoryDB = InMemoryBackend <$> newIORef (InMemoryStorage Map.empty Map.empty)
+initInMemoryDB = InMemoryBackend <$> newIORef (InMemoryStorage Map.empty Map.empty Map.empty)
 
 saveGame :: StorageBackend -> Text -> Text -> GameState -> IO ()
 saveGame (InMemoryBackend ref) gId scenario gs = do
@@ -303,3 +306,82 @@ saveCustomCard (PostgresBackend pool) card sourceFile author = do
           )
 
     return $ Right ()
+
+saveSnapshot :: StorageBackend -> Text -> GameState -> IO ()
+saveSnapshot (InMemoryBackend ref) gId gs = do
+  modifyIORef' ref $ \st ->
+    let existing = Map.findWithDefault [] gId st.inMemorySnapshots
+        updated = take 20 (gs : existing)
+     in st{inMemorySnapshots = Map.insert gId updated st.inMemorySnapshots}
+saveSnapshot (PostgresBackend pool) gId gs = do
+  now <- getCurrentTime
+  let rNum = fromIntegral gs.roundNumber :: Int32
+      ph = T.pack (show gs.phase)
+      snapshotVal = PgJSONB (toJSON gs)
+  withResource pool $ \conn -> do
+    runBeamPostgres conn $ do
+      runInsert $
+        insert (gameSnapshots cardpgDb) $
+          insertExpressions
+            [ GameSnapshot
+                default_
+                (val_ gId)
+                (val_ rNum)
+                (val_ ph)
+                (val_ now)
+                (val_ snapshotVal)
+            ]
+      -- Prune to keep at most 20 snapshots in DB
+      snapshots <-
+        runSelectReturningList $
+          select $
+            orderBy_ (\s -> desc_ s.snapshotId) $
+              filter_ (\s -> s.gameId ==. val_ gId) (all_ (gameSnapshots cardpgDb))
+      let toDelete = drop 20 snapshots
+      forM_ toDelete $ \oldRec ->
+        runDelete $
+          delete (gameSnapshots cardpgDb) (\s -> s.snapshotId ==. val_ oldRec.snapshotId)
+
+loadSnapshots :: StorageBackend -> Text -> IO [GameState]
+loadSnapshots (InMemoryBackend ref) gId = do
+  st <- readIORef ref
+  return $ Map.findWithDefault [] gId st.inMemorySnapshots
+loadSnapshots (PostgresBackend pool) gId = do
+  withResource pool $ \conn -> do
+    records <-
+      runBeamPostgres conn $
+        runSelectReturningList $
+          select $
+            limit_ 20 $
+              orderBy_ (\s -> desc_ s.snapshotId) $
+                filter_ (\s -> s.gameId ==. val_ gId) (all_ (gameSnapshots cardpgDb))
+    let decodeSnapshot snapRec =
+          let (PgJSONB val) = snapRec.snapshotData
+           in case fromJSON val of
+                Success gs -> Just gs
+                Error _ -> Nothing
+    return (mapMaybe decodeSnapshot records)
+
+deleteLatestSnapshot :: StorageBackend -> Text -> IO ()
+deleteLatestSnapshot (InMemoryBackend ref) gId = do
+  modifyIORef' ref $ \st ->
+    let existing = Map.findWithDefault [] gId st.inMemorySnapshots
+        updated = case existing of
+          [] -> []
+          (_ : rest) -> rest
+     in st{inMemorySnapshots = Map.insert gId updated st.inMemorySnapshots}
+deleteLatestSnapshot (PostgresBackend pool) gId = do
+  withResource pool $ \conn -> do
+    mLatest <-
+      runBeamPostgres conn $
+        runSelectReturningOne $
+          select $
+            limit_ 1 $
+              orderBy_ (\s -> desc_ s.snapshotId) $
+                filter_ (\s -> s.gameId ==. val_ gId) (all_ (gameSnapshots cardpgDb))
+    case mLatest of
+      Nothing -> return ()
+      Just latestRec ->
+        runBeamPostgres conn $
+          runDelete $
+            delete (gameSnapshots cardpgDb) (\s -> s.snapshotId ==. val_ latestRec.snapshotId)

@@ -42,6 +42,9 @@ import Core.State
 import Core.Stats (ResourceType (..), StackPower (..))
 
 import Api.Request qualified as Req
+import Api.Types (ClientRole (..))
+import Control.Concurrent (newMVar, readMVar)
+import Server.Config (Config (..), DBConfig (..))
 import Server.DB
   ( SqlSerial (..)
   , initInMemoryDB
@@ -55,13 +58,18 @@ import Server.DB.Schema (GameEventRecordT (..), GameT (..))
 import Server.Dispatch (processCommand)
 import Server.Engine (runActorAction)
 import Server.Game (GameState (..), addActor, emptyGame)
+import Server.ReflexConnection (checkPermission, handleGameCommand)
 import Server.Types
   ( ActorGameEvent (..)
+  , Client (..)
   , LogEntry (..)
   , LogId (..)
   , LogPayload (..)
   , LogSender (..)
+  , Phase (..)
+  , ServerState (..)
   , StateUpdate (..)
+  , newServerState
   )
 
 test_game :: TestTree
@@ -489,6 +497,127 @@ test_game =
           [rEvt] -> do
             rEvt.roundNumber @?= 2
           _ -> assertBool "Expected exactly one RoundStarted event in round 2" False
+    , testCase "Phase Transition Checkpointing and GM Undo" $ do
+        backend <- initInMemoryDB
+        let consCard = mockConsCard "Bleeding" 1
+        let env =
+              GameEnv
+                { fatigueCardTemplate = mockCard "fatigue"
+                , statusCardTemplates = Map.empty
+                , consequenceCardTemplates = Map.singleton "Bleeding" consCard
+                }
+        let gen = mkStdGen 42
+        let game0 = emptyGame env
+        let actorId = ActorId (read "00000000-0000-0000-0000-000000000001")
+        let cardId = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
+        let deck = [Identified cardId (mockCard "test")]
+        let actorState = emptyActorState & #coreState . #deck .~ deck
+        let game1 = addActor actorId actorState game0
+
+        let gmCid = read "00000000-0000-0000-0000-000000000010"
+        let playerCid = read "00000000-0000-0000-0000-000000000020"
+        let gmClient = Client gmCid "GM" RoleGM []
+        let playerClient = Client playerCid "Player" (RolePlayer actorId) []
+
+        let cfg =
+              Config
+                { dbConfig = DBConfig "" "" "" ""
+                , serverPort = 3004
+                , cardsDir = "data/cards"
+                , scenarioFile = "data/scenarios/starter.yaml"
+                , savedGameFile = Nothing
+                , useInMemoryDB = True
+                , useGargoyle = False
+                , seed = Just 42
+                , gameId = "test-undo-game"
+                }
+
+        let initState =
+              (newServerState backend game1 gen cfg [])
+                { clients = Map.fromList [(gmCid, gmClient), (playerCid, playerClient)]
+                }
+        stateMVar <- newMVar initState
+
+        -- 1. Test checkPermission
+        checkPermission RoleGM Req.UndoPhase @?= True
+        checkPermission (RolePlayer actorId) Req.UndoPhase @?= False
+        checkPermission RoleUnassigned Req.UndoPhase @?= False
+
+        -- 2. Non-GM calling UndoPhase receives Permission Denied
+        nonGmRes <- handleGameCommand playerClient stateMVar Req.UndoPhase
+        nonGmRes @?= Left "Permission denied"
+
+        -- 3. GM calling UndoPhase with no checkpoints receives error
+        emptyUndoRes <- handleGameCommand gmClient stateMVar Req.UndoPhase
+        emptyUndoRes @?= Left "No phase checkpoint to undo."
+
+        -- 4. GM transitions Planning -> Resolution
+        res1 <- handleGameCommand gmClient stateMVar Req.StartResolution
+        case res1 of
+          Left err -> assertBool ("Failed StartResolution: " ++ show err) False
+          Right _ -> return ()
+
+        sAfterRes <- readMVar stateMVar
+        sAfterRes.gameState.phase @?= Resolution
+        length sAfterRes.checkpoints @?= 1
+        (head sAfterRes.checkpoints).phase @?= Planning
+
+        -- 5. Mutate state during Resolution (e.g. GM adds consequence)
+        addConsRes <- handleGameCommand gmClient stateMVar (Req.AddConsequence actorId (Just 1) Nothing)
+        case addConsRes of
+          Left err -> assertBool ("Failed AddConsequence: " ++ show err) False
+          Right _ -> return ()
+
+        sWithCons <- readMVar stateMVar
+        let mActorWithCons = Map.lookup actorId sWithCons.gameState.actors
+        case mActorWithCons of
+          Nothing -> assertBool "Actor missing" False
+          Just a -> length a.tableState.consequences @?= 1
+
+        -- 6. GM triggers UndoPhase
+        undoRes <- handleGameCommand gmClient stateMVar Req.UndoPhase
+        case undoRes of
+          Left err -> assertBool ("Failed UndoPhase: " ++ show err) False
+          Right stateUpdates -> do
+            length stateUpdates @?= 1
+
+        sAfterUndo <- readMVar stateMVar
+        -- Restored back to Planning
+        sAfterUndo.gameState.phase @?= Planning
+        -- Checkpoints now empty
+        length sAfterUndo.checkpoints @?= 0
+        -- Consequence added during resolution is gone!
+        let mActorRestored = Map.lookup actorId sAfterUndo.gameState.actors
+        case mActorRestored of
+          Nothing -> assertBool "Actor missing" False
+          Just a -> length a.tableState.consequences @?= 0
+
+        -- Last log is the rewound notice
+        case reverse sAfterUndo.gameState.history of
+          (lastLog : _) -> case lastLog.payload of
+            LogInfo txt -> assertBool "Expected rewound log notice" ("rewound phase" `isInfixOf` show txt)
+            _ -> assertBool "Expected LogInfo payload" False
+          [] -> assertBool "Expected history" False
+
+        -- 7. Transition Planning -> Resolution -> EndRound (Round 2 Planning) -> Undo to Round 1 Resolution
+        _ <- handleGameCommand gmClient stateMVar Req.StartResolution
+        _ <- handleGameCommand gmClient stateMVar Req.EndRound
+
+        sRound2 <- readMVar stateMVar
+        sRound2.gameState.roundNumber @?= 2
+        sRound2.gameState.phase @?= Planning
+        length sRound2.checkpoints @?= 2
+
+        -- Undo back to Round 1 Resolution
+        undoR2Res <- handleGameCommand gmClient stateMVar Req.UndoPhase
+        case undoR2Res of
+          Left err -> assertBool ("Failed undo round 2: " ++ show err) False
+          Right _ -> return ()
+
+        sRestoredR1 <- readMVar stateMVar
+        sRestoredR1.gameState.roundNumber @?= 1
+        sRestoredR1.gameState.phase @?= Resolution
+        length sRestoredR1.checkpoints @?= 1
     ]
 
 -- Helpers

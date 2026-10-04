@@ -14,13 +14,13 @@ import Core.Card (ConsequenceCard (..), CoreCard (..))
 import Core.NonEmptyText (getRawText)
 import Core.State (GameEnv (..))
 import Server.Config (Config (..))
-import Server.DB (loadGame, saveGame)
+import Server.DB (loadGame, loadSnapshots, saveGame)
 import Server.Scenario (loadSavedGame, loadScenario)
 import Server.Types (CardLibrary (..), GameState (..), StorageBackend)
 
 -- | Initialize a game session, either by loading from DB or creating a new one from scenario.
 -- If `forceReset` is True, it will ignore DB state and load from scenario/saved-game.
-initGame :: StorageBackend -> Config -> CardLibrary -> Bool -> IO (GameState, StdGen)
+initGame :: StorageBackend -> Config -> CardLibrary -> Bool -> IO (GameState, StdGen, [GameState])
 initGame backend config lib forceReset = do
   let gId = config.gameId
       scenario = T.pack (takeBaseName config.scenarioFile)
@@ -29,6 +29,11 @@ initGame backend config lib forceReset = do
     if forceReset
       then return Nothing
       else loadGame backend gId
+
+  initialCheckpoints <-
+    if forceReset
+      then return []
+      else loadSnapshots backend gId
 
   let hydrate gs =
         let env = gs.env
@@ -43,7 +48,7 @@ initGame backend config lib forceReset = do
       rng <- case config.seed of
         Just s -> return $ mkStdGen s
         Nothing -> newStdGen
-      return (hydrate loadedGs, rng)
+      return (hydrate loadedGs, rng, initialCheckpoints)
     Nothing -> do
       (initialGs, rng) <- case config.savedGameFile of
         Just file -> do
@@ -61,4 +66,4 @@ initGame backend config lib forceReset = do
 
       -- Persist key initial state
       saveGame backend gId scenario newGs
-      return (newGs, rng)
+      return (newGs, rng, initialCheckpoints)

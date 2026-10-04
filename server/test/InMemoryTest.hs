@@ -13,13 +13,16 @@ import Core.Card (CoreCard (..), Stats (..))
 import Core.State (GameEnv (..), GameEvent (..))
 import Server.DB
   ( SqlSerial (..)
+  , deleteLatestSnapshot
   , initInMemoryDB
   , listGames
   , loadGame
   , loadGameEvents
   , loadGameRecord
+  , loadSnapshots
   , saveGame
   , saveGameEvents
+  , saveSnapshot
   )
 import Server.DB.Schema (GameEventRecordT (..), GameT (..))
 import Server.Game (emptyGame)
@@ -35,6 +38,9 @@ mockGameState =
           , consequenceCardTemplates = Map.empty
           }
    in emptyGame env
+
+setRound :: Int -> GameState -> GameState
+setRound r (GameState e a p h m _) = GameState e a p h m r
 
 mockCard :: Text -> CoreCard
 mockCard _name' =
@@ -112,4 +118,36 @@ test_in_memory =
             r2.roundNumber @?= 2
             r2.eventType @?= "RoundStarted"
           _ -> assertBool "Expected exactly 2 events" False
+    , testCase "Save, Load and Delete Phase Snapshots" $ do
+        backend <- initInMemoryDB
+        let gId = "test-snapshots"
+        let gs1 = setRound 1 mockGameState
+        let gs2 = setRound 2 mockGameState
+        let gs3 = setRound 3 mockGameState
+
+        saveSnapshot backend gId gs1
+        saveSnapshot backend gId gs2
+        saveSnapshot backend gId gs3
+
+        snaps <- loadSnapshots backend gId
+        length snaps @?= 3
+        -- Most recent first:
+        (head snaps).roundNumber @?= 3
+
+        -- Delete latest snapshot
+        deleteLatestSnapshot backend gId
+        snapsAfterDelete <- loadSnapshots backend gId
+        length snapsAfterDelete @?= 2
+        (head snapsAfterDelete).roundNumber @?= 2
+    , testCase "Snapshot Retention Cap (20 checkpoints)" $ do
+        backend <- initInMemoryDB
+        let gId = "test-retention"
+        -- Save 25 snapshots
+        mapM_ (\i -> saveSnapshot backend gId (setRound i mockGameState)) [1 .. 25]
+
+        snaps <- loadSnapshots backend gId
+        length snaps @?= 20
+        -- Most recent should be round 25, oldest retained should be round 6
+        (head snaps).roundNumber @?= 25
+        (last snaps).roundNumber @?= 6
     ]

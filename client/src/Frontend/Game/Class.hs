@@ -49,6 +49,7 @@ data SessionState t = SessionState
   , mapMode :: Dynamic t MapMode
   , activeClients :: Dynamic t (Map.Map UUID ClientInfo)
   , identity :: Dynamic t (Maybe (Text, ClientRole))
+  , canUndoPhase :: Dynamic t Bool
   }
 
 -- | Type-safe context class that abstracts state reads and request dispatching.
@@ -59,6 +60,7 @@ class (Monad m) => MonadGame t m | m -> t where
   askMapMode :: m (Dynamic t MapMode)
   askActiveClients :: m (Dynamic t (Map.Map UUID ClientInfo))
   askIdentity :: m (Dynamic t (Maybe (Text, ClientRole)))
+  askCanUndoPhase :: m (Dynamic t Bool)
   requestGame :: Event t (ApiRequest a) -> m (Event t (Either Text a))
 
 type GameWidget t m = (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
@@ -154,4 +156,5 @@ instance
   askMapMode = GameT $ asks (.mapMode)
   askActiveClients = GameT $ asks (.activeClients)
   askIdentity = GameT $ asks (.identity)
+  askCanUndoPhase = GameT $ asks (.canUndoPhase)
   requestGame = lift . requesting

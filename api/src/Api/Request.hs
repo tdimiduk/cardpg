@@ -41,6 +41,7 @@ data ApiRequest a where
   DiscardCards :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
   ReturnToDeck :: ActorId -> [CardInstanceId] -> ApiRequest (Either Text [StateUpdate])
   EndRound :: ApiRequest (Either Text [StateUpdate])
+  UndoPhase :: ApiRequest (Either Text [StateUpdate])
   Pass :: ActorId -> ApiRequest (Either Text [StateUpdate])
   SaveCustomCard :: Value -> Text -> ApiRequest (Either Text ())
 

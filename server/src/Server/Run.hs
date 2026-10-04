@@ -28,9 +28,9 @@ runServer = do
         lib <- loadLibrary config.cardsDir
 
         -- Initialize Game Session
-        (gameGs, gameRng) <- initGame backend config lib False
+        (gameGs, gameRng, initialCheckpoints) <- initGame backend config lib False
 
-        state <- newMVar (newServerState backend gameGs gameRng config){library = lib}
+        state <- newMVar (newServerState backend gameGs gameRng config initialCheckpoints){library = lib}
 
         T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show config.serverPort) <> "..."
         WS.runServer "127.0.0.1" config.serverPort $ application state

@@ -215,13 +215,15 @@ makeSessionState pushEvt identityDyn = do
           (\case PushWelcome{game = g} -> Just g; PushUpdate{game = g} -> Just g; _ -> Nothing)
           pushEvt
   actorsMapDyn <- holdDyn Map.empty (fmap (.actors) gameEvt)
+  canUndoPhaseDyn <- holdDyn False (fmap (.canUndoPhase) gameEvt)
   logsDyn <-
     foldDyn
-      (flip (++))
+      ($)
       []
       ( leftmost
-          [ fmapMaybe (\case PushWelcome{history = h} -> Just h; _ -> Nothing) pushEvt
-          , fmapMaybe (\case PushNewLogs l -> Just l; _ -> Nothing) pushEvt
+          [ const <$> fmapMaybe (\case PushWelcome{history = h} -> Just h; _ -> Nothing) pushEvt
+          , const <$> fmapMaybe (\case PushResetLogs{history = h} -> Just h; _ -> Nothing) pushEvt
+          , flip (++) <$> fmapMaybe (\case PushNewLogs l -> Just l; _ -> Nothing) pushEvt
           ]
       )
   phaseDyn <-
@@ -234,7 +236,8 @@ makeSessionState pushEvt identityDyn = do
       )
   mapModeDyn <- holdDyn MapModeGrid (fmap (fromMaybe MapModeGrid . (.mapMode)) gameEvt)
   activeClientsDyn <- holdDyn Map.empty (fmap (.activeClients) gameEvt)
-  pure $ SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn activeClientsDyn identityDyn
+  pure $
+    SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn activeClientsDyn identityDyn canUndoPhaseDyn
 
 data ViewModeChange
   = UserChange ViewMode

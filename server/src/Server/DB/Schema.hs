@@ -12,6 +12,9 @@ module Server.DB.Schema
   , GameEventRecordT (..)
   , GameEventRecord
   , GameEventRecordId
+  , GameSnapshotT (..)
+  , GameSnapshotRecord
+  , GameSnapshotId
   , CardPGDB (..)
   , cardpgDb
   , annotatedDb
@@ -89,11 +92,31 @@ instance Table GameEventRecordT where
     deriving (Generic, Beamable)
   primaryKey e = GameEventRecordId e.eventId
 
+-- | The Game Phase Checkpoints / Snapshots Table
+data GameSnapshotT f = GameSnapshot
+  { snapshotId :: C f (SqlSerial Int32)
+  , gameId :: C f Text
+  , roundNumber :: C f Int32
+  , phase :: C f Text
+  , snapshotTimestamp :: C f UTCTime
+  , snapshotData :: C f (PgJSONB Value)
+  }
+  deriving (Generic, Beamable)
+
+type GameSnapshotRecord = GameSnapshotT Identity
+type GameSnapshotId = PrimaryKey GameSnapshotT Identity
+
+instance Table GameSnapshotT where
+  data PrimaryKey GameSnapshotT f = GameSnapshotId (C f (SqlSerial Int32))
+    deriving (Generic, Beamable)
+  primaryKey s = GameSnapshotId s.snapshotId
+
 -- | The Database
 data CardPGDB f = CardPGDB
   { games :: f (TableEntity GameT)
   , customCards :: f (TableEntity CustomCardT)
   , gameEvents :: f (TableEntity GameEventRecordT)
+  , gameSnapshots :: f (TableEntity GameSnapshotT)
   }
   deriving stock (Generic)
   deriving anyclass (Database be)
@@ -113,6 +136,17 @@ cardpgDb =
                 , actorId = fieldNamed "actor_id"
                 , eventType = fieldNamed "type"
                 , eventData = fieldNamed "data"
+                }
+      , gameSnapshots =
+          setEntityName "game_snapshots"
+            <> modifyTableFields
+              tableModification
+                { snapshotId = fieldNamed "id"
+                , gameId = fieldNamed "game_id"
+                , roundNumber = fieldNamed "round_number"
+                , phase = fieldNamed "phase"
+                , snapshotTimestamp = fieldNamed "timestamp"
+                , snapshotData = fieldNamed "data"
                 }
       }
 

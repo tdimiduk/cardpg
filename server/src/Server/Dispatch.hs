@@ -108,6 +108,8 @@ processCommand cmd game =
           let finalGame = game{history = game.history ++ newLogs}
           return (finalGame, (), [], newLogs)
     Join _ -> error "Join is handled by the connection layer" -- Should never be called here
+    SetRole _ -> error "SetRole is handled by the connection layer" -- Should never be called here
+    UndoPhase -> error "UndoPhase is handled by the connection layer" -- Should never be called here
     SaveCustomCard _ _ -> error "SaveCustomCard is handled by the connection layer" -- Should never be called here
     DrawCards tid -> runStandard tid Logic.drawCard
     Defend tid cid -> do

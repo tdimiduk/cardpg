@@ -1,10 +1,11 @@
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Server.ReflexConnection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
 import Control.Exception (SomeException, finally, try)
-import Control.Monad (forM_, forever, unless)
+import Control.Monad (forM_, forever, unless, when)
 import Control.Monad.State (runState)
 import Data.Aeson (Result (..), decode, encode, fromJSON)
 import Data.Map qualified as Map
@@ -26,6 +27,7 @@ import Network.WebSockets
   , sendTextData
   , withPingThread
   )
+import System.Random.Stateful (uniform)
 
 import Data.ByteString.Lazy.Char8 qualified as BSL
 import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), TaggedResponse, mkTaggedResponse)
@@ -33,7 +35,7 @@ import Reflex.Dom.GadtApi.WebSocket (TaggedRequest (..), TaggedResponse, mkTagge
 import System.FilePath (takeBaseName)
 
 import Server.Config (Config (..))
-import Server.DB (saveCustomCard, saveGame, saveGameEvents)
+import Server.DB (deleteLatestSnapshot, saveCustomCard, saveGame, saveGameEvents, saveSnapshot)
 import Server.Dispatch (processCommand)
 import Server.Types
   ( Client (..)
@@ -41,6 +43,7 @@ import Server.Types
   , GameState (..)
   , ServerState (..)
   , addClient
+  , appendHistoryEntry
   , clientExists
   , removeClient
   )
@@ -54,7 +57,13 @@ import Api.Reflex
   , WsMessage (..)
   )
 import Api.Request qualified as Req
-import Api.Types (ClientRole (..))
+import Api.Types
+  ( ClientRole (..)
+  , LogEntry (..)
+  , LogPayload (..)
+  , LogSender (..)
+  , StateUpdate (..)
+  )
 
 application :: MVar ServerState -> ServerApp
 application state pending = do
@@ -106,12 +115,7 @@ application state pending = do
   -- Send Welcome
   (msgs, _) <-
     readMVar state >>= \s -> do
-      let view =
-            GameView
-              { actors = s.gameState.actors
-              , mapMode = s.gameState.mapMode
-              , activeClients = getClientInfoMap s.clients
-              }
+      let view = makeGameView s
       let ph = s.gameState.phase
       return ([PushWelcome finalClientId view s.gameState.history ph], s.clients)
 
@@ -123,12 +127,7 @@ application state pending = do
 
   -- Broadcast update to others because activeClients changed
   readMVar state >>= \s -> do
-    let view =
-          GameView
-            { actors = s.gameState.actors
-            , mapMode = s.gameState.mapMode
-            , activeClients = getClientInfoMap s.clients
-            }
+    let view = makeGameView s
     broadcastReflex (PushUpdate view Nothing) s.clients
 
   withPingThread conn 30 (return ()) $ do
@@ -143,12 +142,7 @@ disconnect clientId socketId state = do
 
   -- Broadcast updated client list
   s <- readMVar state
-  let view =
-        GameView
-          { actors = s.gameState.actors
-          , mapMode = s.gameState.mapMode
-          , activeClients = getClientInfoMap s.clients
-          }
+  let view = makeGameView s
   broadcastReflex (PushUpdate view Nothing) s.clients
 
 broadcastReflex :: ServerPush -> Map.Map UUID Client -> IO ()
@@ -189,6 +183,15 @@ talk client socket state = forever $ do
 getClientInfoMap :: Map.Map UUID Client -> Map.Map UUID ClientInfo
 getClientInfoMap = Map.map (\c -> ClientInfo{name = c.clientName, role = c.clientRole})
 
+makeGameView :: ServerState -> GameView
+makeGameView s =
+  GameView
+    { actors = s.gameState.actors
+    , mapMode = s.gameState.mapMode
+    , activeClients = getClientInfoMap s.clients
+    , canUndoPhase = not (null s.checkpoints)
+    }
+
 handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
 handleJoin client name state = do
   modifyMVar_ state $ \s -> do
@@ -198,12 +201,7 @@ handleJoin client name state = do
 
   -- Broadcast updated client list
   s <- readMVar state
-  let view =
-        GameView
-          { actors = s.gameState.actors
-          , mapMode = s.gameState.mapMode
-          , activeClients = getClientInfoMap s.clients
-          }
+  let view = makeGameView s
   broadcastReflex (PushUpdate view Nothing) s.clients
 
   pure (Right client.clientId)
@@ -217,12 +215,7 @@ handleSetRole client role state = do
 
   -- Broadcast updated client list
   s <- readMVar state
-  let view =
-        GameView
-          { actors = s.gameState.actors
-          , mapMode = s.gameState.mapMode
-          , activeClients = getClientInfoMap s.clients
-          }
+  let view = makeGameView s
   broadcastReflex (PushUpdate view Nothing) s.clients
 
   pure (Right ())
@@ -260,6 +253,7 @@ checkPermission role cmd =
         Req.SetMapMode _ -> False
         Req.StartResolution -> False
         Req.EndRound -> False
+        Req.UndoPhase -> False
         Req.SaveCustomCard _ _ -> False
 
 handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
@@ -293,6 +287,7 @@ handleGameCommand client state cmd = do
         Req.DiscardCards _ _ -> pure (Left "Permission denied")
         Req.ReturnToDeck _ _ -> pure (Left "Permission denied")
         Req.EndRound -> pure (Left "Permission denied")
+        Req.UndoPhase -> pure (Left "Permission denied")
         Req.Pass _ -> pure (Left "Permission denied")
         Req.SaveCustomCard _ _ -> pure (Left "Permission denied")
     else case cmd of
@@ -305,18 +300,65 @@ handleGameCommand client state cmd = do
         case fromJSON cardVal of
           Success card -> saveCustomCard backend card file author
           Error err -> return $ Left $ T.pack err
+      Req.UndoPhase -> do
+        (ret, mRestoredState) <- modifyMVar state $ \s -> do
+          case s.checkpoints of
+            [] -> return (s, (Left "No phase checkpoint to undo.", Nothing))
+            ((restoredGame :: GameState) : remainingCheckpoints) -> do
+              let backend = s.dbPool
+                  gId = s.gameId
+                  scenario = T.pack (takeBaseName s.config.scenarioFile)
+              -- Delete latest snapshot from DB
+              deleteLatestSnapshot backend gId
+
+              -- Append undo notification log
+              let (logId, newRng) = uniform s.rng
+                  entry =
+                    LogEntry
+                      { id = logId
+                      , sender = SenderGM
+                      , payload = LogInfo "GM rewound phase transition."
+                      }
+                  finalGame = appendHistoryEntry entry restoredGame
+
+              -- Persist restored game to DB
+              saveGame backend gId scenario finalGame
+
+              let s' = s{gameState = finalGame, checkpoints = remainingCheckpoints, rng = newRng}
+              let stateUpdates = [StateUpdate aid a | (aid, a) <- Map.toList (finalGame :: GameState).actors]
+              return (s', (Right stateUpdates, Just finalGame))
+
+        case mRestoredState of
+          Nothing -> pure ()
+          Just (restoredGame :: GameState) -> do
+            s <- readMVar state
+            let view = makeGameView s
+            broadcastReflex (PushResetLogs restoredGame.history) s.clients
+            broadcastReflex (PushUpdate view (Just restoredGame.phase)) s.clients
+
+        pure ret
       _ -> do
         (ret, newLog) <- modifyMVar state $ \s -> do
           let game = s.gameState
           let rng = s.rng
           let ((newGame, ret, events, newLogs), newRng) = runState (processCommand cmd game) rng
 
-          let s' = s{gameState = newGame, rng = newRng}
+          let isPhaseTransition = game.phase /= newGame.phase
+              newCheckpoints =
+                if isPhaseTransition
+                  then take 20 (game : s.checkpoints)
+                  else s.checkpoints
+
+          let s' = s{gameState = newGame, rng = newRng, checkpoints = newCheckpoints}
 
           -- Persist events and latest game state
           let backend = s.dbPool
               gId = s.gameId
               scenario = T.pack (takeBaseName s.config.scenarioFile)
+
+          when isPhaseTransition $
+            saveSnapshot backend gId game
+
           saveGameEvents backend gId newGame.roundNumber events newLogs
           saveGame backend gId scenario newGame
 
@@ -324,12 +366,7 @@ handleGameCommand client state cmd = do
 
         -- Broadcast updates to others
         readMVar state >>= \s -> do
-          let view =
-                GameView
-                  { actors = s.gameState.actors
-                  , mapMode = s.gameState.mapMode
-                  , activeClients = getClientInfoMap s.clients
-                  }
+          let view = makeGameView s
           broadcastReflex (PushUpdate view (Just s.gameState.phase)) s.clients
 
         -- Broadcast new logs

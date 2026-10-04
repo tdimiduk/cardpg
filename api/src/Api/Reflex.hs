@@ -24,6 +24,7 @@ data GameView = GameView
   { actors :: Map ActorId ActorState
   , mapMode :: Maybe MapMode
   , activeClients :: Map UUID ClientInfo
+  , canUndoPhase :: Bool
   }
   deriving (Show, Eq, Generic)
 
@@ -42,6 +43,7 @@ data ServerPush
       , newPhase :: Maybe Phase
       }
   | PushNewLogs {logs :: [LogEntry]}
+  | PushResetLogs {history :: [LogEntry]}
   | PushError ErrorMessage
   deriving (Show, Eq, Generic)
 

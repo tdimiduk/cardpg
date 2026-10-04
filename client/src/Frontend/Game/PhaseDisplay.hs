@@ -6,6 +6,7 @@ module Frontend.Game.PhaseDisplay
   ( phaseDisplayWidget
   ) where
 
+import Control.Monad (when)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
 
@@ -58,13 +59,25 @@ planningControls
 planningControls identityDyn = do
   readyCountDyn <- askReadyCount
   totalCountDyn <- askTotalCount
+  canUndoDyn <- askCanUndoPhase
   divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
-    dyn_ $ ffor identityDyn $ \case
-      Just (_, RoleGM) -> do
+    dyn_ $ ffor (zipDyn identityDyn canUndoDyn) $ \case
+      (Just (_, RoleGM), canUndo) -> do
         btnClick <- button (def :: ButtonConfig t){size = SizeSmall} $ text "Start Resolution"
         let req = Req.StartResolution <$ btnClick
         _ <- requestGame req
-        pure ()
+        when canUndo $ do
+          undoClick <-
+            button
+              (def :: ButtonConfig t)
+                { size = SizeSmall
+                , variant = VariantGhost
+                , testId = Just "undo-phase-btn"
+                }
+              $ text "Undo Phase"
+          let undoReq = Req.UndoPhase <$ undoClick
+          _ <- requestGame undoReq
+          pure ()
       _ -> do
         elS "span" (S.textXs <> S.text S.Gray 5 <> S.italic) $ text "Waiting for GM to start resolution..."
     -- Ready Count
@@ -78,9 +91,10 @@ resolutionControls
   => Dynamic t (Maybe (Text, ClientRole))
   -> m ()
 resolutionControls identityDyn = do
+  canUndoDyn <- askCanUndoPhase
   divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
-    dyn_ $ ffor identityDyn $ \case
-      Just (_, RoleGM) -> do
+    dyn_ $ ffor (zipDyn identityDyn canUndoDyn) $ \case
+      (Just (_, RoleGM), canUndo) -> do
         btnClick <-
           button
             (def :: ButtonConfig t)
@@ -90,6 +104,17 @@ resolutionControls identityDyn = do
             $ text "End Round"
         let req = Req.EndRound <$ btnClick
         _ <- requestGame req
-        pure ()
+        when canUndo $ do
+          undoClick <-
+            button
+              (def :: ButtonConfig t)
+                { size = SizeSmall
+                , variant = VariantGhost
+                , testId = Just "undo-phase-btn"
+                }
+              $ text "Undo Phase"
+          let undoReq = Req.UndoPhase <$ undoClick
+          _ <- requestGame undoReq
+          pure ()
       _ -> do
         elS "span" (S.textXs <> S.text S.Gray 5 <> S.italic) $ text "Waiting for GM to end round..."
