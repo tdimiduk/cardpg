@@ -36,6 +36,7 @@ library
     Server.DB.Schema
     Server.Dispatch
     Server.Engine
+    Server.ExportTrace
     Server.Game
     Server.Loader
     Server.Presenter
@@ -66,6 +67,7 @@ library
     , megaparsec
     , mtl
     , network
+    , optparse-applicative
     , postgresql-simple
     , random
     , reflex-gadt-api
@@ -99,6 +101,16 @@ executable server-devel
     , text
     , websockets
 
+executable export-trace
+  import:         project-config
+  main-is:        ExportTrace.hs
+  hs-source-dirs: app
+  ghc-options:    -threaded
+  build-depends:
+    , base                  >=4.7 && <5
+    , optparse-applicative
+    , server
+
 test-suite server-test
   import:         project-config
   type:           exitcode-stdio-1.0
@@ -106,6 +118,7 @@ test-suite server-test
 
   -- cabal-fmt: expand test -Main
   other-modules:
+    ExportTraceTest
     GameTest
     InMemoryTest
     ScenarioTest
@@ -115,6 +128,7 @@ test-suite server-test
     , aeson
     , api
     , base              >=4.7 && <5
+    , beam-postgres
     , bytestring
     , containers
     , core
@@ -129,4 +143,6 @@ test-suite server-test
     , tasty-hunit
     , tasty-quickcheck
     , text
+    , time
+    , uuid
     , yaml

@@ -1,5 +1,6 @@
 module Main where
 
+import ExportTraceTest qualified
 import GameTest qualified
 import InMemoryTest qualified
 import ScenarioTest qualified
@@ -13,4 +14,5 @@ main =
       [ GameTest.test_game
       , ScenarioTest.test_scenario
       , InMemoryTest.test_in_memory
+      , ExportTraceTest.test_export_trace
       ]
