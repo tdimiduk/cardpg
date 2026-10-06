@@ -127,7 +127,7 @@ loadAndInstantiateActor path x y handSize = do
 instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
 instantiateActor def x y maybeHandSize = do
   -- Process Deck (Core Cards)
-  deckCards <- processCards (def.deck)
+  deckCards <- processCards (Card.actorDeckCards def)
   shuffledDeck <- shuffleListM deckCards
 
   let handSize = fromMaybe 0 maybeHandSize

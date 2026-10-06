@@ -50,10 +50,12 @@ import Core.Card
   , ConsequenceCard (..)
   , CoreCard (..)
   , CustomCard (..)
+  , DeckEntry (..)
   , EncounterCard (..)
   , ItemCard (..)
   , NatureCard (..)
   , TalentCard (..)
+  , actorDeckCards
   , customCardCategoryText
   , customCardFingerprint
   , customCardIdText
@@ -623,7 +625,7 @@ deckWidget actor = do
   divS deckGrid $ do
     mapM_ (renderNatureCardWith printSettings) actor.nature
     mapM_ (renderItemCardWith printSettings) actor.items
-    mapM_ (renderCoreCardWith printSettings) actor.deck
+    mapM_ (renderCoreCardWith printSettings) (actorDeckCards actor)
 
 data RuleDoc = RuleDoc
   { docTitle :: Text
@@ -868,7 +870,8 @@ consequenceCardKey c = getRawText c.name <> "-" <> customCardFingerprint (Custom
 updateActorDef :: ActorDefinition -> [CustomCardRecord] -> ActorDefinition
 updateActorDef actorDef records =
   let (cores, items, natures) = partitionRecords records
-      updatedDeck = mergeList actorDef.deck cores coreCardKey
+      inlineCores = actorDeckCards actorDef
+      updatedDeck = map EntryInline $ mergeList inlineCores cores coreCardKey
       updatedItems = mergeList actorDef.items items itemCardKey
       updatedNature = mergeList actorDef.nature natures natureCardKey
    in actorDef
@@ -979,7 +982,7 @@ classifyAndParseImport path
       fileContent <- BS.readFile path
       case Yaml.decodeEither' fileContent of
         Right (actorDef :: ActorDefinition) -> do
-          let cores = map CustomCore actorDef.deck
+          let cores = map CustomCore (actorDeckCards actorDef)
               items = map CustomItem actorDef.items
               natures = map CustomNature actorDef.nature
           return $ cores ++ items ++ natures

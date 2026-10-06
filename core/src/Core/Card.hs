@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 module Core.Card
   ( module Core.Rules
   , Stats (..)
@@ -8,7 +10,19 @@ module Core.Card
   , TalentCard (..)
   , EncounterCard (..)
   , ConsequenceCard (..)
+  , RulesStatus (..)
+  , MasterCard (..)
+  , CardMilestone (..)
+  , DeckEntry (..)
+  , CardReference (..)
   , ActorDefinition (..)
+  , ActorRawDefinition
+  , actorDeckCards
+  , resolveDeckEntry
+  , resolveActorDeck
+  , applyOverrides
+  , masterCardToCoreCard
+  , coreCardToMasterCard
   , CustomCard (..)
   , customCardNameText
   , customCardCategoryText
@@ -20,10 +34,22 @@ module Core.Card
   , CardInstance
   ) where
 
-import Data.Aeson (toJSON)
+import Data.Aeson
+  ( FromJSON (..)
+  , Options (..)
+  , ToJSON (..)
+  , Value (..)
+  , genericParseJSON
+  , genericToJSON
+  , toJSON
+  )
+import Data.Aeson.KeyMap qualified as KM
 import Data.Aeson.TH (deriveJSON)
 import Data.Char (isAlphaNum, ord, toLower)
 import Data.List.NonEmpty (NonEmpty)
+import Data.Map.Strict (Map)
+import Data.Map.Strict qualified as Map
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import GHC.Generics (Generic)
@@ -157,6 +183,89 @@ data ConsequenceCard = ConsequenceCard
 
 $(deriveJSON cardpgJsonDef ''ConsequenceCard)
 
+-- | Rules status indicating currency of the card's rules text.
+data RulesStatus = RulesCurrent | RulesOutdated | RulesExperimental
+  deriving stock (Eq, Show, Generic, Ord, Enum, Bounded)
+
+$(deriveJSON (cardpgJsonOptions "Rules") ''RulesStatus)
+
+-- | Represents milestone variants/upgrades of a card.
+data CardMilestone = CardMilestone
+  { stats :: Maybe (Stats (Maybe Int))
+  , attack :: Maybe AttackDef
+  , rules :: Maybe (NonEmpty Rule)
+  , cost :: Maybe Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+$(deriveJSON cardpgJsonDef ''CardMilestone)
+
+-- | Represents a canonical card definition in the database.
+data MasterCard = MasterCard
+  { id :: Text -- Flat unique ID/slug (e.g. "sunder-armor")
+  , name :: NonEmptyText -- Display name (e.g. "Sunder Armor")
+  , tags :: Maybe (NonEmpty Text)
+  , stats :: Stats Int
+  , cost :: Maybe Int
+  , attack :: Maybe AttackDef
+  , rules :: Maybe (NonEmpty Rule)
+  , flavor :: Maybe RichText
+  , rulesStatus :: Maybe RulesStatus
+  , legacyNotes :: Maybe Text
+  , milestones :: Maybe (Map Text CardMilestone)
+  }
+  deriving stock (Eq, Show, Generic)
+
+masterCardJsonOptions :: Options
+masterCardJsonOptions =
+  cardpgJsonDef
+    { fieldLabelModifier = \case
+        "rulesStatus" -> "rules_status"
+        "legacyNotes" -> "legacy_notes"
+        f -> f
+    }
+
+instance ToJSON MasterCard where
+  toJSON = genericToJSON masterCardJsonOptions
+
+instance FromJSON MasterCard where
+  parseJSON (Object o) =
+    let o' = normalizeKey "rulesStatus" "rules_status" . normalizeKey "legacyNotes" "legacy_notes" $ o
+     in genericParseJSON masterCardJsonOptions (Object o')
+    where
+      normalizeKey oldKey newKey km =
+        case KM.lookup oldKey km of
+          Just val | not (KM.member newKey km) -> KM.insert newKey val (KM.delete oldKey km)
+          _ -> km
+  parseJSON v = genericParseJSON masterCardJsonOptions v
+
+-- | A card reference pointing to a master database entry with optional overrides.
+data CardReference = CardReference
+  { card :: Text -- e.g. "sunder-armor"
+  , stats :: Maybe (Stats (Maybe Int)) -- optional stat overrides
+  , upgrades :: Maybe (Stats (Maybe Int)) -- optional +1 deltas
+  , milestone :: Maybe Text -- optional milestone key
+  }
+  deriving stock (Eq, Show, Generic)
+
+$(deriveJSON cardpgJsonDef ''CardReference)
+
+-- | An entry in an actor's deck list, either referencing a master card or inlining one directly.
+data DeckEntry
+  = EntryRef CardReference
+  | EntryInline CoreCard
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON DeckEntry where
+  toJSON (EntryRef ref) = toJSON ref
+  toJSON (EntryInline c) = toJSON c
+
+instance FromJSON DeckEntry where
+  parseJSON v@(Object o)
+    | KM.member "card" o = EntryRef <$> parseJSON v
+    | otherwise = EntryInline <$> parseJSON v
+  parseJSON v = EntryInline <$> parseJSON v
+
 -- | Represents the *Static Definition* or "Character Sheet" of an Actor.
 -- | This is used for initialization and templates, not for running game state.
 data ActorDefinition = ActorDefinition
@@ -164,11 +273,115 @@ data ActorDefinition = ActorDefinition
   , tags :: Maybe (NonEmpty Text)
   , items :: [ItemCard]
   , nature :: [NatureCard]
-  , deck :: [CoreCard]
+  , deck :: [DeckEntry]
   }
   deriving stock (Eq, Show, Generic)
 
+type ActorRawDefinition = ActorDefinition
+
 $(deriveJSON cardpgJsonDef ''ActorDefinition)
+
+-- | Extract all inline CoreCards from an ActorDefinition.
+actorDeckCards :: ActorDefinition -> [CoreCard]
+actorDeckCards actor = [c | EntryInline c <- actor.deck]
+
+-- | Resolve a single DeckEntry against a master card catalog.
+resolveDeckEntry :: Map Text MasterCard -> DeckEntry -> Either String CoreCard
+resolveDeckEntry _ (EntryInline c) = Right c
+resolveDeckEntry catalog (EntryRef ref) = case Map.lookup ref.card catalog of
+  Nothing -> Left $ "Unknown card ID in deck: " <> T.unpack ref.card
+  Just master -> Right $ applyOverrides ref master
+
+-- | Resolve all deck entries of an actor definition against a master catalog.
+resolveActorDeck :: Map Text MasterCard -> ActorDefinition -> Either String [CoreCard]
+resolveActorDeck catalog actor = traverse (resolveDeckEntry catalog) actor.deck
+
+-- | Apply stat overrides, upgrade deltas, and milestone replacements to a master card.
+applyOverrides :: CardReference -> MasterCard -> CoreCard
+applyOverrides ref master =
+  let mMilestone = do
+        msKey <- ref.milestone
+        msMap <- master.milestones
+        Map.lookup msKey msMap
+
+      baseStats = case mMilestone of
+        Just ms | Just s <- ms.stats -> applyPartialStats s master.stats
+        _ -> master.stats
+
+      statsAfterRef = case ref.stats of
+        Just s -> applyPartialStats s baseStats
+        Nothing -> baseStats
+
+      finalStats = case ref.upgrades of
+        Just u -> applyDeltas u statsAfterRef
+        Nothing -> statsAfterRef
+
+      finalCost = case mMilestone of
+        Just ms | Just c <- ms.cost -> Just c
+        _ -> master.cost
+
+      finalAttack = case mMilestone of
+        Just ms | Just a <- ms.attack -> Just a
+        _ -> master.attack
+
+      finalRules = case mMilestone of
+        Just ms | Just r <- ms.rules -> Just r
+        _ -> master.rules
+   in CoreCard
+        { name = master.name
+        , tags = master.tags
+        , stats = finalStats
+        , cost = finalCost
+        , attack = finalAttack
+        , rules = finalRules
+        , flavor = master.flavor
+        }
+
+applyPartialStats :: Stats (Maybe Int) -> Stats Int -> Stats Int
+applyPartialStats overrides base =
+  Stats
+    { red = fromMaybe base.red overrides.red
+    , yellow = fromMaybe base.yellow overrides.yellow
+    , blue = fromMaybe base.blue overrides.blue
+    }
+
+applyDeltas :: Stats (Maybe Int) -> Stats Int -> Stats Int
+applyDeltas deltas base =
+  Stats
+    { red = base.red + fromMaybe 0 deltas.red
+    , yellow = base.yellow + fromMaybe 0 deltas.yellow
+    , blue = base.blue + fromMaybe 0 deltas.blue
+    }
+
+-- | Convert a MasterCard to a CoreCard with default values.
+masterCardToCoreCard :: MasterCard -> CoreCard
+masterCardToCoreCard m =
+  CoreCard
+    { name = m.name
+    , tags = m.tags
+    , stats = m.stats
+    , cost = m.cost
+    , attack = m.attack
+    , rules = m.rules
+    , flavor = m.flavor
+    }
+
+-- | Convert a CoreCard to a canonical MasterCard.
+coreCardToMasterCard :: Text -> CoreCard -> MasterCard
+coreCardToMasterCard cardId c =
+  MasterCard
+    { id = cardId
+    , name = c.name
+    , tags = c.tags
+    , stats = c.stats
+    , cost = c.cost
+    , attack = c.attack
+    , rules = c.rules
+    , flavor = c.flavor
+    , rulesStatus = Just RulesCurrent
+    , legacyNotes = Nothing
+    , milestones = Nothing
+    }
 
 -- | A wrapper for any type of authored card.
 data CustomCard
