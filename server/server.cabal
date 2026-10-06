@@ -121,6 +121,7 @@ test-suite server-test
     ExportTraceTest
     GameTest
     InMemoryTest
+    LoaderTest
     ScenarioTest
 
   hs-source-dirs: test

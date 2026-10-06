@@ -15,7 +15,7 @@ import Core.NonEmptyText (getRawText)
 import Core.State (GameEnv (..))
 import Server.Config (Config (..))
 import Server.DB (loadGame, loadSnapshots, saveGame)
-import Server.Scenario (loadSavedGame, loadScenario)
+import Server.Scenario (loadSavedGame, loadScenarioWithCatalog)
 import Server.Types (CardLibrary (..), GameState (..), StorageBackend)
 
 -- | Initialize a game session, either by loading from DB or creating a new one from scenario.
@@ -60,7 +60,7 @@ initGame backend config lib forceReset = do
           return (gs, r)
         Nothing -> do
           T.putStrLn $ "Loading starter scenario from " <> T.pack config.scenarioFile <> "..."
-          loadScenario config.scenarioFile config.seed
+          loadScenarioWithCatalog lib.masterCatalog config.scenarioFile config.seed
 
       let newGs = hydrate initialGs
 

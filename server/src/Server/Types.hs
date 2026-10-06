@@ -27,6 +27,10 @@ import Data.Aeson
   , ToJSON (..)
   , genericParseJSON
   , genericToJSON
+  , withObject
+  , (.!=)
+  , (.:)
+  , (.:?)
   )
 import Data.Aeson.TH (deriveJSON)
 
@@ -57,6 +61,7 @@ import Core.Card
   , ConsequenceCard
   , CoreCard (..)
   , ItemCard
+  , MasterCard
   , NatureCard
   )
 import Core.Json (cardpgJsonDef)
@@ -105,11 +110,19 @@ data CardLibrary = CardLibrary
   , consequences :: [ConsequenceCard]
   , items :: [ItemCard]
   , nature :: [NatureCard]
+  , masterCatalog :: Map Text MasterCard
   }
   deriving (Show, Eq, Generic)
 
 instance FromJSON CardLibrary where
-  parseJSON = genericParseJSON cardpgJsonDef
+  parseJSON = withObject "CardLibrary" $ \o ->
+    CardLibrary
+      <$> o .: "actors"
+      <*> o .: "statuses"
+      <*> o .: "consequences"
+      <*> o .: "items"
+      <*> o .: "nature"
+      <*> (o .:? "masterCatalog" .!= Map.empty)
 
 instance ToJSON CardLibrary where
   toJSON = genericToJSON cardpgJsonDef
@@ -140,7 +153,7 @@ newServerState :: StorageBackend -> GameState -> StdGen -> Config -> [GameState]
 newServerState backend gs rng cfg cps =
   ServerState
     { clients = Map.empty
-    , library = CardLibrary [] [] [] [] []
+    , library = CardLibrary [] [] [] [] [] Map.empty
     , gameState = gs
     , dbPool = backend
     , rng = rng

@@ -17,21 +17,26 @@ import Control.Monad.State
 import Data.Aeson (FromJSON)
 import Data.Generics.Labels ()
 import Data.List.NonEmpty (toList)
+import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
+import Data.Text qualified as T
 import Data.Yaml (decodeFileThrow)
 import GHC.Generics (Generic)
+import System.Directory (doesDirectoryExist)
 import System.FilePath (takeDirectory, (</>))
 import System.Random (StdGen, mkStdGen, newStdGen, uniform)
 import System.Random.Stateful (Uniform (..))
 
 import Core.Card
-  ( ActorDefinition
+  ( ActorDefinition (..)
+  , CoreCard (..)
   , Identified (..)
-  , ItemCard
+  , ItemCard (..)
+  , MasterCard (..)
+  , resolveActorDeck
   )
-import Core.Card qualified as Card
 import Core.Hardcoded (fatigueCard)
 import Core.Primitives (ActorId, CardInstanceId, EquipSlot (..))
 import Core.State
@@ -45,6 +50,7 @@ import Core.State
 import Core.State qualified as State
 import Server.Engine (autoPlanForNPCs)
 import Server.Game (GameState (..), addActor, emptyGame)
+import Server.Loader (loadMasterCatalog)
 
 import Core.Util (shuffleListM)
 
@@ -73,6 +79,12 @@ instance FromJSON Scenario
 -- This initializes the game state, loads all actors, and generates UUIDs.
 loadScenario :: FilePath -> Maybe Int -> IO (GameState, StdGen)
 loadScenario path maybeSeed = do
+  catalog <- findMasterCatalog (takeDirectory path)
+  loadScenarioWithCatalog catalog path maybeSeed
+
+-- | Load a scenario with an explicit master card catalog.
+loadScenarioWithCatalog :: Map Text MasterCard -> FilePath -> Maybe Int -> IO (GameState, StdGen)
+loadScenarioWithCatalog catalog path maybeSeed = do
   scenario :: Scenario <- decodeFileThrow path
   rng <- case maybeSeed of
     Just seed -> return $ mkStdGen seed
@@ -89,15 +101,36 @@ loadScenario path maybeSeed = do
 
   -- We use StateT GameState (StateT StdGen IO) to accumulate actors into the game
   ((_, finalGameState), finalRng) <-
-    runStateT (runStateT (loadScenarioActors (takeDirectory path) (scenario.actors)) initialGame) rng
+    runStateT
+      (runStateT (loadScenarioActors catalog (takeDirectory path) (scenario.actors)) initialGame)
+      rng
 
   -- Auto-plan for NPCs at start
   let ((gameWithPlans, _), plannedRng) = runState (autoPlanForNPCs finalGameState) finalRng
   return (gameWithPlans, plannedRng)
 
+-- | Look for a master card catalog in standard locations relative to the scenario file or repo root.
+findMasterCatalog :: FilePath -> IO (Map Text MasterCard)
+findMasterCatalog baseDir = do
+  let candidates =
+        [ baseDir </> "../cards/master"
+        , baseDir </> "cards/master"
+        , "data/cards/master"
+        , "../data/cards/master"
+        ]
+  findFirst candidates
+  where
+    findFirst [] = pure Map.empty
+    findFirst (dir : rest) = do
+      exists <- doesDirectoryExist dir
+      if exists
+        then loadMasterCatalog dir
+        else findFirst rest
+
 -- | Load a list of actors and add them to the game state
-loadScenarioActors :: FilePath -> [ScenarioActor] -> StateT GameState (StateT StdGen IO) ()
-loadScenarioActors baseDir actorsList = do
+loadScenarioActors
+  :: Map Text MasterCard -> FilePath -> [ScenarioActor] -> StateT GameState (StateT StdGen IO) ()
+loadScenarioActors catalog baseDir actorsList = do
   forM_ actorsList $ \actorDef -> do
     let actorPath = baseDir </> actorDef.file
 
@@ -108,26 +141,45 @@ loadScenarioActors baseDir actorsList = do
 
     -- Load actor definition (IO).
     -- Instantiation requires RNG state.
-    -- loadActorState now needs to return a state action or we liftIO deeply?
-
-    -- Let's helper: loadAndInstantiate :: FilePath -> ... -> StateT StdGen IO ActorState
     actorState <-
-      lift $ loadAndInstantiateActor actorPath actorDef.x actorDef.y actorDef.initialHandSize
+      lift $ loadAndInstantiateActor catalog actorPath actorDef.x actorDef.y actorDef.initialHandSize
 
     gst <- get
     let updatedGame = addActor tid actorState gst
     put updatedGame
 
-loadAndInstantiateActor :: FilePath -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
-loadAndInstantiateActor path x y handSize = do
+loadAndInstantiateActor
+  :: Map Text MasterCard -> FilePath -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
+loadAndInstantiateActor catalog path x y handSize = do
   def :: ActorDefinition <- liftIO $ decodeFileThrow path
-  instantiateActor def x y handSize
+  case resolveActorDeck catalog def of
+    Left err ->
+      liftIO $
+        ioError $
+          userError $
+            "Failed to resolve actor deck in " ++ path ++ " (" ++ T.unpack def.name ++ "): " ++ err
+    Right _ ->
+      instantiateActor catalog def x y handSize
 
--- | Convert a static ActorDefinition into a dynamic ActorState by generating IDs
-instantiateActor :: ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
-instantiateActor def x y maybeHandSize = do
+-- | Convert a static ActorDefinition into a dynamic ActorState by resolving the deck against the catalog and generating IDs
+instantiateActor
+  :: Map Text MasterCard -> ActorDefinition -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
+instantiateActor catalog def x y maybeHandSize = do
+  resolvedCards <- case resolveActorDeck catalog def of
+    Left err ->
+      liftIO $
+        ioError $
+          userError $
+            "Failed to resolve deck for actor '" ++ T.unpack def.name ++ "': " ++ err
+    Right cs -> pure cs
+  instantiateActorWithCards def resolvedCards x y maybeHandSize
+
+-- | Convert a static ActorDefinition and resolved cards into a dynamic ActorState by generating IDs
+instantiateActorWithCards
+  :: ActorDefinition -> [CoreCard] -> Int -> Int -> Maybe Int -> StateT StdGen IO ActorState
+instantiateActorWithCards def cards x y maybeHandSize = do
   -- Process Deck (Core Cards)
-  deckCards <- processCards (Card.actorDeckCards def)
+  deckCards <- processCards cards
   shuffledDeck <- shuffleListM deckCards
 
   let handSize = fromMaybe 0 maybeHandSize
