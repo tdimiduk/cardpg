@@ -64,3 +64,8 @@ active_design_exploration:
       name: "Gameplay Traces & Empirical Benchmarks"
       purpose: "Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:exploration", "pillar:social"]
+
+    - path: "iteration/campaign-weeping-fen/index.yaml"
+      name: "Campaign Workshop: The Outlaw of Weeping Fen"
+      purpose: "Development benchmark scenario: a short, complete campaign arc testing travel, non-combat general actions, tactical combat, persistent harm, and the living world clock in the Grounded Heroism setting."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:pacing"]

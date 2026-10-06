@@ -1,0 +1,21 @@
+# Campaign Workshop: The Outlaw of Weeping Fen
+package:
+  purpose: "Development benchmark scenario: a short, complete campaign arc testing travel, non-combat general actions, tactical combat, persistent harm, and the living world clock in the Grounded Heroism setting."
+  tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:pacing"]
+
+documents:
+  - path: "iteration/campaign-weeping-fen/README.md"
+    purpose: "Overview and design brief for The Outlaw of Weeping Fen development benchmark scenario."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing"]
+
+  - path: "iteration/campaign-weeping-fen/narrative-arc.md"
+    purpose: "Story outline, factions, NPCs, dramatic dilemmas, and 5-act narrative flow."
+    tags: ["doc-type:iteration", "audience:designer-facing", "pillar:social", "pillar:exploration"]
+
+  - path: "iteration/campaign-weeping-fen/world-clock.md"
+    purpose: "Narrative and mechanical design of the World Clock deck (weather, light, tracking hounds, sickness)."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
+
+  - path: "iteration/campaign-weeping-fen/challenges-and-encounters.md"
+    purpose: "High-level breakdown of locations, non-combat General Actions, and fast 3-5 round tactical combats."
+    tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration"]
