@@ -3,10 +3,26 @@
 
 module Main (main) where
 
+import Core.Card
+  ( ActorDefinition (..)
+  , CardReference (..)
+  , CoreCard (..)
+  , DeckEntry (..)
+  , MasterCard (..)
+  , RulesStatus (..)
+  , Stats (..)
+  , resolveDeckEntry
+  )
 import Core.DSL (toText)
 import Core.Glossary
+import Core.NonEmptyText (unsafeNonEmptyText)
+import Data.ByteString qualified as BS
+import Data.Either (rights)
+import Data.List.NonEmpty qualified as NE
+import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
+import Data.Yaml (ParseException, decodeEither', decodeFileEither, encode)
 import Design.Frontmatter
 import Design.Glossary
   ( generateGlossaryHaskellSource
@@ -17,6 +33,8 @@ import Design.Index
 import Design.TOC
 import Design.Types
 import KeywordMod hiding (main)
+import ManageCards
+import System.Directory (doesDirectoryExist)
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -36,6 +54,7 @@ tests =
     , test_scaffolding
     , test_indexOps
     , test_tocNormalization
+    , test_cardManagement
     ]
 
 sampleMarkdown :: Text
@@ -277,3 +296,308 @@ test_tocNormalization =
               "<!-- BEGIN AUTO-TOC -->\n| Document | Summary |\n| :--- | :--- |\n| [Doc](doc.md) | **Bold** and _under_ |\n\n_Last synced from `design/index.yaml` via `audit-index`._\n<!-- END AUTO-TOC -->"
         assertEqual "Normalized equality" (normalizeMarkdownBlock block1) (normalizeMarkdownBlock block2)
     ]
+
+test_cardManagement :: TestTree
+test_cardManagement =
+  testGroup
+    "ManageCards Tooling"
+    [ test_legacyClassifier
+    , test_deduplicationAndSlugs
+    , test_exportAndSerialization
+    , test_deckRewriter
+    , test_dataIntegrity
+    ]
+
+test_legacyClassifier :: TestTree
+test_legacyClassifier =
+  testGroup
+    "Legacy Rules Classifier"
+    [ testCase "Detects shorthand color pipes" $ do
+        assertBool "Detects |x|" (checkShorthandColor "defend |x| + 1")
+        assertBool "Detects |y|" (checkShorthandColor "strength = |y|")
+        assertBool "Detects |z|" (checkShorthandColor "|z| + 3")
+        assertBool "Detects |b|" (checkShorthandColor "|b| defense")
+        assertBool "Ignores clean text" (not (checkShorthandColor "defend {Red} + 1"))
+    , testCase "Detects legacy armor syntax" $ do
+        assertBool "Detects ignore 1 armor" (checkLegacyArmor "ignore 1 armor on hit")
+        assertBool "Detects no armor" (checkLegacyArmor "Str = {Red} + 3 -> no armor")
+        assertBool "Detects armor damage" (checkLegacyArmor "Armor damage (on any success)")
+        assertBool "Ignores clean armor" (not (checkLegacyArmor "wear heavy armor"))
+    , testCase "Detects legacy defense wording" $ do
+        assertBool
+          "Detects defend from anywhere"
+          (checkLegacyDefense "+ 3 when used to defend from anywhere")
+        assertBool "Ignores regular defend" (not (checkLegacyDefense "defend against attack"))
+    , testCase "Detects obsolete consequence tiers" $ do
+        assertBool "Detects minor:" (checkObsoleteTiers "Minor: Target is staggered")
+        assertBool "Detects major:" (checkObsoleteTiers "Major: Target is stunned")
+        assertBool "Detects critical:" (checkObsoleteTiers "Critical: Target falls")
+        assertBool "Ignores standard rules" (not (checkObsoleteTiers "Inflict consequence"))
+    , testCase "Detects legacy wound phrasing" $ do
+        assertBool "Detects basic wound" (checkLegacyWounds "{Red}: Str = {Red} + 2 -> basic wound")
+        assertBool "Ignores clean attack" (not (checkLegacyWounds "{Red}: Str = {Red} + 2"))
+    , testCase "Classifies clean modern card as RulesCurrent" $ do
+        let card =
+              CoreCard
+                { name = unsafeNonEmptyText "Conditioning"
+                , tags = Nothing
+                , stats = Stats 4 3 3
+                , cost = Nothing
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                }
+            (status, notes) = classifyLegacy card
+        status @?= RulesCurrent
+        notes @?= Nothing
+    ]
+
+test_deduplicationAndSlugs :: TestTree
+test_deduplicationAndSlugs =
+  testGroup
+    "Deduplication & Slugs"
+    [ testCase "Disambiguates colliding slugs" $ do
+        let c1 =
+              CoreCard
+                { name = unsafeNonEmptyText "Sunder Armor"
+                , tags = Nothing
+                , stats = Stats 4 2 3
+                , cost = Just 2
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                }
+            c2 =
+              CoreCard (unsafeNonEmptyText "Sunder Armor") Nothing (Stats 4 2 3) (Just 1) Nothing Nothing Nothing
+            groups =
+              assignUniqueSlugs
+                [(CategoryMartial, c1, [CardOccurrence "f1" c1]), (CategoryMartial, c2, [CardOccurrence "f2" c2])]
+        map (\g -> g.canonicalSlug) groups @?= ["sunder-armor", "sunder-armor-2"]
+    , testCase "Categorizes core cards appropriately" $ do
+        let c =
+              CoreCard
+                { name = unsafeNonEmptyText "Athletics"
+                , tags = Nothing
+                , stats = Stats 4 4 2
+                , cost = Nothing
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                }
+        determineCardCategory ["data/cards/pc/shield-fighter.yaml"] c @?= CategoryCore
+    , testCase "Categorizes wizard cards as arcane" $ do
+        let c =
+              CoreCard
+                { name = unsafeNonEmptyText "Fireball"
+                , tags = Nothing
+                , stats = Stats 2 2 5
+                , cost = Just 2
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                }
+        determineCardCategory ["data/cards/pc/wizard.yaml"] c @?= CategoryArcane
+    , testCase "Categorizes beast monsters appropriately" $ do
+        let c =
+              CoreCard
+                { name = unsafeNonEmptyText "Snack attack"
+                , tags = Nothing
+                , stats = Stats 6 4 2
+                , cost = Just 1
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                }
+        determineCardCategory ["data/cards/monsters/bread_wolf.yaml"] c @?= CategoryBeasts
+    , testCase "Picks modal stats for group with stat variations" $ do
+        let c1 = CoreCard (unsafeNonEmptyText "Bite") Nothing (Stats 3 2 2) (Just 1) Nothing Nothing Nothing
+            c2 = CoreCard (unsafeNonEmptyText "Bite") Nothing (Stats 3 2 2) (Just 1) Nothing Nothing Nothing
+            c3 = CoreCard (unsafeNonEmptyText "Bite") Nothing (Stats 5 2 2) (Just 1) Nothing Nothing Nothing
+            groups = groupCards [("f1", c1), ("f2", c2), ("f3", c3)]
+        case groups of
+          [grp] -> grp.baseCard.stats @?= Stats 3 2 2
+          _ -> assertFailure "Expected single group"
+    ]
+
+test_exportAndSerialization :: TestTree
+test_exportAndSerialization =
+  testGroup
+    "Export & YAML Serialization"
+    [ testCase "Serializes MasterCard with snake_case rules_status and legacy_notes" $ do
+        let mc =
+              MasterCard
+                { id = "test-card"
+                , name = unsafeNonEmptyText "Test Card"
+                , tags = Just (NE.singleton "Martial")
+                , stats = Stats 3 2 1
+                , cost = Just 1
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                , rulesStatus = Just RulesOutdated
+                , legacyNotes = Just "Uses legacy syntax"
+                , milestones = Nothing
+                }
+            encoded = encode [mc]
+        assertBool "Contains rules_status" ("rules_status: outdated" `BS.isInfixOf` encoded)
+        assertBool "Contains legacy_notes" ("legacy_notes: Uses legacy syntax" `BS.isInfixOf` encoded)
+        case decodeEither' encoded of
+          Left err -> assertFailure $ "Failed to decode: " ++ show err
+          Right (decoded :: [MasterCard]) -> decoded @?= [mc]
+    , testCase "CardGroup to MasterCard populates category tags when missing" $ do
+        let c = CoreCard (unsafeNonEmptyText "Slash") Nothing (Stats 4 2 2) (Just 1) Nothing Nothing Nothing
+            grp = CardGroup "slash" c [CardOccurrence "f" c] CategoryMartial RulesCurrent Nothing
+            mc = cardGroupToMasterCard grp
+        mc.tags @?= Just (NE.singleton "Martial")
+        mc.rulesStatus @?= Just RulesCurrent
+    ]
+
+test_deckRewriter :: TestTree
+test_deckRewriter =
+  testGroup
+    "Deck Rewriter"
+    [ testCase "Computes Nothing for matching stats" $ do
+        let s = Stats 3 2 1
+        computeStatOverrides s s @?= Nothing
+    , testCase "Computes partial override when only one stat differs" $ do
+        let actual = Stats 5 2 1
+            base = Stats 3 2 1
+        computeStatOverrides actual base @?= Just (Stats (Just 5) Nothing Nothing)
+    , testCase "Replaces matching inline cards with CardReference" $ do
+        let baseCard = CoreCard (unsafeNonEmptyText "Shield Bash") Nothing (Stats 2 1 3) Nothing Nothing Nothing Nothing
+            mc =
+              MasterCard
+                { id = "shield-bash"
+                , name = unsafeNonEmptyText "Shield Bash"
+                , tags = Nothing
+                , stats = Stats 2 1 3
+                , cost = Nothing
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                , rulesStatus = Just RulesCurrent
+                , legacyNotes = Nothing
+                , milestones = Nothing
+                }
+            catalog = Map.singleton "shield-bash" mc
+            actor =
+              ActorDefinition
+                { name = "Defender"
+                , tags = Nothing
+                , items = []
+                , nature = []
+                , deck = [EntryInline baseCard]
+                }
+            (rewritten, res) = rewriteActorDefinition catalog actor
+        res.replacedEntries @?= 1
+        res.modified @?= True
+        case rewritten.deck of
+          [EntryRef ref] -> do
+            ref.card @?= "shield-bash"
+            ref.stats @?= Nothing
+          _ -> assertFailure "Expected EntryRef"
+    , testCase "Preserves non-matching inline cards inline" $ do
+        let unknownCard = CoreCard (unsafeNonEmptyText "Unknown") Nothing (Stats 1 1 1) Nothing Nothing Nothing Nothing
+            actor =
+              ActorDefinition
+                { name = "Mystery"
+                , tags = Nothing
+                , items = []
+                , nature = []
+                , deck = [EntryInline unknownCard]
+                }
+            (rewritten, res) = rewriteActorDefinition Map.empty actor
+        res.retainedInlineEntries @?= 1
+        res.modified @?= False
+        rewritten.deck @?= [EntryInline unknownCard]
+    , testCase "Byte-for-byte roundtrip passes for rewritten actor" $ do
+        let mc =
+              MasterCard
+                { id = "quick-jab"
+                , name = unsafeNonEmptyText "Quick Jab"
+                , tags = Nothing
+                , stats = Stats 2 1 1
+                , cost = Nothing
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                , rulesStatus = Just RulesCurrent
+                , legacyNotes = Nothing
+                , milestones = Nothing
+                }
+            catalog = Map.singleton "quick-jab" mc
+            actor =
+              ActorDefinition
+                { name = "Boxer"
+                , tags = Nothing
+                , items = []
+                , nature = []
+                , deck =
+                    [ EntryInline
+                        (CoreCard (unsafeNonEmptyText "Quick Jab") Nothing (Stats 3 1 1) Nothing Nothing Nothing Nothing)
+                    ]
+                }
+            (rewritten, _) = rewriteActorDefinition catalog actor
+            encoded = encode rewritten
+        case decodeEither' encoded of
+          Left err -> assertFailure $ "Failed decode: " ++ show err
+          Right (decoded :: ActorDefinition) -> encode decoded @?= encoded
+    ]
+
+test_dataIntegrity :: TestTree
+test_dataIntegrity =
+  testGroup
+    "Data Integrity"
+    [ testCase "All existing actor files on disk have zero dangling card references" $ do
+        let pcDir = "data/cards/pc"
+            monDir = "data/cards/monsters"
+        pcExists <- doesDirectoryExist pcDir
+        let (actualPc, actualMon) = if pcExists then (pcDir, monDir) else ("../" ++ pcDir, "../" ++ monDir)
+        (_, pcFiles) <- scanActorFiles [actualPc]
+        (_, monFiles) <- scanActorFiles [actualMon]
+        let allFiles = pcFiles ++ monFiles
+        actors <- mapM decodeFileEither allFiles :: IO [Either ParseException ActorDefinition]
+        let validActors = rights actors
+        let errors = verifyCatalogIntegrity Map.empty validActors
+        errors @?= []
+    , testCase "Catches dangling card reference in invalid actor" $ do
+        let badActor =
+              ActorDefinition
+                { name = "Ghost"
+                , tags = Nothing
+                , items = []
+                , nature = []
+                , deck = [EntryRef (CardReference "nonexistent-slug" Nothing Nothing Nothing)]
+                }
+            errs = verifyCatalogIntegrity Map.empty [badActor]
+        assertEqual "Reports exactly 1 missing reference error" 1 (length errs)
+        case errs of
+          [firstErr] -> do
+            assertBool
+              "Mentions actor name"
+              ("Ghost" `elem` words firstErr || "Actor 'Ghost'" `isInfixOfStr` firstErr)
+            assertBool "Mentions card ID" ("nonexistent-slug" `isInfixOfStr` firstErr)
+          _ -> assertFailure "Expected exactly 1 error message"
+    , testCase "Resolves valid reference cleanly" $ do
+        let mc =
+              MasterCard
+                { id = "strike"
+                , name = unsafeNonEmptyText "Strike"
+                , tags = Nothing
+                , stats = Stats 3 2 2
+                , cost = Nothing
+                , attack = Nothing
+                , rules = Nothing
+                , flavor = Nothing
+                , rulesStatus = Just RulesCurrent
+                , legacyNotes = Nothing
+                , milestones = Nothing
+                }
+            catalog = Map.singleton "strike" mc
+            ref = CardReference "strike" (Just (Stats (Just 4) Nothing Nothing)) Nothing Nothing
+        case resolveDeckEntry catalog (EntryRef ref) of
+          Left err -> assertFailure $ "Resolution failed: " ++ err
+          Right resolved -> resolved.stats @?= Stats 4 2 2
+    ]
+  where
+    isInfixOfStr needle haystack = needle `T.isInfixOf` T.pack haystack

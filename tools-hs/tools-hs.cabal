@@ -29,6 +29,13 @@ library
     Design.TOC
     Design.Types
     KeywordMod
+    ManageCards
+    ManageCards.Audit
+    ManageCards.Classifier
+    ManageCards.Deduplicate
+    ManageCards.Export
+    ManageCards.Rewrite
+    ManageCards.Types
 
   build-depends:
     , aeson
@@ -77,6 +84,18 @@ executable audit-index
     , optparse-applicative
     , tools-hs
 
+executable manage-cards
+  import:         project-config
+  hs-source-dirs: app/manage-cards
+  main-is:        Main.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+    , base
+    , directory
+    , filepath
+    , optparse-applicative
+    , tools-hs
+
 test-suite tools-hs-test
   import:         project-config
   type:           exitcode-stdio-1.0
@@ -85,8 +104,13 @@ test-suite tools-hs-test
   ghc-options:    -threaded -rtsopts -with-rtsopts=-N
   build-depends:
     , base
+    , bytestring
+    , containers
     , core
+    , directory
+    , filepath
     , tasty
     , tasty-hunit
     , text
     , tools-hs
+    , yaml

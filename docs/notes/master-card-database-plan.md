@@ -36,121 +36,108 @@ flowchart TD
 
 ---
 
-## Completed Phases
+## Completed Foundations (Phases 1–3)
 
-- **Phase 1: Core Schema & Types (`Core.Card`)** — [COMPLETED]
-  - Added `RulesStatus`, `CardMilestone`, `MasterCard`, `CardReference`, `DeckEntry`, `ActorDefinition`, `resolveDeckEntry`, `resolveActorDeck`, and `applyOverrides` in [`Core.Card`](file:///home/tdimiduk/cardpg/cardpg/core/src/Core/Card.hs).
-  - Verified with comprehensive unit & roundtrip tests in [`core/tests/CardParsingTest.hs`](file:///home/tdimiduk/cardpg/cardpg/core/tests/CardParsingTest.hs) (79/79 passing).
-
-- **Phase 2: Catalog Loading & Deck Resolution (`Server.Loader` & `Server.Scenario`)** — [COMPLETED]
-  - Implemented `loadMasterCatalog` and recursive catalog discovery in [`Server.Loader`](file:///home/tdimiduk/cardpg/cardpg/server/src/Server/Loader.hs).
-  - Integrated `masterCatalog` into `CardLibrary` in [`Server.Types`](file:///home/tdimiduk/cardpg/cardpg/server/src/Server/Types.hs).
-  - Wired runtime deck resolution in [`Server.Scenario`](file:///home/tdimiduk/cardpg/cardpg/server/src/Server/Scenario.hs) and [`Server.Session`](file:///home/tdimiduk/cardpg/cardpg/server/src/Server/Session.hs), raising descriptive errors for unresolved card references.
-  - Verified with unit tests in [`server/test/LoaderTest.hs`](file:///home/tdimiduk/cardpg/cardpg/server/test/LoaderTest.hs) (31/31 server tests passing, 0 linter warnings).
+- **Phase 1: Core Schema & Types (`Core.Card`)** — Added `RulesStatus`, `CardMilestone`, `MasterCard`, `CardReference`, `DeckEntry`, `ActorDefinition`, `resolveDeckEntry`, `resolveActorDeck`, and `applyOverrides`.
+- **Phase 2: Catalog Loading & Deck Resolution (`Server.Loader` & `Server.Scenario`)** — Recursive multi-card catalog loading, runtime scenario deck resolution with descriptive errors for missing IDs.
+- **Phase 3: Haskell Tooling & Migration (`tools-hs/`)** — Implemented `manage-cards` CLI tool (`audit`, `export`, `rewrite`), heuristic legacy classifier, deduplication/unique slug generator, override calculator, and data integrity test suite.
 
 ---
 
-## Key Lessons Learned (Crucial for Phases 3 & 4)
+## Key Constraints & Context for Phase 4
 
-1. **Byte-for-Byte Roundtrip Testing in `CardParsingTest.hs`:**
-   - [`core/tests/CardParsingTest.hs`](file:///home/tdimiduk/cardpg/cardpg/core/tests/CardParsingTest.hs) enforces `Data.Yaml.encode actor == originalFileBytes` for all files in `data/cards/pc/` and `data/cards/monsters/`.
-   - When rewriting actor YAMLs in Phase 3/4, the emitted YAML must match `Data.Yaml.encode` formatting (2-space indentation, standard key ordering) so roundtrip assertions pass.
+1. **Byte-for-Byte Roundtrip Testing (`core/tests/CardParsingTest.hs`):**
+   - [`core/tests/CardParsingTest.hs`](file:///home/tdimiduk/cardpg/cardpg/core/tests/CardParsingTest.hs) asserts `Data.Yaml.encode actor == originalFileBytes` for all files in `data/cards/pc/` and `data/cards/monsters/`.
+   - `manage-cards rewrite` uses `Data.Yaml.encode` to ensure converted actor files pass roundtrip checks without formatting discrepancies.
 
-2. **UTF-8 ByteString Encoding for Unicode Symbols:**
-   - Rules texts contain Unicode glyphs like `'→'` (`U+2192`).
-   - Never use `Data.ByteString.Char8.pack` or `Char8.unlines` (which truncates codepoints > 255 and corrupts YAML).
-   - Always encode with `Data.Text.Encoding.encodeUtf8` when exporting YAML files in `tools-hs`.
+2. **Client Static Deck Rendering (`client/app/StaticMain.hs`):**
+   - [`StaticMain.hs`](file:///home/tdimiduk/cardpg/cardpg/client/app/StaticMain.hs#L622) currently calls `actorDeckCards actor`, which only yields inline cards (`EntryInline`).
+   - Prior to visual verification of pilot actors, `deckWidget` in `StaticMain.hs` must resolve the deck against `data/cards/master/` using `resolveActorDeck catalog actor` so cards converted to references continue to be rendered.
 
 3. **Global ID Uniqueness Across Master YAMLs:**
-   - `loadMasterCatalog` recursively collects cards from all `.yaml` files under `data/cards/master/` into a single flat `Map Text MasterCard`.
-   - Card IDs (e.g. `sunder-armor`, `athletics`) must be globally unique across all category files (`martial.yaml`, `core.yaml`, `beasts.yaml`). Duplicate IDs overwrite earlier entries. The Phase 3 deduplication audit must enforce unique slug generation.
+   - All master card IDs (`sunder-armor`, `athletics`, etc.) are globally unique across all category files (`core.yaml`, `martial.yaml`, `arcane.yaml`, `monsters/beasts.yaml`, `monsters/humanoids.yaml`).
+   - `manage-cards export` assigns and verifies unique slugs with collision disambiguation (`-2`, `-3`).
 
-4. **Multi-Card File Formatting:**
-   - The loader supports both single-card YAML files and multi-card YAML lists (`[- id: ..., - id: ...]`).
-   - Group canonical cards into category lists (`data/cards/master/martial.yaml`, `data/cards/master/monsters/beasts.yaml`) to avoid thousands of tiny single-card files.
+4. **Multi-Card File Formatting & UTF-8 Encoding:**
+   - Master catalog entries are grouped as YAML lists in their category files.
+   - Text containing Unicode characters (e.g. `'→'`) must be encoded via UTF-8 `ByteString`.
 
-5. **Canonical Field Naming in Output:**
-   - Canonical `MasterCard` YAML must use snake_case for `rules_status` and `legacy_notes`.
-   - Milestone mappings should nest under `milestones: { <key>: { stats: ..., rules: ... } }`.
-
-6. **Incremental Migration Support:**
-   - `ActorDefinition.deck` freely mixes `EntryInline CoreCard` and `EntryRef CardReference`.
-   - Conversion does not need to be all-or-nothing: individual cards within an actor deck can be migrated incrementally.
-
-7. **Weeder / Dead Code Enforcement:**
-   - `./scripts/lint` runs `weeder` across compiled HIE files. Any new types or helper functions added to `tools-hs` or `server` must be directly utilized by executables or test suites to pass CI.
+5. **Stat Curve Overrides & Incremental Migration:**
+   - Actor decks support any mixture of `EntryInline CoreCard` and `EntryRef CardReference`.
+   - Repeated cards with stat curves (such as `Snack attack` in `bread_wolf.yaml`) reference a single base master card while overriding only the differing stat dimensions (e.g. `stats: { red: 6 }`).
 
 ---
 
-## Remaining Phases
+## Phase 4: Master Database Population & Pilot Refactor
 
-### Phase 3: Haskell Tooling & Migration (`tools-hs/`)
+### Step 1: Populate Master Database
 
-#### [MODIFY] `tools-hs/tools-hs.cabal` & [NEW] `tools-hs/app/manage-cards/Main.hs`
+1. Run `manage-cards export`:
+   ```bash
+   cabal run tools-hs:exe:manage-cards -- export --out-dir data/cards/master
+   ```
+2. Verify generated YAML files under `data/cards/master/`:
+   - `core.yaml` (generic action cards: Conditioning, Athletics, Dodge, etc.)
+   - `martial.yaml` (weapons, martial combat maneuvers, stances, strikes)
+   - `arcane.yaml` (wizard spells and magical effects)
+   - `monsters/beasts.yaml` (natural beasts and animal monster cards)
+   - `monsters/humanoids.yaml` (sentient enemies, brigands, and monster adversaries)
+3. Inspect generated YAML files to confirm snake_case field names (`rules_status`, `legacy_notes`) and clean tagging.
 
-Implement a CLI tool (`cabal run tools-hs:exe:manage-cards -- <subcommand>`):
+### Step 2: Enable Master Deck Resolution in Static Site Generator (`client`)
 
-1. **Audit & Deduplicate (`manage-cards audit`):**
-   - Scan all PC (`data/cards/pc/`) and monster (`data/cards/monsters/`) files.
-   - Extract inline cards via `actorDeckCards`.
-   - Group identical cards by name, rules text, and stats, assigning canonical slug IDs.
-   - Report card reuse counts and candidate master cards.
+1. In [`client/app/StaticMain.hs`](file:///home/tdimiduk/cardpg/cardpg/client/app/StaticMain.hs), load the master catalog from `data/cards/master/` if present.
+2. In `deckWidget` (or `generateDeck`), resolve actor deck entries via `resolveActorDeck catalog actor` (falling back to `actorDeckCards actor` if catalog is unavailable).
+3. Ensure `cabal test client:test:client-test` and `./scripts/lint` pass.
 
-2. **Heuristic Legacy Classifier:**
-   - Automatically assign `rules_status: outdated` with appropriate `legacy_notes` when detecting:
-     - Shorthand color syntax (`|[xyzb]|`)
-     - Legacy armor syntax (`ignore .*armor`, `no armor`, `armor damage`)
-     - Legacy defense wording (`defend from anywhere`)
-     - Obsolete consequence tiers (`Minor:`, `Major:`, `Critical:`)
-     - Legacy wound phrasing (`basic wound`)
+### Step 3: Pilot Conversion of Target Actors
 
-3. **Export Master Catalog (`manage-cards export`):**
-   - Emit categorized, normalized YAML files under `data/cards/master/`:
-     - `core.yaml` (basic attacks, defenses, generic actions)
-     - `martial.yaml` (weapons, combat maneuvers)
-     - `arcane.yaml` (spells, magical effects)
-     - `monsters/beasts.yaml` (animals, natural beasts)
-     - `monsters/humanoids.yaml` (sentient enemies, brigands)
+Convert selected pilot actors to reference syntax using `manage-cards rewrite`:
 
-4. **Deck Rewriter (`manage-cards rewrite --actor <file>`):**
-   - Replace matching inline cards in target actor YAMLs with `CardReference` (`card: <id>`).
-   - Preserve non-standard stats via `stats` overrides or `upgrades`.
-   - Format rewritten files using `Data.Yaml.encode` to ensure byte-for-byte roundtrip compliance.
+1. **Martial PC Pilot — Shield Fighter**:
 
----
+   ```bash
+   cabal run tools-hs:exe:manage-cards -- rewrite --catalog data/cards/master --actor data/cards/pc/shield-fighter.yaml
+   ```
 
-### Phase 4: Master Database Population & Pilot Refactor
+   _Objective_: Verifies martial maneuvers, stances, and legacy syntax annotation tracking.
 
-1. **Populate Master Database:**
-   - Run `manage-cards export` to generate master catalog files in `data/cards/master/`.
-   - Review and manually refine rules text, tags, and `rules_status` annotations.
+2. **Standard PC Pilot — Squire**:
 
-2. **Pilot Conversion:**
-   - Convert target actors to reference syntax:
-     - `data/cards/pc/shield-fighter.yaml`
-     - `data/cards/pc/squire.yaml`
-     - `data/cards/monsters/bread_wolf.yaml` (stat curve demonstration)
-     - `data/cards/monsters/troglodyte.yaml` and `data/cards/monsters/infernal_troglodyte.yaml`
-   - Verify byte-for-byte roundtrip tests in `CardParsingTest.hs`.
+   ```bash
+   cabal run tools-hs:exe:manage-cards -- rewrite --catalog data/cards/master --actor data/cards/pc/squire.yaml
+   ```
 
----
+   _Objective_: Verifies basic martial PC deck conversion.
 
-## Verification Plan
+3. **Stat Curve Monster Pilot — Bread Wolf**:
 
-### Automated Tests
+   ```bash
+   cabal run tools-hs:exe:manage-cards -- rewrite --catalog data/cards/master --actor data/cards/monsters/bread_wolf.yaml
+   ```
 
-1. **Tooling & Parser Tests (`tools-hs-test`):**
-   - Test deduplication logic, legacy rules classifier, and YAML serialization in `tools-hs`.
-2. **Data Integrity Test:**
-   - Add a test verifying that every `card: <id>` reference in all actor files in `data/cards/pc/` and `data/cards/monsters/` resolves to an existing master card without dangling references.
-3. **Regression & Full Suite:**
-   - Verify no regressions across the workspace:
+   _Objective_: Demonstrates stat curve overrides on repeated cards (`Snack attack`, `Bread bite`, `On A roll`, `Crust claw`).
+
+4. **Monster Family Variant Pilot — Troglodytes**:
+   ```bash
+   cabal run tools-hs:exe:manage-cards -- rewrite --catalog data/cards/master --actor data/cards/monsters/troglodyte.yaml
+   cabal run tools-hs:exe:manage-cards -- rewrite --catalog data/cards/master --actor data/cards/monsters/infernal_troglodyte.yaml
+   ```
+   _Objective_: Demonstrates card reuse and stat scaling between a base monster and an elite variant.
+
+### Step 4: Verification & Integrity Audits
+
+1. **Automated Data Integrity Test**:
+   - Run `cabal test tools-hs:test:tools-hs-test` to verify that all card references in all actor files resolve against `data/cards/master/` with zero dangling IDs.
+2. **Byte-for-Byte Roundtrip Test**:
+   - Run `cabal test core:test:core-test` to confirm all rewritten actor files roundtrip cleanly with zero formatting discrepancies.
+3. **Runtime Scenario Resolution**:
+   - Run `cabal test server:test:server-test` to verify runtime scenario resolution with catalog references.
+4. **Visual Regression Verification**:
+   - Run `cabal run client:exe:cardpg-static -- deck data/cards/pc/shield-fighter.yaml` and inspect output HTML to ensure card visual styling and text layout are unchanged.
+5. **Full Workspace Test & Lint**:
+   - Run full verification:
      ```bash
      cabal test all
      ./scripts/lint
      ```
-
-### Manual Verification
-
-1. `cabal run client:exe:cardpg-static -- deck data/cards/pc/shield-fighter.yaml` to ensure visual rendering is identical before and after reference migration.
-2. Inspect generated master YAML files for accurate `rules_status` flags and proper categorization.
