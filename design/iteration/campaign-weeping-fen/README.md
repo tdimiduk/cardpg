@@ -46,7 +46,7 @@ flowchart TD
     end
 
     subgraph Micro [Micro Loop: Crisis Time]
-        SITE --> FIGHT["Decisive Combat (Fast 3-5 Round Battles)"]
+        SITE --> FIGHT["Decisive Combat (Fast-Paced, Engaging Resolution)"]
         FIGHT --> PERSIST["Persistent Harm & Deck Dilution (No Full Resets)"]
         PERSIST --> SITE
     end

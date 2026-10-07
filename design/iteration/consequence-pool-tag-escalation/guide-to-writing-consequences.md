@@ -137,16 +137,16 @@ Consequences do not all behave as simple single-track state machines. Tabletop h
 
 ### 6.2. The Inviolable Rules of Escalation Design
 
-To prevent degenerate mechanics and combat pacing drag, all `escalate:` clauses must satisfy four strict criteria:
+To ensure clarity and strong table pacing, all `escalate:` clauses must satisfy four core criteria:
 
 1. **The Organic Asymmetry Standard (Ban on Forced Symmetry)**:
    Escalation should **only occur if it makes sense mechanically and narratively**. It is completely fine for cards to have no printed escalation, or for chains to be different lengths.
    > **A card track that mechanically forces a neat 1 $\to$ 2 $\to$ 3 $\to$ 4 progression is suspicious.**
    > Human physiology and tabletop tactics are inherently asymmetric. Some tracks peak early (posture at Tier 2); some jump directly to emergency states upon re-injury; others exist purely as parallel symptoms.
-2. **Strict Ban on Intra-Tier Escalation Above Tier 1 (Anti-Drag Rule)**:
-   - Intra-tier escalation (`Poor Footing` $\to$ `Off Balance`, `Rattled Nerves` $\to$ `Afraid`) is **strictly confined to Tier 1** to model early tactical sparring.
-   - Above Tier 1, all escalations must move **vertically** (cross-tier, e.g., Tier 2 $\to$ Tier 3 $\to$ Tier 4 Narrative Taken Out) or trigger kinetic overmatch wildcards (Anvil Principle).
-   - _Never author soft-to-sharp sub-tiers within Tier 2 or Tier 3._ Doing so creates a 6-to-7 hit sponge that stretches combat far beyond the intended 3–5 round horizon.
+2. **Escalation Must Advance Stakes or Alter Tactics (Avoid Hit-Buffer Sponges)**:
+   - Escalation clauses exist to drive tactical evolution and ratchet stakes, not to serve as mechanical padding that absorbs attacks without changing how the fight plays.
+   - An escalation should tangibly alter the tactical situation, restrict options, or escalate immediate danger (e.g., converting a footing slip into being knocked prone, or a hairline crack into a structural fracture).
+   - Avoid authoring redundant, incremental sub-conditions that merely soak attacks without changing the player's choices or table state.
 3. **The Narrative Continuity Standard**:
    An escalation must represent a direct progression of the **exact same underlying pathology**.
    - _Forbidden:_ Morphing wound categories (e.g., a cut turning into a puncture; bruised ribs turning into a strained arm).
@@ -315,7 +315,7 @@ Before committing any consequence card, verify:
 - [ ] If Tier 2 or 3 bodily trauma, is an in-combat removal `action:` appropriately omitted (or limited strictly to temporary tactile suppression)?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier?
-- [ ] If the card has an `escalate:` block, does it follow the Anti-Drag Rule (intra-tier escalation confined strictly to Tier 1; Tier 2+ escalations move vertically)?
+- [ ] If the card has an `escalate:` block, does the escalation meaningfully raise stakes or alter tactics rather than just acting as a hit buffer?
 - [ ] Are `escalate:` triggers restricted strictly to Leaf Tags (e.g. `head`, `fear`, `bleeding`, `positioning`, `armor`), completely banning root tags (`injury`, `physical`, `combat`)?
 - [ ] If the card is a platform condition at its ceiling (`Knocked Prone`, `Sundered Armor`), does it define an Anvil Principle wildcard (drawing a fresh Physical Injury card) and a progress setback clause?
 - [ ] If the card is a transient Tier 1, does it resolve and discard immediately with NO `escalate:` block?

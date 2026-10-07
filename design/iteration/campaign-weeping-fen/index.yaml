@@ -17,5 +17,5 @@ documents:
     tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
 
   - path: "iteration/campaign-weeping-fen/challenges-and-encounters.md"
-    purpose: "High-level breakdown of locations, non-combat General Actions, and fast 3-5 round tactical combats."
+    purpose: "High-level breakdown of locations, non-combat General Actions, and fast-paced tactical combats."
     tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration"]

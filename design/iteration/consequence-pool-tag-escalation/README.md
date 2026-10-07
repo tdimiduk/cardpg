@@ -128,18 +128,18 @@ Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Tier } (S)$ formul
 
 Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by compounding vulnerabilities:
 
-1. **Round 1 (Initial Setup & Foothold)**: Attackers land a 4-Impact strike against an unarmored defender ($N=2$) $\to$ buys two Tier 2 cards (`Knocked Prone`, `Cracked Ribs`) or curates sharp Tier 1 cards (`Afraid`, `Off Balance`). Defender takes `Afraid`.
-2. **Round 2 (Compounding Friction)**: Attackers exploit hesitation and land follow-up impact, deliberately offering `Afraid` (fear tag). Defender suffers upgrade to **Tier 2** (`Terrified`).
-3. **Round 3 (Defensive Breakdown & Structural Trauma)**: With defenses depleted and action taxes mounting, follow-up strikes penetrate armor or exploit posture, landing **Tier 3** trauma (`Sundered Armor` flipping armor to Damaged, or `Broken Arm`).
-4. **Round 4 (Terminal Resolution)**: Compounding impact and shrinking pool sizes allow attackers to reach **Tier 4** (`Mind Void` or `Unconscious`) to conclude the conflict decisively.
+- **Initial Foothold (Opening Exchanges)**: Attackers test defenses and search for openings. Early hits inflict or offer sharp Tier 1 friction (`Afraid`, `Off Balance`, `Poor Footing`) or exploit an unarmored defender's smaller pool size ($N=2$) to establish active tags on the table.
+- **Compounding Pressure & Tag Escalation**: Follow-up strikes exploit exposed tags and compromised positions (e.g., hitting an already `Afraid` defender to deliberately trigger fear tag escalation into Tier 2 `Terrified`), worsening the defender's resource drain or defensive capability.
+- **Defensive Breakdown & Structural Trauma**: As hand cards are expended and defenses fray, incoming attacks penetrate armor thresholds or exploit lost posture, landing Tier 3 structural trauma (`Sundered Armor` flipping armor to Damaged and reducing pool size $N$, or severe bodily injury like `Broken Arm`).
+- **Terminal Resolution**: Compounding trauma, stripped defenses, and exhausted draw piles culminate in decisive collapse or incapacitation (reaching Tier 4 exit states like `Mind Void` or `Unconscious`).
 
-### The Tapering Funnel & Anti-Drag Escalation Rules
+### The Tapering Funnel & Meaningful Escalation
 
 Dynamic range within consequence decks does not repeat uniformly across tiers; it **progressively narrows** as severity ascends:
 
 1. **Tier 1 (The Sparring Band - Wide Dynamic Range):**
    - _Dynamic Range:_ Spans from clearable friction (Priority 1–3, e.g. `Poor Footing`, `Winded`) to stiff tactical locks (Priority 4–5, e.g. `Off Balance`, `Afraid`, `Rattled Guard`).
-   - _Intra-Tier Escalation Permitted:_ Only in Tier 1 can conditions escalate horizontally (`Poor Footing` $\to$ `Off Balance`, `Rattled Nerves` $\to$ `Afraid`), creating an opening tactical sparring phase where combatants can react before real tissue damage occurs.
+   - _Opening Maneuvers:_ Tier 1 models early tactical sparring where combatants can react, steady themselves, or clear footing before severe structural harm occurs.
 2. **Tier 2 (Operational Divergence - Platform vs. Biological):**
    - _Operational Divergence:_ Cards split between **Platform conditions** (`Knocked Prone`, severe immediate tactical vulnerability with in-combat recovery actions), **Biological trauma** (`Cracked Ribs`, `Mild Concussion`, persistent ongoing taxes that cannot be cured mid-combat), and **Suppressive trauma** (`Deep Laceration`, requiring direct card commitment). There are zero "soft outs."
 3. **Tier 3 (Orthogonal Pillar Collapse - Zero Soft Options):**
@@ -149,9 +149,9 @@ Dynamic range within consequence decks does not repeat uniformly across tiers; i
      - **Planning & Hand:** `Severe Concussion` (hand size hard-capped at 3, blocks Blue actions).
      - **Life Clock:** `Arterial Hemorrhage` (dilutes hand with `Blood Loss` cards each round).
    - Drafting is a tragic triage: _"Which pillar of my character can I afford to lose to survive this round?"_
-4. **Anti-Drag Escalation Rule:**
-   - **Intra-tier escalation is strictly forbidden above Tier 1.**
-   - Once blood is drawn at Tier 2 or 3, subsequent escalations must move **vertically** (cross-tier to Tier 3 or Tier 4 Narrative Taken Out) or trigger kinetic overmatches (Anvil Principle). Allowing soft-to-sharp sub-tiers at higher severities creates a 6-to-7 hit sponge that drags combat beyond the intended 3–5 round horizon.
+4. **Meaningful Escalation (Avoid Wheel-Spinning Buffers):**
+   - Escalation tracks exist to drive tactical evolution and ratchet stakes, not to serve as mechanical padding that absorbs attacks without changing how the fight plays.
+   - Every escalation should tangibly alter the tactical situation, restrict options, or escalate immediate danger rather than absorbing hits without altering the player's choices or table state.
 
 ---
 

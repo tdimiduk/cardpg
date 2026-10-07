@@ -74,13 +74,13 @@ These challenges test the **General Action** framework, emphasizing cooperation 
 
 ---
 
-## 3. The Combat Encounters (Fast, Decisive, 3–5 Rounds)
+## 3. The Combat Encounters (Fast, Decisive Combat Pacing)
 
-Combats in this scenario are designed to be fast and lethal, proving the speed of _caRdPG_ relative to traditional RPGs:
+Combats in this scenario are designed to be fast-paced, decisive, and engaging for their full duration without dragging:
 
 ```mermaid
 flowchart LR
-    C1["Combat 1: The Peat Ambush<br/>(2 Scouts + 1 Hound)<br/>• Fast 2-3 rounds<br/>• Travel vigilance test"] --> REST1["The Breather<br/>(Reshuffle + Fatigue)"]
+    C1["Combat 1: The Peat Ambush<br/>(2 Scouts + 1 Hound)<br/>• Fast skirmish<br/>• Travel vigilance test"] --> REST1["The Breather<br/>(Reshuffle + Fatigue)"]
     REST1 --> C2["Combat 2: The Barrow Gate<br/>(Durn & Iron Dogs)<br/>• Chokepoint tactical fight<br/>• Armor soak vs. Crossbows"]
     C2 --> C3["Combat 3: The Grendel-Hound<br/>(Apex Bog Terror)<br/>• Climax boss battle<br/>• Crushing multi-target attacks"]
 ```
@@ -90,21 +90,21 @@ flowchart LR
 - **Combatants:** 2 Mercenary Scouts (leather jerkins, spears) + 1 War Mastiff (fast pounce, pinning bite).
 - **Setting:** Open peat field with scattered reeds and standing puddles.
 - **Tactical Focus:** Tests entering combat from the travel vigilance dial. The mastiff rushes the unarmored Swashbuckler, while the spearmen try to keep the Shield-Fighter at distance with reach.
-- **Expected Length:** 2–3 rounds (under 5 minutes at the table).
+- **Expected Pacing:** Fast opening skirmish (under 5–10 minutes of table time).
 
 ### Combat 2: The Barrow Gate Breach (Tactical Defense)
 
 - **Combatants:** Sergeant Durn (heavy chain, military billhook) + 2 Crossbowmen with pavise shields.
 - **Setting:** The narrow stone threshold of the barrow archway.
 - **Tactical Focus:** Chokepoint defense. The Shield-Fighter can plant their shield in the 2-meter doorway, forcing Durn to engage in grinding close-quarters combat while the Swashbuckler flanks through a collapsed side fissure to threaten the crossbowmen.
-- **Expected Length:** 3–4 rounds.
+- **Expected Pacing:** Methodical, grinding chokepoint defense testing armor soak and positioning.
 
 ### Combat 3: The Grendel-Hound (Climactic Boss Encounter)
 
-- **Combatant:** The Grendel-Hound (Massive bog beast; thick water-soaked hide acting as heavy natural armor; devastating sweep and crushing jaw attacks).
+- **Combatants:** The Grendel-Hound (Massive bog beast; thick water-soaked hide acting as heavy natural armor; devastating sweep and crushing jaw attacks).
 - **Setting:** The flooded courtyard of the barrow during a raging downpour. Deep mud hampers footwork; lightning illuminates the black water.
 - **Tactical Focus:** Multi-enemy management or boss focus. The beast hits with crushing `{Red}` Strength that threatens even the Shield-Fighter's guard, requiring the Swashbuckler to dart in and exploit its blind flank with `{Yellow}` precision strikes while dodging thrashing claws.
-- **Expected Length:** 4–5 rounds of high-tension card play.
+- **Expected Pacing:** Climactic clash of high-tension card play, resource conservation, and fatigue endurance.
 
 ---
 

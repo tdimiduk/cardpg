@@ -37,9 +37,36 @@ The initiating actor (attacker, hazard, or active challenger) sets the difficult
 
 The core resolution engine must resolve physical combat, courtroom debates, treacherous climbs, and arcane research using the same universal vocabulary (`Strength`, `Color`, and `Consequences`). While cross-domain friction is natural and expected—getting mentally rattled in a debate can certainly strain your focus, add Fatigue to your deck, or impose tactical conditions in a subsequent brawl—mechanics should **avoid overly tight cross-domain coupling**. Having your consequence track filled with social embarrassment or mockery should not mean that the very first minor sword strike you take in an alleyway immediately escalates into a lethal punctured lung. Escalating trauma in one domain should not blindly trigger catastrophic, lethal outcomes in an unrelated domain.
 
-### DO NOT assume sequential turn-taking or constant action-taking.
+### DO NOT assume sequential turn-taking.
 
-In Crisis Time, all participants plan and resolve actions simultaneously. The rules must cleanly resolve incoming attacks against characters who choose to rest, hoard cards, take cover, or hold reactive defenses without requiring ad-hoc edge cases. Hand hoarding is balanced naturally by the systemic risk of **Defensive Collapse** (a depleted draw pile rapidly chaining Fatigue Cycles), not by artificial hand-size caps.
+In Crisis Time, all participants plan and resolve actions simultaneously. The rules operate on a simultaneous Plan step (secretly choosing actions) and a parallel Resolve step. This completely eliminates the classic tabletop bottleneck where players sit idle for 10–15 minutes waiting for their turn to come around in an initiative order. The engine must cleanly adjudicate parallel interactions—such as simultaneous attacks, mutual defenses, and contested maneuvers—without falling back on sequential turn-taking crutches.
+
+### DO NOT assume constant action-taking (The "Pass" as a Core Tactical Decision).
+
+In traditional d20 RPGs, "skipping a turn" is an action-economy catastrophe and a miserable player experience. In _caRdPG_, choosing to **Pass** during the Plan step is a core, intentional piece of tactical gameplay:
+
+- **Why Pass?** Players draw only 2 cards per round. Passing is an active decision driven by tactical calculation:
+  - _Powering Up / Banking Cards:_ Many cards carry significant resource costs—action costs frequently reach 4, 5, or higher (e.g., high-tier arcane spells and committed martial strikes). Since you only draw 2 cards per round, unleashing a major strike or complex spell requires deliberately holding back and assembling a substantial hand over multiple rounds.
+  - _Defensive Readiness:_ Passing preserves valuable cards in hand specifically for reactive `Defend` actions against anticipated enemy attacks, ensuring you aren't caught flat-footed with an empty hand.
+- **The "1 in 3" Cadence Rule of Thumb:** Continuous action on every single round is not the baseline expectation for all combatants; it is the hallmark of a **specific fast archetype** (e.g., relentless swashbucklers, agile skirmishers, or harrying beasts). The **typical baseline cadence** for most combatants and monsters is to **pass at least 1 round in 3**—circling, gathering energy, sizing up an opening, or bracing behind a shield before committing to another strike.
+- **Balancing Large Hands:** Hand hoarding is balanced naturally by the systemic risk of **Defensive Collapse** (a depleted draw pile rapidly chaining Fatigue Cycles if forced to flip against an unexpected attack), not by artificial hand-size caps.
+
+### DO NOT equate round count with combat duration (Table Pacing vs. Round Counts).
+
+Designers arriving from mainstream d20 systems (e.g., D&D 5e, Pathfinder) carry an ingrained rule-of-thumb that "balanced, exciting combats should resolve in 3–5 rounds." In those systems, this heuristic is essential: turns are resolved sequentially, with individual player decision paralysis, movement grid measurement, and rules lookups meaning a single round can easily consume 10–20 minutes of table time. In that paradigm, an 8-round combat is an exhausting, multi-hour slog.
+
+In _caRdPG_, this assumption does not apply:
+
+- **Simultaneous Action Eliminates Table Downtime:** Because everyone plans and resolves in parallel, players stay continuously engaged throughout the fight.
+- **Rounds are Fast by Design:** A round is designed to execute quickly, scaling directly with the complexity of what was declared:
+  - An **"all pass" or low-action round** (circling, sizing up opponents, banking cards) resolves in **well under a minute**—players draw 2 cards, confirm passes or stances, and immediately advance.
+  - A round featuring **a couple of minor attacks or defenses** resolves in **a few minutes** via straightforward card flipping.
+- **Pacing is Measured in Table Time and Engagement, Not Round Numbers:** Between frequent passing and the fast resolution of minor exchanges, a combat spanning 8, 10, or 12 rounds easily finishes in **10–20 minutes of real-world table time**. If those rounds are brisk, high-tension, and continuously cycling decks, a higher round count is exciting and tactically deep, not a pacing failure.
+
+**Design Implications:**
+
+- **Frame Goals in Real-World Table Time:** State encounter pacing goals in terms of real-world minutes (e.g., "a brisk 5–10 minute skirmish" or "a 20–30 minute climactic set-piece") and player engagement, rather than prescribing an arbitrary round ceiling.
+- **Target Friction, Not Round Caps:** When investigating whether combat is dragging, diagnose **table-time friction** (are rules slowing down physical card manipulation? are players bogged down in analysis paralysis?) and **round value** (did this round present interesting choices and shift the tactical state, or was it empty wheel-spinning?), rather than artificially truncating the number of rounds.
 
 ### DO NOT assume numerical advancement causes d20-style "level bloat" (Scale Invariance vs. Disjointed Math).
 
