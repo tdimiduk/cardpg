@@ -1,156 +1,44 @@
 deck:
-- name: Trogle
+- card: trogle
   stats:
-    blue: 2
     red: 4
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
+- card: blindsight
+- card: skitter-2
   stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
     yellow: 5
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Bite
+- card: bite-3
+- card: rake-2
+- card: claw-7
+- card: trogle
   stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
     red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 1
-  name: claw
+- card: blindsight
+- card: skitter-2
   stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- name: Trogle
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
     yellow: 5
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Bite
+- card: bite-3
+- card: rake-2
+- card: claw-7
+- card: trogle
   stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
     red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 1
-  name: claw
+- card: blindsight
+- card: skitter-2
   stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- name: Trogle
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
     yellow: 5
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Bite
+- card: bite-3
+- card: rake-2
+- card: claw-7
+- card: trogle
   stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
     red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 1
-  name: claw
+- card: blindsight
+- card: skitter-2
   stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- name: Trogle
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
     yellow: 5
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 1
-  name: claw
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
+- card: bite-3
+- card: rake-2
+- card: claw-7
 items: []
 name: Infernal Troglodyte
 nature:

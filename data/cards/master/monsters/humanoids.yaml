@@ -1,0 +1,1372 @@
+- id: animate-food
+  name: Animate food
+  rules_status: current
+  stats:
+    blue: 5
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- cost: 0
+  id: become-invisible
+  name: Become invisible
+  rules:
+  - 'action : Ignore all attacks this turn'
+  rules_status: current
+  stats:
+    blue: 6
+    red: 2
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
+  id: big-slice
+  name: Big slice
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Monster
+- id: birthday-cake
+  name: Birthday cake
+  rules_status: current
+  stats:
+    blue: 2
+    red: 8
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Blue}: Str = {Red} + 5 → basic wound'
+  cost: 2
+  id: bite
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bite
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 5
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
+  id: bite-2
+  name: Bite
+  rules_status: current
+  stats:
+    blue: 3
+    red: 1
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 0
+  id: bite-5
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bite
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: bite-7
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bite
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 3
+    yellow: 0
+  tags:
+  - Monster
+- id: blindsight
+  name: blindsight
+  rules:
+  - get +2 to defend against light based attacks
+  rules_status: current
+  stats:
+    blue: 5
+    red: 1
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
+  cost: 2
+  id: blow-through
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Blow through
+  rules:
+  - Ignore physical |x| and |y| attacks this turn
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 4
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
+  id: blue
+  legacy_notes: Uses legacy armor syntax
+  name: Blue
+  rules:
+  - Ignore armor
+  rules_status: outdated
+  stats:
+    blue: 8
+    red: 2
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
+  cost: 4
+  id: boulder-roll
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Boulder roll
+  rules:
+  - Knocks target off boulder, they must spend 2 turns actions getting back up
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 4
+  tags:
+  - Monster
+- id: bovine-strength
+  name: Bovine strength
+  rules_status: current
+  stats:
+    blue: 2
+    red: 10
+    yellow: 2
+  tags:
+  - Monster
+- id: bovine-strength-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bovine strength
+  rules:
+  - basic wound
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 10
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Blue}: Str = {Blue} + 3 → Stun 2/4/6'
+  cost: 3
+  id: brain-freeze
+  name: Brain Freeze
+  rules_status: current
+  stats:
+    blue: 4
+    red: 1
+    yellow: 1
+  tags:
+  - Monster
+- id: brutish-strength
+  name: Brutish strength
+  rules_status: current
+  stats:
+    blue: 2
+    red: 12
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} → Stun 2/4/6'
+  cost: 1
+  id: bump
+  name: Bump
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 1
+  id: burn
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Burn
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 8
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
+  id: cake-slice
+  name: Cake slice
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 1
+  id: chop
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Chop
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
+  cost: 3
+  id: chop-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Chop
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 8
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
+  id: chop-vegetables
+  name: Chop vegetables
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 3
+  id: clang
+  name: Clang
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 1
+  id: claw-2
+  name: Claw
+  rules_status: current
+  stats:
+    blue: 2
+    red: 6
+    yellow: 6
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
+  cost: 3
+  id: claw-4
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Claw
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
+  cost: 1
+  id: claw-5
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Claw
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 5
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 1
+  id: claw-6
+  name: claw
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 1
+  id: claw-7
+  name: claw
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
+  cost: 2
+  id: claw-grab
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Claw grab
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  tags:
+  - Monster
+- id: close-wounds
+  name: Close wounds
+  rules:
+  - |-
+    Spend to recover 1 minor wound or
+    spend 3 to recover 1 major wound
+  rules_status: current
+  stats:
+    blue: 6
+    red: 6
+    yellow: 6
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 2
+  id: cone-stab
+  name: Cone stab
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
+  id: cream-and-ice
+  name: Cream and Ice
+  rules_status: current
+  stats:
+    blue: 1
+    red: 4
+    yellow: 1
+  tags:
+  - Monster
+- id: creamy
+  name: Creamy
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 7 → basic wound'
+  cost: 5
+  id: die
+  legacy_notes: Uses legacy armor syntax; Uses legacy wound phrasing (basic wound)
+  name: Die
+  rules:
+  - ignore armor
+  rules_status: outdated
+  stats:
+    blue: 6
+    red: 9
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 2 → basic wound'
+  cost: 2
+  id: dive-bomb
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Dive Bomb
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 0
+    yellow: 10
+  tags:
+  - Monster
+- id: dragon-scales
+  name: Dragon scales
+  rules_status: current
+  stats:
+    blue: 5
+    red: 9
+    yellow: 7
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
+  cost: 4
+  id: drown
+  name: Drown
+  rules_status: current
+  stats:
+    blue: 3
+    red: 5
+    yellow: 3
+  tags:
+  - Monster
+- id: duck-behind-counter
+  name: Duck behind counter
+  rules:
+  - When flipped defend completely
+  rules_status: current
+  stats:
+    blue: 0
+    red: 4
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 1 → Knock down'
+  cost: 1
+  id: earthquake
+  name: earthquake
+  rules:
+  - Affects multiple enemies
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 4
+  tags:
+  - Monster
+- id: eat-me
+  name: Eat me
+  rules_status: current
+  stats:
+    blue: 1
+    red: 0
+    yellow: 0
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
+  cost: 1
+  id: electrified
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Electrified
+  rules:
+  - when used in defense can be played as an attack next round
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 6
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: fire-spray
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Fire spray
+  rules:
+  - affects all enemies
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  tags:
+  - Monster
+- cost: 1
+  id: fly-inbetween
+  name: Fly inbetween
+  rules:
+  - 'Action : enemy attack this turn also affects enemies ally'
+  - Recover this and resource if no attacks this round
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 5
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
+  cost: 2
+  id: gore
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Gore
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 7
+    yellow: 2
+  tags:
+  - Monster
+- id: green
+  name: Green
+  rules_status: current
+  stats:
+    blue: 7
+    red: 7
+    yellow: 7
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
+  cost: 3
+  id: hack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Hack
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  tags:
+  - Monster
+- id: hard-rock
+  name: Hard Rock
+  rules:
+  - Gets +4 when defending
+  rules_status: current
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 0
+  id: horn-poke
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Horn poke
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 4
+    yellow: 6
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound + Stun 2'
+  cost: 3
+  id: howling-wind-strike
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Howling Wind Strike
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 2'
+  cost: 2
+  id: ice-scream
+  name: Ice Scream
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- cost: 1
+  id: incorporeal
+  name: Incorporeal
+  rules:
+  - 'Defend: Ignore an attack'
+  rules_status: current
+  stats:
+    blue: 7
+    red: 1
+    yellow: 3
+  tags:
+  - Monster
+- attack: |-
+    {Red}: Str = {Red} + 3 → ignore armor
+    basic wound
+  cost: 4
+  id: life-leech
+  legacy_notes: Uses legacy armor syntax; Uses legacy wound phrasing (basic wound)
+  name: Life Leech
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 5
+    yellow: 0
+  tags:
+  - Monster
+- id: lizard-strength
+  name: Lizard strength
+  rules_status: current
+  stats:
+    blue: 1
+    red: 5
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Blue}: Str = {Blue} + 8 → Stun 1,4,10'
+  cost: 0
+  id: lose-in-a-labyrinth
+  name: Lose in a labyrinth
+  rules_status: current
+  stats:
+    blue: 8
+    red: 4
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 5 → Knockdown'
+  cost: 1
+  id: make-waves
+  name: Make waves
+  rules_status: current
+  stats:
+    blue: 1
+    red: 4
+    yellow: 2
+  tags:
+  - Monster
+- id: maze-runner
+  name: Maze Runner
+  rules_status: current
+  stats:
+    blue: 4
+    red: 5
+    yellow: 6
+  tags:
+  - Monster
+- id: minotaur-s-cunning
+  name: Minotaur's cunning
+  rules_status: current
+  stats:
+    blue: 8
+    red: 4
+    yellow: 5
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} - 1 → basic wound'
+  cost: 2
+  id: mob
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Mob
+  rules:
+  - each sucessive attack +1 strength
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  tags:
+  - Monster
+- cost: 1
+  id: monitor-the-situation
+  name: Monitor the situation
+  rules:
+  - Draw 2 cards, recover 2 from spent
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: |-
+    {Red}: Str = {Red} → or |y|
+    basic wound
+  cost: 1
+  id: orange
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|); Uses legacy wound phrasing
+    (basic wound)
+  name: Orange
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 6
+    yellow: 5
+  tags:
+  - Monster
+- id: pan-shield
+  name: Pan shield
+  rules:
+  - When flipped + defence
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
+  cost: 3
+  id: paralyzing-slash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Paralyzing Slash
+  rules_status: outdated
+  stats:
+    blue: 5
+    red: 5
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 1
+  id: peel
+  name: Peel
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} - 1 → basic wound'
+  cost: 2
+  id: poke-with-stick
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Poke with stick
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 8 → basic wound'
+  cost: 3
+  id: pounce-4
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Pounce
+  rules:
+  - Can be used as a resourse for a claw attack next round
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 6
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: punch
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Punch
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 4
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 2
+  id: punch-2
+  name: Punch
+  rules_status: current
+  stats:
+    blue: 2
+    red: 8
+    yellow: 4
+  tags:
+  - Monster
+- id: purple
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Purple
+  rules:
+  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
+  rules_status: outdated
+  stats:
+    blue: 6
+    red: 4
+    yellow: 5
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 2
+  id: rake
+  name: rake
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 2
+  id: rake-2
+  name: rake
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Monster
+- id: really-cold
+  name: Really cold
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Monster
+- id: really-strong
+  name: Really Strong
+  rules_status: current
+  stats:
+    blue: 1
+    red: 8
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → fire wound'
+  cost: 2
+  id: red
+  name: Red
+  rules_status: current
+  stats:
+    blue: 2
+    red: 8
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: rend
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Rend
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 5
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 8'
+  cost: 3
+  id: rend-2
+  name: Rend
+  rules_status: current
+  stats:
+    blue: 3
+    red: 8
+    yellow: 8
+  tags:
+  - Monster
+- id: run-run-run
+  name: Run run run
+  rules_status: current
+  stats:
+    blue: 1
+    red: 3
+    yellow: 6
+  tags:
+  - Monster
+- id: scaly-skin
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Scaly skin
+  rules:
+  - defense +2 when spent on defense
+  - basic wound
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 4
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: shamble-at
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Shamble at
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  tags:
+  - Monster
+- id: shield-weakness
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Shield Weakness
+  rules:
+  - 'Defend : |x| or |z| with |x|'
+  - 'State : Attacker next attack at -4 strength'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} - 4 → basic wound'
+  cost: 3
+  id: shock-bite
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|); Uses legacy wound phrasing
+    (basic wound)
+  name: Shock bite
+  rules:
+  - 'also attack |x|: strength = |x| - 6'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 5
+    yellow: 6
+  tags:
+  - Monster
+- id: skitter
+  name: Skitter
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 5
+  tags:
+  - Monster
+- id: skitter-2
+  name: skitter
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: slash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Slash
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 2
+  id: slash-2
+  name: Slash
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 1
+  id: slash-3
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Slash
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 6
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 3
+  id: slash-4
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Slash
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 5
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
+  cost: 2
+  id: slash-with-stick
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Slash with stick
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: smash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Smash
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 4
+    yellow: 0
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 3
+  id: smash-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Smash
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 7
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 6'
+  cost: 3
+  id: smash-3
+  name: Smash
+  rules_status: current
+  stats:
+    blue: 2
+    red: 6
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: splash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Splash
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 1
+  id: spray
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Spray
+  rules:
+  - Hits up to 255 enemies
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} → Attacks all characters'
+  cost: 4
+  id: spread-frosting
+  name: Spread frosting
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: stab
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Stab
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
+  id: stab-a-bite
+  name: Stab a bite
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: stomp
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Stomp
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 5
+    yellow: 3
+  tags:
+  - Monster
+- id: strength
+  name: Strength
+  rules_status: current
+  stats:
+    blue: 3
+    red: 6
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 5'
+  cost: 2
+  id: super-gust
+  name: Super Gust
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 5
+  tags:
+  - Monster
+- id: super-strong
+  name: Super strong
+  rules_status: current
+  stats:
+    blue: 2
+    red: 8
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: swat
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Swat
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 2
+    yellow: 0
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 2
+  id: swat-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Swat
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Monster
+- id: swiming-speed
+  name: Swiming speed
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 5
+  tags:
+  - Monster
+- id: thick-hide
+  name: Thick hide
+  rules:
+  - 'defend: this and all resources spent with it remain as state and spend to protect
+    against the next attack as well'
+  rules_status: current
+  stats:
+    blue: 4
+    red: 6
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 1
+  id: too-hot-to-touch
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Too hot to touch
+  rules:
+  - when used in defense can be played as an attack next round
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 6
+    yellow: 4
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
+  id: toss-salad
+  name: Toss salad
+  rules_status: current
+  stats:
+    blue: 3
+    red: 1
+    yellow: 4
+  tags:
+  - Monster
+- id: tough-cookie
+  name: Tough cookie
+  rules_status: current
+  stats:
+    blue: 2
+    red: 6
+    yellow: 3
+  tags:
+  - Monster
+- id: trogle
+  name: Trogle
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Monster
+- cost: 1
+  id: troll-healing
+  name: Troll healing
+  rules:
+  - recover 4 cards from exhausted to deck
+  rules_status: current
+  stats:
+    blue: 4
+    red: 6
+    yellow: 6
+  tags:
+  - Monster
+- attack: '{Blue}: Str = {Red} + 4 → basic wound'
+  cost: 1
+  id: water-breath
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Water breath
+  rules:
+  - hits multiple opponents
+  rules_status: outdated
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- id: water-breathing
+  name: Water breathing
+  rules:
+  - Get +4 to defend water based attacks from anywhere
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Monster
+- id: wave-power
+  name: Wave Power
+  rules_status: current
+  stats:
+    blue: 3
+    red: 7
+    yellow: 3
+  tags:
+  - Monster
+- attack: |-
+    {Red}: Str = {Red} → ignore armor
+    -1,-2,-4 to red on all cards
+  cost: 0
+  id: weakening-poke
+  legacy_notes: Uses legacy armor syntax
+  name: weakening poke
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  tags:
+  - Monster
+- attack: |-
+    {Red}: Str = {Red} → ignore armor
+    -1,-2,-4 to red on all cards
+  cost: 2
+  id: weakening-whack
+  legacy_notes: Uses legacy armor syntax
+  name: Weakening whack
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
+  cost: 2
+  id: weakness-slash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Weakness Slash
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  tags:
+  - Monster
+- attack: '{Red}: Str = {Red} - 2 → basic wound'
+  cost: 1
+  id: whack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Whack
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
+  cost: 0
+  id: wind-gust
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Wind Gust
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 5
+  tags:
+  - Monster
+- id: wind-s-speed
+  name: Wind's speed
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 8
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
+  cost: 2
+  id: yellow
+  name: Yellow
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 8
+  tags:
+  - Monster
+- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
+  cost: 1
+  id: zap
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Zap
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 8
+  tags:
+  - Monster
+- id: zoom
+  name: Zoom
+  rules_status: current
+  stats:
+    blue: 5
+    red: 7
+    yellow: 9
+  tags:
+  - Monster

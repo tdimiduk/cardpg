@@ -1,0 +1,381 @@
+- id: academy-politics
+  name: Academy Politics
+  rules_status: current
+  stats:
+    blue: 5
+    red: 4
+    yellow: 2
+  tags:
+  - Arcane
+- attack: |-
+    {Yellow}: Str = {Blue} + 2 → attack up to 3 targets within 10m
+    Minor: Dazzle
+    Major: Blind
+  cost: 4
+  id: blinding-beams
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Blinding Beams
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Arcane
+- id: book-learning
+  name: Book Learning
+  rules_status: current
+  stats:
+    blue: 6
+    red: 1
+    yellow: 1
+  tags:
+  - Arcane
+- attack: |-
+    {Blue}: Str = {Blue} → ignore armor, range 10m
+    Minor: Target's next attack is expended without effect
+     Major: caster picks next attack's target (no self, but can target "nothing")
+    Grave: Caster picks who target attacks until removed
+  cost: 5
+  id: dominate
+  legacy_notes: Uses legacy armor syntax; Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Dominate
+  rules_status: outdated
+  stats:
+    blue: 5
+    red: 1
+    yellow: 1
+  tags:
+  - Arcane
+- id: elven-lore
+  name: Elven Lore
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Arcane
+- id: elven-patience
+  name: Elven Patience
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  tags:
+  - Arcane
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 5
+  id: fireball
+  name: Fireball
+  rules:
+  - Affects all monsters
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 1
+  tags:
+  - Arcane
+- attack: |-
+    {Red}: Str = {Red} + 4 → attack all within medium area
+    basic fire wound
+  cost: 5
+  id: fireball-2
+  name: Fireball
+  rules:
+  - Attacks multiple enemies
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Arcane
+- attack: |-
+    {Red}: Str = {Red} + 4 → range 25m, 5m radius
+    basic fire wound
+  cost: 5
+  id: fireball-3
+  name: Fireball
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Arcane
+- id: flicker
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Flicker
+  rules:
+  - 'defend |x|, |y|, |z|: strength = |z|'
+  - 'You may Defend |x|, |y|, |z|: |z| for all attacks this turn'
+  rules_status: outdated
+  stats:
+    blue: 5
+    red: 1
+    yellow: 3
+  tags:
+  - Arcane
+- attack: |-
+    {Red}: Str = {Blue} + 2 → range 20m
+    basic wound
+  cost: 2
+  id: force-dart
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Force Dart
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Arcane
+- id: ghostform
+  name: Ghostform
+  rules:
+  - Action play as state
+  - 'If you are attacked: degrade any wounds you take by two steps and expend this'
+  - 'Planning: recover to hand if in play as state'
+  rules_status: current
+  stats:
+    blue: 2
+    red: 1
+    yellow: 3
+  tags:
+  - Arcane
+- attack: |-
+    {Yellow}: Str = {Blue} → ignore armor, range 10m, 2 meter radius
+    Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 3
+  id: grease
+  legacy_notes: Uses legacy armor syntax; Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Grease
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Arcane
+- cost: 2
+  id: haste-2
+  name: Haste
+  rules:
+  - Play this as state on a character with it's resources under it
+  - Each Draw, draw 2 extra cards and expend this or one card from under it
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 5
+  tags:
+  - Arcane
+- attack: |-
+    {Blue}: Str = {Blue} + 2 → range 20m
+    Curse 1/3/5
+  cost: 1
+  id: hex-bolt
+  name: Hex bolt
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 3
+  tags:
+  - Arcane
+- attack: |-
+    {Red}: Str = {Blue} → range 5m, leave this as state (without it's resources)
+    Minor: Jinx 1 or Hex 1 (caster picks)
+     Major: Curse 1
+    Grave: You're a newt
+  cost: 2
+  id: incremental-polymorph
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Incremental Polymorph
+  rules:
+  - 'Planning: Expend this or spend your action to add a +1 on top and repeat the
+    attack using your draw for this turn as resources'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Arcane
+- id: magic
+  name: Magic
+  rules_status: current
+  stats:
+    blue: 6
+    red: 2
+    yellow: 3
+  tags:
+  - Arcane
+- id: magical-abilities
+  name: Magical Abilities
+  rules_status: current
+  stats:
+    blue: 6
+    red: 1
+    yellow: 1
+  tags:
+  - Arcane
+- id: magical-nature
+  name: Magical nature
+  rules_status: current
+  stats:
+    blue: 8
+    red: 2
+    yellow: 4
+  tags:
+  - Arcane
+- id: magical-strength
+  name: magical strength
+  rules_status: current
+  stats:
+    blue: 7
+    red: 7
+    yellow: 0
+  tags:
+  - Arcane
+- attack: |-
+    {Blue}: Str = {Blue} + 3 → ignore armor, range 5m
+    Any Success: Target discards their hand
+  cost: 1
+  id: make-sneeze-2
+  legacy_notes: Uses legacy armor syntax
+  name: Make sneeze
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Arcane
+- attack: |-
+    {Blue}: Str = {Blue} → ignore armor, range 8m
+    basic mind wound
+  cost: 4
+  id: mind-crush
+  legacy_notes: Uses legacy armor syntax
+  name: Mind Crush
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 1
+    yellow: 1
+  tags:
+  - Arcane
+- cost: 2
+  id: mirror-image
+  name: Mirror Image
+  rules:
+  - 'Action: place this as state with it''s resources under it'
+  - 'When you are attacked: expend a card from this to ignore the attack. Expend this
+    when it has no resources under it'
+  - Expend this when it has no resources under it
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Arcane
+- cost: 2
+  id: ogre-strength
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Ogre Strength
+  rules:
+  - Play this as state on a character with it's resources under it
+  - When making an |x|, add +2 on each card spent, expend this or a card under it
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 5
+    yellow: 1
+  tags:
+  - Arcane
+- attack: '{Red}: Str = {Blue} + 2 → range 8m'
+  id: overwhelm-essense
+  name: Overwhelm Essense
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Arcane
+- attack: |-
+    {Blue}: Str = {Blue} + 4 → range 5m
+    Basic death wound
+  cost: 4
+  id: rend-spirit
+  name: Rend Spirit
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 2
+  tags:
+  - Arcane
+- id: shield-of-force
+  name: Shield of Force
+  rules:
+  - When you defend with this, recover to hand all other cards used in the defense
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Arcane
+- attack: |-
+    {Blue}: Str = {Blue} + 1 → range 3m
+    Minor: Stun 2
+     Major: Impose the Sleep Trance condition
+    Critical: Impose the Sleeping condition
+  cost: 3
+  id: sleep-powder-spray
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Sleep Powder Spray
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 2
+    yellow: 2
+  tags:
+  - Arcane
+- attack: |-
+    {Yellow}: Str = {Blue} + 2 → range 10m
+    Slow 2/5/10
+  cost: 2
+  id: slow-ray
+  name: Slow ray
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Arcane
+- attack: |-
+    {Red}: Str = {Blue} + 2 → range 2m
+    Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 1
+  id: telekenetic-shove
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Telekenetic Shove
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 5
+    yellow: 2
+  tags:
+  - Arcane

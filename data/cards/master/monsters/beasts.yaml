@@ -1,0 +1,629 @@
+- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
+  cost: 4
+  id: acid-bite
+  name: Acid Bite
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} → Attacks again next round'
+  cost: 4
+  id: acid-spit
+  name: Acid Spit
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
+  cost: 5
+  id: acid-spray
+  name: Acid Spray
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  tags:
+  - Beast
+- id: basilisk-strength
+  name: Basilisk strength
+  rules_status: current
+  stats:
+    blue: 3
+    red: 9
+    yellow: 5
+  tags:
+  - Beast
+- id: bat-s-speed
+  name: bat's speed
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 6
+  tags:
+  - Beast
+- id: bears-strength
+  name: Bears Strength
+  rules_status: current
+  stats:
+    blue: 3
+    red: 10
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 2
+  id: bite-10
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bite
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 6 → basic wound'
+  cost: 2
+  id: bite-11
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bite
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 7
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
+  cost: 1
+  id: bite-12
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bite
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
+  id: bite-4
+  name: Bite
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
+  id: bite-6
+  name: Bite
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 1
+  id: bite-8
+  name: Bite
+  rules_status: current
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 1
+  id: bite-9
+  name: Bite
+  rules:
+  - affects all enemies
+  rules_status: current
+  stats:
+    blue: 4
+    red: 7
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 2
+  id: bread-bite
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bread bite
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: claw
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Claw
+  rules:
+  - 2 + when spent to defend
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 1
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  cost: 1
+  id: claw-3
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Claw
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 6
+    yellow: 6
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 0
+  id: claws
+  name: Claws
+  rules_status: current
+  stats:
+    blue: 4
+    red: 5
+    yellow: 6
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: crust-claw
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Crust claw
+  rules:
+  - 2 + when spent to defend
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 1
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4 → basic wound'
+  id: crystal-crash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Crystal crash
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  id: crystal-slice
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Crystal slice
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 4
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  id: crystal-smash
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Crystal smash
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Beast
+- id: crystal-strength
+  name: Crystal strength
+  rules_status: current
+  stats:
+    blue: 2
+    red: 6
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
+  cost: 2
+  id: dive-bomb-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Dive Bomb
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Yellow} + 4'
+  cost: 5
+  id: dive-bomb-3
+  name: Dive bomb
+  rules_status: current
+  stats:
+    blue: 1
+    red: 4
+    yellow: 5
+  tags:
+  - Beast
+- id: flit
+  name: Flit
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 5
+  tags:
+  - Beast
+- id: fly-into-the-shadows
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Fly into the shadows
+  rules:
+  - 'Action: Defend |x| or |y| with |y| + 3'
+  rules_status: outdated
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 4
+  id: flyby
+  name: Flyby
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 4
+  tags:
+  - Beast
+- cost: 1
+  id: itchy
+  name: Itchy
+  rules:
+  - Each opponent discards one card
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Yellow}'
+  cost: 2
+  id: jab
+  name: Jab
+  rules_status: current
+  stats:
+    blue: 1
+    red: 2
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Yellow} + 1'
+  cost: 2
+  id: jab-2
+  name: Jab
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 5
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 10 → basic wound'
+  cost: 1
+  id: knock-down
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Knock down
+  rules_status: outdated
+  stats:
+    blue: 5
+    red: 7
+    yellow: 5
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 3
+  id: on-a-roll
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: On A roll
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 1
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: pack-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Pack attack
+  rules:
+  - Other wolves attacking this round +1
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 3
+  id: pounce
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Pounce
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 1
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 7'
+  cost: 2
+  id: pounce-2
+  name: Pounce
+  rules_status: current
+  stats:
+    blue: 3
+    red: 5
+    yellow: 7
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 7'
+  cost: 2
+  id: pounce-3
+  name: Pounce
+  rules:
+  - affects all enemies
+  rules_status: current
+  stats:
+    blue: 3
+    red: 5
+    yellow: 7
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 4
+  id: ram
+  name: Ram
+  rules_status: current
+  stats:
+    blue: 1
+    red: 4
+    yellow: 1
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
+  id: ram-2
+  name: Ram
+  rules_status: current
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Beast
+- id: reflect-attack
+  name: Reflect attack
+  rules:
+  - When flipped as armor ignore attack and put it back on random enemy
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 8 → basic wound'
+  cost: 3
+  id: rend-3
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Rend
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 8
+    yellow: 5
+  tags:
+  - Beast
+- attack: |-
+    {Blue}: Str = {Red} → ignore armor
+    Discard 1/2/4 cards
+  cost: 0
+  id: roar
+  legacy_notes: Uses legacy armor syntax
+  name: Roar
+  rules:
+  - Affects all enemies
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Blue}: Str = {Blue} + 1 → stun 1 per hit'
+  cost: 4
+  id: rot-breath
+  name: Rot breath
+  rules:
+  - Affects all enemies
+  rules_status: current
+  stats:
+    blue: 6
+    red: 2
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
+  id: shard-poke
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Shard poke
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 5
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: snack-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Snack attack
+  rules:
+  - Other wolves attacking this round +1
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
+  id: sting
+  name: Sting
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
+  id: sting-2
+  name: Sting
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Yellow}: Str = {Yellow} + 1'
+  cost: 3
+  id: sting-3
+  name: Sting
+  rules_status: current
+  stats:
+    blue: 1
+    red: 2
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Yellow}: Str = {Yellow} + 2'
+  cost: 3
+  id: sting-4
+  name: Sting
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 6
+  tags:
+  - Beast
+- attack: '{Blue}: Str = {Blue} → slow 3/skip 3 turns/stone statue'
+  cost: 1
+  id: stone-gaze
+  name: Stone Gaze
+  rules_status: current
+  stats:
+    blue: 6
+    red: 4
+    yellow: 6
+  tags:
+  - Beast
+- id: strong-lattice
+  name: Strong lattice
+  rules:
+  - get + 3 when defending from anywhere
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Red} + 5'
+  cost: 2
+  id: tail-slap
+  name: Tail slap
+  rules_status: current
+  stats:
+    blue: 5
+    red: 8
+    yellow: 2
+  tags:
+  - Beast
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
+  cost: 0
+  id: wing-slap
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Wing slap
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Yellow} + 3'
+  cost: 3
+  id: wing-slice
+  name: Wing slice
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  tags:
+  - Beast
+- attack: '{Red}: Str = {Yellow} + 2'
+  cost: 3
+  id: wingbeat
+  name: Wingbeat
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Beast
+- id: yellow-jacket
+  name: Yellow jacket
+  rules_status: current
+  stats:
+    blue: 5
+    red: 5
+    yellow: 5
+  tags:
+  - Beast

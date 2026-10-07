@@ -1,0 +1,65 @@
+- id: athletics
+  name: Athletics
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  tags:
+  - Core
+- id: athletics-2
+  name: Athletics
+  rules:
+  - 'Action: Move 8'
+  - recover this to your hand
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  tags:
+  - Core
+- id: athletics-3
+  name: Athletics
+  rules:
+  - 'Action: Move 8, recover this to your hand'
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 4
+  tags:
+  - Core
+- id: conditioning
+  name: Conditioning
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Core
+- id: dodge
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Dodge
+  rules:
+  - Defend |x| or |y| with |y| +1
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 5
+  tags:
+  - Core
+- id: dodge-2
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Dodge
+  rules:
+  - Defend |x| or |y| with |y| from anywhere
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 5
+  tags:
+  - Core

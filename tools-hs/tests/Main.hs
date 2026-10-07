@@ -551,14 +551,22 @@ test_dataIntegrity =
     [ testCase "All existing actor files on disk have zero dangling card references" $ do
         let pcDir = "data/cards/pc"
             monDir = "data/cards/monsters"
+            masterDir = "data/cards/master"
         pcExists <- doesDirectoryExist pcDir
-        let (actualPc, actualMon) = if pcExists then (pcDir, monDir) else ("../" ++ pcDir, "../" ++ monDir)
+        let (actualPc, actualMon, actualMaster) =
+              if pcExists
+                then (pcDir, monDir, masterDir)
+                else ("../" ++ pcDir, "../" ++ monDir, "../" ++ masterDir)
         (_, pcFiles) <- scanActorFiles [actualPc]
         (_, monFiles) <- scanActorFiles [actualMon]
         let allFiles = pcFiles ++ monFiles
         actors <- mapM decodeFileEither allFiles :: IO [Either ParseException ActorDefinition]
         let validActors = rights actors
-        let errors = verifyCatalogIntegrity Map.empty validActors
+        eCatalog <- loadCatalog actualMaster
+        catalog <- case eCatalog of
+          Left err -> assertFailure ("Failed to load master catalog: " ++ err) >> pure Map.empty
+          Right c -> pure c
+        let errors = verifyCatalogIntegrity catalog validActors
         errors @?= []
     , testCase "Catches dangling card reference in invalid actor" $ do
         let badActor =

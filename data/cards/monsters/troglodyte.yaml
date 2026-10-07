@@ -1,156 +1,28 @@
 deck:
-- name: Trogle
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 1
-  name: claw
-  stats:
-    blue: 2
-    red: 2
-    yellow: 3
-- name: Trogle
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 1
-  name: claw
-  stats:
-    blue: 2
-    red: 2
-    yellow: 3
-- name: Trogle
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 1
-  name: claw
-  stats:
-    blue: 2
-    red: 2
-    yellow: 3
-- name: Trogle
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- name: blindsight
-  rules:
-  - get +2 to defend against light based attacks
-  stats:
-    blue: 5
-    red: 1
-    yellow: 1
-- name: skitter
-  stats:
-    blue: 3
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: rake
-  stats:
-    blue: 2
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 1
-  name: claw
-  stats:
-    blue: 2
-    red: 2
-    yellow: 3
+- card: trogle
+- card: blindsight
+- card: skitter-2
+- card: bite-2
+- card: rake
+- card: claw-6
+- card: trogle
+- card: blindsight
+- card: skitter-2
+- card: bite-2
+- card: rake
+- card: claw-6
+- card: trogle
+- card: blindsight
+- card: skitter-2
+- card: bite-2
+- card: rake
+- card: claw-6
+- card: trogle
+- card: blindsight
+- card: skitter-2
+- card: bite-2
+- card: rake
+- card: claw-6
 items: []
 name: Troglodyte
 nature:

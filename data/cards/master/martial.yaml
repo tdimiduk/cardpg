@@ -1,0 +1,2174 @@
+- id: ancient-wisdom
+  name: Ancient wisdom
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- id: armor-deflect
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Armor Deflect
+  rules:
+  - '|x| or |y| +2 defense from anywhere if you have deflecting armor'
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Attack
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  id: backswing
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Backswing
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 1
+  id: backswing-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Backswing
+  rules:
+  - You must have attacked last turn to play backswing
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 6'
+  cost: 2
+  id: banish-darkness
+  name: Banish Darkness
+  rules:
+  - Only affects dark-related monsters
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 3
+  id: bark-worse-than-bite
+  name: Bark worse than bite
+  rules:
+  - Melee attack
+  rules_status: current
+  stats:
+    blue: 3
+    red: 5
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 2
+  id: bite-3
+  name: Bite
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Blue}: Str = {Blue} + 1 → basic wound'
+  cost: 1
+  id: black-beam
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Black beam
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: blinding-sun
+  name: Blinding Sun
+  rules:
+  - The next 2 attacks against you, ignore the resource number on the top card
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- cost: 1
+  id: bouy-spirits
+  name: Bouy Spirits
+  rules:
+  - 'Action: An ally recovers 2 cards from spent to hand'
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 1
+  id: box-in
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Box in
+  rules:
+  - target must expend a card to attack next roud
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 3'
+  cost: 3
+  id: branch-bash
+  name: Branch bash
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- id: bravery
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|); Uses legacy defense wording
+    (defend from anywhere)
+  name: Bravery
+  rules:
+  - '|z| + 3 when used to defend from anywhere'
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 1
+  id: bully
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Bully
+  rules:
+  - target must expend a card to attack next roud
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- id: burning-blades
+  name: Burning blades
+  rules:
+  - Place this and it's resources on a weapon. Include this as a bonus on attacks
+    with this weapon. Each time it is used expend it or one resource from under it.
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 3'
+  cost: 4
+  id: chain-lightning
+  name: Chain Lightning
+  rules:
+  - Attacks 1 monster for full strength next for 1/2 and next for 1/4 strength
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- id: chivalry
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Chivalry
+  rules:
+  - '|z| + 3 when defending from anywhere'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: clumsy-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Clumsy Attack
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: consistent-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Consistent Attack
+  rules:
+  - 'Option: recover to hand then expend your first draw'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Blue}: Str = {Blue} + 2 → separately for each card in this attack'
+  id: constelation-sneeze
+  name: Constelation sneeze
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Red} + 2 → non |x| defends at -2
+    crushing wound
+  cost: 3
+  id: crush-through
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Crush through
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Red} + 1 → ignore one armor
+    basic wound
+  cost: 2
+  id: crushing-blow
+  legacy_notes: Uses legacy armor syntax; Uses legacy wound phrasing (basic wound)
+  name: Crushing blow
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Blue}: Str = {Blue} + 4 → Minor magic attacks at half strength
+    major magic attacks at 0 strength
+  cost: 4
+  id: crystal-crush
+  name: Crystal crush
+  rules_status: current
+  stats:
+    blue: 5
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → Minor: No Effect, Major or Critical: Kill target'
+  cost: 2
+  id: deathblow
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Deathblow
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Blue}: Str = {Red} + 3 → no armor
+    Target discards 1/3/All cards
+  cost: 1
+  id: demoralize
+  legacy_notes: Uses legacy armor syntax
+  name: Demoralize
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- id: disarming-humor
+  name: Disarming Humor
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 3 → Fire wound'
+  cost: 3
+  id: double-flame
+  name: Double flame
+  rules:
+  - Attacks 2 monsters
+  rules_status: current
+  stats:
+    blue: 8
+    red: 4
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: dragon-chomp
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Dragon chomp
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 0
+  id: dragon-flap
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Dragon flap
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: dragon-grab
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Dragon grab
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 3 → minor: stun 2, major: stun 4, stun 10'
+  cost: 3
+  id: dragon-roar
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Dragon roar
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Martial
+- id: dragon-scale
+  legacy_notes: Uses legacy defense wording (defend from anywhere)
+  name: Dragon scale
+  rules:
+  - get + 2 to defend from anywhere
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Blue}: Str = {Red} → All cards red values get -1, -2, -4'
+  cost: 2
+  id: dragon-shrink
+  name: Dragon shrink
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Blue}: Str = {Blue} → Next 1,2,4 attacks also attack a random monster'
+  cost: 3
+  id: dragon-star
+  name: Dragon Star
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → minor: knockdown, major: knock down skip 2 turns,
+    paralyze'
+  cost: 2
+  id: dragon-stomp
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Dragon stomp
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- id: durian-spikes
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Durian spikes
+  rules:
+  - 'Action: play. Attack 5 |x| attackers. expend if triggered, ottherwise recover'
+  - Attacker discards a card or stuns 1
+  - Attackers get attacked and discard a card
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 5
+  id: durian-stink-bomb
+  name: Durian Stink bomb
+  rules:
+  - Discard 3/7/11/15, slow remainder
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
+  cost: 2
+  id: efficient-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Efficient Attack
+  rules:
+  - reclaim 1 resourse from this attack to hand
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- id: elvish-footsteps
+  name: Elvish Footsteps
+  rules:
+  - Super good at sneaking in a forest
+  rules_status: current
+  stats:
+    blue: 5
+    red: 1
+    yellow: 2
+  tags:
+  - Martial
+- id: endure
+  legacy_notes: Uses legacy defense wording (defend from anywhere)
+  name: Endure
+  rules:
+  - strength +2 when used to defend from anywhere
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: endure-2
+  legacy_notes: Uses legacy defense wording (defend from anywhere)
+  name: Endure
+  rules:
+  - strength +4 when used to defend from anywhere
+  rules_status: outdated
+  stats:
+    blue: 0
+    red: 1
+    yellow: 0
+  tags:
+  - Martial
+- id: fall-foliage
+  name: Fall foliage
+  rules:
+  - The next 2 attacks against you, ignore the resource number on the top card
+  - Send a blast of leaves out to make it hard to attack
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Yellow} + 5 → Minor: Stun 2 recover resources spent'
+  cost: 2
+  id: false-charge
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: False Charge
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow} + 4 → Target must expend 1/2/4 cards to defend
+    against you next turn'
+  cost: 1
+  id: feint
+  name: Feint
+  rules_status: current
+  stats:
+    blue: 3
+    red: 1
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow} → basic wound'
+  cost: 2
+  id: fence
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Fence
+  rules:
+  - you may apply this and it's resources to any defense this round
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- id: fend-off
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Fend Off
+  rules:
+  - 'defend |x|, |y|, or |z|: strength = |x|+1'
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- cost: 2
+  id: fire-armor
+  name: Fire armor
+  rules:
+  - 'action: place this as state'
+  - you can use this as a resource on defense without expending it. If you take a
+    red wound, fatigue this instead.
+  rules_status: current
+  stats:
+    blue: 1
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 5'
+  cost: 4
+  id: fire-blast
+  name: Fire Blast
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 4'
+  cost: 2
+  id: fire-bolt
+  name: Fire Bolt
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
+  cost: 0
+  id: flashing-blade
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Flashing blade
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- id: flow-with-the-wind
+  name: Flow with the wind
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 1
+  id: flyby-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Flyby attack
+  rules:
+  - Can also move this turn
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: follow-up
+  name: Follow up
+  rules:
+  - strength +4 as a resource for an action (not defense) if you acted last turn
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 1
+  tags:
+  - Martial
+- id: footwork
+  name: Footwork
+  rules:
+  - When spent on attack can also spend to defend one attack
+  rules_status: current
+  stats:
+    blue: 1
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: frantic-defense
+  name: Frantic Defense
+  rules:
+  - 'Defense: Flip 2 cards and add to this defense'
+  rules_status: current
+  stats:
+    blue: 1
+    red: 1
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red}'
+  cost: 1
+  id: frenzy
+  name: Frenzy
+  rules:
+  - Draw 1 card
+  rules_status: current
+  stats:
+    blue: 1
+    red: 2
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
+  cost: 1
+  id: gauntlet-punch
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Gauntlet Punch
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: golden-eyes
+  name: Golden eyes
+  rules:
+  - Show this card, you can see invisible this turn
+  rules_status: current
+  stats:
+    blue: 5
+    red: 4
+    yellow: 4
+  tags:
+  - Martial
+- id: gymnastics
+  name: Gymnastics
+  rules:
+  - If you spend this as a resource you can move 1 extra meter in your "free" move
+    for the action
+  rules_status: current
+  stats:
+    blue: 1
+    red: 3
+    yellow: 5
+  tags:
+  - Martial
+- cost: 3
+  id: haste
+  name: Haste
+  rules:
+  - 'Action: put into play'
+  - Up to 4 target creatures draw an extra card per turn for 4 turns
+  rules_status: current
+  stats:
+    blue: 2
+    red: 1
+    yellow: 5
+  tags:
+  - Martial
+- id: healing-hands
+  name: Healing Hands
+  rules:
+  - 'Action: remove a 1 consequence from creature touched'
+  - 'Action: Replace a Consequence:2 with an Injury or a Consequence:3 with 5 Injury(s)'
+  - 'Action (1 minute): Replace an Injury with a Fatigue'
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  tags:
+  - Martial
+- cost: 23
+  id: healing-mango
+  name: Healing mango
+  rules:
+  - Eating the mango heals someone removing all bad cards and conditions
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 1
+  tags:
+  - Martial
+- cost: 1
+  id: heat-up
+  name: Heat Up
+  rules:
+  - Add +1 to all attacks for the rest of this battle
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: hide-behind-shield
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Hide behind shield
+  rules:
+  - 'defend |x| or |y|: strength |x|+3, use this (with different resources) against
+    any number of attacks. Do not draw this turn'
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- cost: 1
+  id: i-ve-got-a-plan
+  name: I've got a plan
+  rules:
+  - Next turn you and your allies get +4 on actions (including defense and attack)
+  rules_status: current
+  stats:
+    blue: 5
+    red: 3
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Blue} + 4'
+  cost: 3
+  id: ice-cage
+  name: Ice cage
+  rules:
+  - Cant act or draw cards for 1,2,5
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- cost: 0
+  id: inspire
+  name: Inspire
+  rules:
+  - 'Action: Your allies attacks get +4 strength this turn'
+  rules_status: current
+  stats:
+    blue: 1
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- id: interceed
+  name: Interceed
+  rules:
+  - May contribute this to an adjacent ally's defense
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: invisibility
+  name: Invisibility
+  rules:
+  - Turn invisible for a few minutes out of combat to sneak around
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 4
+  tags:
+  - Martial
+- id: just-a-normal-tree
+  name: Just a normal tree
+  rules:
+  - Appear as just a normal tree for a time
+  rules_status: current
+  stats:
+    blue: 5
+    red: 4
+    yellow: 0
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Red} + 2 → Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 2
+  id: knockdown
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Knockdown
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → ranged'
+  cost: 3
+  id: launch-rotten-fruit
+  name: Launch rotten fruit
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
+  cost: 2
+  id: lead-with-the-shield
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Lead with the Shield
+  rules:
+  - you may apply this and it's resources to any defense this round
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 1
+  id: light-blast
+  name: Light Blast
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: light-on-fire
+  name: Light On Fire
+  rules:
+  - Ignites nonliving burnable things on fire
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue}'
+  cost: 2
+  id: lightning-block
+  name: Lightning block
+  rules:
+  - you may apply this and it's resources to any defense this round
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 4'
+  cost: 3
+  id: lightning-bolt
+  name: Lightning Bolt
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: lightning-dodge
+  name: Lightning Dodge
+  rules:
+  - Use {yellow} + {red} for {Red} defense
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 5
+  tags:
+  - Martial
+- id: lightning-speed
+  name: Lightning Speed
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 5
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} → Attacks each round removing one card from stack each
+    turn until empty'
+  cost: 3
+  id: magma-missile
+  name: Magma Missile
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 1
+  tags:
+  - Martial
+- id: make-opportunity
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Make Opportunity
+  rules:
+  - 'defend |x|: strength = |x| you may use this as a resource to attack next turn'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: make-opportunity-2
+  name: Make Opportunity
+  rules:
+  - 'defend: you may use this as a resource to attack next turn'
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: |-
+    {Blue}: Str = {Blue} + 3 → ignore armor
+    Minor discard their hand
+  cost: 1
+  id: make-sneeze
+  legacy_notes: Uses legacy armor syntax
+  name: Make sneeze
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 4'
+  cost: 4
+  id: mango-mace
+  name: Mango mace
+  rules_status: current
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 2'
+  cost: 2
+  id: melt-weapon
+  name: Melt Weapon
+  rules:
+  - Heat up a weapon so much it melts, hurts the one holding it
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: might-of-the-oaks
+  name: Might of the oaks
+  rules_status: current
+  stats:
+    blue: 2
+    red: 6
+    yellow: 0
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1 → upgraded wound'
+  cost: 2
+  id: mighty-blow
+  name: Mighty Blow
+  rules_status: current
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Blue}: Str = {Blue} + 3 → ignore armor
+    Discard 1 /3/All cards
+  cost: 1
+  id: mind-games
+  legacy_notes: Uses legacy armor syntax
+  name: Mind Games
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- id: mirror-image-2
+  name: Mirror image
+  rules:
+  - 'action: place this as state with it''s resources under it'
+  - Expend this or a card under it to negate an attack
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- cost: 2
+  id: moon-darkness
+  name: Moon Darkness
+  rules:
+  - 'Action: all attacks miss this round, recover if no attacks'
+  rules_status: current
+  stats:
+    blue: 6
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- id: moon-forcefield
+  name: Moon Forcefield
+  rules:
+  - get +4 when used to block a attack
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- id: nobility
+  name: Nobility
+  rules:
+  - Use this card to invoke your noble privileges
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- id: not-there-anymore
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Not there anymore
+  rules:
+  - |-
+    Defend |x|: strength |y|
+    you can use this whole defense against any number of attacks this round
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- id: opportune-shield-placement
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|); Uses legacy defense wording
+    (defend from anywhere)
+  name: Opportune Shield Placement
+  rules:
+  - '|x| and |y| +3 when used to defend from anywhere if you have a shield'
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 0
+  id: opportunistic-attack
+  name: Opportunistic Attack
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → Minor: daze 1, Major: Minor wound, Critical: major
+    wound'
+  cost: 0
+  id: opportunistic-kick
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Opportunistic Kick
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Red} + 3 → Minor: daze 1
+     Major: Minor wound
+    Critical: major wound
+  cost: 0
+  id: opportunistic-kick-2
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Opportunistic Kick
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: overheated
+  name: Overheated
+  rules_status: current
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Martial
+- id: pain-drives-me
+  name: Pain drives me
+  rules:
+  - 'If this card is part of a defense where you take a wound: draw 2 cards'
+  rules_status: current
+  stats:
+    blue: 1
+    red: 3
+    yellow: 1
+  tags:
+  - Martial
+- id: parry
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Parry
+  rules:
+  - 'defend |x| or |y|: strength |y| + 1'
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  tags:
+  - Martial
+- id: patter
+  name: Patter
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 5
+  tags:
+  - Martial
+- id: plant-growth
+  name: Plant growth
+  rules:
+  - Makes plants around you grow
+  rules_status: current
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Blue} + 2 → ignore armor
+    minor: slow 2, major: slow 5, slow 24
+  cost: 2
+  id: plant-trap
+  legacy_notes: Uses legacy armor syntax; Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Plant trap
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 3 → Poison wound'
+  cost: 3
+  id: poison-bolt
+  name: Poison bolt
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: power
+  name: Power
+  rules_status: current
+  stats:
+    blue: 2
+    red: 5
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 2
+  id: power-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Power Attack
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Yellow}: Str = {Yellow} → ignore 1 armor
+    basic wound
+  cost: 2
+  id: precise-strike
+  legacy_notes: Uses legacy armor syntax; Uses legacy wound phrasing (basic wound)
+  name: Precise Strike
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 1
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  id: pressing-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Pressing Attack
+  rules:
+  - can spend this on an attack next turn
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 4
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 1
+  id: pressing-attack-2
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Pressing Attack
+  rules:
+  - can spend this on an attack next turn
+  rules_status: outdated
+  stats:
+    blue: 1
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- cost: 1
+  id: push-yourself
+  name: Push yourself
+  rules:
+  - 'Action: Draw 3 extra cards at upkeep this turn'
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
+  cost: 1
+  id: quick-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Quick Attack
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → basic wound'
+  cost: 2
+  id: rattling-blow
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Rattling blow
+  rules:
+  - If defender adds cards with armor, stun 1
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 1
+  id: rebound
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Rebound
+  rules:
+  - If this does not deliver a wound, recover it's resource
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: regrowth
+  name: Regrowth
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow} + 2 → basic wound'
+  cost: 1
+  id: reliable-attack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Reliable Attack
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- id: revitilizing-growth
+  name: Revitilizing growth
+  rules:
+  - heals plants
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 1
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Red} → ignore armor
+    stun 2/5/10
+  cost: 1
+  id: ring-the-bell
+  legacy_notes: Uses legacy armor syntax
+  name: Ring the Bell
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: root-network
+  name: Root network
+  rules:
+  - Ask nearby trees what they have heard
+  rules_status: current
+  stats:
+    blue: 5
+    red: 4
+    yellow: 1
+  tags:
+  - Martial
+- cost: 4
+  id: root-tangle
+  name: Root tangle
+  rules_status: current
+  stats:
+    blue: 1
+    red: 4
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → basic wound'
+  cost: 2
+  id: scale-slap
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Scale slap
+  rules:
+  - you may apply this and it's resources to any defense this round
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: second-wind
+  name: Second wind
+  rules:
+  - Fatigue this face up
+  - recover 4 face down fatigue to spent
+  - When you recover this from face up fatigue, fatigue 4 cards face down (if you
+    have recovery points remaining from your rest you can recover them as normal)
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} → basic wound'
+  cost: 0
+  id: sharp-star
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Sharp star
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 1
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2 → cannot inflict more than a minor wound'
+  cost: 0
+  id: shield-bash
+  name: Shield Bash
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: shield-block
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Shield Block
+  rules:
+  - 'defend |x| or |y|: strength = |x|'
+  - recover 1 resource to hand
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- id: shield-deflect
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Shield Deflect
+  rules:
+  - 'defend |x| or |y|: strength = |x|'
+  - you can save 1 resource from this and use it on attack next turn
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- id: shield-sacrifice
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Shield Sacrifice
+  rules:
+  - 'defend |x| or |y|: strength = |x|'
+  - if your shield is undamaged, you can damage your shield to downgrade any wound
+    you recieve from this attack by 1 level
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- id: shield-wings
+  legacy_notes: Uses legacy defense wording (defend from anywhere)
+  name: Shield Wings
+  rules:
+  - get + 3 to defend from anywhere
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- id: shielded-stance
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Shielded Stance
+  rules:
+  - 'action: play as state'
+  - 'you may defend |x| or |y|: strength = |x| + 1 at will. You can use shielded stance
+    as a resource for one of these defenses, but then you expend it. expend when you
+    attack.'
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
+  cost: 1
+  id: shielded-strike
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Shielded Strike
+  rules:
+  - you may apply this card to defense this round
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Blue}: Str = {Blue} + 2 → minor: stun 2, major: stun 4, stun 10'
+  cost: 2
+  id: shining-sun
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Shining sun
+  rules:
+  - Used at range
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 2 → basic wound'
+  cost: 2
+  id: shooting-star
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Shooting star
+  rules:
+  - Used at range
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- cost: 2
+  id: shrinking-sky
+  name: Shrinking sky
+  rules:
+  - Monsters can't fly for 5 turns
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 3'
+  cost: 3
+  id: sky-star
+  name: Sky star
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} → Slow 2, stun 2 slow 5, stun 5 slow 10'
+  cost: 4
+  id: snow-storm
+  name: Snow storm
+  rules:
+  - Affects all enemies
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- cost: 2
+  id: speed-boost
+  name: Speed boost
+  rules:
+  - Draw an extra card each turn
+  rules_status: current
+  stats:
+    blue: 3
+    red: 1
+    yellow: 4
+  tags:
+  - Martial
+- id: spikes
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Spikes
+  rules:
+  - 'Action: put out to defend'
+  - Next time some one attacks you attack them |x| strength 6
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- cost: 4
+  id: spirit-creatures
+  name: Spirit creatures
+  rules:
+  - 'Attack: 7 for 5 turns starting now'
+  rules_status: current
+  stats:
+    blue: 2
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1'
+  cost: 2
+  id: splinter
+  name: Splinter
+  rules_status: current
+  stats:
+    blue: 3
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 1 → basic wound'
+  cost: 2
+  id: star-beam
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Star beam
+  rules:
+  - Used at range, hits up to 3 monsters
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 1
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} → basic wound'
+  cost: 1
+  id: star-blast
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Star blast
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 1
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 1 → basic wound'
+  cost: 1
+  id: star-dagger
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Star dagger
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 2 → minor: stun 2, major: stun 4, stun 10'
+  cost: 2
+  id: star-lock
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Star lock
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 3
+    yellow: 1
+  tags:
+  - Martial
+- id: star-scales
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Star scales
+  rules:
+  - 'Action: put out to defend'
+  - Next time some one attacks you attack them |x| strength 6
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- id: star-shield
+  name: Star shield
+  rules:
+  - get +4 when used to block a magic attack
+  rules_status: current
+  stats:
+    blue: 5
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 4 → attack all within medium area'
+  cost: 5
+  id: star-storm
+  name: Star storm
+  rules:
+  - Hits area
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 2 → basic wound'
+  cost: 2
+  id: star-sword
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Star sword
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 3
+    yellow: 1
+  tags:
+  - Martial
+- attack: |-
+    {Blue}: Str = {Blue} + 3 → ignore armor, ranged
+    Minor: Stun 2
+     Major: cannot attack or draw until attacked or someone uses an action discard
+    Critical: unconsious
+  cost: 2
+  id: starry-night
+  legacy_notes: Uses legacy armor syntax; Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Starry night
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 2
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 2'
+  cost: 1
+  id: stick-stick
+  name: Stick stick
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 3 → basic wound'
+  cost: 2
+  id: stone-blast
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Stone blast
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Yellow}: Str = {Yellow}  (+ 3 if target is attacking you this turn) →
+    basic wound'
+  cost: 1
+  id: stop-thrust
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Stop Thrust
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue}'
+  cost: 2
+  id: sunburn
+  name: Sunburn
+  rules:
+  - Debuffs monster
+  rules_status: current
+  stats:
+    blue: 4
+    red: 4
+    yellow: 1
+  tags:
+  - Martial
+- attack: |-
+    {Red}: Str = {Red} + 2 → ignore 1 armor
+    Armor damage (on any success)
+  cost: 2
+  id: sunder-armor
+  legacy_notes: Uses legacy armor syntax
+  name: Sunder Armor
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- id: sunlight
+  name: Sunlight
+  rules:
+  - Causes the character to glow
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 4
+  tags:
+  - Martial
+- id: sunny-day
+  name: Sunny Day
+  rules:
+  - All sleeping (unconscious/stunned) characters are woken up
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  tags:
+  - Martial
+- id: supercharged
+  name: Supercharged
+  rules:
+  - 'Action: Put in play. Attack {Red} 10 anyone who attacks you. Resolve (end): expend
+    the attack the attack triggered, otherwise recover to hand'
+  rules_status: current
+  stats:
+    blue: 1
+    red: 2
+    yellow: 5
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 15 → basic wound x2'
+  cost: 10
+  id: supernova
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Supernova
+  rules:
+  - Affects all enemies in the area
+  rules_status: outdated
+  stats:
+    blue: 8
+    red: 5
+    yellow: 3
+  tags:
+  - Martial
+- id: sweeping-defense
+  legacy_notes: Uses shorthand color syntax (|[xyzb]|)
+  name: Sweeping defense
+  rules:
+  - 'defend |x| or |y|: strength = |x|+1'
+  - You may apply sweeping defense against 2 attacks (use seperate resources for each)
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1 → Cant act or draw cards for 1,2,5'
+  cost: 1
+  id: tail-grab
+  name: Tail Grab
+  rules_status: current
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 3 → basic wound'
+  cost: 3
+  id: tail-whack
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Tail Whack
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- id: take-it
+  legacy_notes: Uses legacy defense wording (defend from anywhere)
+  name: Take it
+  rules:
+  - |-
+    strength +4 when used to defend from anywhere
+    you suffer at least a minor success an action when you defend with this
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- cost: 1
+  id: tales-of-heroics
+  name: Tales of Heroics
+  rules:
+  - 'Action: you or an ally draws 2 extra cards this turn'
+  rules_status: current
+  stats:
+    blue: 3
+    red: 4
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} - 1 → Atacks everyone in area first round, then for
+    5 rounds anyone in area takes same attack'
+  cost: 5
+  id: the-floor-is-lava
+  name: The Floor is Lava
+  rules:
+  - Makes an area of ground that is lava
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 1
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} → Up to 4 melee targets'
+  cost: 4
+  id: thrashing-branches
+  name: Thrashing branches
+  rules:
+  - Multi melee attack
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} - 3'
+  cost: 6
+  id: thunderstorm
+  name: Thunderstorm
+  rules:
+  - Summons a cloud that zaps monsters randomly for 3 rounds
+  rules_status: current
+  stats:
+    blue: 4
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 10 → Stun 2 self'
+  cost: 6
+  id: timber
+  name: Timber
+  rules_status: current
+  stats:
+    blue: 1
+    red: 6
+    yellow: 0
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} + 3 → minor: stun 2, major: stun 4, stun 10'
+  cost: 3
+  id: tornado
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Tornado
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 2
+    yellow: 5
+  tags:
+  - Martial
+- cost: 4
+  id: treetment
+  name: Treetment
+  rules:
+  - remove 4 bad cards and one condition
+  rules_status: current
+  stats:
+    blue: 4
+    red: 3
+    yellow: 2
+  tags:
+  - Martial
+- attack: |-
+    {Blue}: Str = {Yellow} + 1 → ignore armor
+    Target must expend 1/2/4 cards to attack next turn, you draw a card if they do not
+  cost: 0
+  id: trick
+  legacy_notes: Uses legacy armor syntax
+  name: Trick
+  rules_status: outdated
+  stats:
+    blue: 4
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: |-
+    {Yellow}: Str = {Yellow} + 3 → Minor: knockdown
+     Major: knockdown + stun 2
+    Critical: knockdown + stun 6
+  cost: 1
+  id: trip
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Trip
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 2
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} → basic wound'
+  cost: 3
+  id: triple-lightning
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Triple lightning
+  rules:
+  - Used at range, hits up to 3 monsters
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 1
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Blue} → basic wound'
+  cost: 3
+  id: triple-stars
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Triple stars
+  rules:
+  - Used at range, hits up to 3 monsters
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 1
+    yellow: 3
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 5'
+  cost: 5
+  id: trunk-thunk
+  name: Trunk Thunk
+  rules:
+  - Big melee attack
+  rules_status: current
+  stats:
+    blue: 3
+    red: 5
+    yellow: 0
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 5 → basic wound'
+  cost: 3
+  id: unstoppable-chop
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Unstoppable chop
+  rules_status: outdated
+  stats:
+    blue: 2
+    red: 4
+    yellow: 2
+  tags:
+  - Martial
+- attack: '{Red}: Str = {Red} + 1 → basic wound'
+  cost: 2
+  id: warding-strike
+  legacy_notes: Uses legacy wound phrasing (basic wound)
+  name: Warding Strike
+  rules:
+  - your team gets +2 strength to defend against an attack from target this round
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 4
+  tags:
+  - Martial
+- attack: |-
+    {Yellow}: Str = {Blue} + 4 → attack all within small area
+    minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun 2
+  cost: 3
+  id: wave
+  legacy_notes: Uses obsolete consequence tiers (Minor/Major/Critical)
+  name: Wave
+  rules_status: outdated
+  stats:
+    blue: 3
+    red: 3
+    yellow: 3
+  tags:
+  - Martial
+- cost: 0
+  id: wind-up
+  name: Wind up
+  rules:
+  - 'action: you may use this as a resource to attack next turn at +3'
+  rules_status: current
+  stats:
+    blue: 3
+    red: 3
+    yellow: 2
+  tags:
+  - Martial

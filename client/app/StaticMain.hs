@@ -38,7 +38,7 @@ import System.Directory
   , pathIsSymbolicLink
   , removePathForcibly
   )
-import System.FilePath (takeBaseName, takeExtension, (</>))
+import System.FilePath (takeBaseName, takeDirectory, takeExtension, (</>))
 import System.Process (callProcess)
 
 import Api.Reflex ()
@@ -53,6 +53,7 @@ import Core.Card
   , DeckEntry (..)
   , EncounterCard (..)
   , ItemCard (..)
+  , MasterCard (..)
   , NatureCard (..)
   , TalentCard (..)
   , actorDeckCards
@@ -60,6 +61,7 @@ import Core.Card
   , customCardFingerprint
   , customCardIdText
   , customCardNameText
+  , resolveActorDeck
   )
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId, CardInstanceId (..), ChallengeId (..), Identified (..))
@@ -99,7 +101,7 @@ import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout
 import Server.Game (GameState (..))
-import Server.Scenario (loadSavedGame, loadScenario)
+import Server.Scenario (findMasterCatalog, loadSavedGame, loadScenario)
 import Text.Pandoc.Definition (Pandoc)
 
 -- | CLI Options
@@ -300,9 +302,13 @@ generateDeck opts path skipSnapshot = do
   case Yaml.decodeEither' yamlContent of
     Left err -> putStrLn $ "Error decoding YAML: " <> show err
     Right (actorDef :: ActorDefinition) -> do
+      catalog <- findMasterCatalog (takeDirectory path)
+      case resolveActorDeck catalog actorDef of
+        Left err -> unless opts.quiet $ putStrLn $ "Warning: resolving deck: " <> err
+        Right _ -> pure ()
       let baseName = takeBaseName path
           outName = opts.outputDir </> baseName <> ".html"
-      writeStaticPage outName (deckWidget actorDef)
+      writeStaticPage outName (deckWidget catalog actorDef)
 
       unless skipSnapshot $ do
         currentDir <- getCurrentDirectory
@@ -619,13 +625,16 @@ mockGameWidgetWithRulesView gameState tab mActiveKw = do
   _ <- rulesViewerWidgetWithConfig tab mActiveKw never
   return ()
 
-deckWidget :: (DomBuilder t m) => ActorDefinition -> m ()
-deckWidget actor = do
+deckWidget :: (DomBuilder t m) => Map.Map Text MasterCard -> ActorDefinition -> m ()
+deckWidget catalog actor = do
   let printSettings = CardSettings{displayMode = CardPrint}
+      cards = case resolveActorDeck catalog actor of
+        Right resolved -> resolved
+        Left _err -> actorDeckCards actor
   divS deckGrid $ do
     mapM_ (renderNatureCardWith printSettings) actor.nature
     mapM_ (renderItemCardWith printSettings) actor.items
-    mapM_ (renderCoreCardWith printSettings) (actorDeckCards actor)
+    mapM_ (renderCoreCardWith printSettings) cards
 
 data RuleDoc = RuleDoc
   { docTitle :: Text
