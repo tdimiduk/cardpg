@@ -58,7 +58,7 @@ These challenges test the **General Action** framework, emphasizing cooperation 
 
 ### Challenge 3: The Barrow Threshold (Tense Social De-escalation)
 
-- **The Situation:** Reaching the archway of the Sunken Barrow, the heroes are confronted in the shadows by Ser Kenneth and his two retainers with drawn, notched blades. Kenneth assumes the heroes are Vane's headhunters.
+- **The Situation:** Reaching the archway of the Sunken Barrow, the heroes are confronted in the shadows by Sir Kenneth and his two retainers with drawn, notched blades. Kenneth assumes the heroes are Vane's headhunters.
 - **Approaches:**
   - _Appealing to Knightly Honor (Shield-Fighter):_ Presenting military credentials, reciting the Marcher code of arms, or lowering weapons to prove peaceful intent.
   - _Fast-Talk & Empathy (Swashbuckler):_ Revealing knowledge of the real beast, offering clean medicine, and warning them of Durn's approaching hounds.

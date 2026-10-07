@@ -18,7 +18,7 @@ This document details the story outline, dramatis personae, faction motives, and
 
 On the border of the civilized Marches lies the **Weeping Fen**, a sprawling, fog-drenched expanse of peat bogs, drowning pools, and dead willows.
 
-Two months ago, **Ser Kenneth**, a respected hedge knight of modest means, was accused of treason and summarily stripped of his ancestral estate and timberlands by **Bailiff Malakor Vane**, the regional magistrate. Rather than submit to a rigged hanging, Kenneth fled into the fen with his retainers and his twelve-year-old daughter, **Elsbeth**.
+Two months ago, **Sir Kenneth**, a respected Marcher knight of modest means, was accused of treason and summarily stripped of his ancestral estate and timberlands by **Bailiff Walter Vane**, the regional magistrate. Rather than submit to a rigged hanging, Kenneth fled into the fen with his retainers and his twelve-year-old daughter, **Elsbeth**.
 
 Recently, a wave of horrific nocturnal slaughter has struck the outlying hamlet of **Moss-Gallows**: farmsteads broken into, livestock eviscerated, and a shepherd killed. Bailiff Vane publicly brands Kenneth an apostate outlaw and "blood-drinking butcher," offering a royal bounty for the knight’s head.
 
@@ -30,7 +30,7 @@ Recently, a wave of horrific nocturnal slaughter has struck the outlying hamlet 
 
 ```mermaid
 flowchart TD
-    VANE["Bailiff Malakor Vane<br/>(Greedy Magistrate)"] -- "Stole lands from / framed" --> KENNETH["Ser Kenneth the Disgraced<br/>(Fugitive Knight)"]
+    VANE["Bailiff Walter Vane<br/>(Calculating Magistrate)"] -- "Stole lands from / framed" --> KENNETH["Sir Kenneth the Disgraced<br/>(Fugitive Knight)"]
     VANE -- "Employs / commands" --> POSSE["Sergeant Durn & The Iron Dogs<br/>(Mercenary Posse)"]
     VANE -- "Intimidates / taxes" --> VILLAGE["Moss-Gallows Hamlet<br/>(Desperate Peasants)"]
 
@@ -45,14 +45,14 @@ flowchart TD
 
 ### The Outlaws (The Desperate Fugitives)
 
-- **Ser Kenneth the Disgraced:** Once an honorable line-officer in the Marches, Kenneth is now exhausted, hollow-eyed, and gaunt. His rusted mail hangs loose on his shoulders. He is not a revolutionary or a bandit; he is a proud father trapped in an untenable nightmare, determined to keep his daughter alive at all costs.
+- **Sir Kenneth the Disgraced:** Once an honorable line-officer in the Marches, Kenneth is now exhausted, hollow-eyed, and gaunt. His rusted mail hangs loose on his shoulders. He is not a revolutionary or a bandit; he is a proud father trapped in an untenable nightmare, determined to keep his daughter alive at all costs.
 - **Elsbeth:** Kenneth’s 12-year-old daughter. She is bedridden in a damp stone barrow, burning with **Black-Water Ague** (a lethal marsh fever). Without clean water and medicinal willow-bark/moss, she has only a couple of days to live. Her condition is a ticking emotional clock.
 - **Bran & Tomas:** The two surviving household guards who refused to abandon their lord. Battered, hungry, and deeply suspicious of any strangers entering the bog.
 
 ### The Law & The Village
 
-- **Bailiff Malakor Vane:** A calculating, well-dressed provincial magistrate who uses the machinery of the law as an extortion racket. Vane fabricated the charges against Kenneth to claim the knight's valuable oak-wood timber rights. Vane knows that royal circuit judges are arriving in three weeks; Kenneth must be dead before the crown can inspect the deeds.
-- **Sergeant Durn & The Iron Dogs:** Vane’s personal enforcers. A dozen hard-bitten mercenaries equipped with crossbows, boiled leather armor, and vicious tracking hounds. Durn is brutal but practical: he prefers ambushes, poison, and setting fire to hiding spots rather than risking a fair fight with seasoned veterans.
+- **Bailiff Walter Vane:** A polished, punctilious provincial magistrate who conceals ruthless ambition behind legalistic duty and civic concern. Outwardly, Vane presents himself as an overworked official desperate to protect his terrified hamlet from a fallen knight turned murderous outlaw. In reality, Vane fabricated the treason charges to seize Kenneth's ancestral oak timberlands. With royal circuit judges arriving in three weeks to inspect provincial tenures, Vane urgently needs Kenneth dead before the crown examines the confiscated deeds.
+- **Sergeant Durn & The Iron Dogs:** Vane’s hired border enforcers. A dozen disciplined, hard-bitten mercenaries equipped with crossbows, boiled leather armor, and vicious tracking hounds. Durn is not a reckless brawler, but a grim professional: he avoids fair fights with experienced soldiers, favoring ambushes, cordons, and setting fire to hiding spots rather than risking casualties.
 - **Mother Martha & The Moss-Gallows Folk:** Peasant farmers, peat-cutters, and sheep herders. They are caught between Vane’s heavy levies and the terrifying attacks on their homesteads. They are deeply superstitious and distrustful of outsiders, but desperate for protection.
 
 ### The True Menace (The Wild)
@@ -66,11 +66,12 @@ flowchart TD
 
 ### Act 1: The Hamlet of Moss-Gallows (The Departure)
 
-- **Opening Scene:** The heroes arrive at the waterlogged tavern in Moss-Gallows. Outside, the rain falls in steady sheets. Nailed to the tavern post is a royal writ of execution and a pouch of gold coins for Kenneth's head.
-- **Social Investigation & Rumors:**
-  - Talking with _Mother Martha_ reveals that Kenneth was known as a gentle, quiet lord who never stole a turnip in his life, and that the tracks around the slaughtered sheep pens were "far too large to belong to any man on two legs."
-  - A confrontation with _Sergeant Durn_ and his drunken guards at the bar establishes their cruelty and warns the players that Vane's hounds are already moving into the fen.
-- **Preparation:** Securing local guides, marsh poles, waterproofing boots, or purchasing herbal poultices before stepping off solid ground.
+- **Opening Scene:** The heroes arrive at the waterlogged tavern in Moss-Gallows amidst sheets of cold rain. Nailed to the tavern post is a formal royal writ bearing Bailiff Vane's wax seal: a handsome bounty in gold for the capture or head of Sir Kenneth, branded a traitor and nocturnal butcher.
+- **The Public Face of Authority:** Bailiff Walter Vane meets the party with polished courtesy, treating them as capable mercenaries hired to resolve a community tragedy. He frames Kenneth's fall with sober regret—a decorated border soldier ruined by debt and marsh madness who took to butchering outlying farms. Sergeant Durn and his enforcers maintain a quiet, watchful presence, coldly preparing their mastiffs for the hunt.
+- **Social Investigation & Forensics (The Cracks in the Story):**
+  - Talking with _Mother Martha_ and the fearful peat-cutters reveals that Kenneth was known as a gentle, quiet lord who never wronged a tenant. More importantly, she whispers that the tracks around the slaughtered sheepfold were "wide as trenchers, with four-inch claw gouges—no man's boot or sword ever made those."
+  - Players inspecting the homestead or talking to village woodcutters can notice that Bailiff Vane recently launched an aggressive, unauthorized drainage and logging operation deep in the fen—right before the nocturnal attacks began.
+- **Preparation:** Securing local guides, marsh poles, waterproofing boots, or purchasing herbal poultices before stepping off solid ground, knowing Durn's hounds are already moving into the fen.
 
 ### Act 2: The Sinking Causeway (Travel & Survival)
 
