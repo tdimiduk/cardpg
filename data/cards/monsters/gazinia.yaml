@@ -1,166 +1,28 @@
 deck:
-- cost: 0
-  name: Become invisible
-  rules:
-  - 'action : Ignore all attacks this turn'
-  stats:
-    blue: 6
-    red: 2
-    yellow: 2
-- cost: 0
-  name: Become invisible
-  rules:
-  - 'action : Ignore all attacks this turn'
-  stats:
-    blue: 6
-    red: 2
-    yellow: 2
-- attack: '{Blue}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Water breath
-  rules:
-  - hits multiple opponents
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- attack: '{Blue}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Water breath
-  rules:
-  - hits multiple opponents
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- attack: '{Blue}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Water breath
-  rules:
-  - hits multiple opponents
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- name: magical strength
-  stats:
-    blue: 7
-    red: 7
-    yellow: 0
-- name: magical strength
-  stats:
-    blue: 7
-    red: 7
-    yellow: 0
-- name: magical strength
-  stats:
-    blue: 7
-    red: 7
-    yellow: 0
-- name: magical strength
-  stats:
-    blue: 7
-    red: 7
-    yellow: 0
-- name: Super strong
-  stats:
-    blue: 2
-    red: 8
-    yellow: 3
-- name: Super strong
-  stats:
-    blue: 2
-    red: 8
-    yellow: 3
-- name: Super strong
-  stats:
-    blue: 2
-    red: 8
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
-  cost: 2
-  name: Claw grab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
-  cost: 2
-  name: Claw grab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound, skip next turn'
-  cost: 2
-  name: Claw grab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Blue}: Str = {Red} + 5 → basic wound'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 2
-    red: 5
-    yellow: 3
-- attack: '{Blue}: Str = {Red} + 5 → basic wound'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 2
-    red: 5
-    yellow: 3
-- attack: '{Blue}: Str = {Red} + 5 → basic wound'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 2
-    red: 5
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Rend
-  stats:
-    blue: 3
-    red: 5
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Rend
-  stats:
-    blue: 3
-    red: 5
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Rend
-  stats:
-    blue: 3
-    red: 5
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 3
-  name: Claw
-  stats:
-    blue: 2
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 3
-  name: Claw
-  stats:
-    blue: 2
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 3
-  name: Claw
-  stats:
-    blue: 2
-    red: 4
-    yellow: 4
+- card: become-invisible
+- card: become-invisible
+- card: water-breath
+- card: water-breath
+- card: water-breath
+- card: magical-strength
+- card: magical-strength
+- card: magical-strength
+- card: magical-strength
+- card: super-strong
+- card: super-strong
+- card: super-strong
+- card: claw-grab
+- card: claw-grab
+- card: claw-grab
+- card: bite
+- card: bite
+- card: bite
+- card: rend
+- card: rend
+- card: rend
+- card: claw-4
+- card: claw-4
+- card: claw-4
 items: []
 name: Gazinia
 nature:

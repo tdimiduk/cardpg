@@ -1,146 +1,36 @@
 deck:
-- name: Strong lattice
-  rules:
-  - get + 3 when defending from anywhere
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- name: Strong lattice
-  rules:
-  - get + 3 when defending from anywhere
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- name: Strong lattice
-  rules:
-  - get + 3 when defending from anywhere
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  name: Shard poke
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  name: Shard poke
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  name: Shard poke
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- name: Reflect attack
-  rules:
-  - When flipped as armor ignore attack and put it back on random enemy
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- name: Magical nature
+- card: strong-lattice
+- card: strong-lattice
+- card: strong-lattice
+- card: shard-poke
+- card: shard-poke
+- card: shard-poke
+- card: reflect-attack
+- card: magical-nature
   stats:
     blue: 6
     red: 3
     yellow: 3
-- name: Magical nature
+- card: magical-nature
   stats:
     blue: 6
     red: 3
     yellow: 3
-- name: Crystal strength
-  stats:
-    blue: 2
-    red: 6
-    yellow: 2
-- name: Crystal strength
-  stats:
-    blue: 2
-    red: 6
-    yellow: 2
-- name: Crystal strength
-  stats:
-    blue: 2
-    red: 6
-    yellow: 2
-- name: Crystal strength
-  stats:
-    blue: 2
-    red: 6
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  name: Crystal smash
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  name: Crystal smash
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  name: Crystal smash
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  name: Crystal smash
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  name: Crystal slice
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  name: Crystal slice
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  name: Crystal slice
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  name: Crystal slice
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  name: Crystal crash
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  name: Crystal crash
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  name: Crystal crash
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
+- card: crystal-strength
+- card: crystal-strength
+- card: crystal-strength
+- card: crystal-strength
+- card: crystal-smash
+- card: crystal-smash
+- card: crystal-smash
+- card: crystal-smash
+- card: crystal-slice
+- card: crystal-slice
+- card: crystal-slice
+- card: crystal-slice
+- card: crystal-crash
+- card: crystal-crash
+- card: crystal-crash
 items: []
 name: Crystal Shard
 nature:

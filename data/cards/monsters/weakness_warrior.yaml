@@ -1,175 +1,28 @@
 deck:
-- attack: |-
-    {Red}: Str = {Red} → ignore armor
-    -1,-2,-4 to red on all cards
-  cost: 2
-  name: Weakening whack
-  stats:
-    blue: 4
-    red: 4
-    yellow: 3
-- attack: |-
-    {Red}: Str = {Red} → ignore armor
-    -1,-2,-4 to red on all cards
-  cost: 0
-  name: weakening poke
-  stats:
-    blue: 4
-    red: 3
-    yellow: 4
-- name: Magic
-  stats:
-    blue: 6
-    red: 2
-    yellow: 3
-- name: Strength
-  stats:
-    blue: 3
-    red: 6
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
-  cost: 3
-  name: Paralyzing Slash
-  stats:
-    blue: 5
-    red: 5
-    yellow: 1
-- name: Shield Weakness
-  rules:
-  - 'Defend : |x| or |z| with |x|'
-  - 'State : Attacker next attack at -4 strength'
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
-  cost: 2
-  name: Weakness Slash
-  stats:
-    blue: 4
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: Slash
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: |-
-    {Red}: Str = {Red} → ignore armor
-    -1,-2,-4 to red on all cards
-  cost: 2
-  name: Weakening whack
-  stats:
-    blue: 4
-    red: 4
-    yellow: 3
-- attack: |-
-    {Red}: Str = {Red} → ignore armor
-    -1,-2,-4 to red on all cards
-  cost: 0
-  name: weakening poke
-  stats:
-    blue: 4
-    red: 3
-    yellow: 4
-- name: Magic
-  stats:
-    blue: 6
-    red: 2
-    yellow: 3
-- name: Strength
-  stats:
-    blue: 3
-    red: 6
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
-  cost: 3
-  name: Paralyzing Slash
-  stats:
-    blue: 5
-    red: 5
-    yellow: 1
-- name: Shield Weakness
-  rules:
-  - 'Defend : |x| or |z| with |x|'
-  - 'State : Attacker next attack at -4 strength'
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
-  cost: 2
-  name: Weakness Slash
-  stats:
-    blue: 4
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: Slash
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: |-
-    {Red}: Str = {Red} → ignore armor
-    -1,-2,-4 to red on all cards
-  cost: 2
-  name: Weakening whack
-  stats:
-    blue: 4
-    red: 4
-    yellow: 3
-- attack: |-
-    {Red}: Str = {Red} → ignore armor
-    -1,-2,-4 to red on all cards
-  cost: 0
-  name: weakening poke
-  stats:
-    blue: 4
-    red: 3
-    yellow: 4
-- name: Magic
-  stats:
-    blue: 6
-    red: 2
-    yellow: 3
-- name: Strength
-  stats:
-    blue: 3
-    red: 6
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5 → Basic wound + -2,-4, paralyzed to red on all cards'
-  cost: 3
-  name: Paralyzing Slash
-  stats:
-    blue: 5
-    red: 5
-    yellow: 1
-- name: Shield Weakness
-  rules:
-  - 'Defend : |x| or |z| with |x|'
-  - 'State : Attacker next attack at -4 strength'
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → Basic wound + -1,-2,-4 to red on all cards'
-  cost: 2
-  name: Weakness Slash
-  stats:
-    blue: 4
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 2
-  name: Slash
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
+- card: weakening-whack
+- card: weakening-poke
+- card: magic
+- card: strength
+- card: paralyzing-slash
+- card: shield-weakness
+- card: weakness-slash
+- card: slash-2
+- card: weakening-whack
+- card: weakening-poke
+- card: magic
+- card: strength
+- card: paralyzing-slash
+- card: shield-weakness
+- card: weakness-slash
+- card: slash-2
+- card: weakening-whack
+- card: weakening-poke
+- card: magic
+- card: strength
+- card: paralyzing-slash
+- card: shield-weakness
+- card: weakness-slash
+- card: slash-2
 items: []
 name: Weakness Warrior
 nature:

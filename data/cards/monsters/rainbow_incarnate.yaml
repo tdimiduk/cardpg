@@ -1,176 +1,28 @@
 deck:
-- name: Purple
-  rules:
-  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
-  stats:
-    blue: 6
-    red: 4
-    yellow: 5
-- name: Purple
-  rules:
-  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
-  stats:
-    blue: 6
-    red: 4
-    yellow: 5
-- name: Purple
-  rules:
-  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
-  stats:
-    blue: 6
-    red: 4
-    yellow: 5
-- name: Purple
-  rules:
-  - 'Defend: |x|, |y|, or |z| with |x|, |y|, or |z|'
-  stats:
-    blue: 6
-    red: 4
-    yellow: 5
-- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
-  name: Blue
-  rules:
-  - Ignore armor
-  stats:
-    blue: 8
-    red: 2
-    yellow: 2
-- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
-  name: Blue
-  rules:
-  - Ignore armor
-  stats:
-    blue: 8
-    red: 2
-    yellow: 2
-- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
-  name: Blue
-  rules:
-  - Ignore armor
-  stats:
-    blue: 8
-    red: 2
-    yellow: 2
-- attack: '{Blue}: Str = {Blue} → slow 2, 10, 24'
-  name: Blue
-  rules:
-  - Ignore armor
-  stats:
-    blue: 8
-    red: 2
-    yellow: 2
-- name: Green
-  stats:
-    blue: 7
-    red: 7
-    yellow: 7
-- name: Green
-  stats:
-    blue: 7
-    red: 7
-    yellow: 7
-- name: Green
-  stats:
-    blue: 7
-    red: 7
-    yellow: 7
-- name: Green
-  stats:
-    blue: 7
-    red: 7
-    yellow: 7
-- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
-  cost: 2
-  name: Yellow
-  stats:
-    blue: 2
-    red: 2
-    yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
-  cost: 2
-  name: Yellow
-  stats:
-    blue: 2
-    red: 2
-    yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
-  cost: 2
-  name: Yellow
-  stats:
-    blue: 2
-    red: 2
-    yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 2 → stun 2, 6, paralyze'
-  cost: 2
-  name: Yellow
-  stats:
-    blue: 2
-    red: 2
-    yellow: 8
-- attack: |-
-    {Red}: Str = {Red} → or |y|
-    basic wound
-  cost: 1
-  name: Orange
-  stats:
-    blue: 4
-    red: 6
-    yellow: 5
-- attack: |-
-    {Red}: Str = {Red} → or |y|
-    basic wound
-  cost: 1
-  name: Orange
-  stats:
-    blue: 4
-    red: 6
-    yellow: 5
-- attack: |-
-    {Red}: Str = {Red} → or |y|
-    basic wound
-  cost: 1
-  name: Orange
-  stats:
-    blue: 4
-    red: 6
-    yellow: 5
-- attack: |-
-    {Red}: Str = {Red} → or |y|
-    basic wound
-  cost: 1
-  name: Orange
-  stats:
-    blue: 4
-    red: 6
-    yellow: 5
-- attack: '{Red}: Str = {Red} + 2 → fire wound'
-  cost: 2
-  name: Red
-  stats:
-    blue: 2
-    red: 8
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → fire wound'
-  cost: 2
-  name: Red
-  stats:
-    blue: 2
-    red: 8
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → fire wound'
-  cost: 2
-  name: Red
-  stats:
-    blue: 2
-    red: 8
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → fire wound'
-  cost: 2
-  name: Red
-  stats:
-    blue: 2
-    red: 8
-    yellow: 2
+- card: purple
+- card: purple
+- card: purple
+- card: purple
+- card: blue
+- card: blue
+- card: blue
+- card: blue
+- card: green
+- card: green
+- card: green
+- card: green
+- card: yellow
+- card: yellow
+- card: yellow
+- card: yellow
+- card: orange
+- card: orange
+- card: orange
+- card: orange
+- card: red
+- card: red
+- card: red
+- card: red
 items: []
 name: Rainbow Incarnate
 nature:

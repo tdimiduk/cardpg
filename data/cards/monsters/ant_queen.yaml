@@ -1,176 +1,28 @@
 deck:
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- cost: 1
-  name: Itchy
-  rules:
-  - Each opponent discards one card
-  stats:
-    blue: 4
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
-  cost: 4
-  name: Acid Bite
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
-  cost: 5
-  name: Acid Spray
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- cost: 1
-  name: Itchy
-  rules:
-  - Each opponent discards one card
-  stats:
-    blue: 4
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
-  cost: 4
-  name: Acid Bite
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
-  cost: 5
-  name: Acid Spray
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- cost: 1
-  name: Itchy
-  rules:
-  - Each opponent discards one card
-  stats:
-    blue: 4
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
-  cost: 4
-  name: Acid Bite
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
-  cost: 5
-  name: Acid Spray
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- cost: 1
-  name: Itchy
-  rules:
-  - Each opponent discards one card
-  stats:
-    blue: 4
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1 → Attacks again next round'
-  cost: 4
-  name: Acid Bite
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Attacks all opponents, Attacks again next round'
-  cost: 5
-  name: Acid Spray
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
+- card: ram-2
+- card: itchy
+- card: acid-bite
+- card: acid-spray
+- card: sting-2
+- card: bite-6
+- card: ram-2
+- card: itchy
+- card: acid-bite
+- card: acid-spray
+- card: sting-2
+- card: bite-6
+- card: ram-2
+- card: itchy
+- card: acid-bite
+- card: acid-spray
+- card: sting-2
+- card: bite-6
+- card: ram-2
+- card: itchy
+- card: acid-bite
+- card: acid-spray
+- card: sting-2
+- card: bite-6
 items: []
 name: Ant Queen
 nature:

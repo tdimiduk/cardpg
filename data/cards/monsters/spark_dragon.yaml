@@ -1,180 +1,37 @@
 deck:
-- name: Dragon scales
-  stats:
-    blue: 5
-    red: 9
-    yellow: 7
-- name: Zoom
-  stats:
-    blue: 5
-    red: 7
-    yellow: 9
-- attack: '{Yellow}: Str = {Yellow} → basic wound'
-  cost: 1
-  name: Electrified
-  rules:
-  - when used in defense can be played as an attack next round
-  stats:
-    blue: 3
-    red: 4
-    yellow: 6
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 1
-  name: Too hot to touch
-  rules:
-  - when used in defense can be played as an attack next round
+- card: dragon-scales
+- card: zoom
+- card: electrified
+- card: too-hot-to-touch
+- card: shock-bite
+- card: dive-bomb
+- card: pounce-4
+- card: pounce-4
+- card: fire-spray
+- card: burn
+- card: burn
+- card: burn
+- card: claw-5
+- card: claw-5
+- card: claw-5
+- card: claw-5
+- card: claw-5
+- card: claw-5
+- card: bite-11
   stats:
     blue: 3
     red: 6
-    yellow: 4
-- attack: '{Yellow}: Str = {Yellow} - 4 → basic wound'
-  cost: 3
-  name: Shock bite
-  rules:
-  - 'also attack |x|: strength = |x| - 6'
-  stats:
-    blue: 3
-    red: 5
-    yellow: 6
-- attack: '{Yellow}: Str = {Yellow} + 2 → basic wound'
-  cost: 2
-  name: Dive Bomb
-  stats:
-    blue: 0
-    red: 0
-    yellow: 10
-- attack: '{Yellow}: Str = {Yellow} + 8 → basic wound'
-  cost: 3
-  name: Pounce
-  rules:
-  - Can be used as a resourse for a claw attack next round
-  stats:
-    blue: 3
-    red: 3
-    yellow: 6
-- attack: '{Yellow}: Str = {Yellow} + 8 → basic wound'
-  cost: 3
-  name: Pounce
-  rules:
-  - Can be used as a resourse for a claw attack next round
-  stats:
-    blue: 3
-    red: 3
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Fire spray
-  rules:
-  - affects all enemies
-  stats:
-    blue: 3
-    red: 5
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Burn
-  stats:
-    blue: 3
-    red: 8
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Burn
-  stats:
-    blue: 3
-    red: 8
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Burn
-  stats:
-    blue: 3
-    red: 8
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 3
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 3
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 3
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 3
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 3
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5 → basic wound'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 3
-    red: 4
-    yellow: 5
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 2
-  name: Bite
+- card: bite-11
   stats:
     blue: 3
     red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 2
-  name: Bite
+- card: bite-11
   stats:
     blue: 3
     red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 1
-  name: Zap
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 1
-  name: Zap
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 1
-  name: Zap
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
+- card: zap
+- card: zap
+- card: zap
 items: []
 name: Spark Dragon
 nature:

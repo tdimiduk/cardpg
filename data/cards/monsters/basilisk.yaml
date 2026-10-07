@@ -1,164 +1,28 @@
 deck:
-- attack: '{Red}: Str = {Red} + 5'
-  cost: 2
-  name: Tail slap
-  stats:
-    blue: 5
-    red: 8
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5'
-  cost: 2
-  name: Tail slap
-  stats:
-    blue: 5
-    red: 8
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5'
-  cost: 2
-  name: Tail slap
-  stats:
-    blue: 5
-    red: 8
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5'
-  cost: 2
-  name: Tail slap
-  stats:
-    blue: 5
-    red: 8
-    yellow: 2
-- attack: '{Blue}: Str = {Blue} → slow 3/skip 3 turns/stone statue'
-  cost: 1
-  name: Stone Gaze
-  stats:
-    blue: 6
-    red: 4
-    yellow: 6
-- attack: '{Blue}: Str = {Blue} → slow 3/skip 3 turns/stone statue'
-  cost: 1
-  name: Stone Gaze
-  stats:
-    blue: 6
-    red: 4
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 7'
-  cost: 2
-  name: Pounce
-  stats:
-    blue: 3
-    red: 5
-    yellow: 7
-- attack: '{Red}: Str = {Red} + 7'
-  cost: 2
-  name: Pounce
-  rules:
-  - affects all enemies
-  stats:
-    blue: 3
-    red: 5
-    yellow: 7
-- attack: '{Red}: Str = {Red} + 7'
-  cost: 2
-  name: Pounce
-  stats:
-    blue: 3
-    red: 5
-    yellow: 7
-- attack: '{Red}: Str = {Red} + 7'
-  cost: 2
-  name: Pounce
-  stats:
-    blue: 3
-    red: 5
-    yellow: 7
-- name: Magical nature
-  stats:
-    blue: 8
-    red: 2
-    yellow: 4
-- name: Magical nature
-  stats:
-    blue: 8
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 0
-  name: Claws
-  stats:
-    blue: 4
-    red: 5
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 0
-  name: Claws
-  stats:
-    blue: 4
-    red: 5
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 0
-  name: Claws
-  stats:
-    blue: 4
-    red: 5
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 0
-  name: Claws
-  stats:
-    blue: 4
-    red: 5
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Bite
-  rules:
-  - affects all enemies
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- name: Basilisk strength
-  stats:
-    blue: 3
-    red: 9
-    yellow: 5
-- name: Basilisk strength
-  stats:
-    blue: 3
-    red: 9
-    yellow: 5
-- name: Basilisk strength
-  stats:
-    blue: 3
-    red: 9
-    yellow: 5
-- name: Basilisk strength
-  stats:
-    blue: 3
-    red: 9
-    yellow: 5
+- card: tail-slap
+- card: tail-slap
+- card: tail-slap
+- card: tail-slap
+- card: stone-gaze
+- card: stone-gaze
+- card: pounce-2
+- card: pounce-3
+- card: pounce-2
+- card: pounce-2
+- card: magical-nature
+- card: magical-nature
+- card: claws
+- card: claws
+- card: claws
+- card: claws
+- card: bite-8
+- card: bite-8
+- card: bite-8
+- card: bite-9
+- card: basilisk-strength
+- card: basilisk-strength
+- card: basilisk-strength
+- card: basilisk-strength
 items: []
 name: Basilisk
 nature:

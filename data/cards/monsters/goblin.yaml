@@ -1,184 +1,28 @@
 deck:
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Mob
-  rules:
-  - each sucessive attack +1 strength
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Mob
-  rules:
-  - each sucessive attack +1 strength
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Mob
-  rules:
-  - each sucessive attack +1 strength
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Mob
-  rules:
-  - each sucessive attack +1 strength
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Mob
-  rules:
-  - each sucessive attack +1 strength
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Mob
-  rules:
-  - each sucessive attack +1 strength
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 2 → basic wound'
-  cost: 1
-  name: Whack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} - 2 → basic wound'
-  cost: 1
-  name: Whack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} - 2 → basic wound'
-  cost: 1
-  name: Whack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} - 2 → basic wound'
-  cost: 1
-  name: Whack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} - 2 → basic wound'
-  cost: 1
-  name: Whack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} - 2 → basic wound'
-  cost: 1
-  name: Whack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  cost: 2
-  name: Slash with stick
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  cost: 2
-  name: Slash with stick
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  cost: 2
-  name: Slash with stick
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  cost: 2
-  name: Slash with stick
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  cost: 2
-  name: Slash with stick
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1 → basic wound'
-  cost: 2
-  name: Slash with stick
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Poke with stick
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Poke with stick
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Poke with stick
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Poke with stick
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Poke with stick
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} - 1 → basic wound'
-  cost: 2
-  name: Poke with stick
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
+- card: mob
+- card: mob
+- card: mob
+- card: mob
+- card: mob
+- card: mob
+- card: whack
+- card: whack
+- card: whack
+- card: whack
+- card: whack
+- card: whack
+- card: slash-with-stick
+- card: slash-with-stick
+- card: slash-with-stick
+- card: slash-with-stick
+- card: slash-with-stick
+- card: slash-with-stick
+- card: poke-with-stick
+- card: poke-with-stick
+- card: poke-with-stick
+- card: poke-with-stick
+- card: poke-with-stick
+- card: poke-with-stick
 items: []
 name: Goblin
 nature:

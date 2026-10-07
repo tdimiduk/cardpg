@@ -1,174 +1,28 @@
 deck:
-- name: Close wounds
-  rules:
-  - |-
-    Spend to recover 1 minor wound or
-    spend 3 to recover 1 major wound
-  stats:
-    blue: 6
-    red: 6
-    yellow: 6
-- name: Close wounds
-  rules:
-  - |-
-    Spend to recover 1 minor wound or
-    spend 3 to recover 1 major wound
-  stats:
-    blue: 6
-    red: 6
-    yellow: 6
-- cost: 1
-  name: Troll healing
-  rules:
-  - recover 4 cards from exhausted to deck
-  stats:
-    blue: 4
-    red: 6
-    yellow: 6
-- cost: 1
-  name: Troll healing
-  rules:
-  - recover 4 cards from exhausted to deck
-  stats:
-    blue: 4
-    red: 6
-    yellow: 6
-- name: Thick hide
-  rules:
-  - 'defend: this and all resources spent with it remain as state and spend to protect
-    against the next attack as well'
-  stats:
-    blue: 4
-    red: 6
-    yellow: 2
-- name: Thick hide
-  rules:
-  - 'defend: this and all resources spent with it remain as state and spend to protect
-    against the next attack as well'
-  stats:
-    blue: 4
-    red: 6
-    yellow: 2
-- name: Brutish strength
-  stats:
-    blue: 2
-    red: 12
-    yellow: 4
-- name: Brutish strength
-  stats:
-    blue: 2
-    red: 12
-    yellow: 4
-- name: Brutish strength
-  stats:
-    blue: 2
-    red: 12
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 8'
-  cost: 3
-  name: Rend
-  stats:
-    blue: 3
-    red: 8
-    yellow: 8
-- attack: '{Red}: Str = {Red} + 8'
-  cost: 3
-  name: Rend
-  stats:
-    blue: 3
-    red: 8
-    yellow: 8
-- attack: '{Red}: Str = {Red} + 8'
-  cost: 3
-  name: Rend
-  stats:
-    blue: 3
-    red: 8
-    yellow: 8
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 2
-    red: 6
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 2
-    red: 6
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 2
-    red: 6
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 1
-  name: Claw
-  stats:
-    blue: 2
-    red: 6
-    yellow: 6
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 2
-    red: 8
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 2
-    red: 8
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 2
-    red: 8
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 2
-    red: 8
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 6
-    yellow: 4
+- card: close-wounds
+- card: close-wounds
+- card: troll-healing
+- card: troll-healing
+- card: thick-hide
+- card: thick-hide
+- card: brutish-strength
+- card: brutish-strength
+- card: brutish-strength
+- card: rend-2
+- card: rend-2
+- card: rend-2
+- card: claw-2
+- card: claw-2
+- card: claw-2
+- card: claw-2
+- card: punch-2
+- card: punch-2
+- card: punch-2
+- card: punch-2
+- card: smash-3
+- card: smash-3
+- card: smash-3
+- card: smash-3
 items: []
 name: Troll
 nature:

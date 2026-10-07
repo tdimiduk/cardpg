@@ -1,174 +1,28 @@
 deck:
-- attack: '{Red}: Str = {Red} + 1 → Knock down'
-  cost: 1
-  name: earthquake
-  rules:
-  - Affects multiple enemies
-  stats:
-    blue: 3
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 1 → Knock down'
-  cost: 1
-  name: earthquake
-  rules:
-  - Affects multiple enemies
-  stats:
-    blue: 3
-    red: 4
-    yellow: 4
-- name: Hard Rock
-  rules:
-  - Gets +4 when defending
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- name: Hard Rock
-  rules:
-  - Gets +4 when defending
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- name: Hard Rock
-  rules:
-  - Gets +4 when defending
-  stats:
-    blue: 4
-    red: 7
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 4
-  name: Boulder roll
-  rules:
-  - Knocks target off boulder, they must spend 2 turns actions getting back up
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 4
-  name: Boulder roll
-  rules:
-  - Knocks target off boulder, they must spend 2 turns actions getting back up
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 6 → basic wound'
-  cost: 4
-  name: Boulder roll
-  rules:
-  - Knocks target off boulder, they must spend 2 turns actions getting back up
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stomp
-  stats:
-    blue: 1
-    red: 5
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stomp
-  stats:
-    blue: 1
-    red: 5
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stomp
-  stats:
-    blue: 1
-    red: 5
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stomp
-  stats:
-    blue: 1
-    red: 5
-    yellow: 3
-- name: Really Strong
-  stats:
-    blue: 1
-    red: 8
-    yellow: 1
-- name: Really Strong
-  stats:
-    blue: 1
-    red: 8
-    yellow: 1
-- name: Really Strong
-  stats:
-    blue: 1
-    red: 8
-    yellow: 1
-- name: Really Strong
-  stats:
-    blue: 1
-    red: 8
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 7
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 7
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 7
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Smash
-  stats:
-    blue: 2
-    red: 7
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 1
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 1
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 1
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Punch
-  stats:
-    blue: 1
-    red: 4
-    yellow: 3
+- card: earthquake
+- card: earthquake
+- card: hard-rock
+- card: hard-rock
+- card: hard-rock
+- card: boulder-roll
+- card: boulder-roll
+- card: boulder-roll
+- card: stomp
+- card: stomp
+- card: stomp
+- card: stomp
+- card: really-strong
+- card: really-strong
+- card: really-strong
+- card: really-strong
+- card: smash-2
+- card: smash-2
+- card: smash-2
+- card: smash-2
+- card: punch
+- card: punch
+- card: punch
+- card: punch
 items: []
 name: Stone spirit
 nature:

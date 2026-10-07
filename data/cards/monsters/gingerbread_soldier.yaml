@@ -1,144 +1,28 @@
 deck:
-- name: Tough cookie
-  stats:
-    blue: 2
-    red: 6
-    yellow: 3
-- name: Tough cookie
-  stats:
-    blue: 2
-    red: 6
-    yellow: 3
-- name: Tough cookie
-  stats:
-    blue: 2
-    red: 6
-    yellow: 3
-- name: Tough cookie
-  stats:
-    blue: 2
-    red: 6
-    yellow: 3
-- name: Tough cookie
-  stats:
-    blue: 2
-    red: 6
-    yellow: 3
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 2
-  name: Swat
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 2
-  name: Swat
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 2
-  name: Swat
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 2
-  name: Swat
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 2
-  name: Swat
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- name: Run run run
-  stats:
-    blue: 1
-    red: 3
-    yellow: 6
-- name: Run run run
-  stats:
-    blue: 1
-    red: 3
-    yellow: 6
-- name: Run run run
-  stats:
-    blue: 1
-    red: 3
-    yellow: 6
-- name: Run run run
-  stats:
-    blue: 1
-    red: 3
-    yellow: 6
-- name: Run run run
-  stats:
-    blue: 1
-    red: 3
-    yellow: 6
-- attack: '{Red}: Str = {Red} → Stun 2/4/6'
-  cost: 1
-  name: Bump
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Stun 2/4/6'
-  cost: 1
-  name: Bump
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Stun 2/4/6'
-  cost: 1
-  name: Bump
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Stun 2/4/6'
-  cost: 1
-  name: Bump
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} → Stun 2/4/6'
-  cost: 1
-  name: Bump
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- name: Animate food
-  stats:
-    blue: 5
-    red: 3
-    yellow: 3
-- name: Animate food
-  stats:
-    blue: 5
-    red: 3
-    yellow: 3
-- name: Animate food
-  stats:
-    blue: 5
-    red: 3
-    yellow: 3
-- name: Animate food
-  stats:
-    blue: 5
-    red: 3
-    yellow: 3
+- card: tough-cookie
+- card: tough-cookie
+- card: tough-cookie
+- card: tough-cookie
+- card: tough-cookie
+- card: swat-2
+- card: swat-2
+- card: swat-2
+- card: swat-2
+- card: swat-2
+- card: run-run-run
+- card: run-run-run
+- card: run-run-run
+- card: run-run-run
+- card: run-run-run
+- card: bump
+- card: bump
+- card: bump
+- card: bump
+- card: bump
+- card: animate-food
+- card: animate-food
+- card: animate-food
+- card: animate-food
 items: []
 name: Gingerbread Soldier
 nature:

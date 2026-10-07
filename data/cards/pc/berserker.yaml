@@ -1,181 +1,28 @@
 deck:
-- cost: 0
-  name: Wind up
-  rules:
-  - 'action: you may use this as a resource to attack next turn at +3'
-  stats:
-    blue: 3
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → Minor: daze 1, Major: Minor wound, Critical: major
-    wound'
-  cost: 0
-  name: Opportunistic Kick
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 0
-  name: Opportunistic Attack
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- name: Follow up
-  rules:
-  - strength +4 as a resource for an action (not defense) if you acted last turn
-  stats:
-    blue: 3
-    red: 2
-    yellow: 1
-- name: Take it
-  rules:
-  - |-
-    strength +4 when used to defend from anywhere
-    you suffer at least a minor success an action when you defend with this
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- name: Fend Off
-  rules:
-  - 'defend |x|, |y|, or |z|: strength = |x|+1'
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- name: Second wind
-  rules:
-  - Fatigue this face up
-  - recover 4 face down fatigue to spent
-  - When you recover this from face up fatigue, fatigue 4 cards face down (if you
-    have recovery points remaining from your rest you can recover them as normal)
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1 → upgraded wound'
-  cost: 2
-  name: Mighty Blow
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → Minor: No Effect, Major or Critical: Kill target'
-  cost: 2
-  name: Deathblow
-  stats:
-    blue: 1
-    red: 3
-    yellow: 2
-- name: Frantic Defense
-  rules:
-  - 'Defense: Flip 2 cards and add to this defense'
-  stats:
-    blue: 1
-    red: 1
-    yellow: 2
-- cost: 1
-  name: Push yourself
-  rules:
-  - 'Action: Draw 3 extra cards at upkeep this turn'
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red}'
-  cost: 1
-  name: Frenzy
-  rules:
-  - Draw 1 card
-  stats:
-    blue: 1
-    red: 2
-    yellow: 1
-- name: Sweeping defense
-  rules:
-  - 'defend |x| or |y|: strength = |x|+1'
-  - You may apply sweeping defense against 2 attacks (use seperate resources for each)
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- name: Pain drives me
-  rules:
-  - 'If this card is part of a defense where you take a wound: draw 2 cards'
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 1
-  name: Bully
-  rules:
-  - target must expend a card to attack next roud
-  stats:
-    blue: 2
-    red: 2
-    yellow: 2
-- name: Athletics
-  stats:
-    blue: 2
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  name: Backswing
-  stats:
-    blue: 1
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Clumsy Attack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 1
-- name: Make Opportunity
-  rules:
-  - 'defend |x|: strength = |x| you may use this as a resource to attack next turn'
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} → basic wound'
-  name: Pressing Attack
-  rules:
-  - can spend this on an attack next turn
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- name: Endure
-  rules:
-  - strength +4 when used to defend from anywhere
-  stats:
-    blue: 0
-    red: 1
-    yellow: 0
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 1
-  name: Attack
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Power Attack
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- name: Power
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
+- card: wind-up
+- card: opportunistic-kick
+- card: opportunistic-attack
+- card: follow-up
+- card: take-it
+- card: fend-off
+- card: second-wind
+- card: mighty-blow
+- card: deathblow
+- card: frantic-defense
+- card: push-yourself
+- card: frenzy
+- card: sweeping-defense
+- card: pain-drives-me
+- card: bully
+- card: athletics
+- card: backswing
+- card: clumsy-attack
+- card: make-opportunity
+- card: pressing-attack
+- card: endure-2
+- card: attack
+- card: power-attack
+- card: power
 items:
 - name: Greateaxe
   tags:

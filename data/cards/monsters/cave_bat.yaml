@@ -1,160 +1,28 @@
 deck:
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 2
-  name: Dive Bomb
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Yellow}: Str = {Yellow} → basic wound'
-  cost: 0
-  name: Wing slap
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 2
-    red: 2
-    yellow: 4
-- name: bat's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 6
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| from anywhere
-  stats:
-    blue: 2
-    red: 3
-    yellow: 5
-- name: Flit
-  stats:
-    blue: 4
-    red: 2
-    yellow: 5
-- name: Fly into the shadows
-  rules:
-  - 'Action: Defend |x| or |y| with |y| + 3'
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 2
-  name: Dive Bomb
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Yellow}: Str = {Yellow} → basic wound'
-  cost: 0
-  name: Wing slap
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 2
-    red: 2
-    yellow: 4
-- name: bat's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 6
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| from anywhere
-  stats:
-    blue: 2
-    red: 3
-    yellow: 5
-- name: Flit
-  stats:
-    blue: 4
-    red: 2
-    yellow: 5
-- name: Fly into the shadows
-  rules:
-  - 'Action: Defend |x| or |y| with |y| + 3'
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 2
-  name: Dive Bomb
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Yellow}: Str = {Yellow} → basic wound'
-  cost: 0
-  name: Wing slap
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 2
-    red: 2
-    yellow: 4
-- name: bat's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 6
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| from anywhere
-  stats:
-    blue: 2
-    red: 3
-    yellow: 5
-- name: Flit
-  stats:
-    blue: 4
-    red: 2
-    yellow: 5
-- name: Fly into the shadows
-  rules:
-  - 'Action: Defend |x| or |y| with |y| + 3'
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 4 → basic wound'
-  cost: 2
-  name: Dive Bomb
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Yellow}: Str = {Yellow} → basic wound'
-  cost: 0
-  name: Wing slap
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 1
-  name: Bite
-  stats:
-    blue: 2
-    red: 2
-    yellow: 4
+- card: dive-bomb-2
+- card: wing-slap
+- card: bite-12
+- card: bat-s-speed
+- card: dodge-2
+- card: flit
+- card: fly-into-the-shadows
+- card: dive-bomb-2
+- card: wing-slap
+- card: bite-12
+- card: bat-s-speed
+- card: dodge-2
+- card: flit
+- card: fly-into-the-shadows
+- card: dive-bomb-2
+- card: wing-slap
+- card: bite-12
+- card: bat-s-speed
+- card: dodge-2
+- card: flit
+- card: fly-into-the-shadows
+- card: dive-bomb-2
+- card: wing-slap
+- card: bite-12
 items: []
 name: Cave Bat
 nature:

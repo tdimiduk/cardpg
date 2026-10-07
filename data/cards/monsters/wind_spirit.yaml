@@ -1,179 +1,28 @@
 deck:
-- name: Wind's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
-- name: Wind's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
-- name: Wind's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
-- name: Wind's speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 8
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 0
-  name: Wind Gust
-  stats:
-    blue: 1
-    red: 3
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 0
-  name: Wind Gust
-  stats:
-    blue: 1
-    red: 3
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 0
-  name: Wind Gust
-  stats:
-    blue: 1
-    red: 3
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1 → basic wound'
-  cost: 0
-  name: Wind Gust
-  stats:
-    blue: 1
-    red: 3
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5'
-  cost: 2
-  name: Super Gust
-  stats:
-    blue: 4
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5'
-  cost: 2
-  name: Super Gust
-  stats:
-    blue: 4
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 5'
-  cost: 2
-  name: Super Gust
-  stats:
-    blue: 4
-    red: 4
-    yellow: 5
-- cost: 1
-  name: Incorporeal
-  rules:
-  - 'Defend: Ignore an attack'
-  stats:
-    blue: 7
-    red: 1
-    yellow: 3
-- cost: 1
-  name: Incorporeal
-  rules:
-  - 'Defend: Ignore an attack'
-  stats:
-    blue: 7
-    red: 1
-    yellow: 3
-- cost: 1
-  name: Incorporeal
-  rules:
-  - 'Defend: Ignore an attack'
-  stats:
-    blue: 7
-    red: 1
-    yellow: 3
-- cost: 1
-  name: Fly inbetween
-  rules:
-  - 'Action : enemy attack this turn also affects enemies ally'
-  - Recover this and resource if no attacks this round
-  stats:
-    blue: 5
-    red: 2
-    yellow: 5
-- cost: 1
-  name: Fly inbetween
-  rules:
-  - 'Action : enemy attack this turn also affects enemies ally'
-  - Recover this and resource if no attacks this round
-  stats:
-    blue: 5
-    red: 2
-    yellow: 5
-- cost: 1
-  name: Fly inbetween
-  rules:
-  - 'Action : enemy attack this turn also affects enemies ally'
-  - Recover this and resource if no attacks this round
-  stats:
-    blue: 5
-    red: 2
-    yellow: 5
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| +1
-  stats:
-    blue: 2
-    red: 4
-    yellow: 5
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| +1
-  stats:
-    blue: 2
-    red: 4
-    yellow: 5
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| +1
-  stats:
-    blue: 2
-    red: 4
-    yellow: 5
-- name: Dodge
-  rules:
-  - Defend |x| or |y| with |y| +1
-  stats:
-    blue: 2
-    red: 4
-    yellow: 5
-- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
-  cost: 2
-  name: Blow through
-  rules:
-  - Ignore physical |x| and |y| attacks this turn
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
-  cost: 2
-  name: Blow through
-  rules:
-  - Ignore physical |x| and |y| attacks this turn
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 1 → Stun 2, 4, 10'
-  cost: 2
-  name: Blow through
-  rules:
-  - Ignore physical |x| and |y| attacks this turn
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
+- card: wind-s-speed
+- card: wind-s-speed
+- card: wind-s-speed
+- card: wind-s-speed
+- card: wind-gust
+- card: wind-gust
+- card: wind-gust
+- card: wind-gust
+- card: super-gust
+- card: super-gust
+- card: super-gust
+- card: incorporeal
+- card: incorporeal
+- card: incorporeal
+- card: fly-inbetween
+- card: fly-inbetween
+- card: fly-inbetween
+- card: dodge
+- card: dodge
+- card: dodge
+- card: dodge
+- card: blow-through
+- card: blow-through
+- card: blow-through
 items: []
 name: Wind spirit
 nature:

@@ -1,172 +1,28 @@
 deck:
-- attack: '{Red}: Str = {Yellow} + 3'
-  cost: 4
-  name: Flyby
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Yellow} + 3'
-  cost: 4
-  name: Flyby
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Yellow} + 3'
-  cost: 4
-  name: Flyby
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Yellow} + 3'
-  cost: 4
-  name: Flyby
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Yellow} + 3'
-  cost: 4
-  name: Flyby
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Yellow} + 3'
-  cost: 4
-  name: Flyby
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Yellow}'
-  cost: 2
-  name: Jab
-  stats:
-    blue: 1
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Yellow}'
-  cost: 2
-  name: Jab
-  stats:
-    blue: 1
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Yellow}'
-  cost: 2
-  name: Jab
-  stats:
-    blue: 1
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Yellow}'
-  cost: 2
-  name: Jab
-  stats:
-    blue: 1
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Yellow}'
-  cost: 2
-  name: Jab
-  stats:
-    blue: 1
-    red: 2
-    yellow: 4
-- attack: '{Red}: Str = {Yellow}'
-  cost: 2
-  name: Jab
-  stats:
-    blue: 1
-    red: 2
-    yellow: 4
-- attack: '{Yellow}: Str = {Yellow} + 1'
-  cost: 3
-  name: Sting
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1'
-  cost: 3
-  name: Sting
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1'
-  cost: 3
-  name: Sting
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1'
-  cost: 3
-  name: Sting
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1'
-  cost: 3
-  name: Sting
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Yellow}: Str = {Yellow} + 1'
-  cost: 3
-  name: Sting
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Yellow} + 2'
-  cost: 3
-  name: Wingbeat
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Yellow} + 2'
-  cost: 3
-  name: Wingbeat
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Yellow} + 2'
-  cost: 3
-  name: Wingbeat
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Yellow} + 2'
-  cost: 3
-  name: Wingbeat
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Yellow} + 2'
-  cost: 3
-  name: Wingbeat
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Yellow} + 2'
-  cost: 3
-  name: Wingbeat
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
+- card: flyby
+- card: flyby
+- card: flyby
+- card: flyby
+- card: flyby
+- card: flyby
+- card: jab
+- card: jab
+- card: jab
+- card: jab
+- card: jab
+- card: jab
+- card: sting-3
+- card: sting-3
+- card: sting-3
+- card: sting-3
+- card: sting-3
+- card: sting-3
+- card: wingbeat
+- card: wingbeat
+- card: wingbeat
+- card: wingbeat
+- card: wingbeat
+- card: wingbeat
 items: []
 name: Wasp Soldier
 nature:

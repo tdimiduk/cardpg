@@ -1,176 +1,30 @@
 deck:
-- cost: 4
-  name: Treetment
-  rules:
-  - remove 4 bad cards and one condition
+- card: treetment
+- card: splinter
+- card: regrowth
+- card: plant-growth
+- card: ancient-wisdom
+- card: might-of-the-oaks
+- card: flow-with-the-wind
+- card: stick-stick
+- card: timber
+- card: root-tangle
+- card: durian-spikes
+- card: bark-worse-than-bite
+- card: root-network
+- card: thrashing-branches
+- card: trunk-thunk
+- card: durian-stink-bomb
+- card: healing-mango
+- card: revitilizing-growth
+- card: mango-mace
+- card: branch-bash
+- card: bite-3
   stats:
-    blue: 4
     red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Splinter
-  stats:
-    blue: 3
-    red: 2
-    yellow: 4
-- name: Regrowth
-  stats:
-    blue: 4
-    red: 3
-    yellow: 2
-- name: Plant growth
-  rules:
-  - Makes plants around you grow
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- name: Ancient wisdom
-  stats:
-    blue: 5
-    red: 2
-    yellow: 2
-- name: Might of the oaks
-  stats:
-    blue: 2
-    red: 6
-    yellow: 0
-- name: Flow with the wind
-  stats:
-    blue: 4
-    red: 4
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 1
-  name: Stick stick
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 10 → Stun 2 self'
-  cost: 6
-  name: Timber
-  stats:
-    blue: 1
-    red: 6
-    yellow: 0
-- cost: 4
-  name: Root tangle
-  stats:
-    blue: 1
-    red: 4
-    yellow: 4
-- name: Durian spikes
-  rules:
-  - 'Action: play. Attack 5 |x| attackers. expend if triggered, ottherwise recover'
-  - Attacker discards a card or stuns 1
-  - Attackers get attacked and discard a card
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bark worse than bite
-  rules:
-  - Melee attack
-  stats:
-    blue: 3
-    red: 5
-    yellow: 1
-- name: Root network
-  rules:
-  - Ask nearby trees what they have heard
-  stats:
-    blue: 5
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} → Up to 4 melee targets'
-  cost: 4
-  name: Thrashing branches
-  rules:
-  - Multi melee attack
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 5'
-  cost: 5
-  name: Trunk Thunk
-  rules:
-  - Big melee attack
-  stats:
-    blue: 3
-    red: 5
-    yellow: 0
-- attack: '{Red}: Str = {Blue} + 2'
-  cost: 5
-  name: Durian Stink bomb
-  rules:
-  - Discard 3/7/11/15, slow remainder
-  stats:
-    blue: 3
-    red: 3
-    yellow: 2
-- cost: 23
-  name: Healing mango
-  rules:
-  - Eating the mango heals someone removing all bad cards and conditions
-  stats:
-    blue: 4
-    red: 2
-    yellow: 1
-- name: Revitilizing growth
-  rules:
-  - heals plants
-  stats:
-    blue: 4
-    red: 2
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 4'
-  cost: 4
-  name: Mango mace
-  stats:
-    blue: 2
-    red: 5
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 3
-  name: Branch bash
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 2
-  name: Bite
-  stats:
-    blue: 3
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → ranged'
-  cost: 3
-  name: Launch rotten fruit
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- name: Fall foliage
-  rules:
-  - The next 2 attacks against you, ignore the resource number on the top card
-  - Send a blast of leaves out to make it hard to attack
-  stats:
-    blue: 4
-    red: 2
-    yellow: 4
-- name: Just a normal tree
-  rules:
-  - Appear as just a normal tree for a time
-  stats:
-    blue: 5
-    red: 4
-    yellow: 0
+- card: launch-rotten-fruit
+- card: fall-foliage
+- card: just-a-normal-tree
 items: []
 name: Culorn
 nature:

@@ -1,162 +1,28 @@
 deck:
-- cost: 1
-  name: Monitor the situation
-  rules:
-  - Draw 2 cards, recover 2 from spent
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- cost: 1
-  name: Monitor the situation
-  rules:
-  - Draw 2 cards, recover 2 from spent
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- name: Skitter
-  stats:
-    blue: 2
-    red: 2
-    yellow: 5
-- name: Skitter
-  stats:
-    blue: 2
-    red: 2
-    yellow: 5
-- name: Athletics
-  stats:
-    blue: 2
-    red: 4
-    yellow: 4
-- name: Athletics
-  stats:
-    blue: 2
-    red: 4
-    yellow: 4
-- name: Lizard strength
-  stats:
-    blue: 1
-    red: 5
-    yellow: 2
-- name: Lizard strength
-  stats:
-    blue: 1
-    red: 5
-    yellow: 2
-- name: Lizard strength
-  stats:
-    blue: 1
-    red: 5
-    yellow: 2
-- name: Scaly skin
-  rules:
-  - defense +2 when spent on defense
-  - basic wound
-  stats:
-    blue: 1
-    red: 4
-    yellow: 3
-- name: Scaly skin
-  rules:
-  - defense +2 when spent on defense
-  - basic wound
-  stats:
-    blue: 1
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Chop
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Chop
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 1
-  name: Chop
-  stats:
-    blue: 1
-    red: 2
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 5 → basic wound'
-  cost: 3
-  name: Hack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5 → basic wound'
-  cost: 3
-  name: Hack
-  stats:
-    blue: 1
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Power Attack
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Power Attack
-  stats:
-    blue: 2
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 0
-  name: Bite
-  stats:
-    blue: 1
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 0
-  name: Bite
-  stats:
-    blue: 1
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 1
-  name: Slash
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 1
-  name: Slash
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 1
-  name: Slash
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 1
-  name: Slash
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
+- card: monitor-the-situation
+- card: monitor-the-situation
+- card: skitter
+- card: skitter
+- card: athletics
+- card: athletics
+- card: lizard-strength
+- card: lizard-strength
+- card: lizard-strength
+- card: scaly-skin
+- card: scaly-skin
+- card: chop
+- card: chop
+- card: chop
+- card: hack
+- card: hack
+- card: power-attack
+- card: power-attack
+- card: bite-5
+- card: bite-5
+- card: slash
+- card: slash
+- card: slash
+- card: slash
 items: []
 name: Lizard Warrior
 nature:

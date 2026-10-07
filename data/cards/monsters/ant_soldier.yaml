@@ -1,172 +1,28 @@
 deck:
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 1'
-  cost: 2
-  name: Sting
-  stats:
-    blue: 2
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 3'
-  cost: 4
-  name: Ram
-  stats:
-    blue: 1
-    red: 4
-    yellow: 1
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 2'
-  cost: 3
-  name: Bite
-  stats:
-    blue: 2
-    red: 3
-    yellow: 2
-- attack: '{Red}: Str = {Red} → Attacks again next round'
-  cost: 4
-  name: Acid Spit
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} → Attacks again next round'
-  cost: 4
-  name: Acid Spit
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} → Attacks again next round'
-  cost: 4
-  name: Acid Spit
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} → Attacks again next round'
-  cost: 4
-  name: Acid Spit
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} → Attacks again next round'
-  cost: 4
-  name: Acid Spit
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Red} → Attacks again next round'
-  cost: 4
-  name: Acid Spit
-  stats:
-    blue: 3
-    red: 2
-    yellow: 2
+- card: sting
+- card: sting
+- card: sting
+- card: sting
+- card: sting
+- card: sting
+- card: ram
+- card: ram
+- card: ram
+- card: ram
+- card: ram
+- card: ram
+- card: bite-4
+- card: bite-4
+- card: bite-4
+- card: bite-4
+- card: bite-4
+- card: bite-4
+- card: acid-spit
+- card: acid-spit
+- card: acid-spit
+- card: acid-spit
+- card: acid-spit
+- card: acid-spit
 items: []
 name: Ant Soldier
 nature:

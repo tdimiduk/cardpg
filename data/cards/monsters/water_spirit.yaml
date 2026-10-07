@@ -1,166 +1,28 @@
 deck:
-- name: Wave Power
-  stats:
-    blue: 3
-    red: 7
-    yellow: 3
-- name: Wave Power
-  stats:
-    blue: 3
-    red: 7
-    yellow: 3
-- name: Wave Power
-  stats:
-    blue: 3
-    red: 7
-    yellow: 3
-- name: Water breathing
-  rules:
-  - Get +4 to defend water based attacks from anywhere
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- name: Water breathing
-  rules:
-  - Get +4 to defend water based attacks from anywhere
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- name: Water breathing
-  rules:
-  - Get +4 to defend water based attacks from anywhere
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- name: Swiming speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- name: Swiming speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- name: Swiming speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- name: Swiming speed
-  stats:
-    blue: 3
-    red: 3
-    yellow: 5
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 1
-  name: Spray
-  rules:
-  - Hits up to 255 enemies
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 1
-  name: Spray
-  rules:
-  - Hits up to 255 enemies
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 1
-  name: Spray
-  rules:
-  - Hits up to 255 enemies
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} → basic wound'
-  cost: 1
-  name: Spray
-  rules:
-  - Hits up to 255 enemies
-  stats:
-    blue: 3
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Splash
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Splash
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Splash
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 3 → basic wound'
-  cost: 2
-  name: Splash
-  stats:
-    blue: 4
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 5 → Knockdown'
-  cost: 1
-  name: Make waves
-  stats:
-    blue: 1
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5 → Knockdown'
-  cost: 1
-  name: Make waves
-  stats:
-    blue: 1
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 5 → Knockdown'
-  cost: 1
-  name: Make waves
-  stats:
-    blue: 1
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
-  cost: 4
-  name: Drown
-  stats:
-    blue: 3
-    red: 5
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
-  cost: 4
-  name: Drown
-  stats:
-    blue: 3
-    red: 5
-    yellow: 3
-- attack: '{Red}: Str = {Red} + 7 → Stun 4, stun 8, kill'
-  cost: 4
-  name: Drown
-  stats:
-    blue: 3
-    red: 5
-    yellow: 3
+- card: wave-power
+- card: wave-power
+- card: wave-power
+- card: water-breathing
+- card: water-breathing
+- card: water-breathing
+- card: swiming-speed
+- card: swiming-speed
+- card: swiming-speed
+- card: swiming-speed
+- card: spray
+- card: spray
+- card: spray
+- card: spray
+- card: splash
+- card: splash
+- card: splash
+- card: splash
+- card: make-waves
+- card: make-waves
+- card: make-waves
+- card: drown
+- card: drown
+- card: drown
 items: []
 name: Water spirit
 nature:

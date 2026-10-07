@@ -1,227 +1,31 @@
 deck:
-- attack: '{Red}: Str = {Blue} + 3 → Fire wound'
-  cost: 3
-  name: Double flame
-  rules:
-  - Attacks 2 monsters
-  stats:
-    blue: 8
-    red: 4
-    yellow: 4
-- cost: 2
-  name: Moon Darkness
-  rules:
-  - 'Action: all attacks miss this round, recover if no attacks'
-  stats:
-    blue: 6
-    red: 4
-    yellow: 2
-- name: Moon Forcefield
-  rules:
-  - get +4 when used to block a attack
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
-- name: Mirror image
-  rules:
-  - 'action: place this as state with it''s resources under it'
-  - Expend this or a card under it to negate an attack
-  stats:
-    blue: 3
-    red: 2
-    yellow: 3
-- attack: |-
-    {Blue}: Str = {Blue} + 3 → ignore armor
-    Minor discard their hand
-  cost: 1
-  name: Make sneeze
-  stats:
-    blue: 3
-    red: 2
-    yellow: 4
-- attack: |-
-    {Yellow}: Str = {Blue} + 4 → attack all within small area
-    minor: knockdown, major: knockdown + daze, critical: knockdown + daze 2 + stun 2
-  cost: 3
-  name: Wave
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: |-
-    {Blue}: Str = {Blue} + 4 → Minor magic attacks at half strength
-    major magic attacks at 0 strength
-  cost: 4
-  name: Crystal crush
-  stats:
-    blue: 5
-    red: 3
-    yellow: 2
-- attack: |-
-    {Red}: Str = {Blue} + 2 → ignore armor
-    minor: slow 2, major: slow 5, slow 24
-  cost: 2
-  name: Plant trap
-  stats:
-    blue: 3
-    red: 3
-    yellow: 2
-- name: Burning blades
-  rules:
-  - Place this and it's resources on a weapon. Include this as a bonus on attacks
-    with this weapon. Each time it is used expend it or one resource from under it.
-  stats:
-    blue: 3
-    red: 4
-    yellow: 3
-- name: Spikes
-  rules:
-  - 'Action: put out to defend'
-  - Next time some one attacks you attack them |x| strength 6
-  stats:
-    blue: 2
-    red: 4
-    yellow: 3
-- attack: '{Red}: Str = {Blue} + 3 → Poison wound'
-  cost: 3
-  name: Poison bolt
-  stats:
-    blue: 4
-    red: 3
-    yellow: 2
-- cost: 2
-  name: Shrinking sky
-  rules:
-  - Monsters can't fly for 5 turns
-  stats:
-    blue: 3
-    red: 4
-    yellow: 4
-- attack: '{Blue}: Str = {Blue} + 1 → basic wound'
-  cost: 1
-  name: Black beam
-  stats:
-    blue: 3
-    red: 3
-    yellow: 3
-- attack: '{Red}: Str = {Blue} → Slow 2, stun 2 slow 5, stun 5 slow 10'
-  cost: 4
-  name: Snow storm
-  rules:
-  - Affects all enemies
-  stats:
-    blue: 4
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Blue}'
-  cost: 2
-  name: Lightning block
-  rules:
-  - you may apply this and it's resources to any defense this round
-  stats:
-    blue: 2
-    red: 3
-    yellow: 4
-- attack: '{Red}: Str = {Blue} + 3 → minor: stun 2, major: stun 4, stun 10'
-  cost: 3
-  name: Tornado
-  stats:
-    blue: 3
-    red: 2
-    yellow: 5
-- name: Golden eyes
-  rules:
-  - Show this card, you can see invisible this turn
-  stats:
-    blue: 5
-    red: 4
-    yellow: 4
-- cost: 2
-  name: Fire armor
-  rules:
-  - 'action: place this as state'
-  - you can use this as a resource on defense without expending it. If you take a
-    red wound, fatigue this instead.
-  stats:
-    blue: 1
-    red: 2
-    yellow: 2
-- attack: '{Blue}: Str = {Blue} + 2 → minor: stun 2, major: stun 4, stun 10'
-  cost: 2
-  name: Shining sun
-  rules:
-  - Used at range
-  stats:
-    blue: 3
-    red: 2
-    yellow: 3
-- cost: 4
-  name: Spirit creatures
-  rules:
-  - 'Attack: 7 for 5 turns starting now'
-  stats:
-    blue: 2
-    red: 2
-    yellow: 2
-- attack: '{Red}: Str = {Blue} → basic wound'
-  cost: 3
-  name: Triple lightning
-  rules:
-  - Used at range, hits up to 3 monsters
-  stats:
-    blue: 3
-    red: 1
-    yellow: 3
-- name: Invisibility
-  rules:
-  - Turn invisible for a few minutes out of combat to sneak around
-  stats:
-    blue: 4
-    red: 3
-    yellow: 4
-- cost: 2
-  name: Speed boost
-  rules:
-  - Draw an extra card each turn
-  stats:
-    blue: 3
-    red: 1
-    yellow: 4
-- attack: |-
-    {Red}: Str = {Red} + 4 → attack all within medium area
-    basic fire wound
-  cost: 5
-  name: Fireball
-  rules:
-  - Attacks multiple enemies
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Red}: Str = {Blue} + 3 → basic wound'
-  cost: 2
-  name: Stone blast
-  stats:
-    blue: 3
-    red: 4
-    yellow: 2
-- attack: '{Yellow}: Str = {Blue} + 4'
-  cost: 3
-  name: Ice cage
-  rules:
-  - Cant act or draw cards for 1,2,5
-  stats:
-    blue: 3
-    red: 2
-    yellow: 3
-- name: Star shield
-  rules:
-  - get +4 when used to block a magic attack
-  stats:
-    blue: 5
-    red: 2
-    yellow: 3
+- card: double-flame
+- card: moon-darkness
+- card: moon-forcefield
+- card: mirror-image-2
+- card: make-sneeze
+- card: wave
+- card: crystal-crush
+- card: plant-trap
+- card: burning-blades
+- card: spikes
+- card: poison-bolt
+- card: shrinking-sky
+- card: black-beam
+- card: snow-storm
+- card: lightning-block
+- card: tornado
+- card: golden-eyes
+- card: fire-armor
+- card: shining-sun
+- card: spirit-creatures
+- card: triple-lightning
+- card: invisibility
+- card: speed-boost
+- card: fireball-2
+- card: stone-blast
+- card: ice-cage
+- card: star-shield
 items:
 - name: Moon Hat
   tags:

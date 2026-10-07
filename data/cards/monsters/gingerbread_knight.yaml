@@ -1,142 +1,78 @@
 deck:
-- name: Tough cookie
+- card: tough-cookie
   stats:
     blue: 3
     red: 8
     yellow: 4
-- name: Tough cookie
+- card: tough-cookie
   stats:
     blue: 3
     red: 8
     yellow: 4
-- name: Tough cookie
+- card: tough-cookie
   stats:
     blue: 3
     red: 8
     yellow: 4
-- name: Tough cookie
+- card: tough-cookie
   stats:
     blue: 3
     red: 8
     yellow: 4
-- name: Tough cookie
+- card: tough-cookie
   stats:
     blue: 3
     red: 8
     yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Slash
-  stats:
-    blue: 3
-    red: 5
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Slash
-  stats:
-    blue: 3
-    red: 5
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Slash
-  stats:
-    blue: 3
-    red: 5
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Slash
-  stats:
-    blue: 3
-    red: 5
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 4 → basic wound'
-  cost: 3
-  name: Slash
-  stats:
-    blue: 3
-    red: 5
-    yellow: 4
-- name: Run run run
+- card: slash-4
+- card: slash-4
+- card: slash-4
+- card: slash-4
+- card: slash-4
+- card: run-run-run
   stats:
     blue: 2
     red: 5
     yellow: 7
-- name: Run run run
+- card: run-run-run
   stats:
     blue: 2
     red: 5
     yellow: 7
-- name: Run run run
+- card: run-run-run
   stats:
     blue: 2
     red: 5
     yellow: 7
-- name: Run run run
+- card: run-run-run
   stats:
     blue: 2
     red: 5
     yellow: 7
-- name: Run run run
+- card: run-run-run
   stats:
     blue: 2
     red: 5
     yellow: 7
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stab
+- card: stab
+- card: stab
+- card: stab
+- card: stab
+- card: stab
+- card: animate-food
   stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- attack: '{Red}: Str = {Red} + 2 → basic wound'
-  cost: 2
-  name: Stab
-  stats:
-    blue: 3
-    red: 6
-    yellow: 4
-- name: Animate food
-  stats:
-    blue: 5
     red: 5
     yellow: 4
-- name: Animate food
+- card: animate-food
   stats:
-    blue: 5
     red: 5
     yellow: 4
-- name: Animate food
+- card: animate-food
   stats:
-    blue: 5
     red: 5
     yellow: 4
-- name: Animate food
+- card: animate-food
   stats:
-    blue: 5
     red: 5
     yellow: 4
 items: []
