@@ -70,8 +70,3 @@ active_design_exploration:
       purpose: "Development benchmark scenario: a short, complete campaign arc testing travel, non-combat general actions, tactical combat, persistent harm, and the living world clock in the Grounded Heroism setting."
       tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:pacing"]
 
-    - path: "iteration/campaign-sunken-cairn/index.yaml"
-      name: "Campaign Workshop: The Sunken Cairn of Dun-Mahr"
-      purpose: "Travel and dungeon-crawl playtest campaign engineered for GM-less, card-based play (PCs vs cards). Tests the Resource Management Engine (fatigue, conditions, light, supplies, and time tradeoffs) in Grounded Heroism."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:pacing", "core-concept:fatigue"]
-

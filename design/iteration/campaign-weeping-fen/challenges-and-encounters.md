@@ -4,13 +4,13 @@ doc_type: iteration
 track: ludology
 origin: AI drafted
 epistemic_status:
-  confidence: medium
+  confidence: high
   vetted_by_human: false
 ---
 
 # Challenges & Encounters: The Weeping Fen
 
-This document sketches the primary locations, non-combat challenges, and tactical combats in **"The Outlaw of Weeping Fen"** at a high level. Rather than fixing exact card numbers or stats, it defines the narrative stakes, physical environment, tactical dilemmas, and the mechanical virtues each encounter is designed to test.
+This document sketches the primary locations, non-combat challenges, and tactical combats in **"The Outlaw of Weeping Fen"** at a high level. Rather than fixing rigid stats, it defines the narrative stakes, physical environment, tactical dilemmas, and the mechanical virtues each encounter is designed to test under our **Grounded Heroism** philosophy.
 
 ---
 
@@ -18,10 +18,10 @@ This document sketches the primary locations, non-combat challenges, and tactica
 
 ```mermaid
 flowchart TD
-    HAMLET["Moss-Gallows Hamlet<br/>(Safe Haven: Tavern, Peat-cutters, Bailiff's Office)"]
-    CAUSEWAY["The Sinking Causeway<br/>(Rotting Timbers, Quicksand, Drowned Road)"]
-    BARROW["The Sunken Barrow<br/>(Ancient Stone Tomb on High Mound, Outlaw Sanctuary)"]
-    GROVE["The Drowned Willow Grove<br/>(Flooded Timberland, The Grendel-Hound's Den)"]
+    HAMLET["Willow-Garth Settlement<br/>(The Safe Haven: The Willow Hearth Inn, Dikes, Stockade)"]
+    CAUSEWAY["The Sinking Causeway<br/>(Elder Stone Highway, Flooded Spans, Reeds)"]
+    BARROW["The Sunken Barrow<br/>(Megalithic Tomb Redoubt, Hearth Flue, Outlaw Sanctuary)"]
+    GROVE["The Drowned Willow Grove<br/>(Flooded Primeval Bottoms, Fen-Beast's Den)"]
 
     HAMLET --> CAUSEWAY
     CAUSEWAY --> BARROW
@@ -29,89 +29,89 @@ flowchart TD
     BARROW <--> GROVE
 ```
 
-1. **Moss-Gallows Hamlet:** A miserable cluster of sod-roofed hovels clinging to the edge of the wetlands. Smells of peat smoke and damp wool. The only dry haven before the marsh.
-2. **The Sinking Causeway:** An ancient paved military road that has fractured and sunken into the black bog. Safe to walk on in sections, but broken by 10-to-20-meter spans of deep, sluggish water and treacherous mudbanks.
-3. **The Sunken Barrow:** A massive stone tumulus dating back to a forgotten era, perched on the only high, rocky knoll for miles. Surrounded by a natural moat of dark water and tangled brambles.
-4. **The Drowned Willow Grove:** The devastated area where Bailiff Vane's illegal logging crew drained the bog. Tangled stumps, stagnant black pools, and the hollowed root-nest of the Grendel-Hound.
+1. **Willow-Garth Settlement:** A thriving, resilient border settlement of timber-and-fieldstone cottages protected by earthen dikes and willow windbreaks. At its center stands _The Willow Hearth_ inn—a beacon of warmth, roasted meats, hot cider, and hospitable fellowship that anchors the region's dynamic range.
+2. **The Sinking Causeway:** An ancient paved military highway cutting through the fen. While solid and dry across long spans, several 10-to-20-meter sections have collapsed into slow brown water, requiring careful poling, athletic leaps, or timber bridging.
+3. **The Sunken Barrow:** A solemn cyclopean stone tumulus dating to an elder age, resting high on a dry granite island. Surrounded by a natural moat of deep water and water lilies, its massive lintels shelter a defensible antechamber with an ancient working chimney flue.
+4. **The Drowned Willow Grove:** A primeval wetland forest of massive, moss-draped willows recently flooded by Bailiff Vane's unauthorized timber dikes. Root-snags and floating logs surround the hollowed earth mound where the Great Fen-Beast made its ancestral den.
 
 ---
 
 ## 2. The Non-Combat Challenge Palette
 
-These challenges test the **General Action** framework, emphasizing cooperation between the Shield-Fighter (endurance, brute force, military protocol) and the Swashbuckler (agility, fast-talk, stealth, perception).
+These scenes test the **General Action** framework, emphasizing cooperation between the Shield-Fighter (endurance, athletic brute force, military protocol) and the Swashbuckler (agility, fast-talk, stealth, keen perception).
 
-### Challenge 1: The Broken Causeway Culvert (Environmental Peril)
+### Challenge 1: The Broken Causeway Culvert (Environmental Peril & Teamwork)
 
-- **The Situation:** A 15-meter section of the stone causeway has completely collapsed into a deep, bubbling peat sinkhole. Rushing brown water cuts off forward progress.
+- **The Situation:** A 15-meter span of the elder stone road has fractured and fallen into a slow-moving channel of deep bog water. Rushing current cuts off forward progress.
 - **Approaches:**
-  - _Agile Traversal (Swashbuckler):_ Leaping across slippery, rotting timber pylons while carrying a guide line to anchor on the far side.
-  - _Brute Engineering (Shield-Fighter):_ Wading through the chest-deep mire to lever a fallen cypress log into place with raw muscle and shields.
-- **The Stakes:** High impact means slipping into the freezing mire, soaking provisions, or taking `Bruised Shins` and burning cards of stamina.
+  - _Agile Traversal (Swashbuckler):_ Leaping across exposed stone footings while hauling a stout guide cord to anchor on the far abutment.
+  - _Brute Engineering (Shield-Fighter):_ Wading into the shallows to lever a drift-log into place with raw muscle and stout shields, creating a firm bridge.
+- **Tactical Stakes:** Success preserves pace and dry rations; complications mean a soak in cold water, forcing an expenditure of dry fuel or burning stamina to dry out before evening.
 
-### Challenge 2: Distinguishing the Tracks (Investigation & Forensics)
+### Challenge 2: Frontier Forensics at the Stockade (Investigation & Deduction)
 
-- **The Situation:** Around a half-sunken rowboat, the mud is churned with blood and prints. Bailiff Vane claimed Kenneth butchered a fishing family here.
+- **The Situation:** Inspecting the smashed sheepfold timber gates in Willow-Garth where Bailiff Vane claimed Sir Kenneth butchered livestock.
 - **Approaches:**
-  - _Forensic Analysis (Perception / Lore):_ Examining claw marks on the gunwales and the crushed bones of the victims to deduce the truth—this was the work of an apex predator with four-inch talons, not human blades.
-  - _Following the Blood Trail:_ Differentiating the beast's deep, clawed gait from the bootprints of fleeing men.
-- **The Stakes:** Discovering the truth provides leverage in future social confrontations and eliminates doubt about Kenneth's guilt.
+  - _Forensic Inspection (Perception / Lore):_ Examining the splintered oak and identifying four-inch claw gouges and crushed bone patterns characteristic of a massive apex beast, proving human blades were not involved.
+  - _Tracking the Withdrawal:_ Differentiating the heavy, padded tracks of the bog predator heading toward the drowned groves from human bootprints.
+- **Tactical Stakes:** Uncovering the physical truth eliminates doubt about Kenneth's innocence and arms the party with undeniable leverage when confronting Bailiff Vane.
 
-### Challenge 3: The Barrow Threshold (Tense Social De-escalation)
+### Challenge 3: The Barrow Threshold (Martial Honor & De-escalation)
 
-- **The Situation:** Reaching the archway of the Sunken Barrow, the heroes are confronted in the shadows by Sir Kenneth and his two retainers with drawn, notched blades. Kenneth assumes the heroes are Vane's headhunters.
+- **The Situation:** Reaching the megalithic portal of the Sunken Barrow, the heroes are challenged in the shadows by Sir Kenneth and his two yeomen with leveled steel. Kenneth fears Vane’s headhunters have arrived to finish his line.
 - **Approaches:**
-  - _Appealing to Knightly Honor (Shield-Fighter):_ Presenting military credentials, reciting the Marcher code of arms, or lowering weapons to prove peaceful intent.
-  - _Fast-Talk & Empathy (Swashbuckler):_ Revealing knowledge of the real beast, offering clean medicine, and warning them of Durn's approaching hounds.
-- **The Stakes:** Failure results in an unnecessary, tragic skirmish with desperate, starving men. Success turns the outlaws into grateful, vital allies.
+  - _Appealing to Knightly Honor (Shield-Fighter):_ Lowering weapons, displaying military credentials, reciting the Marcher soldier's oath, and parleying with formal respect.
+  - _Diplomatic Candor (Swashbuckler):_ Presenting the forensic claw evidence, explaining Vane's timber scheme, and offering fresh medicinal supplies for the sick child.
+- **Tactical Stakes:** De-escalates a tragic misunderstanding into an alliance. Kenneth shares vital intelligence on the beast's movements and pledges his shield for the final stand.
 
-### Challenge 4: Treating the Marsh-Rot (Medical & Logistical Care)
+### Challenge 4: Breaking the Marsh-Chill (Wilderness Caretaking & Craft)
 
-- **The Situation:** Elsbeth is burning with Black-Water Ague inside the damp crypt. Her fever is peaking.
+- **The Situation:** Elsbeth is feverish and shivering in the barrow's stone antechamber. Her cold-water immersion has settled into an acute fever that requires immediate care.
 - **Approaches:**
-  - _Crafting the Fever-Draft:_ Boiling clean water, crushing wild willow-bark, and applying cooling moss compresses to break the fever.
-  - _Physical Comfort & Shelter:_ Repairing the barrow's drafts, building a smokeless stone hearth, and keeping her warm.
-- **The Stakes:** Success stabilizes the child and preserves Kenneth's fighting spirit for the upcoming battle; failure adds a severe complication and forces Kenneth into suicidal despair.
+  - _Crafting the Fever-Draft:_ Boiling clean water over a smokeless fire, steeping willow-bark and fever-root, and preparing cooling herbal compresses.
+  - _Sanctuary Preparation:_ Clearing the ancient chimney flue, sealing damp drafts with dry sheepskins, and creating a dry, warm microclimate for recovery.
+- **Tactical Stakes:** Success stabilizes the child, removes the emotional ticking clock, and restores Kenneth's full focus and martial discipline for the impending battle.
 
 ---
 
-## 3. The Combat Encounters (Fast, Decisive Combat Pacing)
+## 3. The Combat Encounters (Fast, Decisive Table Pacing)
 
-Combats in this scenario are designed to be fast-paced, decisive, and engaging for their full duration without dragging:
+Combat in _caRdPG_ is designed to resolve in **5–10 minutes** of intense, simultaneous decision-making:
 
 ```mermaid
 flowchart LR
-    C1["Combat 1: The Peat Ambush<br/>(2 Scouts + 1 Hound)<br/>• Fast skirmish<br/>• Travel vigilance test"] --> REST1["The Breather<br/>(Reshuffle + Fatigue)"]
-    REST1 --> C2["Combat 2: The Barrow Gate<br/>(Durn & Iron Dogs)<br/>• Chokepoint tactical fight<br/>• Armor soak vs. Crossbows"]
-    C2 --> C3["Combat 3: The Grendel-Hound<br/>(Apex Bog Terror)<br/>• Climax boss battle<br/>• Crushing multi-target attacks"]
+    C1["Combat 1: The Causeway Skirmish<br/>(2 Scouts + 1 Hound)<br/>• Fast vigilance check<br/>• Positioning on narrow path"] --> REST1["The Breather<br/>(Deck reshuffle + Stance adjustment)"]
+    REST1 --> C2["Combat 2: The Barrow Gate Breach<br/>(Durn & Mercenary Vanguard)<br/>• Chokepoint tactical defense<br/>• Shield soak vs. Pavise line"]
+    C2 --> C3["Combat 3: The Great Fen-Beast<br/>(Apex Primeval Boss)<br/>• Coordinated multi-target defense<br/>• Precision strikes vs. Thick hide"]
 ```
 
-### Combat 1: The Peat Ambush (Outdoor Skirmish)
+### Combat 1: The Causeway Skirmish (Outdoor Travel Skirmish)
 
-- **Combatants:** 2 Mercenary Scouts (leather jerkins, spears) + 1 War Mastiff (fast pounce, pinning bite).
-- **Setting:** Open peat field with scattered reeds and standing puddles.
-- **Tactical Focus:** Tests entering combat from the travel vigilance dial. The mastiff rushes the unarmored Swashbuckler, while the spearmen try to keep the Shield-Fighter at distance with reach.
-- **Expected Pacing:** Fast opening skirmish (under 5–10 minutes of table time).
+- **Combatants:** 2 Mercenary Scouts (leather armor, spears) + 1 War Mastiff (fast dash, takedown).
+- **Setting:** A narrow, mossy span of the stone causeway bounded by deep water and reeds.
+- **Tactical Focus:** Tests entering combat from the Ready Hand vigilance dial. The mastiff aims for the mobile Swashbuckler, while the spearmen attempt to keep the Shield-Fighter contained.
+- **Table Pacing:** Fast opening engagement (resolves in 2–3 rounds / ~5 minutes).
 
-### Combat 2: The Barrow Gate Breach (Tactical Defense)
+### Combat 2: The Barrow Gate Breach (Tactical Chokepoint Defense)
 
-- **Combatants:** Sergeant Durn (heavy chain, military billhook) + 2 Crossbowmen with pavise shields.
-- **Setting:** The narrow stone threshold of the barrow archway.
-- **Tactical Focus:** Chokepoint defense. The Shield-Fighter can plant their shield in the 2-meter doorway, forcing Durn to engage in grinding close-quarters combat while the Swashbuckler flanks through a collapsed side fissure to threaten the crossbowmen.
-- **Expected Pacing:** Methodical, grinding chokepoint defense testing armor soak and positioning.
+- **Combatants:** Sergeant Durn (heavy ring-mail, billhook) + 2 Mercenary Crossbowmen behind pavises.
+- **Setting:** The 2-meter megalithic archway of the Sunken Barrow.
+- **Tactical Focus:** Chokepoint management. The Shield-Fighter can plant their heavy shield to anchor the threshold, while the Swashbuckler exploits high stone ledges or side arrow-slits to disrupt the crossbowmen.
+- **Table Pacing:** Methodical, high-impact tactical engagement testing armor absorption, guard economy, and non-lethal submission options.
 
-### Combat 3: The Grendel-Hound (Climactic Boss Encounter)
+### Combat 3: The Great Fen-Beast (Climactic Boss Encounter)
 
-- **Combatants:** The Grendel-Hound (Massive bog beast; thick water-soaked hide acting as heavy natural armor; devastating sweep and crushing jaw attacks).
-- **Setting:** The flooded courtyard of the barrow during a raging downpour. Deep mud hampers footwork; lightning illuminates the black water.
-- **Tactical Focus:** Multi-enemy management or boss focus. The beast hits with crushing `{Red}` Strength that threatens even the Shield-Fighter's guard, requiring the Swashbuckler to dart in and exploit its blind flank with `{Yellow}` precision strikes while dodging thrashing claws.
-- **Expected Pacing:** Climactic clash of high-tension card play, resource conservation, and fatigue endurance.
+- **Combatants:** The Great Fen-Beast (Massive ancient predator; thick mud-caked hide acting as natural armor; sweeping paw strikes and crushing charges).
+- **Setting:** The barrow's outer megalithic courtyard during a nocturnal rainstorm.
+- **Tactical Focus:** Asymmetric boss battle. The beast deals heavy `{Red}` kinetic blows requiring the Shield-Fighter's braced stances, while the Swashbuckler darts around heavy swings to target vulnerable soft points with `{Yellow}` precision strikes.
+- **Table Pacing:** High-intensity climax requiring team coordination, stance synergies, and resource conservation.
 
 ---
 
-## 4. State Persistence & Endurance Test
+## 4. State Persistence & Earned Recovery
 
-The core test of this scenario is how character state carries across these encounters:
+This scenario models the complete macro lifecycle of an expedition:
 
-- **No Combat Resets:** Damage suffered against the scouts in Combat 1 does not vanish when entering the barrow.
-- **Deck Dilution:** Flipped stamina cards convert into Fatigue during cycles; taking a Breather between fights saves cards at the cost of clock ticks, but characters will enter the final confrontation with noticeably leaner, more fatigue-laden decks.
-- **Victory Through Resource Management:** Success against the Grendel-Hound is earned because players conserved their highest-value action cards and managed their fatigue across the entire journey.
+- **No Mid-Adventure Amnesia:** Wounds and fatigue sustained during the travel skirmish carry forward into the barrow defense.
+- **Tactical Downtime:** Taking short breathers allows characters to reset active hands at the cost of ticking the World Clock deck.
+- **Full Convalescence Cycle:** Returning to the safe haven of Willow-Garth initiates the recovery arc: injuries are medically dressed, turning severe condition cards into temporary fatigue, which is then fully flushed through warm hearths, wholesome food, and days of honest rest before advancing character decks.

@@ -16,26 +16,26 @@ This directory contains the active design sketch and structural outline for **"T
 
 ## 1. Scenario Vision & Core Themes
 
-_The Outlaw of Weeping Fen_ is a low-fantasy, sword-and-sorcery scenario centered on perseverance, survival, and moral ambiguity:
+_The Outlaw of Weeping Fen_ is a low-fantasy scenario blending frontier adventure, moral stakes, and grounded physical realism:
 
-- **Grounded Heroism:** Violence is dangerous, physical trauma has lasting weight, and the protagonists are defined by what they can endure rather than effortless godlike power.
-- **The Active Environment:** The fenland itself—its treacherous peat bogs, clinging mist, creeping damp, and sudden downpours—is an active antagonist that tests supplies, footwear, and vigilance.
-- **Human Stakes over Cartoon Villains:** The conflict is not between pure good and absolute evil. It stems from feudal injustice, desperation, disease, and the friction between an isolated rural hamlet and a harsh frontier.
-- **The Fast-Paced Combat Engine:** Demonstrates _caRdPG_'s core design advantage over traditional tabletop games (like D&D): simultaneous planning and card-count resolution mean combats resolve in 5–10 minutes of intense, high-stakes decision-making.
+- **Grounded Heroism with Dynamic Range:** Violence has authentic physical weight and injuries require dedicated recovery arcs, but the protagonists are defined by their courage, competence, and resolve. They are seasoned heroes standing up for vulnerable folk against real physical odds—neither invulnerable superheroes nor helpless victims of attrition. Peril in the wild is thrown into vivid relief by warm hearths, good food, and village fellowship.
+- **The Living Environment (Atmospheric Contrast):** The fenland is a landscape of both wild danger and primeval natural wonder: treacherous peat mires, clinging fog, and sudden squalls contrast with golden sedge swaying in the breeze, tranquil water-lily channels, majestic weeping willows, and ancient moss-covered stone causeways catching the dawn light.
+- **High-Stakes Conflict (Ruthless Ambition vs. Resolute Defense):** Bridges the gap between clear, calculating opposition (Bailiff Vane's land theft and mercenary enforcers) and nuanced human drama (an honorable Marcher knight desperately protecting his fever-stricken daughter and proud frontier villagers caught in the middle).
+- **The Fast-Paced Combat Engine:** Demonstrates _caRdPG_'s core design advantage over traditional tabletop games: simultaneous planning and card-count resolution mean combats resolve in 5–10 minutes of intense, high-stakes decision-making.
 
 ---
 
 ## 2. The Campaign Lifecycle & Architecture
 
-The scenario exercises the three interconnected tiers of the _caRdPG_ engine:
+The scenario exercises the three interconnected tiers of the _caRdPG_ engine, directly following the canonical adventure lifecycle:
 
 ```mermaid
 flowchart TD
     subgraph Macro [Macro Loop: The Expedition Arc]
-        HAVEN["Moss-Gallows Hamlet<br/>(Safe Haven: Rumors, Gear, Bounty)"] --> TRAVEL["The Sinking Causeway<br/>(Overland Travel: Weather & Tracking)"]
-        TRAVEL --> SITE["The Ruined Barrow & Moated Hall<br/>(Exploration: Infiltration & Hazards)"]
-        SITE --> CLIMAX["The Redoubt Confrontation<br/>(Three-Way Crisis & Resolution)"]
-        CLIMAX --> CAMP["Camp / Return to Haven<br/>(Multi-Hour Rest, Clock Progression, Healing)"]
+        HAVEN["Willow-Garth Settlement<br/>(The Safe Haven: Hearth warmth, rumors, gear)"] --> TRAVEL["The Sinking Causeway<br/>(Overland Travel: Weather & Tracking)"]
+        TRAVEL --> SITE["The Sunken Barrow<br/>(The Crucible: Ancient tomb redoubt & parley)"]
+        SITE --> CLIMAX["The Redoubt Confrontation<br/>(Climax: Three-way crisis & decisive stand)"]
+        CLIMAX --> CAMP["Return & Convalescence<br/>(Sanctuary: Exposing Vane, healing, rest)"]
     end
 
     subgraph Meso [Meso Loop: Adventuring Time]
