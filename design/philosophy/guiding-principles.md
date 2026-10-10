@@ -13,6 +13,17 @@
 
 **Grounded Heroism** is the defining thesis of caRdPG. The game is about earned victories—heroes who are capable of mighty deeds, but whose achievements are meaningful because they are born from real choices, real sacrifices, and real consequences. Characters are not beings of consequence-free power; their abilities are anchored by the tangible costs of exertion, fatigue, and recovery. Groundedness describes the visceral relationship between effort, risk, and harm—it is not an artificial ceiling that forbids characters from growing in capability or scaling into higher heroic tiers.
 
+### Dynamic Range Across All Axes
+
+Grounded Heroism demands **dynamic range across all narrative and aesthetic axes**. Groundedness is an anchor of physical reality, not a tonal mandate for uniform gloom, cynicism, or constant bodily degradation:
+
+- **Physical Grounding as the Anchor:** The laws of nature, biological endurance, and material limits are consistent. This grounding gives gravity to every victory.
+- **Harsh Survival Where It Is the Plot:** When the party faces harsh elements, isolation, or hostile terrain, the physical realities of survival (freezing cold, scarce water, heavy gear, fatigue) provide compelling, high-stakes drama—without becoming an oppressive mechanical tax on every scene.
+- **Earned Wonder and Beauty:** Moments of awe, ancient mystery, and natural majesty shine brighter precisely because the physical world has rules. Magic feels miraculous, not cheap or casual.
+- **Moral and Dramatic Breadth:** The world makes room for dastardly, unapologetic villains alongside nuanced, tragic factions; warm, hospitable havens alongside treacherous frontiers; and capable, courageous heroes whose deeds resonate because they were earned against real odds.
+
+Neither grimdark misery nor consequence-free glitter—grounded heroism spans the full spectrum of adventure.
+
 ## Cards As Your Character
 
 A character's 24-card deck is their sole resource, elegantly integrating three aspects of who they are into a single, cohesive engine:

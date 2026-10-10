@@ -82,7 +82,7 @@ Agents are fully empowered to request human assistance when acquiring vital rese
 
 1. **Web UI Access (Gate / CAPTCHA Bypass):**
    - If a specific, high-value document is public or open-access but guarded by an interactive web UI gate (e.g., Cloudflare verification, interactive CAPTCHA, or complex download forms that defeat CLI tools), **the agent should ask the human to download the file**.
-   - The human can retrieve the file via a desktop browser and place it directly into `design/research/sources/verisimilitude/` (or `ludology/`).
+   - The human can retrieve the file via a desktop browser and ingest it directly using `python3 design/research/sources/scripts/archive_source.py ingest --file <path> --slug <slug> --commit` (or place it into `design/research/sources/<track>/<slug>/source.pdf`).
    - _Scale Guideline:_ This is intended for specific, targeted documents that unlock key empirical verifications—not for bulk harvesting hundreds of files.
 2. **Institutional Library Access (Paywall Retrieval — Last Resort):**
    - The human has institutional library access that can penetrate academic paywalls.

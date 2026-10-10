@@ -14,6 +14,8 @@ inspiration_by_design_goal:
           - "The Soulsborne Series & Nioh Series"
           - "Samurai Cinema"
           - "The Witcher Series"
+          - "The Deed of Paksenarrion"
+          - "The Honor Harrington Series (Tactical Doctrine & Kinetics)"
       - sub_goal: "For Heroic, High-Powered Combat"
         titles:
           - "Exalted"
@@ -27,10 +29,14 @@ inspiration_by_design_goal:
           - "Might and Magic Series"
   - goal: "Sources for Exploration"
     sources:
-      - sub_goal: "For Player-Driven Journeys"
+      - sub_goal: "For Player-Driven Journeys & Environmental Contrast"
         titles:
           - "Ironsworn"
           - "The Lord of the Rings"
+          - "The Wheel of Time"
+          - "The Elder Scrolls V: Skyrim"
+          - "Baldur's Gate Series (1–3)"
+          - "Dragon Age: Origins"
           - "Red Dead Redemption 2"
           - "Avatar: The Last Airbender"
           - "Torchbearer"
@@ -73,6 +79,12 @@ inspiration_by_design_goal:
           - "Ars Magica"
           - "Red Dead Redemption 2"
           - "Torchbearer"
+      - sub_goal: "For Rest, Sanctuary & Convalescence"
+        titles:
+          - "The Heralds of Valdemar (Mercedes Lackey)"
+          - "Dragon Age: Origins Camp System"
+          - "Baldur's Gate Camp & Long Rest"
+          - "The Elder Scrolls (Inns & Hearthfire)"
       - sub_goal: "For Generational Play & Legacy"
         titles:
           - "King Arthur Pendragon"
@@ -83,6 +95,30 @@ inspiration_by_design_goal:
           - "OSR Stronghold Building rules"
 ---
 inspiration_by_theme_and_tone:
+  - theme: "Grounded Heroism & Dynamic Range (Flagship Default)"
+    description: >
+      Stories grounded in physical verisimilitude, human vulnerability, and tangible stakes,
+      possessing wide dynamic range across tone, wonder, morality, and beauty:
+      harsh survival when battling the elements, genuine awe and wonder where appropriate,
+      resolute and capable heroes, and both dastardly villains and complex characters.
+    titles:
+      - "The Lord of the Rings"
+      - "The Deed of Paksenarrion"
+      - "The Wheel of Time"
+      - "The Stormlight Archive & Mistborn (Brandon Sanderson)"
+      - "The Heralds of Valdemar (Mercedes Lackey)"
+      - "The Honor Harrington Series (David Weber)"
+      - "Princess Mononoke & Nausicaä of the Valley of the Wind"
+      - "Frieren: Beyond Journey's End"
+      - "Dungeon Meshi (Delicious in Dungeon)"
+      - "The Earthsea Cycle"
+      - "Seven Samurai & Classical Samurai Cinema"
+      - "The Mummy (1999) / Indiana Jones"
+      - "Baldur's Gate Series (1–3)"
+      - "The Elder Scrolls V: Skyrim"
+      - "Dragon Age: Origins"
+      - "The Witcher Series"
+      - "A Song of Ice and Fire"
   - theme: "Gritty & Lethal Tone"
     titles:
       - "The Black Company Series"
@@ -122,6 +158,8 @@ inspiration_by_game_mechanic:
         titles:
           - "Ars Magica"
           - "Mage: The Ascension"
+          - "Brandon Sanderson (Allomancy / Surgebinding)"
+          - "The Wheel of Time (The One Power)"
       - sub_mechanic: "For Gritty, Consequential Magic"
         titles:
           - "The Witcher Series"
@@ -141,12 +179,29 @@ master_source_index:
         sources:
           - title: "The Lord of the Rings"
             author: "J.R.R. Tolkien"
+          - title: "The Deed of Paksenarrion"
+            author: "Elizabeth Moon"
+            description: "A benchmark for realistic military logistics, drill, weapon care, and physical trauma paired with unyielding paladinhood, divine wonder, and moral grace."
+          - title: "The Wheel of Time"
+            author: "Robert Jordan"
+            description: "Foundational for tactical named sword stances, hard fatigue-bounded magic (the One Power), and deep dynamic range between pastoral comfort and shadow horrors."
+          - title: "The Stormlight Archive & Mistborn"
+            author: "Brandon Sanderson"
+            description: "Exemplifies hard magic operating under kinetic and physical conservation laws, while demonstrating how grueling physical labor (Bridge Four) can forge heroic fellowship."
+          - title: "The Heralds of Valdemar"
+            author: "Mercedes Lackey"
+            description: "A primary touchstone for narrative convalescence, companion bonding, the physical toll of magical empathy, and the emotional warmth of sanctuary."
           - title: "A Song of Ice and Fire"
             author: "George R.R. Martin"
           - title: "The Witcher Saga"
             author: "Andrzej Sapkowski"
           - title: "The Black Company Series"
             author: "Glen Cook"
+      - type: "Military Science Fiction & Competence Fiction"
+        sources:
+          - title: "The Honor Harrington Series"
+            author: "David Weber"
+            description: "Exemplifies competence-driven heroism under unyielding physical laws, acceleration kinetics, and logistical doctrine. Protagonists face genuine physical trauma without losing agency or noble resolve."
       - type: "Sword & Sorcery Literature"
         sources:
           - title: "Conan the Barbarian"
@@ -252,6 +307,12 @@ master_source_index:
     entries:
       - type: "CRPGs (Computer Role-Playing Games)"
         sources:
+          - title: "Baldur's Gate Series (1–3)"
+            description: "Exemplary party-based adventuring loop, balancing humble rural beginnings, wilderness exploration, tactical combat, camp rest, and high-stakes heroic drama."
+          - title: "The Elder Scrolls V: Skyrim"
+            description: "Masterwork of atmospheric dynamic range: tactile wilderness travel, cold weather, and ancient crypts contrasted with warm tavern hearths, songs, and regional folklore."
+          - title: "Dragon Age: Origins"
+            description: "Models a dark fantasy frontier balanced with rich dynamic range: tactical party combat, companion banter by the campfire, and tragic heroism without grimdark hopelessness."
           - title: "The Witcher Series"
           - title: "The Soulsborne Series & Nioh Series"
           - title: "Final Fantasy Series"

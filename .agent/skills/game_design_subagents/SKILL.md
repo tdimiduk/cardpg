@@ -32,11 +32,8 @@ When a design task involves broad searches or complex simulations:
 1. **Local-First Verification:** Always check `local_archive` paths in `design/research/verisimilitude-sources.yaml` and `design/research/ludology-sources.yaml` before querying external web search.
 2. Define the subagent if not already registered.
 3. **Parent-Mediated Resource Harvesting & Extraction:**
-   - Because read-only subagents (`enable_write_tools: false`) cannot run terminal commands or save files, the parent agent must fetch external materials using CLI tools and extract readable text:
-     - **Search text in PDF:** `pdftotext <path> - | rg -C 3 "<query>"`
-     - **Dump full text for subagent reading:** `pdftotext <pdf_path> <scratch_or_txt_path>`
-     - **Check metadata & page count:** `pdfinfo <path>`
-     - **Clean web content capture:** `trafilatura -u <url>`
-   - **Mandatory Archival:** Whenever external documents or essays are fetched, save them directly to `design/research/sources/` (`verisimilitude/`, `ludology/`, or `ephemera/`), commit them within the nested git repository (`git -C design/research/sources add/commit`), and link them via `local_archive` in the relevant catalog.
+   - Because read-only subagents (`enable_write_tools: false`) cannot run terminal commands or view binary PDFs, the parent agent ensures documents are archived into standard source bundles using `design/research/sources/scripts/archive_source.py ingest`.
+   - Subagents can then directly inspect the derived text (`extracted.txt` for PDFs, `extracted.md` for web captures) via `view_file` without running shell commands.
+   - **Mandatory Archival:** Whenever external documents or essays are fetched, ingest them via `archive_source.py --commit` and link them via `local_archive` in the relevant catalog (`sources/<track>/<slug>`).
 4. Launch via `invoke_subagent`. The subagent inspects local files via `view_file` or performs web research.
 5. Synthesize the subagent's concise report back into the main conversation without polluting the main context window.

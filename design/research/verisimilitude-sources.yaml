@@ -127,7 +127,7 @@ modeling_armor_weapons_combat:
         author: "CDC / NIOSH"
         year: 1998
         doi_or_url: "https://stacks.cdc.gov/view/cdc/5923/cdc_5923_DS1.pdf"
-        local_archive: "sources/verisimilitude/niosh-1998-occupational-noise-exposure-criteria.pdf"
+        local_archive: "sources/verisimilitude/niosh-1998-occupational-noise-exposure-criteria"
         epistemic_grade: "governmental_standard"
         description: >
           Definitive federal standard on acute and chronic acoustic trauma. Details how near-field blast overpressure and impulse impacts exceeding 140 dB SPL cause mechanical shearing of cochlear stereocilia and metabolic hair cell exhaustion, inducing acute temporary threshold shifts (TTS) and subjective tinnitus resolving over 24–72 hours.
@@ -141,7 +141,7 @@ modeling_armor_weapons_combat:
         author: "Panjabi, M. M., et al. / StatPearls"
         year: 2023
         doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK546644/"
-        local_archive: "sources/verisimilitude/statpearls-2023-cervical-whiplash-biomechanics.md"
+        local_archive: "sources/verisimilitude/statpearls-2023-cervical-whiplash-biomechanics"
         epistemic_grade: "clinical_dataset"
         description: >
           Clinical biomechanics chapter on cervical acceleration-deceleration trauma resulting from rapid blunt impacts to helmets or shields. Quantifies mechanical strain on cervical facet capsular ligaments, myofascial micro-tears in sternocleidomastoid and trapezius, delayed muscle spasms peaking at 12–24 hours, and 3–6 week functional recovery curves.
@@ -285,7 +285,7 @@ foundational_scientific_medical:
       author: "U.S. Army Research Institute of Environmental Medicine"
       year: 2008
       doi_or_url: "https://apps.dtic.mil/sti/tr/pdf/ADA504354.pdf"
-      local_archive: "sources/verisimilitude/us-army-2008-body-armor-effects-ada504354.pdf"
+      local_archive: "sources/verisimilitude/us-army-2008-body-armor-effects-ada504354"
       epistemic_grade: "primary_academic"
       description: >
         A foundational modern military study on load carriage. It provides the critical quantitative data that adding weight to the feet is 4 to 6 times more energetically costly than adding it to the torso, which is the key biomechanical explanation for the high metabolic cost of full-body plate armor.
@@ -424,7 +424,7 @@ modeling_logistics_transport_materials:
       author: "Hasluck, P. N."
       year: 1904
       doi_or_url: "https://archive.org/details/harnessmaking00hasl"
-      local_archive: "sources/verisimilitude/hasluck-1904-harness-making.pdf"
+      local_archive: "sources/verisimilitude/hasluck-1904-harness-making"
       epistemic_grade: "historical_manual"
       description: >
         Comprehensive historical craft treatise detailing harness makers' tools, leather tensile preparation, buckle tongues, oval punches, stitching techniques, and field repair methods for draft and pack harness straps under cyclic load.
@@ -438,7 +438,7 @@ modeling_logistics_transport_materials:
       author: "Food and Drug Administration (FDA)"
       year: 1984
       doi_or_url: "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/inspection-technical-guides/water-activity-aw-foods"
-      local_archive: "sources/verisimilitude/fda-1984-water-activity-in-foods.md"
+      local_archive: "sources/verisimilitude/fda-1984-water-activity-in-foods"
       epistemic_grade: "primary_academic"
       description: >
         Technical inspection guide defining sorption isotherms, water activity measurement (a_w = ERH/100), and microbial proliferation thresholds. Establishes a_w >= 0.70 as the critical activation boundary for xerophilic molds (Aspergillus, Penicillium) and a_w >= 0.85 for rapid bacterial and low-acid food spoilage.
@@ -452,7 +452,7 @@ modeling_logistics_transport_materials:
       author: "Chapman, R."
       year: 1868
       doi_or_url: "https://library.si.edu/digital-library/book/treatiseonropema00chap"
-      local_archive: "sources/verisimilitude/chapman-1868-treatise-on-ropemaking.pdf"
+      local_archive: "sources/verisimilitude/chapman-1868-treatise-on-ropemaking"
       epistemic_grade: "historical_manual"
       description: >
         Master ropemaker's technical manual providing quantitative breaking strain formulas, weight tables, and friction wear dynamics for natural hemp (Cannabis sativa) cordage, shroud hawsers, and animal draft tethers, detailing fiber fatigue and splicing recovery methods.
@@ -466,7 +466,7 @@ modeling_logistics_transport_materials:
       author: "Alcántara, J., de la Fuente, D., Chico, B., Simancas, J., Díaz, I., & Morcillo, M."
       year: 2017
       doi_or_url: "https://doi.org/10.3390/ma10040406"
-      local_archive: "sources/verisimilitude/alcantara-2017-marine-atmospheric-corrosion-carbon-steel.md"
+      local_archive: "sources/verisimilitude/alcantara-2017-marine-atmospheric-corrosion-carbon-steel"
       epistemic_grade: "primary_academic"
       publication: "Materials"
       description: >
@@ -481,7 +481,7 @@ modeling_logistics_transport_materials:
       author: "Martinson, K."
       year: 2023
       doi_or_url: "https://extension.umn.edu/horse-health/horse-hoof-abscesses"
-      local_archive: "sources/verisimilitude/umn-extension-2023-horse-hoof-abscesses.md"
+      local_archive: "sources/verisimilitude/umn-extension-2023-horse-hoof-abscesses"
       epistemic_grade: "primary_academic"
       publication: "University of Minnesota Extension"
       description: >
@@ -496,7 +496,7 @@ modeling_logistics_transport_materials:
       author: "Woloshuk, C., & Wise, K."
       year: 2010
       doi_or_url: "https://www.extension.purdue.edu/extmedia/bp/bp-83-w.pdf"
-      local_archive: "sources/verisimilitude/woloshuk-2010-purdue-aspergillus-ear-rot.pdf"
+      local_archive: "sources/verisimilitude/woloshuk-2010-purdue-aspergillus-ear-rot"
       epistemic_grade: "primary_academic"
       publication: "Purdue University Extension"
       description: >
@@ -511,7 +511,7 @@ modeling_logistics_transport_materials:
       author: "Sturt, G."
       year: 1923
       doi_or_url: "https://archive.org/details/wheelwrightsshop00stur"
-      local_archive: "sources/verisimilitude/sturt-1923-the-wheelwrights-shop.pdf"
+      local_archive: "sources/verisimilitude/sturt-1923-the-wheelwrights-shop"
       epistemic_grade: "historical_manual"
       description: >
         Foundational technical treatise on the engineering, timber mechanics, and repair of traditional horse-drawn wagons and carriages. Details bottom-timber structural dynamics, selection of seasoned hardwood (beech, ash, oak) for axle-beds and axle-trees to resist vertical shear and dynamic bending moments from rut shock, iron axle-tree bedding, and traditional wheelwright replacement methods.
@@ -525,7 +525,7 @@ modeling_logistics_transport_materials:
       author: "Meehan, M., Stokka, G., & Mostrom, M."
       year: 2021
       doi_or_url: "https://www.ndsu.edu/agriculture/extension/publications/cyanobacteria-poisoning-blue-green-algae"
-      local_archive: "sources/verisimilitude/ndsu-extension-2021-cyanobacteria-poisoning.md"
+      local_archive: "sources/verisimilitude/ndsu-extension-2021-cyanobacteria-poisoning"
       epistemic_grade: "primary_academic"
       publication: "North Dakota State University Extension"
       description: >
@@ -545,7 +545,7 @@ modeling_crafting_materials_metallurgy:
       author: "Walker, N. J., & King, K. C."
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430730/"
-      local_archive: "sources/verisimilitude/walker-2023-thermal-burn-evaluation-management.md"
+      local_archive: "sources/verisimilitude/walker-2023-thermal-burn-evaluation-management"
       epistemic_grade: "clinical_dataset"
       description: >
         Clinical emergency guide on thermal burn pathophysiological evaluation, tri-zonal tissue destruction (coagulation, stasis, hyperemia), Parkland/Brooke fluid resuscitation, and re-epithelialization timelines across superficial partial-thickness (10-15 days), deep partial-thickness (3-5 weeks), and full-thickness third-degree burns requiring surgical debridement and grafting.
@@ -559,7 +559,7 @@ modeling_crafting_materials_metallurgy:
       author: "Rushton, R., & Richie, D."
       year: 2024
       doi_or_url: "https://doi.org/10.4085/1062-6050-0437.22"
-      local_archive: "sources/verisimilitude/rushton-2024-friction-blister-causation.md"
+      local_archive: "sources/verisimilitude/rushton-2024-friction-blister-causation"
       epistemic_grade: "primary_academic"
       publication: "Journal of Athletic Training"
       description: >
@@ -574,7 +574,7 @@ modeling_crafting_materials_metallurgy:
       author: "Ozgok Kangal, M. K., & Regan, N. L."
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK535406/"
-      local_archive: "sources/verisimilitude/ozgok-kangal-2023-physiology-wound-healing.md"
+      local_archive: "sources/verisimilitude/ozgok-kangal-2023-physiology-wound-healing"
       epistemic_grade: "clinical_dataset"
       description: >
         Comprehensive clinical physiology treatise on the four overlapping phases of cutaneous wound repair: hemostasis (minutes), inflammation (neutrophils and macrophages at 24-48h), proliferation (keratinocyte migration and granulation at 3-10 days), and remodeling. Defines re-epithelialization timelines (3-5 days for superficial wounds) and prolonged tensile scar strength recovery.
@@ -588,7 +588,7 @@ modeling_crafting_materials_metallurgy:
       author: "Bernard, B. P. (Ed.)"
       year: 1997
       doi_or_url: "https://stacks.cdc.gov/view/cdc/21745"
-      local_archive: "sources/verisimilitude/bernard-1997-niosh-musculoskeletal-disorders.pdf"
+      local_archive: "sources/verisimilitude/bernard-1997-niosh-musculoskeletal-disorders"
       epistemic_grade: "primary_academic"
       description: >
         Landmark NIOSH epidemiological synthesis on occupational musculoskeletal disorders. Establishes significant causal association (OR 2.0-5.5) between high repetition, forceful exertion, and vibratory recoil on wrist/hand tendinitis, tenosynovitis, and carpal tunnel syndrome in manual and metallurgy trades, requiring multi-week immobilization.
@@ -602,7 +602,7 @@ modeling_crafting_materials_metallurgy:
       author: "Takahashi, J., Kabayama, M., & Shimizu, N."
       year: 2020
       doi_or_url: "https://doi.org/10.1002/1348-9585.12102"
-      local_archive: "sources/verisimilitude/takahashi-2020-arc-welding-uv-hazard.md"
+      local_archive: "sources/verisimilitude/takahashi-2020-arc-welding-uv-hazard"
       epistemic_grade: "primary_academic"
       publication: "Journal of Occupational Health"
       description: >
@@ -617,7 +617,7 @@ modeling_crafting_materials_metallurgy:
       author: "Brenner, B. E., & Keyes, D."
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK583199/"
-      local_archive: "sources/verisimilitude/statpearls-2023-metal-fume-fever.md"
+      local_archive: "sources/verisimilitude/statpearls-2023-metal-fume-fever"
       epistemic_grade: "clinical_dataset"
       description: >
         Clinical toxicological review on metal fume fever and smelting fume inhalation. Details alveolar deposition of ultrafine metal oxide fumes (zinc oxide, copper, lead, iron), pyrogenic cytokine activation (TNF-alpha peak at 3 hours, IL-6, IL-8), latency of 4-10 hours, substernal tightness, metallic taste, rigors, and resolution in 24-48 hours with fresh air and rest.
@@ -631,7 +631,7 @@ modeling_crafting_materials_metallurgy:
       author: "Frazier, W. D., & Miller, M."
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK538153/"
-      local_archive: "sources/verisimilitude/statpearls-2023-digit-amputation.md"
+      local_archive: "sources/verisimilitude/statpearls-2023-digit-amputation"
       epistemic_grade: "clinical_dataset"
       description: >
         Clinical hand surgery treatise on traumatic digit amputation, warm ischemia tolerances (12 hours digit warm ischemia; 6 hours for proximal muscular tissue), emergency hemostasis, bone contouring/shortening, and primary flap closure of traumatic finger amputations, detailing multi-week bone and scar union timelines.
@@ -645,7 +645,7 @@ modeling_crafting_materials_metallurgy:
       author: "Garner, J., et al."
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430914/"
-      local_archive: "sources/verisimilitude/statpearls-2023-blast-injuries.md"
+      local_archive: "sources/verisimilitude/statpearls-2023-blast-injuries"
       epistemic_grade: "clinical_dataset"
       description: >
         Clinical emergency trauma guide on explosion mechanics and injury categorization: primary (shockwave overpressure barotrauma to air-filled organs including lungs and tympanic membranes), secondary (penetrating shrapnel and projectiles), tertiary (physical blunt displacement), and quaternary (thermal flash burns, chemical inhalation). Details high-pressure blast lung disruption, pneumothorax, and critical resuscitation.
@@ -664,7 +664,7 @@ modeling_social_psychology_legal:
       author: "Allen, A. P., Kennedy, P. J., Cryan, J. F., Dinan, T. G., & Clarke, G."
       year: 2014
       doi_or_url: "https://doi.org/10.1016/j.ynstr.2016.11.001"
-      local_archive: "sources/verisimilitude/allen-2014-trier-social-stress-test.md"
+      local_archive: "sources/verisimilitude/allen-2014-trier-social-stress-test"
       epistemic_grade: "primary_academic"
       publication: "Neurobiology of Stress"
       description: >
@@ -679,7 +679,7 @@ modeling_social_psychology_legal:
       author: "Goffman, E."
       year: 1967
       doi_or_url: "https://archive.org/details/interactionritua00goff"
-      local_archive: "sources/verisimilitude/goffman-1967-interaction-ritual.pdf"
+      local_archive: "sources/verisimilitude/goffman-1967-interaction-ritual"
       epistemic_grade: "primary_academic"
       description: >
         Foundational microsociological treatise on 'face-work' and interpersonal ceremonial rituals. Establishes the dynamics of poise, embarrassment, and conversational opening moves, detailing how communicative violations break interaction equilibrium and require immediate corrective ritual sequences or withdrawal.
@@ -693,7 +693,7 @@ modeling_social_psychology_legal:
       author: "Eisenberger, N. I."
       year: 2012
       doi_or_url: "https://doi.org/10.1097/PSY.0b013e3182464dd1"
-      local_archive: "sources/verisimilitude/eisenberger-2012-neural-bases-social-pain.md"
+      local_archive: "sources/verisimilitude/eisenberger-2012-neural-bases-social-pain"
       epistemic_grade: "primary_academic"
       publication: "Psychosomatic Medicine"
       description: >
@@ -708,7 +708,7 @@ modeling_social_psychology_legal:
       author: "Schweitzer, M. E., Hershey, J. C., & Bradlow, E. T."
       year: 2006
       doi_or_url: "https://doi.org/10.1016/j.obhdp.2006.05.005"
-      local_archive: "sources/verisimilitude/schweitzer-2006-restoring-violated-trust.pdf"
+      local_archive: "sources/verisimilitude/schweitzer-2006-restoring-violated-trust"
       epistemic_grade: "primary_academic"
       publication: "Organizational Behavior and Human Decision Processes"
       description: >
@@ -723,7 +723,7 @@ modeling_social_psychology_legal:
       author: "McEwen, B. S."
       year: 2012
       doi_or_url: "https://doi.org/10.1073/pnas.1121254109"
-      local_archive: "sources/verisimilitude/mcewen-2012-brain-on-stress-social-environment.md"
+      local_archive: "sources/verisimilitude/mcewen-2012-brain-on-stress-social-environment"
       epistemic_grade: "primary_academic"
       publication: "Proceedings of the National Academy of Sciences"
       description: >
@@ -738,7 +738,7 @@ modeling_social_psychology_legal:
       author: "Maranon, R., & Patel, P."
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430973/"
-      local_archive: "sources/verisimilitude/statpearls-2023-panic-disorder-emergency.md"
+      local_archive: "sources/verisimilitude/statpearls-2023-panic-disorder-emergency"
       epistemic_grade: "clinical_dataset"
       description: >
         Clinical psychiatric emergency monograph on panic attack pathophysiology and acute intervention. Details amygdala-driven sympathetic autonomic storm, tachycardia exceeding 140 bpm, tachypnea leading to hypocapnic respiratory alkalosis (paresthesias, chest tightness, dizziness), peak intensity within 10 minutes, and 1-2 hour post-ictal exhaustion.
@@ -752,7 +752,7 @@ modeling_social_psychology_legal:
       author: "Pollock, F., & Maitland, F. W."
       year: 1898
       doi_or_url: "https://archive.org/details/historyofenglish02polluoft"
-      local_archive: "sources/verisimilitude/pollock-maitland-1898-history-english-law-vol2.pdf"
+      local_archive: "sources/verisimilitude/pollock-maitland-1898-history-english-law-vol2"
       epistemic_grade: "historical_manual"
       description: >
         Definitive legal historical treatise on medieval English common law. Provides exhaustive historical analysis of outlawry (utlagaria), the doctrine of the 'wolf's head' (caput gerat lupinum), communal hue and cry, total forfeiture of chattels and land, and the formal process of abjuration of the realm (banishment to continental exile on pain of summary execution).
@@ -771,7 +771,7 @@ modeling_arcane_sensory_electrotrauma:
       author: "CDC / NIOSH"
       year: 2009
       doi_or_url: "https://www.cdc.gov/niosh/docs/2009-113/pdfs/2009-113.pdf"
-      local_archive: "sources/verisimilitude/cdc-niosh-2009-electrical-safety.pdf"
+      local_archive: "sources/verisimilitude/cdc-niosh-2009-electrical-safety"
       epistemic_grade: "governmental_standard"
       description: >
         NIOSH manual detailing physical hazards of electrical arcs, radiant thermal energy pulse mechanics, arc flash temperatures exceeding 5000°C, superficial contact burns, and clothing ignition/scorching thresholds across wool, linen, and synthetic fabrics.
@@ -785,7 +785,7 @@ modeling_arcane_sensory_electrotrauma:
       author: "Horn, C. C., et al."
       year: 2014
       doi_or_url: "https://doi.org/10.1016/j.autneu.2014.06.002"
-      local_archive: "sources/verisimilitude/horn-2014-neurobiology-nausea-vomiting.md"
+      local_archive: "sources/verisimilitude/horn-2014-neurobiology-nausea-vomiting"
       epistemic_grade: "primary_academic"
       publication: "Autonomic Neuroscience"
       description: >
@@ -800,7 +800,7 @@ modeling_arcane_sensory_electrotrauma:
       author: "StatPearls"
       year: 2023
       doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK430809/"
-      local_archive: "sources/verisimilitude/statpearls-2023-tinnitus-auditory-processing.md"
+      local_archive: "sources/verisimilitude/statpearls-2023-tinnitus-auditory-processing"
       epistemic_grade: "clinical_dataset"
       description: >
         Clinical neuro-otology monograph on acute acoustic overstimulation, excitotoxicity, hair cell stereocilia shearing, and cortical inhibitory gating breakdown resulting in acute phantom tinnitus, phonophobia, and severe cognitive distractibility.
@@ -814,7 +814,7 @@ modeling_arcane_sensory_electrotrauma:
       author: "Meyers, C., et al."
       year: 2019
       doi_or_url: "https://doi.org/10.1002/jbm4.10172"
-      local_archive: "sources/verisimilitude/meyers-2019-heterotopic-ossification-review.md"
+      local_archive: "sources/verisimilitude/meyers-2019-heterotopic-ossification-review"
       epistemic_grade: "primary_academic"
       publication: "JBMR Plus"
       description: >
@@ -829,7 +829,7 @@ modeling_arcane_sensory_electrotrauma:
       author: "Federal Aviation Administration"
       year: 2020
       doi_or_url: "https://www.faa.gov/pilots/safety/pilotsafetybrochures/media/spatiald.pdf"
-      local_archive: "sources/verisimilitude/faa-2020-spatial-disorientation-vestibular-illusions.pdf"
+      local_archive: "sources/verisimilitude/faa-2020-spatial-disorientation-vestibular-illusions"
       epistemic_grade: "governmental_standard"
       description: >
         Federal aeromedical treatise on vestibular illusions and spatial disorientation. Explains sensory conflicts between semicircular canal endolymph inertia and otolith gravireceptors (Coriolis illusion, graveyard spirals), triggering acute postural instability, motion sickness, sensory mismatch, and spatial agnosia.
