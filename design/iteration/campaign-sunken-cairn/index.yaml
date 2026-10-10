@@ -1,0 +1,28 @@
+# Campaign Workshop: The Sunken Cairn of Dun-Mahr
+#
+# A travel and subterranean dungeon-crawl scenario designed for GM-less, small-group playtesting
+# in Grounded Heroism. Focuses on physical and narrative constraints, environmental realism,
+# and sandbox tradeoffs between pushing forward and resting to recover.
+
+directory: "iteration/campaign-sunken-cairn"
+
+documents:
+  - path: "iteration/campaign-sunken-cairn/README.md"
+    name: "Scenario Workshop: The Sunken Cairn of Dun-Mahr"
+    purpose: "High-level vision, core themes, architectural expedition lifecycle, and verisimilitude benchmarks."
+    tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:pacing"]
+
+  - path: "iteration/campaign-sunken-cairn/physical-constraints-and-resource-dilemmas.md"
+    name: "Physical Constraints & Resource Dilemmas: The Sunken Cairn"
+    purpose: "Detailed physical reality of light combustion, smoke, caloric burn, cold water immersion, joint trauma, and the true physiological nature of breathers vs camps."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:fatigue", "core-concept:harm", "pillar:exploration", "pillar:downtime"]
+
+  - path: "iteration/campaign-sunken-cairn/travel-and-locations.md"
+    name: "Travel & Delve Locations: The Sunken Cairn of Dun-Mahr"
+    purpose: "Sensory descriptions, physical obstacles, and natural approaches across the moorland approach zones and five subterranean chambers."
+    tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "core-concept:action-resolution"]
+
+  - path: "iteration/campaign-sunken-cairn/hazards-and-adversaries.md"
+    name: "Hazards & Adversaries: The Sunken Cairn of Dun-Mahr"
+    purpose: "Physical behavior of subterranean hazards (blackdamp, methane, spalling) and ecological behavior of adversaries (mire-hounds, cave bats, troglodytes, the barrow sentinel)."
+    tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:harm"]
