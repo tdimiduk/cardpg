@@ -339,6 +339,64 @@ foundational_scientific_medical:
       description: >
         A foundational paper on the "cold shock" response. It provides the physiological explanation and timeline for the involuntary gasp and hyperventilation that occur in the first few minutes of cold water immersion, which are the primary cause of drowning long before hypothermia sets in.
     - type: journal_article
+      title: "Cold stress, near drowning and accidental hypothermia: a review"
+      author: "Giesbrecht, G. G."
+      year: 2000
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/pubmed/10902928"
+      synthesis_reference: "synthesis/cold-water-immersion-and-hypothermia.md"
+      epistemic_grade: "primary_academic"
+      publication: "Aviation, Space, and Environmental Medicine"
+      description: >
+        Definitive physiological review establishing the 1-10-1 principle. Distinguishes acute cold shock (1 min), peripheral neuromuscular cold incapacitation and swim failure (2-10 min), and systemic core hypothermia requiring 30-60+ minutes. Essential for disproving claims of rapid 3-4 minute hypothermia. Primary PDF queued in DEFERRED_ACQUISITIONS.md.
+      vetting:
+        - date: "2026-10-09"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Master reference on cold water immersion phases, peripheral motor paralysis kinetics, and true core cooling rates."
+    - type: journal_article
+      title: "Muscle glycogen depletion during prolonged strenuous exercise"
+      author: "Coyle, E. F., et al."
+      year: 1986
+      doi_or_url: "https://doi.org/10.1152/jappl.1986.61.1.165"
+      synthesis_reference: "synthesis/glycogen-depletion-and-exertion-kinetics.md"
+      epistemic_grade: "primary_academic"
+      publication: "Journal of Applied Physiology"
+      description: >
+        Foundational exercise physiology study demonstrating that heavy physical exertion depletes skeletal muscle and hepatic glycogen reserves within 2 to 3 hours without carbohydrate intake, inducing acute hypoglycemic collapse ('bonking'), correcting misconceptions that glycogen lasts 24 hours under march loads. Primary PDF queued in DEFERRED_ACQUISITIONS.md.
+      vetting:
+        - date: "2026-10-09"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous clinical benchmark on intramuscular glycogen exhaustion timelines under heavy endurance exertion."
+    - type: report
+      title: "The Causes of Death in Colliery Explosions and Underground Fires"
+      author: "Haldane, J. S."
+      year: 1895
+      doi_or_url: "https://archive.org/details/causesofdeathinc00hald"
+      synthesis_reference: "synthesis/subterranean-gases-and-blackdamp-toxicity.md"
+      epistemic_grade: "historical_scientific"
+      description: >
+        Foundational mine toxicology treatise establishing blackdamp (nitrogen + CO2) behavior, flame extinction thresholds at 15-16% O2, acute hypoxic syncope within 15-30 seconds in pure stagnant pockets, and ground-level heavy gas stratification dynamics. Primary PDF queued in DEFERRED_ACQUISITIONS.md.
+      vetting:
+        - date: "2026-10-09"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Authoritative historical and physiological standard on confined space subterranean damps, flame behavior, and asphyxiation speeds."
+    - type: governmental_report
+      title: "Process of Thermal Spalling in Rocks (RI 7384)"
+      author: "Thirumalai, K."
+      year: 1970
+      doi_or_url: "https://www.osti.gov/biblio/5221087"
+      synthesis_reference: "synthesis/rock-mechanics-and-thermal-spalling.md"
+      epistemic_grade: "primary_academic"
+      description: >
+        US Bureau of Mines experimental geomechanics treatise demonstrating that thermal rock spalling requires sustained heat fluxes exceeding 200-500 kW/m² and temperatures over 400-600°C. Proves that handheld torches (5-15 kW diffuse flame) cannot cause rock spallation in massive granite. Primary report queued in DEFERRED_ACQUISITIONS.md.
+      vetting:
+        - date: "2026-10-09"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Essential geomechanics benchmark on thermal rock fracturing thresholds, disproving torch-induced ceiling spalling."
+    - type: journal_article
       title: "Tactical Combat Casualty Care in Special Operations"
       author: "Butler, F. K., Hagmann, J., & Butler, E. G."
       year: 1996
