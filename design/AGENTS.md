@@ -13,7 +13,7 @@ This rule file applies to all agent activities within the `design/` directory an
 Always uphold and cross-reference the project's foundational design documents:
 
 1. **Index as Source of Truth:** Check `design/index.yaml` to navigate the design directory structure. Active documents are authoritative and updated in place; Git history and the `archive/` directory preserve historical context.
-2. **Core Philosophy:** Adhere strictly to `design/philosophy/design-precepts.md`, `design/philosophy/guiding-principles.md`, and `design/philosophy/game-settings.md`:
+2. **Core Philosophy:** Adhere strictly to `design/philosophy/design-precepts.md`, `design/philosophy/guiding-principles.md`, `design/philosophy/campaign-dimensions.md`, and `design/philosophy/narrative-baseline.md`:
    - _Dynamic Range Across All Axes_ (In scenario, adventure, and campaign design, maintain full-spectrum dynamic range across tone, wonder, morality, and stakes. Avoid both the **Grimdark Collapse**—reducing realism to a monotone slog of mud, rot, and infection—and the **Ubiquitous Grandeur Trap**—erasing consequence with effortless magic. Groundedness is the anchor of cause-and-effect, not an aesthetic filter).
    - _Default to Success at a Cost_ (Action outcomes focus on trade-offs rather than flat failure).
    - _Simultaneous Action Resolution_ in Crisis Time.

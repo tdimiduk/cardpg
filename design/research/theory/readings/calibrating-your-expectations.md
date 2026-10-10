@@ -15,7 +15,7 @@ epistemic_status:
 related_files:
   - "design/philosophy/guiding-principles.md"
   - "design/philosophy/design-precepts.md"
-  - "design/philosophy/game-settings.md"
+  - "design/philosophy/campaign-dimensions.md"
   - "design/methodology/paradigm-shifts.md"
   - "design/rules/gamemaster-guide.md"
   - "design/research/theory/readings/exploration-is-logistics.md"

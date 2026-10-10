@@ -22,12 +22,12 @@ project_foundation:
       purpose: "The 'Why.' The ultimate authority on the project's creative vision and core philosophies."
       tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:pillars-of-play"]
 
-    - path: "philosophy/game-settings.md"
-      purpose: "A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences."
-      tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
+    - path: "philosophy/campaign-dimensions.md"
+      purpose: "A designer-facing document explaining how to tune the engine's dimensions of variation to curate play experiences."
+      tags: ["doc-type:philosophy", "philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
 
-    - path: "philosophy/default-setting.md"
-      purpose: "The canonical world primer and scenario evaluation rubric for caRdPG's default Grounded Heroism setting."
+    - path: "philosophy/narrative-baseline.md"
+      purpose: "The canonical scenario guide, regional archetypes, and evaluation rubric for caRdPG's flagship Grounded Heroism mode."
       tags: ["doc-type:philosophy", "philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
 
   design_patterns:
