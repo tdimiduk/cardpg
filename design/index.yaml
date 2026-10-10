@@ -26,6 +26,10 @@ project_foundation:
       purpose: "A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences."
       tags: ["doc-type:philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
 
+    - path: "philosophy/default-setting.md"
+      purpose: "The canonical world primer and scenario evaluation rubric for caRdPG's default Grounded Heroism setting."
+      tags: ["doc-type:philosophy", "philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
+
   design_patterns:
     - path: "philosophy/design-precepts.md"
       purpose: "The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics."

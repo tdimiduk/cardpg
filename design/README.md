@@ -27,16 +27,17 @@ Your interaction with this repository is governed by two key documents and a cor
 
 ### Foundations & Philosophy
 
-| Document                                                          | Summary                                                                                                                         |
-| :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| [Guiding Principles](philosophy/guiding-principles.md)            | The 'Why.' The ultimate authority on the project's creative vision and core philosophies.                                       |
-| [Game Settings](philosophy/game-settings.md)                      | A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences.             |
-| [Design Precepts](philosophy/design-precepts.md)                  | The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics.                                    |
-| [Paradigm Shifts](methodology/paradigm-shifts.md)                 | An onboarding guide for designers familiar with other TTRPGs detailing core assumptions to un-learn.                            |
-| [Documentation Standards](methodology/documentation-standards.md) | The official style guide for creating and formatting all design documents in the project.                                       |
-| [Tag Glossary](methodology/tag-glossary.md)                       | The canonical reference for the project's tagging system. Defines the scope and usage of all tags.                              |
-| [Introduction](introduction.md)                                   | The primary player-facing introduction to the game. Sets tone, theme, and core player experience before rules are presented.    |
-| [Agent Design Rules](AGENTS.md)                                   | Operating rules, canonical hierarchies, and subagent delegation instructions for AI assistants working in the design directory. |
+| Document                                                           | Summary                                                                                                                         |
+| :----------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| [Guiding Principles](philosophy/guiding-principles.md)             | The 'Why.' The ultimate authority on the project's creative vision and core philosophies.                                       |
+| [Game Settings](philosophy/game-settings.md)                       | A designer-facing document explaining how to tune the game's tone and mechanics to create curated play experiences.             |
+| [Default Setting: Grounded Heroism](philosophy/default-setting.md) | The canonical world primer and scenario evaluation rubric for caRdPG's default Grounded Heroism setting.                        |
+| [Design Precepts](philosophy/design-precepts.md)                   | The 'How-To.' Provides concrete design patterns and case studies for creating new mechanics.                                    |
+| [Paradigm Shifts](methodology/paradigm-shifts.md)                  | An onboarding guide for designers familiar with other TTRPGs detailing core assumptions to un-learn.                            |
+| [Documentation Standards](methodology/documentation-standards.md)  | The official style guide for creating and formatting all design documents in the project.                                       |
+| [Tag Glossary](methodology/tag-glossary.md)                        | The canonical reference for the project's tagging system. Defines the scope and usage of all tags.                              |
+| [Introduction](introduction.md)                                    | The primary player-facing introduction to the game. Sets tone, theme, and core player experience before rules are presented.    |
+| [Agent Design Rules](AGENTS.md)                                    | Operating rules, canonical hierarchies, and subagent delegation instructions for AI assistants working in the design directory. |
 
 ### Rules & Mechanics
 
