@@ -6,6 +6,7 @@ origin: AI drafted
 epistemic_status:
   confidence: high
   vetted_by_human: false
+  vetting_notes: "Trimmed setting-specific regional archetypes, lore, and prescriptive conflict/faction taxonomies to keep document strictly focused on narrative/tonal framing, adventure lifecycle, and scenario evaluation."
 ---
 
 # Narrative Baseline: Grounded Heroism
@@ -44,81 +45,7 @@ Rather than bogging down adventures with bookkeeping or physiological factoids (
 
 ---
 
-## 3. World Geography & Regional Archetypes
-
-The default world is a pre-industrial frontier—an untamed wilderness dotted with bastions of hospitality and shadowed by monumental ruins of elder civilizations. When brainstorming scenarios, draw from or combine these canonical regional archetypes:
-
-### 3.1. The Wind-Scoured High Moors
-
-- **The Landscape:** Vast rolling highlands of heather, shifting granite scree, sudden rain squalls, and deep peat bogs. Wind howls relentlessly; visibility collapses in sudden moor-mists.
-- **Havens:** Fortified stone waystations, lonely sheep-herder hamlets tucked into sheltered combes, roadside coaching inns with roaring peat hearths and heavy timber shutters.
-- **Wilderness Hazards:** Flash hypothermia from soaked clothing, unstable scree slopes, treacherous peat sinks, roving wolf packs, and territorial barrow-eagles.
-- **The Crucible / Archaeological Wonder:** Megalithic barrow-mounds and cyclopean granite lintels aligned with celestial solstices, sealing iron-age chieftain tombs and forgotten smithing vaults.
-
-### 3.2. The Drowned Fens & Low Marches
-
-- **The Landscape:** Stagnant river deltas, dense willow groves, black-water mires, and half-submerged cobblestone causeways built by elder empires.
-- **Havens:** Stilted peat-cutter villages, walled abbey infirmaries surrounded by dry dykes, smoky marsh-side taverns serving strong ale and smoked eels.
-- **Wilderness Hazards:** Leeches, waterborne sickness, rotten timber bridges, sudden sinkholes, thick marsh-fog muffling sound, and ambush predators waiting in dark pools.
-- **The Crucible / Archaeological Wonder:** Sunken fortress redoubts, waterlogged crypts choked with ancient moss, half-drowned aqueducts, and forgotten sluice gates holding back dark reservoirs.
-
-### 3.3. The Primeval Forest Border
-
-- **The Landscape:** Dense old-growth timber, monumental moss-draped oaks, limestone karst ravines, and forgotten boundary stones carved with ancient warnings.
-- **Havens:** Stockaded timber logging outposts, charcoal-burner camps, frontier shrines tended by solitary hermits, river crossing settlements.
-- **Wilderness Hazards:** Disorienting canopy cover hiding the sun, sudden deadfall, territorial apex beasts (boars, owlbears, cave drakes), and fungal spore pockets.
-- **The Crucible / Archaeological Wonder:** Overgrown stone dolmens, subterranean root-vaults, abandoned elven or elder-race boundary watchtowers built into living redwoods.
-
-### 3.4. The Alpine Spires & High Passes
-
-- **The Landscape:** Jagged tooth-like peaks, glacial cirques, roaring meltwater gorges, and precarious cliffside ledges choked with late-season snowpack.
-- **Havens:** Mountain monasteries carved into sheer granite, fortified toll-gates garrisoned by disciplined borderers, high alpine shelters stocked with dry firewood.
-- **Wilderness Hazards:** High winds, thinning air, avalanche chutes, crevasse bridges of rotten snow, and sudden blizzards.
-- **The Crucible / Archaeological Wonder:** Mountain redoubts carved into cliff faces, forgotten subterranean dwarf-delves, deep iron mines, and ancient fire-beacons.
-
----
-
-## 4. The Conflict Engine & Plot Seeds
-
-Adventures in Grounded Heroism are driven by grounded stakes: protecting vulnerable communities, uncovering lost history, or halting ruthless adversaries. Use these four primary conflict engines to seed scenarios:
-
-### 4.1. The Apex Incursion / Displaced Beast
-
-- **The Premise:** An apex natural predator or ancient monstrous beast has been displaced from the deep wild (by forest fire, harsh winter, or ruin breach) and encroaches on frontier settlements.
-- **The Stakes:** Livestock slaughtered, trade routes severed, settlers huddled in terror.
-- **The Twist:** The beast is not mindless evil; it is clever, territorial, and physically formidable. Defeating it requires tracking, setting bait, controlling terrain, or driving it back to its ancestral den.
-
-### 4.2. The Elder Breach / Unsealed Vault
-
-- **The Premise:** Natural erosion, miners, or reckless treasure-hunters unseal an ancient megalithic barrow or deep vault, waking ancient guardians or releasing a dormant environmental peril (noxious damp, cursed dust, or creeping blights).
-- **The Stakes:** Local water sources tainted, miners trapped, or ancient mechanical/eldritch wards threatening to collapse an entire hillside.
-- **The Twist:** A legendary iron relic or curative ancestral secret inside the vault holds the key to saving the nearby haven, demanding a daring delve.
-
-### 4.3. Frontier Friction / Desperate Factions
-
-- **The Premise:** Scarcity or political upheaval forces two factions into dangerous confrontation on the frontier (e.g., a ruthless bailiff levying cruel taxes vs. a dispossessed knight leading desperate outlaw homesteaders; competing mining companies fighting over a single dry tunnel).
-- **The Stakes:** Common folk caught in the crossfire, threatened with starvation or violence.
-- **The Twist:** Neither side can be solved by mindless slaughter alone; heroes must exercise moral discernment, tactical deterrence, and negotiate or decisively dismantle the corrupt core while protecting the vulnerable.
-
-### 4.4. The Critical Expedition & Relic Recovery
-
-- **The Premise:** A haven is threatened by an impending disaster (an early winter, a spreading plague, or a siege by warlords). The only remedy is lost within an elder site across hostile terrain.
-- **The Stakes:** A race against a clear, physical countdown clock (the first deep snow, the turn of the harvest season).
-- **The Twist:** Extracting the remedy or relic involves heavy physical logistics (clearing cave-ins, securing rafts across white water, hauling delicate apothecary stores intact).
-
----
-
-## 5. Factions & NPC Dynamics
-
-To ensure NPCs feel authentic and scenarios avoid cynical grey-sludge or flat caricature:
-
-- **Settlers & Common Folk:** Hardworking, cautious, and deeply attached to their hearths. They are vulnerable and value honor and bravery. When heroes protect them, they respond with genuine hospitality, shared meals, local rumors, and lasting loyalty.
-- **Local Authorities & Patrons:** Often pragmatic and stretched dangerously thin. A bailiff, village elder, or frontier sheriff may be stern or suspicious, but their primary duty is keeping their people alive through the next winter.
-- **Adversaries & Villains:** Clear, high-stakes opposition. Villains are motivated by greed, ambition, vengeance, or ruthless zeal. They use fortifications, terrain, and disciplined retinues to protect themselves. They fight to win, but retreat or parley when their physical position collapses.
-
----
-
-## 6. The Canonical Adventure Lifecycle
+## 3. The Canonical Adventure Lifecycle
 
 A default _caRdPG_ adventure breathes through a five-phase rhythm, alternating between restorative preparation, high-tension crisis, and earned recovery:
 
@@ -135,13 +62,13 @@ flowchart TD
 
 1. **The Safe Haven:** The party gathers in a bastion of warmth and hospitality. Stakes are established—a clear threat to innocent lives, an expedition contract, or an unsealed ruin. Players gather intelligence, provision physical gear (torches, ropes, rations), and tune their deck builds.
 2. **The Overland March:** The journey across the living frontier. Navigating terrain, managing weather fronts, and setting the Ready Hand Vigilance dial (0–4). Obstacles are resolved through General Actions. Evenings are marked by defensible camping, standing watch, and campfire camaraderie.
-3. **The Crucible / The Delve:** Entering the danger site (an ancient barrow, mountain redoubt, or flooded crypt). Physical hazards are solved with tools and teamwork. Encounters transition into fast, high-stakes Crisis Time (5–10 minutes of simultaneous card resolution). Ancient architectural wonder rewards careful exploration.
+3. **The Crucible / The Delve:** Entering the danger site (an ancient ruin, mountain redoubt, or flooded crypt). Physical hazards are solved with tools and teamwork. Encounters transition into fast, high-stakes Crisis Time (5–10 minutes of simultaneous card resolution). Ancient architectural wonder rewards careful exploration.
 4. **The Climax & Extraction:** The decisive confrontation with the apex threat or lead adversary. Resources are stretched thin; heroes push their limits to prevail. Extraction requires tactical coordination: guarding wounded companions, carrying heavy salvage, and escaping before exits collapse.
 5. **Sanctuary & Convalescence:** Returning to warmth. The convalescence cycle begins: chirurgeons dress injuries, transforming severe condition cards into manageable [[Fatigue]]; days of wholesome rest, food, and companionship flush fatigue from the deck; and earned victories translate into card upgrades and new tactical stances.
 
 ---
 
-## 7. The Scenario Evaluation Rubric
+## 4. The Scenario Evaluation Rubric
 
 Use this checklist to audit any proposed scenario, encounter, or adventure hook. If an adventure fails multiple tests, revise it to bring it into alignment with Grounded Heroism:
 
@@ -157,7 +84,7 @@ Use this checklist to audit any proposed scenario, encounter, or adventure hook.
 
 ### 3. The "Dynamic Range of Opposition" Test
 
-- **Pass:** The scenario features clear, high-stakes adversaries—ruthless villains, apex predators, or corrupt despots—giving the party clear moral purpose and earned satisfaction in victory, alongside nuanced neutral parties where appropriate.
+- **Pass:** Opposition is meaningful, high-stakes, and consequential. Adversaries may range from clear villains or apex predators to tragic rivals and morally complex factions with understandable motives—crucially, victory is earned, heroic action makes a real difference, and doing good is not treated as futile foolishness.
 - **Fail (Grimdark):** Every conflict is an ambiguous, cynical tragedy where every choice is equally vile, no victory is clean, and heroes are mocked for doing good.
 
 ### 4. The "Recovery vs. Attrition" Test
@@ -178,7 +105,7 @@ Use this checklist to audit any proposed scenario, encounter, or adventure hook.
 
 ---
 
-## 8. Canonical Touchstones
+## 5. Canonical Touchstones
 
 When calibrating scenes, descriptions, and character interactions, draw directly on these touchstones:
 

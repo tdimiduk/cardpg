@@ -69,6 +69,7 @@ library
     , network
     , optparse-applicative
     , postgresql-simple
+    , process
     , random
     , reflex-gadt-api
     , resource-pool

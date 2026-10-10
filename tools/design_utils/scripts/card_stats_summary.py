@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 import re
+import shutil
+import subprocess
 import yaml
 import statistics
 from pathlib import Path
@@ -321,6 +323,15 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(markdown))
         
+    # Format with prettier if available
+    prettier = shutil.which("prettier")
+    if prettier:
+        subprocess.run([prettier, "--write", str(OUTPUT_FILE)], check=False)
+    else:
+        pre_commit = shutil.which("pre-commit")
+        if pre_commit:
+            subprocess.run([pre_commit, "run", "prettier", "--files", str(OUTPUT_FILE)], check=False)
+
     print(f"Baseline statistics generated successfully at: {OUTPUT_FILE}")
 
 if __name__ == "__main__":

@@ -1,5 +1,8 @@
 # Prettier ignore
 design/**/index.yaml
+design/**/*.yaml
+design/research/reports/**
+data/cards/**
 
 # Generated static assets, ASTs, and exports
 client/static/*.json

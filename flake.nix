@@ -273,6 +273,7 @@
               pkgs.process-compose
               pkgs.haskellPackages.cabal-fmt # cabal-fmt doesn't support GHC 9.12 yet
               pkgs.nodejs
+              pkgs.prettier
               pkgs.git
               pkgs.rsync
               pkgs.openssh

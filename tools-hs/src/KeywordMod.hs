@@ -18,13 +18,11 @@ module KeywordMod
   ) where
 
 import Control.Applicative (empty, (<|>))
-import Control.Monad (forM, unless, void, when)
+import Control.Monad (forM, unless, when)
 import Core.Glossary
   ( Glossary (..)
   , GlossaryEntry (..)
   , allEntries
-  , fromList
-  , toSlug
   )
 import Data.Aeson (toJSON)
 import Data.Aeson.Encode.Pretty
@@ -37,12 +35,12 @@ import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy qualified as BL
 import Data.Char (isAlphaNum)
 import Data.List (sortBy)
-import Data.Maybe (fromMaybe)
 import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Void (Void)
+import Design.Prettier (runPrettier)
 import Options.Applicative qualified as OA
 import System.Directory
   ( canonicalizePath
@@ -71,16 +69,13 @@ import Text.Megaparsec
   , anySingle
   , choice
   , eof
-  , lookAhead
   , many
   , manyTill
-  , optional
   , parse
   , takeWhile1P
-  , takeWhileP
   , try
   )
-import Text.Megaparsec.Char (char, eol, hspace, string)
+import Text.Megaparsec.Char (char, string)
 
 --------------------------------------------------------------------------------
 -- CLI Model
@@ -617,8 +612,11 @@ runNormalizationPass terms dryRun files = do
       putStrLn $ modeTag ++ show changes ++ " lines in " ++ filePath
       unless dryRun $
         TIO.writeFile filePath newContent
-    pure (changes, if changes > 0 then 1 else 0)
-  pure (sum (map fst results), sum (map snd results))
+    pure (changes, if changes > 0 then 1 else 0, filePath)
+  unless dryRun $ do
+    let updated = [fp | (ch, _, fp) <- results, ch > 0]
+    runPrettier updated
+  pure (sum (map (\(c, _, _) -> c) results), sum (map (\(_, s, _) -> s) results))
 
 runRename :: RenameOptions -> IO ()
 runRename opts = do
@@ -631,9 +629,12 @@ runRename opts = do
       putStrLn $ modeTag ++ show changes ++ " instances in " ++ filePath
       unless opts.dryRun $
         TIO.writeFile filePath newContent
-    pure changes
-  let totalChanges = sum results
+    pure (changes, filePath)
+  let totalChanges = sum (map fst results)
+      updated = [fp | (ch, fp) <- results, ch > 0]
       modeStr = if opts.dryRun then "Previewed" else "Completed"
+  unless opts.dryRun $
+    runPrettier updated
   putStrLn $
     modeStr
       ++ " rename: "

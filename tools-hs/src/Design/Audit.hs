@@ -38,6 +38,7 @@ import Design.Index
   , resolveIndexTarget
   , syncAggregatedTags
   )
+import Design.Prettier (runPrettier)
 import Design.TOC
   ( generateArchiveToc
   , generateIterationToc
@@ -269,6 +270,7 @@ autoIndexFiles designRoot unindexed = do
           Right Nothing -> do
             let (scaffolded, newContent) = scaffoldFrontmatter relPath content
             TIO.writeFile absPath newContent
+            runPrettier [absPath]
             putStrLn $ "[FIX] Scaffolding epistemic frontmatter in '" ++ relPath ++ "'"
             pure (Just scaffolded, [])
           Right (Just (fmLang, _)) -> do

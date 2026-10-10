@@ -32,9 +32,10 @@ import Data.UUID qualified as UUID
 import Database.Beam.Postgres (PgJSONB (..))
 import Database.PostgreSQL.Simple qualified as Pg
 import Options.Applicative hiding (Failure, Success)
-import System.Directory (createDirectoryIfMissing)
+import System.Directory (createDirectoryIfMissing, findExecutable)
 import System.FilePath (takeDirectory)
 import System.IO (hPutStrLn, stderr)
+import System.Process (readProcessWithExitCode)
 import Text.Printf (printf)
 
 import Api.Types (LogPayload (..))
@@ -235,12 +236,30 @@ exportSession backend opts = do
           Just outPath -> do
             createDirectoryIfMissing True (takeDirectory outPath)
             T.writeFile outPath markdown
+            runPrettier [outPath]
             hPutStrLn stderr $ "Trace exported to: " ++ outPath
             -- Also print to stdout if output was defaulted
             when (isNothing opts.outputFile) $
               T.putStrLn markdown
           Nothing ->
             T.putStrLn markdown
+
+-- | Run prettier --write on given files if available (direct binary or via pre-commit fallback)
+runPrettier :: [FilePath] -> IO ()
+runPrettier [] = pure ()
+runPrettier files = do
+  mPrettier <- findExecutable "prettier"
+  case mPrettier of
+    Just bin -> do
+      _ <- readProcessWithExitCode bin ("--write" : files) ""
+      pure ()
+    Nothing -> do
+      mPreCommit <- findExecutable "pre-commit"
+      case mPreCommit of
+        Just bin -> do
+          _ <- readProcessWithExitCode bin (["run", "prettier", "--files"] ++ files) ""
+          pure ()
+        Nothing -> pure ()
 
 -- ---------------------------------------------------------------------------
 -- Internal Event & Round Reconstruction

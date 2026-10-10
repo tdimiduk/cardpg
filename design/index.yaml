@@ -27,7 +27,7 @@ project_foundation:
       tags: ["doc-type:philosophy", "philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
 
     - path: "philosophy/narrative-baseline.md"
-      purpose: "The canonical scenario guide, regional archetypes, and evaluation rubric for caRdPG's flagship Grounded Heroism mode."
+      purpose: "The canonical scenario-authoring guide, adventure lifecycle, and evaluation rubric for caRdPG's flagship Grounded Heroism mode."
       tags: ["doc-type:philosophy", "philosophy", "audience:designer-facing", "core-concept:design-vision", "core-concept:game-tone"]
 
   design_patterns:

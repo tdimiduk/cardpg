@@ -19,6 +19,7 @@ import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Text.IO qualified as Text
 import Data.Yaml (ParseException, decodeFileEither)
+import Design.Prettier (runPrettier)
 import Design.Types (IndexItem (..))
 import System.Directory (doesFileExist)
 import System.Exit (exitFailure)
@@ -366,7 +367,6 @@ generateDensityTable activeDomains consequences =
       rows = map makeRow counts
    in Text.unlines $
         [ "<!-- START_DENSITY_TABLE -->"
-        , "<!-- prettier-ignore -->"
         , Text.pack header
         , Text.pack divider
         ]
@@ -400,6 +400,7 @@ injectTable hubPath newTable = do
           let cleanAfter = Text.drop (Text.length endMarker) after
               newContent = before <> newTable <> cleanAfter
           Text.writeFile hubPath newContent
+          runPrettier [hubPath]
           return $ Right ()
         _ -> return $ Left "Could not find <!-- END_DENSITY_TABLE --> comment marker."
     _ -> return $ Left "Could not find <!-- START_DENSITY_TABLE --> comment marker."

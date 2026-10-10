@@ -109,7 +109,7 @@ To demonstrate how these three dimensions combine to curate specific experiences
 ### Reference Point 2: Grounded Heroism (Default Flagship)
 
 - **Core Concept & Inspirations:** The game's intended default experience. Balances rigorous physical reality with heroic fantasy, dynamic range, and earned wonder. Characters are competent, courageous protagonists defined by their ability to overcome formidable odds against an unyielding, physically authentic world.
-- **Detailed Guide:** See [narrative-baseline.md](file:///home/tdimiduk/cardpg/cardpg/design/philosophy/narrative-baseline.md) for the complete world texture, regional archetypes, conflict engines, adventure lifecycle, and scenario evaluation rubric for this reference point.
+- **Detailed Guide:** See [narrative-baseline.md](file:///home/tdimiduk/cardpg/cardpg/design/philosophy/narrative-baseline.md) for the core narrative invariants, tactical dilemmas, adventure lifecycle, and scenario evaluation rubric for this reference point.
 - **Inspirations:**
   - **Literary Canon:** _The Lord of the Rings_ (J.R.R. Tolkien), _The Deed of Paksenarrion_ (Elizabeth Moon), _The Wheel of Time_ (Robert Jordan), _The Stormlight Archive & Mistborn_ (Brandon Sanderson), _The Heralds of Valdemar_ (Mercedes Lackey), _The Honor Harrington Series_ (David Weber), _The Earthsea Cycle_ (Ursula K. Le Guin), _Dungeon Meshi_ (Ryōko Kui), _The Witcher Series_ (Andrzej Sapkowski), _A Song of Ice and Fire_ (George R.R. Martin).
   - **Cinematic & Anime Canon:** _Princess Mononoke_ & _Nausicaä of the Valley of the Wind_ (Studio Ghibli), _Frieren: Beyond Journey's End_, _Seven Samurai_ & Classical Samurai Cinema (Akira Kurosawa), _The Mummy (1999)_ / _Indiana Jones_.

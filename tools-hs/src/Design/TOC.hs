@@ -27,6 +27,7 @@ import Data.Text.IO qualified as TIO
 import Data.Vector qualified as V
 import Design.Frontmatter (extractFrontmatterText, parseFrontmatter)
 import Design.Index (loadIndexValue)
+import Design.Prettier (runPrettier)
 import Design.Types
 import System.Directory (doesFileExist)
 import System.FilePath (takeBaseName, takeDirectory, (</>))
@@ -430,6 +431,7 @@ updateOrVerifyReadmeToc readmeAbsPath expectedTocBody fix = do
       if fix
         then do
           TIO.writeFile readmeAbsPath (expectedBlock <> "\n")
+          runPrettier [readmeAbsPath]
           pure (Right (), True)
         else pure (Left $ "README file " ++ readmeAbsPath ++ " does not exist", False)
     else do
@@ -443,6 +445,7 @@ updateOrVerifyReadmeToc readmeAbsPath expectedTocBody fix = do
                 then do
                   let newContent = T.stripEnd content <> "\n\n" <> expectedBlock <> "\n"
                   TIO.writeFile readmeAbsPath newContent
+                  runPrettier [readmeAbsPath]
                   pure (Right (), True)
                 else pure (Left "Missing <!-- BEGIN AUTO-TOC --> block", False)
           | otherwise -> do
@@ -455,7 +458,7 @@ updateOrVerifyReadmeToc readmeAbsPath expectedTocBody fix = do
                       let currentBlock = beginTag <> innerBlock <> endTag
                           normCurrent = normalizeMarkdownBlock currentBlock
                           normExpected = normalizeMarkdownBlock expectedBlock
-                      if currentBlock == expectedBlock
+                      if normCurrent == normExpected
                         then pure (Right (), False)
                         else
                           if fix
@@ -463,8 +466,6 @@ updateOrVerifyReadmeToc readmeAbsPath expectedTocBody fix = do
                               let remainder = T.drop (T.length endTag) afterEnd
                                   newContent = before <> expectedBlock <> remainder
                               TIO.writeFile readmeAbsPath newContent
+                              runPrettier [readmeAbsPath]
                               pure (Right (), True)
-                            else
-                              if normCurrent == normExpected
-                                then pure (Right (), False)
-                                else pure (Left "Table of contents is out of date", False)
+                            else pure (Left "Table of contents is out of date", False)

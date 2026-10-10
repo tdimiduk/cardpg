@@ -26,6 +26,7 @@ library
     Design.Frontmatter
     Design.Glossary
     Design.Index
+    Design.Prettier
     Design.TOC
     Design.Types
     KeywordMod
