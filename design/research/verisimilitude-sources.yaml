@@ -372,11 +372,12 @@ foundational_scientific_medical:
       title: "The Causes of Death in Colliery Explosions and Underground Fires"
       author: "Haldane, J. S."
       year: 1895
-      doi_or_url: "https://archive.org/details/causesofdeathinc00hald"
+      doi_or_url: "https://archive.org/details/b24398408"
+      local_archive: "sources/verisimilitude/haldane-1895-investigation-mine-air-blackdamp"
       synthesis_reference: "synthesis/subterranean-gases-and-blackdamp-toxicity.md"
       epistemic_grade: "historical_scientific"
       description: >
-        Foundational mine toxicology treatise establishing blackdamp (nitrogen + CO2) behavior, flame extinction thresholds at 15-16% O2, acute hypoxic syncope within 15-30 seconds in pure stagnant pockets, and ground-level heavy gas stratification dynamics. Primary PDF queued in DEFERRED_ACQUISITIONS.md.
+        Foundational mine toxicology treatise establishing blackdamp (nitrogen + CO2) behavior, flame extinction thresholds at 15-16% O2, acute hypoxic syncope within 15-30 seconds in pure stagnant pockets, and ground-level heavy gas stratification dynamics. Primary PDF archived in vault.
       vetting:
         - date: "2026-10-09"
           type: "empirical literature verification"
@@ -751,7 +752,7 @@ modeling_social_psychology_legal:
       title: "The History of English Law Before the Time of Edward I (Vol. 2)"
       author: "Pollock, F., & Maitland, F. W."
       year: 1898
-      doi_or_url: "https://archive.org/details/historyofenglish02polluoft"
+      doi_or_url: "https://archive.org/details/historyofenglish00polluoft"
       local_archive: "sources/verisimilitude/pollock-maitland-1898-history-english-law-vol2"
       epistemic_grade: "historical_manual"
       description: >
