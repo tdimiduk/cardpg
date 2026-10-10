@@ -358,7 +358,7 @@ foundational_scientific_medical:
       author: "Coyle, E. F., et al."
       year: 1986
       doi_or_url: "https://doi.org/10.1152/jappl.1986.61.1.165"
-      synthesis_reference: "synthesis/glycogen-depletion-and-exertion-kinetics.md"
+      synthesis_reference: "synthesis/hardship-and-exertion.md"
       epistemic_grade: "primary_academic"
       publication: "Journal of Applied Physiology"
       description: >
@@ -383,20 +383,6 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
           summary: "Authoritative historical and physiological standard on confined space subterranean damps, flame behavior, and asphyxiation speeds."
-    - type: governmental_report
-      title: "Process of Thermal Spalling in Rocks (RI 7384)"
-      author: "Thirumalai, K."
-      year: 1970
-      doi_or_url: "https://www.osti.gov/biblio/5221087"
-      synthesis_reference: "synthesis/rock-mechanics-and-thermal-spalling.md"
-      epistemic_grade: "primary_academic"
-      description: >
-        US Bureau of Mines experimental geomechanics treatise demonstrating that thermal rock spalling requires sustained heat fluxes exceeding 200-500 kW/m² and temperatures over 400-600°C. Proves that handheld torches (5-15 kW diffuse flame) cannot cause rock spallation in massive granite. Primary report queued in DEFERRED_ACQUISITIONS.md.
-      vetting:
-        - date: "2026-10-09"
-          type: "empirical literature verification"
-          author: "Gemini 3.8 Flash (Antigravity)"
-          summary: "Essential geomechanics benchmark on thermal rock fracturing thresholds, disproving torch-induced ceiling spalling."
     - type: journal_article
       title: "Tactical Combat Casualty Care in Special Operations"
       author: "Butler, F. K., Hagmann, J., & Butler, E. G."

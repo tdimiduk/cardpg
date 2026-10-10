@@ -130,6 +130,14 @@ design_process_and_research:
       purpose: "A consolidated synthesis of research on the timescales of combat, providing reference tables for physiological phases, performance degradation, and the duration of discrete tactical actions (e.g., firing a bow, standing from prone)."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:action-resolution", "core-concept:verisimilitude"]
 
+    - path: "research/synthesis/cold-water-immersion-and-hypothermia.md"
+      purpose: "A synthesis of cold-water immersion physiology and hypothermia kinetics, establishing the 1-10-1 principle and distinguishing acute cold shock and neuromuscular incapacitation from slow systemic core cooling."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:consequences", "core-concept:verisimilitude"]
+
+    - path: "research/synthesis/subterranean-gases-and-blackdamp-toxicity.md"
+      purpose: "A synthesis of subterranean gas behavior, mine damps, flame extinction thresholds, and hypoxic syncope timelines grounded in Haldane (1895)."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:consequences", "core-concept:verisimilitude"]
+
   design_theory_and_readings:
     - path: "research/theory/readings/exploration-is-logistics.md"
       purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."
