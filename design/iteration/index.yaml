@@ -70,3 +70,8 @@ active_design_exploration:
       purpose: "Development benchmark scenario: a short, complete campaign arc testing travel, non-combat general actions, tactical combat, persistent harm, and the living world clock in the Grounded Heroism setting."
       tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:pacing"]
 
+    - path: "iteration/campaign-crag-gallows/index.yaml"
+      name: "Campaign Workshop: The Delve of Crag-Gallows"
+      purpose: "Zero-GM benchmark scenario: a procedural dungeon and wilderness crawl testing fatigue accumulation, consequence escalation, push-your-luck retreat loops, and living clock decks using existing monster cards."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:fatigue", "core-concept:consequences", "core-concept:pacing"]
+

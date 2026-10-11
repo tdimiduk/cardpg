@@ -56,6 +56,7 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 | [Design Brief: Exploration Procedures, Dungeon Clocks, and Location Decks](exploration-decks-and-dungeon-clocks-brief.md) | Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel, Location Decks, and Effort Cycle pacing.                                               |
 | [Gameplay Traces & Empirical Benchmarks](traces/README.md)                                                                | Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing.                           |
 | [Campaign Workshop: The Outlaw of Weeping Fen](campaign-weeping-fen/README.md)                                            | Development benchmark scenario: a short, complete campaign arc testing travel, non-combat general actions, tactical combat, persistent harm, and the living w... |
+| [Campaign Workshop: The Delve of Crag-Gallows](campaign-crag-gallows/README.md)                                           | Zero-GM benchmark scenario: a procedural dungeon and wilderness crawl testing fatigue accumulation, consequence escalation, push-your-luck retreat loops, and... |
 
 _Last synced from `iteration/index.yaml` via `audit-index`._
 

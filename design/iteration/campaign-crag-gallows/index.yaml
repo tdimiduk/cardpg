@@ -1,0 +1,17 @@
+# Campaign Workshop: The Delve of Crag-Gallows
+package:
+  purpose: "Zero-GM benchmark scenario: a procedural dungeon and wilderness crawl testing fatigue accumulation, consequence escalation, push-your-luck retreat loops, and living clock decks using existing monster cards."
+  tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:fatigue", "core-concept:consequences", "core-concept:pacing"]
+
+documents:
+  - path: "iteration/campaign-crag-gallows/README.md"
+    purpose: "Overview, grounded realism vision, and architecture of The Delve of Crag-Gallows testbed scenario."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing"]
+
+  - path: "iteration/campaign-crag-gallows/environment-and-inhabitants.md"
+    purpose: "Worldbuilding, zone layout, inhabitant goals, and environmental hazards across the Haven, Defile, Quarry, and Mine."
+    tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat"]
+
+  - path: "iteration/campaign-crag-gallows/living-clocks.md"
+    purpose: "Conceptual design and event catalogs for the 3 Living Clock Decks (Wilderness Clock, Site Activity Clock, Macro Haven Clock)."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
