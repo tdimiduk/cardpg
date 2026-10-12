@@ -44,13 +44,15 @@ Always uphold and cross-reference the project's foundational design documents:
 
 ## 3. Delegation to Subagents & Tooling Protocols
 
-When a task involves deep exploration or high token volume, delegate to specialized subagents defined in `.agent/skills/game_design_subagents/SKILL.md`:
+When a task involves deep exploration or high token volume, delegate to specialized subagents defined in our dedicated skills:
 
-- **`SourceHarvester`:** Literature retrieval and vault ingestion (`enable_write_tools: true`). Restricted solely to running `archive_source.py ingest --commit` and registering catalog manifests. Never edits files inside `design/research/sources/` directly.
-- **`EmpiricalSynthesizer`:** Quantitative domain extraction (`enable_write_tools: false`). Reads local `extracted.txt`/`extracted.md` files to extract Joules, METs, timelines, and material thresholds for living syntheses.
-- **`VerisimilitudeAuditor`:** Factual plausibility auditing (`enable_write_tools: false`). Cross-examines proposed mechanics against `design/research/synthesis/` using the Gross Violations vs. Casual Realism rubric.
-- **`GameSystemsDesigner`:** Mathematical modeling of probability spreads, deck attrition rates, and card economy balances.
-- **`RulebookAdversary`:** Adversarial stress-testing of rules to find degenerate combos, exploit loops, and table tracking friction.
+- **Empirical Research Vault & Synthesis** ([`.agent/skills/empirical_research_subagents/SKILL.md`](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/empirical_research_subagents/SKILL.md)):
+  - **`SourceHarvester`:** Literature retrieval and vault ingestion (`enable_write_tools: true`). Restricted solely to running `archive_source.py ingest --commit` and registering catalog manifests. Never edits files inside `design/research/sources/` directly.
+  - **`EmpiricalSynthesizer`:** Quantitative domain extraction (`enable_write_tools: false`). Reads local `extracted.txt`/`extracted.md` files to extract Joules, METs, timelines, and material thresholds for living syntheses.
+- **Tabletop Rules & Verification** ([`.agent/skills/tabletop_rules_subagents/SKILL.md`](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/tabletop_rules_subagents/SKILL.md)):
+  - **`GameSystemsDesigner`:** Mathematical modeling of probability spreads, deck attrition rates, and card economy balances.
+  - **`RulebookAdversary`:** Adversarial stress-testing of rules to find degenerate combos, exploit loops, and table tracking friction.
+  - **`VerisimilitudeAuditor`:** Factual plausibility auditing (`enable_write_tools: false`). Cross-examines proposed mechanics against `design/research/synthesis/` using the Gross Violations vs. Casual Realism rubric.
 
 ### The Rules Verification Triangle
 

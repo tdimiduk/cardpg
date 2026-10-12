@@ -115,7 +115,7 @@ Before launching subagents or querying databases, read these existing files:
 ## 4. Research Methodology & Standards for Incoming Agent
 
 1. **Invoke the `empirical_researcher` Subagent:**
-   - Use the `game_design_subagents` skill (`.agent/skills/game_design_subagents/SKILL.md`) to invoke the `empirical_researcher` persona.
+   - Use the `empirical_research_subagents` skill (`.agent/skills/empirical_research_subagents/SKILL.md`) to invoke the `empirical_synthesizer` persona.
    - Persona is read-only (`enable_write_tools: false`), focused strictly on quantitative metrics (seconds, Joules, dB, METs, clinical/biomechanical data).
 2. **Follow Literature Sourcing Hierarchy (`.agent/standards/empirical_research_standards.md`):**
    - Check local archive first.
