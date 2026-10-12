@@ -57,14 +57,14 @@ This will result in a massive [[Impact]] and devastating consequences, likely ta
 
 ## The Art of Vigilance: Managing Adventuring Time
 
-Outside of combat, your deck functions as your party's stamina and endurance clock. How you manage your [[Ready Hand]] during exploration dictates both your immediate readiness for sudden violence and your long-term stamina.
+Outside of combat, your deck functions as your party's stamina and endurance clock. How you manage your [[Vigilance]] pool during exploration dictates both your immediate readiness for sudden violence and your long-term stamina.
 
 ### The Vigilance Dial (0 to 4 Cards)
 
-Your Ready Hand size (from 0 to 4 cards) is not a static number—it is a tactical dial you adjust based on the danger of your surroundings:
+Your Vigilance pool size (from 0 to 4 cards) is not a static number—it is a tactical dial you adjust based on the danger of your surroundings:
 
-- **Raising Vigilance Anytime:** If you hear eerie noises, enter an unmapped dungeon wing, or take point on watch, you can deal additional cards from your deck to your Ready Hand at any time (up to 4). Remember that cards dealt to the table are committed stamina: when the next 1-hour Effort Cycle arrives, your entire Ready Hand will flush to the expended pile.
-- **Lowering Vigilance at the Flush:** Once dealt, cards cannot be returned to your draw deck. If you want to drop your guard to conserve stamina (e.g., reaching a secure campsite or safe road), you simply choose a lower size (like 0) when the Effort Cycle flushes.
+- **Raising Vigilance Anytime:** If you hear eerie noises, enter an unmapped dungeon wing, or take point on watch, you can deal additional cards from your deck to your Vigilance pool at any time (up to 4). Remember that cards dealt to the table are committed stamina: when the next 1-hour Effort Cycle arrives, your entire Vigilance pool will flush to the expended pile.
+- **Lowering Vigilance at the Flush:** Once dealt, cards cannot be returned to your draw deck. If you want to drop your vigilance to conserve stamina (e.g., reaching a secure campsite or safe road), you simply choose a lower size (like 0) when the Effort Cycle flushes.
 - **Peak Alertness (4 Cards):** You are walking with weapons drawn, shields raised, and eyes scanning the shadows. If an ambush strikes, you pick up a full 4-card tactical hand. However, maintaining this level of tension is exhausting: every 1-hour Effort Cycle flushes 4 cards into your expended pile. In a standard 24-card deck, **every 6 Effort Cycles (6 hours) triggers a full Fatigue Cycle**.
 - **Marching at Ease (0 Cards):** Your weapons are sheathed, packs are slung comfortably, and you are relaxing or chatting. Effort Cycles cost you **zero cards**—you can travel, explore, or rest indefinitely without fatiguing your deck. But if combat breaks out, you enter Crisis Time with an empty hand, spending Round 1 scrambling to ready weapons.
 - **Moderate Vigilance (1–3 Cards):** A middle ground for extended exploration through uncertain territory, balancing reaction speed against deck attrition.
@@ -73,13 +73,13 @@ Your Ready Hand size (from 0 to 4 cards) is not a static number—it is a tactic
 
 Because a Fatigue Cycle adds **2 + Burden** [[Fatigue]] cards to your deck, heavily armored characters pay a much steeper price for high vigilance. An unencumbered scout (Burden 0) gains 2 Fatigue per cycle, while a knight in full harness (Burden 3) gains 5 Fatigue per cycle!
 
-This creates a natural, historical dynamic: knights take off their helms, rest their shields on pack horses, and lower their guard when not actively anticipating combat, while light scouts take point on high alert.
+This creates a natural, historical dynamic: knights take off their helms, rest their shields on pack horses, and lower their vigilance when not actively anticipating combat, while light scouts take point on high alert.
 
-### Tactics of the Face-Up Guard
+### Tactics of the Readied Card
 
-Setting a guard (spending ~1 minute to search your deck for 1 Action Card to place face up) gives you guaranteed tactical readiness. If you expect a ferocious beast, you can prime a heavy attack or a defensive parry before kicking down the door.
+Readying a card (spending ~1 minute to search your deck for 1 card to place face up in your Vigilance pool) gives you guaranteed tactical readiness. This can be an Action card—like priming a heavy attack or a defensive parry before kicking down the door—or simply a high-value card for sudden Snap Checks.
 
-However, holding a primed stance has a continuous cost: **every Effort Cycle, you must discard 2 cards off the top of your deck** to keep it.
+However, holding a readied card has a continuous cost: **every Effort Cycle, you must discard 2 cards off the top of your deck** to keep it.
 
 - **When to hold it:** When an encounter is imminent (e.g., breaching a room, stalking a patrol).
 - **When to let it go:** During long marches or when the path ahead is clear. Letting it flush back to discard saves your deck from rapid exhaustion.
@@ -90,29 +90,29 @@ When faced with a General Action (climbing a cliff, negotiating a toll, picking 
 
 #### 1. Casual Attempt
 
-You do not touch your Ready Hand; you resolve the task purely by flipping cards from your deck.
+You do not touch your Vigilance pool; you resolve the task purely by flipping cards from your deck.
 
-- **The Upside:** Your current Ready Hand remains untouched on the table, preserving any prepared face-up stance or high reaction cards you may have waiting.
+- **The Upside:** Your current Vigilance pool remains untouched on the table, preserving any readied card or high reaction cards you may have waiting.
 - **The Risk:** Blind flips have natural variance. If you hit low values, you may flip many cards, driving up [[Impact]] and taking more consequences.
 
 #### 2. Committed Effort
 
-You pick up your Ready Hand, bringing your conscious focus, trained techniques, and immediate physical energy to bear on the problem.
+You pick up your Vigilance pool, bringing your conscious focus, trained techniques, and immediate physical energy to bear on the problem.
 
 - **Hand Cards in the Flipped Stack:** When you add a card from your hand to the flipped stack in place of a flip, it counts toward the task's [[Impact]] just like a card flipped from your deck. This prevents players from dumping weak cards: playing a card with `Yellow 1` adds 1 full Impact for negligible Strength.
 - **The Golden Rule: Never Play Low-Value Cards to the Flipped Stack!**
   A blind flip from your deck has an average value (typically ~3). If your hand holds a low-value card, let it flush away! Only add cards from your hand to the flipped stack that significantly beat your deck's average (e.g., `Yellow 5` or higher).
-- **The Flush:** When the action resolves, any cards remaining in your hand are discarded to your expended pile, and you deal a fresh Ready Hand up to your chosen size. Committing your hand doesn't leave you defenseless—your Ready Hand is redrawn immediately—but it represents cycling through your current focus and stamina to overcome the obstacle.
+- **The Flush:** When the action resolves, any cards remaining in your hand are discarded to your expended pile, and you deal fresh cards to your Vigilance pool back up to your chosen level. Committing your hand doesn't leave you defenseless—your Vigilance pool is redrawn immediately—but it represents cycling through your current focus and stamina to overcome the obstacle.
 
-_(Note: If your table plays with the [Selective Commitment Module](modules/selective-commitment.md), you may choose to commit a measured subset of your Ready Hand rather than picking up the entire hand)._
+_(Note: If your table plays with the [Selective Commitment Module](modules/selective-commitment.md), you may choose to commit a measured subset of your Vigilance pool rather than picking up the entire hand)._
 
 #### Playing Printed Action Stacks
 
-If your Ready Hand contains a relevant Action Card, you can play it as an [[Action Stack]] (paying its printed Resource Cost with other cards from hand).
+If your hand contains a relevant Action Card, you can play it as an [[Action Stack]] (paying its printed Resource Cost with other cards from hand).
 
 - **Action Stacks Do Not Count for Impact:** Just as declaring an attack in combat does not inflict self-harm, cards in your Action Stack do not go into the flipped stack. Instead, the action alters the terms of the challenge: providing bonus [[Strength]], establishing an active [[Defense]], enabling cross-color spending, or granting specific protections.
 - **Example: Jumping the Chasm with Athletics:**
-  The Swashbuckler faces a dangerous 10-meter leap (`Strength 18 Yellow`). Rather than risking a blind leap, they spend a minute of preparation to **Set Guard**, searching their deck to place `Athletics` (Cost 1, `Yellow 4`, text: _+2 Strength, Defense 2 on physical maneuvers_) face up in their Ready Hand.
+  The Swashbuckler faces a dangerous 10-meter leap (`Strength 18 Yellow`). Rather than risking a blind leap, they spend a minute of preparation to **Ready** `Athletics` (Cost 1, `Yellow 4`, text: _+2 Strength, Defense 2 on physical maneuvers_), searching their deck to place it face up as their readied card in their Vigilance pool.
   When they make the jump, they choose a Committed Attempt and declare `Athletics`, paying 1 card from hand for its printed Cost. `Athletics` establishes `Defense 2` and contributes $4 + 2 = 6$ Yellow Strength.
   To meet the remaining 12 Strength, they add one high-Yellow card (`Yellow 6`) from hand to the flipped stack in place of a flip, and flip one card from the deck (`Yellow 6`).
-  The flipped stack contains exactly 2 cards (`Impact = 2`). With `Defense 2`, they suffer $2 / 2 = 1$ minor scrape instead of risking 5 or 6 blind flips. When the jump is complete, their hand flushes, and they deal a new Ready Hand face down.
+  The flipped stack contains exactly 2 cards (`Impact = 2`). With `Defense 2`, they suffer $2 / 2 = 1$ minor scrape instead of risking 5 or 6 blind flips. When the jump is complete, their hand flushes, and they deal a new Vigilance pool face down.

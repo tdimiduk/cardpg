@@ -73,8 +73,8 @@ When targeted by an attack, you face the strike by meeting its Strength in the d
 
 ### Transitions
 
-- **Entering Crisis (Mutual Awareness):** Pick up your [[Ready Hand]] (both face-down cards and any face-up guard) as your starting hand for Round 1.
-- **Entering Crisis (Surprise):** If caught unaware or marching at ease (Ready Hand size 0), you enter Crisis Time with an empty hand, drawing only your 2 round cards when Round 1 begins.
+- **Entering Crisis (Mutual Awareness):** Pick up your [[Vigilance]] pool (both face-down cards and any readied card) as your starting hand for Round 1.
+- **Entering Crisis (Surprise):** If caught unaware or marching at ease (Vigilance 0), you enter Crisis Time with an empty hand, drawing only your 2 round cards when Round 1 begins.
 - **Exiting Crisis:** When tension breaks, all characters discard any cards remaining in hand to their expended pile.
 
 ---
@@ -83,15 +83,15 @@ When targeted by an attack, you face the strike by meeting its Strength in the d
 
 Adventuring Time is used for travel, investigation, dungeon exploration, and downtime.
 
-### The Ready Hand & Effort Cycles
+### Vigilance & Effort Cycles
 
-You do not hold a hand during Adventuring Time. Instead, you maintain a [[Ready Hand]] of 0 to 4 cards on the table, representing your vigilance:
+You do not hold a hand during Adventuring Time. Instead, you maintain **[[Vigilance]]** as a pool of 0 to 4 cards on the table:
 
-- **Face-Down Cards:** Dealt from the top of your deck and kept face down. Outside of crisis, you may deal additional cards to your Ready Hand from your deck at any time (up to 4).
-- **Face-Up Guard:** Up to 1 card in your Ready Hand may be kept face up as a prepared stance or readied action (prepared via roughly one minute of quiet focus outside of crisis).
-- **Effort Cycles (1 Hour):** Maintaining vigilance burns stamina. Every **one in-game hour**, all characters **flush** their Ready Hand:
-  1. Discard your Ready Hand to your expended pile. _(To retain a face-up guard, discard 2 cards from the top of your deck to your expended pile instead)._
-  2. Redraw face down from your deck back to your chosen Ready Hand size (0 to 4). If your chosen size is 0 (at ease), an Effort Cycle costs you no cards.
+- **Face-Down Cards:** Dealt from the top of your deck and kept face down. Outside of crisis, you may deal additional cards to your Vigilance pool from your deck at any time (up to 4).
+- **Readied Card:** Up to 1 card in your Vigilance pool may be kept face up as a **readied card**. You may search your deck for this card by spending roughly one minute of quiet focus outside of crisis. This can be a high-value card for rapid reactions or a specific technique you plan to unleash.
+- **Effort Cycles (1 Hour):** Maintaining vigilance burns stamina. Every **one in-game hour**, all characters **flush** their Vigilance pool:
+  1. Discard your Vigilance pool to your expended pile. _(To retain a readied card, discard 2 cards from the top of your deck to your expended pile instead)._
+  2. Redraw face down from your deck back to your chosen Vigilance level (0 to 4). If your chosen size is 0 (marching at ease), an Effort Cycle costs you no cards.
 
 ### General Actions
 
@@ -99,10 +99,10 @@ Tasks with meaningful stakes outside combat (climbing a cliff, picking a lock, c
 
 The GM or challenge sets the [[Color]] and [[Strength]]:
 
-1. **Commit Ready Hand (Optional):** You may resolve the task using deck flips alone, or pick up your Ready Hand. If picked up, you may play an Action card from hand as an Action Stack (card + Cost) to modify the check (e.g. bonus Strength or Defense). Cards in the Action Stack do not count toward your flipped stack.
-2. **Meet Strength:** Flip cards from your deck into a flipped stack until the Strength is met. If you committed your Ready Hand, instead of a flip you may add a card from your [[Ready Hand]] to the flipped stack.
+1. **Commit Vigilance (Optional):** You may resolve the task using deck flips alone, or pick up your Vigilance pool. If picked up, you may play an Action card from hand as an Action Stack (card + Cost) to modify the check (e.g. bonus Strength or Defense). Cards in the Action Stack do not count toward your flipped stack.
+2. **Meet Strength:** Flip cards from your deck into a flipped stack until the Strength is met. If you committed your Vigilance pool, instead of a flip you may add a card from your hand to the flipped stack.
 3. **Suffer Consequences:** Count your flipped stack (your Impact) and resolve consequences against your Defense and Resilience.
-4. **Flush:** If you picked up your Ready Hand, discard remaining hand cards and flush back to your chosen Ready Hand size.
+4. **Flush:** If you picked up your Vigilance pool, discard remaining hand cards and flush back to your chosen Vigilance level.
 
 ---
 

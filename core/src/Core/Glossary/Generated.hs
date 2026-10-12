@@ -262,9 +262,9 @@ glossaryEntries =
         RichText (TextRun Nothing (unsafeNonEmptyText "Extended periods of rest, crafting, project advancement, and long-term recovery between active adventures.") NE.:| [])
     }
   ,   GlossaryEntry
-    { canonical = "Ready Hand"
-    , aliases = []
-    , slug = "ready-hand"
+    { canonical = "Vigilance"
+    , aliases = ["Vigilance Pool"]
+    , slug = "vigilance"
     , category = "Pacing & Play Modes"
     , theme = Nothing
     , summary =
@@ -272,7 +272,22 @@ glossaryEntries =
           ( TextRun Nothing (unsafeNonEmptyText "A pool of 0 to 4 cards maintained on the table during ")
           NE.:|
             [ Wikilink (unsafeNonEmptyText "Adventuring Time") Nothing
-            , TextRun Nothing (unsafeNonEmptyText " representing immediate vigilance and readiness.")
+            , TextRun Nothing (unsafeNonEmptyText " representing immediate alertness and physical readiness.")
+            ]
+          )
+    }
+  ,   GlossaryEntry
+    { canonical = "Readied Card"
+    , aliases = ["Readied Cards", "Ready a Card"]
+    , slug = "readied-card"
+    , category = "Pacing & Play Modes"
+    , theme = Nothing
+    , summary =
+        RichText
+          ( TextRun Nothing (unsafeNonEmptyText "Up to 1 card in your ")
+          NE.:|
+            [ Wikilink (unsafeNonEmptyText "Vigilance") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " pool kept face up, prepared by searching your deck outside of crisis.")
             ]
           )
     }

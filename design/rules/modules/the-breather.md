@@ -32,7 +32,7 @@ When the party takes a Breather, each player resolves the following steps:
    - **Heavy Exertion (12 or more cards expended):** Add **2 Fatigue** cards to your expended pile.
 3. **Burden Relief (Unbuckling Harness):** If you take off a heavy pack or unbuckle your armor harness during the 15-minute rest, **ignore your Burden** for this cycle! (If you must stay fully strapped and helmeted because danger is imminent, add your Burden to the fatigue cards above as normal).
 4. **Reshuffle:** Reshuffle your entire expended pile back into your draw deck.
-5. **Reset Guard:** You may search your freshly reshuffled deck to **Set Guard** with 1 Action Card face up for free. Deal the rest of your Ready Hand face down up to your chosen vigilance level.
+5. **Ready a Card:** You may search your freshly reshuffled deck to place 1 card face up as your **readied card** for free. Deal the rest of your Vigilance pool face down up to your chosen vigilance level.
 
 ---
 
@@ -41,7 +41,7 @@ When the party takes a Breather, each player resolves the following steps:
 Some campaigns or specific character archetypes may want a way to retrieve a single exhausted technique without reshuffling the entire deck. GMs can offer this as an optional universal maneuver or print it on specific Trait/Stance cards.
 
 - **Tactical Recall Maneuver:**
-  During a brief pause outside of combat, you may strain to recall a spent maneuver. Search your expended pile for **1 Action Card** and place it face up as your guard (or into your Ready Hand).
+  During a brief pause outside of combat, you may strain to recall a spent maneuver. Search your expended pile for **1 Action Card** and place it face up as your readied card in your Vigilance pool.
   **The Cost:** You must immediately discard **2 cards from the top of your deck** into your expended pile to pay for the physical strain.
 
 ---

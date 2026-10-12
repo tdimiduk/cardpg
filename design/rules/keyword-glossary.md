@@ -78,9 +78,17 @@ Fluid exploration mode used for travel, dungeon navigation, investigation, and d
 
 Extended periods of rest, crafting, project advancement, and long-term recovery between active adventures.
 
-### Ready Hand
+### Vigilance
 
-A pool of 0 to 4 cards maintained on the table during [[Adventuring Time]] representing immediate vigilance and readiness.
+_Aliases: Vigilance Pool_
+
+A pool of 0 to 4 cards maintained on the table during [[Adventuring Time]] representing immediate alertness and physical readiness.
+
+### Readied Card
+
+_Aliases: Readied Cards, Ready a Card_
+
+Up to 1 card in your [[Vigilance]] pool kept face up, prepared by searching your deck outside of crisis.
 
 ### Action Stack
 

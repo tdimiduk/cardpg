@@ -14,11 +14,11 @@ In _caRdPG_, physical stamina and narrative progress are governed by a single un
 
 The player deck (baseline 24 cards) acts as the party's expedition clock:
 
-- At peak vigilance ([[Ready Hand]] size 4), a character flushes 4 cards into their expended pile every hour.
+- At peak vigilance ([[Vigilance]] pool size 4), a character flushes 4 cards into their expended pile every hour.
 - A 24-card deck cycles in **6 Effort Cycles (6 in-game hours)**, injecting $2 + \text{Burden}$ [[Fatigue]] cards into the deck.
-- At ease (Ready Hand size 0), a character flushes 0 cards per hour, burning zero deck stamina.
+- At ease (Vigilance 0), a character flushes 0 cards per hour, burning zero deck stamina.
 
-Because cards committed to the [[Ready Hand]] flush every hour, **time directly translates to stamina attrition for vigilant adventurers**.
+Because cards committed to the [[Vigilance]] pool flush every hour, **time directly translates to stamina attrition for vigilant adventurers**.
 
 ### B. "Hard Going" vs. "Acute Perils"
 
@@ -148,7 +148,7 @@ When designing encounter suites or custom campaigns, adhere to these mathematica
 
 Every player character operates on a 24-card starting deck. Assuming standard 1-hour Effort Cycles:
 
-$$\text{Deck Attrition Rate} = \frac{24}{\text{Ready Hand Size}}$$
+$$\text{Deck Attrition Rate} = \frac{24}{\text{Vigilance Level}}$$
 
 - **Vigilance 4:** Cycles deck every **6 hours** (4 cards/hour).
 - **Vigilance 3:** Cycles deck every **8 hours** (3 cards/hour).
@@ -156,10 +156,10 @@ $$\text{Deck Attrition Rate} = \frac{24}{\text{Ready Hand Size}}$$
 - **Vigilance 1:** Cycles deck every **24 hours** (1 card/hour).
 - **Vigilance 0:** Infinite endurance (0 cards/hour).
 
-#### Face-Up Guard Math:
+#### Readied Card Math:
 
-Retaining a [[Face-Up Guard]] costs **2 cards off the top of the deck** per Effort Cycle flush.
-A character maintaining 1 Face-Up Guard + 3 Face-Down cards burns $2 + 3 = 5\text{ cards/hour}$. Their deck will cycle in approximately **4.8 hours**. Ensure encounters provide natural pauses where players feel safe letting their guard down.
+Retaining a [[Readied Card]] costs **2 cards off the top of the deck** per Effort Cycle flush.
+A character maintaining 1 Readied Card + 3 Face-Down cards burns $2 + 3 = 5\text{ cards/hour}$. Their deck will cycle in approximately **4.8 hours**. Ensure encounters provide natural pauses where players feel safe letting their vigilance down.
 
 ### B. Standard Strength Budgets for Challenges
 
