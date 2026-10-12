@@ -68,9 +68,9 @@ Use this skill to spawn isolated subagents for literature harvesting, quantitati
 
   ### Directives:
 
-  1. Audit mechanics using the rubric in `.agent/standards/empirical_research_standards.md`:
-     - Flag Gross Violations: Broken material/force interactions, Hollywood/RPG tropes (studded leather, 10lb swords), zero-consequence trauma/hardship, and scale/timeline incoherence.
-     - Respect Casual Realism: Allow discrete quantization (reach bands), tactile card abstractions (fatigue cards instead of tracking calories), and heroic dynamic range.
+  1. Read and apply the Verisimilitude Audit Rubric in `.agent/standards/empirical_research_standards.md`:
+     - Flag Gross Violations (broken material/force interactions, pop-history tropes, zero-consequence trauma/hardship, scale/timeline incoherence).
+     - Respect Casual Realism (discrete quantization, tactile card abstractions, heroic dynamic range).
   2. Produce an objective, structured audit report detailing:
      - Plausibility status (Pass, Warning, or Gross Violation)
      - Physical/material basis for each finding
@@ -91,12 +91,9 @@ Use this skill to spawn isolated subagents for literature harvesting, quantitati
 
 ---
 
-## Usage Guide & Lifecycle
+## Workflow Integration
 
-When a design task involves empirical grounding or broad research:
+For execution runbooks and mode-specific procedures:
 
-1. **Local-First Verification:** Always check `local_archive` paths in `design/research/verisimilitude-sources.yaml` and `design/research/ludology-sources.yaml` before querying external search.
-2. **If Literature is Missing:** Invoke `source_harvester` (`enable_write_tools: true`) to discover, ingest via `archive_source.py ingest --commit`, verify extracted text, and register the source catalog entry.
-3. **If Synthesis is Needed:** Invoke `empirical_synthesizer` (`enable_write_tools: false`) pointing to the vaulted `extracted.txt` or `extracted.md`. The subagent returns a concise, structured synthesis that the parent agent writes to `design/research/synthesis/`.
-4. **If Rules Need Fact-Checking:** Invoke `verisimilitude_auditor` (`enable_write_tools: false`) to critique the draft rules against `design/research/synthesis/`.
-5. **Rules Verification Triangle:** Before finalizing rules, pair `verisimilitude_auditor` (factual plausibility) with `game_systems_designer` (math & economy) and `rulebook_adversary` (exploits & table friction).
+- **Research Lifecycle:** Follow [.agent/workflows/empirical_research.md](file:///home/tdimiduk/cardpg/cardpg/.agent/workflows/empirical_research.md) for gap analysis, literature harvesting, quantitative synthesis, and verisimilitude auditing.
+- **Rules Design & Verification:** Follow [.agent/workflows/design.md](file:///home/tdimiduk/cardpg/cardpg/.agent/workflows/design.md) for rules drafting and evaluating mechanics through the Rules Verification Triangle (`game_systems_designer` + `rulebook_adversary` + `verisimilitude_auditor`).

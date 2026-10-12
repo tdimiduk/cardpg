@@ -80,14 +80,7 @@ When acquiring new literature, prioritize automated access through open reposito
 
 - The `design/research/sources/` directory is an independent git repository strictly reserved for **direct, authentic scrapes and deterministic extractions** (`metadata.yaml`, `source.<ext>`, `extracted.<ext>`).
 - **Zero AI Commentary in Sources:** Never place AI-authored notes, summaries, or interpretations inside `sources/`.
-- All ingestion must be performed via the canonical script:
-  ```bash
-  python3 design/research/sources/scripts/archive_source.py ingest \
-    --url "<url>" \
-    --track <verisimilitude|ludology|ephemera> \
-    --slug <author-year-topic> \
-    --commit
-  ```
+- All additions to the vault must be performed via `design/research/sources/scripts/archive_source.py ingest` (see `design/research/sources/README.md` for full CLI options and automated catalog registration).
 
 ### E. Human-in-the-Loop Sourcing Escalation Protocol
 

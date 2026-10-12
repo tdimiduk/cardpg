@@ -42,22 +42,10 @@ Before executing, load the core standards:
 
 ### Mode: `harvest` (Subagent: `source_harvester`)
 
-1. Define and invoke `source_harvester` via `invoke_subagent` (`enable_write_tools: true`).
-2. The subagent follows the 5-tier open-access hierarchy (Internet Archive, land-grant Extension bulletins, CDC/NIOSH, StatPearls, PMC).
-3. The subagent runs:
-   ```bash
-   python3 design/research/sources/scripts/archive_source.py ingest \
-     --url "<url>" \
-     --track <verisimilitude|ludology|ephemera> \
-     --slug <author-year-topic> \
-     --section <target_section> \
-     --epistemic-grade <grade> \
-     --description "<summary of empirical data>" \
-     --register-catalog \
-     --commit
-   ```
-4. Subagent verifies `extracted.txt` / `extracted.md` via `view_file` to ensure non-empty text extraction, confirms catalog registration output, and reports back.
-5. If the document is blocked by an interactive CAPTCHA or commercial paywall, escalate per the Human-in-the-Loop Sourcing Escalation Protocol.
+1. Define and invoke `source_harvester` via `invoke_subagent` (`enable_write_tools: true`) following [.agent/skills/game_design_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/game_design_subagents/SKILL.md).
+2. The subagent searches open-access tiers per the [Automated Ingestion Hierarchy](file:///home/tdimiduk/cardpg/cardpg/.agent/standards/empirical_research_standards.md#b-automated-ingestion-hierarchy-open-access-tiers).
+3. The subagent ingests the source via `archive_source.py ingest` (see [design/research/sources/README.md](file:///home/tdimiduk/cardpg/cardpg/design/research/sources/README.md) for CLI options and automated catalog registration), verifies clean text extraction via `view_file`, and reports back.
+4. If blocked by an interactive gate or paywall, escalate per the Human Escalation Boundary below.
 
 ### Mode: `synthesize` (Subagent: `empirical_synthesizer`)
 
@@ -71,16 +59,14 @@ Before executing, load the core standards:
 
 1. Define and invoke `verisimilitude_auditor` via `invoke_subagent` (`enable_write_tools: false`).
 2. Provide the draft rules or card text, along with pointers to relevant syntheses in `design/research/synthesis/`.
-3. Subagent applies the Rubric from `.agent/standards/empirical_research_standards.md`:
-   - **Gross Violations:** Broken material/force interactions, pop-history tropes, zero-consequence trauma/hardship, scale/timeline incoherence.
-   - **Casual Realism:** Valid discrete quantization, tabletop card compression, heroic dynamic range.
+3. Subagent evaluates the rules against the [Verisimilitude Audit Rubric](file:///home/tdimiduk/cardpg/cardpg/.agent/standards/empirical_research_standards.md#6-verisimilitude-audit-rubric-gross-violations-vs-casual-realism) in `empirical_research_standards.md`, distinguishing Gross Violations from Casual Realism stylization.
 4. Subagent returns an objective audit report recommending adjustments to harmonize mechanics with reality without sacrificing playability.
 
 ---
 
 ## 4. Human Escalation Boundary
 
-When a needed source cannot be obtained automatically:
+When a needed source cannot be obtained automatically, follow the [Human-in-the-Loop Sourcing Escalation Protocol](file:///home/tdimiduk/cardpg/cardpg/.agent/standards/empirical_research_standards.md#e-human-in-the-loop-sourcing-escalation-protocol) in `empirical_research_standards.md`:
 
-- **Web UI Gate / CAPTCHA:** Request that the user download the file via browser and ingest with `archive_source.py ingest --file ... --commit`.
-- **Paywall:** Check for open-access preprints/reviews first. If none exist and the document is foundational, log to `design/research/sources/DEFERRED_ACQUISITIONS.md` or request institutional library retrieval as a last resort.
+- **Web UI Gate / CAPTCHA:** Request the user retrieve the file via browser for CLI ingestion (`archive_source.py ingest --file ...`).
+- **Paywall:** Exhaust open-access preprints and government reviews first. If foundational and unreachable, record in `design/research/sources/DEFERRED_ACQUISITIONS.md` or request institutional library retrieval as a last resort.

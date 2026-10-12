@@ -31,17 +31,9 @@ Always uphold and cross-reference the project's foundational design documents:
      - _Low Confidence / Unvetted AI Draft:_ Do not ignore the research, but do not break game mechanics to conform to an unverified claim.
    - **Trigger Investigation:** Dispatch `SourceHarvester` or `EmpiricalSynthesizer` to trace primary sources and replace speculative drafts with verified facts.
 6. **Fetch-to-Sources Archival Policy:**
-   - Whenever an agent fetches or reads a remote document, web essay, academic paper, or dataset to inform research or design, the agent **must immediately archive a clean copy** using the canonical ingestion tool:
-     ```bash
-     python3 design/research/sources/scripts/archive_source.py ingest \
-       --url "<url>" \
-       --track verisimilitude \
-       --slug author-year-topic \
-       --commit
-     ```
-   - **Bundle Architecture:** Sources are stored as directory bundles in `design/research/sources/<track>/<slug>/` containing `metadata.yaml`, `source.<ext>`, and deterministic derived text `extracted.<ext>` (`extracted.txt` for PDFs, `extracted.md` for HTML).
-   - **Catalog Cross-Referencing:** Always link archived copies in `design/research/verisimilitude-sources.yaml` or `design/research/ludology-sources.yaml` via `local_archive: "sources/<track>/<slug>"`.
-   - **Local-First Verification:** Before fetching from the web, agents must check `local_archive` paths in the catalogs to reuse existing local sources.
+   - Whenever an agent fetches or reads a remote document, web essay, academic paper, or dataset to inform research or design, the agent **must immediately archive a clean copy** into `design/research/sources/`.
+   - **Local-First Verification:** Before fetching external sources, check `local_archive` entries in `design/research/verisimilitude-sources.yaml` and `design/research/ludology-sources.yaml` to reuse existing vault bundles.
+   - **Canonical Tooling & Architecture:** See `design/research/sources/README.md` for bundle specifications, catalog registration options, and canonical `archive_source.py ingest` CLI syntax. Never write manual notes or unverified text into `design/research/sources/`.
 7. **Human Vetting Invariant (`vetted_by_human`):**
    - **Never Set to True:** AI agents must **never** flip `vetted_by_human` to `true` (or assign a human reviewer string). Only human designers have the authority to mark a document as vetted by a human.
    - **Must Reset to False on Substantial Edits:** Whenever an agent makes substantial edits, structural rewrites, or conceptual additions to any document (including documents previously vetted by a human), the agent **must flip `vetted_by_human` back to `false`** and summarize the alterations in `vetting_notes` for human re-review.
