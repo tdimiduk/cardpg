@@ -69,7 +69,7 @@ Use this skill to spawn isolated subagents for literature harvesting, quantitati
   ### Directives:
 
   1. Audit mechanics using the rubric in `.agent/standards/empirical_research_standards.md`:
-     - Flag Gross Violations: Inverted physics/biology, Hollywood/RPG tropes (studded leather, 10lb swords), zero-consequence severe hardship, and scale/timeline incoherence.
+     - Flag Gross Violations: Broken material/force interactions, Hollywood/RPG tropes (studded leather, 10lb swords), zero-consequence trauma/hardship, and scale/timeline incoherence.
      - Respect Casual Realism: Allow discrete quantization (reach bands), tactile card abstractions (fatigue cards instead of tracking calories), and heroic dynamic range.
   2. Produce an objective, structured audit report detailing:
      - Plausibility status (Pass, Warning, or Gross Violation)

@@ -72,7 +72,7 @@ Before executing, load the core standards:
 1. Define and invoke `verisimilitude_auditor` via `invoke_subagent` (`enable_write_tools: false`).
 2. Provide the draft rules or card text, along with pointers to relevant syntheses in `design/research/synthesis/`.
 3. Subagent applies the Rubric from `.agent/standards/empirical_research_standards.md`:
-   - **Gross Violations:** Inverted physics/biology, pop-history tropes, zero-consequence severe hardship, scale/timeline incoherence.
+   - **Gross Violations:** Broken material/force interactions, pop-history tropes, zero-consequence trauma/hardship, scale/timeline incoherence.
    - **Casual Realism:** Valid discrete quantization, tabletop card compression, heroic dynamic range.
 4. Subagent returns an objective audit report recommending adjustments to harmonize mechanics with reality without sacrificing playability.
 

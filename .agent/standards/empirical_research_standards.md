@@ -130,10 +130,10 @@ When auditing game mechanics, cards, or rules modules, agents must distinguish b
 
 ### Gross Violations (Must Be Flagged & Corrected)
 
-1. **Inverted Physics or Physiology:** Rules where physical cause-and-effect operates backwards (e.g., heavy armor causing instant drowning without struggle, bludgeoning plate armor with an unaugmented sword edge causing crushing trauma without half-swording, or falling 30 feet onto stone being shaken off in one round with zero consequence).
-2. **Gamified / Pop-History Tropes:** Mechanics perpetuating Hollywood or RPG myths (e.g., studded leather armor, 10 lb greatswords, swords slicing through iron maille, daggers penetrating solid breastplates, or treating torches as lasting 1 hour in stagnant blackdamp).
-3. **Zero-Consequence Hardship:** High-strain activities (e.g., forced marching 14 hours in freezing sleet, sprinting in full armor, or performing continuous heavy labor while dehydrated) having no cumulative metabolic or cognitive fatigue consequence.
-4. **Scale & Timeline Incoherence:** Long-term physiological processes happening instantaneously (e.g., healing a fractured femur in 8 hours of sleep, or forging a steel axe in 20 minutes without fuel).
+1. **Broken Material & Force Interactions:** Mechanics that contradict the physical behavior of materials, impulse, and injury mechanics, or produce perversely inverted incentives (e.g., an unaugmented sword edge delivering blunt crushing trauma through rigid plate, daggers piercing solid breastplates, or encumbrance rules where heavier loads paradoxically increase speed or stability).
+2. **Gamified / Pop-History Tropes:** Mechanics perpetuating Hollywood or RPG myths in place of historical technology and metallurgy (e.g., studded leather armor, 10 lb greatswords, swords cleanly slicing iron maille, or treating torches as lasting 1 hour in stagnant, oxygen-depleted blackdamp).
+3. **Zero-Consequence Trauma & Hardship:** High-energy kinetic trauma or extreme metabolic strain being absorbed with zero functional degradation or physical debt (e.g., shrugging off a 30-foot fall onto stone in one round because hit points remain, sustained heavy labor while severely dehydrated, or forced marching 14 hours in freezing sleet with no hypothermia or stamina penalty).
+4. **Scale, Timeline & State Incoherence:** Long-term physical processes occurring instantaneously, or dynamic physical struggles collapsed into instant binary states (e.g., heavy armor causing instantaneous drowning upon entering water with zero window for breath-holding, treading, or shedding kit; healing a fractured femur in 8 hours of sleep; or forging an axe in 20 minutes without fuel or thermal cycling).
 
 ### Casual Realism / Conscious Stylization (Accepted & Encouraged)
 
