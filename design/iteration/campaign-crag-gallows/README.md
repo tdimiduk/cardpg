@@ -64,6 +64,10 @@ flowchart TD
 
 - [environment-and-inhabitants.md](environment-and-inhabitants.md): Detailed breakdown of the Haven, the Wilderness Approach, the Upper Works, and the Lower Cuts, including locations, inhabitants, and environmental hazards.
 - [living-clocks.md](living-clocks.md): Design and narrative concepts for the 3 Clock Decks (Wilderness Clock, Site Activity Clock, and Macro Haven Clock).
+- [location-card-schema.md](location-card-schema.md): Formal YAML schemas and concrete prototypes for Location Cards, Travel Cards, and Clock Event Cards, embedding grounded time costs and noise interrupt tags.
+- [software-requirements-checklist.md](software-requirements-checklist.md): Engineering checklist for digital tabletop support of the expedition chronometer, modular decks, interrupt dispatch, and exploration automation.
+- [verisimilitude-study-agenda.md](verisimilitude-study-agenda.md): Structured research agenda to empirically calibrate the tentative 30m/60m time baselines against vigilance fatigue, mine traversal kinetics, and acoustics.
+- [research-handoff-brief.md](research-handoff-brief.md): Comprehensive context and execution brief for incoming clean research session to investigate vigilance limits, caving locomotion, and mine acoustics.
 - [index.yaml](index.yaml): Local package registry and document metadata.
 
 ---
@@ -72,6 +76,7 @@ flowchart TD
 
 To ensure game balance without premature, ungrounded rule invention, future refinement sessions will focus on targeted design topics:
 
-1. **The Expedition Economy Session:** Calibrating lodging costs, apothecary treatment, and salvage values to create just the right amount of action pressure.
-2. **The Attrition & Recovery Calibration Session:** Tuning deck dilution rates, fatigue purging during rests, and condition card treatment in town.
-3. **Encounter & Card Deck Data Schemas:** Translating node features, clock events, and obstacle choices into structured data formats for automated agent play.
+1. **Empirical Verisimilitude Studies:** Dispatching `empirical_researcher` to stress-test vigilance fatigue limits, caving locomotion speeds, and acoustic transmission per [verisimilitude-study-agenda.md](verisimilitude-study-agenda.md).
+2. **The Expedition Economy Session:** Calibrating lodging costs, apothecary treatment, and salvage values to create just the right amount of action pressure.
+3. **The Attrition & Recovery Calibration Session:** Tuning deck dilution rates, fatigue purging during rests, and condition card treatment in town.
+4. **Software Implementation of Chronometer & Decks:** Implementing the Haskell core models and Reflex UI widgets outlined in [software-requirements-checklist.md](software-requirements-checklist.md).

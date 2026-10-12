@@ -1,93 +1,86 @@
 ---
-description: Research tasks focusing on physiological and physical facts (design prompts, synthesize topics, vet sources)
+description: Empirical research workflow covering gap analysis, literature harvesting, quantitative synthesis, and verisimilitude auditing
 ---
 
 # Empirical Research Workflow
 
-This unified workflow handles all empirical research tasks, aligning with the `biomechanical_analyst` subagent. The user's prompt determines the mode.
+This workflow guides all empirical research tasks across CardPG, connecting design requirements to the project's factual bedrock.
 
-## Delegating to Subagent
+---
 
-For deep scientific or physiological fact-finding, vetting academic/historical texts, or drafting research prompts, delegate to the `biomechanical_analyst` subagent (Lead Technical Researcher) to maintain academic focus and quantitative rigor in a separate research sandbox.
+## 1. Context & Standards
 
-If the subagent is not yet defined in this conversation, define it first using `define_subagent` with the following configuration:
-
-- **Name**: `biomechanical_analyst`
-- **Description**: Specialized in empirical research, biomechanics, physiological stress limits, and factual sourcing.
-- **System Prompt**:
-
-  ```markdown
-  You are the Lead Technical Researcher for CardPG. You are an expert in experimental archaeology, clinical trauma metrics, and biological/biomechanical stress scaling.
-
-  ### Scope & Duties:
-
-  - Perform deep physical and physiological research on human combat, trauma, and movement stress.
-  - Draft Research Prompts for empirical data collection.
-  - Synthesize quantitative facts from academic databases.
-  - Vet historical and scientific sources for physical verisimilitude.
-
-  ### Standards:
-
-  - **Tangible Materiality**: Prioritize hard physical forces (Joules, shear stress), physiological costs (calories, aerobic thresholds), timescales (seconds to recover), and material properties (tensile strength, thickness).
-  - **No Abstract Trivia**: Strictly reject narrative folklore, mythology, symbolic heraldry, or purely chronological listings that do not describe physical stress.
-  ```
-
-- **Tool Access**: Enable Write Tools: `true`, MCP Tools: `true`, Subagent Tools: `false`
-
-## 1. Load Context
+Before executing, load the core standards:
 
 - `view_file <workspace_root>/.agent/standards/standards.md`
 - `view_file <workspace_root>/.agent/standards/empirical_research_standards.md`
+- Check `design/research/sources/README.md` if operating on vault bundles.
 
-Adhere to the **Lead Technical Researcher** guidelines and principles.
+---
 
-## 2. Determine Mode from User Request
+## 2. Determine Mode from Request
 
-| Mode              | Trigger Keywords                                      | Behavior                                                                                                                                                            |
-| ----------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Design Prompt** | "research prompt", "deep research", "set up research" | Draft a detailed prompt for Deep Research tool. Focus on quantitative data. Create directory at `design/research/reports/<slug>/` with `prompt.md` and `meta.yaml`. |
-| **Synthesize**    | "synthesize", "summarize research", "what do we know" | Cross-reference existing reports in `design/research/`. Highlight Physical Constraints and Physiological Limits. Reject abstract trivia.                            |
-| **Vet Source**    | "vet", "evaluate source", "is this good"              | Critique source for Tangible Materiality. Good = physics/biology/mechanics. Bad = mythology/lineage/symbolism. Output Material Analysis + Database Entry YAML.      |
+| Mode               | Trigger Keywords                                                                | Subagent & Strategy                                                    | Behavior                                                                                                                                                             |
+| :----------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`gap_analysis`** | "gap analysis", "assess gaps", "what are we missing", "research agenda"         | **Main Agent Direct Execution**                                        | Audit design requirements against `design/research/index.yaml` and catalogs. Isolate ungrounded assumptions and formulate quantitative research questions.           |
+| **`harvest`**      | "find sources", "harvest", "archive paper", "ingest source", "look up research" | **Delegate to `source_harvester`** (`enable_write_tools: true`)        | Searches open-access repositories (Tier 1/2), executes `archive_source.py ingest --commit`, verifies extraction, and registers catalog YAML.                         |
+| **`synthesize`**   | "synthesize", "extract metrics", "summarize research", "build synthesis"        | **Delegate to `empirical_synthesizer`** (`enable_write_tools: false`)  | Reads local `sources/<track>/<slug>/extracted.*` text files. Extracts hard numbers (METs, Joules, timescales, failure modes) and drafts structured reference tables. |
+| **`audit`**        | "fact check", "audit verisimilitude", "is this realistic", "check rules"        | **Delegate to `verisimilitude_auditor`** (`enable_write_tools: false`) | Cross-examines proposed mechanics against `design/research/synthesis/`. Flags Gross Violations vs. Casual Realism stylization.                                       |
 
-## 3. Execute Per Mode
+---
 
-### Design Prompt Mode
+## 3. Execution Procedures
 
-1. Slugify topic → directory name
-2. Create `design/research/reports/<slug>/`
-3. Write `prompt.md` with research questions focusing on numbers, timelines, physical consequences
-4. Write `meta.yaml` with date and tool info
+### Mode: `gap_analysis` (Main Agent)
 
-### Synthesize Mode
+1. **Scope the Subsystem:** Identify the physical interactions, materials, or environmental hardships involved in the active mechanic or module.
+2. **Catalog Audit:** Check `design/research/verisimilitude-sources.yaml`, `design/research/ludology-sources.yaml`, and `design/research/synthesis/` for existing coverage.
+3. **Formulate Questions:** Output a structured research agenda defining:
+   - Primary physical phenomenon (e.g. cold-water immersion, rock spalling, draft horse pull limits)
+   - Specific quantitative metrics needed (Joules, failure curves, recovery duration, metabolic cost in METs)
+   - Target source types (Tier 1 primary manual, experimental archaeology, or Tier 2 clinical/extension bulletin).
 
-1. Scan `design/research/synthesis/` and `design/research/reports/`
-2. Extract hard constraints
-3. Output summary prioritizing quantitative facts
+### Mode: `harvest` (Subagent: `source_harvester`)
 
-### Vet Source Mode
-
-1. Analyze provided text/URL
-2. Output:
-
-   ````markdown
-   ### Material Analysis
-
-   **Focus:** [Physics/Biology vs. History]
-   **Rigor:** [Academic vs. Pop-History]
-
-   ### Database Entry
-
-   ```yaml
-   - type: [book/article]
-     title: "..."
-     description: "Contains quantitative data on..."
-     vetting:
-       - date: "[YYYY-MM-DD]"
-         author: "Lead Technical Researcher"
-         summary: "..."
+1. Define and invoke `source_harvester` via `invoke_subagent` (`enable_write_tools: true`).
+2. The subagent follows the 5-tier open-access hierarchy (Internet Archive, land-grant Extension bulletins, CDC/NIOSH, StatPearls, PMC).
+3. The subagent runs:
+   ```bash
+   python3 design/research/sources/scripts/archive_source.py ingest \
+     --url "<url>" \
+     --track <verisimilitude|ludology|ephemera> \
+     --slug <author-year-topic> \
+     --section <target_section> \
+     --epistemic-grade <grade> \
+     --description "<summary of empirical data>" \
+     --register-catalog \
+     --commit
    ```
-   ````
+4. Subagent verifies `extracted.txt` / `extracted.md` via `view_file` to ensure non-empty text extraction, confirms catalog registration output, and reports back.
+5. If the document is blocked by an interactive CAPTCHA or commercial paywall, escalate per the Human-in-the-Loop Sourcing Escalation Protocol.
 
-## 4. If Mode Unclear
+### Mode: `synthesize` (Subagent: `empirical_synthesizer`)
 
-Ask: "What research task—design a prompt, synthesize existing research, or vet a source?"
+1. Define and invoke `empirical_synthesizer` via `invoke_subagent` (`enable_write_tools: false`).
+2. Pass the path to the vaulted bundle text (e.g. `design/research/sources/verisimilitude/<slug>/extracted.txt`).
+3. Subagent reads the source text, extracts quantitative parameters, and returns a draft synthesis.
+4. **Parent Ingestion:** The parent agent reviews the output and integrates it into a living document in `design/research/synthesis/<topic>.md` (or a point-in-time report under `design/research/reports/<slug>/`).
+5. Ensure epistemic frontmatter is complete (`origin`, `doc_type`, `epistemic_status`, `vetted_by_human: false`).
+
+### Mode: `audit` (Subagent: `verisimilitude_auditor`)
+
+1. Define and invoke `verisimilitude_auditor` via `invoke_subagent` (`enable_write_tools: false`).
+2. Provide the draft rules or card text, along with pointers to relevant syntheses in `design/research/synthesis/`.
+3. Subagent applies the Rubric from `.agent/standards/empirical_research_standards.md`:
+   - **Gross Violations:** Inverted physics/biology, pop-history tropes, zero-consequence severe hardship, scale/timeline incoherence.
+   - **Casual Realism:** Valid discrete quantization, tabletop card compression, heroic dynamic range.
+4. Subagent returns an objective audit report recommending adjustments to harmonize mechanics with reality without sacrificing playability.
+
+---
+
+## 4. Human Escalation Boundary
+
+When a needed source cannot be obtained automatically:
+
+- **Web UI Gate / CAPTCHA:** Request that the user download the file via browser and ingest with `archive_source.py ingest --file ... --commit`.
+- **Paywall:** Check for open-access preprints/reviews first. If none exist and the document is foundational, log to `design/research/sources/DEFERRED_ACQUISITIONS.md` or request institutional library retrieval as a last resort.

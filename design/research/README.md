@@ -20,7 +20,7 @@ Research in caRdPG operates across two distinct epistemological tracks:
 
 ### Track A: Verisimilitude Research (Physical Reality & Factual Bedrock)
 
-The evidence-based foundation for our "Casual Realism" guiding principle. Governed by `.agent/standards/empirical_research_standards.md` and investigated by the `empirical_researcher` subagent.
+The evidence-based foundation for our "Casual Realism" guiding principle. Governed by [.agent/standards/empirical_research_standards.md](../../.agent/standards/empirical_research_standards.md) and investigated by specialized subagents (`source_harvester`, `empirical_synthesizer`, `verisimilitude_auditor`).
 
 - **[verisimilitude-sources.yaml](verisimilitude-sources.yaml)**: Master bibliography of vetted historical treatises, archaeological data, and scientific/medical publications.
 - **[reports/](reports/)**: Deep-dive, point-in-time empirical research reports (e.g., trauma timelines, metabolic costs of armor). Each report contains its findings (`report.md`), research mandate (`prompt.md`), and tooling metadata (`meta.yaml`).

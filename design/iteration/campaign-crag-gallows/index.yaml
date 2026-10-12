@@ -15,3 +15,19 @@ documents:
   - path: "iteration/campaign-crag-gallows/living-clocks.md"
     purpose: "Conceptual design and event catalogs for the 3 Living Clock Decks (Wilderness Clock, Site Activity Clock, Macro Haven Clock)."
     tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
+
+  - path: "iteration/campaign-crag-gallows/location-card-schema.md"
+    purpose: "Data schemas and concrete prototypes for Location, Travel, and Clock Cards with explicit time costs and interrupt tags."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
+
+  - path: "iteration/campaign-crag-gallows/software-requirements-checklist.md"
+    purpose: "Engineering checklist for digital tabletop chronometer, modular decks, interrupt dispatch, and adventuring time state."
+    tags: ["doc-type:iteration", "audience:developer-facing", "core-concept:architecture"]
+
+  - path: "iteration/campaign-crag-gallows/verisimilitude-study-agenda.md"
+    purpose: "Empirical research agenda for testing and calibrating the tentative 30m/60m time baselines against human vigilance, caving kinetics, and acoustics."
+    tags: ["doc-type:iteration", "audience:designer-facing", "track:verisimilitude", "core-concept:pacing"]
+
+  - path: "iteration/campaign-crag-gallows/research-handoff-brief.md"
+    purpose: "Self-contained handoff brief and operational guidance for the clean research session on vigilance limits and acoustics."
+    tags: ["doc-type:iteration", "audience:developer-facing", "audience:designer-facing", "track:verisimilitude", "core-concept:pacing"]

@@ -22,14 +22,14 @@ Always uphold and cross-reference the project's foundational design documents:
    - _Scale Invariance & Multi-Scale Scope_ (Core mechanics function identically from single to triple digits; advancement scales cards numerically; decks can model macro entities like armies or kingdoms).
 3. **Design Standards:** Adhere to `.agent/standards/systems_design_standards.md`.
 4. **Empirical Research vs. Narrative Scenario Design:**
-   - Adhere to `.agent/standards/empirical_research_standards.md` for biomechanical and trauma data harvesting (quantifiable forces, metabolic costs, clinical timelines).
+   - Adhere to `.agent/standards/empirical_research_standards.md` for factual data harvesting across all physical, material, environmental, and physiological domains (quantifiable forces, metabolic costs, material limits, clinical timelines).
    - **Do not confuse physical verisimilitude with narrative tone:** Physical research defines how the world's machinery functions, not what the world's emotional mood must be. Focus on harsh survival when that _is_ the explicit plot (e.g., blizzards, desert treks, collapsed mines); let wonder and beauty shine where appropriate; include dastardly foes when clear opposition drives momentum; and treat protagonists as competent, courageous heroes rather than fragile, bumbling victims.
 5. **Conflict Resolution ("Flag & Investigate"):**
    - **Always Flag Conflicts:** When an agent notices a tension between research and a design precept or game mechanic, proactively report it.
    - **Differentiate by Confidence:**
      - _High Confidence / Human-Vetted:_ Game design must adapt or explicitly justify a conscious stylization (Casual Realism).
      - _Low Confidence / Unvetted AI Draft:_ Do not ignore the research, but do not break game mechanics to conform to an unverified claim.
-   - **Trigger Investigation:** Propose or dispatch an `EmpiricalResearcher` task to trace primary sources and replace speculative drafts with verified facts.
+   - **Trigger Investigation:** Dispatch `SourceHarvester` or `EmpiricalSynthesizer` to trace primary sources and replace speculative drafts with verified facts.
 6. **Fetch-to-Sources Archival Policy:**
    - Whenever an agent fetches or reads a remote document, web essay, academic paper, or dataset to inform research or design, the agent **must immediately archive a clean copy** using the canonical ingestion tool:
      ```bash
@@ -52,16 +52,21 @@ Always uphold and cross-reference the project's foundational design documents:
 
 ## 3. Delegation to Subagents & Tooling Protocols
 
-When a task involves deep exploration or high token volume, delegate to specialized subagents to keep the main conversation context clean:
+When a task involves deep exploration or high token volume, delegate to specialized subagents defined in `.agent/skills/game_design_subagents/SKILL.md`:
 
-- **`EmpiricalResearcher`:** Delegate broad literature reviews, biomechanical data collection, and source analysis (with write tools disabled to protect context).
-- **`RulebookAdversary`:** Delegate stress-testing of new mechanics to find degenerate combos, exploit loops, analysis-paralysis bottlenecks, and table tracking friction.
-- **`GameSystemsDesigner`:** Delegate mathematical modeling of probability spreads, deck attrition rates, and card economy balances.
+- **`SourceHarvester`:** Literature retrieval and vault ingestion (`enable_write_tools: true`). Restricted solely to running `archive_source.py ingest --commit` and registering catalog manifests. Never edits files inside `design/research/sources/` directly.
+- **`EmpiricalSynthesizer`:** Quantitative domain extraction (`enable_write_tools: false`). Reads local `extracted.txt`/`extracted.md` files to extract Joules, METs, timelines, and material thresholds for living syntheses.
+- **`VerisimilitudeAuditor`:** Factual plausibility auditing (`enable_write_tools: false`). Cross-examines proposed mechanics against `design/research/synthesis/` using the Gross Violations vs. Casual Realism rubric.
+- **`GameSystemsDesigner`:** Mathematical modeling of probability spreads, deck attrition rates, and card economy balances.
+- **`RulebookAdversary`:** Adversarial stress-testing of rules to find degenerate combos, exploit loops, and table tracking friction.
 
-### Parent-Mediated CLI & Fetch Coordination:
+### The Rules Verification Triangle
 
-Because subagents defined with `enable_write_tools: false` cannot run shell commands or view binary PDFs, the **parent agent** ingests external materials using `archive_source.py ingest --commit` before dispatching subagents.
-Subagents can then immediately inspect the companion plain text (`<slug>/extracted.txt` or `<slug>/extracted.md`) directly with `view_file` without needing shell execution.
+Before finalizing any mechanics or rules module under `design/rules/` or `design/iteration/`, evaluate it through the three-part verification loop:
+
+1. **Systems & Math:** `GameSystemsDesigner` (probability curves, card economy, 10x Rule)
+2. **Ergonomics & Exploits:** `RulebookAdversary` (degenerate loops, tracking friction)
+3. **Physical Plausibility:** `VerisimilitudeAuditor` (cause-and-effect grounding, casual realism)
 
 ## 4. Output Conventions
 
