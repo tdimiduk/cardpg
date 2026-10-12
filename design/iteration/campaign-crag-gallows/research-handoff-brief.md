@@ -1,130 +1,119 @@
 ---
-title: "Research Handoff Brief: Calibrating the Time Economy & Vigilance Dynamics"
+title: "Research Brief: Physiological & Cognitive Timelines of Vigilance, Guard, and Acute Recovery"
 doc_type: iteration
-track: ludology
+track: verisimilitude
 origin: AI drafted
 epistemic_status:
   confidence: high
   vetted_by_human: true
 ---
 
-# Research Handoff Brief: Calibrating the Time Economy & Vigilance Dynamics
+# Research Brief: Physiological & Cognitive Timelines of Vigilance, Guard, and Acute Recovery
 
-## Executive Summary for Incoming Agent
+## Persona & Mission
 
-This handoff brief is prepared for a dedicated, clean research session. Its goal is to provide full context, established architectural decisions, relevant files, and explicit research questions to calibrate the **Grounded Time Economy** of _The Delve of Crag-Gallows_ and _caRdPG_.
+You are an expert research analyst specializing in human physiology, sports biomechanics, military ergonomics, and cognitive neuroscience.
 
-In our prior session, we established a foundational design pivot: **in-game time should be tracked in direct, realistic physical units (minutes, hours, days) rather than abstract card-turn counters**, with digital tabletop automation handling scheduled clock intervals and noise interrupts.
+Your mission is to establish the empirical, quantitative baseline for the human limits of **sustained sensory alertness, combat-ready guard postures, and short-term physical/cognitive recovery**.
 
-We established initial working baselines—**30 minutes for delve checks/effort flushes** and **60 minutes for wilderness checks**—marked explicitly as **tentative**. Your mission in the clean session is to conduct empirical research to stress-test, refine, and ground these numbers against human biomechanics, cognitive vigilance decay, speleological transit physics, and subterranean acoustics.
-
----
-
-## 1. Core Mechanics & Design Context
-
-### The Engine
-
-- **Deck as Stamina:** Each character has a symmetrical 24-card deck representing their health, physical reserves, and tactical capability.
-- **Adventuring Time & Ready Hand:** Outside combat (Crisis Time), players do not hold cards. Instead, they set a **Vigilance Dial (0 to 4 cards)** on the table as a **Ready Hand** (up to 1 card can be an active face-up guard stance).
-- **The Effort Cycle:** Sustaining alertness flushes the Ready Hand to the expended pile, forcing a redraw. At vigilance 4, each Effort Cycle discards 4 cards (burning through 8 cards/hour under a 30-min cycle). After roughly 2–3 hours of continuous high vigilance, a character hits an automatic **Fatigue Cycle** (shuffling fatigue cards into the deck).
-- **Marching at Ease (Dial 0):** Burns 0 cards on Effort Cycles, but entering surprise or Crisis Time leaves the player with an empty hand (0 cards).
-- **The Breather:** A 15-minute pause allowing characters to perform a proportional fatigue cycle (adding 1 fatigue if $<12$ cards expended; 2 fatigue if $\ge 12$) and ignore armor Burden if unbuckling.
-- **Dual-Trigger Clocks:**
-  - _Scheduled:_ Elapsed chronometer time crossing thresholds (e.g., every 30m in delve, every 60m in wild).
-  - _Interrupt:_ Actions bearing tags like `[Loud]` (sledgehammer breach, bone horns) or `[Exposed]` immediately trigger an out-of-turn clock draw.
+Your analysis must be strictly evidence-based, quantitative, and focused on functional performance curves over elapsed time (minutes and hours). Do not reference tabletop game mechanics, rules abstractions, or narrative tropes; your deliverable is the objective physical reality.
 
 ---
 
-## 2. Key Questions for the Clean Research Session
+## Key Research Areas (KRAs)
 
-Your research should focus on four distinct quantitative tracks. Avoid pop-history tropes and focus strictly on empirical, peer-reviewed data per `.agent/standards/empirical_research_standards.md`.
+Structure your investigation around four core physiological domains. Provide concrete quantitative timelines, degradation percentages, and functional thresholds for each.
 
-### Track 1: Biomechanics & Cognitive Limits of Sustained Vigilance
+### KRA 1: Sustained Cognitive Vigilance & Signal Detection
 
-1. **Isometric Weapon & Shield Hold Endurance:**
-   - What is the physiological limit of holding an active combat guard (1.2 kg sword, 2.5 kg spear, 3–5 kg strapped/boss shield held high and ready) before tremor, muscular fatigue, and reaction time degradation occur?
-   - At what minute mark does performance significantly decline without lowering arms?
-2. **Sensory Vigilance in Absolute Darkness:**
-   - Review literature on sustained attention in high-stress, low-stimulus environments (e.g., Mackworth clock vigilance tests, military night perimeter watches, subterranean exploration).
-   - In a dark cave where auditory cues (clicks, scrapes) are the sole warning of lethal ambush, how long can peak auditory attention be maintained before attentional lapses occur?
-3. **Effort Cycle Interval Calibration:**
-   - Does our tentative **30-minute interval** accurately match the threshold where maintaining high readiness (Vigilance Dial 4) exhausts acute reserves, or should it be adjusted to 20 or 45 minutes?
+Investigate human attentional endurance in high-threat, low-stimulus, or sensory-deprived environments (e.g., military sentry watch, night patrols, underground or confined space operations).
 
-### Track 2: Subterranean & Mountain Locomotion Kinetics
+1. **The Vigilance Decrement Curve:** Under continuous high alert where auditory cues (scrapes, clicks) or subtle peripheral visual cues are the sole warning of lethal danger, how rapidly does detection performance decay?
+2. **Error Rate & Reaction Latency Timelines:**
+   - At what elapsed minute marks (e.g., 10m, 20m, 30m, 45m, 60m) do significant attentional lapses, delayed reaction latencies, or signal misses first manifest?
+   - What does the standard Mackworth clock vigilance curve look like in high-stress, survival-critical contexts?
+3. **Cognitive Reset Requirements:** How much quiet rest or mental disengagement is required to reset attentional capacity back to initial baseline?
 
-1. **Subterranean Traversal Speeds:**
-   - What are empirical travel speeds (meters/minute or km/hour) documented in historical mine rescues, speleological cave surveys, or military tunnel warfare across:
-     - Dry, even limestone quarry floors vs.
-     - Low-clearance timber adits (duck-walking, stoop-walking) vs.
-     - Waist-deep flooded mine sumps with submerged rubble?
-2. **Scree & Ravine Ascent:**
-   - What is the metabolic cost and realistic transit time of ascending 20°–30° loose shale/scree slopes carrying 20–30 kg of field gear?
-3. **Room Traversal Calibration:**
-   - Does 5–10 minutes per delve room and 45–60 minutes per wilderness trail leg hold up to physical realities?
+### KRA 2: Isometric Muscular Endurance of Guard Postures
 
-### Track 3: Acoustic Dynamics & Alert Horizons in Hard-Rock Mines
+Investigate the physiological and biomechanical limits of holding drawn weapons and defensive shields in active readiness.
 
-1. **Decibel Output of Exploratory & Forcible Actions:**
-   - Quantify sound pressure levels (dB) for:
-     - Sledgehammer or pickaxe striking iron mine rails / mortared stone ($\sim 115\text{--}125\text{ dB}$).
-     - Clattering tin cans / bone chimes ($\sim 65\text{--}75\text{ dB}$).
-     - Bone horn / whistle blasts ($\sim 100\text{--}115\text{ dB}$).
-     - Delicate lockpicking and wire snipping ($\sim 40\text{--}50\text{ dB}$).
-2. **Acoustic Wave Transmission in Stone Shafts:**
-   - How rapidly does sound attenuate around 90° rock corners, down vertical shafts, and through damp air?
-3. **Alert Horizon Rules:**
-   - When an action has the `[Loud]` tag, what is the realistic radius (in rooms/meters) of immediate sentry detection?
+1. **Active Guard vs. Passive Carry Limits:**
+   - What is the sustainable duration of holding a drawn one-handed weapon (1.0–2.5 kg) or polearm in an active, elevated guard?
+   - What is the sustainable duration of holding a braced shield (3.0–5.0 kg strapped or center-boss) in a high ready position before muscular failure?
+   - How does this compare to resting, slung, or low-ready carry postures?
+2. **Neuromuscular Degradation Timelines:**
+   - At what minute mark of continuous isometric contraction do motor tremor, loss of grip stability, and parry latency degradation occur?
+   - At what point does acute muscular exhaustion force an individual to lower their arms regardless of external threat?
 
-### Track 4: Frontier Portable Light: Combustion & Atmospheric Costs
+### KRA 3: Acute Recovery Kinetics in Short Rest Windows (5 to 30 Minutes)
 
-1. **Torch & Lantern Burn Lifespans:**
-   - What are empirical burn times, fuel weights, and wind thresholds for pine pitch/resin torches, tallow candles, and oil lanterns?
-2. **Oxygen Depletion & Gas Hazards:**
-   - How rapidly does an open flame consume oxygen in an unventilated dead-end adit compared to a human at rest or under exertion?
-   - How does open flame interact with pooling blackdamp ($CO_2 / N_2$)?
+Investigate the physiological processes that occur when an exerted, hyper-vigilant human sits down, removes restrictive headgear/armor burden, and pauses for a brief rest (5, 10, 15, or 30 minutes).
+
+1. **Phased Recovery Timelines:** Detail what physiological systems recover across short rest intervals:
+   - **0–5 Minutes:** Phosphocreatine (PCr) resynthesis, immediate heart rate drop, initial oxygen debt repayment.
+   - **10–15 Minutes:** Blood and muscle lactate clearance, autonomic down-regulation, respiratory stabilization.
+   - **20–30 Minutes:** Neuromuscular excitability recovery, cognitive attentional reset.
+2. **What Remains Unrecovered:** What deeper physiological costs (glycogen depletion, microtrauma, sustained sympathetic nervous system exhaustion) _cannot_ be restored by a short pause and accumulate as cumulative fatigue?
+
+### KRA 4: High-Exertion Metabolic Spikes & Fatigue Compression
+
+Investigate non-standard locomotion and arduous physical activities that compress acute stamina reserves far faster than level walking.
+
+1. **Metabolic Costs (METs & kcal/hr):** Quantify the energy expenditure of:
+   - Stoop-walking or duck-walking in low-clearance spaces (confined tunnels, collapsed structures).
+   - Wading through knee-deep to waist-deep water or thick mud.
+   - Ascending 20°–30° loose scree, talus, or broken rock slopes under 20–25 kg load.
+2. **Exhaustion Timelines:** Compared to standard walking (3.0–4.0 METs), how quickly do these high-output activities (>8–12 METs) deplete acute anaerobic capacity and trigger acute muscular/respiratory failure?
 
 ---
 
-## 3. Essential Workspace Context & Files
+## Output Format & Deliverables
 
-Before launching subagents or querying databases, read these existing files:
+Your research must adhere strictly to `.agent/standards/empirical_research_standards.md`:
 
-### Scenario & Clock Design Files
+1. **Vault Ingestion & Catalog Registration:**
+   - Every external study, paper, or monograph retrieved must be archived into the local vault using `archive_source.py`:
+     `python3 design/research/sources/scripts/archive_source.py ingest --url "<url>" --track verisimilitude --slug <author-year-topic> --title "..." --authors "..." --year <YYYY> --section foundational_scientific_medical --epistemic-grade primary_academic --description "..." --register-catalog --commit`
+   - Verify that `extracted.txt` (or `extracted.md`) cleanly captured the text.
 
-- [`design/iteration/campaign-crag-gallows/README.md`](README.md): Vision and architecture of the testbed scenario.
-- [`design/iteration/campaign-crag-gallows/environment-and-inhabitants.md`](environment-and-inhabitants.md): Full zone topology, monsters, hazards, and color checks.
-- [`design/iteration/campaign-crag-gallows/living-clocks.md`](living-clocks.md): Concepts for Wilderness, Site Activity, and Macro Haven clocks.
-- [`design/iteration/campaign-crag-gallows/location-card-schema.md`](location-card-schema.md): Data schemas for Location, Travel, and Clock cards with concrete YAML examples.
-- [`design/iteration/campaign-crag-gallows/software-requirements-checklist.md`](software-requirements-checklist.md): The technical requirements for chronometer and deck tracking.
-- [`design/iteration/campaign-crag-gallows/verisimilitude-study-agenda.md`](verisimilitude-study-agenda.md): Detailed 5-track study plan.
+2. **Living Research Synthesis:**
+   - Create the permanent synthesis document under `design/research/synthesis/vigilance-and-alertness.md` with complete frontmatter:
+     ```yaml
+     ---
+     title: "Vigilance, Guard Endurance, and Acute Recovery Dynamics"
+     doc_type: "synthesis"
+     track: "verisimilitude"
+     origin: "AI synthesized"
+     epistemic_status:
+       confidence: "high"
+       audited_by: "<model name>"
+       vetted_by_human: false
+       vetting_notes: "Empirical synthesis of cognitive vigilance decrement, isometric guard holding curves, and acute recovery kinetics."
+     related_files:
+       - "design/research/synthesis/hardship-and-exertion.md"
+     ---
+     ```
 
-### Core Rules & Precepts
+3. **Functional Impact Tables:**
+   - Include structured markdown tables detailing elapsed time vs. percentage degradation for:
+     - Sensory cue detection & reaction latency over time (KRA 1).
+     - Isometric arm/shoulder strength and parry speed (KRA 2).
+     - Physiological recovery milestones during short rest windows (0–5m, 10–15m, 20–30m) (KRA 3).
+     - Metabolic multiplier tables for arduous terrain/locomotion (KRA 4).
 
-- [`design/rules/core-rules.md`](../../rules/core-rules.md): Ready Hand, Vigilance Dial, Effort Cycles, Fatigue Cycles (lines 82–106).
-- [`design/rules/modules/the-breather.md`](../../rules/modules/the-breather.md): The Breather 15-minute rest procedure.
-- [`design/philosophy/design-precepts.md`](../../philosophy/design-precepts.md): Core engine philosophy, 10x rule, casual realism.
-
-### Existing Relevant Research Reports in the Repo
-
-- [`design/research/reports/exertion-recovery-dynamics/report.md`](../../research/reports/exertion-recovery-dynamics/report.md): Quantitative data on EPOC, glycogen replenishment (5–10 mmol/kg/hr), and daily sustainable metabolic ceiling (2.5x BMR).
-- [`design/research/reports/functional-decline-under-physical-hardship/report.md`](../../research/reports/functional-decline-under-physical-hardship/report.md): Impact of cold-water immersion, load carriage, and sleep deprivation.
-- [`design/research/synthesis/subterranean-gases-and-blackdamp-toxicity.md`](../../research/synthesis/subterranean-gases-and-blackdamp-toxicity.md): Empirical gas physics and flame smothering thresholds.
+4. **Epistemic Standards:**
+   - Prioritize Tier 1 (clinical physiology, experimental human performance studies, biomechanical trials) and Tier 2 (military ergonomics monographs, NIOSH/OSHA standards).
+   - Reject pop-history tropes and unverified internet claims.
+   - Do not curl commercial publishers directly (Elsevier, Springer, Wiley).
 
 ---
 
-## 4. Research Methodology & Standards for Incoming Agent
+## Subagent Execution Workflow
 
-1. **Invoke the `empirical_researcher` Subagent:**
-   - Use the `empirical_research_subagents` skill (`.agent/skills/empirical_research_subagents/SKILL.md`) to invoke the `empirical_synthesizer` persona.
-   - Persona is read-only (`enable_write_tools: false`), focused strictly on quantitative metrics (seconds, Joules, dB, METs, clinical/biomechanical data).
-2. **Follow Literature Sourcing Hierarchy (`.agent/standards/empirical_research_standards.md`):**
-   - Check local archive first.
-   - For web queries, use NCBI Bookshelf / StatPearls, PubMed Central (PMC HTML articles), Internet Archive, and government monographs (NIOSH/OSHA/CDC).
-   - **Never curl commercial academic publishers directly** (Elsevier, Springer, Wiley) to prevent HTTP 403 blocks.
-3. **Output Deliverables:**
-   - Save the comprehensive clinical research report under `design/research/reports/time-economy-and-vigilance/report.md` (or relevant directory).
-   - Include **Functional Impact Tables** mapping elapsed vigilance time and terrain types to physical performance decrements.
-   - Provide concrete, actionable recommendations:
-     - Confirmed or revised Effort Cycle intervals (e.g. "Maintain 30 min as baseline, but add X rule for knee-deep wading").
-     - Clear dB thresholds and room-distance horizons for `[Loud]` tags.
-     - Exact burn-rate parameters for torches and lanterns.
+Follow the procedure in `.agent/workflows/empirical_research.md`:
+
+1. **Lead Agent Orchestration:** Review existing repo assets (e.g., `design/research/reports/exertion-recovery-dynamics/report.md`, `design/research/synthesis/hardship-and-exertion.md`) to avoid re-researching documented physiology. Formulate targeted search queries for open-access repositories (PMC, NCBI Bookshelf, DTIC military research).
+2. **`source_harvester` Subagent (`enable_write_tools: true`):** Retrieve and ingest relevant open-access papers using `archive_source.py ingest --commit` per `.agent/skills/empirical_research_subagents/SKILL.md`.
+3. **`empirical_synthesizer` Subagent (`enable_write_tools: false`):** Extract hard numerical parameters (minutes, METs, % decrements) from vaulted text files (`extracted.txt` / `extracted.md`).
+4. **Lead Agent Integration:** Synthesize extracted metrics into the final living document in `design/research/synthesis/vigilance-and-alertness.md`.

@@ -401,6 +401,182 @@ foundational_scientific_medical:
       publication: "Brill"
       description: >
         An essential text on the material science of historical armor. It provides the quantitative data (in joules) on the energy required to penetrate different types of armor, confirming that sword cuts are physically incapable of defeating steel plate and providing a factual basis for the game's weapon vs. armor interaction model.
+    - type: journal_article
+      title: "Cognitive performance of military men and women during prolonged load carriage"
+      author: "Nicola C Armstrong, S J R Smith, D Risius, D Doyle, S L Wardle, J P Greeves, J R House, M Tipton, M Lomax"
+      year: 2022
+      doi_or_url: "https://doi.org/10.1136/bmjmilitary-2021-002000"
+      local_archive: "sources/verisimilitude/drain-2023-cognitive-performance-load-carriage"
+      epistemic_grade: "primary_academic"
+      publication: "BMJ Military Health"
+      description: >
+        Experimental study evaluating cognitive degradation (working memory n-back,
+        Go/No Go vigilance) in military personnel across 3-hour loaded marches
+        carrying up to 61 kg loads.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Authoritative military human-performance study quantifying cognitive accuracy drops and executive function decline under sustained load carriage."
+    - type: journal_article
+      title: "Rehabilitation of the Ankle After Acute Sprain or Chronic Instability"
+      author: "Carl G Mattacola, Maureen K Dwyer"
+      year: 2002
+      doi_or_url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC164373/"
+      local_archive: "sources/verisimilitude/mattacola-2002-rehabilitation-ankle-sprain-instability"
+      epistemic_grade: "clinical_dataset"
+      publication: "Journal of Athletic Training"
+      description: >
+        Clinical sports medicine review on acute ankle sprain grading (I-III),
+        mechanoreceptor disruption, postural sway, peroneal reaction latency, and
+        functional instability.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Foundational clinical review detailing proprioceptive deficit mechanisms and multi-week rehabilitation trajectories for joint ligament sprains."
+    - type: journal_article
+      title: "A Meta-Analysis of Systemic Evaluation of Knee Ligament Injury or Intervention of Knee Proprioceptive Function Recovery"
+      author: "Longqiang Zou, Yibin Yang, Yihai Wang"
+      year: 2022
+      doi_or_url: "https://doi.org/10.1155/2022/9129284"
+      local_archive: "sources/verisimilitude/wang-2022-knee-ligament-proprioceptive-recovery"
+      epistemic_grade: "clinical_dataset"
+      publication: "Frontiers in Surgery"
+      description: >
+        Systematic review and meta-analysis quantifying knee proprioceptive
+        mechanoreceptor loss, hamstring reflex latency doubling, and joint giving-
+        way instability.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Rigorous meta-analysis establishing physiological timelines and neuromuscular deficit curves following knee ligament trauma."
+    - type: journal_article
+      title: "Stress fractures in military recruits: A prospective study for evaluation of incidence, patterns of injury and invalidments out of service"
+      author: "Puneet Takkar, Rajat Prabhakar"
+      year: 2019
+      doi_or_url: "https://doi.org/10.1016/j.mjafi.2018.09.006"
+      local_archive: "sources/verisimilitude/sharma-2019-stress-fractures-military-recruits"
+      epistemic_grade: "clinical_dataset"
+      publication: "Medical Journal Armed Forces India"
+      description: >
+        Prospective military study detailing stress fracture incidence during
+        prolonged marches, anatomical distribution (86.5% tibia), progression from
+        bone strain to cortical fracture, and prolonged recovery invalidment.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Comprehensive clinical dataset detailing overuse stress fracture progression kinetics and recovery durations in loaded marching."
+    - type: journal_article
+      title: "Nonfreezing Cold Injury (Trench Foot)"
+      author: "Ken Zafren"
+      year: 2021
+      doi_or_url: "https://doi.org/10.3390/ijerph181910482"
+      local_archive: "sources/verisimilitude/zafren-2021-nonfreezing-cold-injury-trench-foot"
+      epistemic_grade: "clinical_dataset"
+      publication: "International Journal of Environmental Research and Public Health"
+      description: >
+        Comprehensive clinical review of nonfreezing cold injury (trench
+        foot/immersion foot), moisture requirements, exposure durations (14-22 hours
+        to 1-3 days), microvascular/neuropathic damage, numbness masking, and multi-
+        week incapacitation.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Modern definitive clinical treatise on trench foot etiology, stages, severe rewarming pain, and prolonged mobility impairment."
+    - type: journal_article
+      title: "Fundamentals of glycogen metabolism for coaches and athletes"
+      author: "Bob Murray, Christine Rosenbloom"
+      year: 2018
+      doi_or_url: "https://doi.org/10.1093/nutrit/nuy001"
+      local_archive: "sources/verisimilitude/murray-2018-fundamentals-glycogen-metabolism"
+      epistemic_grade: "primary_academic"
+      publication: "Nutrition Reviews"
+      description: >
+        Comprehensive exercise biochemistry review quantifying liver (80-100g) vs
+        skeletal muscle (350-500g) glycogen stores, oxidation rates, depletion
+        within 90-180 min at heavy workloads, acute hypoglycemia/bonking, and
+        biphasic resynthesis kinetics (5-10 mmol/kg/hr requiring 24-48h).
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Definitive clinical and biochemical reference on glycogen stores, depletion timescales during sustained physical exertion, and carbohydrate recovery windows."
+    - type: journal_article
+      title: "Extreme events reveal an alimentary limit on sustained maximal human energy expenditure"
+      author: "Caitlin Thurber, Lara R Dugas, Cara Ocobock, Bryce Carlson, John R Speakman, Herman Pontzer"
+      year: 2019
+      doi_or_url: "https://doi.org/10.1126/sciadv.aaw0341"
+      local_archive: "sources/verisimilitude/thurber-2019-alimentary-limit-human-endurance"
+      epistemic_grade: "primary_academic"
+      publication: "Science Advances"
+      description: >
+        Seminal metabolic study establishing the maximum sustainable daily human
+        energy expenditure limit of ~2.5x BMR, governed by gastrointestinal
+        absorption limits over prolonged multi-day/multi-week endurance.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Authoritative metabolic study defining the non-negotiable physiological ceiling on sustainable multi-day work capacity."
+    - type: journal_article
+      title: "Central and Peripheral Fatigue in Physical Exercise Explained: A Narrative Review"
+      author: "José Francisco Tornero-Aguilera, Jorge Jimenez-Morcillo, Alejandro Rubio-Zarapuz, Vicente J Clemente-Suárez"
+      year: 2022
+      doi_or_url: "https://doi.org/10.3390/ijerph19073909"
+      local_archive: "sources/verisimilitude/tornero-aguilera-2022-central-peripheral-fatigue-review"
+      epistemic_grade: "primary_academic"
+      publication: "International Journal of Environmental Research and Public Health"
+      description: >
+        Comprehensive review detailing mechanisms differentiating peripheral muscle
+        contractile failure (glycogen/PCr depletion, acidosis) from central nervous
+        system fatigue (reduced voluntary activation, neurotransmitter shifts, RPE
+        escalation).
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Rigorous neurophysiological and biomechanical review separating central drive degradation from peripheral muscular exhaustion."
+    - type: journal_article
+      title: "A Brief History of Shigella"
+      author: "Keith A Lampel, Samuel B Formal†, Anthony T Maurelli"
+      year: 2018
+      doi_or_url: "https://doi.org/10.1128/ecosalplus.esp-0006-2017"
+      local_archive: "sources/verisimilitude/the-2021-brief-history-of-shigella"
+      epistemic_grade: "primary_academic"
+      publication: "Microbial Genomics"
+      description: >
+        Historical and clinical review of Shigella dysentery, transmission through
+        contaminated water, 1-3 day incubation, acute fluid loss, incapacitating
+        cramps, and military campaign attrition.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Authoritative review of bacillary dysentery pathology, incubation timelines, and severe dehydration hazards in field operations."
+    - type: journal_article
+      title: "The Effects of Sleep Deprivation on Performance During Continuous Combat Operations"
+      author: "Committee on Military Nutrition Research, Institute of Medicine"
+      year: 1994
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK209071/"
+      local_archive: "sources/verisimilitude/cmnr-1994-sleep-deprivation-continuous-operations"
+      epistemic_grade: "governmental_standard"
+      description: >
+        Military medical monograph quantifying cognitive degradation during
+        continuous operations. Documents ~25% decline in useful mental work per 24
+        hours of wakefulness, preserved simple psychomotor performance on fixed
+        targets after 90 hours, and catastrophic collapse (<10% baseline) on complex
+        adaptive tasks requiring situational awareness and unexpected target
+        acquisition.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Empirical literature benchmark for The Effects of Sleep Deprivation on Performance During Continuous Combat Operations."
+
 ---
 modeling_logistics_transport_materials:
   description: >

@@ -24,7 +24,7 @@ The evidence-based foundation for our "Casual Realism" guiding principle. Govern
 
 - **[verisimilitude-sources.yaml](verisimilitude-sources.yaml)**: Master bibliography of vetted historical treatises, archaeological data, and scientific/medical publications.
 - **[reports/](reports/)**: Deep-dive, point-in-time empirical research reports (e.g., trauma timelines, metabolic costs of armor). Each report contains its findings (`report.md`), research mandate (`prompt.md`), and tooling metadata (`meta.yaml`).
-- **[synthesis/](synthesis/)**: Actionable design frameworks and consequence databases (e.g., `armor.md`, `consequences-combat.md`). Translates raw empirical data into practical gameplay reference tables.
+- **[synthesis/](synthesis/)**: Pure domain syntheses and consequence databases (e.g., `armor.md`, `consequences-combat.md`). Synthesizes raw empirical data into structured reference tables of physical constraints, failure modes, and recovery kinetics (without prescribing game mechanics).
 
 ### Track B: Ludology & Game Design Theory (Systems & Secondary Sources)
 

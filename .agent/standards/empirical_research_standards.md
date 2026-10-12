@@ -19,6 +19,14 @@ Research is not limited to combat trauma. It establishes the factual grounding a
 - **Cognitive & Neurological Stress:** Sensory disorientation (vestibular illusions), sustained vigilance degradation, acute panic physiology, acoustic trauma/tinnitus, social stress/trust dynamics.
 - **Ludological Grounding (Track B):** Structural game design theory, resource logistics, post-mortems, and player dynamics.
 
+### Strict Domain Separation: Factual Bedrock vs. Rules Engineering
+
+Research syntheses and reports belong strictly to Track A (Verisimilitude / Factual Bedrock) or Track B (Ludological Foundations). They establish the objective physical, biological, and material constraints of reality:
+
+- **What research documents:** Physical forces, energetic costs (METs), biological timelines, tissue recovery curves, material failure thresholds, cognitive degradation benchmarks, and functional constraints on human performance.
+- **Domain Purity (Zero Rules Bleed):** Syntheses and reports must **never** design, suggest, or prescribe card mechanics, card names, deck manipulation, dice rules, token systems, or game-specific procedural phases (e.g., naming game phases like "The Breather", creating card types like "Brain Fog cards", or proposing hand discard costs).
+- **Where rules translation happens:** Translating factual realities into playable tabletop systems belongs exclusively to Rules Engineering (`design/rules/` and `design/iteration/`), mediated by the Systems Design workflow and evaluated via the Rules Verification Triangle.
+
 ---
 
 ## 2. Evidentiary Quality Hierarchy
@@ -97,7 +105,7 @@ When acquiring new literature, prioritize automated access through open reposito
 
 1. **Source Vault Bundle (`design/research/sources/<track>/<slug>/`):** Authentic capture and deterministic text extraction (`metadata.yaml`, `source.<ext>`, `extracted.<ext>`).
 2. **Source Database Entry (`verisimilitude-sources.yaml` / `ludology-sources.yaml`):** Structured catalog entry with bibliographic metadata, `local_archive` pointer, `epistemic_grade`, and vetting summary.
-3. **Living Research Synthesis (`design/research/synthesis/*.md`):** Updated in place with epistemic frontmatter. Translates empirical metrics into game-ready reference tables, failure modes, and MET costs.
+3. **Living Research Synthesis (`design/research/synthesis/*.md`):** Updated in place with epistemic frontmatter. Synthesizes empirical metrics, physical thresholds, biological failure modes, clinical timelines, and functional capabilities into domain-pure reference tables and quantitative models. Syntheses must **never** prescribe card game mechanics, card names, deck rules, or tabletop procedures.
 4. **Research Report (`design/research/reports/<slug>/`):** Immutable point-in-time harvesting runs for major standalone research mandates (`prompt.md`, `meta.yaml`, `report.md`).
 5. **Literature Note (`design/research/theory/readings/*.md`):** Analytical notes deconstructing external game design essays and adapting their insights to CardPG.
 
