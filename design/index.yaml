@@ -73,7 +73,19 @@ game_system_and_rules:
     - pillar:exploration
     - pillar:social
     - pillar:downtime
-    - core-concept:disengagement
+  - path: rules/designers-guide.md
+    purpose: Technical specifications, card anatomy schemas, time accounting standards,
+      and mathematical attrition budgets for card and adventure authors.
+    tags:
+    - doc-type:guide
+    - audience:designer-facing
+    - core-concept:cards
+    - core-concept:pacing
+    - core-concept:time-accounting
+    - core-concept:effort-cycle
+    - core-concept:fatigue
+    - pillar:exploration
+    - pillar:combat
   - path: rules/keyword-glossary.md
     purpose: Reference for the keywords in the game.
     tags:

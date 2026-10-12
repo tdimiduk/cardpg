@@ -61,9 +61,11 @@ Outside of combat, your deck functions as your party's stamina and endurance clo
 
 ### The Vigilance Dial (0 to 4 Cards)
 
-Your Ready Hand size (from 0 to 4 cards) is not a static number—it is a dial you actively adjust based on the danger of your surroundings:
+Your Ready Hand size (from 0 to 4 cards) is not a static number—it is a tactical dial you adjust based on the danger of your surroundings:
 
-- **Peak Alertness (4 Cards):** You are walking with weapons drawn, shields raised, and eyes scanning the shadows. If an ambush strikes, you pick up a full 4-card tactical hand. However, maintaining this level of tension is exhausting: every Effort Cycle flushes 4 cards into your expended pile. In a standard 24-card deck, **every 6 Effort Cycles triggers a full Fatigue Cycle**.
+- **Raising Vigilance Anytime:** If you hear eerie noises, enter an unmapped dungeon wing, or take point on watch, you can deal additional cards from your deck to your Ready Hand at any time (up to 4). Remember that cards dealt to the table are committed stamina: when the next 1-hour Effort Cycle arrives, your entire Ready Hand will flush to the expended pile.
+- **Lowering Vigilance at the Flush:** Once dealt, cards cannot be returned to your draw deck. If you want to drop your guard to conserve stamina (e.g., reaching a secure campsite or safe road), you simply choose a lower size (like 0) when the Effort Cycle flushes.
+- **Peak Alertness (4 Cards):** You are walking with weapons drawn, shields raised, and eyes scanning the shadows. If an ambush strikes, you pick up a full 4-card tactical hand. However, maintaining this level of tension is exhausting: every 1-hour Effort Cycle flushes 4 cards into your expended pile. In a standard 24-card deck, **every 6 Effort Cycles (6 hours) triggers a full Fatigue Cycle**.
 - **Marching at Ease (0 Cards):** Your weapons are sheathed, packs are slung comfortably, and you are relaxing or chatting. Effort Cycles cost you **zero cards**—you can travel, explore, or rest indefinitely without fatiguing your deck. But if combat breaks out, you enter Crisis Time with an empty hand, spending Round 1 scrambling to ready weapons.
 - **Moderate Vigilance (1–3 Cards):** A middle ground for extended exploration through uncertain territory, balancing reaction speed against deck attrition.
 

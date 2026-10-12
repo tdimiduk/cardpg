@@ -87,11 +87,11 @@ Adventuring Time is used for travel, investigation, dungeon exploration, and dow
 
 You do not hold a hand during Adventuring Time. Instead, you maintain a [[Ready Hand]] of 0 to 4 cards on the table, representing your vigilance:
 
-- **Face-Down Cards:** Dealt from the top of your deck and kept face down.
+- **Face-Down Cards:** Dealt from the top of your deck and kept face down. Outside of crisis, you may deal additional cards to your Ready Hand from your deck at any time (up to 4).
 - **Face-Up Guard:** Up to 1 card in your Ready Hand may be kept face up as a prepared stance or readied action (prepared via roughly one minute of quiet focus outside of crisis).
-- **Effort Cycles:** Maintaining vigilance burns stamina. Periodically, the GM will call an **Effort Cycle** to **flush** your Ready Hand:
+- **Effort Cycles (1 Hour):** Maintaining vigilance burns stamina. Every **one in-game hour**, all characters **flush** their Ready Hand:
   1. Discard your Ready Hand to your expended pile. _(To retain a face-up guard, discard 2 cards from the top of your deck to your expended pile instead)._
-  2. Redraw face down from your deck back to your chosen Ready Hand size (0 to 4). If your chosen size is 0 (marching at ease), Effort Cycles cost you no cards.
+  2. Redraw face down from your deck back to your chosen Ready Hand size (0 to 4). If your chosen size is 0 (at ease), an Effort Cycle costs you no cards.
 
 ### General Actions
 

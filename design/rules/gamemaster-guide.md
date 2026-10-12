@@ -141,19 +141,28 @@ One of your most important roles as GM is to manage the game's pacing and narrat
 
 Adventuring Time is the default mode of play, covering exploration, travel, and social encounters. Characters are not acting under immediate pressure, so you resolve their actions with [[General Actions]] as needed.
 
-#### The "Ready" Hand and Effort Cycles
+#### Pacing with Effort Cycles
 
-During Adventuring Time, players do not hold a hand of cards. Instead, they maintain a [[Ready Hand]] on the table of up to 4 cards, representing their character's state of alertness and readiness to react to sudden events:
+The core mechanics for exploration readiness—maintaining a [[Ready Hand]] (0 to 4 cards), keeping a [[Face-Up Guard]], and flushing cards during an [[Effort Cycle]]—are defined in [The Ready Hand & Effort Cycles](core-rules.md#the-ready-hand--effort-cycles).
 
-- **The Vigilance Dial (0 to 4 cards):** Players choose their Ready Hand size. At peak alertness (4 cards), they are ready to react instantly to ambushes, but burn through stamina quickly. At ease (0 cards), Effort Cycles cost nothing, but the characters start Crisis Time with an empty hand and automatically fail Snap Checks.
-- **Face-Up Guard:** Outside of crisis, a character may spend about one minute of preparation to search their deck for 1 Action Card to place face up as a prepared stance or guard.
-- **Resolving an Effort Cycle:** When an Effort Cycle is called, each player flushes their Ready Hand:
-  1. _Discard:_ Discard all cards in the Ready Hand to the expended pile. A player with an unspent face-up guard may keep it face up by discarding 2 cards from the top of their deck into their expended pile instead.
-  2. _Redraw:_ Deal cards face down from the deck up to the player's chosen Ready Hand size.
+As the GM, **Effort Cycles** are your primary pacing tool. They represent **one in-game hour** of active travel, alertness, or strenuous exploration, converting narrative time, environmental friction, and sustained alertness directly into deck stamina attrition without requiring micro-tracking of rations or abstract stamina points.
 
-- **When to Call for an Effort Cycle:** The trigger for an Effort Cycle depends on your GMing style:
-  - **Ad-Hoc Pacing:** For free-flowing adventures, a good guideline is to call for a cycle about once per hour of in-game time when characters are in a state of alert (traveling, on watch, exploring a ruin). In high-tension or strenuous environments, call them more frequently (e.g., after arduous physical feats, extended searches, or tense stealth infiltrations).
-  - **Structured Pacing (Advanced):** For detailed, high-stakes scenarios like a dungeon crawl, you can use pre-designed **Location Decks** (representing places and obstacles) and **Clock Decks** (representing the passage of time and external pressures). Cards in these decks can explicitly trigger an Effort Cycle, tightly coupling the characters' exertion to the pressures of the environment.
+- **The Exploration Clock & Time Accounting:**
+  - Whether tracking time on a VTT game clock or using tabletop exploration turns, assign realistic time costs to exploratory tasks:
+    - _Quick scan or standard corridor traversal:_ 5–10 minutes.
+    - _Thorough room search or delicate lockpicking:_ 10–15 minutes.
+    - _Taking [The Breather](modules/the-breather.md):_ 15 minutes.
+    - _Extensive investigation or ritual preparation:_ 30–60 minutes.
+  - When the cumulative active time reaches **one hour**, an Effort Cycle immediately triggers: all characters flush their Ready Hands and choose their vigilance for the upcoming hour. In civilized downtime or secure camp, if all characters are at ease (Vigilance 0), hours advance with zero card cost.
+
+- **Adjudicating the Vigilance Dial:**
+  - Players set their starting Ready Hand size when an Effort Cycle resolves (or when setting out on an expedition).
+  - Players may raise their vigilance at any time outside crisis by dealing additional cards from their deck to their Ready Hand (up to 4). These cards are committed stamina; they cannot be returned to the deck, and when the hour elapses, the entire Ready Hand flushes.
+  - To lower vigilance (marching at ease to conserve stamina), players simply choose a smaller hand size (such as 0) when the Effort Cycle flushes.
+
+- **Arduous Terrain and Hazards:**
+  - Obstacles, difficult terrain, or weather that slow the party down simply consume more in-game time (e.g., slogging through a flooded fen takes 2 hours instead of 1). Advancing the game clock burns torches, consumes daylight, and triggers Effort Cycles naturally.
+  - For acute physical hazards that don't take hours (such as freezing river crossings, toxic spores, or rockfalls), test the party using [[General Actions]] or direct consequences rather than manipulating the clock.
 
 ### 2.2. Running Crisis Time
 
@@ -189,7 +198,7 @@ Moving between the two modes should be a clear and deliberate act.
 
 - **To Crisis Time:** When a threat appears, the transition is determined by awareness.
   - **Mutual Awareness:** Both sides spot each other. Everyone picks up their Ready hand and the first round of Crisis Time begins.
-  - **Surprise:** One side has the advantage. The aware characters can take one or more full Crisis Time rounds while their opponents are oblivious and do not draw or act.
+  - **Surprise:** One side has the advantage (or caught the other unaware / marching at ease). As detailed in [Transitions](core-rules.md#transitions), unaware combatants enter Crisis Time with an empty starting hand (Ready Hand 0), drawing only their 2 round cards when Round 1 begins, while aware characters begin with their full Ready Hand.
   - **Player-Initiated Crisis:** Any player can declare their intent to enter Crisis Time. This is the primary tool for modeling a character taking time to prepare, focus, or set up an ambush. This preparation comes at a significant cost; the player will draw cards and act as normal for as many rounds as they wish to prepare, but they must still pay the standard cost for ending a crisis (discarding their hand) when their preparation is complete.
 - **Out of Crisis Time:** When the threat is gone or the tension breaks, the crisis ends. Crisis Time represents a state of heightened, second-by-second focus, and the cards in hand are the immediate tactical options relevant to that specific moment. Upon leaving the crisis, all characters must expend any cards remaining in their hands. This represents letting go of those fleeting opportunities as your character's focus shifts to the new situation.
 
