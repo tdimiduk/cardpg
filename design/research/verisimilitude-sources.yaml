@@ -555,27 +555,123 @@ foundational_scientific_medical:
       vetting:
         - date: "2026-10-11"
           type: "empirical literature verification"
-          author: "tdimiduk"
-          summary: "Authoritative review of bacillary dysentery pathology, incubation timelines, and severe dehydration hazards in field operations."
     - type: journal_article
-      title: "The Effects of Sleep Deprivation on Performance During Continuous Combat Operations"
-      author: "Committee on Military Nutrition Research, Institute of Medicine"
-      year: 1994
-      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK209071/"
-      local_archive: "sources/verisimilitude/cmnr-1994-sleep-deprivation-continuous-operations"
-      epistemic_grade: "governmental_standard"
+      title: "Animal Injuries; a Case Series of Bull Induced Injuries in India"
+      author: "Sharma, B., et al."
+      year: 2019
+      doi_or_url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6955030/"
+      local_archive: "sources/verisimilitude/sharma-2019-animal-injuries-bull"
+      epistemic_grade: "clinical_dataset"
+      publication: "International Journal of Emergency Medicine"
       description: >
-        Military medical monograph quantifying cognitive degradation during
-        continuous operations. Documents ~25% decline in useful mental work per 24
-        hours of wakefulness, preserved simple psychomotor performance on fixed
-        targets after 90 hours, and catastrophic collapse (<10% baseline) on complex
-        adaptive tasks requiring situational awareness and unexpected target
-        acquisition.
+        Clinical emergency case series quantifying multi-system polytrauma from
+        large animal (bull) encounters in agricultural contexts. Details simultaneous
+        blunt impact injuries: cervical spine fractures with spinal cord compression
+        and quadriplegia/paraparesis, rib fractures with pneumothorax, concurrent femur
+        and radius fractures, and high-velocity traumatic brain injury with intracranial
+        hemorrhage.
       vetting:
         - date: "2026-10-11"
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
-          summary: "Empirical literature benchmark for The Effects of Sleep Deprivation on Performance During Continuous Combat Operations."
+          summary: "Definitive clinical case series demonstrating that large animal trauma causes simultaneous multi-system trauma (fractures, spinal cord compression, intracranial bleeds) requiring high-velocity trauma management."
+    - type: journal_article
+      title: "Incidence and Time to Return to Training for Stress Fractures during Military Basic Training"
+      author: "Wood, A. M., et al."
+      year: 2014
+      doi_or_url: "https://doi.org/10.1155/2014/282980"
+      local_archive: "sources/verisimilitude/wood-2014-stress-fracture-recovery-military"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Longitudinal prospective study on Royal Marine recruits quantifying stress
+        fracture incidence and rehabilitation timelines. Establishes that tibial and
+        femoral stress fractures require an average of 21.1 weeks to return to
+        training, while metatarsal stress fractures require 12.2 weeks.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Empirical literature benchmark for Incidence and Time to Return to Training for Stress Fractures during Military Basic Training."
+    - type: journal_article
+      title: "'Autonomic conflict': a different way to die during cold water immersion?"
+      author: "Michael J Shattock, Michael J Tipton"
+      year: 2012
+      doi_or_url: "https://doi.org/10.1113/jphysiol.2012.229864"
+      local_archive: "sources/verisimilitude/shattock-2012-autonomic-conflict-cold-water"
+      epistemic_grade: "primary_academic"
+      description: >
+        Physiological review by Tipton and Shattock detailing autonomic conflict
+        during sudden cold water immersion. Explains co-activation of sympathetic
+        cold shock (tachycardia) and parasympathetic dive reflex (bradycardia via
+        trigeminal stimulation and breath holding), inducing fatal cardiac
+        arrhythmias and sudden cardiac death in healthy individuals within the first
+        seconds of submersion.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Empirical literature benchmark for 'Autonomic conflict': a different way to die during cold water immersion?."
+    - type: journal_article
+      title: "The Effect of Cold Exposure on Cognitive Performance in Healthy Adults: A Systematic Review"
+      author: "Taylor, L., et al."
+      year: 2021
+      doi_or_url: "https://doi.org/10.3390/ijerph18189725"
+      local_archive: "sources/verisimilitude/taylor-2021-cold-exposure-cognitive-performance"
+      epistemic_grade: "primary_academic"
+      description: >
+        Systematic review synthesizing 18 experimental studies on cold ambient and
+        water exposure on cognitive domains in healthy adults. Confirms significant
+        impairment in working memory, executive function, and attentional processing
+        speed, driven by thermal discomfort distraction, neurochemical shifts, and
+        shivering interference.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Empirical literature benchmark for The Effect of Cold Exposure on Cognitive Performance in Healthy Adults: A Systematic Review."
+    - type: journal_article
+      title: "Hypothermia"
+      author: "Candace Crist, Gaurav Patel"
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK545239/"
+      local_archive: "sources/verisimilitude/statpearls-2023-hypothermia"
+      epistemic_grade: "clinical_dataset"
+      description: >
+        Clinical emergency medicine monograph on accidental hypothermia. Defines
+        core body temperature thresholds for mild (32–35°C), moderate (28–32°C), and
+        severe (<28°C) hypothermia. Details systemic pathophysiology: shivering
+        thermogenesis, cessation of shivering in moderate stages, cold diuresis,
+        cardiac dysrhythmias (Osborn J waves), apathy, confusion, paradoxical
+        undressing, and terminal burrowing.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Hypothermia."
+    - type: book
+      title: "Food Components to Enhance Performance: An Evaluation of Potential Performance-Enhancing Food Components for Operational Rations"
+      author: "Bernadette M. Marriott (Ed.), Committee on Military Nutrition Research, Institute of Medicine"
+      year: 1994
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK209056/"
+      local_archive: "sources/verisimilitude/cmnr-1994-food-components-performance"
+      epistemic_grade: "governmental_standard"
+      publication: "National Academy Press"
+      description: >
+        Comprehensive 560-page military operational physiology and nutrition monograph
+        evaluating metabolic demands, combat ration design, stress neuroendocrinology,
+        and cognitive performance sustainment.
+        Major indexed chapters include:
+        - Ch. 6: Evaluation of Physical Performance (James A. Vogel)
+        - Ch. 7: The Effects of Sleep Deprivation on Performance During Continuous Combat Operations (Gregory Belenky et al., NBK209071) — establishes quantitative 25% drop in useful mental work per 24h wakefulness, preserved simple psychomotor performance on fixed targets at 90h, and catastrophic (<10%) collapse on complex/random target acquisition.
+        - Ch. 10 & 11: Endocrine, Immune, and Metabolic Responses to Stress and Physical Activity (Horton & Beisel)
+        - Ch. 12: Food Components That May Optimize Physical Performance (John L. Ivy) — carbohydrate and glycogen replenishment kinetics.
+        - Ch. 16: Tyrosine and Glucose Modulation of Cognitive Deficits Resulting from Cold Stress (Stephen T. Ahlers et al.)
+        - Ch. 20: Effects of Caffeine on Cognitive Performance, Mood, and Alertness in Sleep-Deprived Humans (David M. Penetar et al.)
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Definitive federal military physiology and nutrition monograph establishing baseline parameters for sustained operational stress, continuous sleep loss degradation, and metabolic recovery."
 
 ---
 modeling_logistics_transport_materials:
@@ -924,6 +1020,26 @@ modeling_social_psychology_legal:
           type: "empirical literature verification"
           author: "Gemini 3.8 Flash (Antigravity)"
           summary: "Master legal historical reference on medieval criminal jurisprudence, outlawry as civil death, and banishment mechanisms."
+    - type: journal_article
+      title: "Pollock and Maitland's History of English Law"
+      author: "Heinrich Brunner"
+      year: 1896
+      doi_or_url: "https://doi.org/10.2307/2139936"
+      local_archive: "sources/verisimilitude/brunner-1896-pollock-maitland-review"
+      epistemic_grade: "historical_treatise"
+      publication: "Political Science Quarterly"
+      description: >
+        Contemporary legal-historical review of Pollock & Maitland's 'History of
+        English Law' by renowned German legal historian Heinrich Brunner. Analyzes
+        the Anglo-Norman transformation of Anglo-Saxon customary law, Frankish
+        inquest origins of the jury system, royal jurisdiction expansion under Henry
+        II, and legal mechanisms of outlawry and royal peace.
+      vetting:
+        - date: "2026-10-11"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Pollock and Maitland's History of English Law."
+
 ---
 modeling_arcane_sensory_electrotrauma:
   description: >
