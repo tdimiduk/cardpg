@@ -80,8 +80,7 @@ Combat in _caRdPG_ is designed to resolve in **5–10 minutes** of intense, simu
 
 ```mermaid
 flowchart LR
-    C1["Combat 1: The Causeway Skirmish<br/>(2 Scouts + 1 Hound)<br/>• Fast vigilance check<br/>• Positioning on narrow path"] --> REST1["The Breather<br/>(Deck reshuffle + Stance adjustment)"]
-    REST1 --> C2["Combat 2: The Barrow Gate Breach<br/>(Durn & Mercenary Vanguard)<br/>• Chokepoint tactical defense<br/>• Shield soak vs. Pavise line"]
+    C1["Combat 1: The Causeway Skirmish<br/>(2 Scouts + 1 Hound)<br/>• Fast vigilance check<br/>• Positioning on narrow path"] --> C2["Combat 2: The Barrow Gate Breach<br/>(Durn & Mercenary Vanguard)<br/>• Chokepoint tactical defense<br/>• Shield soak vs. Pavise line"]
     C2 --> C3["Combat 3: The Great Fen-Beast<br/>(Apex Primeval Boss)<br/>• Coordinated multi-target defense<br/>• Precision strikes vs. Thick hide"]
 ```
 
@@ -113,5 +112,4 @@ flowchart LR
 This scenario models the complete macro lifecycle of an expedition:
 
 - **No Mid-Adventure Amnesia:** Wounds and fatigue sustained during the travel skirmish carry forward into the barrow defense.
-- **Tactical Downtime:** Taking short breathers allows characters to reset active hands at the cost of ticking the World Clock deck.
 - **Full Convalescence Cycle:** Returning to the safe haven of Willow-Garth initiates the recovery arc: injuries are medically dressed, turning severe condition cards into temporary fatigue, which is then fully flushed through warm hearths, wholesome food, and days of honest rest before advancing character decks.

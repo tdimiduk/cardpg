@@ -26,7 +26,7 @@ flowchart TD
     end
 
     subgraph SITE ["2. The Site Activity Clock"]
-        S_TRIG["Triggers: Moving between rooms, breathers, loud noise, extended searches"]
+        S_TRIG["Triggers: Elapsed expedition time, loud noise, extended searches"]
         S_OUT["Effects: Goblin guard shifts, horn alarms, barricade construction, troglodytes creeping up"]
     end
 
@@ -136,6 +136,6 @@ The Macro Haven Clock prevents players from casually taking weeks off in town to
 
 The presence of these three decks directly structures the core decision of _caRdPG_: **when to press forward and when to turn back.**
 
-1. **In the Delve:** Every room explored or breather taken draws from the **Site Clock**. Lingering risks horn alarms, barricaded escape routes, or troglodytes creeping up into your rear.
+1. **In the Delve:** Lingering or generating noise draws from the **Site Clock**, risking horn alarms, barricaded escape routes, or troglodytes creeping up into your rear.
 2. **On the Retreat:** If characters decide to pull back, they must cross the **Wilderness Clock** while carrying whatever wounds and deck fatigue they accumulated underground. A sudden sleet storm or stalking wolf pack on the way down is ten times more dangerous to a limping, exhausted hero.
 3. **In the Haven:** Safe at the hearth, heroes can rest and heal, but every day spent convalescing draws from the **Macro Clock**, causing the delve's inhabitants to reinforce, the mine environment to shift, and the valley to face goblin raids.

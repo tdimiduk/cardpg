@@ -21,7 +21,7 @@ In the Weeping Fen, time is measured by the natural rhythms of the frontier:
 1. **The Sun and the Fog:** Daylight is precious; twilight in the wetlands brings rising river mists, cooling air, and shifting light conditions.
 2. **The Posse's Net:** Sergeant Durn and his hounds do not freeze in place while the heroes deliberate. Every hour spent searching or resting allows the mercenaries to cast their tracking net wider.
 3. **The Biological Urgency:** Elsbeth's marsh fever requires warm shelter and prompt herbal care, creating emotional urgency without an arbitrary video game timer.
-4. **The Rest Dilemma:** Halting to pitch camp or take a long breather clears fatigue from character decks, but directly advances the World Clock by several cards, shifting the tactical environment.
+4. **The Rest Dilemma:** Halting to pitch camp advances the World Clock as the search net tightens, shifting the tactical environment.
 
 ```mermaid
 flowchart LR

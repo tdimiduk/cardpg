@@ -75,8 +75,6 @@ logistics:
     strength: 15
     tags: ["Quiet"]
     discovery_table: "upper_works_salvage"
-  breather_allowed: true # Whether 15-minute rest can be safely attempted here
-  unbuckle_safe: false # If false, taking off armor risks ambush without defense
 ```
 
 ### 2.2 Concrete Example: `loc_u1_barricaded_portal.yaml`
@@ -138,8 +136,6 @@ actions:
 logistics:
   search:
     available: false # Exposed threshold; nothing to search
-  breather_allowed: false # Active goblin sightlines
-  unbuckle_safe: false
 ```
 
 ---
@@ -367,6 +363,5 @@ effects:
 ├────────────────────────────────────────────────────────┤
 │ LOGISTICS:                                             │
 │   • Search: Not available                              │
-│   • Breather: Restricted (Active sentry line)          │
 └────────────────────────────────────────────────────────┘
 ```

@@ -24,7 +24,6 @@ In _caRdPG_, physical and mental stamina are tracked symmetrically through each 
 
 - Walking at high vigilance (4 cards ready) steadily burns cards on each Effort Cycle ($\approx 1$ Fatigue Cycle every 6 flushes).
 - Marching at ease (0 cards ready) burns 0 cards, but leaves the party vulnerable to ambushes.
-- Taking [The Breather](../rules/modules/the-breather.md) recovers cards at the cost of 10–15 minutes of in-game time.
 
 For this engine to generate genuine tension rather than arbitrary book-keeping, **time and distance must have physical representation on the table**.
 
@@ -63,12 +62,6 @@ The envisioned table structure uses modular physical decks:
   - Only when an Effort Cycle flushes?
   - Anytime, but increasing it requires drawing from the top of the deck, while lowering it leaves cards in hand until the next flush?
 
-### Tension 4: Pacing Breathers Against Clock Pressure
-
-- [The Breather](../rules/modules/the-breather.md) allows players to pause for 10–15 minutes, unbuckle armor, and recover cards with proportional fatigue.
-- If there is no clock pressure, players will take a Breather after every single minor obstacle.
-- How do Location and Clock Decks enforce the cost of a 15-minute pause (e.g. advancing a Front Clock, drawing an Encounter Card, or exhausting light sources)?
-
 ---
 
 ## 3. Evaluated Exploration Procedures & Candidate Baseline
@@ -76,7 +69,7 @@ The envisioned table structure uses modular physical decks:
 ### Model A: The 6-Tick Dungeon Clock (The "Turn Wheel") — [ACTIVE PROPOSAL]
 
 - The GM maintains a small 6-tick tracker (d6 die or 6-card Clock Deck).
-- Every major exploratory activity (traversing/searching a room, resolving a General Action, picking a vault lock, or taking a Breather) ticks the clock by 1.
+- Every major exploratory activity (traversing/searching a room, resolving a General Action, picking a vault lock) ticks the clock by 1.
 - **At Tick 6:**
   1. An **Effort Cycle** triggers: all players flush their Ready Hands (paying 2 cards if retaining a Face-Up Guard).
   2. The GM checks for a Wandering Threat / Hazard.

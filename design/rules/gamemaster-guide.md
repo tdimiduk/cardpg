@@ -151,7 +151,6 @@ As the GM, calling on the party to pay for vigilance is your primary pacing tool
   - Whether tracking time on a VTT game clock or using tabletop exploration turns, assign realistic time costs to exploratory tasks:
     - _Quick scan or standard corridor traversal:_ 5–10 minutes.
     - _Thorough room search or delicate lockpicking:_ 10–15 minutes.
-    - _Taking [The Breather](modules/the-breather.md):_ 15 minutes.
     - _Extensive investigation or ritual preparation:_ 30–60 minutes.
   - When the cumulative active time reaches roughly **one hour**, characters pay for vigilance: all characters flush their Vigilance pool and choose their vigilance for the upcoming stretch. In civilized downtime or secure camp, if all characters are at ease (Vigilance 0), hours advance with zero card cost.
 

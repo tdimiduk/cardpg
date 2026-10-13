@@ -29,7 +29,7 @@ flowchart TD
         CHRONO["Expedition Chronometer<br/>(Time Accumulator & Thresholds)"]
         EVENT_BUS["Event & Interrupt Bus<br/>(Tags: [Loud], [Exposed])"]
         DECK_MGR["Modular Deck Manager<br/>(Location, Travel, Clock, Player)"]
-        EXPLORE_ENG["Adventuring Time State<br/>(Effort Cycles, Breathers, Fatigue)"]
+        EXPLORE_ENG["Adventuring Time State<br/>(Effort Cycles, Vigilance, Fatigue)"]
     end
 
     BOARD_UI -->|Trigger Action / Move| CHRONO
@@ -55,7 +55,6 @@ flowchart TD
   - Add `AdvanceExpeditionTime Minutes` constructor to root game action types.
   - Automatically advance chronometer when:
     - Resolving Location/Travel actions (`time_cost_minutes`).
-    - Taking a Breather (`+15m`).
     - Moving between connected nodes (`base_time_minutes`).
 - [ ] **1.3 Periodic Clock Schedule Dispatcher**
   - Configurable schedule triggers per environment:
@@ -79,7 +78,7 @@ flowchart TD
 
 - [ ] **2.1 Card Definition Schemas & Parsers**
   - Implement YAML parsers and Aeson codecs for:
-    - `LocationCard` (traversal time, lighting, atmosphere, actions with Color/Strength, search/breather options).
+    - `LocationCard` (traversal time, lighting, atmosphere, actions with Color/Strength, search options).
     - `TravelCard` (distance, terrain tags, travel paces, forage options).
     - `ClockEventCard` (target entity/zone, mutations, sensory cues).
 - [ ] **2.2 Multi-Deck Management Engine**
@@ -128,18 +127,6 @@ flowchart TD
     2. Move remaining Ready Hand cards to `expended` pile.
     3. Redraw face-down cards from draw deck up to `vigilanceDial`.
     4. If deck is exhausted during redraw, execute standard `FatigueCycle`.
-- [ ] **4.3 Breather (Short Rest) Procedure Wizard**
-  - Dedicated interactive modal/action:
-    1. Adds 15 minutes to Chronometer.
-    2. Inspects actor's `expended` pile count:
-       - $< 12$ cards: adds 1 Fatigue card.
-       - $\ge 12$ cards: adds 2 Fatigue cards.
-    3. Toggle: `"Unbuckle Armor Harness"`:
-       - If checked: ignore armor `Burden` for this rest cycle.
-       - If unchecked: add active `Burden` to added fatigue cards.
-    4. Reshuffles expended pile into draw deck.
-    5. Allows player to select 1 Action Card as free `FaceUpGuard`.
-    6. Refills Ready Hand up to chosen vigilance dial.
 
 ---
 

@@ -168,7 +168,7 @@ When running these scenarios through any proposed resolution system, audit again
 While Scenarios 1–4 serve as atomic, single-resolution benchmarks for immediate mechanics, a complete test suite also requires **lower-resolution macro traces** that span an entire multi-scene expedition (3–5 consecutive challenges/crises):
 
 1. **Cross-Scene Attrition & Deck Dilution:** Tracking how Fatigue cycles, status cards, and unrecovered injuries progressively dilute a 24-card deck across multiple scenes.
-2. **Pacing Engine Verification:** Testing the interaction between the Ready Hand Vigilance Dial (0–4 cards), Effort Cycle flushes, and short-rest recovery ([The Breather](../../rules/modules/the-breather.md)) under dungeon clock pressure.
+2. **Pacing Engine Verification:** Testing the interaction between the Ready Hand Vigilance Dial (0–4 cards) and Effort Cycle flushes under dungeon clock pressure.
 3. **Burden Drag:** Observing the cumulative aerobic cost of heavy equipment over extended exploration.
 
 _Note:_ As noted in design discussions, these lower-resolution traces may either be detailed in this benchmark document or expanded into a dedicated proposal file (`macro-endurance-traces.md`).

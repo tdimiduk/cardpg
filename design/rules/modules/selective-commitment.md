@@ -78,7 +78,7 @@ A Swashbuckler with a [[Vigilance]] pool of 4 (1 face-up readied card—hypothet
 
 ### Example 2: A Measured Blind Gamble (Picking a Lock)
 
-A Rogue with a [[Vigilance]] pool of 4 (all cards face down) attempts an iron lock (**[[Yellow]] 8 [[Strength]]**). The Rogue has only 6 cards left in their draw deck and wants to reach a safe room to take [[The Breather]]. Flipping blind risks high [[Impact]], but committing all 4 cards would flush 4 cards, redraw 4, and trigger an untimely [[Fatigue Cycle]].
+A Rogue with a [[Vigilance]] pool of 4 (all cards face down) attempts an iron lock (**[[Yellow]] 8 [[Strength]]**). The Rogue has only 6 cards left in their draw deck. Flipping blind risks high [[Impact]], but committing all 4 cards would flush 4 cards, redraw 4, and trigger an untimely [[Fatigue Cycle]].
 
 1. **Selective Commitment:** The Rogue commits **2 cards**, lifting 2 face-down cards before looking at them.
 2. **Inspection:** The cards are `Yellow 6` and `Red 1`.

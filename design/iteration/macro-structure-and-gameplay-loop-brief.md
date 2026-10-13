@@ -12,7 +12,7 @@ epistemic_status:
 
 ## Purpose of this Working Session Track
 
-To articulate and document the **macro-level gameplay loop** of _caRdPG_—connecting micro-level resolution (Crisis Time rounds and General Actions) and meso-level exploration (Location Decks, Effort Cycles, and Breathers) into a cohesive **session and campaign lifecycle**.
+To articulate and document the **macro-level gameplay loop** of _caRdPG_—connecting micro-level resolution (Crisis Time rounds and General Actions) and meso-level exploration (Location Decks and Effort Cycles) into a cohesive **session and campaign lifecycle**.
 
 While the card engine for tactical encounters is deeply developed, much of the structural knowledge regarding how an entire session flows, how campaigns progress, and how character decks recover across expeditions currently exists primarily as unwritten author intent. This brief seeds the session track to formalize that roadmap in the repository.
 
@@ -36,8 +36,7 @@ graph TD
         ADVENTURE --> LOC[Location Traversal / Navigation]
         LOC --> EC{Effort Cycles & Vigilance Dial}
         EC --> GA[General Actions: Obstacles & Hazards]
-        GA --> BR[The Breather: 15-Minute Respite]
-        BR --> LOC
+        GA --> LOC
         EC --> CRISIS_TRANSITION{Threat Encountered}
     end
 
@@ -55,8 +54,8 @@ graph TD
 
 ### Tension 1: The Expedition Endurance Budget — [ACTIVE HYPOTHESIS]
 
-- **Design Target:** A standard 24-card deck is hypothesized to sustain **40–55 cards of churn per adventuring day** (1 overland march, 1–2 obstacles, 1 skirmish, 1 Breather, and 1 climactic crisis).
-- **The Fatigue Baseline:** A hard day is intended to push characters through **1 to 2 Fatigue Cycles** (or Heavy Exertion Breathers):
+- **Design Target:** A standard 24-card deck is hypothesized to sustain **40–55 cards of churn per adventuring day** (1 overland march, 1–2 obstacles, 1 skirmish, and 1 climactic crisis).
+- **The Fatigue Baseline:** A hard day is intended to push characters through **1 to 2 Fatigue Cycles**:
   - **Burden 0 (Light/Unarmored):** Ends the day with **2–4 Fatigue cards** (~10–15% deck dilution).
   - **Burden 2 (Heavy Armor):** Incurs $+ \text{Burden}$ on every cycle, ending with **5–8 Fatigue cards** (~25–30% deck dilution).
 - **Exploration Gating:** Heavy armor provides strong tactical defense, but organically limits expedition depth without an organized supply train.
@@ -72,7 +71,6 @@ graph TD
 
 ### Tension 3: The Campaign Fronts & World Clock Integration — [PROPOSED TARGETS]
 
-- **The Breather Economy:** Taking a 15-minute [The Breather](../rules/modules/the-breather.md) to reset decks advances the campaign **Front Clock by 1 tick**.
 - **Retreat Cost:** Retreating early from an expedition to recover advances the enemy Front Clock by **2 ticks**, creating meaningful strategic pressure.
 
 ### Tension 4: Character Progression and Deck Upgrading — [OPEN]
@@ -97,5 +95,5 @@ Next steps to formalize the macro framework:
 - [ ] **2. Campaign Progression Guide:** Expanding [gamemaster-guide.md](../rules/gamemaster-guide.md) Part 3 with campaign pacing tables, Front advancement formulas, and deck advancement benchmarks.
 - [x] **3. Multi-Resolution Trace Suite (COMPLETED):**
   - [gameplay-trace-standards.md](traces/gameplay-trace-standards.md) (Standardizing Micro, Meso, Macro trace fidelity and state ledgers).
-  - [macro-gauntlet-expedition-trace.md](traces/macro-gauntlet-expedition-trace.md) (Full-day expedition trace proving the 24-card budget, Breathers, and Burden drag).
+  - [macro-gauntlet-expedition-trace.md](traces/macro-gauntlet-expedition-trace.md) (Full-day expedition trace proving the 24-card budget and Burden drag).
   - [trace-climactic-boss-8-rounds.md](traces/trace-climactic-boss-8-rounds.md) (8-round climactic crisis testing the Turn Horizon, mid-combat Fatigue Cycles, and Pass-to-Charge economy).

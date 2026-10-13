@@ -63,7 +63,7 @@
   notes: >
     Physiological Basis: Acute anaerobic exertion and transient diaphragm compression/spasm. Rapid depletion of
     intracellular ATP-PCr stores forces short, shallow respiration, penalizing aggressive attacks until a brief
-    breather is taken. Replaces transient 'Out of Breath' with active on-table presence.
+    pause to catch breath. Replaces transient 'Out of Breath' with active on-table presence.
     Escalation: Continued physical over-exertion strains muscular groups into Strained Offense.
 
 - name: Dust in Eyes
@@ -134,7 +134,7 @@
     - task: Catch Breath & Tend Bruises (Time 5 min) -> Remove this.
   notes: >
     Physiological Basis: Superficial muscle contusion and soft-tissue microtrauma. General soreness increases defensive
-    reaction latency (+1 Impact). Easily shaken off with exertion or a 5-minute breather.
+    reaction latency (+1 Impact). Easily shaken off with exertion or a few minutes of quiet rest.
     Persistent: Remains in play until cleared. General contusions do not escalate to broken limbs or tendon tears.
 
 # --- TIER 1: SHARP / PUNISHING BAND (Priority 3-5) ---

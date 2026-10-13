@@ -37,7 +37,7 @@ When authoring Location, Travel, and Hazard cards, distinguish between continuou
 When attaching time costs to cards, obstacles, and exploration tasks, use these standard increments:
 
 - **5–10 Minutes:** Rapid sweep, traversing an unobstructed corridor, glancing at murals, quick barrier vault.
-- **10–15 Minutes:** Thorough search of a single room/chamber, picking a standard lock, carefully disarming a mechanical trap, taking [[The Breather]].
+- **10–15 Minutes:** Thorough search of a single room/chamber, picking a standard lock, carefully disarming a mechanical trap.
 - **30 Minutes:** Forcing open a collapsed portcullis, excavating rubble, deep research in a library stack, deciphering ancient script.
 - **60 Minutes:** Ascending a steep mountain pass, enduring a punishing blizzard crossing, or an exhaustive search of a multi-room dungeon wing.
 
@@ -144,24 +144,70 @@ flavor_text: "Your arms tremble under the weight of your weapon."
 
 When designing encounter suites or custom campaigns, adhere to these mathematical baselines:
 
-### A. The 24-Card Endurance Curve
+### A. The Endurance & Vigilance Curve
 
-Every player character operates on a 24-card starting deck. Assuming hourly pacing:
+Every player character operates on a 24-card starting deck. Time translates to card attrition based on chosen readiness:
 
-$$\text{Deck Attrition Rate} = \frac{24}{\text{Vigilance Level}}$$
+$$\text{Deck Attrition Rate} = \frac{24}{\text{Cards Expended per Hour}}$$
 
-- **Vigilance 4:** Cycles deck every **6 hours** (4 cards/hour).
-- **Vigilance 3:** Cycles deck every **8 hours** (3 cards/hour).
-- **Vigilance 2:** Cycles deck every **12 hours** (2 cards/hour).
-- **Vigilance 1:** Cycles deck every **24 hours** (1 card/hour).
-- **Vigilance 0:** Infinite endurance (0 cards/hour).
+| Vigilance Stance             | Vigilance Pool Size | Clock Interval | Cards / Hour | Time to 1st Fatigue Cycle (Pure Travel) |
+| :--------------------------- | :-----------------: | :------------: | :----------: | :-------------------------------------: |
+| **At Ease**                  |       0 cards       |     1 Hour     |   0 cards    |      $\infty$ (No vigilance cost)       |
+| **Low Alert**                |       1 card        |     1 Hour     |    1 card    |               24.0 Hours                |
+| **Routine Vigilance**        |       2 cards       |     1 Hour     |   2 cards    |               12.0 Hours                |
+| **Attentive Patrol**         |       3 cards       |     1 Hour     |   3 cards    |                8.0 Hours                |
+| **Adventuring Focus**        |       4 cards       |     1 Hour     |   4 cards    |    6.0 Hours (~3.5–4.5h with checks)    |
+| **Redline (Module)**         |       5 cards       |   30 Minutes   |   10 cards   |               ~2.4 Hours                |
+| **Hyper-Vigilance (Module)** |       6 cards       |   30 Minutes   |   12 cards   |    2.0 Hours (Sentry / Breach limit)    |
 
 #### Readied Card Math:
 
 Retaining a [[Readied Card]] costs **2 cards off the top of the deck** each time vigilance is paid.
-A character maintaining 1 Readied Card + 3 Face-Down cards burns $2 + 3 = 5\text{ cards/hour}$. Their deck will cycle in approximately **4.8 hours**. Ensure encounters provide natural pauses where players feel safe letting their vigilance down.
 
-### B. Standard Strength Budgets for Challenges
+- At Adventuring Focus (1 Readied + 3 Face-Down, hourly): Burns $2 + 3 = 5\text{ cards/hour}$. The deck cycles in **4.8 hours**.
+- At Hyper-Vigilance (1 Readied + 5 Face-Down, 30-min): Burns $2 + 5 = 7\text{ cards / 30m}$ ($14\text{ cards/hour}$). The deck cycles in **~1.7 hours**.
+
+---
+
+### B. Fatigue Dilution Mathematics & The Friction Cascade
+
+In _caRdPG_, fatigue does not subtract hit points; it **dilutes card density and escalates impact**. Each [[Fatigue Cycle]] adds $2 + \text{Burden}$ [[Fatigue]] cards (printed values `1/1/1`, no action abilities) into the player's deck.
+
+The table below models progressive deck degradation for an unarmored character (Burden 0, starting deck 24 cards, average stat 3.0):
+
+| Fatigue Cycles Completed | Fatigue Cards in Deck | Total Deck Size | Dead Card Ratio (% of Deck) | Avg Card Stat (Baseline 3.0) | Stat Drop (%) | Action Density (Draw Chance) | 2-Card Hand Compromised Prob |
+| :----------------------: | :-------------------: | :-------------: | :-------------------------: | :--------------------------: | :-----------: | :--------------------------: | :--------------------------: |
+|      **0 (Fresh)**       |           0           |       24        |            0.0%             |            3.000             |   Baseline    |            100.0%            |           **0.0%**           |
+|       **1 Cycle**        |           2           |       26        |            7.7%             |            2.846             |   **-5.1%**   |            92.3%             | **15.1%** (~1 in 6.6 hands)  |
+|       **2 Cycles**       |           4           |       28        |            14.3%            |            2.714             |   **-9.5%**   |            85.7%             | **27.5%** (~1 in 3.6 hands)  |
+|       **3 Cycles**       |           6           |       30        |            20.0%            |            2.600             |  **-13.3%**   |            80.0%             | **36.6%** (~1 in 2.7 hands)  |
+|       **4 Cycles**       |           8           |       32        |            25.0%            |            2.500             |  **-16.7%**   |            75.0%             | **44.4%** (~1 in 2.3 hands)  |
+
+$$\text{Compromised Hand Probability} = 1 - \left( \frac{N_{\text{actions}}}{N_{\text{total}}} \times \frac{N_{\text{actions}} - 1}{N_{\text{total}} - 1} \right)$$
+
+#### The Mechanical Ripple Effects of Dilution:
+
+1. **The Hand Compromise:** At 2 cycles, more than 1 in every 4 Crisis hands contains a dead card, choking out tactical Action Stacks.
+2. **Impact Escalation (The Consequence Trap):** When flipping to meet challenge Strength or absorb incoming strikes, flipping a `1/1/1` Fatigue card provides only 1 point of Strength, forcing extra flips. Because every additional flipped card adds to **Impact**, fatigue directly converts into completed Defense stacks and **physical wounds/trauma**.
+
+---
+
+### C. Armor Burden & Compounding Attrition
+
+Armor adds [[Burden]] to each Fatigue Cycle ($2 + \text{Burden}$ Fatigue cards added per cycle). While armored characters pay the same hourly vigilance cost, their deck dilution accelerates drastically once cycling begins:
+
+| Gear Level                | Active Burden | Fatigue Cards per Cycle | Deck Size after 1 Cycle | Deck Size after 2 Cycles | Dead Card Ratio after 2 Cycles |
+| :------------------------ | :-----------: | :---------------------: | :---------------------: | :----------------------: | :----------------------------: |
+| **Unarmored / Light**     |   Burden 0    |        +2 cards         |  26 cards (7.7% dead)   |  28 cards (14.3% dead)   |    14.3% (~1 in 3.6 hands)     |
+| **Mail / Medium**         |   Burden 1    |        +3 cards         |  27 cards (11.1% dead)  |  30 cards (20.0% dead)   |    20.0% (~1 in 2.7 hands)     |
+| **Plate Harness / Heavy** |   Burden 2    |        +4 cards         |  28 cards (14.3% dead)  |  32 cards (25.0% dead)   |  **25.0%** (~1 in 2.3 hands)   |
+| **Maximum Load / Siege**  |   Burden 3    |        +5 cards         |  29 cards (17.2% dead)  |  34 cards (29.4% dead)   |  **29.4%** (~1 in 2.0 hands)   |
+
+A knight in full plate (Burden 2) who endures 2 Fatigue Cycles suffers a deck that is **25% dead cards**, with a 44.4% chance of drawing dead cards into every 2-card hand. This mathematically reflects the 2.2x metabolic cost of plate harness (Askew et al., 2012) without requiring granular encumbrance math at the table.
+
+---
+
+### D. Standard Strength Budgets for Challenges
 
 When assigning [[Strength]] values to obstacles and general actions:
 
