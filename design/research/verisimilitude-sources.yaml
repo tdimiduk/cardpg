@@ -672,6 +672,39 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk"
           summary: "Definitive federal military physiology and nutrition monograph establishing baseline parameters for sustained operational stress, continuous sleep loss degradation, and metabolic recovery."
+    - type: journal_article
+      title: "The vigilance decrement: its first 75 years"
+      author: "Raymond M Klein, Brett B T Feltmate"
+      year: 2025
+      doi_or_url: "https://doi.org/10.3389/fcogn.2025.1632885"
+      local_archive: "sources/verisimilitude/klein-2025-vigilance-decrement-75-years"
+      epistemic_grade: "primary_academic"
+      description: >
+        Comprehensive 75-year historical and empirical review of the vigilance
+        decrement. Synthesizes findings on signal detection theory, 20-30 minute
+        onset of perceptual degradation, cognitive resource depletion, and sustained
+        attention limits.
+      vetting:
+        - date: "2026-10-12"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Definitive 75-year academic review detailing the temporal trajectory of vigilance decrement, signal detection sensitivity declines, and cognitive workload mechanisms."
+    - type: journal_article
+      title: "Vigilance Decrement and Enhancement Techniques: A Review"
+      author: "Fares Al-Shargie, Usman Tariq, Hasan Mir, Hamad Alawar, Fabio Babiloni, Hasan Al-Nashash"
+      year: 2019
+      doi_or_url: "https://doi.org/10.3390/brainsci9080178"
+      local_archive: "sources/verisimilitude/esteban-2019-vigilance-decrement-review"
+      epistemic_grade: "primary_academic"
+      description: >
+        Systematic review of vigilance decrement and enhancement techniques.
+        Analyzes the time course of attentional decline across monitoring tasks,
+        resource-depletion vs mindlessness models, and cognitive fatigue.
+      vetting:
+        - date: "2026-10-12"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Peer-reviewed neurocognitive review analyzing the temporal onset and resource exhaustion mechanisms of vigilance decrement in human operators."
 
 ---
 modeling_logistics_transport_materials:

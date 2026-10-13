@@ -74,7 +74,7 @@ Procedure:
 Except for any readied card, it is critical that players do not know the contents of their face-down Vigilance cards. To perform a passive check at a physical table, use one of the following methods:
 
 - **The Quick Glance:** When a check is warranted, discreetly glance at the face-down cards of each player's Vigilance pool (adding any readied card) to determine their totals.
-- **The Discrete Tally:** For maximum discretion, keep a small note of each player's Red, [[Yellow]], and Blue totals. When they perform an Effort Cycle and deal a new Vigilance pool, ask to see the cards briefly so you can update your tally for the next opportunity.
+- **The Discrete Tally:** For maximum discretion, keep a small note of each player's [[Red]], [[Yellow]], and [[Blue]] totals. When they pay for vigilance and deal a new Vigilance pool, ask to see the cards briefly so you can update your tally for the next opportunity.
 
 On a **digital tabletop**, this is simpler, as the GM can view player hands without their knowledge.
 If a player's hand meets the [[Strength]] you've set, you provide them with the information directly ("As you walk, you notice a glint of metal under a floorboard..."). If no one succeeds, you say nothing, and the game continues.

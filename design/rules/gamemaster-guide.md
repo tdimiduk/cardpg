@@ -141,11 +141,11 @@ One of your most important roles as GM is to manage the game's pacing and narrat
 
 Adventuring Time is the default mode of play, covering exploration, travel, and social encounters. Characters are not acting under immediate pressure, so you resolve their actions with [[General Actions]] as needed.
 
-#### Pacing with Effort Cycles
+#### Pacing: Paying for Vigilance
 
-The core mechanics for exploration readiness—maintaining [[Vigilance]] (0 to 4 cards), keeping a [[Readied Card]], and flushing cards during an [[Effort Cycle]]—are defined in [Vigilance & Effort Cycles](core-rules.md#vigilance--effort-cycles).
+The core mechanics for exploration readiness—maintaining [[Vigilance]] (0 to 4 cards), keeping a [[Readied Card]], and paying for vigilance—are defined in [Vigilance](core-rules.md#vigilance).
 
-As the GM, **Effort Cycles** are your primary pacing tool. They represent **one in-game hour** of active travel, alertness, or strenuous exploration, converting narrative time, environmental friction, and sustained alertness directly into deck stamina attrition without requiring micro-tracking of rations or abstract stamina points.
+As the GM, calling on the party to pay for vigilance is your primary pacing tool. It paces active travel, alertness, or strenuous exploration, converting narrative time, environmental friction, and sustained alertness directly into deck stamina attrition without requiring micro-tracking of rations or abstract stamina points.
 
 - **The Exploration Clock & Time Accounting:**
   - Whether tracking time on a VTT game clock or using tabletop exploration turns, assign realistic time costs to exploratory tasks:
@@ -153,15 +153,15 @@ As the GM, **Effort Cycles** are your primary pacing tool. They represent **one 
     - _Thorough room search or delicate lockpicking:_ 10–15 minutes.
     - _Taking [The Breather](modules/the-breather.md):_ 15 minutes.
     - _Extensive investigation or ritual preparation:_ 30–60 minutes.
-  - When the cumulative active time reaches **one hour**, an Effort Cycle immediately triggers: all characters flush their Vigilance pool and choose their vigilance for the upcoming hour. In civilized downtime or secure camp, if all characters are at ease (Vigilance 0), hours advance with zero card cost.
+  - When the cumulative active time reaches roughly **one hour**, characters pay for vigilance: all characters flush their Vigilance pool and choose their vigilance for the upcoming stretch. In civilized downtime or secure camp, if all characters are at ease (Vigilance 0), hours advance with zero card cost.
 
 - **Adjudicating the Vigilance Dial:**
-  - Players set their starting Vigilance level when an Effort Cycle resolves (or when setting out on an expedition).
-  - Players may raise their vigilance at any time outside crisis by dealing additional cards from their deck to their Vigilance pool (up to 4). These cards are committed stamina; they cannot be returned to the deck, and when the hour elapses, the entire Vigilance pool flushes.
-  - To lower vigilance (marching at ease to conserve stamina), players simply choose a smaller hand size (such as 0) when the Effort Cycle flushes.
+  - Players set their starting Vigilance level when setting out on an expedition (or whenever they pay for vigilance).
+  - Players may raise their vigilance at any time outside crisis by dealing additional cards from their deck to their Vigilance pool (up to 4). These cards are committed stamina; they cannot be returned to the deck, and when paying for vigilance, the entire Vigilance pool flushes.
+  - To lower vigilance (marching at ease to conserve stamina), players simply choose a smaller pool size (such as 0) when paying for vigilance.
 
 - **Arduous Terrain and Hazards:**
-  - Obstacles, difficult terrain, or weather that slow the party down simply consume more in-game time (e.g., slogging through a flooded fen takes 2 hours instead of 1). Advancing the game clock burns torches, consumes daylight, and triggers Effort Cycles naturally.
+  - Obstacles, difficult terrain, or weather that slow the party down simply consume more in-game time (e.g., slogging through a flooded fen takes 2 hours instead of 1). Advancing the game clock burns torches, consumes daylight, and triggers paying for vigilance naturally.
   - For acute physical hazards that don't take hours (such as freezing river crossings, toxic spores, or rockfalls), test the party using [[General Actions]] or direct consequences rather than manipulating the clock.
 
 ### 2.2. Running Crisis Time

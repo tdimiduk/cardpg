@@ -157,6 +157,14 @@ game_system_and_rules:
     - core-concept:ready-hand
     - core-concept:action-resolution
     - core-concept:hand-management
+  - path: rules/modules/hyper-vigilance.md
+    purpose: In the core rules, characters maintain **[[Vigilance]]** as a pool of
+      0 to 4 cards, representing disciplined, sustainable readiness on the road and
+      on watch, paid roughly every in-game hour.
+    tags:
+    - doc-type:module
+    - audience:player-facing
+    - audience:gm-facing
 global_registries:
 - path: ../data/cards/_manifest.yaml
   purpose: The master index for all game objects (Cards, Items, Encounters). Used

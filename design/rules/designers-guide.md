@@ -8,14 +8,14 @@ While [Core Rules](core-rules.md) defines the foundational player-facing engine 
 
 ## 1. The Core Currency: Unified In-Game Time
 
-In _caRdPG_, physical stamina and narrative progress are governed by a single unified resource: **in-game time**. Outside of [[Crisis Time]], time is tracked in **1-hour Effort Cycles**.
+In _caRdPG_, physical stamina and narrative progress are governed by a single unified resource: **in-game time**. Outside of [[Crisis Time]], time is tracked through pacing intervals (nominally 1 hour) where characters pay for vigilance.
 
 ### A. The 60-Minute Exploration Engine
 
 The player deck (baseline 24 cards) acts as the party's expedition clock:
 
 - At peak vigilance ([[Vigilance]] pool size 4), a character flushes 4 cards into their expended pile every hour.
-- A 24-card deck cycles in **6 Effort Cycles (6 in-game hours)**, injecting $2 + \text{Burden}$ [[Fatigue]] cards into the deck.
+- A 24-card deck cycles in **6 hours** at high vigilance, injecting $2 + \text{Burden}$ [[Fatigue]] cards into the deck.
 - At ease (Vigilance 0), a character flushes 0 cards per hour, burning zero deck stamina.
 
 Because cards committed to the [[Vigilance]] pool flush every hour, **time directly translates to stamina attrition for vigilant adventurers**.
@@ -24,10 +24,10 @@ Because cards committed to the [[Vigilance]] pool flush every hour, **time direc
 
 When authoring Location, Travel, and Hazard cards, distinguish between continuous physical strain and sudden traumatic shocks:
 
-| Category                            | Design Meaning                                                        | Card Implementation                                                                                          | Why It Matters                                                                                                                                                                                          |
-| :---------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Hard Going (Arduous Conditions)** | Strenuous terrain, poor weather, heavy obstacles, or slow navigation. | **Consumes In-Game Time** (`time_cost: 15m`, `time_cost: 30m`, or `Double Travel Time`).                     | Advances the narrative clock. Torches burn, daylight wanes, and Effort Cycles trigger naturally. Vigilant characters pay for their readiness in card loss; relaxed characters pay in time and exposure. |
-| **Acute Perils (Sudden Shocks)**    | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.         | **Direct Consequences or General Action** (`Flip Red 12 or suffer 2 Impact`, `Discard 2 cards to expended`). | Inflicts immediate, sharp damage that tests reflexes or forces instant deck attrition regardless of current vigilance posture.                                                                          |
+| Category                            | Design Meaning                                                        | Card Implementation                                                                                          | Why It Matters                                                                                                                                                                                                 |
+| :---------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Hard Going (Arduous Conditions)** | Strenuous terrain, poor weather, heavy obstacles, or slow navigation. | **Consumes In-Game Time** (`time_cost: 15m`, `time_cost: 30m`, or `Double Travel Time`).                     | Advances the narrative clock. Torches burn, daylight wanes, and characters pay for vigilance naturally. Vigilant characters pay for their readiness in card loss; relaxed characters pay in time and exposure. |
+| **Acute Perils (Sudden Shocks)**    | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.         | **Direct Consequences or General Action** (`Flip Red 12 or suffer 2 Impact`, `Discard 2 cards to expended`). | Inflicts immediate, sharp damage that tests reflexes or forces instant deck attrition regardless of current vigilance posture.                                                                                 |
 
 > [!IMPORTANT]
 > **Avoid arbitrary flat card taxes for rough terrain.** Do not write _"Swamp: Each player discards 2 cards from deck."_ Doing so bypasses the player's deliberate risk/reward choice with their Vigilance Dial. Write `Swamp: Travel takes 45 minutes.`
@@ -39,7 +39,7 @@ When attaching time costs to cards, obstacles, and exploration tasks, use these 
 - **5–10 Minutes:** Rapid sweep, traversing an unobstructed corridor, glancing at murals, quick barrier vault.
 - **10–15 Minutes:** Thorough search of a single room/chamber, picking a standard lock, carefully disarming a mechanical trap, taking [[The Breather]].
 - **30 Minutes:** Forcing open a collapsed portcullis, excavating rubble, deep research in a library stack, deciphering ancient script.
-- **60 Minutes (1 Full Effort Cycle):** Ascending a steep mountain pass, enduring a punishing blizzard crossing, or an exhaustive search of a multi-room dungeon wing.
+- **60 Minutes:** Ascending a steep mountain pass, enduring a punishing blizzard crossing, or an exhaustive search of a multi-room dungeon wing.
 
 ---
 
@@ -146,7 +146,7 @@ When designing encounter suites or custom campaigns, adhere to these mathematica
 
 ### A. The 24-Card Endurance Curve
 
-Every player character operates on a 24-card starting deck. Assuming standard 1-hour Effort Cycles:
+Every player character operates on a 24-card starting deck. Assuming hourly pacing:
 
 $$\text{Deck Attrition Rate} = \frac{24}{\text{Vigilance Level}}$$
 
@@ -158,7 +158,7 @@ $$\text{Deck Attrition Rate} = \frac{24}{\text{Vigilance Level}}$$
 
 #### Readied Card Math:
 
-Retaining a [[Readied Card]] costs **2 cards off the top of the deck** per Effort Cycle flush.
+Retaining a [[Readied Card]] costs **2 cards off the top of the deck** each time vigilance is paid.
 A character maintaining 1 Readied Card + 3 Face-Down cards burns $2 + 3 = 5\text{ cards/hour}$. Their deck will cycle in approximately **4.8 hours**. Ensure encounters provide natural pauses where players feel safe letting their vigilance down.
 
 ### B. Standard Strength Budgets for Challenges

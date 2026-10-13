@@ -63,10 +63,10 @@ Outside of combat, your deck functions as your party's stamina and endurance clo
 
 Your Vigilance pool size (from 0 to 4 cards) is not a static number—it is a tactical dial you adjust based on the danger of your surroundings:
 
-- **Raising Vigilance Anytime:** If you hear eerie noises, enter an unmapped dungeon wing, or take point on watch, you can deal additional cards from your deck to your Vigilance pool at any time (up to 4). Remember that cards dealt to the table are committed stamina: when the next 1-hour Effort Cycle arrives, your entire Vigilance pool will flush to the expended pile.
-- **Lowering Vigilance at the Flush:** Once dealt, cards cannot be returned to your draw deck. If you want to drop your vigilance to conserve stamina (e.g., reaching a secure campsite or safe road), you simply choose a lower size (like 0) when the Effort Cycle flushes.
-- **Peak Alertness (4 Cards):** You are walking with weapons drawn, shields raised, and eyes scanning the shadows. If an ambush strikes, you pick up a full 4-card tactical hand. However, maintaining this level of tension is exhausting: every 1-hour Effort Cycle flushes 4 cards into your expended pile. In a standard 24-card deck, **every 6 Effort Cycles (6 hours) triggers a full Fatigue Cycle**.
-- **Marching at Ease (0 Cards):** Your weapons are sheathed, packs are slung comfortably, and you are relaxing or chatting. Effort Cycles cost you **zero cards**—you can travel, explore, or rest indefinitely without fatiguing your deck. But if combat breaks out, you enter Crisis Time with an empty hand, spending Round 1 scrambling to ready weapons.
+- **Raising Vigilance Anytime:** If you hear eerie noises, enter an unmapped dungeon wing, or take point on watch, you can deal additional cards from your deck to your Vigilance pool at any time (up to 4). Remember that cards dealt to the table are committed stamina: when it is time to pay for vigilance, your entire Vigilance pool will flush to the expended pile.
+- **Lowering Vigilance at the Flush:** Once dealt, cards cannot be returned to your draw deck. If you want to drop your vigilance to conserve stamina (e.g., reaching a secure campsite or safe road), you simply choose a lower size (like 0) when paying for vigilance.
+- **Peak Alertness (4 Cards):** You are walking on hair-trigger alert, eyes scanning every shadow. If an ambush strikes, you pick up a full 4-card tactical hand. However, maintaining this level of tension is exhausting: each time you pay for vigilance flushes 4 cards into your expended pile. In a standard 24-card deck, maintaining peak alertness triggers a full Fatigue Cycle roughly every 6 hours.
+- **Marching at Ease (0 Cards):** Packs are slung comfortably, and you are relaxing or chatting. Paying for vigilance costs **zero cards**—you can travel, explore, or rest indefinitely without fatiguing your deck. But if combat breaks out, you enter Crisis Time with an empty hand, spending Round 1 scrambling to react.
 - **Moderate Vigilance (1–3 Cards):** A middle ground for extended exploration through uncertain territory, balancing reaction speed against deck attrition.
 
 ### The Burden of Plate
@@ -79,7 +79,7 @@ This creates a natural, historical dynamic: knights take off their helms, rest t
 
 Readying a card (spending ~1 minute to search your deck for 1 card to place face up in your Vigilance pool) gives you guaranteed tactical readiness. This can be an Action card—like priming a heavy attack or a defensive parry before kicking down the door—or simply a high-value card for sudden Snap Checks.
 
-However, holding a readied card has a continuous cost: **every Effort Cycle, you must discard 2 cards off the top of your deck** to keep it.
+However, holding a readied card has a continuous cost: each time you pay for vigilance, you must discard 2 cards off the top of your deck to keep it.
 
 - **When to hold it:** When an encounter is imminent (e.g., breaching a room, stalking a patrol).
 - **When to let it go:** During long marches or when the path ahead is clear. Letting it flush back to discard saves your deck from rapid exhaustion.

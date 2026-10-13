@@ -83,15 +83,17 @@ When targeted by an attack, you face the strike by meeting its Strength in the d
 
 Adventuring Time is used for travel, investigation, dungeon exploration, and downtime.
 
-### Vigilance & Effort Cycles
+### Vigilance
 
 You do not hold a hand during Adventuring Time. Instead, you maintain **[[Vigilance]]** as a pool of 0 to 4 cards on the table:
 
 - **Face-Down Cards:** Dealt from the top of your deck and kept face down. Outside of crisis, you may deal additional cards to your Vigilance pool from your deck at any time (up to 4).
 - **Readied Card:** Up to 1 card in your Vigilance pool may be kept face up as a **readied card**. You may search your deck for this card by spending roughly one minute of quiet focus outside of crisis. This can be a high-value card for rapid reactions or a specific technique you plan to unleash.
-- **Effort Cycles (1 Hour):** Maintaining vigilance burns stamina. Every **one in-game hour**, all characters **flush** their Vigilance pool:
+- **Paying for Vigilance:** Maintaining vigilance burns stamina. Roughly every in-game hour (or as time advances on the road or on watch), all characters pay for vigilance:
   1. Discard your Vigilance pool to your expended pile. _(To retain a readied card, discard 2 cards from the top of your deck to your expended pile instead)._
-  2. Redraw face down from your deck back to your chosen Vigilance level (0 to 4). If your chosen size is 0 (marching at ease), an Effort Cycle costs you no cards.
+  2. Deal cards face down from your deck back to your chosen Vigilance level (0 to 4). If your chosen size is 0 (marching at ease), paying for vigilance costs zero cards.
+
+_(To push beyond 4 cards into acute combat alertness at double the fatigue rate, see the [Hyper-Vigilance Module](modules/hyper-vigilance.md))._
 
 ### General Actions
 

@@ -55,7 +55,7 @@ The core rules' all-or-nothing commitment rule is an onboarding tool: keeping th
 
 Selective Commitment is often the first module a group adopts. It is ideal for:
 
-- **Graduating Past Onboarding Friction ("Feel Bad"):** Once players understand Effort Cycles, being forced to flush an entire hand just to spend 1 card on an obstacle feels needlessly punishing. Selective Commitment resolves that table friction without adding tokens or altering combat math.
+- **Graduating Past Onboarding Friction ("Feel Bad"):** Once players understand paying for vigilance, being forced to flush an entire pool just to spend 1 card on an obstacle feels needlessly punishing. Selective Commitment resolves that table friction without adding tokens or altering combat math.
 - **Tactical Groups & Card Economy:** Groups that enjoy deck management and want fine-tuned control over their deck cycling and stamina attrition.
 - **Gritty Campaigns & Dungeon Crawls:** Environments where characters are balancing frequent minor obstacles against an impending Fatigue Cycle, making every card cycled toward deck exhaustion count.
 
