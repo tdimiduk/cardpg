@@ -12,6 +12,7 @@ The repository is structured into several key directories, each with a distinct 
 - **[methodology](methodology)**: The Onboarding & Meta. Guides for TTRPG designers, documentation standards, and the project tagging ontology.
 - **[rules](rules)**: The "How." This contains the player-facing and GM-facing rulebooks. [Core Rules](rules/core-rules.md) is the foundational document for the entire game system.
 - **[research](research)**: The Factual Bedrock. This directory houses the historical, physiological, and scientific research that grounds our mechanics in "Casual Realism."
+- **[authoring](authoring)**: Content Creation & Schemas. Authoring standards, technical specifications, schemas, and content creation guides for cards, hazards, and adventure modules.
 - **[iteration](iteration)**: The Workshop. This is the space for active design explorations, brainstorming, and sketching out new mechanics and ideas.
 
 ## For AI Partners (Chronicler & Artificer)
@@ -46,7 +47,7 @@ Your interaction with this repository is governed by two key documents and a cor
 | [Core Rules](rules/core-rules.md)                                           | The foundational player-facing rules. The single most important mechanics document.                                                                              |
 | [Player's Guide](rules/players-guide.md)                                    | Strategic advice, advanced tactics, and detailed play examples complementing core-rules.md.                                                                      |
 | [Gamemaster's Guide](rules/gamemaster-guide.md)                             | Instructions, best practices, and advanced guidance for running the game and writing adventures.                                                                 |
-| [Designers Guide](rules/designers-guide.md)                                 | Technical specifications, card anatomy schemas, time accounting standards, and mathematical attrition budgets for card and adventure authors.                    |
+| [Designers Guide](authoring/designers-guide.md)                             | Technical specifications, card anatomy schemas, time accounting standards, and mathematical attrition budgets for card and adventure authors.                    |
 | [Keyword Glossary](rules/keyword-glossary.md)                               | Reference for the keywords in the game.                                                                                                                          |
 | [Reading The Cards](rules/reading-the-cards.md)                             | Guide on interpreting card rules and keywords.                                                                                                                   |
 | [Colors Of Action](rules/colors-of-action.md)                               | An extensive lexicon to guide classifying in-game actions into Red, Yellow, or Blue.                                                                             |

@@ -2,7 +2,7 @@
 
 This document is the official technical reference for game designers, module writers, and content creators authoring cards, hazards, encounters, and adventure decks for **caRdPG**.
 
-While [Core Rules](core-rules.md) defines the foundational player-facing engine and the [Gamemaster's Guide](gamemaster-guide.md) provides advice for table adjudication, this guide provides the mechanical standards, schemas, mathematical budgets, and pacing conventions required to build balanced, tactile game content.
+While [Core Rules](../rules/core-rules.md) defines the foundational player-facing engine and the [Gamemaster's Guide](../rules/gamemaster-guide.md) provides advice for table adjudication, this guide provides the mechanical standards, schemas, mathematical budgets, and pacing conventions required to build balanced, tactile game content.
 
 ---
 
@@ -65,8 +65,8 @@ tags: ["Bludgeon", "Shield", "Melee"]
 #### Authoring Rules for Action Cards:
 
 1. **The 10x Rule:** Action text must fit within 2–3 lines of physical card text. Complexity belongs in tactical hand combinations, not wall-of-text card rules.
-2. **Strict Keyword Usage:** Use recognized keywords (`Passive:`, `Resolve:`, `Reaction:`) defined in the [Keyword Glossary](keyword-glossary.md).
-3. **Color Integrity:** Ensure the card's theme strictly adheres to [Colors of Action](colors-of-action.md) (Red = force/direct exertion, Yellow = agility/timing/precision, Blue = discipline/wit/perception).
+2. **Strict Keyword Usage:** Use recognized keywords (`Passive:`, `Resolve:`, `Reaction:`) defined in the [Keyword Glossary](../rules/keyword-glossary.md).
+3. **Color Integrity:** Ensure the card's theme strictly adheres to [Colors of Action](../rules/colors-of-action.md) (Red = force/direct exertion, Yellow = agility/timing/precision, Blue = discipline/wit/perception).
 
 ---
 
@@ -108,7 +108,7 @@ exits:
 
 ### C. Clock & Front Cards (Campaign & Dynamic Pressures)
 
-Clock cards model escalating threats, wandering patrols, and environmental timers per [Clocks and Fronts](modules/clocks-and-fronts.md).
+Clock cards model escalating threats, wandering patrols, and environmental timers per [Clocks and Fronts](../rules/modules/clocks-and-fronts.md).
 
 ```yaml
 title: "The Scent of Blood"

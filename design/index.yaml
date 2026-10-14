@@ -73,7 +73,7 @@ game_system_and_rules:
     - pillar:exploration
     - pillar:social
     - pillar:downtime
-  - path: rules/designers-guide.md
+  - path: authoring/designers-guide.md
     purpose: Technical specifications, card anatomy schemas, time accounting standards,
       and mathematical attrition budgets for card and adventure authors.
     tags:
