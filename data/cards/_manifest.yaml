@@ -34,6 +34,14 @@ definitions:
     status: "Pending"
     notes: "Source: Encouters - monster chef.csv"
 
+  - name: "Expedition Supplies"
+    id: "lib-supplies"
+    path: "items/supplies.yaml"
+    type: "Item Library"
+    status: "Active"
+    tags: ["Supplies", "Rations", "Water", "Camp"]
+    notes: "Provisions, waterskins, and camping gear supporting the fatigue and recovery economy."
+
   # Core Rules Definitions
   - name: "Core Status Cards"
     id: "lib-status-core"
@@ -50,3 +58,11 @@ definitions:
     status: "Active"
     tags: ["Consequences", "Core", "General"]
     notes: "Generic Severity 1 & 2 consequences for standard play."
+
+  - name: "Exploration Consequences"
+    id: "deck-consequences-exploration"
+    path: "consequences/exploration.yaml"
+    type: "Consequence Deck"
+    status: "Active"
+    tags: ["Consequences", "Exploration", "Hardship", "Environmental"]
+    notes: "Grounded Severity 1 & 2 traversal, environmental, and exertion consequences."

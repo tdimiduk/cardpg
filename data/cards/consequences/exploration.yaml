@@ -1,0 +1,136 @@
+# Exploration and Traversal Consequence Deck
+# Grounded in design/research/synthesis/consequences-exploration.md and hardship-and-exertion.md
+
+- name: Aching Quads (DOMS)
+  notes: Delayed onset muscle soreness from eccentric strain during steep descents or forced marching.
+  passive: When you flip cards to meet Strength during physical checks, add +1 Impact to your flipped stack.
+  rules:
+  - 'Task: Rest Day (Time 24 Hours in Haven) → Remove this'
+  - 'Task: Salve and Massage (Check {Blue} 6; Time 30 min) → Remove this'
+  severity: 1
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Legs
+  - Exertion
+
+- name: Lumbar Pack Strain
+  notes: Spasmodic strain in erector spinae and trapezius from prolonged heavy ruck carriage.
+  passive: You cannot carry gear exceeding your base encumbrance without suffering 1 Impact at each vigilance payment.
+  rules:
+  - 'Task: Unburdened Rest (Time 1 Day without pack) → Remove this'
+  - 'Task: Spinal Realignment (Check {Blue} 8; Time 15 min) → Remove this'
+  severity: 1
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Torso
+  - Exertion
+
+- name: Friction Blister ("Hot Spot")
+  notes: Repetitive mechanical shear strain cleaving the stratum spinosum (Rushton 2024).
+  passive: When you move or reposition during Crisis Time, discard 1 card from hand.
+  rules:
+  - 'Task: Dress and Pad (Cost Clean Cloth; Time 5 min) → Treat this'
+  - 'When treated → Suppress passive penalty. Clears naturally after 3 Days.'
+  severity: 1
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Feet
+  - Traversal
+
+- name: Mild Dehydration
+  notes: 1–2% body mass fluid deficit causing headache, dry mouth, and slowed reaction times (Sawka 2007).
+  passive: You cannot maintain a Readied Card in your Vigilance pool.
+  rules:
+  - 'Task: Rehydrate (Cost 1 Water Portion; Time 1 Hour) → Remove this'
+  severity: 1
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Exertion
+
+- name: Chilled / Shivering
+  notes: Peripheral vasoconstriction from damp clothing or cold winds without a campfire.
+  passive: -1 Strength to all Blue and Yellow actions.
+  rules:
+  - 'Task: Warm Hearth (Time 1 Hour by a campfire with dry clothes) → Remove this'
+  severity: 1
+  tags:
+  - Exploration
+  - Condition
+  - Environmental
+  - Cold
+
+- name: Dust in Eyes
+  notes: Foreign particulate irritation causing acute lacrimation and blurred vision.
+  passive: You cannot maintain Vigilance above 2 cards.
+  rules:
+  - 'Task: Flush Eyes (Cost 1 Clean Water; Time 5 min) → Remove this'
+  severity: 1
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Sensory
+  - Eyes
+
+- name: Grade II Ankle Sprain
+  notes: Partial ATFL ligament tear and mechanoreceptor loss causing postural sway (Mattacola 2002).
+  passive: Walking speed halved. You cannot run or carry heavy gear. All agility checks require +2 flips.
+  rules:
+  - 'Task: Rigid Splinting (Check {Blue} 8; Cost Splint + Bandages; Time 30 min) → Treat this'
+  - 'When treated → Walking speed restored to a limp. Requires 3 Weeks of relative rest to fully remove.'
+  severity: 2
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Legs
+  - Traversal
+
+- name: Moderate Hypothermia
+  notes: Core body temperature drops to 28–32°C; shivering stops, inducing confusion and apathy (Giesbrecht 2000).
+  passive: You are lethargic and confused. You cannot plan actions in Crisis Time (must Pass unless guided).
+  rules:
+  - 'Task: Active Rewarming (Time 4 Hours in warm shelter with hot broth and blankets) → Remove this'
+  - When removed → Add 2 Fatigue to your expended pile
+  severity: 2
+  tags:
+  - Exploration
+  - Condition
+  - Environmental
+  - Cognitive
+  - Cold
+
+- name: Heat Exhaustion
+  notes: Core temperature elevation with peripheral vasodilation and electrolyte loss; dizziness, nausea.
+  passive: Work capacity reduced by half. You must discard 1 card at the start of each Crisis round.
+  rules:
+  - 'Task: Cool Shade and Saline Rehydration (Time 12 Hours resting with salt and water) → Remove this'
+  - When removed → Add 2 Fatigue to your expended pile
+  severity: 2
+  tags:
+  - Exploration
+  - Condition
+  - Environmental
+  - Physical
+  - Heat
+
+- name: Trench Foot
+  notes: Prolonged damp-cold exposure inducing microvascular ischemia and axonopathy (Zafren 2021).
+  passive: Feet are numb and swollen with burning rewarming pain. You cannot march for more than 2 hours per day.
+  rules:
+  - 'Task: Dry Convalescence (Time 2 Weeks of complete bed rest with elevated, dry feet) → Remove this'
+  severity: 2
+  tags:
+  - Exploration
+  - Condition
+  - Physical
+  - Feet
+  - Environmental

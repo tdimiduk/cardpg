@@ -1,8 +1,7 @@
 - flavor: Fatigue is setting in ...
   name: Fatigue
   rules:
-  - 'Task: Sleep (Time 2 Hours) → Remove this card.'
-  - 'Task: Light Rest (Time 4 Hours) → Remove this card.'
+  - 'Task: Sleep (Time 4 Hours) → Remove this card.'
   stats:
     blue: 1
     red: 1
