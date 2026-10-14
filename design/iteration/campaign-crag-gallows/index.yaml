@@ -16,9 +16,6 @@ documents:
     purpose: "Conceptual design and event catalogs for the 3 Living Clock Decks (Wilderness Clock, Site Activity Clock, Macro Haven Clock)."
     tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
 
-  - path: "iteration/campaign-crag-gallows/location-card-schema.md"
-    purpose: "Data schemas and concrete prototypes for Location, Travel, and Clock Cards with explicit time costs and interrupt tags."
-    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
 
   - path: "iteration/campaign-crag-gallows/software-requirements-checklist.md"
     purpose: "Engineering checklist for digital tabletop chronometer, modular decks, interrupt dispatch, and adventuring time state."

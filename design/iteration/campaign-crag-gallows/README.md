@@ -64,7 +64,7 @@ flowchart TD
 
 - [environment-and-inhabitants.md](environment-and-inhabitants.md): Detailed breakdown of the Haven, the Wilderness Approach, the Upper Works, and the Lower Cuts, including locations, inhabitants, and environmental hazards.
 - [living-clocks.md](living-clocks.md): Design and narrative concepts for the 3 Clock Decks (Wilderness Clock, Site Activity Clock, and Macro Haven Clock).
-- [location-card-schema.md](location-card-schema.md): Formal YAML schemas and concrete prototypes for Location Cards, Travel Cards, and Clock Event Cards, embedding grounded time costs and noise interrupt tags.
+- [locations-and-travel.md](../../authoring/locations-and-travel.md): Canonical data schemas and prototypes for Location Cards, Travel Cards, and Clock Event Cards (promoted from this workshop to core authoring standards).
 - [software-requirements-checklist.md](software-requirements-checklist.md): Engineering checklist for digital tabletop support of the expedition chronometer, modular decks, interrupt dispatch, and exploration automation.
 - [verisimilitude-study-agenda.md](verisimilitude-study-agenda.md): Structured research agenda to empirically calibrate the tentative 30m/60m time baselines against vigilance fatigue, mine traversal kinetics, and acoustics.
 - [research-handoff-brief.md](research-handoff-brief.md): Comprehensive context and execution brief for incoming clean research session to investigate vigilance limits, caving locomotion, and mine acoustics.

@@ -86,6 +86,17 @@ game_system_and_rules:
     - core-concept:fatigue
     - pillar:exploration
     - pillar:combat
+  - path: authoring/locations-and-travel.md
+    purpose: Data schemas, card anatomy, and authoring standards for Location Cards, Travel Cards, and Living Clock Decks.
+    tags:
+    - doc-type:guide
+    - guide
+    - audience:designer-facing
+    - core-concept:cards
+    - core-concept:pacing
+    - core-concept:time-accounting
+    - core-concept:clocks
+    - pillar:exploration
   - path: rules/keyword-glossary.md
     purpose: Reference for the keywords in the game.
     tags:
