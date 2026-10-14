@@ -30,7 +30,7 @@ When authoring or editing rules documents, keep their explicit purpose and targe
 
 ### `modules/` (Modular Rule Plug-ins)
 
-- **Purpose:** Self-contained, optional rules modules that tables can adopt or omit without breaking the core engine (e.g., `snap-check.md`, `narrative-actions.md`, `the-breather.md`).
+- **Purpose:** Self-contained, optional rules modules that tables can adopt or omit without breaking the core engine (e.g., `snap-check.md`, `narrative-actions.md`, `selective-commitment.md`).
 - **Structure:** Each module must contain:
   1. A player-facing rules section.
   2. A GM adjudication section.
