@@ -705,6 +705,42 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk"
           summary: "Peer-reviewed neurocognitive review analyzing the temporal onset and resource exhaustion mechanisms of vigilance decrement in human operators."
+    - type: book
+      title: "The Logistics of the Roman Army at War (264 B.C. - A.D. 235)"
+      author: "Jonathan P. Roth"
+      year: 1999
+      doi_or_url: "https://archive.org/details/the-logistics-of-the-roman-army-at-war-264-b.c.-a.d.-235"
+      local_archive: "sources/verisimilitude/roth-1999-logistics-roman-army"
+      epistemic_grade: "primary_academic"
+      publication: "Brill"
+      description: >
+        Definitive academic treatise on ancient military march rates (25-30 km/day),
+        load carriage (sarcina loads of 20-30 kg), daily cereal rations (frumentum,
+        ~850g grain yielding ~3,000 kcal/day), water requirements, and fortified
+        camp procedures.
+      vetting:
+        - date: "2026-10-12"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Authoritative monograph published by Brill detailing quantitative Roman military march, nutrition, hydration, and camp logistics."
+    - type: journal_article
+      title: "Behavioral and Physiological Consequences of Sleep Restriction"
+      author: "Siobhan Banks, David F. Dinges"
+      year: 2007
+      doi_or_url: "https://doi.org/10.5664/jcsm.26918"
+      local_archive: "sources/verisimilitude/banks-2007-sleep-restriction-recovery"
+      epistemic_grade: "primary_academic"
+      publication: "Journal of Clinical Sleep Medicine"
+      description: >
+        Definitive review and empirical synthesis of sleep restriction dose-response
+        curves (Van Dongen 2003, Belenky 2003), quantifying chronic neurobehavioral
+        debt and demonstrating that complete recovery requires multiple nights of
+        consolidated 8-hour sleep.
+      vetting:
+        - date: "2026-10-12"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Authoritative clinical review synthesizing chronic sleep restriction kinetics, cumulative executive deficits, and multi-night recovery sleep requirements."
 
 ---
 modeling_logistics_transport_materials:
