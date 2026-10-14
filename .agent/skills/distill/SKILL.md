@@ -1,5 +1,6 @@
 ---
-description: Compress durable findings, file anchors, and open questions from a working session into scratch/distill/
+name: distill
+description: Session distillation runbook.
 ---
 
 # Session Distillation Workflow

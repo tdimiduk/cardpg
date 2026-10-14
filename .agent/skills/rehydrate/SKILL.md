@@ -1,5 +1,6 @@
 ---
-description: Bootstrap a fresh session from a scratch/distill/ file by verifying code/design anchors before acting
+name: rehydrate
+description: Session rehydration runbook.
 ---
 
 # Session Rehydration Workflow
