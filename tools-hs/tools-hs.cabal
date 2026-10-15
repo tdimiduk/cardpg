@@ -23,6 +23,7 @@ library
   exposed-modules:
     AuditConsequences
     Design.Audit
+    Design.Bundle
     Design.Frontmatter
     Design.Glossary
     Design.Index
@@ -51,6 +52,7 @@ library
     , optparse-applicative
     , process
     , text
+    , time
     , vector
     , yaml
 
@@ -95,6 +97,18 @@ executable manage-cards
     , directory
     , filepath
     , optparse-applicative
+
+executable bundle-topic
+  import:         project-config
+  hs-source-dirs: app/bundle-topic
+  main-is:        Main.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+    , base
+    , directory
+    , filepath
+    , optparse-applicative
+    , text
     , tools-hs
 
 test-suite tools-hs-test

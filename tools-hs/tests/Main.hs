@@ -23,6 +23,14 @@ import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Yaml (ParseException, decodeEither', decodeFileEither, encode)
+import Design.Bundle
+  ( AuthorityTier (..)
+  , BundleConfig (..)
+  , FileBundleEntry (..)
+  , classifyAuthority
+  , computeDynamicFence
+  , renderBundle
+  )
 import Design.Frontmatter
 import Design.Glossary
   ( generateGlossaryHaskellSource
@@ -55,6 +63,7 @@ tests =
     , test_indexOps
     , test_tocNormalization
     , test_cardManagement
+    , test_bundler
     ]
 
 sampleMarkdown :: Text
@@ -609,3 +618,95 @@ test_dataIntegrity =
     ]
   where
     isInfixOfStr needle haystack = needle `T.isInfixOf` T.pack haystack
+
+test_bundler :: TestTree
+test_bundler =
+  testGroup
+    "Topic Bundler Tests"
+    [ testGroup
+        "Authority Tier Classification"
+        [ testCase "Canonical rules" $
+            classifyAuthority "design/rules/core-rules.md" @?= CanonicalRule
+        , testCase "Design philosophy" $
+            classifyAuthority "design/philosophy/design-precepts.md" @?= DesignPhilosophy
+        , testCase "System design standards" $
+            classifyAuthority ".agent/standards/systems_design_standards.md" @?= SystemDesignStandard
+        , testCase "Math baseline" $
+            classifyAuthority "data/math-baseline.md" @?= CanonicalMathBaseline
+        , testCase "Active iteration" $
+            classifyAuthority "design/iteration/fatigue/proposal.md" @?= ActiveIteration
+        , testCase "Research synthesis" $
+            classifyAuthority "design/research/synthesis/armor.md" @?= EmpiricalResearchSynthesis
+        , testCase "Research report" $
+            classifyAuthority "design/research/reports/archery-tests.md" @?= EmpiricalResearchReport
+        , testCase "Canonical cards" $
+            classifyAuthority "data/cards/core-combat.yaml" @?= CanonicalCardYaml
+        , testCase "Engine Haskell AST" $
+            classifyAuthority "core/src/Core/Types.hs" @?= EngineHaskellAst
+        , testCase "Archived and outdated" $ do
+            classifyAuthority "design/archive/old-rules.md" @?= ArchivedDeprecated
+            classifyAuthority "design/rules/core-rules.md.outdated" @?= ArchivedDeprecated
+        , testCase "Fallback project document" $
+            classifyAuthority "README.md" @?= ProjectDocument
+        ]
+    , testGroup
+        "Dynamic Code Fencing"
+        [ testCase "Standard markdown with no backticks" $
+            computeDynamicFence "Regular prose text without backticks." @?= "`````"
+        , testCase "Markdown with 3-backtick code block" $
+            computeDynamicFence "```haskell\nmain = putStrLn \"hi\"\n```" @?= "`````"
+        , testCase "Markdown with 5-backtick block" $
+            computeDynamicFence "`````markdown\nnested\n`````" @?= "``````"
+        , testCase "Markdown with 7-backtick block" $
+            computeDynamicFence "```````nested 7```````" @?= "````````"
+        ]
+    , testGroup
+        "Bundle Rendering Structure"
+        [ testCase "Renders all required sections and directives" $ do
+            let cfg =
+                  BundleConfig
+                    { topic = "Fatigue & Armor Balance"
+                    , framing = Just "1. How does fatigue interact with heavy armor?\n2. Are dice math within bounds?"
+                    , output = "export/test-bundle.md"
+                    , inputFiles = ["design/rules/core-rules.md"]
+                    , timestamp = Just "2026-10-14 12:00"
+                    }
+                entry =
+                  FileBundleEntry
+                    { relPath = "design/rules/core-rules.md"
+                    , authorityTier = CanonicalRule
+                    , description = "The foundational player-facing rules."
+                    , content = "# Core Rules\n\n```yaml\nsample: true\n```\n"
+                    , lineCount = 5
+                    , charCount = 35
+                    , estimatedTokens = 8
+                    , fence = "`````"
+                    , langTag = "markdown"
+                    }
+                rendered = renderBundle cfg "2026-10-14 12:00" [entry]
+            assertBool
+              "Contains topic header"
+              ("# CARDPG DESIGN BUNDLE: Fatigue & Armor Balance" `T.isInfixOf` rendered)
+            assertBool "Contains timestamp" ("Generated: 2026-10-14 12:00" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Lead Systems Designer directive"
+              ("Directive for AI (Lead Systems Designer)" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Framing Section"
+              ("## 2. Discussion Framing & Open Questions" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Framing Content"
+              ("How does fatigue interact with heavy armor?" `T.isInfixOf` rendered)
+            assertBool "Contains Wrap-Up Protocol" ("## 3. Wrap-Up & Return Protocol" `T.isInfixOf` rendered)
+            assertBool
+              "Contains File Manifest"
+              ("## 4. Included File Manifest & Authority Tiers" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Manifest Line with Authority"
+              ("CANONICAL RULE (Live System Law)" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Source Documents Section"
+              ("## 5. Verbatim Source Documents" `T.isInfixOf` rendered)
+            assertBool "Contains File Fencing" ("`````markdown\n# Core Rules" `T.isInfixOf` rendered)
+        ]
+    ]

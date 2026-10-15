@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -e
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Locate the compiled bundle-topic binary in dist-newstyle
+find_binary() {
+  local ghc_ver=""
+  if command -v ghc &>/dev/null; then
+    ghc_ver=$(ghc --numeric-version 2>/dev/null || true)
+  fi
+
+  shopt -s nullglob
+  local candidates=()
+  if [ -n "$ghc_ver" ]; then
+    candidates=("$ROOT_DIR"/dist-newstyle/build/*/ghc-"$ghc_ver"/tools-hs-*/x/bundle-topic/build/bundle-topic/bundle-topic)
+  fi
+
+  if [ ${#candidates[@]} -eq 0 ]; then
+    candidates=("$ROOT_DIR"/dist-newstyle/build/*/ghc-*/tools-hs-*/x/bundle-topic/build/bundle-topic/bundle-topic)
+  fi
+
+  local newest=""
+  for c in "${candidates[@]}"; do
+    if [ -z "$newest" ] || [ "$c" -nt "$newest" ]; then
+      newest="$c"
+    fi
+  done
+  echo "$newest"
+}
+
+BIN=$(find_binary)
+NEEDS_BUILD=0
+
+if [ -z "$BIN" ] || [ ! -x "$BIN" ]; then
+  NEEDS_BUILD=1
+else
+  # Check if any Haskell sources or cabal files in tools-hs or core are newer than the binary
+  if [ -n "$(find "$ROOT_DIR/tools-hs" "$ROOT_DIR/core/src" "$ROOT_DIR/core/core.cabal" \( -name "*.hs" -o -name "*.cabal" \) -newer "$BIN" -print -quit 2>/dev/null)" ]; then
+    NEEDS_BUILD=1
+  fi
+fi
+
+if [ "$NEEDS_BUILD" -eq 1 ]; then
+  echo "Building bundle-topic..." >&2
+  (cd "$ROOT_DIR" && cabal build -v0 tools-hs:exe:bundle-topic)
+  BIN=$(find_binary)
+  if [ -z "$BIN" ] || [ ! -x "$BIN" ]; then
+    echo "Error: Failed to find built bundle-topic binary." >&2
+    exit 1
+  fi
+fi
+
+exec "$BIN" "$@"
