@@ -20,17 +20,18 @@ The player deck (baseline 24 cards) acts as the party's expedition clock:
 
 Because cards committed to the [[Vigilance]] pool flush every hour, **time directly translates to stamina attrition for vigilant adventurers**.
 
-### B. "Hard Going" vs. "Acute Perils"
+### B. "Hard Going" vs. "Acute Perils" vs. "Physical Labor"
 
-When authoring Location, Travel, and Hazard cards, distinguish between continuous physical strain and sudden traumatic shocks:
+When authoring Location, Travel, and Hazard cards, distinguish between environmental pacing, deliberate physical work, and sudden traumatic shocks:
 
-| Category                            | Design Meaning                                                        | Card Implementation                                                                                          | Why It Matters                                                                                                                                                                                                 |
-| :---------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Hard Going (Arduous Conditions)** | Strenuous terrain, poor weather, heavy obstacles, or slow navigation. | **Consumes In-Game Time** (`time_cost: 15m`, `time_cost: 30m`, or `Double Travel Time`).                     | Advances the narrative clock. Torches burn, daylight wanes, and characters pay for vigilance naturally. Vigilant characters pay for their readiness in card loss; relaxed characters pay in time and exposure. |
-| **Acute Perils (Sudden Shocks)**    | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.         | **Direct Consequences or General Action** (`Flip Red 12 or suffer 2 Impact`, `Discard 2 cards to expended`). | Inflicts immediate, sharp damage that tests reflexes or forces instant deck attrition regardless of current vigilance posture.                                                                                 |
+| Category                            | Design Meaning                                                       | Card Implementation                                                                                          | Why It Matters                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :---------------------------------- | :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Travel & Environmental Friction** | Arduous trails, poor weather, navigation delays, or resting in camp. | **Consumes In-Game Time** (`time_cost: 15m`, `time_cost: 60m`, or `Double Travel Time`).                     | Advances the narrative clock. Torches burn, daylight wanes, and characters pay for vigilance naturally. Vigilant characters pay in card loss; relaxed characters pay in time and exposure.                                                                                                                                                                                                                           |
+| **Physical Labor & Obstacles**      | Forcing jammed portcullises, clearing deadfalls, climbing cliffs.    | **General Action / Labor Task** (`Red 16` or `Yellow 14` with dynamic time and `consequences: ["Fatigue"]`). | Success is default, but physical work expends deck stamina. Character capability and tools reduce cards flipped and time elapsed. Controlled consequence pools prevent traumatic injury.                                                                                                                                                                                                                             |
+| **Hazard Attacks (Acute Perils)**   | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.        | **Hazard Attack** (`Yellow 12 [Reflex, Puncture]` or `Red 16 [BluntForce, Crush]`).                          | An environmental attack against the character resolved using standard defense rules. The player meets incoming [[Strength]] using [[Vigilance]]/hand cards (0 Impact) and/or deck flips (1 Impact each). Flipped cards convert into [[Consequences]] via [[Defense]]. Alert characters absorb blows with readied defenses; characters marching at ease ([[Vigilance]] 0) must absorb the full force via blind flips. |
 
 > [!IMPORTANT]
-> **Avoid arbitrary flat card taxes for rough terrain.** Do not write _"Swamp: Each player discards 2 cards from deck."_ Doing so bypasses the player's deliberate risk/reward choice with their Vigilance Dial. Write `Swamp: Travel takes 45 minutes.`
+> **Avoid arbitrary flat card taxes.** Do not write _"Swamp: Each player discards 2 cards from deck."_ Doing so bypasses character attributes, gear, and the player's deliberate risk/reward choice with their Vigilance Dial. Environmental pacing and resting are adjudicated through in-game time; active physical exertion is adjudicated through colored challenges.
 
 ### C. Standard Time Cost Benchmarks
 
@@ -75,33 +76,41 @@ tags: ["Bludgeon", "Shield", "Melee"]
 Location cards represent physical rooms, wilderness hexes, landmarks, or dungeon chambers. They define the environment and provide interactive choice nodes.
 
 ```yaml
-title: "Submerged Sluice Gate"
-deck: "Dungeon - Sunken Bastion"
+id: "loc_submerged_sluice_gate"
+name: "Submerged Sluice Gate"
+card_type: "Location"
+governing_clock: "site_activity_clock"
+base_time_minutes: 15
 tags: ["Subterranean", "Flooded", "Chokepoint"]
-time_cost: "15m" # In-game exploration time elapsed
 
-environment_text: >
+narrative: >
   Waist-deep brackish water fills the stone conduit. A rusted iron gate 
   blocks forward progress; debris has wedged into the winch gears.
 
-obstacles:
+exits:
+  - to: "loc_chamber_of_cisterns"
+    status: "blocked"
+    passage: "Submerged overflow pipe"
+  - to: "loc_flooded_vault"
+    status: "blocked"
+    passage: "Rusted iron sluice gate"
+
+actions:
   - name: "Force the Winch"
-    type: "General Action"
     color: "Red"
     strength: 14
-    consequence_pool: "Exploration Exhaustion"
-    rules_text: "Clearing the winch opens the dry overflow passage."
+    time_cost_minutes: 10
+    consequences: ["Fatigue", "MuscleStrain"]
+    tags: ["Leverage", "Iron"]
+    narrative: "Muscle the rusted gears free to hoist the sluice gate."
 
   - name: "Dive Beneath the Gate"
-    type: "General Action"
     color: "Yellow"
     strength: 10
-    time_cost: "5m"
-    rules_text: "Squeeze through silted gaps. Suffer Cold Exposure on 2+ Impact."
-
-exits:
-  - "Chamber of Cisterns"
-  - "Flooded Vault"
+    time_cost_minutes: 5
+    consequences: ["ColdExposure", "PinchWound"]
+    tags: ["Submerged", "TightSqueeze"]
+    narrative: "Squeeze through silted gaps beneath the rusted teeth."
 ```
 
 ---
@@ -124,18 +133,54 @@ flavor_text: "Chittering echoes through the ventilation shafts."
 
 ### D. Consequence Cards (Harm & Complications)
 
-Consequence cards represent the physical, mental, and logistical fallout of exceeding [[Defense]] and [[Resilience]].
+Consequence cards represent the physical, mental, and logistical fallout of exceeding [[Defense]] and [[Resilience]]. The game divides harm into two distinct mechanical forms:
 
-- **Status Cards (In Your Deck):** Represent systemic attrition (`Fatigue`, `Minor Wound`, `Shaken`). They enter the expended pile and dilute future draws with low values.
-- **Condition Cards (On the Table):** Represent acute tactical penalties (`Sprained Ankle`, `Pinned`, `Bleeding`). They sit face up on the table until resolved.
+1. **Status Cards (In Your Deck):** Represent systemic attrition (`Fatigue`, `Injury`). They enter the expended pile, cycle into your active deck during [[Fatigue Cycles]], and dilute draw density with poor stats and unplayable hands.
+2. **Condition Cards (On the Table):** Represent acute tactical penalties or persistent ailments (`Sprained Ankle`, `Aching Quads`, `Concussion`). They sit face up on the table in rows determined by [[Resilience]], imposing persistent passive penalties until cleared by recovery tasks.
+
+#### 1. Status Card Schema (Deck Pollution)
+
+Canonical status cards are defined in [`data/cards/status/core.yaml`](file:///home/tdimiduk/cardpg/cardpg/data/cards/status/core.yaml):
+
+- **`Fatigue`:** Universal metabolic exhaustion (`1/1/1`), cleared via `'Task: Sleep (Time 4 Hours) → Remove this card.'`
+- **`Injury`:** Acute physical trauma (`0/0/0`), auto-expended if held in hand at round end, cleared via `'Task: Rest (Time 1 Day) → Remove this card.'`
+
+When authoring custom status cards (such as severe regional blights, venom, or extreme exertion), use the canonical YAML schema:
 
 ```yaml
-title: "Exhausted Muscles"
-type: "Status"
-harm_category: "Fatigue"
-deck_color: "Red 0"
-rules_text: "When flipped during a physical check, adds 0 Strength and +1 Impact."
-flavor_text: "Your arms tremble under the weight of your weapon."
+# Schema: Status Card (data/cards/status/)
+name: "Exhausted Muscles"
+flavor: "Your arms tremble under the weight of your weapon; lactic acid burns deep."
+stats:
+  red: 0 # Physical force compromised
+  yellow: 0 # Agility compromised
+  blue: 1 # Mental focus remains intact
+rules:
+  - "Task: Liniment & Rest (Check {Blue} 6; Time 8 Hours) → Remove this card."
+tags:
+  - "Status"
+  - "Fatigue"
+  - "Physical"
+```
+
+#### 2. Condition Card Schema (Tabletop Resilience Rows)
+
+Condition cards are defined in [`data/cards/consequences/`](file:///home/tdimiduk/cardpg/cardpg/data/cards/consequences/). They declare a severity tier (1, 2, or 3), passive penalties, and concrete removal tasks:
+
+```yaml
+# Schema: Condition Card (data/cards/consequences/)
+name: "Aching Quads (DOMS)"
+severity: 1 # Row 1 = Severity 1; escalates when row width exceeds Resilience
+notes: "Delayed onset muscle soreness from eccentric strain during steep descents."
+passive: "When you flip cards to meet Strength during physical checks, add +1 Impact to your flipped stack."
+rules:
+  - "Task: Rest Day (Time 24 Hours in Haven) → Remove this"
+  - "Task: Salve and Massage (Check {Blue} 6; Time 30 min) → Remove this"
+tags:
+  - "Exploration"
+  - "Condition"
+  - "Physical"
+  - "Exertion"
 ```
 
 ---
@@ -209,14 +254,17 @@ A knight in full plate (Burden 2) who endures 2 Fatigue Cycles suffers a deck th
 
 ### D. Standard Strength Budgets for Challenges
 
-When assigning [[Strength]] values to obstacles and general actions:
+When assigning [[Strength]] values to obstacles, labor tasks, and environmental hazard attacks:
 
-| Tier            | Typical Strength | Narrative Scale                                                                                 |    Expected Deck Flips (Casual Attempt)    |
-| :-------------- | :--------------: | :---------------------------------------------------------------------------------------------- | :----------------------------------------: |
-| **Routine**     |    **6 – 8**     | Picking a simple lock, scaling a dry wall, intimidating a nervous guard.                        |          1 – 2 flips (0–1 Impact)          |
-| **Challenging** |   **12 – 16**    | Forcing a jammed portcullis, leaping a chasm, holding ground against a torrent.                 |          3 – 5 flips (1–3 Impact)          |
-| **Formidable**  |   **20 – 26**    | Swimming through a freezing current, disarming an ancient runic engine, resisting venom.        |          5 – 8 flips (3–5 Impact)          |
-| **Extreme**     |     **30+**      | Surviving a collapsing cavern roof, withstanding dragon fear, lifting an iron portcullis alone. | 8+ flips (Severe Impact / Deck Starvation) |
+| Tier            | Typical Strength | Narrative Scale                                                                                 | Flips & Impact (Casual Attempt) | Expected Consequences (at Def 2) |
+| :-------------- | :--------------: | :---------------------------------------------------------------------------------------------- | :-----------------------------: | :------------------------------: |
+| **Routine**     |    **6 – 8**     | Picking a simple lock, scaling a dry wall, intimidating a nervous guard.                        |    2 – 3 flips (2–3 Impact)     |          1 Consequence           |
+| **Challenging** |   **12 – 16**    | Forcing a jammed portcullis, leaping a chasm, holding ground against a torrent.                 |    4 – 6 flips (4–6 Impact)     |        2 – 3 Consequences        |
+| **Formidable**  |   **20 – 26**    | Swimming through a freezing current, disarming an ancient runic engine, resisting venom.        |    7 – 9 flips (7–9 Impact)     |        3 – 4 Consequences        |
+| **Extreme**     |     **30+**      | Surviving a collapsing cavern roof, withstanding dragon fear, lifting an iron portcullis alone. |     10+ flips (10+ Impact)      |         5+ Consequences          |
+
+> [!NOTE]
+> Every card flipped into the flipped stack is exactly **1 [[Impact]]**. Impact is divided by active [[Defense]] to determine completed [[Consequences]]. Characters resolving challenges from hand (via [[Vigilance]] or prepared Defend actions) generate **0 Impact** for those hand cards.
 
 ---
 
@@ -224,7 +272,7 @@ When assigning [[Strength]] values to obstacles and general actions:
 
 1. **Defender-Centric Action Drafting:**
    - Never write cards that say _"The GM flips cards to attack you."_ The challenge sets the static [[Strength]] and [[Color]]; the targeted player flips, spends, and decides how to mitigate consequences.
-2. **Success at a Cost:**
-   - Avoid binary pass/fail triggers outside of explicit life-or-death saving checks. If an obstacle has a high Strength, meeting it flips cards and causes [[Impact]]. Success happens; the card's job is to extract the realistic physical price.
+2. **Success at a Cost (for Obstacles):**
+   - When authoring [[General Actions]] and labor obstacles, success is default; meeting the challenge [[Strength]] extracts the realistic physical and stamina price ([[Impact]] and elapsed time). Avoid binary pass/fail gates. For sudden, reactive perils (springing a trap, falling masonry, toxic bursts), author them as **Hazard Attacks** that test player defenses directly rather than using binary saving throws.
 3. **Casual Realism:**
    - Ground all card text in cause-and-effect plausibility. Cross-reference injury timelines, armor weights, and physical exertion rates against the synthesis papers in `design/research/synthesis/`.

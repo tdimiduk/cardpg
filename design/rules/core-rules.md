@@ -112,7 +112,7 @@ The GM or challenge sets the [[Color]] and [[Strength]]:
 
 ### Status Cards vs. Condition Cards
 
-- **Status Cards (In Your Deck):** Represent general systemic wear-and-tear (_Fatigue_, _Minor Wound_). They enter your expended pile, shuffle into your deck during Fatigue Cycles, and clog your draws with low Color values.
+- **Status Cards (In Your Deck):** Represent general systemic wear-and-tear (_Fatigue_, _Injury_). They enter your expended pile, shuffle into your deck during Fatigue Cycles, and clog your draws with low Color values.
 - **Condition Cards (On the Table):** Represent acute tactical injuries or setbacks (_Sprained Ankle_, _Concussion_, _Pinned_). They sit face up on the table, imposing persistent penalties until treated or cleared through narrative recovery.
 
 ### Keywords and Timing
