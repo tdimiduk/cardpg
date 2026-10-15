@@ -5,7 +5,7 @@
 module Main (main) where
 
 import Control.Applicative (optional, some, (<**>))
-import Control.Monad (forM_)
+import Control.Monad (forM_, unless)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Design.Bundle
@@ -165,4 +165,9 @@ main = do
           ++ " lines | ~"
           ++ show summary.totalEstimatedTokens
           ++ " tokens"
+      unless (null summary.landscapeEntries) $
+        putStrLn $
+          "External Landscape: "
+            ++ show (length summary.landscapeEntries)
+            ++ " canonical documents cataloged (available on request)"
       exitSuccess

@@ -27,6 +27,7 @@ import Design.Bundle
   ( AuthorityTier (..)
   , BundleConfig (..)
   , FileBundleEntry (..)
+  , LandscapeEntry (..)
   , classifyAuthority
   , computeDynamicFence
   , renderBundle
@@ -683,7 +684,14 @@ test_bundler =
                     , fence = "`````"
                     , langTag = "markdown"
                     }
-                rendered = renderBundle cfg "2026-10-14 12:00" [entry]
+                landscape =
+                  [ LandscapeEntry
+                      { relPath = "design/rules/modules/clocks-and-fronts.md"
+                      , authorityTier = CanonicalRule
+                      , description = "Pressure tracking and countdown clocks."
+                      }
+                  ]
+                rendered = renderBundle cfg "2026-10-14 12:00" [entry] landscape
             assertBool
               "Contains topic header"
               ("# CARDPG DESIGN BUNDLE: Fatigue & Armor Balance" `T.isInfixOf` rendered)
@@ -691,6 +699,9 @@ test_bundler =
             assertBool
               "Contains Lead Systems Designer directive"
               ("Directive for AI (Lead Systems Designer)" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Boundary Awareness"
+              ("Repository Context & Boundary Awareness" `T.isInfixOf` rendered)
             assertBool
               "Contains Framing Section"
               ("## 2. Discussion Framing & Open Questions" `T.isInfixOf` rendered)
@@ -705,8 +716,14 @@ test_bundler =
               "Contains Manifest Line with Authority"
               ("CANONICAL RULE (Live System Law)" `T.isInfixOf` rendered)
             assertBool
+              "Contains Landscape Section"
+              ("## 5. Broader Repository Landscape (Available on Request)" `T.isInfixOf` rendered)
+            assertBool
+              "Contains Landscape item"
+              ("design/rules/modules/clocks-and-fronts.md" `T.isInfixOf` rendered)
+            assertBool
               "Contains Source Documents Section"
-              ("## 5. Verbatim Source Documents" `T.isInfixOf` rendered)
+              ("## 6. Verbatim Source Documents" `T.isInfixOf` rendered)
             assertBool "Contains File Fencing" ("`````markdown\n# Core Rules" `T.isInfixOf` rendered)
         ]
     ]

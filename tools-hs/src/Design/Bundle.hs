@@ -7,21 +7,24 @@ module Design.Bundle
   , authorityTierTitle
   , classifyAuthority
   , FileBundleEntry (..)
+  , LandscapeEntry (..)
   , BundleConfig (..)
   , BundleSummary (..)
   , computeDynamicFence
   , maxConsecutiveBackticks
   , extensionToLang
   , buildFileBundleEntry
+  , extractLandscapeEntries
   , renderBundle
   , createBundle
   ) where
 
 import Control.Applicative ((<|>))
 import Data.Aeson (Value (..))
-import Data.List (isPrefixOf, isSuffixOf, stripPrefix)
+import Data.List (isPrefixOf, isSuffixOf, sort, stripPrefix)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
+import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
@@ -141,6 +144,14 @@ data FileBundleEntry = FileBundleEntry
   }
   deriving stock (Show, Eq)
 
+-- | Canonical document in the repository landscape available on request
+data LandscapeEntry = LandscapeEntry
+  { relPath :: FilePath
+  , authorityTier :: AuthorityTier
+  , description :: Text
+  }
+  deriving stock (Show, Eq, Ord)
+
 -- | Configuration parameters for creating a bundle
 data BundleConfig = BundleConfig
   { topic :: Text
@@ -159,6 +170,7 @@ data BundleSummary = BundleSummary
   , totalEstimatedTokens :: Int
   , outputPath :: FilePath
   , entries :: [FileBundleEntry]
+  , landscapeEntries :: [LandscapeEntry]
   }
   deriving stock (Show, Eq)
 
@@ -239,9 +251,54 @@ buildFileBundleEntry rawP fileContent idxData =
         , langTag = lang
         }
 
--- | Render the full markdown bundle text from configuration and entries
-renderBundle :: BundleConfig -> Text -> [FileBundleEntry] -> Text
-renderBundle cfg timeStr fileEntries =
+-- | Extract canonical landscape documents that are NOT in the bundled files
+extractLandscapeEntries :: [FilePath] -> IndexData -> [LandscapeEntry]
+extractLandscapeEntries inputFiles idxData =
+  let bundled = Set.fromList (map cleanPath inputFiles)
+      toRepo p =
+        let norm = cleanPath p
+         in if
+              | "../" `isPrefixOf` norm -> drop 3 norm
+              | "design/" `isPrefixOf` norm -> norm
+              | "data/" `isPrefixOf` norm -> norm
+              | "core/" `isPrefixOf` norm -> norm
+              | ".agent/" `isPrefixOf` norm -> norm
+              | otherwise -> "design/" </> norm
+      isEligibleTier t =
+        t
+          `elem` [ CanonicalRule
+                 , DesignPhilosophy
+                 , SystemDesignStandard
+                 , CanonicalMathBaseline
+                 , EmpiricalResearchSynthesis
+                 , CanonicalCardYaml
+                 ]
+      isIgnoredPath p =
+        "index.yaml" `isSuffixOf` p
+          || "README.md" `isSuffixOf` p
+          || "http://" `isPrefixOf` p
+          || "https://" `isPrefixOf` p
+      rawEntries =
+        [ LandscapeEntry
+            { relPath = repoP
+            , authorityTier = tier
+            , description = T.strip desc
+            }
+        | (idxP, item) <- Map.toList idxData.entriesByPath
+        , let repoP = toRepo idxP
+        , not (isIgnoredPath repoP)
+        , not (cleanPath repoP `Set.member` bundled)
+        , let tier = classifyAuthority repoP
+        , isEligibleTier tier
+        , let desc = fromMaybe "" (item.purpose <|> item.name)
+        , not (T.null (T.strip desc))
+        ]
+      nubByPath = Map.elems (Map.fromList [(e.relPath, e) | e <- rawEntries])
+   in sort nubByPath
+
+-- | Render the full markdown bundle text from configuration, entries, and landscape
+renderBundle :: BundleConfig -> Text -> [FileBundleEntry] -> [LandscapeEntry] -> Text
+renderBundle cfg timeStr fileEntries landscapeEntries =
   let totFiles = length fileEntries
       totLines = sum [e.lineCount | e <- fileEntries]
       totTokens = sum [e.estimatedTokens | e <- fileEntries]
@@ -253,7 +310,7 @@ renderBundle cfg timeStr fileEntries =
         T.unlines
           [ "## 1. Directive for AI (Lead Systems Designer)"
           , "You are acting as the **Lead Systems Designer** for CardPG."
-          , "Analyze the core tensions framed in Section 2 using the documents provided in Section 5."
+          , "Analyze the core tensions framed in Section 2 using the documents provided in Section 6."
           , ""
           , "### Operating Rules:"
           , "1. **Respect Authority Tiers**:"
@@ -261,8 +318,12 @@ renderBundle cfg timeStr fileEntries =
           , "   - `SYSTEM DESIGN STANDARD`: Mandatory design patterns (Defender-Centric Resolution, Deck as Life, Simultaneity of Action, Table Constraints)."
           , "   - `ACTIVE ITERATION / PROPOSAL`: Unmerged, exploratory ideas under evaluation."
           , "   - `EMPIRICAL RESEARCH SYNTHESIS`: Factual domain reference grounding physical reality."
-          , "2. **Prioritize Tabletop Ergonomics**: Cards must be physically playable on a standard table. Track status via card states, not excessive tokens. Avoid rigid initiative stacks."
-          , "3. **Follow the Wrap-Up Protocol** (Section 3) when concluding."
+          , "2. **Repository Context & Boundary Awareness**:"
+          , "   - This bundle is a curated slice extracted from the larger CardPG repository, focused on this topic."
+          , "   - Do NOT assume concepts referenced but not fully defined here are missing from the game."
+          , "   - If a core dependency or subsystem is needed to resolve this topic, consult Section 5 (Broader Repository Landscape) and ask the user for that document rather than inventing substitute systems."
+          , "3. **Prioritize Tabletop Ergonomics**: Cards must be physically playable on a standard table. Track status via card states, not excessive tokens. Avoid rigid initiative stacks."
+          , "4. **Follow the Wrap-Up Protocol** (Section 3) when concluding."
           ]
       framingSection =
         T.unlines
@@ -321,6 +382,27 @@ renderBundle cfg timeStr fileEntries =
                      <> " tokens"
                  ]
           )
+      landscapeLines =
+        if null landscapeEntries
+          then ["*(All relevant canonical documents are included in this bundle.)*"]
+          else
+            [ "- `"
+                <> T.pack e.relPath
+                <> "` (**"
+                <> authorityTierTitle e.authorityTier
+                <> "**) — *"
+                <> e.description
+                <> "*"
+            | e <- landscapeEntries
+            ]
+      landscapeSection =
+        T.unlines
+          ( [ "## 5. Broader Repository Landscape (Available on Request)"
+            , "*The following canonical documents exist in the repository but are not bundled above. If relevant to resolving the topic questions, ask the user to provide them:*"
+            , ""
+            ]
+              ++ landscapeLines
+          )
       verbatimEntries =
         [ T.unlines
             [ "### FILE: `" <> T.pack e.relPath <> "`"
@@ -335,7 +417,7 @@ renderBundle cfg timeStr fileEntries =
         ]
       sourceSection =
         T.unlines
-          ( [ "## 5. Verbatim Source Documents"
+          ( [ "## 6. Verbatim Source Documents"
             , ""
             ]
               ++ verbatimEntries
@@ -356,6 +438,9 @@ renderBundle cfg timeStr fileEntries =
         , "---"
         , ""
         , manifestSection
+        , "---"
+        , ""
+        , landscapeSection
         , "---"
         , ""
         , sourceSection
@@ -385,22 +470,25 @@ createBundle repoRoot cfg = do
           )
           cfg.inputFiles
 
-      -- 4. Determine timestamp
+      -- 4. Extract unbundled canonical landscape entries
+      let landscape = extractLandscapeEntries cfg.inputFiles idxData
+
+      -- 5. Determine timestamp
       timeStr <- case cfg.timestamp of
         Just t -> pure t
         Nothing ->
           T.pack . formatTime defaultTimeLocale "%Y-%m-%d %H:%M"
             <$> getCurrentTime
 
-      -- 5. Render markdown content
-      let rendered = renderBundle cfg timeStr entries
+      -- 6. Render markdown content
+      let rendered = renderBundle cfg timeStr entries landscape
           outPath = repoRoot </> cfg.output
 
-      -- 6. Write to disk
+      -- 7. Write to disk
       createDirectoryIfMissing True (takeDirectory outPath)
       TIO.writeFile outPath rendered
 
-      -- 7. Calculate summary metrics
+      -- 8. Calculate summary metrics
       let summary =
             BundleSummary
               { totalFiles = length entries
@@ -409,5 +497,6 @@ createBundle repoRoot cfg = do
               , totalEstimatedTokens = sum [e.estimatedTokens | e <- entries]
               , outputPath = cfg.output
               , entries = entries
+              , landscapeEntries = landscape
               }
       pure (Right summary)
