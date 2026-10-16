@@ -1,0 +1,54 @@
+# Crag-Gallows Expedition — Travel Cards
+# Canonical schema defined in design/authoring/locations-and-travel.md
+
+- id: "trv_low_scree_path"
+  name: "The Low Scree Path"
+  card_type: "Travel"
+  governing_clock: "wilderness_clock"
+  route:
+    from: "haven_crow_roost"
+    to: "site_timber_cut"
+    distance_leagues: 1.5
+    base_time_minutes: 45
+    terrain_tags:
+      - "LooseSlate"
+      - "WindBuffeted"
+      - "WolfSign"
+  narrative: >
+    A treacherous trail of loose shale skirting the ravine edge, buffeted by
+    erratic mountain drafts and crisscrossed by predator tracks.
+  paces:
+    - name: "Measured Mountain March"
+      time_cost_minutes: 45
+      tags:
+        - "StandardPace"
+      narrative: "Pick footsteps carefully through loose slate and low brambles. Standard vigilance flushes apply."
+
+    - name: "Agile Scree Scramble"
+      time_cost_minutes: 20
+      color: "Yellow"
+      strength: 15
+      consequences:
+        - "BruisedShins"
+        - "RattleScreeNoise"
+      tags:
+        - "Rushed"
+      narrative: "Sprint up the shale incline before gravel slides gather momentum."
+      interrupt: "wilderness_clock"
+
+    - name: "Packhorse Anchor Haul"
+      time_cost_minutes: 35
+      color: "Red"
+      strength: 20
+      consequences:
+        - "MuscleStrain"
+      tags:
+        - "Exhausting"
+      narrative: "Drive anchor stakes and muscle companions and heavy gear up the grade."
+  expedients:
+    camp_restriction: "Exposed slope; cold camping is prohibited due to rockfall hazard."
+    forage:
+      time_cost_minutes: 30
+      color: "Blue"
+      strength: 10
+      narrative: "Gather willow bark and wound moss along the damp rock cut."

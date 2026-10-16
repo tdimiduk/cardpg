@@ -1,0 +1,66 @@
+# Crag-Gallows Expedition — Location Cards
+# Canonical schema defined in design/authoring/locations-and-travel.md
+
+- id: "loc_barricaded_portal"
+  name: "The Barricaded Portal"
+  card_type: "Location"
+  governing_clock: "site_activity_clock"
+  base_time_minutes: 5
+  tags:
+    - "Chokepoint"
+    - "Dim"
+    - "ColdDamp"
+  exits:
+    - to: "loc_sorting_yard"
+      status: "blocked"
+      passage: "Rock archway jammed with timber and mine rails"
+  narrative: >
+    A crude deadfall of twisted mine rails, sharpened stakes, and suspended tin
+    cans blocks the rock archway leading deeper into the workings.
+  actions:
+    - name: "Sledgehammer Breach"
+      time_cost_minutes: 1
+      color: "Red"
+      strength: 22
+      consequences:
+        - "Exhaustion"
+        - "BluntForce"
+      tags:
+        - "Loud"
+        - "Exhausting"
+      narrative: "Shatter rails and timber stakes with heavy sledge blows. Clears the passage immediately."
+      interrupt: "site_activity_clock"
+
+    - name: "Muffled Wire Disarm"
+      time_cost_minutes: 10
+      color: "Yellow"
+      strength: 15
+      consequences:
+        - "PinchWound"
+        - "TripwireSnap"
+      tags:
+        - "Quiet"
+      narrative: "Snip tripwires delicately and squeeze through gaps in the timbers without sound."
+
+    - name: "Structural Keystoning"
+      time_cost_minutes: 5
+      color: "Blue"
+      strength: 14
+      tags:
+        - "Quiet"
+      narrative: "Identify and dislodge the load-bearing wedge to swing the entire barricade outward like a gate."
+
+    - name: "Methodical Deconstruction"
+      color: "Red"
+      strength: 16
+      time_base_minutes: 30
+      time_per_impact_minutes: 10
+      consequences:
+        - "Fatigue"
+      tags:
+        - "Barricade"
+        - "Timber"
+        - "Leverage"
+        - "Teamwork"
+        - "Quiet"
+      narrative: "Carefully lever rails aside and unseat timber stakes. Safe and quiet, but demanding physical labor. Leverage tools and teamwork apply."

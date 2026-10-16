@@ -1,0 +1,34 @@
+# Crag-Gallows Expedition — Clock Event Cards
+# Canonical schema defined in design/authoring/locations-and-travel.md
+
+- id: "clk_site_sentry_rotation"
+  name: "Sentry Shift Rotation"
+  card_type: "ClockEvent"
+  clock_deck: "site_activity_clock"
+  urgency: "Immediate"
+  tags:
+    - "InhabitantAction"
+  narrative:
+    summary: "Goblin sentries rotate posts across the upper terraces."
+    sensory_cue: "Muffled guttural bickering and the clatter of dropped spears echo along the catwalks."
+  effects:
+    - target: "loc_barricaded_portal"
+      text: "The barricade portal is left completely unguarded for the next 20 minutes."
+      duration_minutes: 20
+    - target: "loc_sorting_yard"
+      text: "2 additional goblin lookouts join the watch fire."
+
+- id: "clk_wild_sudden_scree_squall"
+  name: "Sudden Scree Squall"
+  card_type: "ClockEvent"
+  clock_deck: "wilderness_clock"
+  urgency: "OngoingModifier"
+  tags:
+    - "EnvironmentalShift"
+  narrative:
+    summary: "Freezing rain and sleet lash down from the upper crags."
+    sensory_cue: "The wind shrieks as heavy hail hammers against cloaks and slates."
+  effects:
+    - target: "current_zone"
+      text: "Extinguish all unshielded open flames. +5 Yellow Strength to all footing and climbing checks."
+      duration_minutes: 60
