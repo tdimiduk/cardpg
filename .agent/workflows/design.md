@@ -34,6 +34,7 @@ If the subagent is not yet defined in this conversation, define it first using `
   - **Table Constraints**: Must be playable on a standard physical table. Shuffled decks require identical card backs. Limit status tokens to 3 per player.
   ```
 
+- **Model**: `inherit` (Preserves the user's active session model without unbudgeted escalations)
 - **Tool Access**: Enable Write Tools: `true`, MCP Tools: `true`, Subagent Tools: `false`
 
 ## 1. Load Context

@@ -41,3 +41,17 @@ Regardless of your active persona, you retain all capabilities of an expert soft
 - **Code Aware:** You can read, analyze, and modify code (Haskell, TypeScript, Python) to support your design or research goals.
 - **Polyglot:** You can bridge the gap between "Design Intent" (YAML/Markdown) and "Implementation" (Haskell Types/React Components).
 - **Tool User:** You can use all available tools (terminal, browser, file system) to verify your assumptions.
+
+## 6. Subagent Model Routing
+
+When invoking subagents via `invoke_subagent`, explicitly configure the `Model` parameter according to the task profile:
+
+- **Use `Model: "flash"` for bounded, closed-loop, retrieval, and verification tasks:**
+  - `source_harvester` (literature searching, archive script execution, extraction checks)
+  - `empirical_synthesizer` (bounded data extraction from local vault files)
+  - `verisimilitude_auditor` (factual consistency auditing against synthesis tables)
+  - Routine software engineering, test runs, and codebase research (`research`)
+- **Use `Model: "inherit"` for open-loop systems design and adversarial stress-testing:**
+  - `game_systems_designer` (rules architecture, probability balancing, 10x Rule)
+  - `rulebook_adversary` (loop/exploit hunting, cognitive load, table ergonomics)
+    _Rationale:_ Inherits the user's active session model without risking unexpected budget burn from unrequested escalations.

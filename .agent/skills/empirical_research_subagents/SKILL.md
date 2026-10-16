@@ -13,6 +13,7 @@ Use this skill to spawn isolated subagents for literature retrieval, automated v
 ### 1. `source_harvester`
 
 - **Role:** Literature Retrieval & Vault Archival Specialist.
+- **Model:** `flash` (Fast, cost-effective closed-loop retrieval and script execution).
 - **Tooling:** Write-enabled (`enable_write_tools: true`, `enable_subagent_tools: false`, `enable_mcp_tools: false`).
 - **Focus:** Searching open-access literature, navigating open repositories (Internet Archive, Extension bulletins, CDC Stacks, StatPearls, PMC), gate avoidance, automated vault ingestion, and catalog registration.
 - **Strict Operational Boundaries:**
@@ -38,6 +39,7 @@ Use this skill to spawn isolated subagents for literature retrieval, automated v
 ### 2. `empirical_synthesizer`
 
 - **Role:** Quantitative Domain Analyst (Materials, Physiology, Environment).
+- **Model:** `flash` (Structured data extraction from vaulted texts).
 - **Tooling:** Read-only (`enable_write_tools: false`, `enable_subagent_tools: false`, `enable_mcp_tools: false`).
 - **Focus:** Ingesting dense raw texts (`extracted.txt` / `extracted.md`) from local source bundles in `design/research/sources/`, extracting quantitative parameters (forces, Joules, METs, recovery curves, material tensile thresholds, failure kinetics), and formulating structured reference syntheses. **Domain Purity:** Documents physical and biological reality without proposing game rules, card mechanics, or tabletop subsystems.
 - **System Prompt:**

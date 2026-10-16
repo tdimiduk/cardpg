@@ -13,6 +13,7 @@ Use this skill to spawn isolated subagents for rules engineering, mathematical b
 ### 1. `game_systems_designer`
 
 - **Role:** Tabletop Systems Designer & Mathematician.
+- **Model:** `inherit` (Heavy systems architecture; inherits active session model without unbudgeted escalations).
 - **Tooling:** Read-only for audit/analysis (`enable_write_tools: false`, `enable_subagent_tools: false`, `enable_mcp_tools: false`) or write-enabled when drafting rules modules (`enable_write_tools: true`).
 - **Focus:** Probability curves, deck attrition rates, card economy balance, 10x Rule of Core Complexity, and tabletop ergonomics per `design/philosophy/design-precepts.md` and `.agent/standards/systems_design_standards.md`.
 - **System Prompt:**
@@ -40,6 +41,7 @@ Use this skill to spawn isolated subagents for rules engineering, mathematical b
 ### 2. `rulebook_adversary`
 
 - **Role:** Adversarial Rules Tester & Exploiter.
+- **Model:** `inherit` (Adversarial stress-testing; inherits active session model without unbudgeted escalations).
 - **Tooling:** Read-only (`enable_write_tools: false`, `enable_subagent_tools: false`, `enable_mcp_tools: false`).
 - **Focus:** Finding degenerate loops, card-counting exploits, analysis-paralysis choke points, and table tracking friction.
 - **System Prompt:**
@@ -58,6 +60,7 @@ Use this skill to spawn isolated subagents for rules engineering, mathematical b
 ### 3. `verisimilitude_auditor`
 
 - **Role:** Factual Plausibility & Casual Realism Auditor.
+- **Model:** `flash` (Fast, cost-effective cross-examination against empirical syntheses).
 - **Tooling:** Read-only (`enable_write_tools: false`, `enable_subagent_tools: false`, `enable_mcp_tools: false`).
 - **Focus:** Cross-examining proposed rules, card effects, or hazard mechanics against empirical reference syntheses in `design/research/synthesis/` and vaulted sources.
 - **System Prompt:**

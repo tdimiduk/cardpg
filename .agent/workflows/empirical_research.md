@@ -42,14 +42,14 @@ Before executing, load the core standards:
 
 ### Mode: `harvest` (Subagent: `source_harvester`)
 
-1. Define and invoke `source_harvester` via `invoke_subagent` (`enable_write_tools: true`) following [.agent/skills/empirical_research_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/empirical_research_subagents/SKILL.md).
+1. Define and invoke `source_harvester` via `invoke_subagent` (`Model: "flash"`, `enable_write_tools: true`) following [.agent/skills/empirical_research_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/empirical_research_subagents/SKILL.md).
 2. The subagent searches open-access tiers per the [Automated Ingestion Hierarchy](file:///home/tdimiduk/cardpg/cardpg/.agent/standards/empirical_research_standards.md#b-automated-ingestion-hierarchy-open-access-tiers).
 3. The subagent ingests the source via `archive_source.py ingest` (see [design/research/sources/README.md](file:///home/tdimiduk/cardpg/cardpg/design/research/sources/README.md) for CLI options and automated catalog registration), verifies clean text extraction via `view_file`, and reports back.
 4. If blocked by an interactive gate or paywall, escalate per the Human Escalation Boundary below.
 
 ### Mode: `synthesize` (Subagent: `empirical_synthesizer`)
 
-1. Define and invoke `empirical_synthesizer` via `invoke_subagent` (`enable_write_tools: false`) following [.agent/skills/empirical_research_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/empirical_research_subagents/SKILL.md).
+1. Define and invoke `empirical_synthesizer` via `invoke_subagent` (`Model: "flash"`, `enable_write_tools: false`) following [.agent/skills/empirical_research_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/empirical_research_subagents/SKILL.md).
 2. Pass the path to the vaulted bundle text (e.g. `design/research/sources/verisimilitude/<slug>/extracted.txt`).
 3. Subagent reads the source text, extracts quantitative parameters, and returns a draft synthesis.
 4. **Parent Ingestion:** The parent agent reviews the output and integrates it into a living document in `design/research/synthesis/<topic>.md` (or a point-in-time report under `design/research/reports/<slug>/`). The parent agent must verify **domain purity**: ensure the document focuses purely on physical, biological, and material realities (forces, timescales, metabolic costs, failure modes, functional constraints) and contains **zero** game mechanics, card names, deck rules, or tabletop procedures.
@@ -57,7 +57,7 @@ Before executing, load the core standards:
 
 ### Mode: `audit` (Subagent: `verisimilitude_auditor`)
 
-1. Define and invoke `verisimilitude_auditor` via `invoke_subagent` (`enable_write_tools: false`) following [.agent/skills/tabletop_rules_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/tabletop_rules_subagents/SKILL.md).
+1. Define and invoke `verisimilitude_auditor` via `invoke_subagent` (`Model: "flash"`, `enable_write_tools: false`) following [.agent/skills/tabletop_rules_subagents/SKILL.md](file:///home/tdimiduk/cardpg/cardpg/.agent/skills/tabletop_rules_subagents/SKILL.md).
 2. Provide the draft rules or card text, along with pointers to relevant syntheses in `design/research/synthesis/`.
 3. Subagent evaluates the rules against the [Verisimilitude Audit Rubric](file:///home/tdimiduk/cardpg/cardpg/.agent/standards/empirical_research_standards.md#6-verisimilitude-audit-rubric-gross-violations-vs-casual-realism) in `empirical_research_standards.md`, distinguishing Gross Violations from Casual Realism stylization.
 4. Subagent returns an objective audit report recommending adjustments to harmonize mechanics with reality without sacrificing playability.
