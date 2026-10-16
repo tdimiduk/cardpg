@@ -281,7 +281,12 @@ docTypeCompatibility dt =
         , "doc-type:iteration"
         , "doc-type:ideation"
         ]
-    other -> Set.singleton other
+    "guide" ->
+      Set.fromList
+        [ "guide"
+        , "doc-type:guide"
+        ]
+    other -> Set.fromList [other, "doc-type:" <> other]
 
 -- | Canonical tags for doc_type
 docTypeCanonicalTag :: Text -> Text

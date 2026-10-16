@@ -171,6 +171,11 @@ inspiration_by_game_mechanic:
       - sub_mechanic: "For Thematic & Elemental Magic"
         titles:
           - "Avatar: The Last Airbender"
+  - mechanic: "Advancement & Constraint Evolution"
+    sources:
+      - sub_mechanic: "For Empowering Progression via Shifting Logistics"
+        titles:
+          - "Factorio"
 ---
 master_source_index:
   - category: "Literary, Cinematic, & Mythological Sources"
@@ -337,3 +342,7 @@ master_source_index:
         sources:
           - title: "Diablo (1997)"
             description: "A masterclass in establishing a gothic horror tone and a gameplay loop built on resource attrition, forcing a compelling risk/reward choice between pressing forward and retreating to safety."
+      - type: "Simulation, Automation, & Systems Games"
+        sources:
+          - title: "Factorio"
+            description: "A masterclass in advancement and constraint evolution. Progression begins with grounded, tactile constraints that are gradually revised through transformative unlocks (electric furnaces, substations, logistics bots). Crucially, powerful milestones never erase friction entirely; they elegantly shift the puzzle from micro-logistics to macro-systemic demands, creating profound player empowerment without trivializing the world."

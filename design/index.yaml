@@ -97,6 +97,19 @@ game_system_and_rules:
     - core-concept:time-accounting
     - core-concept:clocks
     - pillar:exploration
+  - path: authoring/advancement-and-progression.md
+    purpose: Emerging design heuristics and exploratory patterns for authoring character advancement, equipment progression, and logistical evolution.
+    tags:
+    - doc-type:guide
+    - guide
+    - audience:designer-facing
+    - core-concept:advancement
+    - core-concept:fatigue
+    - core-concept:pacing
+    - core-concept:time-accounting
+    - pillar:exploration
+    - pillar:combat
+    - pillar:downtime
   - path: rules/keyword-glossary.md
     purpose: Reference for the keywords in the game.
     tags:
