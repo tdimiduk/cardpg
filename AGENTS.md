@@ -24,3 +24,13 @@ When spawning subagents via `invoke_subagent`, always explicitly pass the `Model
   - `game_systems_designer`: Tabletop systems design, probability modeling, 10x Rule.
   - `rulebook_adversary`: Adversarial exploit finding, loop detection, cognitive load.
     _Policy:_ Inherit the parent session's active model tier rather than escalating to unexpected premium tiers.
+
+## Model-Aware Orchestration (Active Session Tier)
+
+Adapt execution strategy based on the parent session's active model (visible via `<USER_SETTINGS_CHANGE>`):
+
+1. **When running on a heavy/premium model (e.g., Argon / Pro):**
+   - **Protect quota by offloading multi-step mechanical loops:** Each inline tool call re-processes the entire conversation context at the active model's token rate. If a task requires >3 sequential mechanical tool turns (e.g., multi-file searches, repetitive edits, build-fix-test loops, or index/lint cleanups), delegate the bounded loop to a `Model: "flash"` subagent (`research` or `self`) and review the result in a single turn.
+2. **When running on a lightweight model (e.g., Flash):**
+   - **Execute bounded work inline:** Perform routine file reads, edits, and test runs directly in the main session unless subagent isolation is needed to keep large raw text files (such as `extracted.txt` vault dumps) out of the main context window.
+   - **Flag open-loop `inherit` tasks:** Before launching `game_systems_designer` or `rulebook_adversary` (or performing deep open-loop rules synthesis), briefly alert the user that the session is currently on Flash so `inherit` will also run on Flash, and ask whether to proceed or wait for a model switch.

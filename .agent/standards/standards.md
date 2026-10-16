@@ -55,3 +55,8 @@ When invoking subagents via `invoke_subagent`, explicitly configure the `Model` 
   - `game_systems_designer` (rules architecture, probability balancing, 10x Rule)
   - `rulebook_adversary` (loop/exploit hunting, cognitive load, table ergonomics)
     _Rationale:_ Inherits the user's active session model without risking unexpected budget burn from unrequested escalations.
+
+### Model-Aware Orchestration
+
+- **On Argon / Pro:** Offload multi-step mechanical loops (>3 sequential tool turns for codebase searches, repetitive refactors, or build/test cycles) to a `Model: "flash"` subagent rather than burning premium context turns inline.
+- **On Flash:** Execute bounded code/file tasks directly inline (using subagents only for context-window isolation on large raw sources). Before running open-loop design or adversarial tasks (`game_systems_designer`, `rulebook_adversary`), briefly remind the user that the session is on Flash and confirm whether to proceed on Flash or pause for a model switch.
