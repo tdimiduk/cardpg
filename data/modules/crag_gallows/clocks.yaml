@@ -14,7 +14,7 @@
   effects:
     - target: "loc_barricaded_portal"
       text: "The barricade portal is left completely unguarded for the next 20 minutes."
-      duration_minutes: 20
+      duration: "20 min"
     - target: "loc_sorting_yard"
       text: "2 additional goblin lookouts join the watch fire."
 
@@ -31,4 +31,10 @@
   effects:
     - target: "current_zone"
       text: "Extinguish all unshielded open flames. +5 Yellow Strength to all footing and climbing checks."
-      duration_minutes: 60
+      duration: "1 hour"
+      hazard:
+        color: "Yellow"
+        strength: 12
+        consequences:
+          - "BluntForce"
+          - "BruisedShins"

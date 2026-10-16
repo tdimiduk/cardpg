@@ -24,11 +24,11 @@ Because cards committed to the [[Vigilance]] pool flush every hour, **time direc
 
 When authoring Location, Travel, and Hazard cards, distinguish between environmental pacing, deliberate physical work, and sudden traumatic shocks:
 
-| Category                            | Design Meaning                                                       | Card Implementation                                                                                          | Why It Matters                                                                                                                                                                                                                                                                                                                                                                                                       |
-| :---------------------------------- | :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Travel & Environmental Friction** | Arduous trails, poor weather, navigation delays, or resting in camp. | **Consumes In-Game Time** (`time_cost: 15m`, `time_cost: 60m`, or `Double Travel Time`).                     | Advances the narrative clock. Torches burn, daylight wanes, and characters pay for vigilance naturally. Vigilant characters pay in card loss; relaxed characters pay in time and exposure.                                                                                                                                                                                                                           |
-| **Physical Labor & Obstacles**      | Forcing jammed portcullises, clearing deadfalls, climbing cliffs.    | **General Action / Labor Task** (`Red 16` or `Yellow 14` with dynamic time and `consequences: ["Fatigue"]`). | Success is default, but physical work expends deck stamina. Character capability and tools reduce cards flipped and time elapsed. Controlled consequence pools prevent traumatic injury.                                                                                                                                                                                                                             |
-| **Hazard Attacks (Acute Perils)**   | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.        | **Hazard Attack** (`Yellow 12 [Reflex, Puncture]` or `Red 16 [BluntForce, Crush]`).                          | An environmental attack against the character resolved using standard defense rules. The player meets incoming [[Strength]] using [[Vigilance]]/hand cards (0 Impact) and/or deck flips (1 Impact each). Flipped cards convert into [[Consequences]] via [[Defense]]. Alert characters absorb blows with readied defenses; characters marching at ease ([[Vigilance]] 0) must absorb the full force via blind flips. |
+| Category                            | Design Meaning                                                       | Card Implementation                                                                                                                           | Why It Matters                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :---------------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Travel & Environmental Friction** | Arduous trails, poor weather, navigation delays, or resting in camp. | **Consumes In-Game Time** (`time: "15 min"`, `time: "1 hour"`, or `Double Travel Time`).                                                      | Advances the narrative clock. Torches burn, daylight wanes, and characters pay for vigilance naturally. Vigilant characters pay in card loss; relaxed characters pay in time and exposure.                                                                                                                                                                                                                           |
+| **Physical Labor & Obstacles**      | Forcing jammed portcullises, clearing deadfalls, climbing cliffs.    | **General Action / Labor Task** (`Red 16` or `Yellow 14` with `time: "30 min"`, `time_per_impact: "10 min"` and `consequences: ["Fatigue"]`). | Success is default, but physical work expends deck stamina. Character capability and tools reduce cards flipped and time elapsed. Controlled consequence pools prevent traumatic injury.                                                                                                                                                                                                                             |
+| **Hazard Attacks (Acute Perils)**   | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.        | **Hazard Attack** (`Yellow 12 [Reflex, Puncture]` or `Red 16 [BluntForce, Crush]`).                                                           | An environmental attack against the character resolved using standard defense rules. The player meets incoming [[Strength]] using [[Vigilance]]/hand cards (0 Impact) and/or deck flips (1 Impact each). Flipped cards convert into [[Consequences]] via [[Defense]]. Alert characters absorb blows with readied defenses; characters marching at ease ([[Vigilance]] 0) must absorb the full force via blind flips. |
 
 > [!IMPORTANT]
 > **Avoid arbitrary flat card taxes.** Do not write _"Swamp: Each player discards 2 cards from deck."_ Doing so bypasses character attributes, gear, and the player's deliberate risk/reward choice with their Vigilance Dial. Environmental pacing and resting are adjudicated through in-game time; active physical exertion is adjudicated through colored challenges.
@@ -71,45 +71,44 @@ tags: ["Bludgeon", "Shield", "Melee"]
 
 ---
 
-### B. Location Cards (Adventuring Time)
+### B. Location & Travel Cards (Adventuring Time)
 
-Location cards represent physical rooms, wilderness hexes, landmarks, or dungeon chambers. They define the environment and provide interactive choice nodes.
+Location cards represent physical rooms, corridors, or landmarks; Travel cards represent wilderness route segments. Complete specifications and examples are governed by the dedicated guide:
+
+> [!TIP]
+> **Canonical Schema & Examples:** See [Authoring Guide: Locations, Travel, and Clock Cards](locations-and-travel.md) for the full schema specifications, tag interactions, and reference card definitions in [`data/modules/crag_gallows/`](../../data/modules/crag_gallows/).
 
 ```yaml
+# Schema excerpt: Location Node (see locations-and-travel.md for full specification)
 id: "loc_submerged_sluice_gate"
 name: "Submerged Sluice Gate"
 card_type: "Location"
 governing_clock: "site_activity_clock"
-base_time_minutes: 15
+base_time: "15 min"
 tags: ["Subterranean", "Flooded", "Chokepoint"]
 
-narrative: >
-  Waist-deep brackish water fills the stone conduit. A rusted iron gate 
-  blocks forward progress; debris has wedged into the winch gears.
-
 exits:
-  - to: "loc_chamber_of_cisterns"
-    status: "blocked"
-    passage: "Submerged overflow pipe"
   - to: "loc_flooded_vault"
     status: "blocked"
     passage: "Rusted iron sluice gate"
 
 actions:
   - name: "Force the Winch"
+    time: "10 min"
     color: "Red"
     strength: 14
-    time_cost_minutes: 10
     consequences: ["Fatigue", "MuscleStrain"]
     tags: ["Leverage", "Iron"]
+    unblocks: "loc_flooded_vault"
     narrative: "Muscle the rusted gears free to hoist the sluice gate."
 
   - name: "Dive Beneath the Gate"
+    time: "5 min"
     color: "Yellow"
     strength: 10
-    time_cost_minutes: 5
     consequences: ["ColdExposure", "PinchWound"]
     tags: ["Submerged", "TightSqueeze"]
+    unblocks: "loc_flooded_vault"
     narrative: "Squeeze through silted gaps beneath the rusted teeth."
 ```
 
@@ -117,16 +116,24 @@ actions:
 
 ### C. Clock & Front Cards (Campaign & Dynamic Pressures)
 
-Clock cards model escalating threats, wandering patrols, and environmental timers per [Clocks and Fronts](../rules/modules/clocks-and-fronts.md).
+Clock cards model escalating threats, wandering patrols, and environmental timers per [Clocks and Fronts](../rules/modules/clocks-and-fronts.md) and [locations-and-travel.md](locations-and-travel.md).
 
 ```yaml
-title: "The Scent of Blood"
-front: "The Warren Goblins"
-clock_trigger: "Advance Goblin Alert Clock by 1 Tick"
-rules_text: >
-  If the Goblin Alert Clock reaches 4 Ticks, shuffle the 'Goblin Ambush' 
-  Encounter Card into the top 3 cards of the active Location Deck.
-flavor_text: "Chittering echoes through the ventilation shafts."
+# Schema excerpt: Clock Event (see locations-and-travel.md for full specification)
+id: "clk_site_scent_of_blood"
+name: "The Scent of Blood"
+card_type: "ClockEvent"
+clock_deck: "site_activity_clock"
+urgency: "Immediate"
+tags: ["Encounter", "Predator"]
+
+narrative:
+  summary: "The smell of iron and fresh blood draws scavengers from the lower shafts."
+  sensory_cue: "Chittering echoes through the ventilation shafts."
+
+effects:
+  - target: "current_zone"
+    text: "Shuffle 2 Goblin Tracker cards into the top 3 cards of the active location deck."
 ```
 
 ---

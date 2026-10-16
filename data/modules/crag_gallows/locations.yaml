@@ -5,7 +5,7 @@
   name: "The Barricaded Portal"
   card_type: "Location"
   governing_clock: "site_activity_clock"
-  base_time_minutes: 5
+  base_time: "5 min"
   tags:
     - "Chokepoint"
     - "Dim"
@@ -19,7 +19,7 @@
     cans blocks the rock archway leading deeper into the workings.
   actions:
     - name: "Sledgehammer Breach"
-      time_cost_minutes: 1
+      time: "1 min"
       color: "Red"
       strength: 22
       consequences:
@@ -28,11 +28,11 @@
       tags:
         - "Loud"
         - "Exhausting"
+      unblocks: "loc_sorting_yard"
       narrative: "Shatter rails and timber stakes with heavy sledge blows. Clears the passage immediately."
-      interrupt: "site_activity_clock"
 
     - name: "Muffled Wire Disarm"
-      time_cost_minutes: 10
+      time: "10 min"
       color: "Yellow"
       strength: 15
       consequences:
@@ -40,21 +40,23 @@
         - "TripwireSnap"
       tags:
         - "Quiet"
+      unblocks: "loc_sorting_yard"
       narrative: "Snip tripwires delicately and squeeze through gaps in the timbers without sound."
 
     - name: "Structural Keystoning"
-      time_cost_minutes: 5
+      time: "5 min"
       color: "Blue"
       strength: 14
       tags:
         - "Quiet"
+      unblocks: "loc_sorting_yard"
       narrative: "Identify and dislodge the load-bearing wedge to swing the entire barricade outward like a gate."
 
     - name: "Methodical Deconstruction"
+      time: "30 min"
+      time_per_impact: "10 min"
       color: "Red"
       strength: 16
-      time_base_minutes: 30
-      time_per_impact_minutes: 10
       consequences:
         - "Fatigue"
       tags:
@@ -63,4 +65,5 @@
         - "Leverage"
         - "Teamwork"
         - "Quiet"
+      unblocks: "loc_sorting_yard"
       narrative: "Carefully lever rails aside and unseat timber stakes. Safe and quiet, but demanding physical labor. Leverage tools and teamwork apply."

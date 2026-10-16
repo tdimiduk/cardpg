@@ -9,7 +9,7 @@
     from: "haven_crow_roost"
     to: "site_timber_cut"
     distance_leagues: 1.5
-    base_time_minutes: 45
+    base_time: "45 min"
     terrain_tags:
       - "LooseSlate"
       - "WindBuffeted"
@@ -19,13 +19,13 @@
     erratic mountain drafts and crisscrossed by predator tracks.
   paces:
     - name: "Measured Mountain March"
-      time_cost_minutes: 45
+      time: "45 min"
       tags:
         - "StandardPace"
       narrative: "Pick footsteps carefully through loose slate and low brambles. Standard vigilance flushes apply."
 
     - name: "Agile Scree Scramble"
-      time_cost_minutes: 20
+      time: "20 min"
       color: "Yellow"
       strength: 15
       consequences:
@@ -33,11 +33,11 @@
         - "RattleScreeNoise"
       tags:
         - "Rushed"
+        - "Loud"
       narrative: "Sprint up the shale incline before gravel slides gather momentum."
-      interrupt: "wilderness_clock"
 
     - name: "Packhorse Anchor Haul"
-      time_cost_minutes: 35
+      time: "35 min"
       color: "Red"
       strength: 20
       consequences:
@@ -47,8 +47,9 @@
       narrative: "Drive anchor stakes and muscle companions and heavy gear up the grade."
   expedients:
     camp_restriction: "Exposed slope; cold camping is prohibited due to rockfall hazard."
-    forage:
-      time_cost_minutes: 30
-      color: "Blue"
-      strength: 10
-      narrative: "Gather willow bark and wound moss along the damp rock cut."
+    actions:
+      - name: "Forage Trail Cut"
+        time: "30 min"
+        color: "Blue"
+        strength: 10
+        narrative: "Gather willow bark and wound moss along the damp rock cut."

@@ -18,13 +18,13 @@ Following our core design precepts, these schemas treat **in-game time as a conc
 
 ## 1. Architectural Principles
 
-1. **Explicit Time Quotas:** Every exploratory action, movement choice, or physical feat specifies an exact time cost (e.g. `10m`, `45m`, `2h`).
+1. **Explicit Time Quotas (Parsed Durations):** Every exploratory action, movement choice, or physical feat specifies a duration with explicit units (e.g., `time: "10 min"`, `time: "45 min"`, `base_time: "1 hour"`, `duration: "2 days"`). The engine parses these into a canonical `Duration` type, allowing natural multi-scale expression across delve minutes, travel hours, and haven recovery days without manual conversion math.
 2. **Dual-Trigger Reactivity:**
    - **Scheduled Ticks:** Clock decks advance when cumulative elapsed time crosses defined thresholds (tentatively 30 min in delves, 60 min on trails, 24 h in havens).
-   - **Action Interrupts:** Actions bearing specific risk tags (`[Loud]`, `[Exposed]`, `[Flared Torch]`) immediately force an interrupt draw from the designated clock deck, bypassing the timer.
+   - **Action Interrupts:** Actions bearing risk tags (`[Loud]`, `[Exposed]`) automatically trigger an immediate interrupt draw from the card's `governing_clock`, bypassing the chronometer. Actions only specify an explicit `interrupt: <clock_id>` if overriding the default clock.
 3. **Ergonomic Action Menus:** Location and Travel cards serve as tactile, interactive choice boards where options present distinct trade-offs across [[Colors]] ([[Red]], [[Yellow]], [[Blue]]) alongside safe, time-intensive bypasses.
 4. **No Flat Card Taxes (Labor vs. Attrition vs. Hazards):** Cards should never demand arbitrary flat card discards (e.g. _"Discard 3 cards to pass"_). Strenuous physical exertion, labor, and athletic maneuvers are adjudicated as colored challenges testing [[Strength]]—primarily [[Red]] (force, heavy lifting, deconstruction) and [[Yellow]] (agility, balance, scrambling, precision footing), with [[Blue]] for engineering and methodical pacing. Success is default, but flipping cards represents caloric work and deck stamina. General environmental friction, travel pacing, and resting/breathers are adjudicated through **in-game time**, allowing party attrition to flow naturally through the [[Vigilance]] dial, scheduled clock checks, and the [[Fatigue Cycle]]. Methodical "safe" options avoid acute injuries and noise interrupts, but they are never free of physical labor costs. Sudden, acute perils (springing traps, collapsing masonry, flash floods) are adjudicated as **Hazard Attacks** testing active defenses and vigilance readiness per [Core Rules](../rules/core-rules.md).
-5. **Lean Schema (Computable vs. Descriptive):** Schemas only formalize fields that the game engine or VTT rules strictly compute (`time_cost_minutes`, `time_base_minutes`, `time_per_impact_minutes`, `color`, `strength`, `interrupt`, `exits`). Atmospheric details, lighting, and narrative outcomes remain concise text and freeform tags to minimize LLM hallucination and human audit overhead.
+5. **Lean Schema (Computable vs. Descriptive):** Schemas formalize fields that the game engine or VTT rules strictly compute (`base_time`, `time`, `time_per_impact`, `color`, `strength`, `unblocks`, `interrupt`, `exits`). Atmospheric details, lighting, and narrative outcomes remain concise text and freeform tags to minimize LLM hallucination and human audit overhead.
 6. **Decoupled Tool Affinities (Tag-Driven Interaction):** Location cards should never hardcode specific item bypasses (e.g. _"If you have a crowbar: bypass"_). Instead, obstacles declare physical tags (`[Barricade]`, `[Timber]`, `[Leverage]`, `[Teamwork]`), and tools modify levers (Strength bonus, dynamic time reduction, impact absorption, or unlocking colors) through matching keywords. This keeps location schemas lean and decouples environment design from party inventory.
 
 ---
@@ -41,7 +41,7 @@ id: "loc_<slug>"
 name: "Display Name"
 card_type: "Location"
 governing_clock: "site_clock_id" # Clock deck checked for scheduled or interrupt draws
-base_time_minutes: 5 # Time to traverse when cleared/unobstructed
+base_time: "5 min" # Time to traverse when cleared/unobstructed
 tags: ["Chokepoint", "PitchBlack", "ColdDamp"] # Freeform environmental & tactical tags
 
 # Spatial Graph Navigation
@@ -58,22 +58,24 @@ narrative: >
 actions:
   # Rapid / Acute Challenge (Tests Character Attributes via Red, Yellow, or Blue)
   - name: "Action Title"
-    time_cost_minutes: 10 # Fixed in-game time elapsed
-    color: "Red | Yellow | Blue" # Target Color
-    strength: 15 # Required Strength to meet
-    consequences: ["BluntForce", "Sprain"] # Specific tags for consequence cards drawn
+    time: "10 min" # Base duration (parsed Duration: "m", "min", "h", "hour", etc.)
+    color: "Red | Yellow | Blue" # Target Color (optional; omit if no challenge check)
+    strength: 15 # Required Strength (optional; required if `color` present)
+    consequences: ["BluntForce", "Sprain"] # Specific tags for consequence cards drawn (optional)
     tags: ["Loud", "Exhausting", "ObstacleTags..."] # Tags triggering clock interrupts or tool affinities
+    unblocks: "loc_destination_slug" # Optional: matches exits[].to to open blocked passage on success
     narrative: "What the character attempts and the immediate outcome."
-    interrupt: "site_clock_id" # Optional. Triggers immediate clock draw on attempt
+    interrupt: "other_clock_id" # Optional override (omit to trigger governing_clock automatically on [Loud])
 
   # Methodical Labor Option (Safe from acute trauma/alarms, but costs deck stamina & dynamic time)
   - name: "Methodical Labor Title"
+    time: "30 min" # Base duration
+    time_per_impact: "10 min" # Optional: additional time per card in the flipped stack (default: 0)
     color: "Red" # Usually Red for physical deconstruction or hauling
     strength: 16 # Required Strength to meet; success is default, cards flipped = caloric stamina
-    time_base_minutes: 30 # Baseline duration
-    time_per_impact_minutes: 10 # Additional time per card in the flipped stack
     consequences: ["Fatigue"] # Strictly benign physical wear/fatigue; no traumatic injury
     tags: ["Barricade", "Timber", "Leverage", "Teamwork", "Quiet"] # Tags interacting with tools & party effort
+    unblocks: "loc_destination_slug" # Opens blocked exit upon completion
     narrative: "Disciplined, cautious labor that avoids alarm and physical trauma at the cost of stamina and time."
 ```
 
@@ -110,23 +112,23 @@ route:
   from: "node_id"
   to: "node_id"
   distance_leagues: 1.0 # Optional mapping distance
-  base_time_minutes: 60 # Standard walking pace
+  base_time: "1 hour" # Standard walking pace duration
   terrain_tags: ["Steep", "ExposedWind", "DenseCanopy", "Fording"]
 
 narrative: >
   Atmospheric overview of the trail, weather exposure, and terrain footing.
 
-# Travel Paces & Stance Options
+# Travel Paces & Stance Options (Advance party to route.to upon completion)
 paces:
   # Measured / Standard Pace
   - name: "Measured March"
-    time_cost_minutes: 60
+    time: "1 hour"
     tags: ["StandardPace"]
     narrative: "Keep a steady, cautious footing along the trail. Party pays for [[Vigilance]] normally."
 
   # Rushed Pace (Red or Yellow Challenge to save time)
   - name: "Forced March / Fast Scramble"
-    time_cost_minutes: 25
+    time: "25 min"
     color: "Red"
     strength: 15
     consequences: ["Exhaustion", "MuscleStrain"]
@@ -135,20 +137,21 @@ paces:
 
   # Scouted / Cautious Pace (Blue Challenge to secure route)
   - name: "Route Scouting"
-    time_cost_minutes: 75
+    time: "75 min"
     color: "Blue"
     strength: 14
     tags: ["Safe", "TimeConsuming"]
     narrative: "Scout solid ground and sightlines to bypass natural hazards and avoid predator ambushes."
 
-# Optional Field Expedients (Omit if not applicable)
+# Optional Field Expedients (Local trailside tasks; does not advance route)
 expedients:
   camp_restriction: "Exposed slope prone to rockslides; pitching camp triggers immediate clock draw."
-  forage:
-    time_cost_minutes: 30
-    color: "Blue"
-    strength: 10
-    narrative: "Search for medicinal roots, dry kindling, or edible flora along the route."
+  actions:
+    - name: "Trailside Forage"
+      time: "30 min"
+      color: "Blue"
+      strength: 10
+      narrative: "Search for medicinal roots, dry kindling, or edible flora along the route."
 ```
 
 > [!TIP]
@@ -180,7 +183,11 @@ narrative:
 effects:
   - target: "loc_node_id | current_zone | party"
     text: "Clear description of the mutation (e.g. +5 Yellow Strength to footing, guard leaves post, monster spawns)."
-    duration_minutes: 60 # Optional. If omitted, change is permanent or immediate
+    duration: "1 hour" # Optional parsed Duration (omit if immediate/permanent)
+    hazard: # Optional: triggers defender-centric Hazard Attack modal in VTT
+      color: "Yellow"
+      strength: 12
+      consequences: ["BluntForce", "Sprain"]
 ```
 
 > [!TIP]
