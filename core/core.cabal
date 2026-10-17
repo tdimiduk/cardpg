@@ -48,6 +48,7 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Core.Card
+    Core.Card.Exploration
     Core.DSL
     Core.Glossary
     Core.Glossary.Generated
@@ -75,6 +76,7 @@ library
     Core.Rules.Trigger
     Core.State
     Core.Stats
+    Core.Time
     Core.Util
 
 test-suite core-test
@@ -88,6 +90,7 @@ test-suite core-test
     CardParsingTest
     ConsequenceParsingTest
     Core.LogicTest
+    ExplorationParsingTest
     GlossaryTest
     PlanningTests
     ReadmeExamplesTest

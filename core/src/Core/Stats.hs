@@ -55,7 +55,16 @@ import Core.Util (tshow)
 data ResourceType = Red | Yellow | Blue
   deriving stock (Eq, Ord, Show, Enum, Bounded, Generic)
 
-$(deriveJSON cardpgJsonDef ''ResourceType)
+instance ToJSON ResourceType where
+  toJSON = genericToJSON cardpgJsonDef
+
+instance FromJSON ResourceType where
+  parseJSON (String s) = case T.toLower s of
+    "red" -> pure Red
+    "yellow" -> pure Yellow
+    "blue" -> pure Blue
+    _ -> fail $ "Unknown ResourceType: " ++ T.unpack s
+  parseJSON v = genericParseJSON cardpgJsonDef v
 
 data Stats a = Stats
   { red :: a
