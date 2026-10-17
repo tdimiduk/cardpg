@@ -8,6 +8,7 @@ These directives govern AI behavior and subagent orchestration across the `cardp
 2. **Empirical Research:** For literature retrieval, quantitative synthesis, and verisimilitude auditing, follow [.agent/workflows/empirical_research.md](file:///.agent/workflows/empirical_research.md).
 3. **Rules & Game Design:** For game systems design, rules refactoring, and adversarial analysis, follow [.agent/workflows/design.md](file:///.agent/workflows/design.md).
 4. **Epistemic Integrity:** Never flip `vetted_by_human` to `true`. Always reset `vetted_by_human: false` upon substantial edits to design documents.
+5. **Single-Pass File Reads (`view_file`):** `view_file` returns up to 800 lines (46 KB) when `StartLine` and `EndLine` are omitted, and nearly every markdown/code file in this repository is under 800 lines. Omit `StartLine` and `EndLine` to read files in a single tool turn rather than guessing conservative line slices (e.g., `1–100`), unless targeting a specific known line-range anchor or a large generated/vault file (`>800` lines).
 
 ## Subagent Model Routing (`invoke_subagent`)
 

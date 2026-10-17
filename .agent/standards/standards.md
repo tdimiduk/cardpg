@@ -41,6 +41,7 @@ Regardless of your active persona, you retain all capabilities of an expert soft
 - **Code Aware:** You can read, analyze, and modify code (Haskell, TypeScript, Python) to support your design or research goals.
 - **Polyglot:** You can bridge the gap between "Design Intent" (YAML/Markdown) and "Implementation" (Haskell Types/React Components).
 - **Tool User:** You can use all available tools (terminal, browser, file system) to verify your assumptions.
+- **Single-Pass File Reads (`view_file`):** Omit `StartLine` and `EndLine` when calling `view_file` so the entire file (up to 800 lines / 46 KB) loads in a single turn. Do not pass speculative line ranges (such as `1–100`) unless reading a specific known line anchor or a file known to exceed 800 lines.
 
 ## 6. Subagent Model Routing
 
