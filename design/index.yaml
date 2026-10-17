@@ -87,7 +87,8 @@ game_system_and_rules:
     - pillar:exploration
     - pillar:combat
   - path: authoring/locations-and-travel.md
-    purpose: Data schemas, card anatomy, and authoring standards for Location Cards, Travel Cards, and Living Clock Decks.
+    purpose: Data schemas, card anatomy, and authoring standards for Location Cards,
+      Travel Cards, and Living Clock Decks.
     tags:
     - doc-type:guide
     - guide
@@ -98,7 +99,8 @@ game_system_and_rules:
     - core-concept:clocks
     - pillar:exploration
   - path: authoring/advancement-and-progression.md
-    purpose: Emerging design heuristics and exploratory patterns for authoring character advancement, equipment progression, and logistical evolution.
+    purpose: Emerging design heuristics and exploratory patterns for authoring character
+      advancement, equipment progression, and logistical evolution.
     tags:
     - doc-type:guide
     - guide
@@ -277,6 +279,7 @@ sub_indexes:
   - core-concept:armor
   - core-concept:consequences
   - core-concept:defense
+  - core-concept:encumbrance
   - core-concept:fatigue
   - core-concept:hand-management
   - core-concept:harm

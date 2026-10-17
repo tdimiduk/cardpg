@@ -36,6 +36,10 @@ active_design_exploration:
       purpose: "A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:fatigue", "core-concept:status-cards"]
 
+    - path: "iteration/carrying-capacity-proposal.md"
+      purpose: "High-level design proposal for the Carrying Capacity module: Load = Weight + Awkwardness, container transformations, Frame + Conditioning Load Increment, and Averaged Burden."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:pacing"]
+
   ideation_and_sketches:
     - path: "iteration/design-sketchbook.md"
       purpose: "A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization."

@@ -33,12 +33,13 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 
 ### Active Proposals & Mechanics
 
-| Document                                                                              | Summary                                                                                                                                   |
-| :------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------- |
-| [Consequence Pool & Tag Escalation Engine](consequence-pool-tag-escalation/README.md) | Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine.              |
-| [Resolution Mechanic Exploration](resolution-exploration.md)                          | An honest critique of legacy resolution mechanics (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.' |
-| [Defense Action Iteration](defense-action.md)                                         | Exploration of active defense action mechanics and timing.                                                                                |
-| [Fatigue Change Proposal](fatigue-change-proposal.md)                                 | A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant. |
+| Document                                                                                         | Summary                                                                                                                                                          |
+| :----------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Consequence Pool & Tag Escalation Engine](consequence-pool-tag-escalation/README.md)            | Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine.                                     |
+| [Resolution Mechanic Exploration](resolution-exploration.md)                                     | An honest critique of legacy resolution mechanics (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.'                        |
+| [Defense Action Iteration](defense-action.md)                                                    | Exploration of active defense action mechanics and timing.                                                                                                       |
+| [Fatigue Change Proposal](fatigue-change-proposal.md)                                            | A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant.                        |
+| [Design Proposal: Carrying Capacity, Load, and Pack Architecture](carrying-capacity-proposal.md) | High-level design proposal for the Carrying Capacity module: Load = Weight + Awkwardness, container transformations, Frame + Conditioning Load Increment, and... |
 
 ### Ideation Sketches
 

@@ -74,6 +74,10 @@ design_process_and_research:
       purpose: "A synthesis of research on historical armor, analyzing the fundamental tradeoff between protection and the physiological costs of exertion (metabolic energy, mobility, and fatigue). It provides a factual basis for designing armor mechanics."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "core-concept:armor", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:verisimilitude"]
 
+    - path: "research/synthesis/load-carriage-and-pack-biomechanics.md"
+      purpose: "A quantitative synthesis of human and quadrupedal load carriage energetics (LCDA model), pack frame and hip-belt pelvic force transfer, hand/shoulder awkwardness lever arms, Roman sarcina/furca mechanics, and equid/donkey carrying thresholds."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:hardship", "core-concept:verisimilitude"]
+
     - path: "research/synthesis/tactical-movement.md"
       purpose: "A synthesis of research on historical combat locomotion, providing a factual basis for designing mechanics related to tactical movement, positioning, disengagement, and retreats. It also establishes the canonical vocabulary for tactical footwork (e.g., Passing Step, Traverse Step) that should be used in all related designs."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:disengagement", "core-concept:verisimilitude"]
