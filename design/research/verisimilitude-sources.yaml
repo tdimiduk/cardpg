@@ -741,6 +741,86 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk"
           summary: "Authoritative clinical review synthesizing chronic sleep restriction kinetics, cumulative executive deficits, and multi-night recovery sleep requirements."
+    - type: journal_article
+      title: "Modeling the Metabolic Costs of Heavy Military Backpacking"
+      author: "David P. Looney, Elizabeth M. Lavoie, Sai V. Vangala, Lucas D. Holden, Peter S. Figueiredo, Karl E. Friedl, Peter N. Frykman, Jason W. Hancock, Scott J. Montain, J. Luke Pryor, William R. Santee, Adam W. Potter"
+      year: 2022
+      doi_or_url: "https://doi.org/10.1249/MSS.0000000000002833"
+      local_archive: "sources/verisimilitude/looney-2022-modeling-metabolic-costs-backpacking"
+      epistemic_grade: "primary_academic"
+      description: >
+        Empirical US Army study establishing the LCDA predictive backpacking
+        equation for heavy load carriage across 30 active-duty subjects carrying up
+        to 66% body mass (loads up to 47 kg in-trial, cross-validated on historical
+        datasets up to 60+ kg). Demonstrates that classical Pandolf equations
+        systematically underestimate the metabolic rate of heavy load carriage at
+        slow speeds, quantifying steady-state metabolic rates across walking speeds
+        (0.45 to 1.97 m/s) and terrain grades (-10% to +10%).
+      vetting:
+        - date: "2026-10-17"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Modeling the Metabolic Costs of Heavy Military Backpacking."
+    - type: journal_article
+      title: "The Influence of Backpack Weight and Hip Belt Tension on Movement and Loading in the Pelvis and Lower Limbs during Walking"
+      author: "Katja Oberhofer, Patrick D. Wettenschwiler, Navrag Singh, Peter Neugebauer, René M. Rossi, Silvio Lorenzetti"
+      year: 2018
+      doi_or_url: "https://doi.org/10.1155/2018/4671956"
+      local_archive: "sources/verisimilitude/oberhofer-2018-backpack-weight-hip-belt-biomechanics"
+      epistemic_grade: "primary_academic"
+      description: >
+        Controlled optical motion capture and ground reaction force study
+        investigating backpack loads (15 kg, 20 kg, 25 kg) under varying hip belt
+        tension states (30 N vs 120 N). Quantifies load transfer mechanisms where
+        supportive hip belts transfer 30% to over 50% of vertical forces away from
+        the shoulders/spine to the pelvis/iliac crest, demonstrating how load mass
+        and hip tension modulate pelvic transverse range of motion, knee flexion-
+        extension, and reduce peak shoulder contact pressures.
+      vetting:
+        - date: "2026-10-17"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for The Influence of Backpack Weight and Hip Belt Tension on Movement and Loading in the Pelvis and Lower Limbs during Walking."
+    - type: journal_article
+      title: "The Biomechanical Effects of Different Bag-Carrying Styles on Lumbar Spine and Paraspinal Muscles: A Combined Musculoskeletal and Finite Element Study"
+      author: "Shuai Liu, Pengfei Gao, Yaqiong Xiao, Bin Yang, Kunjie Zhao, Ming Lu, Changyong Gao, Qinghong Zhao"
+      year: 2023
+      doi_or_url: "https://doi.org/10.1111/os.13573"
+      local_archive: "sources/verisimilitude/liu-2023-bag-carrying-styles-lumbar-biomechanics"
+      epistemic_grade: "primary_academic"
+      description: >
+        Biomechanical modeling and finite element study comparing bilateral backpack
+        carriage against unilateral asymmetrical carriage modes (one-shoulder bag
+        and hand-held bag) across progressive load levels. Quantifies how asymmetric
+        carrying modes induce severe compensatory paraspinal muscle activation,
+        escalating intervertebral compressive forces (ICF), intervertebral shear
+        forces (ISF), and peak intradiscal pressure on lumbar vertebrae far in
+        excess of the actual carried weight.
+      vetting:
+        - date: "2026-10-17"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for The Biomechanical Effects of Different Bag-Carrying Styles on Lumbar Spine and Paraspinal Muscles: A Combined Musculoskeletal and Finite Element Study."
+    - type: journal_article
+      title: "Quantifying the Impact of Mounted Load Carrying on Equids: A Review"
+      author: "Syed S. U. H. Bukhari, Alan G. McElligott, Rebecca S. V. Parkes"
+      year: 2021
+      doi_or_url: "https://doi.org/10.3390/ani11051333"
+      local_archive: "sources/verisimilitude/bukhari-2021-mounted-load-carrying-equids-review"
+      epistemic_grade: "primary_academic"
+      description: >
+        Comprehensive veterinary and biomechanical review synthesizing empirical
+        data across horses, donkeys, and mules under mounted and pack loads.
+        Establishes physiological and kinematic breakpoints across body weight
+        ratios (BWR), confirming that loads below 20% BW maintain baseline
+        physiological metrics, whereas loads of 25%–30%+ BW trigger exponential
+        plasma lactate elevation, prolonged heart rate recovery times, elevated
+        muscle damage biomarkers (creatine kinase), and stride asymmetry.
+      vetting:
+        - date: "2026-10-17"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Quantifying the Impact of Mounted Load Carrying on Equids: A Review."
 
 ---
 modeling_logistics_transport_materials:
