@@ -9,6 +9,7 @@ import Core.Rules
   ( Rule (..)
   , TaskDef (..)
   )
+import Core.Time (Duration (..), TimeUnit (..))
 
 -- | The canonical Fatigue Card
 -- Hardcoded here as a fundamental mechanic of the engine.
@@ -27,7 +28,7 @@ fatigueCard =
             ( TaskDef
                 { name = unsafeNonEmptyText "Sleep"
                 , check = Nothing
-                , time = Just (unsafeSimpleString "2 Hours")
+                , time = Just (Duration 2 Hour)
                 , cost = Nothing
                 , effect = unsafeSimpleString "Remove this card."
                 }
@@ -36,7 +37,7 @@ fatigueCard =
                    ( TaskDef
                        { name = unsafeNonEmptyText "Light Rest"
                        , check = Nothing
-                       , time = Just (unsafeSimpleString "4 Hours")
+                       , time = Just (Duration 4 Hour)
                        , cost = Nothing
                        , effect = unsafeSimpleString "Remove this card."
                        }

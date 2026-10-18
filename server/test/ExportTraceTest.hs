@@ -62,6 +62,7 @@ mkCoreCard cardName cardStats =
           AttackDef
             { power = StackPower Red 4 Nothing
             , resistedBy = Red
+            , consequences = Nothing
             , effect = Nothing
             }
     , rules = Nothing

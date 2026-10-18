@@ -10,11 +10,15 @@ module Core.Rules.Attack
 
 import Control.Applicative (optional)
 import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON)
+import Data.List.NonEmpty (NonEmpty)
+import Data.List.NonEmpty qualified as NE
+import Data.Text (Text)
+import Data.Text qualified as T
 import GHC.Generics (Generic)
-import Text.Megaparsec (try)
-import Text.Megaparsec.Char (space, space1, string, string')
+import Text.Megaparsec (between, sepBy1, takeWhile1P, try)
+import Text.Megaparsec.Char (char, space, space1, string, string')
 
-import Core.DSL (Parser, TextRep (..), parseText)
+import Core.DSL (Parser, TextRep (..), hspace, parseText)
 import Core.Json (cardpgJsonOptions)
 import Core.Language (cmdAttack, kwStr, sepArrow, sepColon)
 import Core.Layout (LayoutItem (..), renderLayoutText)
@@ -26,6 +30,7 @@ import Core.Stats (ResourceType (..), StackPower (..), resourceSymbol, stackPowe
 data AttackDef = AttackDef
   { power :: StackPower
   , resistedBy :: ResourceType
+  , consequences :: Maybe (NonEmpty Text)
   , effect :: Maybe RichText
   }
   deriving (Show, Eq, Generic)
@@ -56,6 +61,12 @@ layoutAttackDef def =
   , Literal " = "
   ]
     <> layoutStackPower def.power
+    <> case def.consequences of
+      Nothing -> []
+      Just cs ->
+        [ Space
+        , Literal ("[" <> T.intercalate ", " (NE.toList cs) <> "]")
+        ]
     <> case def.effect of
       Nothing -> []
       Just e ->
@@ -76,6 +87,20 @@ attackParser = do
   _ <- optional (string sepColon)
   _ <- space1
   power <- stackPowerParser
+  mConsequences <- optional $ try (space *> consequencesParser)
   _ <- separatorParser
   extra <- optional richTextParser
-  pure $ AttackDef power resistedBy extra
+  pure $ AttackDef power resistedBy mConsequences extra
+
+consequencesParser :: Parser (NonEmpty Text)
+consequencesParser = between (char '[') (char ']') $ do
+  tags <- sepBy1 consequenceTagParser (char ',')
+  case NE.nonEmpty tags of
+    Just ne -> pure ne
+    Nothing -> fail "Empty consequences in attack"
+  where
+    consequenceTagParser = do
+      hspace
+      tag <- takeWhile1P (Just "consequence tag") (\c -> c /= ',' && c /= ']' && c /= '\n')
+      hspace
+      pure (T.strip tag)

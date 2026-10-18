@@ -661,7 +661,15 @@ mockAttackCard _name' color cost' =
     , cost = Just cost'
     , tags = Nothing
     , stats = Stats 1 1 1
-    , attack = Just (AttackDef{power = StackPower color 0 Nothing, resistedBy = color, effect = Nothing})
+    , attack =
+        Just
+          ( AttackDef
+              { power = StackPower color 0 Nothing
+              , resistedBy = color
+              , consequences = Nothing
+              , effect = Nothing
+              }
+          )
     , rules = Nothing
     , flavor = Nothing
     }

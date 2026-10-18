@@ -18,7 +18,7 @@ import GHC.Generics (Generic)
 import Text.Megaparsec (choice, sepBy1, try)
 import Text.Megaparsec.Char (char, space, string')
 
-import Core.DSL (Parser, hspace, hspace1)
+import Core.DSL (Parser, hspace, hspace1, toText)
 import Core.Json (cardpgJsonDef)
 import Core.Language (cmdTask, kwCheck, kwCost, kwTime, sepArrow, sepSemi)
 import Core.Layout (LayoutItem (..), intercalateLayout, layoutWrapper)
@@ -26,6 +26,7 @@ import Core.NonEmptyText (NonEmptyText, getRawText, takeWhilePNonEmptyStripped)
 import Core.RichText (RichText, richTextParser, richTextParserWith)
 import Core.Rules.Common (effectArrow, layoutDifficulty)
 import Core.Stats (Difficulty, difficultyParser)
+import Core.Time (Duration, durationParser)
 
 -- | Task Actions (Downtime/Narrative)
 -- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
@@ -33,7 +34,7 @@ data TaskDef = TaskDef
   { name :: NonEmptyText
   , check :: Maybe Difficulty
   -- ^ The difficulty check: "Check {Blue} 3"
-  , time :: Maybe RichText
+  , time :: Maybe Duration
   -- ^ Duration: "Time 1 min"
   , cost :: Maybe RichText
   -- ^ Narrative Cost: "Cost Bandage"
@@ -57,7 +58,7 @@ layoutTaskDef def =
       let parts =
             catMaybes
               [ fmap (\c -> [Keyword kwCheck, Space] <> layoutDifficulty c) def.check
-              , fmap (\t -> [Keyword kwTime, Space, RichContent t]) def.time
+              , fmap (\t -> [Keyword kwTime, Space, Literal (toText t)]) def.time
               , fmap (\c -> [Keyword kwCost, Space, RichContent c]) def.cost
               ]
        in if null parts
@@ -86,7 +87,7 @@ taskParser = do
           let timeP = try $ do
                 _ <- string' kwTime
                 _ <- hspace1
-                richTextParserWith [';', ')']
+                durationParser
 
           let costP = try $ do
                 _ <- string' kwCost

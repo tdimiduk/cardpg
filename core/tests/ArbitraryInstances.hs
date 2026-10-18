@@ -37,10 +37,21 @@ import Core.RichText
   )
 import Core.State
 import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
+import Core.Time (Duration (..), TimeUnit (..))
 import Data.UUID.Types (UUID)
 import Data.UUID.Types qualified as UUID
 
 -- Arbitrary Instances
+
+instance Arbitrary TimeUnit where
+  arbitrary = elements [Minute, Hour, Day]
+  shrink = genericShrink
+
+instance Arbitrary Duration where
+  arbitrary = (Duration . getPositive <$> arbitrary) <*> arbitrary
+  shrink (Duration v u) =
+    [Duration v' u | Positive v' <- shrink (Positive v)]
+      ++ [Duration v u' | u' <- shrink u]
 
 instance Arbitrary Text where
   arbitrary = T.pack <$> listOf (elements ['a' .. 'z'])
@@ -130,7 +141,18 @@ instance Arbitrary PassiveDef where
   shrink = genericShrink
 
 instance Arbitrary AttackDef where
-  arbitrary = genericArbitrary uniform
+  arbitrary = do
+    power <- arbitrary
+    resistedBy <- arbitrary
+    conseqs <-
+      oneof
+        [ pure Nothing
+        , do
+            let validTag = T.pack <$> listOf1 (elements ['a' .. 'z'])
+            tags <- listOf1 validTag
+            pure $ Just (NE.fromList tags)
+        ]
+    AttackDef power resistedBy conseqs <$> arbitrary
   shrink = genericShrink
 
 instance Arbitrary GeneralDef where

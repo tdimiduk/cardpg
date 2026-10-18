@@ -2,7 +2,7 @@
 
 module CardParsingTest (test_cardParsing) where
 
-import Control.Monad (forM, when)
+import Control.Monad (forM, forM_, when)
 import Data.ByteString qualified as BS
 import Data.ByteString.Char8 qualified as BS8
 import Data.List (isSuffixOf)
@@ -28,8 +28,11 @@ import Core.Card
   , masterCardToCoreCard
   , resolveDeckEntry
   )
+import Core.DSL (parseText, toText)
 import Core.NonEmptyText (getRawText)
-import Core.Stats (Stats (..))
+import Core.Rules (AttackDef (..), Rule (..), TaskDef (..))
+import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), Stats (..))
+import Core.Time (Duration (..), TimeUnit (..))
 
 test_cardParsing :: IO TestTree
 test_cardParsing = do
@@ -45,6 +48,7 @@ test_cardParsing = do
       , testGroup "Deck Entry Parsing" deckEntryParsingTests
       , testGroup "Deck Entry Resolution" deckResolutionTests
       , testGroup "Actor File Parsing & Roundtrip" fileTests
+      , testGroup "Attack & Task DSL Rules" attackAndTaskDslTests
       ]
 
 sampleMasterYaml :: BS.ByteString
@@ -249,3 +253,103 @@ testActorDefinitionFile path = do
         let reformattedPath = path ++ ".reformatted"
         BS.writeFile reformattedPath encoded
         assertFailure $ "YAML output mismatch. Reformatted content written to " ++ reformattedPath
+
+attackAndTaskDslTests :: [TestTree]
+attackAndTaskDslTests =
+  [ testGroup
+      "AttackDef DSL Parsing & Roundtrip"
+      [ testCase "Parses standard attack without consequences" $ do
+          case parseText "{Red}: Str = {Red} + 2" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (atk :: AttackDef) -> do
+              atk.resistedBy @?= Red
+              atk.power @?= StackPower Red 2 Nothing
+              atk.consequences @?= Nothing
+              atk.effect @?= Nothing
+              toText atk @?= "{Red}: Str = {Red} + 2"
+      , testCase "Parses attack with single consequence tag" $ do
+          case parseText "{Red}: Str = {Red} + 2 [BluntForce]" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (atk :: AttackDef) -> do
+              atk.resistedBy @?= Red
+              atk.power @?= StackPower Red 2 Nothing
+              atk.consequences @?= Just ("BluntForce" NE.:| [])
+              atk.effect @?= Nothing
+              toText atk @?= "{Red}: Str = {Red} + 2 [BluntForce]"
+      , testCase "Parses attack with multiple consequence tags" $ do
+          case parseText "{Blue}: Str = {Blue} + 1 [BluntForce, MuscleStrain]" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (atk :: AttackDef) -> do
+              atk.resistedBy @?= Blue
+              atk.power @?= StackPower Blue 1 Nothing
+              atk.consequences @?= Just ("BluntForce" NE.:| ["MuscleStrain"])
+              atk.effect @?= Nothing
+              toText atk @?= "{Blue}: Str = {Blue} + 1 [BluntForce, MuscleStrain]"
+      , testCase "Parses attack with consequences and effect" $ do
+          case parseText "{Red}: Str = {Red} + 3 [BluntForce] → Knockback 1m" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (atk :: AttackDef) -> do
+              atk.resistedBy @?= Red
+              atk.power @?= StackPower Red 3 Nothing
+              atk.consequences @?= Just ("BluntForce" NE.:| [])
+              assertBool "Effect should be present" (isJust atk.effect)
+              toText atk @?= "{Red}: Str = {Red} + 3 [BluntForce] → Knockback 1m"
+      , testCase "Parses attack with Attack prefix" $ do
+          case parseText "Attack {Yellow}: Str = {Yellow} - 1 [Bruise]" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (atk :: AttackDef) -> do
+              atk.resistedBy @?= Yellow
+              atk.power @?= StackPower Yellow (-1) Nothing
+              atk.consequences @?= Just ("Bruise" NE.:| [])
+      ]
+  , testGroup
+      "TaskDef Duration Parsing & Roundtrip"
+      [ testCase "Parses task rule with canonical duration" $ do
+          case parseText "Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) → Remove this" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (RuleTask task) -> do
+              getRawText task.name @?= "First Aid"
+              task.check @?= Just (Difficulty Blue 3)
+              task.time @?= Just (Duration 1 Minute)
+              toText (RuleTask task)
+                @?= "Task: First Aid (Check {Blue} 3; Time 1 min; Cost Bandage) → Remove this"
+            Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      , testCase "Parses task rule with hours" $ do
+          case parseText "Task: Recuperate (Check {Red} 5; Time 1 hour) → Remove this" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (RuleTask task) -> do
+              task.time @?= Just (Duration 1 Hour)
+              toText (RuleTask task) @?= "Task: Recuperate (Check {Red} 5; Time 1 hour) → Remove this"
+            Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      , testCase "Parses task rule with plural hours" $ do
+          case parseText "Task: Careful Repair (Check {Yellow} 12; Time 4 hours; Cost Repair Tools) → Remove this" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (RuleTask task) -> do
+              task.time @?= Just (Duration 4 Hour)
+              toText (RuleTask task)
+                @?= "Task: Careful Repair (Check {Yellow} 12; Time 4 hours; Cost Repair Tools) → Remove this"
+            Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      , testCase "Parses lax duration expressions in task and standardizes to canonical" $ do
+          let laxTests =
+                [
+                  ( "Task: Rest (Time 10m) → Remove this"
+                  , Duration 10 Minute
+                  , "Task: Rest (Time 10 min) → Remove this"
+                  )
+                ,
+                  ( "Task: Rest (Time 2 hrs) → Remove this"
+                  , Duration 2 Hour
+                  , "Task: Rest (Time 2 hours) → Remove this"
+                  )
+                , ("Task: Rest (Time 1 day) → Remove this", Duration 1 Day, "Task: Rest (Time 1 day) → Remove this")
+                , ("Task: Rest (Time 3 days) → Remove this", Duration 3 Day, "Task: Rest (Time 3 days) → Remove this")
+                ]
+          forM_ laxTests $ \(input, expectedDur, expectedCanonical) ->
+            case parseText input of
+              Left err -> assertFailure $ "Failed parsing " ++ show input ++ ": " ++ err
+              Right (RuleTask task) -> do
+                task.time @?= Just expectedDur
+                toText (RuleTask task) @?= expectedCanonical
+              Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      ]
+  ]

@@ -51,6 +51,7 @@ exampleAttack =
       AttackDef
         { power = StackPower Red 2 Nothing
         , resistedBy = Red
+        , consequences = Nothing
         , effect = Just $ unsafeSimpleString "Deal damage."
         }
 
