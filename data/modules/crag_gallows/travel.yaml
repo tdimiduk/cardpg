@@ -20,9 +20,15 @@
   paces:
     - name: "Measured Mountain March"
       time: "45 min"
+      color: "Red"
+      strength: 10
+      consequences:
+        - "Fatigue"
       tags:
         - "StandardPace"
-      narrative: "Pick footsteps carefully through loose slate and low brambles. Standard vigilance flushes apply."
+        - "Travel"
+        - "Exertion"
+      narrative: "Pick footsteps carefully through loose slate and low brambles. Flip to meet hiking exertion, plus standard vigilance flushes."
 
     - name: "Agile Scree Scramble"
       time: "20 min"

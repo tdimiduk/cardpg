@@ -195,17 +195,43 @@ $$\text{Fatigue Added} = 2 + \text{round}\left( \frac{\sum_{c \in \text{Expended
 
 ---
 
-## 4. Open Questions & Next Steps
+## 4. Overland March Attrition, `Vigilance 0`, and `Defense` Domains
 
-With item primitives (`Weight`, `Awkwardness`, `Form Tag`), container transformations, unified `Worn Load` for armor, bounded `Frame & Physique` (`12 / 15 / 18`), and `Averaged Burden` settled and benchmarked in [`carrying-capacity-benchmarks.md`](file:///home/tdimiduk/cardpg/cardpg/design/iteration/carrying-capacity-benchmarks.md), three concrete items remain for the next design and implementation passes:
+### Separating Mental Readiness (`Vigilance`) from Caloric Work (`Travel Checks`)
 
-### 1. Low-Vigilance Travel (`Vigilance 0`) & Overland March Attrition
+In [`core-rules.md`](file:///home/tdimiduk/cardpg/cardpg/design/rules/core-rules.md#L92-L95), maintaining a [[Vigilance]] pool represents **mental alertness and tactical readiness**, whereas overland marching and physical labor represent **caloric and muscular exertion**:
 
-- **The Current Gap:** In [`core-rules.md`](file:///home/tdimiduk/cardpg/cardpg/design/rules/core-rules.md#L92-L95), paying for `Vigilance 0` (marching at ease) expends $0$ cards per hour. Consequently, an encumbered or heavily armored character (`Burden >= 1`) traveling at `Vigilance 0` never depletes their deck and never triggers a `Fatigue Cycle`.
-- **Empirical Anchors ([`hardship-and-exertion.md`](file:///home/tdimiduk/cardpg/cardpg/design/research/synthesis/hardship-and-exertion.md#L43-L48)):** Heavy load carriage burns $500\text{–}800\text{ kcal/hr}$, depleting intramuscular glycogen within $2\text{–}3\text{ hours}$ ("bonking") without carbohydrate intake, and multi-day human endurance is bounded by the $2.5\times\text{ BMR}$ alimentary ceiling ($\approx 4,500\text{ kcal/day}$). Additionally, prolonged loaded marching degrades prefrontal executive vigilance (`drain-2023`).
-- **Design Question:** Should overland marching require a base hourly card expenditure (or periodic March `General Action` check), or should carrying `Burden >= 1` impose a minimum hourly card drain (e.g., discarding cards equal to `Burden` or a minimum of $1\text{–}2$ cards/hr) even when traveling at `Vigilance 0`?
+1. **No Uncosted Overland Marching:** Every active travel pace—including a routine **Measured March**—requires a colored [[Strength]] challenge (typically `Red 10–12` per hour on standard trails, or `Red 15+` on steep/arduous terrain, with `consequences: ["Fatigue"]`).
+2. **What `Vigilance 0` Means:** Setting [[Vigilance]] to `0` ("at ease") means the character holds no cards ready for an ambush and flushes `0` vigilance cards per hour. It only results in zero total card expenditure when the character is **physically stationary or passively transported** (resting in camp, sitting in a tavern, riding in a wagon). When marching on foot at `Vigilance 0`, the character still flips cards to meet each hour's `Red` Travel `Strength`.
+3. **Why Linear `Burden` Hits the 2–3 Hour Glycogen Window Naturally:**
+   - Because `Burden` applies strictly at the [[Fatigue Cycle]] ($2 + \text{Averaged Burden}$), it remains **linear** and requires zero per-action bookkeeping during card play.
+   - On a standard trail (`Red 12` per hour), a conditioned warrior (avg `Red ~3.2`) flips **~4 cards/hr** while an unconditioned scholar (avg `Red ~1.8`) flips **~6–7 cards/hr**. Combined with routine `Vigilance` (`2–4 cards/hr`), a 24-card deck expends **6 to 10 cards per hour**, triggering its first `Fatigue Cycle` after **2.5 to 4 hours** of marching—matching the empirical **2–3 hour intramuscular glycogen depletion ("bonk") window** ([`hardship-and-exertion.md`](file:///home/tdimiduk/cardpg/cardpg/design/research/synthesis/hardship-and-exertion.md#L104-L114)).
+   - During Cycle 1 (Hours 1–3), a conditioned warrior's high `Red` cards allow them to power through the weight of armor and pack at pace with the party. At Hour ~3, the first `Fatigue Cycle` hits: an unencumbered scout (`Burden 0`) takes `+2 Fatigue`, while a heavily loaded warrior (`Burden 2`) takes `+4 Fatigue`, diluting their deck (`1/1/1` cards) and forcing more flips (and higher `Impact`) throughout the afternoon march.
+   - Conversely, a low-`Red` scholar flips more cards per hour on `Red` travel checks and therefore cycles their deck more frequently on hikes—naturally incentivizing unconditioned characters to travel light (`Burden 0`) so frequent reshuffles do not bury their deck in `Fatigue`.
 
-### 2. High Overload Thresholds (`Burden >= 3`), Pace Degradation & Strain Consequences
+### `Defense` Domains: Armor vs. Internal Exertion
+
+When resolving Step 3 of Facing a Challenge (`Suffer Consequences`), [[Defense]] ratings are governed by **Consequence Domains**:
+
+- **Innate Baseline (`Defense 1, Resilience 1`):** Every character has a fallback `Defense 1` and `Resilience 1` that applies across **all** domains.
+- **Domain-Specific `Defense`:** Equipment, traits, and prepared cards only apply their `Defense` rating when the challenge's consequence tags match their domain:
+  - **Ballistic / Combat Armor:** Grants `Defense` against **external physical force and trauma** (`[Combat]`, `[BluntForce]`, `[Slash]`, `[Puncture]`, `[Crush]`, `[Rockfall]`). Armor `Defense` **never** reduces `Impact` from internal physiological strain (`[Fatigue]`, `[Exhaustion]`, `[MuscleStrain]`, `[Heat]`, `[Dehydration]`).
+  - **Travel & Conditioning Gear/Traits:** Specialized footwear, survival gear, or conditioning traits (e.g., _Seasoned Traveler_, _Broken-In Marching Boots_) explicitly grant `Defense 2–3` against `[Travel]`, `[Exertion]`, or `[Blister]` consequences.
+
+### Overnight Recovery & The $2.5\times\text{ BMR}$ Daily Ceiling
+
+Multi-day human endurance is bounded by the gastrointestinal absorptive ceiling of **$\approx 2.5\times\text{ BMR}$** ($\approx 4,500\text{ kcal/day}$; [`hardship-and-exertion.md`](file:///home/tdimiduk/cardpg/cardpg/design/research/synthesis/hardship-and-exertion.md#L46-L48)):
+
+- **Bounded Overnight Clearing:** A full night's sleep (8 hours) with a daily ration clears **up to 4 `Fatigue` status cards** (`1 Fatigue card per 2 hours of sleep`, or up to `6 Fatigue cards` with full camp/haven amenities and hot meals).
+- **Sustainable vs. Catabolic Marching:** A standard marching day (1–2 Fatigue Cycles at `Burden 0–1`, generating `2–6 Fatigue` cards) is fully recovered overnight. Pushing through a grueling forced march under heavy load (2–3 Fatigue Cycles at `Burden 2–3`, generating `8–15 Fatigue` cards) exceeds daily caloric recovery capacity, leaving residual `Fatigue` cards in the deck the next morning until the party takes dedicated rest or lightens their load.
+
+---
+
+## 5. Open Questions & Next Steps
+
+With item primitives (`Weight`, `Awkwardness`, `Form Tag`), container transformations, unified `Worn Load` for armor, bounded `Frame & Physique` (`12 / 15 / 18`), `Averaged Burden`, and overland march attrition settled, two concrete items remain for the next design and implementation passes:
+
+### 1. High Overload Thresholds (`Burden >= 3`), Pace Degradation & Strain Consequences
 
 - **Empirical Anchors ([`load-carriage-and-pack-biomechanics.md`](file:///home/tdimiduk/cardpg/cardpg/design/research/synthesis/load-carriage-and-pack-biomechanics.md#L43-L50)):**
   - At $44\%\text{ BM}$ (`Burden 2–3`, $32\text{–}40\text{ kg}$), maximum aerobic walking speed drops $\approx 15\%$.
@@ -213,7 +239,7 @@ With item primitives (`Weight`, `Awkwardness`, `Form Tag`), container transforma
   - Above $75\%\text{ BM}$ (`Burden 4+`, $>58\text{ kg}$), human pendular gait breaks down completely.
 - **Design Question:** Beyond adding extra [[Fatigue]] cards on reshuffle, how should `Burden 3+` affect overland travel pace, in-combat movement/defense, exposure to overuse consequences (blisters, sprains, stress fractures), and what is the hard ceiling (e.g., `Burden 4` / $< 5\times\text{Load Increment}$) beyond which sustained movement is impossible?
 
-### 3. VTT Data Model & HUD Integration
+### 2. VTT Data Model & HUD Integration
 
 - **Item & Container Schema:** Represent item `(weightKg, awkwardness, formTag, maybeWornLoad)` and container transformation rules `(emptyWeight, emptyAwkwardness, acceptedForms, capacityLimit, weightMult, awkwardnessMult, jettisonCost)` in the Haskell domain model.
 - **Deck HUD & Expended Pile Tracking:** Tag each card moving to the Expended Pile with `expendedAtBurden :: Int` so the VTT can display live `Active Burden`, live `Averaged Burden` for the current cycle, and one-click **Drop Pack** state transitions at the start of Crisis Time.

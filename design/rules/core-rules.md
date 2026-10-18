@@ -34,10 +34,10 @@ Whatever the challenge, facing it follows the same four steps:
 
 1. **Meet the Strength:** The threat or task presents a target [[Strength]] in a specific [[Color]]. You meet or exceed that Strength by adding together card values in that Color (playing prepared cards from hand or flipping cards from your deck).
 2. **Impact:** Your [[Impact]] is the number of cards in your **flipped stack**. Prepared cards played from hand (such as Defend cards or Action Stacks) do not add to your Impact.
-3. **Suffer Consequences:** If you flip cards from your deck, check your active armor or gear for your [[Defense]] and [[Resilience]] ratings (both default to **1** if unarmored):
-   - Group your flipped cards into stacks equal to your [[Defense]]. You suffer **1 Consequence** for each completed stack. (Leftover cards that do not complete a stack cause no harm and are discarded).
+3. **Suffer Consequences:** If you flip cards from your deck, check your active gear or traits for your **domain-applicable [[Defense]]** and [[Resilience]] ratings (every character has an innate baseline of **1** in both across all domains; armor `Defense` applies only against external physical trauma, whereas internal exertion or environmental strain uses innate `Defense 1` unless mitigated by matching survival gear or conditioning traits):
+   - Group your flipped cards into stacks equal to your applicable [[Defense]]. You suffer **1 Consequence** for each completed stack. (Leftover cards that do not complete a stack cause no harm and are discarded).
    - Arrange your Consequence cards on the table in rows of width equal to your [[Resilience]]. The first row holds [[Severity 1]] consequences (minor friction). Filling that row escalates new consequences to [[Severity 2]] (serious injury/vulnerability). Filling the second row pushes you to [[Severity 3]] (incapacitated).
-4. **The Fatigue Cycle:** When you must draw or flip a card and your deck is empty—or voluntarily outside a resolution—perform a Fatigue Cycle: add 2 [[Fatigue]] cards (plus your total active [[Burden]] from heavy gear) to your expended pile, reshuffle it into a new deck, and draw or flip the required card.
+4. **The Fatigue Cycle:** When you must draw or flip a card and your deck is empty—or voluntarily outside a resolution—perform a Fatigue Cycle: add 2 [[Fatigue]] cards (plus your [[Burden]] from heavy gear) to your expended pile, reshuffle it into a new deck, and draw or flip the required card.
 
 ---
 
@@ -89,9 +89,9 @@ You do not hold a hand during Adventuring Time. Instead, you maintain **[[Vigila
 
 - **Face-Down Cards:** Dealt from the top of your deck and kept face down. Outside of crisis, you may deal additional cards to your Vigilance pool from your deck at any time (up to 4).
 - **Readied Card:** Up to 1 card in your Vigilance pool may be kept face up as a **readied card**. You may search your deck for this card by spending roughly one minute of quiet focus outside of crisis. This can be a high-value card for rapid reactions or a specific technique you plan to unleash.
-- **Paying for Vigilance:** Maintaining vigilance burns stamina. Roughly every in-game hour (or as time advances on the road or on watch), all characters pay for vigilance:
+- **Paying for Vigilance:** Maintaining combat alertness burns mental stamina. Roughly every in-game hour (or as time advances on the road or on watch), all characters pay for vigilance:
   1. Discard your Vigilance pool to your expended pile. _(To retain a readied card, discard 2 cards from the top of your deck to your expended pile instead)._
-  2. Deal cards face down from your deck back to your chosen Vigilance level (0 to 4). If your chosen size is 0 (marching at ease), paying for vigilance costs zero cards.
+  2. Deal cards face down from your deck back to your chosen Vigilance level (0 to 4). If your chosen size is 0 (at ease), paying for vigilance costs zero cards—though active overland marching or physical labor still expends cards through [[General Actions]].
 
 _(To push beyond 4 cards into acute combat alertness at double the fatigue rate, see the [Hyper-Vigilance Module](modules/hyper-vigilance.md))._
 

@@ -12,26 +12,24 @@ In _caRdPG_, physical stamina and narrative progress are governed by a single un
 
 ### A. The 60-Minute Exploration Engine
 
-The player deck (baseline 24 cards) acts as the party's expedition clock:
+The player deck (baseline 24 cards) acts as the party's expedition clock, driven by two orthogonal drains—**mental readiness (`Vigilance`)** and **caloric work (`Travel / Labor Checks`)**:
 
-- At peak vigilance ([[Vigilance]] pool size 4), a character flushes 4 cards into their expended pile every hour.
-- A 24-card deck cycles in **6 hours** at high vigilance, injecting $2 + \text{Burden}$ [[Fatigue]] cards into the deck.
-- At ease (Vigilance 0), a character flushes 0 cards per hour, burning zero deck stamina.
+- **Mental Readiness (`Vigilance`):** At peak vigilance ([[Vigilance]] pool size 4), a character flushes 4 cards into their expended pile every hour. At ease (`Vigilance 0`), a character holds no cards ready for an ambush and flushes 0 cards per hour for vigilance.
+- **Physical Travel & Labor:** Active movement on foot—including a standard **Measured March**—always requires a colored [[Strength]] check (typically `Red 10–12` per hour on normal trails, flipping ~4–6 cards/hr). Thus, `Vigilance 0` only results in 0 total cards spent when a character is **stationary or passively transported** (resting in camp, riding in a wagon).
+- **The 2.5–4 Hour Cycle Window:** On the march (expending ~4–6 cards/hr from the `Red` travel check + 2–4 cards/hr from `Vigilance`), a 24-card deck cycles every **2.5 to 4 hours**, injecting $2 + \text{Burden}$ [[Fatigue]] cards into the deck—matching the empirical 2–3 hour glycogen depletion curve.
 
-Because cards committed to the [[Vigilance]] pool flush every hour, **time directly translates to stamina attrition for vigilant adventurers**.
+### B. "Passive Time" vs. "Travel & Labor" vs. "Acute Perils"
 
-### B. "Hard Going" vs. "Acute Perils" vs. "Physical Labor"
+When authoring Location, Travel, and Hazard cards, distinguish between passive time passage, physical exertion, and sudden traumatic shocks:
 
-When authoring Location, Travel, and Hazard cards, distinguish between environmental pacing, deliberate physical work, and sudden traumatic shocks:
-
-| Category                            | Design Meaning                                                       | Card Implementation                                                                                                                           | Why It Matters                                                                                                                                                                                                                                                                                                                                                                                                       |
-| :---------------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Travel & Environmental Friction** | Arduous trails, poor weather, navigation delays, or resting in camp. | **Consumes In-Game Time** (`time: "15 min"`, `time: "1 hour"`, or `Double Travel Time`).                                                      | Advances the narrative clock. Torches burn, daylight wanes, and characters pay for vigilance naturally. Vigilant characters pay in card loss; relaxed characters pay in time and exposure.                                                                                                                                                                                                                           |
-| **Physical Labor & Obstacles**      | Forcing jammed portcullises, clearing deadfalls, climbing cliffs.    | **General Action / Labor Task** (`Red 16` or `Yellow 14` with `time: "30 min"`, `time_per_impact: "10 min"` and `consequences: ["Fatigue"]`). | Success is default, but physical work expends deck stamina. Character capability and tools reduce cards flipped and time elapsed. Controlled consequence pools prevent traumatic injury.                                                                                                                                                                                                                             |
-| **Hazard Attacks (Acute Perils)**   | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.        | **Hazard Attack** (`Yellow 12 [Reflex, Puncture]` or `Red 16 [BluntForce, Crush]`).                                                           | An environmental attack against the character resolved using standard defense rules. The player meets incoming [[Strength]] using [[Vigilance]]/hand cards (0 Impact) and/or deck flips (1 Impact each). Flipped cards convert into [[Consequences]] via [[Defense]]. Alert characters absorb blows with readied defenses; characters marching at ease ([[Vigilance]] 0) must absorb the full force via blind flips. |
+| Category                             | Design Meaning                                                            | Card Implementation                                                                                                      | Why It Matters                                                                                                                                                                                                                                                                                                                                                                       |
+| :----------------------------------- | :------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Passive Time & Waiting**           | Resting in camp, waiting out a storm, or riding in a wagon.               | **Consumes In-Game Time Only** (`time: "1 hour"`, no `Strength` check).                                                  | Advances the narrative clock. Torches burn, daylight wanes, and characters pay only for their chosen [[Vigilance]]. Characters at ease (`Vigilance 0`) expend 0 cards while stationary.                                                                                                                                                                                              |
+| **Overland Travel & Physical Labor** | Standard trail marching, forcing jammed portcullises, clearing deadfalls. | **General Action / Travel Check** (`Red 10–16` or `Yellow 14` with `time: "30–60 min"` and `consequences: ["Fatigue"]`). | Success is default, but physical work always expends deck stamina. High-`Red` conditioning reduces cards flipped per mile; low-`Red` characters flip more cards (cycling faster, which incentivizes them to stay at `Burden 0`). Internal `[Fatigue]` / `[Exertion]` consequences bypass combat armor `Defense`, testing innate `Defense 1` or dedicated travel/conditioning traits. |
+| **Hazard Attacks (Acute Perils)**    | Traps, cave-ins, ambushes, toxic gas, or sudden flash floods.             | **Hazard Attack** (`Yellow 12 [Reflex, Puncture]` or `Red 16 [BluntForce, Crush]`).                                      | An environmental attack against the character resolved using standard defense rules. The player meets incoming [[Strength]] using [[Vigilance]]/hand cards (0 Impact) and/or deck flips (1 Impact each). Flipped cards convert into [[Consequences]] via domain-applicable [[Defense]] (where armor protects against external physical force).                                       |
 
 > [!IMPORTANT]
-> **Avoid arbitrary flat card taxes.** Do not write _"Swamp: Each player discards 2 cards from deck."_ Doing so bypasses character attributes, gear, and the player's deliberate risk/reward choice with their Vigilance Dial. Environmental pacing and resting are adjudicated through in-game time; active physical exertion is adjudicated through colored challenges.
+> **Avoid arbitrary flat card taxes, and never make physical travel card-free.** Do not write _"Swamp: Each player discards 2 cards from deck,"_ and do not write active foot-travel paces without a `Strength` check. Passive waiting is adjudicated through in-game time; active physical movement and labor are always adjudicated through colored `Strength` challenges.
 
 ### C. Standard Time Cost Benchmarks
 
@@ -149,7 +147,7 @@ Consequence cards represent the physical, mental, and logistical fallout of exce
 
 Canonical status cards are defined in [`data/cards/status/core.yaml`](file:///home/tdimiduk/cardpg/cardpg/data/cards/status/core.yaml):
 
-- **`Fatigue`:** Universal metabolic exhaustion (`1/1/1`), cleared via `'Task: Sleep (Time 4 Hours) → Remove this card.'`
+- **`Fatigue`:** Universal metabolic exhaustion (`1/1/1`), cleared via `'Task: Sleep (Time 4 Hours) → Remove this card.'` To reflect the human daily alimentary ceiling ($\approx 2.5\times\text{ BMR}$), a standard night's rest (8 hours sleep + daily ration) clears up to **4 `Fatigue` cards** (or up to **6 `Fatigue` cards** in a secure haven/camp with hot meals), meaning extreme forced marches under heavy `Burden` carry residual fatigue into the next day.
 - **`Injury`:** Acute physical trauma (`0/0/0`), auto-expended if held in hand at round end, cleared via `'Task: Rest (Time 1 Day) → Remove this card.'`
 
 When authoring custom status cards (such as severe regional blights, venom, or extreme exertion), use the canonical YAML schema:
@@ -198,26 +196,26 @@ When designing encounter suites or custom campaigns, adhere to these mathematica
 
 ### A. The Endurance & Vigilance Curve
 
-Every player character operates on a 24-card starting deck. Time translates to card attrition based on chosen readiness:
+Every player character operates on a 24-card starting deck. Hourly card expenditure combines **Vigilance drain** (mental alertness) with **Travel/Labor flips** (caloric work, averaging ~4 flips/hr on a `Red 10–12` trail march for a fit adventurer, or ~6 flips/hr for an unconditioned character):
 
-$$\text{Deck Attrition Rate} = \frac{24}{\text{Cards Expended per Hour}}$$
+$$\text{Deck Attrition Rate} = \frac{24}{\text{Vigilance Cards/Hr} + \text{March Flips/Hr}}$$
 
-| Vigilance Stance             | Vigilance Pool Size | Clock Interval | Cards / Hour | Time to 1st Fatigue Cycle (Pure Travel) |
-| :--------------------------- | :-----------------: | :------------: | :----------: | :-------------------------------------: |
-| **At Ease**                  |       0 cards       |     1 Hour     |   0 cards    |      $\infty$ (No vigilance cost)       |
-| **Low Alert**                |       1 card        |     1 Hour     |    1 card    |               24.0 Hours                |
-| **Routine Vigilance**        |       2 cards       |     1 Hour     |   2 cards    |               12.0 Hours                |
-| **Attentive Patrol**         |       3 cards       |     1 Hour     |   3 cards    |                8.0 Hours                |
-| **Adventuring Focus**        |       4 cards       |     1 Hour     |   4 cards    |    6.0 Hours (~3.5–4.5h with checks)    |
-| **Redline (Module)**         |       5 cards       |   30 Minutes   |   10 cards   |               ~2.4 Hours                |
-| **Hyper-Vigilance (Module)** |       6 cards       |   30 Minutes   |   12 cards   |    2.0 Hours (Sentry / Breach limit)    |
+| Vigilance Stance             | Vigilance Pool Size | Clock Interval | Vigilance Cards / Hr | Stationary Cycle Time (0 March Flips) | Active March Cycle Time (+4 to 6 March Flips/Hr) |
+| :--------------------------- | :-----------------: | :------------: | :------------------: | :-----------------------------------: | :----------------------------------------------: |
+| **At Ease**                  |       0 cards       |     1 Hour     |       0 cards        |     $\infty$ (Camp / Wagon rest)      |         **4.0 – 6.0 Hours** (March only)         |
+| **Low Alert**                |       1 card        |     1 Hour     |        1 card        |              24.0 Hours               |               **3.4 – 4.8 Hours**                |
+| **Routine Vigilance**        |       2 cards       |     1 Hour     |       2 cards        |              12.0 Hours               |               **3.0 – 4.0 Hours**                |
+| **Attentive Patrol**         |       3 cards       |     1 Hour     |       3 cards        |               8.0 Hours               |               **2.7 – 3.4 Hours**                |
+| **Adventuring Focus**        |       4 cards       |     1 Hour     |       4 cards        |               6.0 Hours               |       **2.4 – 3.0 Hours** (Glycogen limit)       |
+| **Redline (Module)**         |       5 cards       |   30 Minutes   |       10 cards       |              ~2.4 Hours               |               **1.5 – 1.7 Hours**                |
+| **Hyper-Vigilance (Module)** |       6 cards       |   30 Minutes   |       12 cards       |               2.0 Hours               |               **1.3 – 1.5 Hours**                |
 
 #### Readied Card Math:
 
 Retaining a [[Readied Card]] costs **2 cards off the top of the deck** each time vigilance is paid.
 
-- At Adventuring Focus (1 Readied + 3 Face-Down, hourly): Burns $2 + 3 = 5\text{ cards/hour}$. The deck cycles in **4.8 hours**.
-- At Hyper-Vigilance (1 Readied + 5 Face-Down, 30-min): Burns $2 + 5 = 7\text{ cards / 30m}$ ($14\text{ cards/hour}$). The deck cycles in **~1.7 hours**.
+- At Adventuring Focus (1 Readied + 3 Face-Down, hourly): Burns $2 + 3 = 5\text{ vigilance cards/hour}$ (4.8 hours stationary; **~2.2–2.7 hours** on an active march).
+- At Hyper-Vigilance (1 Readied + 5 Face-Down, 30-min): Burns $2 + 5 = 7\text{ cards / 30m}$ ($14\text{ vigilance cards/hour}$, cycling in **~1.7 hours** stationary).
 
 ---
 

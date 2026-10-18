@@ -5,7 +5,7 @@ track: ludology
 origin: AI drafted
 epistemic_status:
   confidence: high
-  vetted_by_human: true
+  vetted_by_human: false
 ---
 
 # Authoring Guide: Locations, Travel, and Clock Cards
@@ -23,7 +23,7 @@ Following our core design precepts, these schemas treat **in-game time as a conc
    - **Scheduled Ticks:** Clock decks advance when cumulative elapsed time crosses defined thresholds (tentatively 30 min in delves, 60 min on trails, 24 h in havens).
    - **Action Interrupts:** Actions bearing risk tags (`[Loud]`, `[Exposed]`) automatically trigger an immediate interrupt draw from the card's `governing_clock`, bypassing the chronometer. Actions only specify an explicit `interrupt: <clock_id>` if overriding the default clock.
 3. **Ergonomic Action Menus:** Location and Travel cards serve as tactile, interactive choice boards where options present distinct trade-offs across [[Colors]] ([[Red]], [[Yellow]], [[Blue]]) alongside safe, time-intensive bypasses.
-4. **No Flat Card Taxes (Labor vs. Attrition vs. Hazards):** Cards should never demand arbitrary flat card discards (e.g. _"Discard 3 cards to pass"_). Strenuous physical exertion, labor, and athletic maneuvers are adjudicated as colored challenges testing [[Strength]]—primarily [[Red]] (force, heavy lifting, deconstruction) and [[Yellow]] (agility, balance, scrambling, precision footing), with [[Blue]] for engineering and methodical pacing. Success is default, but flipping cards represents caloric work and deck stamina. General environmental friction, travel pacing, and resting/breathers are adjudicated through **in-game time**, allowing party attrition to flow naturally through the [[Vigilance]] dial, scheduled clock checks, and the [[Fatigue Cycle]]. Methodical "safe" options avoid acute injuries and noise interrupts, but they are never free of physical labor costs. Sudden, acute perils (springing traps, collapsing masonry, flash floods) are adjudicated as **Hazard Attacks** testing active defenses and vigilance readiness per [Core Rules](../rules/core-rules.md).
+4. **No Flat Card Taxes—Caloric Work Always Tests `Strength`:** Cards should never demand arbitrary flat card discards (e.g. _"Discard 3 cards to pass"_), nor should physical travel or labor ever be free of card expenditure. Any activity that expends physical stamina—including **standard overland marching (`Measured March`)**, forced marches, heavy labor, and athletic maneuvers—is adjudicated as a colored challenge testing [[Strength]]: primarily [[Red]] (endurance, hiking, heavy lifting, deconstruction) and [[Yellow]] (agility, balance, scrambling, precision footing), with [[Blue]] for engineering and route-finding. Success is default, and flipping cards represents caloric work and deck stamina. Passive time passage (resting in camp, waiting, riding in a wagon) advances **in-game time** without a `Strength` check, while [[Vigilance]] flushes track the orthogonal mental/nervous cost of staying combat-ready. Sudden, acute perils (springing traps, collapsing masonry, flash floods) are adjudicated as **Hazard Attacks** testing active defenses and vigilance readiness per [Core Rules](../rules/core-rules.md).
 5. **Lean Schema (Computable vs. Descriptive):** Schemas formalize fields that the game engine or VTT rules strictly compute (`base_time`, `time`, `time_per_impact`, `color`, `strength`, `unblocks`, `interrupt`, `exits`). Atmospheric details, lighting, and narrative outcomes remain concise text and freeform tags to minimize LLM hallucination and human audit overhead.
 6. **Decoupled Tool Affinities (Tag-Driven Interaction):** Location cards should never hardcode specific item bypasses (e.g. _"If you have a crowbar: bypass"_). Instead, obstacles declare physical tags (`[Barricade]`, `[Timber]`, `[Leverage]`, `[Teamwork]`), and tools modify levers (Strength bonus, dynamic time reduction, impact absorption, or unlocking colors) through matching keywords. This keeps location schemas lean and decouples environment design from party inventory.
 
@@ -82,21 +82,21 @@ actions:
 > [!TIP]
 > **Reference Implementation:** See [`data/modules/crag_gallows/locations.yaml`](../../data/modules/crag_gallows/locations.yaml) for working Location card examples (such as _The Barricaded Portal_).
 
-### 2.2 Tag-Driven Tool & Teamwork Interactions
+### 2.2 Tag-Driven Tool, `Defense` Domain & Teamwork Interactions
 
 To maintain a lean schema, Location cards never hardcode inventory-specific rules. Instead, obstacles declare physical tags, and character inventory/gear interacts with those tags through defined keywords:
 
 - **Strength Modifiers (Mechanical Advantage):** Tools with matching tags grant bonus Strength (e.g., _Prying Crowbar: +4 Red vs `[Leverage]`_). This directly reduces the number of cards flipped, lowering both [[Impact]] and dynamic time.
 - **Dynamic Time Scaling:** Specialized tools can cut base labor time or per-impact scaling (e.g., _Two-Man Crosscut Saw: Halves base time on `[Timber, Teamwork]`_).
-- **Consequence Filtering:** Protective gear can absorb impact or filter out specific minor trauma (e.g., _Heavy Work Gloves: Absorb 1 Impact from `[Splinter, PinchWound, Blister]` consequences_).
+- **`Defense` Domains & Consequence Filtering:** Every character has an innate baseline of `Defense 1, Resilience 1` across all domains, while equipment and trait `Defense` ratings apply **only to their specified domain tags**. Combat armor grants `Defense` against external physical trauma (`[BluntForce]`, `[Slash]`, `[Puncture]`, `[Crush]`), never internal exertion (`[Fatigue]`, `[Exhaustion]`, `[MuscleStrain]`). Conversely, survival gear and conditioning traits grant `Defense` against matching labor or travel domains (e.g., _Heavy Work Gloves: `Defense 2` vs `[Splinter, PinchWound, Blister]`_; _Seasoned Traveler: `Defense 3` vs `[Travel, Exertion]`_).
 - **Approach Enablers:** Specialized kits unlock alternative Color approaches that would otherwise be impossible (e.g., _Lockpicks: Unlocks Yellow finesse actions on `[MechanicalLock]`_).
-- **Collective Party Labor (`[Teamwork]`):** When a labor action has the `[Teamwork]` tag, multiple characters may contribute cards to meet the [[Strength]]. Each helper flips cards toward the total, and each worker only resolves [[Impact]] against their own [[Defense]] for the cards they personally flipped. Dynamic time is calculated using the highest individual Impact (or total flips divided by number of workers), representing shared labor efficiency.
+- **Collective Party Labor (`[Teamwork]`):** When a labor action has the `[Teamwork]` tag, multiple characters may contribute cards to meet the [[Strength]]. Each helper flips cards toward the total, and each worker only resolves [[Impact]] against their own domain-applicable [[Defense]] for the cards they personally flipped. Dynamic time is calculated using the highest individual Impact (or total flips divided by number of workers), representing shared labor efficiency.
 
 ---
 
 ## 3. Travel Card Schema (Overland Routes & Wilderness Legs)
 
-A **Travel Card** represents an overland trail segment, mountain pass, or wilderness leg between landmarks.
+A **Travel Card** represents an overland trail segment, mountain pass, or wilderness leg between landmarks. Because walking and climbing across terrain expends physical stamina regardless of a character's mental [[Vigilance]], **every active foot-travel pace must include a colored `Strength` check**.
 
 ### 3.1 YAML Specification
 
@@ -120,27 +120,31 @@ narrative: >
 
 # Travel Paces & Stance Options (Advance party to route.to upon completion)
 paces:
-  # Measured / Standard Pace
+  # Measured / Standard Pace (Always includes a baseline Red endurance check)
   - name: "Measured March"
     time: "1 hour"
-    tags: ["StandardPace"]
-    narrative: "Keep a steady, cautious footing along the trail. Party pays for [[Vigilance]] normally."
+    color: "Red"
+    strength: 10
+    consequences: ["Fatigue"]
+    tags: ["StandardPace", "Travel", "Exertion"]
+    narrative: "Keep a steady, measured footing along the trail. Flip to meet hiking exertion, plus pay hourly [[Vigilance]]."
 
-  # Rushed Pace (Red or Yellow Challenge to save time)
+  # Rushed Pace (Higher Red or Yellow Challenge to save time, risking acute strain)
   - name: "Forced March / Fast Scramble"
     time: "25 min"
     color: "Red"
-    strength: 15
+    strength: 16
     consequences: ["Exhaustion", "MuscleStrain"]
-    tags: ["Rushed", "Exhausting"]
+    tags: ["Rushed", "Exhausting", "Travel", "Exertion"]
     narrative: "Power through at a dead run or heavy march to cut travel time in half."
 
-  # Scouted / Cautious Pace (Blue Challenge to secure route)
+  # Scouted / Cautious Pace (Blue Challenge to secure route and avoid hazards)
   - name: "Route Scouting"
     time: "75 min"
     color: "Blue"
     strength: 14
-    tags: ["Safe", "TimeConsuming"]
+    consequences: ["Fatigue"]
+    tags: ["Safe", "TimeConsuming", "Travel", "Exertion"]
     narrative: "Scout solid ground and sightlines to bypass natural hazards and avoid predator ambushes."
 
 # Optional Field Expedients (Local trailside tasks; does not advance route)
