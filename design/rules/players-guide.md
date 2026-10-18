@@ -108,11 +108,12 @@ _(Note: If your table plays with the [Selective Commitment Module](modules/selec
 
 #### Playing Printed Action Stacks
 
-If your hand contains a relevant Action Card, you can play it as an [[Action Stack]] (paying its printed Resource Cost with other cards from hand).
+If your hand contains a relevant Action Card, you can play it as an [[Action Stack]] (with additional cards from hand equal to its printed [[Cost]]).
 
 - **Action Stacks Do Not Count for Impact:** Just as declaring an attack in combat does not inflict self-harm, cards in your Action Stack do not go into the flipped stack. Instead, the action alters the terms of the challenge: providing bonus [[Strength]], establishing an active [[Defense]], enabling cross-color spending, or granting specific protections.
 - **Example: Jumping the Chasm with Athletics:**
   The Swashbuckler faces a dangerous 10-meter leap (`Strength 18 Yellow`). Rather than risking a blind leap, they spend a minute of preparation to **Ready** `Athletics` (Cost 1, `Yellow 4`, text: _+2 Strength, Defense 2 on physical maneuvers_), searching their deck to place it face up as their readied card in their Vigilance pool.
-  When they make the jump, they choose a Committed Attempt and declare `Athletics`, paying 1 card from hand for its printed Cost. `Athletics` establishes `Defense 2` and contributes $4 + 2 = 6$ Yellow Strength.
-  To meet the remaining 12 Strength, they add one high-Yellow card (`Yellow 6`) from hand to the flipped stack in place of a flip, and flip one card from the deck (`Yellow 6`).
+  When they make the jump, they choose a Committed Attempt and declare `Athletics`, playing it into an [[Action Stack]] with 1 additional card from hand (e.g. `Yellow 3`) to meet its printed Cost of 1.
+  The Action Stack establishes `Defense 2` and contributes $4\text{ (Athletics)} + 3\text{ (supporting card)} + 2\text{ (modifier)} = 9$ Yellow Strength!
+  To meet the remaining 9 Strength, they add one high-Yellow card (`Yellow 5`) from hand to the flipped stack in place of a flip, and flip one card from the deck (`Yellow 4`). Total Strength is $9 + 5 + 4 = 18$.
   The flipped stack contains exactly 2 cards (`Impact = 2`). With `Defense 2`, they suffer $2 / 2 = 1$ minor scrape instead of risking 5 or 6 blind flips. When the jump is complete, their hand flushes, and they deal a new Vigilance pool face down.

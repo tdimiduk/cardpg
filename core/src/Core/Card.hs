@@ -74,7 +74,7 @@ data CoreCard = CoreCard
   , tags :: Maybe (NonEmpty Text)
   , stats :: Stats Int
   , cost :: Maybe Int
-  -- ^ Play Cost (Cards to discard to initiate stack).
+  -- ^ Play Cost (Additional cards required from hand to form an Action Stack; total stack is Cost + 1).
   --   | Nothing = Status/Resource (cannot be played).
   , attack :: Maybe AttackDef
   , rules :: Maybe (NonEmpty Rule)

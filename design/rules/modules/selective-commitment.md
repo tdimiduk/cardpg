@@ -71,10 +71,10 @@ Selective Commitment is often the first module a group adopts. It is ideal for:
 A Swashbuckler with a [[Vigilance]] pool of 4 (1 face-up readied card—hypothetically `Athletics`: Cost 1, `Yellow 4`, text: _+2 Strength, Defense 2 on physical maneuvers_—and 3 face-down cards) faces a Challenging chasm leap (**[[Yellow]] 18 [[Strength]]**).
 
 1. **Selective Commitment:** The Swashbuckler commits **2 cards**: the readied `Athletics` card and 1 face-down card. The other 2 cards remain undisturbed on the table.
-2. **Action Stack:** They play `Athletics`, paying the face-down card for its Cost of 1. `Athletics` contributes $4 + 2 = 6$ [[Yellow]] [[Strength]] and establishes active [[Defense]] 2.
-3. **Flips:** To meet the remaining 12 [[Strength]], the player flips 3 cards from the deck (`Yellow 5`, `Yellow 4`, `Yellow 4`). Total [[Strength]] is $6 + 5 + 4 + 4 = 19$ (meeting 18).
-4. **Resolution:** The flipped stack contains 3 cards ([[Impact]] 3). With [[Defense]] 2, the player takes 1 completed stack ($3 / 2 = 1$) as a minor [[Severity 1]] scrape; the 1 leftover card is discarded without harm.
-5. **Flush and Refill:** Both committed cards were used in the stack (no cards to flush). The Swashbuckler deals 2 cards face down from the deck, restoring their [[Vigilance]] pool to 4 while having cycled 2 fewer cards through their deck.
+2. **Action Stack:** They lift and inspect the face-down card (revealing `Yellow 3`) and play `Athletics` into an [[Action Stack]] with that card to meet its Cost of 1. The Action Stack establishes active [[Defense]] 2 and contributes $4\text{ (Athletics)} + 3\text{ (supporting card)} + 2\text{ (modifier)} = 9$ [[Yellow]] [[Strength]].
+3. **Flips:** To meet the remaining 9 [[Strength]], the player flips 2 cards from the deck (`Yellow 5`, `Yellow 4`). Total [[Strength]] is $9 + 5 + 4 = 18$.
+4. **Resolution:** The flipped stack contains 2 cards ([[Impact]] 2). With [[Defense]] 2, the player takes 1 completed group ($2 / 2 = 1$) as a minor [[Severity 1]] scrape.
+5. **Flush and Refill:** Both committed cards were used in the Action Stack (no unplayed committed cards to flush). The Swashbuckler deals 2 cards face down from the deck, restoring their [[Vigilance]] pool to 4 while having cycled 2 fewer cards through their deck.
 
 ### Example 2: A Measured Blind Gamble (Picking a Lock)
 

@@ -12,25 +12,21 @@ Cards use specific keywords to tell you **when** and **how** they can be used.
 
 ### 1. Crisis Actions (`Attack`, `Defend`, `Action`)
 
-These are used during [[Crisis Time]] (combat or tense situations). They happen instantly or within seconds.
+These are used during [[Crisis Time]] (combat or tense situations). When played from hand, they are played as an [[Action Stack]] with additional cards from hand equal to their printed [[Cost]].
 
 - **`Attack {Color}: Strength = {Color} (+/- Mod)`**
   - _Example:_ `Attack {Red}: Strength = {Red} + 2`
-  - **Usage:** Play this card during your turn to attack.
-  - **Cost:** You must pay the card's printed Resource Cost (top right).
-  - **Effect:** Generates Strength equal to the formula to overcome an enemy's Defense.
+  - **Usage:** Play this card during the Plan Step to declare an attack.
+  - **Effect:** Generates [[Strength]] equal to the sum of that [[Color]] across all cards in the [[Action Stack]] plus the printed modifier.
 
-- **`Defend {Color}: Strength = {Color} (+/- Mod)`**
+- **`Defend: ...`**
   - _Example:_ `Defend {Red}: Strength = {Red} + 1`
-  - **Usage:** Play this card in response to an attack.
-  - **Cost:** You must pay the card's printed Resource Cost.
-  - **Effect:** Generates Strength equal to the formula to block incoming damage. You count it's color value towards meeting the attack's strength, but do not count the card towards the impact of the defense.
-  - **Effect:** Rules text that may further modify the defense.
+  - **Usage:** Play this card from hand in response to an incoming attack.
+  - **Effect:** Modifies your defense as described by its rules text (for example, `Strength = {Color} + Mod` generates defensive [[Strength]] equal to the sum of that [[Color]] across the [[Action Stack]] plus the modifier).
 
-- **`Action: [Name] (Spend {Color} X) -> [Effect]`**
-  - **Usage:** Play this card during your turn to perform a special maneuver.
-  - **Cost:** You must discard cards from your hand until their total value in the specified `{Color}` equals or exceeds `X`.
-  - **Effect:** Happens automatically once the cost is paid.
+- **`Action: [Name] ... -> [Effect]`**
+  - **Usage:** Declare this action during the Plan Step to perform a special maneuver or address a condition.
+  - **Resolution:** If the action specifies a colored requirement (e.g. `Spend {Red} 10`), meet that [[Strength]] through your declared action or [[Action Stack]].
   - _Example:_ `Action: Push Through (Spend {Red} 10) -> Remove this card.`
 
 ### 2. Narrative Tasks (`Task`)

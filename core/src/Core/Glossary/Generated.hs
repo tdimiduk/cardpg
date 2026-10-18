@@ -111,12 +111,16 @@ glossaryEntries =
     , theme = Nothing
     , summary =
         RichText
-          ( TextRun Nothing (unsafeNonEmptyText "The total number of cards flipped from the deck during a defense or general action. ")
+          ( TextRun Nothing (unsafeNonEmptyText "The number of cards in your ")
           NE.:|
-            [ Wikilink (unsafeNonEmptyText "Impact") Nothing
+            [ TextRun (Just Bold) (unsafeNonEmptyText "flipped stack")
+            , TextRun Nothing (unsafeNonEmptyText " when facing a challenge. ")
+            , Wikilink (unsafeNonEmptyText "Impact") Nothing
             , TextRun Nothing (unsafeNonEmptyText " is divided by ")
             , Wikilink (unsafeNonEmptyText "Defense") Nothing
-            , TextRun Nothing (unsafeNonEmptyText " to determine the number of consequences suffered.")
+            , TextRun Nothing (unsafeNonEmptyText " to determine the number of ")
+            , Wikilink (unsafeNonEmptyText "Consequences") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " suffered.")
             ]
           )
     }
@@ -298,7 +302,36 @@ glossaryEntries =
     , category = "Pacing & Play Modes"
     , theme = Nothing
     , summary =
-        RichText (TextRun Nothing (unsafeNonEmptyText "An Action card played from hand combined with additional cards committed to pay its resource cost.") NE.:| [])
+        RichText
+          ( TextRun Nothing (unsafeNonEmptyText "An Action card played from hand along with additional cards from hand equal to its printed ")
+          NE.:|
+            [ Wikilink (unsafeNonEmptyText "Cost") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " (total stack size of ")
+            , Wikilink (unsafeNonEmptyText "Cost") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " + 1). Many actions sum the ")
+            , Wikilink (unsafeNonEmptyText "Color") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " values of cards in the stack (usually to set a ")
+            , Wikilink (unsafeNonEmptyText "Strength") Nothing
+            , TextRun Nothing (unsafeNonEmptyText ").")
+            ]
+          )
+    }
+  ,   GlossaryEntry
+    { canonical = "Cost"
+    , aliases = ["Costs", "Resource Cost", "Resource Costs"]
+    , slug = "cost"
+    , category = "Pacing & Play Modes"
+    , theme = Nothing
+    , summary =
+        RichText
+          ( TextRun Nothing (unsafeNonEmptyText "The printed number of additional cards from hand required to play a card as an ")
+          NE.:|
+            [ Wikilink (unsafeNonEmptyText "Action Stack") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " (the top card plus ")
+            , Wikilink (unsafeNonEmptyText "Cost") Nothing
+            , TextRun Nothing (unsafeNonEmptyText " supporting cards).")
+            ]
+          )
     }
   ,   GlossaryEntry
     { canonical = "General Action"

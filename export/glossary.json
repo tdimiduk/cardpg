@@ -6,7 +6,7 @@
     ],
     "slug": "action-stack",
     "category": "Pacing & Play Modes",
-    "summary": "An Action card played from hand combined with additional cards committed to pay its resource cost.",
+    "summary": "An Action card played from hand along with additional cards from hand equal to its printed [[Cost]] (total stack size of [[Cost]] + 1). Many actions sum the [[Color]] values of cards in the stack (usually to set a [[Strength]]).",
     "theme": null
   },
   "adventuring-time": {
@@ -61,6 +61,18 @@
     "slug": "consequence",
     "category": "Action Resolution",
     "summary": "Cards suffered from physical trauma, strain, or environmental friction when [[Impact]] meets or exceeds [[Defense]]. Suffix/plural uses [[Consequences]].",
+    "theme": null
+  },
+  "cost": {
+    "canonical": "Cost",
+    "aliases": [
+      "Costs",
+      "Resource Cost",
+      "Resource Costs"
+    ],
+    "slug": "cost",
+    "category": "Pacing & Play Modes",
+    "summary": "The printed number of additional cards from hand required to play a card as an [[Action Stack]] (the top card plus [[Cost]] supporting cards).",
     "theme": null
   },
   "crisis-time": {
@@ -123,7 +135,7 @@
     "aliases": [],
     "slug": "impact",
     "category": "Action Resolution",
-    "summary": "The total number of cards flipped from the deck during a defense or general action. [[Impact]] is divided by [[Defense]] to determine the number of consequences suffered.",
+    "summary": "The number of cards in your **flipped stack** when facing a challenge. [[Impact]] is divided by [[Defense]] to determine the number of [[Consequences]] suffered.",
     "theme": null
   },
   "passive": {
@@ -134,12 +146,15 @@
     "summary": "A card property that is continuously active while the card is in play or held in hand.",
     "theme": null
   },
-  "ready-hand": {
-    "canonical": "Ready Hand",
-    "aliases": [],
-    "slug": "ready-hand",
+  "readied-card": {
+    "canonical": "Readied Card",
+    "aliases": [
+      "Readied Cards",
+      "Ready a Card"
+    ],
+    "slug": "readied-card",
     "category": "Pacing & Play Modes",
-    "summary": "A pool of 0 to 4 cards maintained on the table during [[Adventuring Time]] representing immediate vigilance and readiness.",
+    "summary": "Up to 1 card in your [[Vigilance]] pool kept face up, prepared by searching your deck outside of crisis.",
     "theme": null
   },
   "red": {
@@ -186,6 +201,16 @@
     "slug": "strength",
     "category": "Action Resolution",
     "summary": "How strong or powerful an action or hazard is. Set by a character's action card, a challenge card, or GM adjudication. The character carrying out a general action or defending against an attack must meet the strength of the challenge in their action resolution.",
+    "theme": null
+  },
+  "vigilance": {
+    "canonical": "Vigilance",
+    "aliases": [
+      "Vigilance Pool"
+    ],
+    "slug": "vigilance",
+    "category": "Pacing & Play Modes",
+    "summary": "A pool of 0 to 4 cards maintained on the table during [[Adventuring Time]] representing immediate alertness and physical readiness.",
     "theme": null
   },
   "yellow": {

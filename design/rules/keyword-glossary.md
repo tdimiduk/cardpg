@@ -30,7 +30,7 @@ How strong or powerful an action or hazard is. Set by a character's action card,
 
 ### Impact
 
-The total number of cards flipped from the deck during a defense or general action. [[Impact]] is divided by [[Defense]] to determine the number of consequences suffered.
+The number of cards in your **flipped stack** when facing a challenge. [[Impact]] is divided by [[Defense]] to determine the number of [[Consequences]] suffered.
 
 ### Defense
 
@@ -94,7 +94,13 @@ Up to 1 card in your [[Vigilance]] pool kept face up, prepared by searching your
 
 _Aliases: Action Stacks_
 
-An Action card played from hand combined with additional cards committed to pay its resource cost.
+An Action card played from hand along with additional cards from hand equal to its printed [[Cost]] (total stack size of [[Cost]] + 1). Many actions sum the [[Color]] values of cards in the stack (usually to set a [[Strength]]).
+
+### Cost
+
+_Aliases: Costs, Resource Cost, Resource Costs_
+
+The printed number of additional cards from hand required to play a card as an [[Action Stack]] (the top card plus [[Cost]] supporting cards).
 
 ### General Action
 

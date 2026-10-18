@@ -17,7 +17,7 @@ _(See [Colors of Action](colors-of-action.md) for how skills and activities map 
 ### Anatomy of a Card
 
 - **Color Strengths (Upper Left):** Values for Red, Yellow, and Blue.
-- **Resource Cost (Upper Right):** Additional cards required from hand to play this card as an Action Stack.
+- **Resource Cost (Upper Right):** The printed [[Cost]]—how many additional cards from hand are required to play this card as an [[Action Stack]].
 - **Rules Text:** Action type, modifiers, or trigger keywords (such as [[Attack]], [[Defend]], [[Stance]], or [[Passive]]).
 
 ---
@@ -32,10 +32,10 @@ Whenever you face a challenge—whether it is an enemy attack, a crumbling ruin,
 
 Whatever the challenge, facing it follows the same four steps:
 
-1. **Meet the Strength:** The threat or task presents a target [[Strength]] in a specific [[Color]]. You meet or exceed that Strength by adding together card values in that Color (playing prepared cards from hand or flipping cards from your deck).
-2. **Impact:** Your [[Impact]] is the number of cards in your **flipped stack**. Prepared cards played from hand (such as Defend cards or Action Stacks) do not add to your Impact.
+1. **Meet the Strength:** The threat or task presents a target [[Strength]] in a specific [[Color]]. You meet or exceed that Strength by adding together card values in that Color—playing an [[Action Stack]] from hand and/or flipping cards from your deck into a **flipped stack**.
+2. **Impact:** Your [[Impact]] is the number of cards in your **flipped stack**.
 3. **Suffer Consequences:** If you flip cards from your deck, check your active gear or traits for your **domain-applicable [[Defense]]** and [[Resilience]] ratings (every character has an innate baseline of **1** in both across all domains; armor `Defense` applies only against external physical trauma, whereas internal exertion or environmental strain uses innate `Defense 1` unless mitigated by matching survival gear or conditioning traits):
-   - Group your flipped cards into stacks equal to your applicable [[Defense]]. You suffer **1 Consequence** for each completed stack. (Leftover cards that do not complete a stack cause no harm and are discarded).
+   - Group your flipped cards into groups equal to your applicable [[Defense]]. You suffer **1 Consequence** for each completed group. (Leftover cards that do not complete a group cause no harm and are discarded).
    - Arrange your Consequence cards on the table in rows of width equal to your [[Resilience]]. The first row holds [[Severity 1]] consequences (minor friction). Filling that row escalates new consequences to [[Severity 2]] (serious injury/vulnerability). Filling the second row pushes you to [[Severity 3]] (incapacitated).
 4. **The Fatigue Cycle:** When you must draw or flip a card and your deck is empty—or voluntarily outside a resolution—perform a Fatigue Cycle: add 2 [[Fatigue]] cards (plus your [[Burden]] from heavy gear) to your expended pile, reshuffle it into a new deck, and draw or flip the required card.
 
@@ -48,7 +48,7 @@ Crisis Time resolves combat, chases, and tense, second-by-second struggles. Play
 ### Round Structure
 
 1. **Plan Step:** Each player draws 2 cards from their deck. Secretly choose your play for the round:
-   - **Play an Action:** Commit an Action card from hand (such as an Attack or Stance) along with any cards required to pay its resource cost.
+   - **Play an Action:** Commit an Action card from hand (such as an Attack or Stance) along with additional cards from hand equal to its printed [[Cost]] to form an [[Action Stack]].
    - **Pass:** Take no action this round to conserve cards.
    - _Movement:_ Narrative positioning and maneuvering are integral parts of your declared action intent.
 2. **Resolve Step:** All participants reveal their actions simultaneously:
@@ -59,7 +59,7 @@ Crisis Time resolves combat, chases, and tense, second-by-second struggles. Play
 
 ### Attack Actions
 
-To attack, play an Attack card from your hand into an [[Action Stack]] with additional cards from your hand equal to its printed Resource Cost. The colored icon on the Attack card indicates the attack's [[Color]]. The attack's [[Strength]] equals the sum of that Color on all cards in the stack, plus the top card's printed modifier. The target must then face the attack (see [Facing a Challenge](#2-facing-a-challenge)).
+To attack, play an Attack card from your hand into an [[Action Stack]] with additional cards from your hand equal to its printed [[Cost]]. The colored icon on the Attack card indicates the attack's [[Color]]. The attack's [[Strength]] equals the sum of that Color on all cards in the stack, plus the top card's printed modifier. The target must then face the attack (see [Facing a Challenge](#2-facing-a-challenge)).
 
 _(To improvise maneuvers without a printed Action card, see the [Narrative Actions Module](modules/narrative-actions.md))._
 
@@ -67,7 +67,7 @@ _(To improvise maneuvers without a printed Action card, see the [Narrative Actio
 
 When targeted by an attack, you face the strike by meeting its Strength in the declared Color (see [Facing a Challenge](#2-facing-a-challenge)):
 
-1. **Defend from Hand (Optional):** You may play a Defend card from your hand, paying any printed Resource Cost from hand. It will add [[Strength]] to your defense or otherwise modify the resolution. Cards played from hand do not add to your Impact.
+1. **Defend from Hand (Optional):** You may play a Defend card from your hand as an [[Action Stack]] (along with additional cards from hand equal to its printed [[Cost]]). The card's rules text defines how the stack modifies the defense or adds [[Strength]].
 2. **Flip from Deck:** If Strength is not yet met, flip cards from your deck one by one into a **flipped stack** until the total meets or exceeds the attack's Strength.
 3. **Suffer Consequences:** Count the cards in your flipped stack (your Impact) and resolve consequences against your Defense and Resilience as normal.
 
@@ -101,7 +101,7 @@ Tasks with meaningful stakes outside combat (climbing a cliff, picking a lock, c
 
 The GM or challenge sets the [[Color]] and [[Strength]]:
 
-1. **Commit Vigilance (Optional):** You may resolve the task using deck flips alone, or pick up your Vigilance pool. If picked up, you may play an Action card from hand as an Action Stack (card + Cost) to modify the check (e.g. bonus Strength or Defense). Cards in the Action Stack do not count toward your flipped stack.
+1. **Commit Vigilance (Optional):** You may resolve the task using deck flips alone, or pick up your Vigilance pool. If picked up, you may play an Action card from hand as an [[Action Stack]] (top card plus [[Cost]] additional cards) to modify the check (e.g. bonus Strength or Defense).
 2. **Meet Strength:** Flip cards from your deck into a flipped stack until the Strength is met. If you committed your Vigilance pool, instead of a flip you may add a card from your hand to the flipped stack.
 3. **Suffer Consequences:** Count your flipped stack (your Impact) and resolve consequences against your Defense and Resilience.
 4. **Flush:** If you picked up your Vigilance pool, discard remaining hand cards and flush back to your chosen Vigilance level.
