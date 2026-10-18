@@ -37,10 +37,17 @@ Read the target `scratch/distill/distill-<topic>.md` file (if specified). If no 
 
 Do **not** immediately write code, edit design docs, or propose answers to `## 3. Open Questions` on Turn 1 unless the user's prompt explicitly commanded you to execute a specific action item.
 
-### 4. Report Readiness
+### 4. Report Readiness & Evaluate Candidate Guidelines
 
 Output a brief (3–5 bullet) confirmation:
 
-- State the loaded distillation file and active **[Constraint]** / **[Decision]** items in working memory.
+- State the loaded distillation file and active **[Constraint]** / **[Decision]** items in working memory (do **not** load **[Candidate Guideline]** items as active constraints).
 - If run in **`check` mode**, report whether the anchored files match the distillation or flag any drift noticed on disk.
-- Ask the user which **Open Question** or **Next Session Action** to tackle first.
+- Ask the user which **Open Question**, **Candidate Guideline**, or **Next Session Action** to tackle first.
+
+**Evaluating `[Candidate Guideline]` Items (Fresh-Context Gate):**
+
+- Whenever the user selects a `**[Candidate Guideline]**` to evaluate—or immediately on Turn 1 if `**[Candidate Guideline]**` items are the **only** items remaining in the distillation—use `ask_question` to interview the user on how to resolve it:
+  1. **Drop as one-off:** Needs no rule (already prevented by types/tests or unlikely to recur).
+  2. **Localize (preferred when needed):** Add a brief Haddock or code comment directly on the relevant symbol/function rather than growing global agent rules.
+  3. **Document in domain guide / standards:** Agree on narrow, non-dogmatic wording and explicit scope boundaries before editing `design/authoring/` or [`.agent/standards/standards.md`](file:///.agent/standards/standards.md).
