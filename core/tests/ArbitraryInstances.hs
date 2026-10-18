@@ -34,7 +34,9 @@ import Core.RichText
   , RichText (..)
   , getInlines
   , mkRichText
+  , unsafeSimpleString
   )
+import Core.Rules.Task (recognizedRequirementKeywords)
 import Core.State
 import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), StatValue (..))
 import Core.Time (Duration (..), TimeUnit (..))
@@ -167,13 +169,41 @@ instance Arbitrary TriggerDef where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary Requirement where
+  arbitrary =
+    oneof
+      [ RequiredKeyword <$> elements recognizedRequirementKeywords
+      , RequiredCustom <$> genCustomReq
+      ]
+    where
+      genCustomReq = do
+        let validChar = elements ['a' .. 'z']
+        s <-
+          listOf1 validChar
+            `suchThat` (\w -> T.toLower (T.pack w) `notElem` map T.toLower recognizedRequirementKeywords)
+        pure $ unsafeSimpleString (T.pack s)
+  shrink (RequiredCustom rt) =
+    [ RequiredCustom (unsafeSimpleString (T.pack s))
+    | s <- shrink (T.unpack (toText rt))
+    , not (null s)
+    , T.toLower (T.pack s) `notElem` map T.toLower recognizedRequirementKeywords
+    ]
+  shrink _ = []
+
 instance Arbitrary TaskDef where
   arbitrary = do
     name <- arbitrary
     check <- arbitrary
     time <- arbitrary
-    cost <- arbitrary
-    TaskDef name check time cost <$> arbitrary
+    cost <-
+      oneof
+        [ pure Nothing
+        , do
+            t <- T.pack <$> listOf1 (elements ['a' .. 'z'])
+            pure $ Just (unsafeSimpleString t)
+        ]
+    requirements <- arbitrary
+    TaskDef name check time cost requirements <$> arbitrary
   shrink = genericShrink
 
 instance Arbitrary Rule where

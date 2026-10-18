@@ -272,9 +272,9 @@ rules:
 Defined in [`Core.Rules.Task`](file:///home/tdimiduk/cardpg/cardpg/core/src/Core/Rules/Task.hs). Non-crisis tasks performed during [[Adventuring Time]] or downtime.
 
 > [!IMPORTANT]
-> **Strict Task Clause Delimiters:** In `Task:`, multiple clauses (`Check`, `Time`, `Cost`) **must be enclosed in parentheses and separated by semicolons (`;`)**. Do not use commas or plain spaces to separate task clauses.
+> **Strict Task Clause Delimiters:** In `Task:`, clauses (`Check`, `Time`, `Cost`, `Requires`) **must be enclosed in parentheses and separated by semicolons (`;`)**. Multiple preconditions inside `Requires` are separated by commas (`,`). Do not place narrative text inside `Time`.
 
-$$\text{Format: } \text{Task: [Name] (}\left[\text{Check }\{\text{Color}\}\ X\text{;}\right]\ \left[\text{Time }<\text{Duration}>\text{;}\right]\ \left[\text{Cost }<\text{Text}>\right]\text{) } \to\ \text{Effect}$$
+$$\text{Format: } \text{Task: [Name] (}\left[\text{Check }\{\text{Color}\}\ X\text{;}\right]\ \left[\text{Time }<\text{Duration}>\text{;}\right]\ \left[\text{Cost }<\text{Text}>\text{;}\right]\ \left[\text{Requires }<\text{Requirements}>\right]\text{) } \to\ \text{Effect}$$
 
 ```yaml
 rules:
@@ -284,20 +284,33 @@ rules:
   # Skill check with duration
   - "Task: First Aid (Check {Blue} 6; Time 15 min) → Remove this card."
 
-  # Treatment requiring clinical materials and skill check
-  - "Task: Rigid Splinting (Check {Blue} 8; Cost Splint + Bandages; Time 30 min) → Treat this"
+  # Rest task requiring safe settlement
+  - "Task: Rest Day (Time 24 hours; Requires Haven) → Remove this"
 
-  # Resource replenishment task
-  - "Task: Rehydrate (Cost 1 Water Portion; Time 1 Hour) → Remove this"
+  # Clinical care requiring tools and supplies
+  - "Task: Rigid Splinting (Check {Blue} 8; Time 30 min; Cost Splint + Bandages) → Remove this"
+
+  # Environmental rewarming combining canonical tags and narrative escape hatch
+  - "Task: Active Rewarming (Time 4 hours; Requires Shelter, Campfire, hot broth and blankets) → Remove this"
 ```
 
 #### Canonical Duration Formatting:
 
-The `Time` clause is parsed into canonical `Duration` units ([`Core.Time`](file:///home/tdimiduk/cardpg/cardpg/core/src/Core/Time.hs)):
+The `Time` clause is parsed strictly into canonical `Duration` units ([`Core.Time`](file:///home/tdimiduk/cardpg/cardpg/core/src/Core/Time.hs)):
 
 - **Minutes:** `5 min`, `15 min`, `30 min`, `45 min`
-- **Hours:** `1 hour`, `4 hours`, `8 hours`
-- **Days / Weeks:** `1 day`, `2 days`, `3 weeks`
+- **Hours:** `1 hour`, `4 hours`, `8 hours`, `24 hours`
+- **Days:** `1 day`, `2 days`, `14 days`
+
+> [!NOTE]
+> The engine supports `Minute`, `Hour`, and `Day`. Multi-week durations are written in days (e.g., `14 days`).
+
+#### Environmental & Precondition Requirements (`Requires`):
+
+The `Requires` clause accepts a comma-separated list of preconditions ([`Core.Rules.Task`](file:///home/tdimiduk/cardpg/cardpg/core/src/Core/Rules/Task.hs)):
+
+- **Canonical Engine Tags:** `Haven`, `Campfire`, `Shelter`, `Unburdened` (parsed as machine-readable `RequiredKeyword`).
+- **Narrative Escape Hatch:** Any condition not matching an engine tag (e.g., `hot broth and blankets`, `dry clothes`, `complete bed rest`) parses into `RequiredCustom RichText` without parser friction.
 
 ---
 
@@ -312,8 +325,8 @@ rules:
   # Removal fallout
   - "When removed → Add 1 Wound to your expended pile"
 
-  # Condition treatment lifecycle
-  - "When treated → Suppress passive penalty. Clears naturally after 3 Days."
+  # Exertion / trauma fallout
+  - "When removed → Add 2 Fatigue to your expended pile"
 
   # Round-end check
   - "When round ends with enemy engaged → Suffer 1 Fatigue"

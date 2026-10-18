@@ -16,8 +16,15 @@ import Core.Card (ConsequenceCard (..))
 import Core.Rules (Rule (..))
 
 test_consequenceParsing :: TestTree
-test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
-  let basePath = "data/cards/consequences/baseline.yaml"
+test_consequenceParsing =
+  testGroup
+    "Consequence Card Parsing & Roundtrip"
+    [ testConsequenceFile "data/cards/consequences/baseline.yaml"
+    , testConsequenceFile "data/cards/consequences/exploration.yaml"
+    ]
+
+testConsequenceFile :: FilePath -> TestTree
+testConsequenceFile basePath = testCase basePath $ do
   exists <- doesFileExist basePath
   let path = if exists then basePath else "../" ++ basePath
   result <- decodeFileEither path :: IO (Either ParseException [ConsequenceCard])
@@ -42,7 +49,7 @@ test_consequenceParsing = testCase "Consequence Card Parsing & Roundtrip" $ do
       original <- BS.readFile path
 
       when (encoded /= original) $ do
-        let reformattedPath = "../data/cards/consequences/baseline.yaml.reformatted"
+        let reformattedPath = path ++ ".reformatted"
         BS.writeFile reformattedPath encoded
         assertFailure $
           "YAML output mismatch. Reformatted content written to "

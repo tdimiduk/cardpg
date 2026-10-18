@@ -30,6 +30,7 @@ fatigueCard =
                 , check = Nothing
                 , time = Just (Duration 2 Hour)
                 , cost = Nothing
+                , requirements = []
                 , effect = unsafeSimpleString "Remove this card."
                 }
             )
@@ -39,6 +40,7 @@ fatigueCard =
                        , check = Nothing
                        , time = Just (Duration 4 Hour)
                        , cost = Nothing
+                       , requirements = []
                        , effect = unsafeSimpleString "Remove this card."
                        }
                    )

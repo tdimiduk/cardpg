@@ -33,7 +33,7 @@ import Core.Card
 import Core.DSL (parseText, toText)
 import Core.NonEmptyText (getRawText, unsafeNonEmptyText)
 import Core.RichText (unsafeSimpleString)
-import Core.Rules (AttackDef (..), Rule (..), TaskDef (..))
+import Core.Rules (AttackDef (..), Requirement (..), Rule (..), TaskDef (..))
 import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), Stats (..))
 import Core.Time (Duration (..), TimeUnit (..))
 
@@ -410,5 +410,31 @@ attackAndTaskDslTests =
                 task.time @?= Just expectedDur
                 toText (RuleTask task) @?= expectedCanonical
               Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      , testCase "Parses task rule with canonical requirement keyword" $ do
+          case parseText "Task: Rest Day (Time 24 hours; Requires Haven) → Remove this" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (RuleTask task) -> do
+              task.time @?= Just (Duration 24 Hour)
+              task.requirements @?= [RequiredKeyword "Haven"]
+              toText (RuleTask task) @?= "Task: Rest Day (Time 24 hours; Requires Haven) → Remove this"
+            Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      , testCase "Parses task rule with multiple requirements including keywords and custom narrative" $ do
+          case parseText
+            "Task: Active Rewarming (Time 4 hours; Requires Shelter, Campfire, hot broth and blankets) → Remove this" of
+            Left err -> assertFailure $ "Failed parsing: " ++ err
+            Right (RuleTask task) -> do
+              task.time @?= Just (Duration 4 Hour)
+              task.requirements
+                @?= [ RequiredKeyword "Shelter"
+                    , RequiredKeyword "Campfire"
+                    , RequiredCustom (unsafeSimpleString "hot broth and blankets")
+                    ]
+              toText (RuleTask task)
+                @?= "Task: Active Rewarming (Time 4 hours; Requires Shelter, Campfire, hot broth and blankets) → Remove this"
+            Right other -> assertFailure $ "Expected RuleTask, got: " ++ show other
+      , testCase "Fails to parse task rule with narrative in duration instead of silently dropping clauses" $ do
+          case parseText "Task: Rest Day (Time 24 Hours in Haven) → Remove this" :: Either String Rule of
+            Left _ -> pure ()
+            Right r -> assertFailure $ "Expected parse failure for malformed duration, but parsed: " ++ show r
       ]
   ]

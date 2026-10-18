@@ -48,6 +48,9 @@ kwTime = "Time"
 kwCost :: Text
 kwCost = "Cost"
 
+kwRequires :: Text
+kwRequires = "Requires"
+
 kwStrength :: Text
 kwStrength = "Strength"
 

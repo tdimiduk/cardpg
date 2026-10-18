@@ -7,6 +7,8 @@ module Core.Rules
   , AttackDef (..)
   , GeneralDef (..)
   , TaskDef (..)
+  , Requirement (..)
+  , emptyTaskDef
   , TriggerDef (..)
   , OngoingDef (..)
   , ruleParser
@@ -23,17 +25,19 @@ module Core.Rules
 
 import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON)
 import GHC.Generics (Generic)
-import Text.Megaparsec (eof)
+import Text.Megaparsec (eof, notFollowedBy)
+import Text.Megaparsec.Char (string')
 
 import Core.DSL (Parser, TextRep (..), parseText, tryChoice)
 import Core.Json (cardpgJsonOptions)
+import Core.Language (cmdTask)
 import Core.Layout (LayoutItem (..), renderLayoutText)
 import Core.RichText (RichText, richTextParser)
 import Core.Rules.Attack (AttackDef (..), attackParser, layoutAttackDef)
 import Core.Rules.General (GeneralDef (..), generalParser, layoutGeneralDef)
 import Core.Rules.Ongoing (OngoingDef (..), layoutOngoingDef, ongoingParser)
 import Core.Rules.Passive (PassiveDef (..), layoutPassiveDef, passiveParser)
-import Core.Rules.Task (TaskDef (..), layoutTaskDef, taskParser)
+import Core.Rules.Task (Requirement (..), TaskDef (..), emptyTaskDef, layoutTaskDef, taskParser)
 import Core.Rules.Trigger (TriggerDef (..), layoutTriggerDef, triggerParser)
 
 -- | The Top-Level Rule Sum Type
@@ -84,4 +88,6 @@ ruleParser =
 
 -- Narrative (Fallback for General)
 narrativeParser :: Parser Rule
-narrativeParser = RuleNarrative <$> richTextParser
+narrativeParser = do
+  notFollowedBy (string' cmdTask)
+  RuleNarrative <$> richTextParser

@@ -4,23 +4,31 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TupleSections #-}
 
 module Core.Rules.Task
-  ( TaskDef (..)
+  ( Requirement (..)
+  , TaskDef (..)
+  , emptyTaskDef
+  , recognizedRequirementKeywords
   , taskParser
   , layoutTaskDef
   ) where
 
-import Control.Applicative ((<|>))
+import Control.Applicative (optional, (<|>))
+import Control.Monad (void)
 import Data.Aeson.TH (deriveJSON)
-import Data.Maybe (catMaybes)
+import Data.List (find)
+import Data.Maybe (catMaybes, fromMaybe)
+import Data.Text (Text)
+import Data.Text qualified as T
 import GHC.Generics (Generic)
-import Text.Megaparsec (choice, sepBy1, try)
+import Text.Megaparsec (choice, eof, lookAhead, sepBy1, try)
 import Text.Megaparsec.Char (char, space, string')
 
 import Core.DSL (Parser, hspace, hspace1, toText)
 import Core.Json (cardpgJsonDef)
-import Core.Language (cmdTask, kwCheck, kwCost, kwTime, sepArrow, sepSemi)
+import Core.Language (cmdTask, kwCheck, kwCost, kwRequires, kwTime, sepArrow, sepComma, sepSemi)
 import Core.Layout (LayoutItem (..), intercalateLayout, layoutWrapper)
 import Core.NonEmptyText (NonEmptyText, getRawText, takeWhilePNonEmptyStripped)
 import Core.RichText (RichText, richTextParser, richTextParserWith)
@@ -28,8 +36,26 @@ import Core.Rules.Common (effectArrow, layoutDifficulty)
 import Core.Stats (Difficulty, difficultyParser)
 import Core.Time (Duration, durationParser)
 
+-- | A prerequisite or condition for performing a task.
+data Requirement
+  = -- | A recognized mechanical tag (e.g. "Haven", "Campfire", "Shelter", "Unburdened")
+    RequiredKeyword Text
+  | -- | Narrative escape hatch for un-enumerated conditions
+    RequiredCustom RichText
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''Requirement)
+
+recognizedRequirementKeywords :: [Text]
+recognizedRequirementKeywords =
+  [ "Haven"
+  , "Campfire"
+  , "Shelter"
+  , "Unburdened"
+  ]
+
 -- | Task Actions (Downtime/Narrative)
--- | Addresses: "Task: First Aid ({Blue} 3, 1 min): Remove this"
+-- | Addresses: "Task: First Aid (Check {Blue} 3; Time 1 min): Remove this"
 data TaskDef = TaskDef
   { name :: NonEmptyText
   , check :: Maybe Difficulty
@@ -38,12 +64,29 @@ data TaskDef = TaskDef
   -- ^ Duration: "Time 1 min"
   , cost :: Maybe RichText
   -- ^ Narrative Cost: "Cost Bandage"
+  , requirements :: [Requirement]
+  -- ^ Environmental/situational preconditions: "Requires Haven, Campfire"
   , effect :: RichText
   -- ^ Effect: "Remove this card"
   }
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''TaskDef)
+
+emptyTaskDef :: NonEmptyText -> RichText -> TaskDef
+emptyTaskDef n eff =
+  TaskDef
+    { name = n
+    , check = Nothing
+    , time = Nothing
+    , cost = Nothing
+    , requirements = []
+    , effect = eff
+    }
+
+layoutRequirement :: Requirement -> [LayoutItem]
+layoutRequirement (RequiredKeyword kw) = [Literal kw]
+layoutRequirement (RequiredCustom rt) = [RichContent rt]
 
 layoutTaskDef :: TaskDef -> [LayoutItem]
 layoutTaskDef def =
@@ -60,13 +103,38 @@ layoutTaskDef def =
               [ fmap (\c -> [Keyword kwCheck, Space] <> layoutDifficulty c) def.check
               , fmap (\t -> [Keyword kwTime, Space, Literal (toText t)]) def.time
               , fmap (\c -> [Keyword kwCost, Space, RichContent c]) def.cost
+              , if null def.requirements
+                  then Nothing
+                  else
+                    Just
+                      ( [Keyword kwRequires, Space]
+                          <> intercalateLayout [Literal sepComma, Space] (map layoutRequirement def.requirements)
+                      )
               ]
        in if null parts
             then []
             else [Space, Group (layoutWrapper (intercalateLayout [Literal sepSemi, Space] parts))]
 
+requirementsParser :: Parser [Requirement]
+requirementsParser = sepBy1 requirementItemParser (try $ hspace >> char ',' >> hspace)
+
+requirementItemParser :: Parser Requirement
+requirementItemParser = do
+  _ <- hspace
+  keywordP <|> customP
+  where
+    keywordP = try $ do
+      kw <- choice [string' k | k <- recognizedRequirementKeywords]
+      _ <- hspace
+      lookAhead (void (char ',') <|> void (char ';') <|> void (char ')') <|> eof)
+      let canonicalKw =
+            fromMaybe kw $
+              find (\k -> T.toLower k == T.toLower kw) recognizedRequirementKeywords
+      pure (RequiredKeyword canonicalKw)
+    customP = RequiredCustom <$> richTextParserWith ['\n', ',', ';', ')']
+
 -- Task
--- Task: Name ({Color} X, Time) -> Effect
+-- Task: Name (Check {Color} X; Time ...; Requires ...) -> Effect
 taskParser :: Parser TaskDef
 taskParser = do
   _ <- string' cmdTask
@@ -74,45 +142,49 @@ taskParser = do
   name <-
     takeWhilePNonEmptyStripped (Just "Task name") (\c -> c /= '(' && c /= '{' && c /= '-' && c /= '→')
 
-  (check, time, cost) <-
-    try
-      ( do
-          _ <- char '('
+  _ <- space
+  mClauses <-
+    optional $ do
+      _ <- char '('
+      _ <- hspace
+      let checkP = try $ do
+            _ <- string' kwCheck
+            _ <- hspace1
+            difficultyParser
 
-          let checkP = try $ do
-                _ <- string' kwCheck
-                _ <- hspace1
-                difficultyParser
+      let timeP = try $ do
+            _ <- string' kwTime
+            _ <- hspace1
+            durationParser
 
-          let timeP = try $ do
-                _ <- string' kwTime
-                _ <- hspace1
-                durationParser
+      let costP = try $ do
+            _ <- string' kwCost
+            _ <- hspace1
+            richTextParserWith ['\n', ';', ')']
 
-          let costP = try $ do
-                _ <- string' kwCost
-                _ <- hspace1
-                richTextParserWith [';', ')']
+      let requiresP = try $ do
+            _ <- string' kwRequires <|> string' "Requirement" <|> string' "Requirements"
+            _ <- hspace1
+            requirementsParser
 
-          let clause =
-                choice
-                  [ (\c -> (Just c, Nothing, Nothing)) <$> checkP
-                  , (\t -> (Nothing, Just t, Nothing)) <$> timeP
-                  , (\c -> (Nothing, Nothing, Just c)) <$> costP
-                  ]
+      let clause =
+            choice
+              [ (\c -> (Just c, Nothing, Nothing, [])) <$> checkP
+              , (\t -> (Nothing, Just t, Nothing, [])) <$> timeP
+              , (\c -> (Nothing, Nothing, Just c, [])) <$> costP
+              , (Nothing,Nothing,Nothing,) <$> requiresP
+              ]
 
-          clauses <- sepBy1 clause (try $ space >> char ';' >> space)
+      clauses <- sepBy1 clause (try $ hspace >> char ';' >> hspace)
+      _ <- hspace
+      _ <- char ')'
+      let merge (c1, t1, co1, r1) (c2, t2, co2, r2) =
+            (c1 <|> c2, t1 <|> t2, co1 <|> co2, r1 <> r2)
+      pure $ foldl merge (Nothing, Nothing, Nothing, []) clauses
 
-          _ <- char ')'
-
-          let merge (c1, t1, co1) (c2, t2, co2) = (c1 <|> c2, t1 <|> t2, co1 <|> co2)
-          let (finalCheck, finalTime, finalCost) = foldl merge (Nothing, Nothing, Nothing) clauses
-
-          pure (finalCheck, finalTime, finalCost)
-      )
-      <|> pure (Nothing, Nothing, Nothing)
+  let (check, time, cost, reqs) = fromMaybe (Nothing, Nothing, Nothing, []) mClauses
 
   _ <- space
   _ <- effectArrow
   _ <- hspace
-  TaskDef name check time cost <$> richTextParser
+  TaskDef name check time cost reqs <$> richTextParser
