@@ -1,6 +1,66 @@
 # Crag-Gallows Expedition — Location Cards
 # Canonical schema defined in design/authoring/locations-and-travel.md
 
+- id: "haven_crow_roost"
+  name: "Crow's Roost Haven"
+  card_type: "Location"
+  governing_clock: "wilderness_clock"
+  base_time: "10 min"
+  tags:
+    - "Haven"
+    - "Sheltered"
+    - "HighAltitude"
+  exits:
+    - to: "site_timber_cut"
+      via_travel: "trv_low_scree_path"
+      status: "open"
+      passage: "The Low Scree Path descending the ravine toward the mine workings."
+  narrative: >
+    A stone watch-shelter perched on the windswept shoulder of the crag.
+    Cold mountain drafts whistle through arrow slits, but the heavy drystone
+    walls provide a defensible refuge above the scree line.
+  actions:
+    - name: "Survey Descent"
+      time: "15 min"
+      color: "Blue"
+      strength: 12
+      tags:
+        - "Quiet"
+        - "Scouting"
+      enables_action: "Rigged Mountain Line"
+      modifies_strength: -3
+      narrative: "Glass the lower scree slopes with a spyglass to spot predator movement and stable footing."
+
+- id: "site_timber_cut"
+  name: "The Timber Cut"
+  card_type: "Location"
+  governing_clock: "site_activity_clock"
+  base_time: "5 min"
+  tags:
+    - "Threshold"
+    - "ColdDamp"
+    - "Exposed"
+  exits:
+    - to: "haven_crow_roost"
+      via_travel: "trv_low_scree_path"
+      status: "open"
+      passage: "The Low Scree Path climbing back to Crow's Roost."
+    - to: "loc_barricaded_portal"
+      status: "open"
+      passage: "A damp rock trench leading into the mouth of the mine workings."
+  narrative: >
+    A muddy logging terrace littered with rotted pine stumps, rusted cable
+    spools, and ditch water. The rock face ahead looms dark where the mine portal opens.
+  actions:
+    - name: "Scout Approach"
+      time: "10 min"
+      color: "Yellow"
+      strength: 10
+      tags:
+        - "Quiet"
+        - "Stealth"
+      narrative: "Creep between mossy timber stacks to inspect the mine entrance without alerting lookouts."
+
 - id: "loc_barricaded_portal"
   name: "The Barricaded Portal"
   card_type: "Location"
@@ -14,6 +74,9 @@
     - to: "loc_sorting_yard"
       status: "blocked"
       passage: "Rock archway jammed with timber and mine rails"
+    - to: "site_timber_cut"
+      status: "open"
+      passage: "The damp rock trench leading back out to the open timber terrace."
   narrative: >
     A crude deadfall of twisted mine rails, sharpened stakes, and suspended tin
     cans blocks the rock archway leading deeper into the workings.
@@ -50,6 +113,8 @@
       tags:
         - "Quiet"
       unblocks: "loc_sorting_yard"
+      enables_action: "Squeeze Through Keyed Timbers"
+      modifies_strength: -4
       narrative: "Identify and dislodge the load-bearing wedge to swing the entire barricade outward like a gate."
 
     - name: "Methodical Deconstruction"
@@ -67,3 +132,39 @@
         - "Quiet"
       unblocks: "loc_sorting_yard"
       narrative: "Carefully lever rails aside and unseat timber stakes. Safe and quiet, but demanding physical labor. Leverage tools and teamwork apply."
+
+- id: "loc_sorting_yard"
+  name: "The Sorting Yard"
+  card_type: "Location"
+  governing_clock: "site_activity_clock"
+  base_time: "5 min"
+  tags:
+    - "Chokepoint"
+    - "Dim"
+    - "HostileZone"
+  exits:
+    - to: "loc_barricaded_portal"
+      status: "open"
+      passage: "The timber-framed archway returning to the mountain portal."
+  narrative: >
+    A cavernous underground junction lit by smoldering coke braziers. Narrow-gauge
+    iron tracks branch across greasy stone turn-tables toward deep adits. Crude
+    watch-platforms cling to the rock walls, manned by alert goblin lookouts.
+  actions:
+    - name: "Duck Behind Ore Carts"
+      time: "1 min"
+      color: "Yellow"
+      strength: 14
+      tags:
+        - "Quiet"
+        - "Stealth"
+      narrative: "Slip into the shadow of iron carts before the sentries raise an alarm."
+
+    - name: "Overturn Coke Brazier"
+      time: "1 min"
+      color: "Red"
+      strength: 16
+      tags:
+        - "Loud"
+        - "Fire"
+      narrative: "Kick a burning iron brazier into the goblin watch-post to sow chaos."

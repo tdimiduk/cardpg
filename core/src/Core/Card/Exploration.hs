@@ -8,9 +8,11 @@ module Core.Card.Exploration
   , ClockDeckId (..)
   , ClockEventId (..)
   , NodeId (..)
+  , ModuleId (..)
   , ExitStatus (..)
   , LocationExit (..)
   , ChallengeDef (..)
+  , ActionScope (..)
   , ExplorationAction (..)
   , LocationCard (..)
   , TravelRoute (..)
@@ -18,14 +20,21 @@ module Core.Card.Exploration
   , TravelCard (..)
   , ClockUrgency (..)
   , ClockNarrative (..)
+  , SetExitStatus (..)
+  , ChallengeModifier (..)
   , ClockEffect (..)
   , ClockEventCard (..)
+  , ClockConfig (..)
+  , ScenarioActor (..)
+  , ModuleManifest (..)
+  , ExpeditionTime (..)
   ) where
 
 import Control.Applicative ((<|>))
 import Data.Aeson
   ( FromJSON (..)
   , FromJSONKey
+  , Object
   , ToJSON (..)
   , ToJSONKey
   , Value (..)
@@ -37,7 +46,12 @@ import Data.Aeson
   , (.:?)
   , (.=)
   )
-import Data.List.NonEmpty (NonEmpty)
+import Data.Aeson.Key (Key)
+import Data.Aeson.Types (Parser)
+import Data.Foldable (toList)
+import Data.List.NonEmpty (NonEmpty (..))
+import Data.Map.Strict (Map)
+import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.String (IsString)
 import Data.Text (Text)
@@ -48,7 +62,19 @@ import Core.DSL (parseText)
 import Core.NonEmptyText (NonEmptyText)
 import Core.RichText (RichText)
 import Core.Stats (ResourceType)
-import Core.Time (Duration)
+import Core.Time (Duration (..), ExpeditionTime (..), TimeUnit (..))
+
+--------------------------------------------------------------------------------
+-- Aeson Field Parsing Helpers
+--------------------------------------------------------------------------------
+
+altOpt :: (FromJSON a) => Object -> [Key] -> Parser (Maybe a)
+altOpt o keys = do
+  results <- mapM (o .:?) keys
+  pure $ foldr (<|>) Nothing results
+
+altDef :: (FromJSON a) => a -> Object -> [Key] -> Parser a
+altDef def o keys = fromMaybe def <$> altOpt o keys
 
 --------------------------------------------------------------------------------
 -- Identifier Newtypes
@@ -71,6 +97,10 @@ newtype ClockEventId = ClockEventId {unClockEventId :: Text}
   deriving newtype (FromJSON, ToJSON, FromJSONKey, ToJSONKey, IsString)
 
 newtype NodeId = NodeId {unNodeId :: Text}
+  deriving stock (Eq, Ord, Show, Generic)
+  deriving newtype (FromJSON, ToJSON, FromJSONKey, ToJSONKey, IsString)
+
+newtype ModuleId = ModuleId {unModuleId :: Text}
   deriving stock (Eq, Ord, Show, Generic)
   deriving newtype (FromJSON, ToJSON, FromJSONKey, ToJSONKey, IsString)
 
@@ -100,6 +130,24 @@ instance FromJSON ChallengeDef where
     mConseq <- o .:? "consequences"
     pure $ ChallengeDef c s mConseq
 
+data ActionScope
+  = ScopeSolo
+  | ScopeTeamwork
+  | ScopeEveryone
+  deriving stock (Eq, Show, Generic, Enum, Bounded)
+
+instance ToJSON ActionScope where
+  toJSON ScopeSolo = String "Solo"
+  toJSON ScopeTeamwork = String "Teamwork"
+  toJSON ScopeEveryone = String "Everyone"
+
+instance FromJSON ActionScope where
+  parseJSON = withText "ActionScope" $ \case
+    t | t `elem` ["Solo", "solo", "ScopeSolo"] -> pure ScopeSolo
+    t | t `elem` ["Teamwork", "teamwork", "ScopeTeamwork"] -> pure ScopeTeamwork
+    t | t `elem` ["Everyone", "everyone", "ScopeEveryone"] -> pure ScopeEveryone
+    other -> fail $ "Unknown ActionScope: " ++ T.unpack other
+
 data ExplorationAction = ExplorationAction
   { name :: NonEmptyText
   , time :: Duration
@@ -109,6 +157,9 @@ data ExplorationAction = ExplorationAction
   , unblocks :: Maybe LocationId
   , timePerImpact :: Maybe Duration
   , interrupt :: Maybe ClockDeckId
+  , scope :: ActionScope
+  , enablesAction :: Maybe Text
+  , modifiesStrength :: Maybe Int
   }
   deriving stock (Eq, Show, Generic)
 
@@ -117,6 +168,7 @@ instance ToJSON ExplorationAction where
     object $
       [ "name" .= act.name
       , "time" .= act.time
+      , "scope" .= act.scope
       ]
         <> maybe [] (\t -> ["time_per_impact" .= t]) act.timePerImpact
         <> ( case act.challenge of
@@ -130,27 +182,51 @@ instance ToJSON ExplorationAction where
         <> maybe [] (\ts -> ["tags" .= ts]) act.tags
         <> maybe [] (\u -> ["unblocks" .= u]) act.unblocks
         <> maybe [] (\i -> ["interrupt" .= i]) act.interrupt
+        <> maybe [] (\ea -> ["enables_action" .= ea]) act.enablesAction
+        <> maybe [] (\ms -> ["modifies_strength" .= ms]) act.modifiesStrength
         <> maybe [] (\n -> ["narrative" .= n]) act.narrative
 
+parseExplorationActionWithDefaultScope :: ActionScope -> Value -> Parser ExplorationAction
+parseExplorationActionWithDefaultScope fallbackScope = withObject "ExplorationAction" $ \o -> do
+  name <- o .: "name"
+  time <- o .: "time"
+  nestedChallenge <- o .:? "challenge"
+  flatChallenge <- do
+    mColor <- o .:? "color" <|> o .:? "attribute"
+    mStr <- o .:? "strength" <|> o .:? "difficulty"
+    mConseq <- o .:? "consequences"
+    case (mColor, mStr) of
+      (Just c, Just s) -> pure (Just (ChallengeDef c s mConseq))
+      _ -> pure Nothing
+  let challenge = nestedChallenge <|> flatChallenge
+  tags <- o .:? "tags"
+  narrative <- o .:? "narrative"
+  unblocks <- o .:? "unblocks"
+  timePerImpact <- altOpt o ["time_per_impact", "timePerImpact"]
+  interrupt <- o .:? "interrupt"
+  mScope <- o .:? "scope"
+  let defaultScope = case tags of
+        Just ts | "Teamwork" `elem` ts -> ScopeTeamwork
+        _ -> fallbackScope
+  let actScope = fromMaybe defaultScope mScope
+  enablesAction <- altOpt o ["enables_action", "enablesAction"]
+  modifiesStrength <- altOpt o ["modifies_strength", "modifiesStrength"]
+  pure $
+    ExplorationAction
+      name
+      time
+      challenge
+      tags
+      narrative
+      unblocks
+      timePerImpact
+      interrupt
+      actScope
+      enablesAction
+      modifiesStrength
+
 instance FromJSON ExplorationAction where
-  parseJSON = withObject "ExplorationAction" $ \o -> do
-    name <- o .: "name"
-    time <- o .: "time"
-    nestedChallenge <- o .:? "challenge"
-    flatChallenge <- do
-      mColor <- o .:? "color" <|> o .:? "attribute"
-      mStr <- o .:? "strength" <|> o .:? "difficulty"
-      mConseq <- o .:? "consequences"
-      case (mColor, mStr) of
-        (Just c, Just s) -> pure (Just (ChallengeDef c s mConseq))
-        _ -> pure Nothing
-    let challenge = nestedChallenge <|> flatChallenge
-    tags <- o .:? "tags"
-    narrative <- o .:? "narrative"
-    unblocks <- o .:? "unblocks"
-    timePerImpact <- o .:? "time_per_impact" <|> o .:? "timePerImpact"
-    interrupt <- o .:? "interrupt"
-    pure $ ExplorationAction name time challenge tags narrative unblocks timePerImpact interrupt
+  parseJSON = parseExplorationActionWithDefaultScope ScopeSolo
 
 --------------------------------------------------------------------------------
 -- Locations & Exits
@@ -171,6 +247,7 @@ instance FromJSON ExitStatus where
 
 data LocationExit = LocationExit
   { to :: LocationId
+  , viaTravel :: Maybe TravelId
   , status :: ExitStatus
   , passage :: Maybe RichText
   }
@@ -182,14 +259,16 @@ instance ToJSON LocationExit where
       [ "to" .= exit.to
       , "status" .= exit.status
       ]
+        <> maybe [] (\vt -> ["via_travel" .= vt]) exit.viaTravel
         <> maybe [] (\p -> ["passage" .= p]) exit.passage
 
 instance FromJSON LocationExit where
   parseJSON = withObject "LocationExit" $ \o -> do
     to <- o .: "to"
+    viaTravel <- altOpt o ["via_travel", "viaTravel"]
     status <- o .:? "status" .!= ExitOpen
     passage <- o .:? "passage"
-    pure $ LocationExit to status passage
+    pure $ LocationExit to viaTravel status passage
 
 data LocationCard = LocationCard
   { id :: LocationId
@@ -222,9 +301,8 @@ instance FromJSON LocationCard where
   parseJSON = withObject "LocationCard" $ \o -> do
     cardId <- o .: "id"
     name <- o .: "name"
-    ct <- o .:? "card_type" <|> o .:? "type"
-    let cardType = fromMaybe "Location" ct
-    gc <- o .:? "governing_clock" <|> o .:? "governingClock"
+    cardType <- altDef "Location" o ["card_type", "type"]
+    gc <- altOpt o ["governing_clock", "governingClock"]
     bt <- o .: "base_time" <|> o .: "baseTime"
     tags <- o .:? "tags"
     exits <- o .:? "exits"
@@ -237,8 +315,8 @@ instance FromJSON LocationCard where
 --------------------------------------------------------------------------------
 
 data TravelRoute = TravelRoute
-  { from :: NodeId
-  , to :: NodeId
+  { from :: LocationId
+  , to :: LocationId
   , distanceLeagues :: Maybe Double
   , baseTime :: Duration
   , terrainTags :: Maybe (NonEmpty Text)
@@ -259,9 +337,9 @@ instance FromJSON TravelRoute where
   parseJSON = withObject "TravelRoute" $ \o -> do
     from <- o .: "from"
     to <- o .: "to"
-    dl <- o .:? "distance_leagues" <|> o .:? "distanceLeagues"
+    dl <- altOpt o ["distance_leagues", "distanceLeagues"]
     bt <- o .: "base_time" <|> o .: "baseTime"
-    tt <- o .:? "terrain_tags" <|> o .:? "terrainTags"
+    tt <- altOpt o ["terrain_tags", "terrainTags"]
     pure $ TravelRoute from to dl bt tt
 
 data TravelExpedients = TravelExpedients
@@ -278,7 +356,7 @@ instance ToJSON TravelExpedients where
 
 instance FromJSON TravelExpedients where
   parseJSON = withObject "TravelExpedients" $ \o -> do
-    cr <- o .:? "camp_restriction" <|> o .:? "campRestriction"
+    cr <- altOpt o ["camp_restriction", "campRestriction"]
     as <- o .:? "actions"
     pure $ TravelExpedients cr as
 
@@ -314,13 +392,18 @@ instance FromJSON TravelCard where
   parseJSON = withObject "TravelCard" $ \o -> do
     cardId <- o .: "id"
     name <- o .: "name"
-    ct <- o .:? "card_type" <|> o .:? "type"
-    let cardType = fromMaybe "Travel" ct
-    gc <- o .:? "governing_clock" <|> o .:? "governingClock"
+    cardType <- altDef "Travel" o ["card_type", "type"]
+    gc <- altOpt o ["governing_clock", "governingClock"]
     route <- o .: "route"
     tags <- o .:? "tags"
     narrative <- o .: "narrative"
-    paces <- o .: "paces"
+    pacesVal <- o .: "paces"
+    pacesList <- case pacesVal of
+      Array v -> mapM (parseExplorationActionWithDefaultScope ScopeEveryone) (toList v)
+      _ -> fail "paces must be an array"
+    paces <- case pacesList of
+      (p : ps) -> pure (p :| ps)
+      [] -> fail "paces array cannot be empty"
     expedients <- o .:? "expedients"
     pure $ TravelCard cardId name cardType gc route tags narrative paces expedients
 
@@ -366,15 +449,64 @@ instance FromJSON ClockNarrative where
     Left err -> fail $ "ClockNarrative RichText parse failed: " ++ err
   parseJSON (Object o) = do
     summary <- o .: "summary"
-    sensoryCue <- o .:? "sensory_cue" <|> o .:? "sensoryCue"
+    sensoryCue <- altOpt o ["sensory_cue", "sensoryCue"]
     pure $ ClockNarrative summary sensoryCue
   parseJSON v = fail $ "Expected String or Object for ClockNarrative, got " ++ show v
+
+data SetExitStatus = SetExitStatus
+  { exit :: LocationId
+  , status :: ExitStatus
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON SetExitStatus where
+  toJSON (SetExitStatus e s) =
+    object
+      [ "exit" .= e
+      , "status" .= s
+      ]
+
+instance FromJSON SetExitStatus where
+  parseJSON (Object o) = do
+    e <- o .: "exit" <|> o .: "location"
+    s <- o .: "status"
+    pure $ SetExitStatus e s
+  parseJSON (Array v) = case toList v of
+    [eVal, sVal] -> do
+      e <- parseJSON eVal
+      s <- parseJSON sVal
+      pure $ SetExitStatus e s
+    _ -> fail "SetExitStatus array must have exactly 2 elements [exit, status]"
+  parseJSON v = fail $ "Expected Object or Array for SetExitStatus, got " ++ show v
+
+data ChallengeModifier = ChallengeModifier
+  { color :: Maybe ResourceType
+  , strength :: Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ChallengeModifier where
+  toJSON cm =
+    object $
+      maybe [] (\c -> ["color" .= c]) cm.color
+        <> ["strength" .= cm.strength]
+
+instance FromJSON ChallengeModifier where
+  parseJSON = withObject "ChallengeModifier" $ \o -> do
+    color <- o .:? "color" <|> o .:? "attribute"
+    strength <- o .: "strength" <|> o .: "difficulty"
+    pure $ ChallengeModifier color strength
 
 data ClockEffect = ClockEffect
   { target :: Text
   , text :: RichText
   , duration :: Maybe Duration
   , hazard :: Maybe ChallengeDef
+  , setExitStatus :: Maybe SetExitStatus
+  , unguarded :: Maybe Bool
+  , challengeModifier :: Maybe ChallengeModifier
+  , extinguishesLight :: Bool
+  , spawnActors :: Maybe [Text]
   }
   deriving stock (Eq, Show, Generic)
 
@@ -386,6 +518,11 @@ instance ToJSON ClockEffect where
       ]
         <> maybe [] (\d -> ["duration" .= d]) eff.duration
         <> maybe [] (\h -> ["hazard" .= h]) eff.hazard
+        <> maybe [] (\es -> ["set_exit_status" .= es]) eff.setExitStatus
+        <> maybe [] (\u -> ["unguarded" .= u]) eff.unguarded
+        <> maybe [] (\cm -> ["challenge_modifier" .= cm]) eff.challengeModifier
+        <> ["extinguishes_light" .= True | eff.extinguishesLight]
+        <> maybe [] (\sa -> ["spawn_actors" .= sa]) eff.spawnActors
 
 instance FromJSON ClockEffect where
   parseJSON = withObject "ClockEffect" $ \o -> do
@@ -393,7 +530,22 @@ instance FromJSON ClockEffect where
     text <- o .: "text"
     duration <- o .:? "duration"
     hazard <- o .:? "hazard"
-    pure $ ClockEffect target text duration hazard
+    setExitStatus <- altOpt o ["set_exit_status", "setExitStatus"]
+    unguarded <- o .:? "unguarded"
+    challengeModifier <- altOpt o ["challenge_modifier", "challengeModifier"]
+    extinguishesLight <- altDef False o ["extinguishes_light", "extinguishesLight"]
+    spawnActors <- altOpt o ["spawn_actors", "spawnActors"]
+    pure $
+      ClockEffect
+        target
+        text
+        duration
+        hazard
+        setExitStatus
+        unguarded
+        challengeModifier
+        extinguishesLight
+        spawnActors
 
 data ClockEventCard = ClockEventCard
   { id :: ClockEventId
@@ -425,11 +577,102 @@ instance FromJSON ClockEventCard where
   parseJSON = withObject "ClockEventCard" $ \o -> do
     cardId <- o .: "id"
     name <- o .: "name"
-    ct <- o .:? "card_type" <|> o .:? "type"
-    let cardType = fromMaybe "ClockEvent" ct
+    cardType <- altDef "ClockEvent" o ["card_type", "type"]
     cd <- o .: "clock_deck" <|> o .: "clockDeck"
     urg <- o .: "urgency"
     tags <- o .:? "tags"
     narrative <- o .: "narrative"
     effects <- o .: "effects"
     pure $ ClockEventCard cardId name cardType cd urg tags narrative effects
+
+--------------------------------------------------------------------------------
+-- Scenario & Module Manifests
+--------------------------------------------------------------------------------
+
+data ScenarioActor = ScenarioActor
+  { name :: Text
+  , file :: FilePath
+  , x :: Int
+  , y :: Int
+  , initialHandSize :: Maybe Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ScenarioActor where
+  toJSON act =
+    object $
+      [ "name" .= act.name
+      , "file" .= act.file
+      , "x" .= act.x
+      , "y" .= act.y
+      ]
+        <> maybe [] (\h -> ["initial_hand_size" .= h]) act.initialHandSize
+
+instance FromJSON ScenarioActor where
+  parseJSON = withObject "ScenarioActor" $ \o -> do
+    name <- o .: "name"
+    file <- o .: "file"
+    x <- o .:? "x" .!= 0
+    y <- o .:? "y" .!= 0
+    initialHandSize <- altOpt o ["initial_hand_size", "initialHandSize"]
+    pure $ ScenarioActor name file x y initialHandSize
+
+data ClockConfig = ClockConfig
+  { name :: Maybe Text
+  , tickInterval :: Duration
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ClockConfig where
+  toJSON cfg =
+    object $
+      maybe [] (\n -> ["name" .= n]) cfg.name
+        <> ["tick_interval" .= cfg.tickInterval]
+
+instance FromJSON ClockConfig where
+  parseJSON = withObject "ClockConfig" $ \o -> do
+    name <- o .:? "name"
+    tickInterval <- altDef (Duration 30 Minute) o ["tick_interval", "tickInterval"]
+    pure $ ClockConfig name tickInterval
+
+data ModuleManifest = ModuleManifest
+  { id :: ModuleId
+  , name :: Text
+  , startingLocation :: LocationId
+  , startingTime :: ExpeditionTime
+  , clockConfigs :: Map ClockDeckId ClockConfig
+  , startingActors :: [ScenarioActor]
+  , locationEncounters :: Map LocationId [ScenarioActor]
+  }
+  deriving stock (Eq, Show, Generic)
+
+instance ToJSON ModuleManifest where
+  toJSON m =
+    object
+      [ "id" .= m.id
+      , "name" .= m.name
+      , "starting_location" .= m.startingLocation
+      , "starting_time" .= m.startingTime
+      , "clock_configs" .= m.clockConfigs
+      , "starting_actors" .= m.startingActors
+      , "location_encounters" .= m.locationEncounters
+      ]
+
+instance FromJSON ModuleManifest where
+  parseJSON = withObject "ModuleManifest" $ \o -> do
+    idVal <- o .: "id"
+    name <- o .: "name"
+    startingLocation <- o .: "starting_location" <|> o .: "startingLocation"
+    startingTime <- altDef (ExpeditionTime 480) o ["starting_time", "startingTime"]
+    clockConfigs <- altDef Map.empty o ["clock_configs", "clockConfigs"]
+    startingActors <- altDef [] o ["starting_actors", "startingActors"]
+    locationEncounters <- altDef Map.empty o ["location_encounters", "locationEncounters"]
+    pure $
+      ModuleManifest
+        idVal
+        name
+        startingLocation
+        startingTime
+        clockConfigs
+        startingActors
+        locationEncounters

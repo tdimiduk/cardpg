@@ -37,6 +37,7 @@ import Core.Card
   , MasterCard (..)
   , resolveActorDeck
   )
+import Core.Card.Exploration (ScenarioActor (..))
 import Core.Hardcoded (fatigueCard)
 import Core.Primitives (ActorId, CardInstanceId, EquipSlot (..))
 import Core.State
@@ -53,18 +54,6 @@ import Server.Game (GameState (..), addActor, emptyGame)
 import Server.Loader (loadMasterCatalog)
 
 import Core.Util (shuffleListM)
-
--- | Definition of an actor within a scenario
-data ScenarioActor = ScenarioActor
-  { name :: Text
-  , file :: FilePath
-  , x :: Int
-  , y :: Int
-  , initialHandSize :: Maybe Int
-  }
-  deriving (Show, Eq, Generic)
-
-instance FromJSON ScenarioActor
 
 -- | Definition of a scenario file
 data Scenario = Scenario

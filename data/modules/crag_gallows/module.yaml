@@ -1,0 +1,32 @@
+# Crag-Gallows Expedition — Module Manifest
+# Canonical schema defined in design/authoring/locations-and-travel.md
+
+id: "crag_gallows"
+name: "Crag-Gallows Delve"
+starting_location: "haven_crow_roost"
+starting_time: "Day 1, 08:00"
+clock_configs:
+  site_activity_clock:
+    name: "Site Activity Clock"
+    tick_interval: "30 min"
+  wilderness_clock:
+    name: "Wilderness Clock"
+    tick_interval: "60 min"
+starting_actors:
+  - name: "vallhach"
+    file: "../../cards/pc/vallhach.yaml"
+    x: 0
+    y: 0
+    initial_hand_size: 4
+location_encounters:
+  loc_sorting_yard:
+    - name: "goblin_lookout"
+      file: "../../cards/monsters/goblin.yaml"
+      x: 0
+      y: 0
+      initial_hand_size: 3
+    - name: "goblin_sentry"
+      file: "../../cards/monsters/goblin.yaml"
+      x: 1
+      y: 0
+      initial_hand_size: 3

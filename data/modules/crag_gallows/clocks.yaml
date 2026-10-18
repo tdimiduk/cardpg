@@ -15,8 +15,12 @@
     - target: "loc_barricaded_portal"
       text: "The barricade portal is left completely unguarded for the next 20 minutes."
       duration: "20 min"
+      unguarded: true
     - target: "loc_sorting_yard"
       text: "2 additional goblin lookouts join the watch fire."
+      spawn_actors:
+        - "goblin_lookout"
+        - "goblin_lookout"
 
 - id: "clk_wild_sudden_scree_squall"
   name: "Sudden Scree Squall"
@@ -32,6 +36,10 @@
     - target: "current_zone"
       text: "Extinguish all unshielded open flames. +5 Yellow Strength to all footing and climbing checks."
       duration: "1 hour"
+      extinguishes_light: true
+      challenge_modifier:
+        color: "Yellow"
+        strength: 5
       hazard:
         color: "Yellow"
         strength: 12
