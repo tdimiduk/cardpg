@@ -115,6 +115,10 @@ layoutTaskDef def =
             then []
             else [Space, Group (layoutWrapper (intercalateLayout [Literal sepSemi, Space] parts))]
 
+-- | Task clause parsers operate strictly within single-line DSL rules.
+-- Separators use 'hspace' (not multiline 'space') and inline custom text
+-- parsers include '\n' in stop characters so clauses do not greedily
+-- consume newlines across rule boundaries.
 requirementsParser :: Parser [Requirement]
 requirementsParser = sepBy1 requirementItemParser (try $ hspace >> char ',' >> hspace)
 

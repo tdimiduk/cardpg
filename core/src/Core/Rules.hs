@@ -87,6 +87,8 @@ ruleParser =
           ]
 
 -- Narrative (Fallback for General)
+-- Note: Must be guarded with notFollowedBy on structured command keywords (e.g. cmdTask)
+-- so malformed command syntax fails explicitly rather than silently falling back to raw narrative.
 narrativeParser :: Parser Rule
 narrativeParser = do
   notFollowedBy (string' cmdTask)
