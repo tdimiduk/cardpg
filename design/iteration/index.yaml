@@ -40,6 +40,10 @@ active_design_exploration:
       purpose: "High-level design proposal for the Carrying Capacity module: Load = Weight + Awkwardness, container transformations, Frame + Conditioning Load Increment, and Averaged Burden."
       tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:pacing"]
 
+    - path: "iteration/carrying-capacity-benchmarks.md"
+      purpose: "Empirically calibrated benchmark dataset for weapons, armor, containers, delving gear, trade goods, and pack creatures, with stress-test evaluations of Candidate A, B, and C capacity formulas across Tiers 1 and 3."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:pacing"]
+
   ideation_and_sketches:
     - path: "iteration/design-sketchbook.md"
       purpose: "A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization."
