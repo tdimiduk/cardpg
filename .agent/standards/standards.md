@@ -61,3 +61,10 @@ When invoking subagents via `invoke_subagent`, explicitly configure the `Model` 
 
 - **On Argon / Pro:** Offload multi-step mechanical loops (>3 sequential tool turns for codebase searches, repetitive refactors, or build/test cycles) to a `Model: "flash"` subagent rather than burning premium context turns inline.
 - **On Flash:** Execute bounded code/file tasks directly inline (using subagents only for context-window isolation on large raw sources). Before running open-loop design or adversarial tasks (`game_systems_designer`, `rulebook_adversary`), briefly remind the user that the session is on Flash and confirm whether to proceed on Flash or pause for a model switch.
+
+## 7. Named Record Construction & Schema Evolution
+
+To protect against schema drift, silent field transposition, and fragile builds when evolving data models:
+
+- **Always use named record construction or smart constructors:** For any data type with $\ge 3$ fields or multiple optional/primitive fields (such as `CoreCard`, `ItemCard`, `NatureCard`, `TalentCard`, `ConsequenceCard`, `MasterCard`), use named record syntax (`ItemCard { name = ..., ... }`) or smart helper constructors (`emptyItemCard`, `emptyCoreCard`).
+- **Never use positional construction for Card records:** Positional construction (e.g. `ItemCard a b c d e f g h i j k l`) bypasses GHC's missing-field protections, easily transposes adjacent `Maybe` fields of identical type (e.g., `defense`, `resilience`, `burden`), and breaks unnecessarily whenever fields are added or reordered.

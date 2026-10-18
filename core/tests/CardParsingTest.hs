@@ -12,7 +12,7 @@ import Data.Maybe (isJust)
 import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
 import Data.Yaml (ParseException, decodeEither', decodeFileEither, encode)
-import System.Directory (doesDirectoryExist, listDirectory)
+import System.Directory (doesDirectoryExist, doesFileExist, listDirectory)
 import System.FilePath ((</>))
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -23,13 +23,16 @@ import Core.Card
   , CardReference (..)
   , CoreCard (..)
   , DeckEntry (..)
+  , ItemCard (..)
   , MasterCard (..)
   , RulesStatus (..)
+  , emptyItemCard
   , masterCardToCoreCard
   , resolveDeckEntry
   )
 import Core.DSL (parseText, toText)
-import Core.NonEmptyText (getRawText)
+import Core.NonEmptyText (getRawText, unsafeNonEmptyText)
+import Core.RichText (unsafeSimpleString)
 import Core.Rules (AttackDef (..), Rule (..), TaskDef (..))
 import Core.Stats (Difficulty (..), ResourceType (..), StackPower (..), Stats (..))
 import Core.Time (Duration (..), TimeUnit (..))
@@ -45,6 +48,7 @@ test_cardParsing = do
     testGroup
       "Card Database & Parsing"
       [ testGroup "Master Card Schema & Parsing" masterCardTests
+      , testGroup "Item Card Schema & Parsing" itemCardTests
       , testGroup "Deck Entry Parsing" deckEntryParsingTests
       , testGroup "Deck Entry Resolution" deckResolutionTests
       , testGroup "Actor File Parsing & Roundtrip" fileTests
@@ -119,6 +123,61 @@ masterCardTests =
       parseStatus "current" @?= Just RulesCurrent
       parseStatus "outdated" @?= Just RulesOutdated
       parseStatus "experimental" @?= Just RulesExperimental
+  ]
+
+itemCardTests :: [TestTree]
+itemCardTests =
+  [ testCase "Parses ItemCard with portions and rules" $ do
+      let yaml =
+            encodeUtf8 $
+              T.unlines
+                [ "name: Waterskin"
+                , "portions: 3"
+                , "rules:"
+                , "  - Drink 1 Portion every 4 hours."
+                , "tags:"
+                , "  - Supply"
+                , "  - Water"
+                ]
+      case decodeEither' yaml of
+        Left err -> assertFailure $ "Failed to decode ItemCard: " ++ show err
+        Right (item :: ItemCard) -> do
+          getRawText item.name @?= "Waterskin"
+          item.portions @?= Just 3
+          assertBool "Rules should be parsed" (isJust item.rules)
+          fmap length item.rules @?= Just 1
+  , testCase "Roundtrips ItemCard YAML encode/decode with portions and rules" $ do
+      let item =
+            (emptyItemCard (unsafeNonEmptyText "Travel Rations"))
+              { portions = Just 4
+              , tags = Just ("Supply" NE.:| ["Food"])
+              , rules = Just (RuleNarrative (unsafeSimpleString "Consume 1 portion during rest") NE.:| [])
+              }
+          encoded = encode item
+      case decodeEither' encoded of
+        Left err -> assertFailure $ "Failed to decode re-encoded ItemCard: " ++ show err
+        Right (item' :: ItemCard) -> item' @?= item
+  , testCase "Parses data/cards/items/supplies.yaml" $ do
+      let relPath = "data/cards/items/supplies.yaml"
+      fileExists <- doesFileExist relPath
+      let path = if fileExists then relPath else "../" ++ relPath
+      result <- decodeFileEither path :: IO (Either ParseException [ItemCard])
+      case result of
+        Left err -> assertFailure $ "Failed to parse " ++ path ++ ": " ++ show err
+        Right items -> do
+          assertBool "Supplies should contain at least 2 items" (length items >= 2)
+          let rations = filter (\i -> getRawText i.name == "Travel Rations") items
+          case rations of
+            [r] -> do
+              r.portions @?= Just 4
+              assertBool "Travel Rations should have rules" (isJust r.rules)
+            _ -> assertFailure "Travel Rations not found in supplies.yaml"
+          let waterskin = filter (\i -> getRawText i.name == "Waterskin") items
+          case waterskin of
+            [w] -> do
+              w.portions @?= Just 3
+              assertBool "Waterskin should have rules" (isJust w.rules)
+            _ -> assertFailure "Waterskin not found in supplies.yaml"
   ]
 
 deckEntryParsingTests :: [TestTree]

@@ -32,6 +32,9 @@ module Core.Card
   , EncounterMechanics (..)
   , Identified (..)
   , CardInstance
+  , emptyItemCard
+  , emptyCoreCard
+  , withCost
   ) where
 
 import Data.Aeson
@@ -97,10 +100,44 @@ data ItemCard = ItemCard
   , defense :: Maybe Int
   , resilience :: Maybe Int
   , burden :: Maybe Int
+  , rules :: Maybe (NonEmpty Rule)
+  , portions :: Maybe Int
   }
   deriving stock (Eq, Show, Generic)
 
 $(deriveJSON cardpgJsonDef ''ItemCard)
+
+emptyItemCard :: NonEmptyText -> ItemCard
+emptyItemCard n =
+  ItemCard
+    { name = n
+    , tags = Nothing
+    , flavor = Nothing
+    , weight = Nothing
+    , value = Nothing
+    , traits = Nothing
+    , passive = Nothing
+    , defense = Nothing
+    , resilience = Nothing
+    , burden = Nothing
+    , rules = Nothing
+    , portions = Nothing
+    }
+
+emptyCoreCard :: NonEmptyText -> Stats Int -> CoreCard
+emptyCoreCard n s =
+  CoreCard
+    { name = n
+    , tags = Nothing
+    , stats = s
+    , cost = Nothing
+    , attack = Nothing
+    , rules = Nothing
+    , flavor = Nothing
+    }
+
+withCost :: Int -> CoreCard -> CoreCard
+withCost c card = card{cost = Just c}
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCard = NatureCard

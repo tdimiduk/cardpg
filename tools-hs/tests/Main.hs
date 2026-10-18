@@ -11,7 +11,9 @@ import Core.Card
   , MasterCard (..)
   , RulesStatus (..)
   , Stats (..)
+  , emptyCoreCard
   , resolveDeckEntry
+  , withCost
   )
 import Core.DSL (toText)
 import Core.Glossary
@@ -378,7 +380,7 @@ test_deduplicationAndSlugs =
                 , flavor = Nothing
                 }
             c2 =
-              CoreCard (unsafeNonEmptyText "Sunder Armor") Nothing (Stats 4 2 3) (Just 1) Nothing Nothing Nothing
+              withCost 1 (emptyCoreCard (unsafeNonEmptyText "Sunder Armor") (Stats 4 2 3))
             groups =
               assignUniqueSlugs
                 [(CategoryMartial, c1, [CardOccurrence "f1" c1]), (CategoryMartial, c2, [CardOccurrence "f2" c2])]
@@ -420,9 +422,9 @@ test_deduplicationAndSlugs =
                 }
         determineCardCategory ["data/cards/monsters/bread_wolf.yaml"] c @?= CategoryBeasts
     , testCase "Picks modal stats for group with stat variations" $ do
-        let c1 = CoreCard (unsafeNonEmptyText "Bite") Nothing (Stats 3 2 2) (Just 1) Nothing Nothing Nothing
-            c2 = CoreCard (unsafeNonEmptyText "Bite") Nothing (Stats 3 2 2) (Just 1) Nothing Nothing Nothing
-            c3 = CoreCard (unsafeNonEmptyText "Bite") Nothing (Stats 5 2 2) (Just 1) Nothing Nothing Nothing
+        let c1 = withCost 1 (emptyCoreCard (unsafeNonEmptyText "Bite") (Stats 3 2 2))
+            c2 = withCost 1 (emptyCoreCard (unsafeNonEmptyText "Bite") (Stats 3 2 2))
+            c3 = withCost 1 (emptyCoreCard (unsafeNonEmptyText "Bite") (Stats 5 2 2))
             groups = groupCards [("f1", c1), ("f2", c2), ("f3", c3)]
         case groups of
           [grp] -> grp.baseCard.stats @?= Stats 3 2 2
@@ -455,7 +457,7 @@ test_exportAndSerialization =
           Left err -> assertFailure $ "Failed to decode: " ++ show err
           Right (decoded :: [MasterCard]) -> decoded @?= [mc]
     , testCase "CardGroup to MasterCard populates category tags when missing" $ do
-        let c = CoreCard (unsafeNonEmptyText "Slash") Nothing (Stats 4 2 2) (Just 1) Nothing Nothing Nothing
+        let c = withCost 1 (emptyCoreCard (unsafeNonEmptyText "Slash") (Stats 4 2 2))
             grp = CardGroup "slash" c [CardOccurrence "f" c] CategoryMartial RulesCurrent Nothing
             mc = cardGroupToMasterCard grp
         mc.tags @?= Just (NE.singleton "Martial")
@@ -474,7 +476,7 @@ test_deckRewriter =
             base = Stats 3 2 1
         computeStatOverrides actual base @?= Just (Stats (Just 5) Nothing Nothing)
     , testCase "Replaces matching inline cards with CardReference" $ do
-        let baseCard = CoreCard (unsafeNonEmptyText "Shield Bash") Nothing (Stats 2 1 3) Nothing Nothing Nothing Nothing
+        let baseCard = emptyCoreCard (unsafeNonEmptyText "Shield Bash") (Stats 2 1 3)
             mc =
               MasterCard
                 { id = "shield-bash"
@@ -507,7 +509,7 @@ test_deckRewriter =
             ref.stats @?= Nothing
           _ -> assertFailure "Expected EntryRef"
     , testCase "Preserves non-matching inline cards inline" $ do
-        let unknownCard = CoreCard (unsafeNonEmptyText "Unknown") Nothing (Stats 1 1 1) Nothing Nothing Nothing Nothing
+        let unknownCard = emptyCoreCard (unsafeNonEmptyText "Unknown") (Stats 1 1 1)
             actor =
               ActorDefinition
                 { name = "Mystery"
@@ -544,7 +546,7 @@ test_deckRewriter =
                 , nature = []
                 , deck =
                     [ EntryInline
-                        (CoreCard (unsafeNonEmptyText "Quick Jab") Nothing (Stats 3 1 1) Nothing Nothing Nothing Nothing)
+                        (emptyCoreCard (unsafeNonEmptyText "Quick Jab") (Stats 3 1 1))
                     ]
                 }
             (rewritten, _) = rewriteActorDefinition catalog actor

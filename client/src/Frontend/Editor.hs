@@ -335,7 +335,20 @@ itemFieldsWidget nameDyn = do
 
         return $
           CustomItem $
-            ItemCard neName Nothing flavor Nothing Nothing traits passive defense resilience Nothing
+            ItemCard
+              { name = neName
+              , tags = Nothing
+              , flavor = flavor
+              , weight = Nothing
+              , value = Nothing
+              , traits = traits
+              , passive = passive
+              , defense = defense
+              , resilience = resilience
+              , burden = Nothing
+              , rules = Nothing
+              , portions = Nothing
+              }
 
   return (customCardDyn, constDyn False)
 
@@ -366,7 +379,18 @@ natureFieldsWidget nameDyn = do
             resilience = readMaybe (T.unpack resVal)
             flavor = unsafeSimpleString . getRawText <$> mkNonEmptyText flavorVal
 
-        return $ CustomNature $ NatureCard neName Nothing flavor traits passive defense resilience Nothing
+        return $
+          CustomNature $
+            NatureCard
+              { name = neName
+              , tags = Nothing
+              , flavor = flavor
+              , traits = traits
+              , passive = passive
+              , defense = defense
+              , resilience = resilience
+              , specialDefend = Nothing
+              }
 
   return (customCardDyn, constDyn False)
 
@@ -397,7 +421,17 @@ talentFieldsWidget nameDyn = do
             resilience = readMaybe (T.unpack resVal)
             flavor = unsafeSimpleString . getRawText <$> mkNonEmptyText flavorVal
 
-        return $ CustomTalent $ TalentCard neName Nothing flavor traits passive defense resilience
+        return $
+          CustomTalent $
+            TalentCard
+              { name = neName
+              , tags = Nothing
+              , flavor = flavor
+              , traits = traits
+              , passive = passive
+              , defense = defense
+              , resilience = resilience
+              }
 
   return (customCardDyn, constDyn False)
 
@@ -419,7 +453,15 @@ encounterFieldsWidget nameDyn = do
             narrative = unsafeSimpleString (if T.null (T.strip narrativeVal) then "..." else narrativeVal)
             options = nonEmpty (filter (not . T.null) (map T.strip (T.splitOn "," optionsVal)))
 
-        return $ CustomEncounter $ EncounterCard neName Nothing narrative options Nothing
+        return $
+          CustomEncounter $
+            EncounterCard
+              { name = neName
+              , tags = Nothing
+              , narrative = narrative
+              , options = options
+              , mechanics = Nothing
+              }
 
   return (customCardDyn, constDyn False)
 
@@ -470,6 +512,16 @@ consequenceFieldsWidget nameDyn = do
                 Right r -> r
                 Left _ -> RuleNarrative (unsafeSimpleString line)
 
-        return $ CustomConsequence $ ConsequenceCard neName Nothing passive effects severity Nothing rules
+        return $
+          CustomConsequence $
+            ConsequenceCard
+              { name = neName
+              , tags = Nothing
+              , passive = passive
+              , effects = effects
+              , severity = severity
+              , notes = Nothing
+              , rules = rules
+              }
 
   return (customCardDyn, hasErrorDyn)

@@ -5,14 +5,12 @@ module PlanningTests where
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import Core.Card (CardInstance, CoreCard (..), Identified (..))
+import Core.Card (CardInstance, CoreCard (..), Identified (..), emptyCoreCard)
 import Core.Logic.Planning
 import Core.NonEmptyText (unsafeNonEmptyText)
 import Core.Primitives (CardInstanceId (..))
 import Core.State (ActionStack (..), NarrativeStack (..), PlannedAction (..))
 import Core.Stats (ResourceType (..), Stats (..))
-
-import Data.List.NonEmpty (NonEmpty (..))
 
 test_planningLogic :: TestTree
 test_planningLogic =
@@ -35,14 +33,7 @@ mkCard :: Int -> Int -> CardInstance CoreCard
 mkCard i costVal =
   Identified
     (dummyId i)
-    CoreCard
-      { name = unsafeNonEmptyText "Test Card"
-      , tags = Nothing
-      , stats = Stats 0 0 0
-      , cost = Just costVal
-      , rules = Nothing
-      , flavor = Nothing
-      }
+    ((emptyCoreCard (unsafeNonEmptyText "Test Card") (Stats 0 0 0) :: CoreCard){cost = Just costVal})
 
 -- Tests
 

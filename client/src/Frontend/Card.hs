@@ -175,7 +175,9 @@ renderItemCardWith settings c = divS (cardClasses settings) $ do
   componentS "name" (nameClasses settings) $ renderNonEmptyText c.name
   divS (artClasses settings) blank
   componentS "rules" (textboxClasses settings) $ do
+    mapM_ (\p -> el "p" $ text $ "Portions: " <> tshow p) c.portions
     mapM_ (el "p" . text) c.passive
+    mapM_ (mapM_ (el "p" . renderRule)) c.rules
     mapM_ renderRichText c.flavor
 
 --------------------------------------------------------------------------------

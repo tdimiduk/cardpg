@@ -41,15 +41,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
     dummyCard = fatigueCard -- simple card
 
     -- Action card for planning test (ensure cost matches resource count)
-    dummyActionCard =
-      CoreCard
-        { name = fatigueCard.name
-        , tags = fatigueCard.tags
-        , stats = fatigueCard.stats
-        , cost = Just 1
-        , rules = fatigueCard.rules
-        , flavor = fatigueCard.flavor
-        }
+    dummyActionCard = (fatigueCard :: CoreCard){cost = Just 1}
 
     card1 = Identified c1Id dummyActionCard
     card2 = Identified c2Id dummyCard

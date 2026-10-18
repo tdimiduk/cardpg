@@ -17,6 +17,8 @@ import Core.Card
   , Identified (..)
   , ItemCard (..)
   , Stats (..)
+  , emptyCoreCard
+  , emptyItemCard
   )
 import Core.Logic.Deck (flipCardToDefense)
 import Core.Logic.Monad (GameM (..), runGameM)
@@ -76,19 +78,7 @@ mkConsTemplate sev =
     }
 
 mkItemRes :: Int -> ItemCard
-mkItemRes res =
-  ItemCard
-    { name = unsafeNonEmptyText "Armor"
-    , tags = Nothing
-    , flavor = Nothing
-    , weight = Nothing
-    , value = Nothing
-    , traits = Nothing
-    , passive = Nothing
-    , defense = Nothing
-    , resilience = Just res
-    , burden = Nothing
-    }
+mkItemRes res = (emptyItemCard (unsafeNonEmptyText "Armor")){resilience = Just res}
 
 mkEnv :: [ConsequenceCard] -> GameEnv
 mkEnv consList =
@@ -120,8 +110,8 @@ test_plannedActions =
       c2 = CardInstanceId (read "00000000-0000-0000-0000-000000000002")
       c3 = CardInstanceId (read "00000000-0000-0000-0000-000000000003")
 
-      dummyCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing
-      dummyActionCard = CoreCard (unsafeNonEmptyText "Dummy") Nothing (Stats 0 0 0) (Just 1) Nothing Nothing Nothing
+      dummyCard = emptyCoreCard (unsafeNonEmptyText "Dummy") (Stats 0 0 0)
+      dummyActionCard = (emptyCoreCard (unsafeNonEmptyText "Dummy") (Stats 0 0 0) :: CoreCard){cost = Just 1}
 
       card1 = Identified c1 dummyActionCard
       card2 = Identified c2 dummyCard
@@ -262,7 +252,7 @@ test_statusLogic =
                 , statusCardTemplates =
                     Map.singleton
                       statusName
-                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing)
+                      (emptyCoreCard (unsafeNonEmptyText "Stunned") (Stats 0 0 0))
                 , consequenceCardTemplates = Map.empty
                 }
         let state = mkActorState []
@@ -278,7 +268,7 @@ test_statusLogic =
                 , statusCardTemplates =
                     Map.singleton
                       statusName
-                      (CoreCard (unsafeNonEmptyText "Stunned") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing)
+                      (emptyCoreCard (unsafeNonEmptyText "Stunned") (Stats 0 0 0))
                 , consequenceCardTemplates = Map.empty
                 }
         let state0 = mkActorState []
@@ -300,7 +290,7 @@ test_defenseLogic =
   let
     cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
     challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 3 Red
-    fatigueCard = CoreCard (unsafeNonEmptyText "Fatigue") Nothing (Stats 0 0 0) Nothing Nothing Nothing Nothing
+    fatigueCard = emptyCoreCard (unsafeNonEmptyText "Fatigue") (Stats 0 0 0)
    in
     testGroup
       "Defense Logic"
