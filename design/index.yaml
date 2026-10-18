@@ -86,6 +86,16 @@ game_system_and_rules:
     - core-concept:fatigue
     - pillar:exploration
     - pillar:combat
+  - path: authoring/card-schemas-and-syntax.md
+    purpose: Authoritative data schemas, YAML layouts, and Mini-DSL grammar for CoreCard,
+      ItemCard, NatureCard, and ConsequenceCard definitions.
+    tags:
+    - doc-type:guide
+    - guide
+    - audience:designer-facing
+    - core-concept:cards
+    - core-concept:core-mechanic
+    - core-concept:keywords
   - path: authoring/locations-and-travel.md
     purpose: Data schemas, card anatomy, and authoring standards for Location Cards,
       Travel Cards, and Living Clock Decks.

@@ -46,25 +46,34 @@ When attaching time costs to cards, obstacles, and exploration tasks, use these 
 
 All cards in _caRdPG_ are designed to be printed on standard playing-card sized stock and must follow consistent structural schemas.
 
-### A. Action Cards (Player & NPC Decks)
+### A. Action & Deck Cards (Player & NPC Decks)
 
-Action cards represent active maneuvers, stances, and tactical techniques played during [[Crisis Time]] or committed during [[General Actions]].
+Action cards represent active maneuvers, attacks, and tactical techniques played during [[Crisis Time]] or committed during [[General Actions]]. They deserialize into [`CoreCard`](../../core/src/Core/Card.hs#L69-L84) and [`MasterCard`](../../core/src/Core/Card.hs#L204-L218) in the Haskell core engine.
+
+> [!TIP]
+> **Canonical Schema & Mini-DSL Guide:** See [Authoring Guide: Card Schemas and Mini-DSL Syntax](card-schemas-and-syntax.md) for full field definitions, milestone structures, and Mini-DSL parser grammar (`Attack`, `Action`, `Task`, `When`, `Passive:`). Reference card definitions live in [`data/cards/master/`](../../data/cards/master/).
 
 ```yaml
-title: "Heavy Shield Bash"
-type: "Attack" # Attack | Defend | Stance | Utility
-color: "Red" # Red (Force/Vigor) | Yellow (Grace/Finesse) | Blue (Focus/Will)
-value: 3 # Baseline numerical value in declared Color
-resource_cost: 1 # Number of additional cards from hand required to pay cost
-modifier: "+2 Strength" # Printed action modifier
-rules_text: "Target suffers Staggered on 3+ Impact."
-tags: ["Bludgeon", "Shield", "Melee"]
+# Schema excerpt: Master Deck Card (see card-schemas-and-syntax.md for full specification)
+id: "heavy-shield-bash"
+name: "Heavy Shield Bash"
+cost: 1 # Additional cards needed to play an action stack
+stats:
+  red: 3 # Force/Vigor value
+  yellow: 1 # Speed/Agility value
+  blue: 1 # Focus/Will value
+attack: "{Red}: Str = {Red} + 2 [Bludgeon, Shield] -> Target suffers Staggered on 3+ Impact."
+tags:
+  - "Martial"
+  - "Shield"
+  - "Melee"
+flavor: "Drive the boss of the shield directly into their guard."
 ```
 
 #### Authoring Rules for Action Cards:
 
 1. **The 10x Rule:** Action text must fit within 2–3 lines of physical card text. Complexity belongs in tactical hand combinations, not wall-of-text card rules.
-2. **Strict Keyword Usage:** Use recognized keywords (`Passive:`, `Resolve:`, `Reaction:`) defined in the [Keyword Glossary](../rules/keyword-glossary.md).
+2. **Strict Keyword & Parser Conformance:** Use recognized Mini-DSL rules keywords (`Action:`, `Task:`, `When`, `Passive:`, `Ongoing`) parsed by [`Core.Rules`](../../core/src/Core/Rules.hs).
 3. **Color Integrity:** Ensure the card's theme strictly adheres to [Colors of Action](../rules/colors-of-action.md) (Red = force/direct exertion, Yellow = agility/timing/precision, Blue = discipline/wit/perception).
 
 ---
