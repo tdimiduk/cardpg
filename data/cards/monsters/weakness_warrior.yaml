@@ -29,7 +29,7 @@ nature:
 - defense: 2
   name: Weakness Warrior
   resilience: 2
-  traits:
+  tags:
   - Sword
   - Shield
 tags:

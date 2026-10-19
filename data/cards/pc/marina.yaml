@@ -30,12 +30,10 @@ items:
 - name: Moon Hat
   tags:
   - Equipped
-  traits:
   - Moon
 - name: Sizzling Staff
   tags:
   - Equipped
-  traits:
   - Staff
 name: Marina
 nature:

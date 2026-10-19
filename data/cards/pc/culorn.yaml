@@ -32,7 +32,7 @@ nature:
   name: Hero
   resilience: 3
 - name: Culorn
-  traits:
+  tags:
   - Tree
   - mango
   - durian

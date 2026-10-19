@@ -29,21 +29,18 @@ items:
     knife you regain the use
   tags:
   - Equipped
-  traits:
   - pierce
   - thrown
   - 3 uses
 - name: Rapier
   tags:
   - Equipped
-  traits:
   - pierce
 - burden: 1
   defense: 3
   name: Leather Armor
   tags:
   - Equipped
-  traits:
   - armored
 name: swashbuckler
 nature:

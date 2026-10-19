@@ -48,7 +48,7 @@ calculateTotalBurden = do
         [ item
         | (_, (Identified _ (TCItem item), Equipped _)) <- Map.toList (tblSt ^. #assets)
         ]
-  let burden = sum [b | item <- equippedItems, let b = fromMaybe 0 (item ^. #burden)]
+  let burden = sum [b | item <- equippedItems, let b = fromMaybe 0 item.burden]
   return burden
 
 performFatigueCycle :: (RandomGen g) => GameM g ()

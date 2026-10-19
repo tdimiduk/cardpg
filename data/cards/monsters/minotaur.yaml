@@ -29,7 +29,7 @@ nature:
 - defense: 3
   name: Minotaur
   resilience: 2
-  traits:
+  tags:
   - Axe
 tags:
 - monster

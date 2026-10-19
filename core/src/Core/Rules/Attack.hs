@@ -12,7 +12,6 @@ import Control.Applicative (optional)
 import Data.Aeson (FromJSON (..), ToJSON (..), Value (..), genericParseJSON)
 import Data.List.NonEmpty (NonEmpty)
 import Data.List.NonEmpty qualified as NE
-import Data.Text (Text)
 import Data.Text qualified as T
 import GHC.Generics (Generic)
 import Text.Megaparsec (between, sepBy1, takeWhile1P, try)
@@ -20,6 +19,7 @@ import Text.Megaparsec.Char (char, space, space1, string, string')
 
 import Core.DSL (Parser, TextRep (..), hspace, parseText)
 import Core.Json (cardpgJsonOptions)
+import Core.Keyword (Keyword, keywordToText, mkKeyword)
 import Core.Language (cmdAttack, kwStr, sepArrow, sepColon)
 import Core.Layout (LayoutItem (..), renderLayoutText)
 import Core.RichText (RichText, richTextParser)
@@ -30,7 +30,7 @@ import Core.Stats (ResourceType (..), StackPower (..), resourceSymbol, stackPowe
 data AttackDef = AttackDef
   { power :: StackPower
   , resistedBy :: ResourceType
-  , consequences :: Maybe (NonEmpty Text)
+  , consequences :: Maybe (NonEmpty Keyword)
   , effect :: Maybe RichText
   }
   deriving (Show, Eq, Generic)
@@ -65,7 +65,7 @@ layoutAttackDef def =
       Nothing -> []
       Just cs ->
         [ Space
-        , Literal ("[" <> T.intercalate ", " (NE.toList cs) <> "]")
+        , Literal ("[" <> T.intercalate ", " (map keywordToText (NE.toList cs)) <> "]")
         ]
     <> case def.effect of
       Nothing -> []
@@ -92,7 +92,7 @@ attackParser = do
   extra <- optional richTextParser
   pure $ AttackDef power resistedBy mConsequences extra
 
-consequencesParser :: Parser (NonEmpty Text)
+consequencesParser :: Parser (NonEmpty Keyword)
 consequencesParser = between (char '[') (char ']') $ do
   tags <- sepBy1 consequenceTagParser (char ',')
   case NE.nonEmpty tags of
@@ -103,4 +103,6 @@ consequencesParser = between (char '[') (char ']') $ do
       hspace
       tag <- takeWhile1P (Just "consequence tag") (\c -> c /= ',' && c /= ']' && c /= '\n')
       hspace
-      pure (T.strip tag)
+      case mkKeyword tag of
+        Just kw -> pure kw
+        Nothing -> fail "Empty consequence tag"

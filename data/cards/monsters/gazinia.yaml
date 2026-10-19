@@ -30,7 +30,7 @@ nature:
   name: Gazinia
   passive: Can turn invisible
   resilience: 2
-  traits:
+  tags:
   - water
   - claws
   - teeth

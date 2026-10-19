@@ -92,7 +92,7 @@ flavor: "Find the structural seam and drive through with concussive weight."
 
 ### B. Table Cards: Items & Equipment (`ItemCard`)
 
-Items stay on the table in front of the player (or in pack containers). They provide defense, resilience, burden, and persistent passive traits. Defined in [`data/cards/items/`](file:///home/tdimiduk/cardpg/cardpg/data/cards/items/) or inline under an actor's `items:` block.
+Items stay on the table in front of the player (or in pack containers). They provide defense, resilience, burden, and persistent passive traits. Defined in [`data/cards/items/`](file:///home/tdimiduk/cardpg/cardpg/data/cards/items/) or inline under an actor's `items:` block. Defensive fields (`defense`, `resilience`, `burden`) are structured internally in a `DefenseProfile` but serialize as flat top-level YAML keys for authoring ergonomics.
 
 ```yaml
 # Schema: Item Card (data/cards/items/*.yaml)
@@ -100,16 +100,12 @@ name: "Mail Hauberk"
 defense: 3 # Defense provided against physical trauma
 resilience: 2 # Width of resilience row before condition escalation
 burden: 1 # Additional Fatigue cards added per Fatigue Cycle
-weight: 12 # Weight in kg (for pack carriage & load calculations)
-value: 45 # Economy value in silver coins
-traits:
-  - "armored"
-  - "mail"
-  - "torso"
 passive: "Grants Defense 3 against Slash and Puncture. Does not apply against Fatigue or Exertion."
 tags:
   - "Equipped"
   - "Armor"
+  - "mail"
+  - "torso"
 flavor: "Interlinked iron rings riveted over a thick padded gambeson."
 
 # Schema: Consumable Supply Item (data/cards/items/supplies.yaml)
@@ -124,20 +120,17 @@ tags:
 
 #### Field Specifications:
 
-| Field        | Haskell Type     | Required | Description                                                                                             |
-| :----------- | :--------------- | :------: | :------------------------------------------------------------------------------------------------------ |
-| `name`       | `NonEmptyText`   |   Yes    | Item title.                                                                                             |
-| `defense`    | `Maybe Int`      |    No    | Damage absorption threshold (cards grouped per completed Consequence).                                  |
-| `resilience` | `Maybe Int`      |    No    | Row capacity for condition severity escalation.                                                         |
-| `burden`     | `Maybe Int`      |    No    | Metabolic load ($2 + \text{Burden}$ Fatigue cards added per cycle).                                     |
-| `weight`     | `Maybe Int`      |    No    | Physical weight in kilograms.                                                                           |
-| `value`      | `Maybe Int`      |    No    | Commercial value in currency units.                                                                     |
-| `portions`   | `Maybe Int`      |    No    | Consumable portions/charges (e.g. food rations, water, fuel).                                           |
-| `traits`     | `Maybe [Text]`   |    No    | Functional keywords matching tool and obstacle affinities (`weapon`, `shield`, `cutting`, `axe`, etc.). |
-| `passive`    | `Maybe Text`     |    No    | Static card text detailing domain-specific protections or limitations.                                  |
-| `rules`      | `Maybe [Rule]`   |    No    | List of Mini-DSL rules or narrative guidelines associated with item usage.                              |
-| `tags`       | `Maybe [Text]`   |    No    | Categorical tags (`Equipped`, `Gear`, `Supply`, `Treasure`).                                            |
-| `flavor`     | `Maybe RichText` |    No    | Item backstory or sensory description.                                                                  |
+| Field        | Haskell Type      | Required | Description                                                                                         |
+| :----------- | :---------------- | :------: | :-------------------------------------------------------------------------------------------------- |
+| `name`       | `NonEmptyText`    |   Yes    | Item title.                                                                                         |
+| `defense`    | `Maybe Int`       |    No    | Damage absorption threshold (cards grouped per completed Consequence; part of `DefenseProfile`).    |
+| `resilience` | `Maybe Int`       |    No    | Row capacity for condition severity escalation (part of `DefenseProfile`).                          |
+| `burden`     | `Maybe Int`       |    No    | Metabolic load ($2 + \text{Burden}$ Fatigue cards added per cycle; part of `DefenseProfile`).       |
+| `portions`   | `Maybe Int`       |    No    | Consumable portions/charges (e.g. food rations, water, fuel).                                       |
+| `tags`       | `Maybe [Keyword]` |    No    | Categorical tags and functional keywords (`Equipped`, `Gear`, `Supply`, `weapon`, `cutting`, etc.). |
+| `passive`    | `Maybe Text`      |    No    | Static card text detailing domain-specific protections or limitations.                              |
+| `rules`      | `Maybe [Rule]`    |    No    | List of Mini-DSL rules or narrative guidelines associated with item usage.                          |
+| `flavor`     | `Maybe RichText`  |    No    | Item backstory or sensory description.                                                              |
 
 ---
 
@@ -150,13 +143,12 @@ Innate species attributes, backgrounds, and learned proficiencies:
 name: "Hardy Mountain Folk"
 defense: 1 # Innate baseline defense
 resilience: 3 # Innate physiological resilience
-traits:
-  - "acclimated-cold"
-  - "sure-footed"
 passive: "You gain +1 Defense against environmental Cold consequences."
 tags:
   - "Nature"
   - "Background"
+  - "acclimated-cold"
+  - "sure-footed"
 ```
 
 ---
@@ -407,13 +399,11 @@ deck:
 # Equipped Table Items
 items:
   - name: "Battleaxe"
-    traits: ["weapon", "cutting", "axe", "heavy weapon"]
-    tags: ["Equipped"]
+    tags: ["Equipped", "weapon", "cutting", "axe", "heavy weapon"]
   - name: "Light Mail"
     defense: 3
     burden: 1
-    tags: ["Equipped"]
-    traits: ["armored"]
+    tags: ["Equipped", "armored"]
 
 # Innate Characteristics
 nature:

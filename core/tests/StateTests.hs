@@ -12,7 +12,13 @@ import Test.Tasty
 import Test.Tasty.QuickCheck hiding (discard)
 
 import ArbitraryInstances ()
-import Core.Card (Identified (..), ItemCard (..), emptyItemCard)
+import Core.Card
+  ( DefenseProfile (..)
+  , Identified (..)
+  , ItemCard (..)
+  , emptyDefenseProfile
+  , emptyItemCard
+  )
 import Core.Hardcoded (fatigueCard)
 import Core.Logic.Deck (performFatigueCycle)
 import Core.Logic.Monad (runGameM)
@@ -44,7 +50,10 @@ prop_fatigueCycleCounts (Small burdenRaw) coreSt itemId =
 
     -- Construct ActorState with specific burden
     dummyItem :: ItemCard
-    dummyItem = (emptyItemCard (unsafeNonEmptyText "Heavy Armor")){burden = Just burden}
+    dummyItem =
+      (emptyItemCard (unsafeNonEmptyText "Heavy Armor"))
+        { defenses = emptyDefenseProfile{burden = Just burden}
+        }
 
     tableSt =
       TableState

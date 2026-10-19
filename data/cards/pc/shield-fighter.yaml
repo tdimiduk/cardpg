@@ -29,7 +29,6 @@ items:
 - name: Battleaxe
   tags:
   - Equipped
-  traits:
   - weapon
   - cutting
   - axe
@@ -37,14 +36,12 @@ items:
 - name: Kite Shield
   tags:
   - Equipped
-  traits:
   - shield
 - burden: 1
   defense: 3
   name: Light Mail
   tags:
   - Equipped
-  traits:
   - armored
 name: shield-fighter
 nature:

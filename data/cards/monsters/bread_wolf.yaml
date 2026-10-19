@@ -63,7 +63,7 @@ nature:
 - defense: 2
   name: Bread Wolf
   resilience: 2
-  traits:
+  tags:
   - Teeth Claws
 tags:
 - monster

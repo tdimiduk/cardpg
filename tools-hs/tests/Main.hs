@@ -439,13 +439,16 @@ test_exportAndSerialization =
         let mc =
               MasterCard
                 { id = "test-card"
-                , name = unsafeNonEmptyText "Test Card"
-                , tags = Just (NE.singleton "Martial")
-                , stats = Stats 3 2 1
-                , cost = Just 1
-                , attack = Nothing
-                , rules = Nothing
-                , flavor = Nothing
+                , card =
+                    CoreCard
+                      { name = unsafeNonEmptyText "Test Card"
+                      , tags = Just (NE.singleton "Martial")
+                      , stats = Stats 3 2 1
+                      , cost = Just 1
+                      , attack = Nothing
+                      , rules = Nothing
+                      , flavor = Nothing
+                      }
                 , rulesStatus = Just RulesOutdated
                 , legacyNotes = Just "Uses legacy syntax"
                 , milestones = Nothing
@@ -460,7 +463,7 @@ test_exportAndSerialization =
         let c = withCost 1 (emptyCoreCard (unsafeNonEmptyText "Slash") (Stats 4 2 2))
             grp = CardGroup "slash" c [CardOccurrence "f" c] CategoryMartial RulesCurrent Nothing
             mc = cardGroupToMasterCard grp
-        mc.tags @?= Just (NE.singleton "Martial")
+        mc.card.tags @?= Just (NE.singleton "Martial")
         mc.rulesStatus @?= Just RulesCurrent
     ]
 
@@ -480,13 +483,7 @@ test_deckRewriter =
             mc =
               MasterCard
                 { id = "shield-bash"
-                , name = unsafeNonEmptyText "Shield Bash"
-                , tags = Nothing
-                , stats = Stats 2 1 3
-                , cost = Nothing
-                , attack = Nothing
-                , rules = Nothing
-                , flavor = Nothing
+                , card = baseCard
                 , rulesStatus = Just RulesCurrent
                 , legacyNotes = Nothing
                 , milestones = Nothing
@@ -526,13 +523,7 @@ test_deckRewriter =
         let mc =
               MasterCard
                 { id = "quick-jab"
-                , name = unsafeNonEmptyText "Quick Jab"
-                , tags = Nothing
-                , stats = Stats 2 1 1
-                , cost = Nothing
-                , attack = Nothing
-                , rules = Nothing
-                , flavor = Nothing
+                , card = emptyCoreCard (unsafeNonEmptyText "Quick Jab") (Stats 2 1 1)
                 , rulesStatus = Just RulesCurrent
                 , legacyNotes = Nothing
                 , milestones = Nothing
@@ -602,13 +593,7 @@ test_dataIntegrity =
         let mc =
               MasterCard
                 { id = "strike"
-                , name = unsafeNonEmptyText "Strike"
-                , tags = Nothing
-                , stats = Stats 3 2 2
-                , cost = Nothing
-                , attack = Nothing
-                , rules = Nothing
-                , flavor = Nothing
+                , card = emptyCoreCard (unsafeNonEmptyText "Strike") (Stats 3 2 2)
                 , rulesStatus = Just RulesCurrent
                 , legacyNotes = Nothing
                 , milestones = Nothing

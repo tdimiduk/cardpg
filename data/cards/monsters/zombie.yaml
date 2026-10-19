@@ -60,9 +60,5 @@ nature:
   name: Zombie
   passive: Always attacks or blocks if possible
   resilience: 2
-  specialDefend:
-    blue: red
-    red: red
-    yellow: red
 tags:
 - monster

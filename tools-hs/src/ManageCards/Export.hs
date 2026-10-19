@@ -25,27 +25,13 @@ import ManageCards.Types
 -- | Convert a CardGroup into a canonical MasterCard ready for database export.
 cardGroupToMasterCard :: CardGroup -> MasterCard
 cardGroupToMasterCard grp =
-  let CoreCard
-        { name = cName
-        , tags = cTags
-        , stats = cStats
-        , cost = cCost
-        , attack = cAttack
-        , rules = cRules
-        , flavor = cFlavor
-        } = grp.baseCard
-      finalTags = case cTags of
+  let finalTags = case grp.baseCard.tags of
         Just ts -> Just ts
         Nothing -> Just (NE.singleton (categoryTag grp.category))
+      c = grp.baseCard{tags = finalTags}
    in MasterCard
         { id = grp.canonicalSlug
-        , name = cName
-        , tags = finalTags
-        , stats = cStats
-        , cost = cCost
-        , attack = cAttack
-        , rules = cRules
-        , flavor = cFlavor
+        , card = c
         , rulesStatus = Just grp.rulesStatus
         , legacyNotes = grp.legacyNotes
         , milestones = Nothing

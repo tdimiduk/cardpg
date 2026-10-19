@@ -16,7 +16,16 @@ import GHC.Generics (Generic)
 import GHC.Records qualified
 
 import Control.Lens qualified as L
-import Core.Card (CardInstance, ConsequenceCard, CoreCard, ItemCard, NatureCard, TalentCard)
+import Core.Card
+  ( CardInstance
+  , ConsequenceCard
+  , CoreCard
+  , DefenseProfile (..)
+  , ItemCard
+  , Keyword
+  , NatureCard
+  , TalentCard
+  )
 import Core.Json (cardpgJsonDef)
 import Core.NonEmptyText (NonEmptyText)
 import Core.Primitives
@@ -280,25 +289,6 @@ instance GPF.HasField "passive" TableCard TableCard (Maybe Text) (Maybe Text) wh
         TCNature x -> TCNature (L.set (GPF.field @"passive") val x)
         TCTalent x -> TCTalent (L.set (GPF.field @"passive") val x)
 
--- | Custom instances for TableCard's traits field (Maybe (NonEmpty Text))
-instance GHC.Records.HasField "traits" TableCard (Maybe (NonEmpty Text)) where
-  getField = \case
-    TCItem x -> L.view (GPF.field @"traits") x
-    TCNature x -> L.view (GPF.field @"traits") x
-    TCTalent x -> L.view (GPF.field @"traits") x
-
-instance GPF.HasField "traits" TableCard TableCard (Maybe (NonEmpty Text)) (Maybe (NonEmpty Text)) where
-  field = L.lens getter setter
-    where
-      getter = \case
-        TCItem x -> L.view (GPF.field @"traits") x
-        TCNature x -> L.view (GPF.field @"traits") x
-        TCTalent x -> L.view (GPF.field @"traits") x
-      setter tc val = case tc of
-        TCItem x -> TCItem (L.set (GPF.field @"traits") val x)
-        TCNature x -> TCNature (L.set (GPF.field @"traits") val x)
-        TCTalent x -> TCTalent (L.set (GPF.field @"traits") val x)
-
 -- | Custom instances for TableCard's flavor field (Maybe RichText)
 instance GHC.Records.HasField "flavor" TableCard (Maybe RichText) where
   getField = \case
@@ -318,52 +308,108 @@ instance GPF.HasField "flavor" TableCard TableCard (Maybe RichText) (Maybe RichT
         TCNature x -> TCNature (L.set (GPF.field @"flavor") val x)
         TCTalent x -> TCTalent (L.set (GPF.field @"flavor") val x)
 
--- | Custom instances for TableCard's defense field (Maybe Int)
-instance GHC.Records.HasField "defense" TableCard (Maybe Int) where
+-- | Custom instances for TableCard's defenses field (DefenseProfile)
+instance {-# OVERLAPPING #-} GHC.Records.HasField "defenses" TableCard DefenseProfile where
   getField = \case
-    TCItem x -> L.view (GPF.field @"defense") x
-    TCNature x -> L.view (GPF.field @"defense") x
-    TCTalent x -> L.view (GPF.field @"defense") x
+    TCItem x -> L.view (GPF.field @"defenses") x
+    TCNature x -> L.view (GPF.field @"defenses") x
+    TCTalent x -> L.view (GPF.field @"defenses") x
 
-instance GPF.HasField "defense" TableCard TableCard (Maybe Int) (Maybe Int) where
+instance {-# OVERLAPPING #-} GPF.HasField "defenses" TableCard TableCard DefenseProfile DefenseProfile where
   field = L.lens getter setter
     where
       getter = \case
-        TCItem x -> L.view (GPF.field @"defense") x
-        TCNature x -> L.view (GPF.field @"defense") x
-        TCTalent x -> L.view (GPF.field @"defense") x
+        TCItem x -> L.view (GPF.field @"defenses") x
+        TCNature x -> L.view (GPF.field @"defenses") x
+        TCTalent x -> L.view (GPF.field @"defenses") x
       setter tc val = case tc of
-        TCItem x -> TCItem (L.set (GPF.field @"defense") val x)
-        TCNature x -> TCNature (L.set (GPF.field @"defense") val x)
-        TCTalent x -> TCTalent (L.set (GPF.field @"defense") val x)
+        TCItem x -> TCItem (L.set (GPF.field @"defenses") val x)
+        TCNature x -> TCNature (L.set (GPF.field @"defenses") val x)
+        TCTalent x -> TCTalent (L.set (GPF.field @"defenses") val x)
+
+-- | Custom instances for TableCard's defense field (Maybe Int)
+instance {-# OVERLAPPING #-} GHC.Records.HasField "defense" TableCard (Maybe Int) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"defenses") x.defense
+    TCNature x -> L.view (GPF.field @"defenses") x.defense
+    TCTalent x -> L.view (GPF.field @"defenses") x.defense
+
+instance {-# OVERLAPPING #-} GPF.HasField "defense" TableCard TableCard (Maybe Int) (Maybe Int) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"defenses") x.defense
+        TCNature x -> L.view (GPF.field @"defenses") x.defense
+        TCTalent x -> L.view (GPF.field @"defenses") x.defense
+      setter tc val = case tc of
+        TCItem x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCItem (L.set (GPF.field @"defenses") (cur{defense = val}) x)
+        TCNature x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCNature (L.set (GPF.field @"defenses") (cur{defense = val}) x)
+        TCTalent x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCTalent (L.set (GPF.field @"defenses") (cur{defense = val}) x)
 
 -- | Custom instances for TableCard's resilience field (Maybe Int)
-instance GHC.Records.HasField "resilience" TableCard (Maybe Int) where
+instance {-# OVERLAPPING #-} GHC.Records.HasField "resilience" TableCard (Maybe Int) where
   getField = \case
-    TCItem x -> L.view (GPF.field @"resilience") x
-    TCNature x -> L.view (GPF.field @"resilience") x
-    TCTalent x -> L.view (GPF.field @"resilience") x
+    TCItem x -> L.view (GPF.field @"defenses") x.resilience
+    TCNature x -> L.view (GPF.field @"defenses") x.resilience
+    TCTalent x -> L.view (GPF.field @"defenses") x.resilience
 
-instance GPF.HasField "resilience" TableCard TableCard (Maybe Int) (Maybe Int) where
+instance {-# OVERLAPPING #-} GPF.HasField "resilience" TableCard TableCard (Maybe Int) (Maybe Int) where
   field = L.lens getter setter
     where
       getter = \case
-        TCItem x -> L.view (GPF.field @"resilience") x
-        TCNature x -> L.view (GPF.field @"resilience") x
-        TCTalent x -> L.view (GPF.field @"resilience") x
+        TCItem x -> L.view (GPF.field @"defenses") x.resilience
+        TCNature x -> L.view (GPF.field @"defenses") x.resilience
+        TCTalent x -> L.view (GPF.field @"defenses") x.resilience
       setter tc val = case tc of
-        TCItem x -> TCItem (L.set (GPF.field @"resilience") val x)
-        TCNature x -> TCNature (L.set (GPF.field @"resilience") val x)
-        TCTalent x -> TCTalent (L.set (GPF.field @"resilience") val x)
+        TCItem x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCItem (L.set (GPF.field @"defenses") (cur{resilience = val}) x)
+        TCNature x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCNature (L.set (GPF.field @"defenses") (cur{resilience = val}) x)
+        TCTalent x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCTalent (L.set (GPF.field @"defenses") (cur{resilience = val}) x)
 
--- | Custom instances for TableCard's tags field (Maybe (NonEmpty Text))
-instance GHC.Records.HasField "tags" TableCard (Maybe (NonEmpty Text)) where
+-- | Custom instances for TableCard's burden field (Maybe Int)
+instance {-# OVERLAPPING #-} GHC.Records.HasField "burden" TableCard (Maybe Int) where
+  getField = \case
+    TCItem x -> L.view (GPF.field @"defenses") x.burden
+    TCNature x -> L.view (GPF.field @"defenses") x.burden
+    TCTalent x -> L.view (GPF.field @"defenses") x.burden
+
+instance {-# OVERLAPPING #-} GPF.HasField "burden" TableCard TableCard (Maybe Int) (Maybe Int) where
+  field = L.lens getter setter
+    where
+      getter = \case
+        TCItem x -> L.view (GPF.field @"defenses") x.burden
+        TCNature x -> L.view (GPF.field @"defenses") x.burden
+        TCTalent x -> L.view (GPF.field @"defenses") x.burden
+      setter tc val = case tc of
+        TCItem x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCItem (L.set (GPF.field @"defenses") (cur{burden = val}) x)
+        TCNature x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCNature (L.set (GPF.field @"defenses") (cur{burden = val}) x)
+        TCTalent x ->
+          let cur = L.view (GPF.field @"defenses") x
+           in TCTalent (L.set (GPF.field @"defenses") (cur{burden = val}) x)
+
+-- | Custom instances for TableCard's tags field (Maybe (NonEmpty Keyword))
+instance {-# OVERLAPPING #-} GHC.Records.HasField "tags" TableCard (Maybe (NonEmpty Keyword)) where
   getField = \case
     TCItem x -> L.view (GPF.field @"tags") x
     TCNature x -> L.view (GPF.field @"tags") x
     TCTalent x -> L.view (GPF.field @"tags") x
 
-instance GPF.HasField "tags" TableCard TableCard (Maybe (NonEmpty Text)) (Maybe (NonEmpty Text)) where
+instance {-# OVERLAPPING #-} GPF.HasField "tags" TableCard TableCard (Maybe (NonEmpty Keyword)) (Maybe (NonEmpty Keyword)) where
   field = L.lens getter setter
     where
       getter = \case

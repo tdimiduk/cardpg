@@ -29,12 +29,10 @@ items:
     deck'
   tags:
   - Equipped
-  traits:
   - 4 uses
 - name: Great Hammer
   tags:
   - Equipped
-  traits:
   - impact
   - pierce
   - large weapon
@@ -43,7 +41,6 @@ items:
   name: Breastplate and Mail
   tags:
   - Equipped
-  traits:
   - armored
   - heavy
   - deflecting

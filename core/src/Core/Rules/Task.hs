@@ -20,7 +20,6 @@ import Control.Monad (void)
 import Data.Aeson.TH (deriveJSON)
 import Data.List (find)
 import Data.Maybe (catMaybes, fromMaybe)
-import Data.Text (Text)
 import Data.Text qualified as T
 import GHC.Generics (Generic)
 import Text.Megaparsec (choice, eof, lookAhead, sepBy1, try)
@@ -28,6 +27,7 @@ import Text.Megaparsec.Char (char, space, string')
 
 import Core.DSL (Parser, hspace, hspace1, toText)
 import Core.Json (cardpgJsonDef)
+import Core.Keyword (Keyword, keywordToText, unsafeKeyword)
 import Core.Language (cmdTask, kwCheck, kwCost, kwRequires, kwTime, sepArrow, sepComma, sepSemi)
 import Core.Layout (LayoutItem (..), intercalateLayout, layoutWrapper)
 import Core.NonEmptyText (NonEmptyText, getRawText, takeWhilePNonEmptyStripped)
@@ -39,14 +39,14 @@ import Core.Time (Duration, durationParser)
 -- | A prerequisite or condition for performing a task.
 data Requirement
   = -- | A recognized mechanical tag (e.g. "Haven", "Campfire", "Shelter", "Unburdened")
-    RequiredKeyword Text
+    RequiredKeyword Keyword
   | -- | Narrative escape hatch for un-enumerated conditions
     RequiredCustom RichText
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Requirement)
 
-recognizedRequirementKeywords :: [Text]
+recognizedRequirementKeywords :: [Keyword]
 recognizedRequirementKeywords =
   [ "Haven"
   , "Campfire"
@@ -85,7 +85,7 @@ emptyTaskDef n eff =
     }
 
 layoutRequirement :: Requirement -> [LayoutItem]
-layoutRequirement (RequiredKeyword kw) = [Literal kw]
+layoutRequirement (RequiredKeyword kw) = [Literal (keywordToText kw)]
 layoutRequirement (RequiredCustom rt) = [RichContent rt]
 
 layoutTaskDef :: TaskDef -> [LayoutItem]
@@ -128,12 +128,12 @@ requirementItemParser = do
   keywordP <|> customP
   where
     keywordP = try $ do
-      kw <- choice [string' k | k <- recognizedRequirementKeywords]
+      kw <- choice [string' (keywordToText k) | k <- recognizedRequirementKeywords]
       _ <- hspace
       lookAhead (void (char ',') <|> void (char ';') <|> void (char ')') <|> eof)
       let canonicalKw =
-            fromMaybe kw $
-              find (\k -> T.toLower k == T.toLower kw) recognizedRequirementKeywords
+            fromMaybe (unsafeKeyword kw) $
+              find (\k -> T.toLower (keywordToText k) == T.toLower kw) recognizedRequirementKeywords
       pure (RequiredKeyword canonicalKw)
     customP = RequiredCustom <$> richTextParserWith ['\n', ',', ';', ')']
 

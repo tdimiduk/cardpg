@@ -55,6 +55,7 @@ library
     Core.Glossary.Types
     Core.Hardcoded
     Core.Json
+    Core.Keyword
     Core.Language
     Core.Layout
     Core.Logic.Bot

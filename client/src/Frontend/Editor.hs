@@ -11,12 +11,12 @@ import Data.Aeson (toJSON)
 import Data.Default (def)
 import Data.List.NonEmpty (NonEmpty, nonEmpty)
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, mapMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Text.Read (readMaybe)
 
-import Reflex.Dom.Core hiding (button)
+import Reflex.Dom.Core hiding (button, mapMaybe)
 
 -- Core imports
 import Core.Card
@@ -284,7 +284,7 @@ coreFieldsWidget nameDyn = do
         let neName = fromMaybe (unsafeNonEmptyText "Draft Card") (mkNonEmptyText nameVal)
             stats = Stats (parseNum redVal) (parseNum yellowVal) (parseNum blueVal)
             cost = readMaybe (T.unpack costVal)
-            tags = nonEmpty (filter (not . T.null) (map T.strip (T.splitOn "," tagsVal)))
+            tags = nonEmpty (mapMaybe (mkKeyword . T.strip) (T.splitOn "," tagsVal))
             flavor = unsafeSimpleString . getRawText <$> mkNonEmptyText flavorVal
 
             -- Forgiving parsing for live preview:
@@ -313,7 +313,7 @@ itemFieldsWidget
   -> m (Dynamic t CustomCard, Dynamic t Bool)
 itemFieldsWidget nameDyn = do
   passiveDyn <- textField "Passive Text" "+1 Defense"
-  traitsDyn <- textField "Traits (Comma-separated)" "Shield, Metal"
+  tagsDyn <- textField "Tags (Comma-separated)" "Shield, Metal"
   defenseDyn <- textField "Defense" "2"
   resilienceDyn <- textField "Resilience" "3"
   flavorDyn <- textareaField "Flavor Text" "A heavy iron shield."
@@ -321,33 +321,29 @@ itemFieldsWidget nameDyn = do
   let customCardDyn = do
         nameVal <- nameDyn
         passiveVal <- passiveDyn
-        traitsVal <- traitsDyn
+        tagsVal <- tagsDyn
         defVal <- defenseDyn
         resVal <- resilienceDyn
         flavorVal <- flavorDyn
 
         let neName = fromMaybe (unsafeNonEmptyText "Draft Item") (mkNonEmptyText nameVal)
             passive = if T.null passiveVal then Nothing else Just passiveVal
-            traits = nonEmpty (filter (not . T.null) (map T.strip (T.splitOn "," traitsVal)))
+            tags = nonEmpty (mapMaybe (mkKeyword . T.strip) (T.splitOn "," tagsVal))
             defense = readMaybe (T.unpack defVal)
             resilience = readMaybe (T.unpack resVal)
+            defenses = DefenseProfile defense resilience Nothing
             flavor = unsafeSimpleString . getRawText <$> mkNonEmptyText flavorVal
 
         return $
           CustomItem $
             ItemCard
               { name = neName
-              , tags = Nothing
-              , flavor = flavor
-              , weight = Nothing
-              , value = Nothing
-              , traits = traits
-              , passive = passive
-              , defense = defense
-              , resilience = resilience
-              , burden = Nothing
-              , rules = Nothing
+              , tags = tags
+              , defenses = defenses
               , portions = Nothing
+              , passive = passive
+              , rules = Nothing
+              , flavor = flavor
               }
 
   return (customCardDyn, constDyn False)
@@ -359,7 +355,7 @@ natureFieldsWidget
   -> m (Dynamic t CustomCard, Dynamic t Bool)
 natureFieldsWidget nameDyn = do
   passiveDyn <- textField "Passive Text" "An elf mage"
-  traitsDyn <- textField "Traits (Comma-separated)" "Elf, Spellcaster"
+  tagsDyn <- textField "Tags (Comma-separated)" "Elf, Spellcaster"
   defenseDyn <- textField "Defense" "1"
   resilienceDyn <- textField "Resilience" "2"
   flavorDyn <- textareaField "Flavor Text" ""
@@ -367,29 +363,27 @@ natureFieldsWidget nameDyn = do
   let customCardDyn = do
         nameVal <- nameDyn
         passiveVal <- passiveDyn
-        traitsVal <- traitsDyn
+        tagsVal <- tagsDyn
         defVal <- defenseDyn
         resVal <- resilienceDyn
         flavorVal <- flavorDyn
 
         let neName = fromMaybe (unsafeNonEmptyText "Draft Nature") (mkNonEmptyText nameVal)
             passive = if T.null passiveVal then Nothing else Just passiveVal
-            traits = nonEmpty (filter (not . T.null) (map T.strip (T.splitOn "," traitsVal)))
+            tags = nonEmpty (mapMaybe (mkKeyword . T.strip) (T.splitOn "," tagsVal))
             defense = readMaybe (T.unpack defVal)
             resilience = readMaybe (T.unpack resVal)
+            defenses = DefenseProfile defense resilience Nothing
             flavor = unsafeSimpleString . getRawText <$> mkNonEmptyText flavorVal
 
         return $
           CustomNature $
             NatureCard
               { name = neName
-              , tags = Nothing
-              , flavor = flavor
-              , traits = traits
+              , tags = tags
+              , defenses = defenses
               , passive = passive
-              , defense = defense
-              , resilience = resilience
-              , specialDefend = Nothing
+              , flavor = flavor
               }
 
   return (customCardDyn, constDyn False)
@@ -401,7 +395,7 @@ talentFieldsWidget
   -> m (Dynamic t CustomCard, Dynamic t Bool)
 talentFieldsWidget nameDyn = do
   passiveDyn <- textField "Passive Text" "Sword training"
-  traitsDyn <- textField "Traits (Comma-separated)" "Sword"
+  tagsDyn <- textField "Tags (Comma-separated)" "Sword"
   defenseDyn <- textField "Defense" "1"
   resilienceDyn <- textField "Resilience" "1"
   flavorDyn <- textareaField "Flavor Text" ""
@@ -409,28 +403,27 @@ talentFieldsWidget nameDyn = do
   let customCardDyn = do
         nameVal <- nameDyn
         passiveVal <- passiveDyn
-        traitsVal <- traitsDyn
+        tagsVal <- tagsDyn
         defVal <- defenseDyn
         resVal <- resilienceDyn
         flavorVal <- flavorDyn
 
         let neName = fromMaybe (unsafeNonEmptyText "Draft Talent") (mkNonEmptyText nameVal)
             passive = if T.null passiveVal then Nothing else Just passiveVal
-            traits = nonEmpty (filter (not . T.null) (map T.strip (T.splitOn "," traitsVal)))
+            tags = nonEmpty (mapMaybe (mkKeyword . T.strip) (T.splitOn "," tagsVal))
             defense = readMaybe (T.unpack defVal)
             resilience = readMaybe (T.unpack resVal)
+            defenses = DefenseProfile defense resilience Nothing
             flavor = unsafeSimpleString . getRawText <$> mkNonEmptyText flavorVal
 
         return $
           CustomTalent $
             TalentCard
               { name = neName
-              , tags = Nothing
-              , flavor = flavor
-              , traits = traits
+              , tags = tags
+              , defenses = defenses
               , passive = passive
-              , defense = defense
-              , resilience = resilience
+              , flavor = flavor
               }
 
   return (customCardDyn, constDyn False)

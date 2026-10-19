@@ -1,9 +1,12 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE LambdaCase #-}
 
 module Core.Card
   ( module Core.Rules
+  , module Core.Keyword
   , Stats (..)
-  , SpecialDefend
+  , DefenseProfile (..)
+  , emptyDefenseProfile
   , CoreCard (..)
   , ItemCard (..)
   , NatureCard (..)
@@ -37,27 +40,31 @@ module Core.Card
   , withCost
   ) where
 
+import Control.Applicative ((<|>))
 import Data.Aeson
   ( FromJSON (..)
-  , Options (..)
   , ToJSON (..)
   , Value (..)
-  , genericParseJSON
-  , genericToJSON
-  , toJSON
+  , withObject
+  , (.:)
+  , (.:?)
   )
 import Data.Aeson.KeyMap qualified as KM
 import Data.Aeson.TH (deriveJSON)
 import Data.Char (isAlphaNum, ord, toLower)
+import Data.List (nub)
 import Data.List.NonEmpty (NonEmpty)
+import Data.List.NonEmpty qualified as NE
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
-import Data.Maybe (fromMaybe)
+import Data.Maybe (catMaybes, fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import GHC.Generics (Generic)
+import GHC.Records qualified
 
 import Core.Json
+import Core.Keyword
 import Core.NonEmptyText (NonEmptyText, getRawText)
 import Core.Primitives (CardInstanceId, Identified (..))
 import Core.RichText (RichText)
@@ -67,11 +74,30 @@ import Core.Stats (ResourceType (..), Stats (..))
 
 type CardInstance a = Identified CardInstanceId a
 
-type SpecialDefend = Stats ResourceType
+data DefenseProfile = DefenseProfile
+  { defense :: Maybe Int
+  , resilience :: Maybe Int
+  , burden :: Maybe Int
+  }
+  deriving stock (Eq, Show, Generic)
+
+$(deriveJSON cardpgJsonDef ''DefenseProfile)
+
+emptyDefenseProfile :: DefenseProfile
+emptyDefenseProfile = DefenseProfile Nothing Nothing Nothing
+
+mergeTags :: Maybe (NonEmpty Keyword) -> Maybe (NonEmpty Keyword) -> Maybe (NonEmpty Keyword)
+mergeTags Nothing Nothing = Nothing
+mergeTags (Just ts) Nothing = Just ts
+mergeTags Nothing (Just trs) = Just trs
+mergeTags (Just ts) (Just trs) =
+  let combined = NE.toList ts ++ NE.toList trs
+      deduped = nub combined
+   in NE.nonEmpty deduped
 
 data CoreCard = CoreCard
   { name :: NonEmptyText
-  , tags :: Maybe (NonEmpty Text)
+  , tags :: Maybe (NonEmpty Keyword)
   , stats :: Stats Int
   , cost :: Maybe Int
   -- ^ Play Cost (Additional cards required from hand to form an Action Stack; total stack is Cost + 1).
@@ -91,37 +117,55 @@ $(deriveJSON cardpgJsonDef ''CoreCard)
 -- | Represents Items/Equipment that stay in play (Table Cards).
 data ItemCard = ItemCard
   { name :: NonEmptyText
-  , tags :: Maybe (NonEmpty Text)
-  , flavor :: Maybe RichText
-  , weight :: Maybe Int
-  , value :: Maybe Int
-  , traits :: Maybe (NonEmpty Text)
-  , passive :: Maybe Text
-  , defense :: Maybe Int
-  , resilience :: Maybe Int
-  , burden :: Maybe Int
-  , rules :: Maybe (NonEmpty Rule)
+  , tags :: Maybe (NonEmpty Keyword)
+  , defenses :: DefenseProfile
   , portions :: Maybe Int
+  , passive :: Maybe Text
+  , rules :: Maybe (NonEmpty Rule)
+  , flavor :: Maybe RichText
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''ItemCard)
+instance ToJSON ItemCard where
+  toJSON item =
+    let defObj = case toJSON item.defenses of
+          Object o -> o
+          _ -> KM.empty
+        base =
+          KM.fromList $
+            catMaybes
+              [ Just ("name", toJSON item.name)
+              , ("tags",) . toJSON <$> item.tags
+              , ("portions",) . toJSON <$> item.portions
+              , ("passive",) . toJSON <$> item.passive
+              , ("rules",) . toJSON <$> item.rules
+              , ("flavor",) . toJSON <$> item.flavor
+              ]
+     in Object (KM.union base defObj)
+
+instance FromJSON ItemCard where
+  parseJSON = withObject "ItemCard" $ \o -> do
+    name <- o .: "name"
+    mTags <- o .:? "tags"
+    mTraits <- o .:? "traits"
+    let tags = mergeTags mTags mTraits
+    defenses <- parseJSON (Object o)
+    portions <- o .:? "portions"
+    passive <- o .:? "passive"
+    rules <- o .:? "rules"
+    flavor <- o .:? "flavor"
+    pure $ ItemCard name tags defenses portions passive rules flavor
 
 emptyItemCard :: NonEmptyText -> ItemCard
 emptyItemCard n =
   ItemCard
     { name = n
     , tags = Nothing
-    , flavor = Nothing
-    , weight = Nothing
-    , value = Nothing
-    , traits = Nothing
-    , passive = Nothing
-    , defense = Nothing
-    , resilience = Nothing
-    , burden = Nothing
-    , rules = Nothing
+    , defenses = emptyDefenseProfile
     , portions = Nothing
+    , passive = Nothing
+    , rules = Nothing
+    , flavor = Nothing
     }
 
 emptyCoreCard :: NonEmptyText -> Stats Int -> CoreCard
@@ -142,31 +186,101 @@ withCost c card = card{cost = Just c}
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCard = NatureCard
   { name :: NonEmptyText
-  , tags :: Maybe (NonEmpty Text)
-  , flavor :: Maybe RichText
-  , traits :: Maybe (NonEmpty Text)
+  , tags :: Maybe (NonEmpty Keyword)
+  , defenses :: DefenseProfile
   , passive :: Maybe Text
-  , defense :: Maybe Int
-  , resilience :: Maybe Int
-  , specialDefend :: Maybe SpecialDefend
+  , flavor :: Maybe RichText
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''NatureCard)
+instance ToJSON NatureCard where
+  toJSON nature =
+    let defObj = case toJSON nature.defenses of
+          Object o -> o
+          _ -> KM.empty
+        base =
+          KM.fromList $
+            catMaybes
+              [ Just ("name", toJSON nature.name)
+              , ("tags",) . toJSON <$> nature.tags
+              , ("passive",) . toJSON <$> nature.passive
+              , ("flavor",) . toJSON <$> nature.flavor
+              ]
+     in Object (KM.union base defObj)
+
+instance FromJSON NatureCard where
+  parseJSON = withObject "NatureCard" $ \o -> do
+    name <- o .: "name"
+    mTags <- o .:? "tags"
+    mTraits <- o .:? "traits"
+    let tags = mergeTags mTags mTraits
+    defenses <- parseJSON (Object o)
+    passive <- o .:? "passive"
+    flavor <- o .:? "flavor"
+    pure $ NatureCard name tags defenses passive flavor
 
 -- | Represents Learned Skills/Training (Proficiencies, Feats).
 data TalentCard = TalentCard
   { name :: NonEmptyText
-  , tags :: Maybe (NonEmpty Text)
-  , flavor :: Maybe RichText
-  , traits :: Maybe (NonEmpty Text)
+  , tags :: Maybe (NonEmpty Keyword)
+  , defenses :: DefenseProfile
   , passive :: Maybe Text
-  , defense :: Maybe Int
-  , resilience :: Maybe Int
+  , flavor :: Maybe RichText
   }
   deriving stock (Eq, Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''TalentCard)
+instance ToJSON TalentCard where
+  toJSON talent =
+    let defObj = case toJSON talent.defenses of
+          Object o -> o
+          _ -> KM.empty
+        base =
+          KM.fromList $
+            catMaybes
+              [ Just ("name", toJSON talent.name)
+              , ("tags",) . toJSON <$> talent.tags
+              , ("passive",) . toJSON <$> talent.passive
+              , ("flavor",) . toJSON <$> talent.flavor
+              ]
+     in Object (KM.union base defObj)
+
+instance FromJSON TalentCard where
+  parseJSON = withObject "TalentCard" $ \o -> do
+    name <- o .: "name"
+    mTags <- o .:? "tags"
+    mTraits <- o .:? "traits"
+    let tags = mergeTags mTags mTraits
+    defenses <- parseJSON (Object o)
+    passive <- o .:? "passive"
+    flavor <- o .:? "flavor"
+    pure $ TalentCard name tags defenses passive flavor
+
+instance GHC.Records.HasField "defense" ItemCard (Maybe Int) where
+  getField (ItemCard _ _ d _ _ _ _) = d.defense
+
+instance GHC.Records.HasField "resilience" ItemCard (Maybe Int) where
+  getField (ItemCard _ _ d _ _ _ _) = d.resilience
+
+instance GHC.Records.HasField "burden" ItemCard (Maybe Int) where
+  getField (ItemCard _ _ d _ _ _ _) = d.burden
+
+instance GHC.Records.HasField "defense" NatureCard (Maybe Int) where
+  getField (NatureCard _ _ d _ _) = d.defense
+
+instance GHC.Records.HasField "resilience" NatureCard (Maybe Int) where
+  getField (NatureCard _ _ d _ _) = d.resilience
+
+instance GHC.Records.HasField "burden" NatureCard (Maybe Int) where
+  getField (NatureCard _ _ d _ _) = d.burden
+
+instance GHC.Records.HasField "defense" TalentCard (Maybe Int) where
+  getField (TalentCard _ _ d _ _) = d.defense
+
+instance GHC.Records.HasField "resilience" TalentCard (Maybe Int) where
+  getField (TalentCard _ _ d _ _) = d.resilience
+
+instance GHC.Records.HasField "burden" TalentCard (Maybe Int) where
+  getField (TalentCard _ _ d _ _) = d.burden
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef
@@ -197,7 +311,7 @@ $(deriveJSON cardpgJsonDef ''EncounterMechanics)
 -- | Represents Narrative Encounters/Events.
 data EncounterCard = EncounterCard
   { name :: NonEmptyText
-  , tags :: Maybe (NonEmpty Text)
+  , tags :: Maybe (NonEmpty Keyword)
   , narrative :: RichText
   , options :: Maybe (NonEmpty Text)
   , mechanics :: Maybe EncounterMechanics
@@ -209,7 +323,7 @@ $(deriveJSON cardpgJsonDef ''EncounterCard)
 -- | Represents Status Effects / Consequences.
 data ConsequenceCard = ConsequenceCard
   { name :: NonEmptyText
-  , tags :: Maybe (NonEmpty Text)
+  , tags :: Maybe (NonEmpty Keyword)
   , passive :: Maybe Text
   , effects :: Maybe (NonEmpty Text)
   , severity :: Int
@@ -239,42 +353,37 @@ $(deriveJSON cardpgJsonDef ''CardMilestone)
 
 -- | Represents a canonical card definition in the database.
 data MasterCard = MasterCard
-  { id :: Text -- Flat unique ID/slug (e.g. "sunder-armor")
-  , name :: NonEmptyText -- Display name (e.g. "Sunder Armor")
-  , tags :: Maybe (NonEmpty Text)
-  , stats :: Stats Int
-  , cost :: Maybe Int
-  , attack :: Maybe AttackDef
-  , rules :: Maybe (NonEmpty Rule)
-  , flavor :: Maybe RichText
+  { id :: Text
+  , card :: CoreCard
   , rulesStatus :: Maybe RulesStatus
   , legacyNotes :: Maybe Text
   , milestones :: Maybe (Map Text CardMilestone)
   }
   deriving stock (Eq, Show, Generic)
 
-masterCardJsonOptions :: Options
-masterCardJsonOptions =
-  cardpgJsonDef
-    { fieldLabelModifier = \case
-        "rulesStatus" -> "rules_status"
-        "legacyNotes" -> "legacy_notes"
-        f -> f
-    }
-
 instance ToJSON MasterCard where
-  toJSON = genericToJSON masterCardJsonOptions
+  toJSON mc =
+    let cardObj = case toJSON mc.card of
+          Object o -> o
+          _ -> KM.empty
+        masterFields =
+          KM.fromList $
+            catMaybes
+              [ Just ("id", toJSON mc.id)
+              , ("rules_status",) . toJSON <$> mc.rulesStatus
+              , ("legacy_notes",) . toJSON <$> mc.legacyNotes
+              , ("milestones",) . toJSON <$> mc.milestones
+              ]
+     in Object (KM.union masterFields cardObj)
 
 instance FromJSON MasterCard where
-  parseJSON (Object o) =
-    let o' = normalizeKey "rulesStatus" "rules_status" . normalizeKey "legacyNotes" "legacy_notes" $ o
-     in genericParseJSON masterCardJsonOptions (Object o')
-    where
-      normalizeKey oldKey newKey km =
-        case KM.lookup oldKey km of
-          Just val | not (KM.member newKey km) -> KM.insert newKey val (KM.delete oldKey km)
-          _ -> km
-  parseJSON v = genericParseJSON masterCardJsonOptions v
+  parseJSON = withObject "MasterCard" $ \o -> do
+    cardId <- o .: "id"
+    card <- parseJSON (Object o)
+    mRulesStatus <- o .:? "rules_status" <|> o .:? "rulesStatus"
+    mLegacyNotes <- o .:? "legacy_notes" <|> o .:? "legacyNotes"
+    mMilestones <- o .:? "milestones"
+    pure $ MasterCard cardId card mRulesStatus mLegacyNotes mMilestones
 
 -- | A card reference pointing to a master database entry with optional overrides.
 data CardReference = CardReference
@@ -307,7 +416,7 @@ instance FromJSON DeckEntry where
 -- | This is used for initialization and templates, not for running game state.
 data ActorDefinition = ActorDefinition
   { name :: Text
-  , tags :: Maybe (NonEmpty Text)
+  , tags :: Maybe (NonEmpty Keyword)
   , items :: [ItemCard]
   , nature :: [NatureCard]
   , deck :: [DeckEntry]
@@ -342,8 +451,8 @@ applyOverrides ref master =
         Map.lookup msKey msMap
 
       baseStats = case mMilestone of
-        Just ms | Just s <- ms.stats -> applyPartialStats s master.stats
-        _ -> master.stats
+        Just ms | Just s <- ms.stats -> applyPartialStats s master.card.stats
+        _ -> master.card.stats
 
       statsAfterRef = case ref.stats of
         Just s -> applyPartialStats s baseStats
@@ -355,23 +464,23 @@ applyOverrides ref master =
 
       finalCost = case mMilestone of
         Just ms | Just c <- ms.cost -> Just c
-        _ -> master.cost
+        _ -> master.card.cost
 
       finalAttack = case mMilestone of
         Just ms | Just a <- ms.attack -> Just a
-        _ -> master.attack
+        _ -> master.card.attack
 
       finalRules = case mMilestone of
         Just ms | Just r <- ms.rules -> Just r
-        _ -> master.rules
+        _ -> master.card.rules
    in CoreCard
-        { name = master.name
-        , tags = master.tags
+        { name = master.card.name
+        , tags = master.card.tags
         , stats = finalStats
         , cost = finalCost
         , attack = finalAttack
         , rules = finalRules
-        , flavor = master.flavor
+        , flavor = master.card.flavor
         }
 
 applyPartialStats :: Stats (Maybe Int) -> Stats Int -> Stats Int
@@ -392,29 +501,14 @@ applyDeltas deltas base =
 
 -- | Convert a MasterCard to a CoreCard with default values.
 masterCardToCoreCard :: MasterCard -> CoreCard
-masterCardToCoreCard m =
-  CoreCard
-    { name = m.name
-    , tags = m.tags
-    , stats = m.stats
-    , cost = m.cost
-    , attack = m.attack
-    , rules = m.rules
-    , flavor = m.flavor
-    }
+masterCardToCoreCard m = m.card
 
 -- | Convert a CoreCard to a canonical MasterCard.
 coreCardToMasterCard :: Text -> CoreCard -> MasterCard
 coreCardToMasterCard cardId c =
   MasterCard
     { id = cardId
-    , name = c.name
-    , tags = c.tags
-    , stats = c.stats
-    , cost = c.cost
-    , attack = c.attack
-    , rules = c.rules
-    , flavor = c.flavor
+    , card = c
     , rulesStatus = Just RulesCurrent
     , legacyNotes = Nothing
     , milestones = Nothing

@@ -29,19 +29,16 @@ items:
     deck'
   tags:
   - Equipped
-  traits:
   - 4 uses
 - name: Quarterstaff
   tags:
   - Equipped
-  traits:
   - weapon
   - impact
 - name: Arcane Training
   passive: You can cast arcane spells as long as you are not wearing armor
   tags:
   - Equipped
-  traits:
   - arcane
 name: wizard
 nature:

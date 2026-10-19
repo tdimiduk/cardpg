@@ -29,7 +29,7 @@ nature:
 - defense: 2
   name: Rainbow Incarnate
   resilience: 2
-  traits:
+  tags:
   - Red
   - Orange
   - Yellow

@@ -91,12 +91,12 @@ masterCardTests =
         Left err -> assertFailure $ "Failed to decode sample MasterCard: " ++ show err
         Right (mc :: MasterCard) -> do
           mc.id @?= "sunder-armor"
-          getRawText mc.name @?= "Sunder Armor"
-          mc.tags @?= Just ("Martial" NE.:| ["Attack"])
-          mc.stats @?= Stats{red = 4, yellow = 2, blue = 3}
-          mc.cost @?= Just 2
-          assertBool "Attack should be parsed" (isJust mc.attack)
-          assertBool "Rules should be parsed" (fmap length mc.rules == Just 1)
+          getRawText mc.card.name @?= "Sunder Armor"
+          mc.card.tags @?= Just ("Martial" NE.:| ["Attack"])
+          mc.card.stats @?= Stats{red = 4, yellow = 2, blue = 3}
+          mc.card.cost @?= Just 2
+          assertBool "Attack should be parsed" (isJust mc.card.attack)
+          assertBool "Rules should be parsed" (fmap length mc.card.rules == Just 1)
           mc.rulesStatus @?= Just RulesOutdated
           mc.legacyNotes @?= Just "Uses legacy armor bypass syntax"
           case mc.milestones of

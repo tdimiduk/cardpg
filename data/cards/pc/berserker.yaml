@@ -27,7 +27,6 @@ items:
 - name: Greateaxe
   tags:
   - Equipped
-  traits:
   - weapon
   - blade
   - axe

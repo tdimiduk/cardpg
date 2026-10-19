@@ -30,9 +30,5 @@ nature:
   name: Troll
   passive: recover 1 cards to bottom of deck per ukpeep
   resilience: 2
-  specialDefend:
-    blue: blue
-    red: red
-    yellow: red
 tags:
 - monster

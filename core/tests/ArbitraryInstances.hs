@@ -59,6 +59,14 @@ instance Arbitrary Text where
   arbitrary = T.pack <$> listOf (elements ['a' .. 'z'])
   shrink t = T.pack <$> shrink (T.unpack t)
 
+instance Arbitrary Keyword where
+  arbitrary = unsafeKeyword <$> arbitrary
+  shrink k = [unsafeKeyword (T.pack s) | s <- shrink (T.unpack (keywordToText k)), not (null s)]
+
+instance Arbitrary DefenseProfile where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary ResourceType where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
@@ -150,7 +158,7 @@ instance Arbitrary AttackDef where
       oneof
         [ pure Nothing
         , do
-            let validTag = T.pack <$> listOf1 (elements ['a' .. 'z'])
+            let validTag = unsafeKeyword . T.pack <$> listOf1 (elements ['a' .. 'z'])
             tags <- listOf1 validTag
             pure $ Just (NE.fromList tags)
         ]
@@ -180,13 +188,13 @@ instance Arbitrary Requirement where
         let validChar = elements ['a' .. 'z']
         s <-
           listOf1 validChar
-            `suchThat` (\w -> T.toLower (T.pack w) `notElem` map T.toLower recognizedRequirementKeywords)
+            `suchThat` (\w -> T.toLower (T.pack w) `notElem` map (T.toLower . keywordToText) recognizedRequirementKeywords)
         pure $ unsafeSimpleString (T.pack s)
   shrink (RequiredCustom rt) =
     [ RequiredCustom (unsafeSimpleString (T.pack s))
     | s <- shrink (T.unpack (toText rt))
     , not (null s)
-    , T.toLower (T.pack s) `notElem` map T.toLower recognizedRequirementKeywords
+    , T.toLower (T.pack s) `notElem` map (T.toLower . keywordToText) recognizedRequirementKeywords
     ]
   shrink _ = []
 

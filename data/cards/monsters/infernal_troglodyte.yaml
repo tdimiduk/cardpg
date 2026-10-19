@@ -45,7 +45,7 @@ nature:
 - defense: 3
   name: Infernal Troglodyte
   resilience: 2
-  traits:
+  tags:
   - claws
   - teeth
   - blindsight

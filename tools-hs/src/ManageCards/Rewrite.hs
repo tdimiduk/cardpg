@@ -91,17 +91,17 @@ findMatchingMasterCard catalog card =
       candidates =
         [ mc
         | mc <- Map.elems catalog
-        , getRawText mc.name == getRawText cName
-        , mc.attack == cAttack
-        , mc.rules == cRules
-        , mc.cost == cCost
-        , mc.flavor == cFlavor
+        , getRawText mc.card.name == getRawText cName
+        , mc.card.attack == cAttack
+        , mc.card.rules == cRules
+        , mc.card.cost == cCost
+        , mc.card.flavor == cFlavor
         ]
    in case candidates of
         [] -> Nothing
         (firstMatch : _) ->
           -- Prioritize exact stat match to avoid unnecessary overrides
-          case find (\m -> m.stats == cStats) candidates of
+          case find (\m -> m.card.stats == cStats) candidates of
             Just exact -> Just exact
             Nothing -> Just firstMatch
 
@@ -135,7 +135,7 @@ rewriteActorDefinition catalog actor =
               ref =
                 CardReference
                   { card = mc.id
-                  , stats = computeStatOverrides cStats mc.stats
+                  , stats = computeStatOverrides cStats mc.card.stats
                   , upgrades = Nothing
                   , milestone = Nothing
                   }

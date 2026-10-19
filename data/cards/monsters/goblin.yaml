@@ -30,7 +30,7 @@ nature:
   name: Goblin
   passive: All attacks copy per goblin
   resilience: 2
-  traits:
+  tags:
   - Sword
 tags:
 - monster

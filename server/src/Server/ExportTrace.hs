@@ -39,7 +39,7 @@ import System.Process (readProcessWithExitCode)
 import Text.Printf (printf)
 
 import Api.Types (LogPayload (..))
-import Core.Card (CardInstance, ConsequenceCard (..), CoreCard (..), Identified (..))
+import Core.Card (CardInstance, ConsequenceCard (..), CoreCard (..), Identified (..), keywordToText)
 import Core.DSL (toText)
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId (..), ChallengeId (..))
@@ -732,7 +732,7 @@ renderSingleConsequence ccard =
       name = getRawText c.name
       sev = c.severity
       tagsTxt = case c.tags of
-        Just ts -> ", Tags: " <> T.intercalate ", " (NE.toList ts)
+        Just ts -> ", Tags: " <> T.intercalate ", " (map keywordToText (NE.toList ts))
         Nothing -> ""
       passiveLine = case c.passive of
         Just p | not (T.null p) -> ["    - _Passive_: " <> p]

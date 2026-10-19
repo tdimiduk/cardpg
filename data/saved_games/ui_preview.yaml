@@ -252,7 +252,6 @@ actors:
                 name: Lightning Earrings
                 tags:
                   - Equipped
-                traits:
                   - Lightning
               tag: tCItem
             id: 541e66fc-39b0-41a1-879f-1d939be4adcf
@@ -263,7 +262,7 @@ actors:
               contents:
                 name: Vallhach
                 passive: An elf mage
-                traits:
+                tags:
                   - Fire
               tag: tCNature
             id: 5eefbda4-5734-4f2c-beb0-590e744b2086
@@ -293,7 +292,6 @@ actors:
                 name: Sun Belt
                 tags:
                   - Equipped
-                traits:
                   - Sun
               tag: tCItem
             id: c9343c4f-a0bd-4000-9b3f-ea0a8c252397
@@ -559,7 +557,7 @@ actors:
                 defense: 2
                 name: Wolf
                 resilience: 2
-                traits:
+                tags:
                   - Teeth Claws
               tag: tCNature
             id: f7c9dddc-99f2-44c6-8f63-67d726f8fa7a

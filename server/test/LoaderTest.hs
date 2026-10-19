@@ -31,6 +31,7 @@ import Core.Card
   , MasterCard (..)
   , RulesStatus (..)
   , Stats (..)
+  , emptyCoreCard
   )
 import Core.NonEmptyText (getRawText, unsafeNonEmptyText)
 import Core.State (ActorState (..), CoreCardState (..))
@@ -166,9 +167,9 @@ test_loader =
               Nothing -> assertBool "sunder-armor must exist" False
               Just mc -> do
                 mc.id @?= "sunder-armor"
-                getRawText mc.name @?= "Sunder Armor"
-                mc.stats.red @?= 2
-                mc.stats.blue @?= 0
+                getRawText mc.card.name @?= "Sunder Armor"
+                mc.card.stats.red @?= 2
+                mc.card.stats.blue @?= 0
                 mc.rulesStatus @?= Just RulesCurrent
         , testCase "Loads multi-card list YAML" $ withTempDir "test-mc-multi" $ \dir -> do
             let cardFile = dir </> "core.yaml"
@@ -178,8 +179,8 @@ test_loader =
             case Map.lookup "shield-bash" catalog of
               Nothing -> assertBool "shield-bash must exist" False
               Just mc -> do
-                getRawText mc.name @?= "Shield Bash"
-                mc.stats.blue @?= 2
+                getRawText mc.card.name @?= "Shield Bash"
+                mc.card.stats.blue @?= 2
             case Map.lookup "athletics" catalog of
               Nothing -> assertBool "athletics must exist" False
               Just mc -> do
@@ -288,13 +289,7 @@ test_loader =
             let mc =
                   MasterCard
                     { id = "quick-jab"
-                    , name = unsafeNonEmptyText "Quick Jab"
-                    , tags = Nothing
-                    , stats = Stats 3 0 0
-                    , cost = Nothing
-                    , attack = Nothing
-                    , rules = Nothing
-                    , flavor = Nothing
+                    , card = emptyCoreCard (unsafeNonEmptyText "Quick Jab") (Stats 3 0 0)
                     , rulesStatus = Just RulesCurrent
                     , legacyNotes = Nothing
                     , milestones = Nothing

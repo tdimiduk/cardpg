@@ -97,6 +97,7 @@ executable manage-cards
     , directory
     , filepath
     , optparse-applicative
+    , tools-hs
 
 executable bundle-topic
   import:         project-config

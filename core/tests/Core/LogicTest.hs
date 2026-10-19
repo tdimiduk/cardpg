@@ -14,10 +14,12 @@ import Core.Card
   ( CardInstance
   , ConsequenceCard (..)
   , CoreCard (..)
+  , DefenseProfile (..)
   , Identified (..)
   , ItemCard (..)
   , Stats (..)
   , emptyCoreCard
+  , emptyDefenseProfile
   , emptyItemCard
   )
 import Core.Logic.Deck (flipCardToDefense)
@@ -78,7 +80,8 @@ mkConsTemplate sev =
     }
 
 mkItemRes :: Int -> ItemCard
-mkItemRes res = (emptyItemCard (unsafeNonEmptyText "Armor")){resilience = Just res}
+mkItemRes res =
+  (emptyItemCard (unsafeNonEmptyText "Armor")){defenses = emptyDefenseProfile{resilience = Just res}}
 
 mkEnv :: [ConsequenceCard] -> GameEnv
 mkEnv consList =

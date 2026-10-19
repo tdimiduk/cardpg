@@ -38,7 +38,7 @@ nature:
 - defense: 3
   name: Spark Dragon
   resilience: 2
-  traits:
+  tags:
   - Lightning
   - Fire
   - Teeth

@@ -59,6 +59,7 @@ import Data.Text qualified as T
 import GHC.Generics (Generic)
 
 import Core.DSL (parseText)
+import Core.Keyword (Keyword)
 import Core.NonEmptyText (NonEmptyText)
 import Core.RichText (RichText)
 import Core.Stats (ResourceType)
@@ -111,7 +112,7 @@ newtype ModuleId = ModuleId {unModuleId :: Text}
 data ChallengeDef = ChallengeDef
   { color :: ResourceType
   , strength :: Int
-  , consequences :: Maybe (NonEmpty Text)
+  , consequences :: Maybe (NonEmpty Keyword)
   }
   deriving stock (Eq, Show, Generic)
 

@@ -30,12 +30,10 @@ items:
 - name: Sun Belt
   tags:
   - Equipped
-  traits:
   - Sun
 - name: Lightning Earrings
   tags:
   - Equipped
-  traits:
   - Lightning
 name: Vallhach
 nature:
@@ -44,7 +42,7 @@ nature:
   resilience: 3
 - name: Vallhach
   passive: An elf mage
-  traits:
+  tags:
   - Fire
 tags:
 - pc
