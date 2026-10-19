@@ -26,6 +26,19 @@ import Core.Card
   , NatureCard
   , TalentCard
   )
+import Core.Card.Exploration
+  ( ChallengeDef
+  , ClockDeckId
+  , ClockEffect
+  , ClockEventCard
+  , ClockEventId
+  , ExitStatus
+  , LocationCard
+  , LocationId
+  , ModuleId
+  , TravelCard
+  , TravelId
+  )
 import Core.Json (cardpgJsonDef)
 import Core.NonEmptyText (NonEmptyText)
 import Core.Primitives
@@ -41,6 +54,7 @@ import Core.Stats
   ( ResourceType
   , Stats (..)
   )
+import Core.Time (Duration, ExpeditionTime)
 import Data.Generics.Product.Fields qualified as GPF
 
 data DefenseDetails = DefenseDetails
@@ -240,6 +254,90 @@ data GameEnv = GameEnv
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEnv)
+
+--------------------------------------------------------------------------------
+-- Exploration & World State
+--------------------------------------------------------------------------------
+
+data Direction = Forward | Reverse
+  deriving stock (Show, Eq, Ord, Generic, Enum, Bounded)
+
+$(deriveJSON cardpgJsonDef ''Direction)
+
+data ExplorationFocus
+  = AtLocation LocationId
+  | OnTravel TravelId Direction
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ExplorationFocus)
+
+data ActiveClockEffect = ActiveClockEffect
+  { effect :: ClockEffect
+  , expiresAtMinute :: Maybe Int
+  , sourceCard :: Maybe ClockEventId
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ActiveClockEffect)
+
+data LocationRuntimeState = LocationRuntimeState
+  { exitStatuses :: Map LocationId ExitStatus
+  , activeEffects :: [ActiveClockEffect]
+  , enabledActions :: [Text]
+  , modifiedStrengths :: Map Text Int
+  , spawnedActors :: [Text]
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''LocationRuntimeState)
+
+data ClockDeckState = ClockDeckState
+  { drawPile :: [ClockEventCard]
+  , discardPile :: [ClockEventCard]
+  , tickInterval :: Duration
+  , accumulatedMinutes :: Int
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ClockDeckState)
+
+newtype LightSourceState = LightSourceState
+  { activeLight :: Maybe (Text, Int)
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''LightSourceState)
+
+data WorldState = WorldState
+  { moduleId :: Maybe ModuleId
+  , time :: ExpeditionTime
+  , focus :: ExplorationFocus
+  , locations :: Map LocationId LocationCard
+  , travelCards :: Map TravelId TravelCard
+  , locationStates :: Map LocationId LocationRuntimeState
+  , clockDecks :: Map ClockDeckId ClockDeckState
+  , lightState :: LightSourceState
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''WorldState)
+
+data ExplorationEvent
+  = TimeAdvanced Duration ExpeditionTime
+  | LightFuelDecreased (Maybe (Text, Int))
+  | LightExtinguished Text
+  | ClockEffectExpired LocationId ActiveClockEffect
+  | EffortCycleFlushed
+  | ClockCardDrawn ClockDeckId ClockEventCard
+  | ClockDeckShuffled ClockDeckId
+  | ClockEffectApplied LocationId ClockEffect
+  | ClockHazardTriggered LocationId ChallengeDef
+  | ActorsSpawned LocationId [Text]
+  | ExitStatusChanged LocationId LocationId ExitStatus
+  | PartyMoved ExplorationFocus ExplorationFocus
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ExplorationEvent)
 
 isActorReady :: ActorState -> Bool
 isActorReady as = isJust as.coreState.planned

@@ -15,6 +15,7 @@ import Core.LogicTest (test_logic)
 import ArbitraryInstances ()
 import CardParsingTest (test_cardParsing)
 import ConsequenceParsingTest (test_consequenceParsing)
+import ExplorationLogicTest (test_explorationLogic)
 import ExplorationParsingTest (test_explorationParsing)
 import GlossaryTest (test_glossary)
 import PlanningTests (test_planningLogic)
@@ -27,10 +28,11 @@ main :: IO ()
 main = do
   cardTests <- test_cardParsing
   explorationTests <- test_explorationParsing
-  defaultMain (tests cardTests explorationTests)
+  explorationLogicTests <- test_explorationLogic
+  defaultMain (tests cardTests explorationTests explorationLogicTests)
 
-tests :: TestTree -> TestTree -> TestTree
-tests cardTests explorationTests =
+tests :: TestTree -> TestTree -> TestTree -> TestTree
+tests cardTests explorationTests explorationLogicTests =
   testGroup
     "Tests"
     [ -- testProperty "CoreCard Roundtrip" $ prop_jsonRoundtrip @CoreCard
@@ -50,6 +52,7 @@ tests cardTests explorationTests =
     , test_planningLogic
     , cardTests
     , explorationTests
+    , explorationLogicTests
     ]
 
 prop_jsonRoundtrip :: (ToJSON a, FromJSON a, Eq a, Show a) => a -> Property

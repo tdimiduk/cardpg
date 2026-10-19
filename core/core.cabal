@@ -61,6 +61,7 @@ library
     Core.Logic.Bot
     Core.Logic.Combat
     Core.Logic.Deck
+    Core.Logic.Exploration
     Core.Logic.Monad
     Core.Logic.Planning
     Core.Logic.Status
@@ -91,6 +92,7 @@ test-suite core-test
     CardParsingTest
     ConsequenceParsingTest
     Core.LogicTest
+    ExplorationLogicTest
     ExplorationParsingTest
     GlossaryTest
     PlanningTests
