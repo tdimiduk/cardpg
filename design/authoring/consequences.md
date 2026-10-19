@@ -51,7 +51,7 @@ Characters in _caRdPG_ do not have static RPG ability scores—do **not** write 
 When a consequence makes actions harder or riskier, distinguish clearly between two distinct mechanisms:
 
 1. **Impairing Strength Accumulation (Indirectly Increases Flips):**
-   A condition can reduce how much [[Strength]] specific cards contribute during resolution (e.g., _"Flipped cards contribute at most 1 {Red} during marching or climbing checks"_ or _"Cards played from hand contribute -1 {Yellow}"_). Because each card contributes less toward the challenge's target Strength, the player is naturally forced to flip more cards from their deck—which in turn increases [[Impact]] through those extra flips.
+   A condition can reduce how much [[Strength]] specific cards contribute during resolution (e.g., _"Flipped cards contribute at most 1 {Red} during marching or climbing checks"_). Because each card contributes less toward the challenge's target Strength, the player is naturally forced to flip more cards from their deck—which in turn increases [[Impact]] through those extra flips.
 2. **Adding Direct Impact (Does Not Change Card Flips):**
    A condition can add flat [[Impact]] to an action resolution (e.g., _"When you flip one or more cards during a physical check, add +1 Impact to the resolution"_). This increases the consequence toll of exerting an injured body without changing how many cards are flipped to meet Strength.
 
@@ -71,7 +71,7 @@ The `rules:` block on a consequence card defines how characters treat or clear t
 
 1. **Field First Aid Stabilizes; It Does Not Instantly Heal Structural Trauma:**
    - Do **not** allow a 30-minute field task to erase a structural injury (like a wrenched ankle, deep laceration, or cracked rib) or merely swap it for a couple of `Fatigue` cards.
-   - Mundane field care (`Bandaging`, `Splinting`, `Poultice`) can **stop acute deterioration** (such as halting active bleeding) or **transition/mitigate** an untreated injury into a stabilized state, but torn ligaments, broken bones, and deep wounds require days or weeks of rest in a `Haven` (`Time 7 days; Requires Haven` or `Time 14 days; Requires Haven`) to actually clear from the table.
+   - Mundane field care (`Bandaging`, `Splinting`, `Poultice`) can **stop acute deterioration** (such as halting active bleeding) or **transition/mitigate** an untreated injury into a stabilized state, but torn ligaments, broken bones, and deep wounds require days or weeks of rest in a `Haven` (e.g. `Time 7 days; Requires Haven`) to actually clear from the table.
 2. **Transient Strains Can Clear in the Field:**
    - Short-term environmental or metabolic friction—such as surface chills, muscle cramps, parched throat, or grit in the eyes—can be removed directly through plausible short tasks (`Time 1 hour; Requires Campfire, dry clothes`, or consuming water/supplies during a rest stop).
 3. **Role of Magic:**
