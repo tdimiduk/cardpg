@@ -69,11 +69,18 @@ import Core.Time (Duration (..), ExpeditionTime (..), TimeUnit (..))
 -- Aeson Field Parsing Helpers
 --------------------------------------------------------------------------------
 
+-- | Parse the first matching optional key from an object.
+--
+-- Note: Do NOT chain optional lookups with @o .:? k1 <|> o .:? k2@ in 'Parser',
+-- because '.:?' succeeds with @pure Nothing@ when a key is absent, short-circuiting
+-- '<|>' without trying subsequent keys. 'altOpt' inspects each key in order and
+-- selects the first 'Just' value.
 altOpt :: (FromJSON a) => Object -> [Key] -> Parser (Maybe a)
 altOpt o keys = do
   results <- mapM (o .:?) keys
   pure $ foldr (<|>) Nothing results
 
+-- | Parse the first matching key with a fallback default.
 altDef :: (FromJSON a) => a -> Object -> [Key] -> Parser a
 altDef def o keys = fromMaybe def <$> altOpt o keys
 

@@ -234,7 +234,7 @@
               audit-index = {
                 enable = true;
                 name = "audit-index";
-                entry = "${project.tools-hs.components.exes.audit-index}/bin/audit-index";
+                entry = "./scripts/audit-index";
                 files = "^(design/|tools-hs/)";
                 pass_filenames = false;
               };

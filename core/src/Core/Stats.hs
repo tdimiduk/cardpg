@@ -198,27 +198,42 @@ legacyResource = between' (char '|') $ mkEnumParser toLegacy
     toLegacy Blue = "z"
 
 stackPowerParser :: Parser StackPower
-stackPowerParser = do
-  _ <- optional $ try $ do
-    _ <- string' kwStrength <|> string' "str"
-    _ <- hspace1
-    _ <- optional (char '=')
-    hspace
-  base <- resourceSymbol
-  _ <- hspace
-  modVal <- optional $ try $ do
-    sign <- (id <$ char '+') <|> (negate <$ char '-')
-    _ <- hspace
-    sign <$> decimal
-  _ <- hspace
-  conditional <- optional $ try $ do
-    _ <- char '('
-    notFollowedBy (string "Cost:")
-    content <- takeWhileP Nothing (/= ')')
-    _ <- char ')'
-    pure $ "(" <> content <> ")"
-  _ <- hspace -- Consume trailing hspace
-  pure $ StackPower base (fromMaybe 0 modVal) conditional
+stackPowerParser = try modFirst <|> baseFirst
+  where
+    parseConditional = optional $ try $ do
+      _ <- char '('
+      notFollowedBy (string "Cost:")
+      content <- takeWhileP Nothing (/= ')')
+      _ <- char ')'
+      pure $ "(" <> content <> ")"
+
+    modFirst = do
+      sign <- (id <$ char '+') <|> (negate <$ char '-')
+      _ <- hspace
+      val <- decimal
+      _ <- hspace
+      base <- resourceSymbol
+      _ <- hspace
+      cond <- parseConditional
+      _ <- hspace
+      pure $ StackPower base (sign val) cond
+
+    baseFirst = do
+      _ <- optional $ try $ do
+        _ <- string' kwStrength <|> string' "str"
+        _ <- hspace1
+        _ <- optional (char '=')
+        hspace
+      base <- resourceSymbol
+      _ <- hspace
+      modVal <- optional $ try $ do
+        sign <- (id <$ char '+') <|> (negate <$ char '-')
+        _ <- hspace
+        sign <$> decimal
+      _ <- hspace
+      conditional <- parseConditional
+      _ <- hspace
+      pure $ StackPower base (fromMaybe 0 modVal) conditional
 
 difficultyParser :: Parser Difficulty
 difficultyParser = do

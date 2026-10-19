@@ -5,6 +5,27 @@
 
 game_content_design:
   active_content:
+  - name: Card Database & Definitions (SSOT)
+    path: ../data/cards/
+    purpose: Authoritative Single Source of Truth (SSOT) for all cards, items, monsters,
+      player characters, and consequences.
+    source_type: directory
+    tags:
+    - doc-type:content-library
+    - audience:designer-facing
+    - audience:builder
+    - core-concept:cards
+    - core-concept:consequences
+    - core-concept:harm
+  - name: Card Schema & Notation Reference
+    path: ../data/cards/README.md
+    purpose: both
+    tags:
+    - doc-type:meta
+    - audience:designer-facing
+    - audience:builder
+    - audience:audit
+    - core-concept:cards
   - name: Consequence Decks
     path: https://docs.google.com/spreadsheets/u/0/d/1H49JzTbhXSZzbtooRIRm5wj3Kd9GD4Yq7xeztLDoRWU/edit
     purpose: The primary spreadsheet for consequence card design.
@@ -133,6 +154,13 @@ game_system_and_rules:
     tags:
     - doc-type:rules
     - audience:player-facing
+  - path: authoring/consequences.md
+    purpose: This guide provides practical instructions and design principles for
+      authors creating complications, injuries, physical strains, and status cards
+      for **caRdPG**.
+    tags:
+    - doc-type:guide
+    - audience:designer-facing
   lexicons:
   - path: rules/colors-of-action.md
     purpose: An extensive lexicon to guide classifying in-game actions into Red, Yellow,
@@ -197,12 +225,12 @@ global_registries:
   - doc-type:registry
   - audience:builder
 - path: ../data/cards/README.md
-  purpose: Technical documentation for the YAML schema and notation syntax used in
-    card definitions.
+  purpose: both
   tags:
   - doc-type:meta
   - audience:builder
   - audience:designer-facing
+  - audience:audit
 introductory_materials:
 - path: introduction.md
   purpose: The primary player-facing introduction to the game. Sets tone, theme, and

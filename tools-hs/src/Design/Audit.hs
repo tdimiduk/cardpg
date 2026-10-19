@@ -148,8 +148,9 @@ runAudit opts = do
         let fromIdx = Set.toList idxFiles
          in do
               missingFiles <- forM fromIdx $ \f -> do
-                exists <- doesFileExist (opts.designRoot </> f)
-                pure [f | not exists]
+                isFile <- doesFileExist (opts.designRoot </> f)
+                isDir <- doesDirectoryExist (opts.designRoot </> f)
+                pure [f | not (isFile || isDir)]
               let relMissingIdxs = map (normaliseRel . makeRelative opts.designRoot) missingIdxs
               pure $ Set.fromList (concat missingFiles ++ relMissingIdxs)
 

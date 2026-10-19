@@ -147,10 +147,13 @@ effects:
 
 ### D. Consequence Cards (Harm & Complications)
 
+> [!TIP]
+> **Canonical Authoring & Empirical Grounding:** See [Authoring Guide: Consequences and Status Conditions](consequences.md) for detailed clinical calibration, empirical recovery task benchmarks, and portability guidelines across resolution iterations.
+
 Consequence cards represent the physical, mental, and logistical fallout of exceeding [[Defense]] and [[Resilience]]. The game divides harm into two distinct mechanical forms:
 
 1. **Status Cards (In Your Deck):** Represent systemic attrition (`Fatigue`, `Injury`). They enter the expended pile, cycle into your active deck during [[Fatigue Cycles]], and dilute draw density with poor stats and unplayable hands.
-2. **Condition Cards (On the Table):** Represent acute tactical penalties or persistent ailments (`Sprained Ankle`, `Aching Quads`, `Concussion`). They sit face up on the table in rows determined by [[Resilience]], imposing persistent passive penalties until cleared by recovery tasks.
+2. **Condition Cards (On the Table):** Represent acute tactical penalties or persistent ailments (`Wrenched Ankle`, `Lead-Heavy Legs`, `Ringing Skull`). They sit face up on the table, imposing persistent passive friction until cleared by recovery tasks.
 
 #### 1. Status Card Schema (Deck Pollution)
 
@@ -163,33 +166,32 @@ When authoring custom status cards (such as severe regional blights, venom, or e
 
 ```yaml
 # Schema: Status Card (data/cards/status/)
-name: "Exhausted Muscles"
-flavor: "Your arms tremble under the weight of your weapon; lactic acid burns deep."
+name: "Trembling Limbs"
+flavor: "Your arms shake under the weight of your weapon; every muscle burns like lead."
 stats:
   red: 0 # Physical force compromised
   yellow: 0 # Agility compromised
   blue: 1 # Mental focus remains intact
 rules:
-  - "Task: Liniment & Rest (Check {Blue} 6; Time 8 Hours) → Remove this card."
+  - "Task: Liniment & Rest (Check {Blue} 6; Time 8 hours) → Remove this card."
 tags:
   - "Status"
   - "Fatigue"
   - "Physical"
 ```
 
-#### 2. Condition Card Schema (Tabletop Resilience Rows)
+#### 2. Condition Card Schema (Tabletop Conditions)
 
-Condition cards are defined in [`data/cards/consequences/`](file:///home/tdimiduk/cardpg/cardpg/data/cards/consequences/). They declare a severity tier (1, 2, or 3), passive penalties, and concrete removal tasks:
+Condition cards are defined in [`data/cards/consequences/`](file:///home/tdimiduk/cardpg/cardpg/data/cards/consequences/). They declare a severity tier, passive friction, and concrete removal tasks:
 
 ```yaml
 # Schema: Condition Card (data/cards/consequences/)
-name: "Aching Quads (DOMS)"
-severity: 1 # Row 1 = Severity 1; escalates when row width exceeds Resilience
-notes: "Delayed onset muscle soreness from eccentric strain during steep descents."
-passive: "When you flip cards to meet Strength during physical checks, add +1 Impact to your flipped stack."
+name: "Lead-Heavy Legs"
+severity: 1
+notes: "Delayed onset muscle soreness (DOMS) from eccentric strain during steep descents."
+passive: "When you flip one or more cards during a physical check, add +1 Impact to the resolution."
 rules:
-  - "Task: Rest Day (Time 24 Hours in Haven) → Remove this"
-  - "Task: Salve and Massage (Check {Blue} 6; Time 30 min) → Remove this"
+  - "Task: Rest Day (Time 24 hours; Requires Haven) → Remove this"
 tags:
   - "Exploration"
   - "Condition"

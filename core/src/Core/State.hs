@@ -330,17 +330,17 @@ instance {-# OVERLAPPING #-} GPF.HasField "defenses" TableCard TableCard Defense
 -- | Custom instances for TableCard's defense field (Maybe Int)
 instance {-# OVERLAPPING #-} GHC.Records.HasField "defense" TableCard (Maybe Int) where
   getField = \case
-    TCItem x -> L.view (GPF.field @"defenses") x.defense
-    TCNature x -> L.view (GPF.field @"defenses") x.defense
-    TCTalent x -> L.view (GPF.field @"defenses") x.defense
+    TCItem x -> x.defense
+    TCNature x -> x.defense
+    TCTalent x -> x.defense
 
 instance {-# OVERLAPPING #-} GPF.HasField "defense" TableCard TableCard (Maybe Int) (Maybe Int) where
   field = L.lens getter setter
     where
       getter = \case
-        TCItem x -> L.view (GPF.field @"defenses") x.defense
-        TCNature x -> L.view (GPF.field @"defenses") x.defense
-        TCTalent x -> L.view (GPF.field @"defenses") x.defense
+        TCItem x -> x.defense
+        TCNature x -> x.defense
+        TCTalent x -> x.defense
       setter tc val = case tc of
         TCItem x ->
           let cur = L.view (GPF.field @"defenses") x
@@ -355,17 +355,17 @@ instance {-# OVERLAPPING #-} GPF.HasField "defense" TableCard TableCard (Maybe I
 -- | Custom instances for TableCard's resilience field (Maybe Int)
 instance {-# OVERLAPPING #-} GHC.Records.HasField "resilience" TableCard (Maybe Int) where
   getField = \case
-    TCItem x -> L.view (GPF.field @"defenses") x.resilience
-    TCNature x -> L.view (GPF.field @"defenses") x.resilience
-    TCTalent x -> L.view (GPF.field @"defenses") x.resilience
+    TCItem x -> x.resilience
+    TCNature x -> x.resilience
+    TCTalent x -> x.resilience
 
 instance {-# OVERLAPPING #-} GPF.HasField "resilience" TableCard TableCard (Maybe Int) (Maybe Int) where
   field = L.lens getter setter
     where
       getter = \case
-        TCItem x -> L.view (GPF.field @"defenses") x.resilience
-        TCNature x -> L.view (GPF.field @"defenses") x.resilience
-        TCTalent x -> L.view (GPF.field @"defenses") x.resilience
+        TCItem x -> x.resilience
+        TCNature x -> x.resilience
+        TCTalent x -> x.resilience
       setter tc val = case tc of
         TCItem x ->
           let cur = L.view (GPF.field @"defenses") x
@@ -380,17 +380,17 @@ instance {-# OVERLAPPING #-} GPF.HasField "resilience" TableCard TableCard (Mayb
 -- | Custom instances for TableCard's burden field (Maybe Int)
 instance {-# OVERLAPPING #-} GHC.Records.HasField "burden" TableCard (Maybe Int) where
   getField = \case
-    TCItem x -> L.view (GPF.field @"defenses") x.burden
-    TCNature x -> L.view (GPF.field @"defenses") x.burden
-    TCTalent x -> L.view (GPF.field @"defenses") x.burden
+    TCItem x -> x.burden
+    TCNature x -> x.burden
+    TCTalent x -> x.burden
 
 instance {-# OVERLAPPING #-} GPF.HasField "burden" TableCard TableCard (Maybe Int) (Maybe Int) where
   field = L.lens getter setter
     where
       getter = \case
-        TCItem x -> L.view (GPF.field @"defenses") x.burden
-        TCNature x -> L.view (GPF.field @"defenses") x.burden
-        TCTalent x -> L.view (GPF.field @"defenses") x.burden
+        TCItem x -> x.burden
+        TCNature x -> x.burden
+        TCTalent x -> x.burden
       setter tc val = case tc of
         TCItem x ->
           let cur = L.view (GPF.field @"defenses") x

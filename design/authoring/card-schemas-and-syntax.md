@@ -107,7 +107,9 @@ tags:
   - "mail"
   - "torso"
 flavor: "Interlinked iron rings riveted over a thick padded gambeson."
+```
 
+```yaml
 # Schema: Consumable Supply Item (data/cards/items/supplies.yaml)
 name: "Waterskin"
 portions: 3 # Consumable charges/servings
@@ -155,6 +157,9 @@ tags:
 
 ### D. Consequence & Status Cards (`ConsequenceCard` & Status `CoreCard`)
 
+> [!TIP]
+> **Canonical Authoring & Portability Guide:** See [Authoring Guide: Consequences and Status Conditions](consequences.md) for detailed clinical calibration, empirical recovery task benchmarks, and guidance on authoring cards that remain portable across resolution iterations.
+
 Harm in _caRdPG_ operates on two distinct card layers:
 
 1. **Status Cards (In Your Deck):** Universal systemic fatigue and trauma that dilute deck density. Defined in [`data/cards/status/core.yaml`](file:///home/tdimiduk/cardpg/cardpg/data/cards/status/core.yaml).
@@ -197,13 +202,12 @@ Harm in _caRdPG_ operates on two distinct card layers:
 
 ```yaml
 # Schema: Condition Card (data/cards/consequences/exploration.yaml)
-- name: "Aching Quads (DOMS)"
+- name: "Lead-Heavy Legs"
   severity: 1 # 1 = minor friction, 2 = serious impediment, 3 = critical
-  notes: "Delayed onset muscle soreness from eccentric strain during steep descents."
-  passive: "When you flip cards to meet Strength during physical checks, add +1 Impact to your flipped stack."
+  notes: "Delayed onset muscle soreness (DOMS) from eccentric strain during steep descents."
+  passive: "When you flip one or more cards during a physical check, add +1 Impact to the resolution."
   rules:
-    - "Task: Rest Day (Time 24 Hours in Haven) → Remove this"
-    - "Task: Salve and Massage (Check {Blue} 6; Time 30 min) → Remove this"
+    - "Task: Rest Day (Time 24 hours; Requires Haven) → Remove this"
   tags:
     - "Exploration"
     - "Condition"
@@ -338,10 +342,10 @@ rules:
   - "Passive: +2 {Red} when attacking"
 
   # Defensive protection
-  - "Passive: +1 Defense against Physical attacks"
+  - "Passive: +1 {Red} when defending against Physical attacks"
 
   # Conditioning trait
-  - "Passive: +2 Defense against Exertion and Travel consequences"
+  - "Passive: +2 {Red} when resisting Exertion and Travel consequences"
 ```
 
 ---

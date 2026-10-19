@@ -5,7 +5,7 @@ The data is stored in **YAML** format, which combines structured fields (Stats, 
 
 **Format**: YAML
 **Extension**: `.yaml`
-**Location**: `design/data/cards/**/*.yaml`
+**Location**: `data/cards/**/*.yaml`
 
 ## Data Pipeline
 
@@ -16,14 +16,19 @@ The data is stored in **YAML** format, which combines structured fields (Stats, 
 ## Card Categories
 
 1.  **Deck Cards (`CoreCard`)**: Cards that go into a deck. They provide Stats (Red/Yellow/Blue) and contain a list of **Rules**.
-2.  **Table Cards (`ItemCard`, `NatureCard`)**: Cards that stay in play (Item, Monster, Character). They provide Defense, Resilience, and passive capabilities.
+2.  **Table Cards (`ItemCard`, `NatureCard`, `TalentCard`, `ConsequenceCard`)**: Cards that stay in play (Equipment, Nature, Talents, Conditions).
 
 ## Schema Reference
 
-**The authoritative schema is defined in the Haskell source code:**
-[`Core.Card`](../../core/src/Core/Card.hs)
+**The authoritative schemas and parsers are defined in the Haskell source code:**
+- [`Core.Card`](../../core/src/Core/Card.hs)
+- [`Core.Rules`](../../core/src/Core/Rules.hs)
 
-Refer to the Haskell types (`CoreCard`, `ItemCard`, `NatureCard`) for the exact list of required and optional fields.
+For comprehensive schema tables, YAML specifications, and Mini-DSL syntax rules, see:
+- [Authoring Guide: Card Schemas and Mini-DSL Syntax](../../design/authoring/card-schemas-and-syntax.md)
+- [Authoring Guide: Consequences and Status Conditions](../../design/authoring/consequences.md)
+
+Refer to the Haskell types (`CoreCard`, `MasterCard`, `ItemCard`, `NatureCard`, `ConsequenceCard`) for the exact list of required and optional fields.
 
 ### Key Concepts
 
@@ -62,8 +67,10 @@ This section defines the **strict syntax** required by the parser.
 
 ## Directory Structure
 
-- `core/`: Core deck cards.
-- `items/`: Equipment and Items.
-- `pc/`: Player Character definitions.
-- `monsters/`: Monster definitions.
-- `generated_cards.json`: **DO NOT COMMIT**. Build artifact.
+- `consequences/`: Table-facing condition and consequence cards (`ConsequenceCard`).
+- `items/`: Equipment, armor, weapons, and consumable supplies (`ItemCard`).
+- `master/`: Master deck card catalog techniques and spells (`MasterCard`).
+- `monsters/`: Monster definitions and adversary decks (`ActorDefinition`).
+- `pc/`: Player Character definitions and starting decks (`ActorDefinition`).
+- `status/`: Core deck-polluting status cards like `Fatigue` and `Injury` (`CoreCard`).
+- `generated_cards.json`: **DO NOT COMMIT**. Validated build artifact.
