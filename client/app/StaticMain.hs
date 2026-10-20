@@ -73,6 +73,7 @@ import Core.State
   , CoreCardState (..)
   , MapMode (..)
   , PlannedAction (..)
+  , mkActiveChallenge
   )
 import Core.Stats (ResourceType (..))
 import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
@@ -570,13 +571,7 @@ mockGameWidgetWithDefense gameState = do
     Nothing -> blank
     Just aid -> do
       let challengeId = ChallengeId (read "00000000-0000-0000-0000-000000000099")
-          challenge =
-            ActiveChallenge
-              { id = challengeId
-              , source = CSAdHoc "Fierce Attack" Nothing
-              , challengeStrength = 4
-              , challengeColor = Red
-              }
+          challenge = mkActiveChallenge challengeId (CSAdHoc "Fierce Attack" Nothing) 4 Red
           -- Use first card in deck as flipped card
           coreState = actorState.coreState :: CoreCardState
           defCards = take 1 coreState.deck

@@ -6,7 +6,8 @@
 
 module Core.State where
 
-import Data.Aeson.TH (deriveJSON)
+import Data.Aeson (FromJSON (..), withObject, (.!=), (.:), (.:?))
+import Data.Aeson.TH (deriveJSON, deriveToJSON)
 import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as M
@@ -118,15 +119,49 @@ data ChallengeSource
 
 $(deriveJSON cardpgJsonDef ''ChallengeSource)
 
+data ChallengeDomain
+  = CombatTrauma
+  | PhysicalLabor [Text]
+  | EnvironmentalHazard [Text]
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''ChallengeDomain)
+
 data ActiveChallenge = ActiveChallenge
   { id :: ChallengeId
   , source :: ChallengeSource
   , challengeStrength :: Int
   , challengeColor :: ResourceType
+  , challengeDomain :: ChallengeDomain
+  , consequencePool :: Maybe (NonEmpty Text)
+  , timePerImpact :: Maybe Duration
   }
   deriving stock (Show, Eq, Generic)
 
-$(deriveJSON cardpgJsonDef ''ActiveChallenge)
+$(deriveToJSON cardpgJsonDef ''ActiveChallenge)
+
+instance FromJSON ActiveChallenge where
+  parseJSON = withObject "ActiveChallenge" $ \o -> do
+    cid <- o .: "id"
+    src <- o .: "source"
+    str <- o .: "challengeStrength"
+    col <- o .: "challengeColor"
+    dom <- o .:? "challengeDomain" .!= CombatTrauma
+    pool <- o .:? "consequencePool"
+    tpi <- o .:? "timePerImpact"
+    pure $ ActiveChallenge cid src str col dom pool tpi
+
+mkActiveChallenge :: ChallengeId -> ChallengeSource -> Int -> ResourceType -> ActiveChallenge
+mkActiveChallenge cid src str col =
+  ActiveChallenge
+    { id = cid
+    , source = src
+    , challengeStrength = str
+    , challengeColor = col
+    , challengeDomain = CombatTrauma
+    , consequencePool = Nothing
+    , timePerImpact = Nothing
+    }
 
 data RevealedEffect
   = REPass
@@ -152,10 +187,45 @@ data CoreCardState = CoreCardState
   , defending :: Maybe ActiveDefense -- Currently committed to a defense
   , inPlay :: Map CardInstanceId (CardInstance CoreCard, CorePlayState) -- Buffs, Stances, Attached effects
   , revealed :: Maybe RevealedEffect
+  , vigilanceDial :: Int
+  , vigilancePool :: [CardInstance CoreCard]
+  , readiedCard :: Maybe (CardInstance CoreCard)
+  , committedVigilance :: Bool
   }
   deriving stock (Show, Eq, Generic)
 
-$(deriveJSON cardpgJsonDef ''CoreCardState)
+$(deriveToJSON cardpgJsonDef ''CoreCardState)
+
+instance FromJSON CoreCardState where
+  parseJSON = withObject "CoreCardState" $ \o -> do
+    deck <- o .: "deck"
+    hand <- o .: "hand"
+    discard <- o .: "discard"
+    planned <- o .:? "planned"
+    defending <- o .:? "defending"
+    inPlay <- o .:? "inPlay" .!= M.empty
+    revealed <- o .:? "revealed"
+    vigilanceDial <- o .:? "vigilanceDial" .!= 2
+    vigilancePool <- o .:? "vigilancePool" .!= []
+    readiedCard <- o .:? "readiedCard"
+    committedVigilance <- o .:? "committedVigilance" .!= False
+    pure CoreCardState{..}
+
+emptyCoreCardState :: CoreCardState
+emptyCoreCardState =
+  CoreCardState
+    { deck = []
+    , hand = []
+    , discard = []
+    , planned = Nothing
+    , defending = Nothing
+    , inPlay = M.empty
+    , revealed = Nothing
+    , vigilanceDial = 2
+    , vigilancePool = []
+    , readiedCard = Nothing
+    , committedVigilance = False
+    }
 
 data TableState = TableState
   { assets :: Map CardInstanceId (CardInstance TableCard, AssetState)
@@ -242,6 +312,14 @@ data GameEvent
     ConsequenceRemoved Text
   | -- | Round number
     RoundStarted Int
+  | -- | Vigilance Dial changed
+    VigilanceDialSet Int
+  | -- | Readied Card selected or cleared
+    CardReadied (Maybe (CardInstance CoreCard))
+  | -- | Vigilance committed to Hand
+    VigilanceCommitted
+  | -- | Vigilance flushed and refilled
+    VigilanceFlushed
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''GameEvent)
@@ -308,6 +386,17 @@ newtype LightSourceState = LightSourceState
 
 $(deriveJSON cardpgJsonDef ''LightSourceState)
 
+data TeamworkProgress = TeamworkProgress
+  { activeChallenge :: ActiveChallenge
+  , totalStrengthContributed :: Int
+  , totalCardsFlipped :: Int
+  , totalImpactTimeAdded :: Duration
+  , participatingActors :: [Text]
+  }
+  deriving stock (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''TeamworkProgress)
+
 data WorldState = WorldState
   { moduleId :: Maybe ModuleId
   , time :: ExpeditionTime
@@ -317,10 +406,24 @@ data WorldState = WorldState
   , locationStates :: Map LocationId LocationRuntimeState
   , clockDecks :: Map ClockDeckId ClockDeckState
   , lightState :: LightSourceState
+  , activeTeamworkChallenge :: Maybe TeamworkProgress
   }
   deriving stock (Show, Eq, Generic)
 
-$(deriveJSON cardpgJsonDef ''WorldState)
+$(deriveToJSON cardpgJsonDef ''WorldState)
+
+instance FromJSON WorldState where
+  parseJSON = withObject "WorldState" $ \o -> do
+    moduleId <- o .:? "moduleId"
+    time <- o .: "time"
+    focus <- o .: "focus"
+    locations <- o .: "locations"
+    travelCards <- o .: "travelCards"
+    locationStates <- o .: "locationStates"
+    clockDecks <- o .: "clockDecks"
+    lightState <- o .: "lightState"
+    activeTeamworkChallenge <- o .:? "activeTeamworkChallenge"
+    pure WorldState{..}
 
 data ExplorationEvent
   = TimeAdvanced Duration ExpeditionTime

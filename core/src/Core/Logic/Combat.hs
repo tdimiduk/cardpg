@@ -7,6 +7,8 @@ module Core.Logic.Combat
   , stackPower
   , calculateResilience
   , computeDefense
+  , computeDefenseForChallenge
+  , computeTagDefense
   , computeResilience
   , computeNextSeverity
   , computeDefenseDetails
@@ -19,11 +21,13 @@ import Data.List.NonEmpty (NonEmpty (..), toList)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
+import Data.Text qualified as T
 
 import Core.Card
   ( CoreCard (..)
   , Identified (..)
   )
+import Core.Keyword (keywordToText)
 import Core.Logic.Monad (GameM (..))
 import Core.Primitives (ChallengeId)
 import Core.Rules (AttackDef (..))
@@ -33,6 +37,7 @@ import Core.State
   , ActiveDefense (..)
   , ActorState (..)
   , AssetState (..)
+  , ChallengeDomain (..)
   , ChallengeSource (..)
   , CoreCardState (..)
   , DefenseDetails (..)
@@ -68,6 +73,9 @@ attackAction cid matPlan = case matPlan of
           , source = CSCard stack.actionCard.id
           , challengeStrength = stackPower stack attackRule.power
           , challengeColor = attackRule.resistedBy
+          , challengeDomain = CombatTrauma
+          , consequencePool = Nothing
+          , timePerImpact = Nothing
           }
   PPass -> Left "pass action"
   PNarrative (NarrativeStack{cards = cs, color = col}) ->
@@ -82,6 +90,9 @@ attackAction cid matPlan = case matPlan of
           , source = CSCard (let (h :| _) = cs in h.id) -- Safe as narrative stack must have cards
           , challengeStrength = rawTotal -- Modifier 0 for now
           , challengeColor = col -- Defense matches Action Color
+          , challengeDomain = CombatTrauma
+          , consequencePool = Nothing
+          , timePerImpact = Nothing
           }
 
 -- | Helper: get table cards in active states (Equipped, Trait)
@@ -102,6 +113,37 @@ computeDefense tblSt =
   let activeCards = getActiveTableCards tblSt
       maxDef = maximum (0 : map (fromMaybe 0 . (.defense)) activeCards)
    in max 1 maxDef
+
+-- | Pure function to compute defense from table state for an active challenge
+computeDefenseForChallenge :: Maybe ActiveChallenge -> TableState -> Int
+computeDefenseForChallenge Nothing tblSt = computeDefense tblSt
+computeDefenseForChallenge (Just challenge) tblSt = case challenge.challengeDomain of
+  CombatTrauma -> computeDefense tblSt
+  PhysicalLabor tags -> computeTagDefense tags tblSt
+  EnvironmentalHazard tags -> computeTagDefense tags tblSt
+
+-- | Tag-aware defense computation: innate baseline 1 or max defense of active cards
+-- sharing at least one tag with the challenge tags (case-insensitive, bracket-insensitive).
+computeTagDefense :: [Text] -> TableState -> Int
+computeTagDefense reqTags tblSt
+  | null reqTags = 1
+  | otherwise =
+      let normReq = map normalizeTag reqTags
+          activeCards = getActiveTableCards tblSt
+          cardMatches tc =
+            let cTags = cardTagTexts tc
+             in any (\ct -> normalizeTag ct `elem` normReq) cTags
+          matchingCards = filter cardMatches activeCards
+          maxMatching = maximum (0 : map (fromMaybe 0 . (.defense)) matchingCards)
+       in max 1 maxMatching
+
+normalizeTag :: Text -> Text
+normalizeTag = T.toLower . T.filter (\c -> c /= '[' && c /= ']' && c /= ' ')
+
+cardTagTexts :: TableCard -> [Text]
+cardTagTexts tc = case tc.tags of
+  Nothing -> []
+  Just kws -> map keywordToText (toList kws)
 
 -- | Pure function to compute resilience from table state
 computeResilience :: TableState -> Int
@@ -131,7 +173,8 @@ computeDefenseDetails ActorState{coreState, tableState} =
     CoreCardState{defending} = coreState
     TableState{consequences} = tableState
 
-    defStat = computeDefense tableState
+    mChallenge = fmap (\(ActiveDefense ch _) -> ch) defending
+    defStat = computeDefenseForChallenge mChallenge tableState
     resStat = computeResilience tableState
 
     defendingCards = case defending of

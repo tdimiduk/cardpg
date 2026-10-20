@@ -38,6 +38,8 @@ import Core.State
   , PlannedAction (..)
   , SpatialState (..)
   , TableState (..)
+  , emptyCoreCardState
+  , mkActiveChallenge
   )
 import Core.Stats (ResourceType (..), StackPower (..))
 
@@ -151,7 +153,7 @@ test_game =
         let cid = ChallengeId (read "00000000-0000-0000-0000-000000000001")
 
         -- We must inject a LogChallenge into history for the defense to work
-        let challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 1 Red
+        let challenge = mkActiveChallenge cid (CSAdHoc "test" Nothing) 1 Red
         let logPayload = LogChallenge challenge PPass
         let logEntry = LogEntry (LogId (read "00000000-0000-0000-0000-000000000099")) SenderGM logPayload
 
@@ -224,7 +226,7 @@ test_game =
 
         let deck = [card3, card4]
         let defId = ChallengeId (read "00000000-0000-0000-0000-000000000099")
-        let defChallenge = ActiveChallenge defId (CSAdHoc "test" Nothing) 1 Red
+        let defChallenge = mkActiveChallenge defId (CSAdHoc "test" Nothing) 1 Red
         let defending = Just $ ActiveDefense defChallenge [card1]
 
         let actorState =
@@ -689,16 +691,7 @@ mockResCard _name' =
 emptyActorState :: ActorState
 emptyActorState =
   ActorState
-    { coreState =
-        CoreCardState
-          { deck = []
-          , hand = []
-          , discard = []
-          , defending = Nothing
-          , inPlay = Map.empty
-          , planned = Nothing
-          , revealed = Nothing
-          }
+    { coreState = emptyCoreCardState
     , tableState =
         TableState
           { assets = Map.empty

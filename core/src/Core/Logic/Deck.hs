@@ -8,10 +8,15 @@ module Core.Logic.Deck
   , createCards
   , discardCards
   , returnCardsToDeck
+  , setVigilanceDial
+  , syncVigilanceToDial
+  , searchDeckForReadiedCard
+  , commitVigilancePool
+  , flushVigilanceCycle
   ) where
 
 import Control.Lens
-import Control.Monad (replicateM, when)
+import Control.Monad (replicateM, replicateM_, when)
 import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (modify)
 import Control.Monad.Trans.Class (lift)
@@ -19,6 +24,7 @@ import Data.Generics.Labels ()
 import Data.List (partition)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
+import Data.Text (Text)
 import System.Random (RandomGen, uniform)
 
 import Core.Card (CardInstance, CoreCard, Identified (..))
@@ -129,3 +135,106 @@ returnCardsToDeck cids = do
   newDeck <- GameM . lift $ shuffleListM (toReturn ++ currentDeck)
   modify $ #coreState . #deck .~ newDeck
   tell [DeckShuffled]
+
+-- | Set vigilance dial (clamped 0 to 4).
+setVigilanceDial :: Int -> GameM g ()
+setVigilanceDial d = do
+  let clamped = max 0 (min 4 d)
+  modify $ #coreState . #vigilanceDial .~ clamped
+  tell [VigilanceDialSet clamped]
+
+-- | Draw or trim face-down cards to match vigilance dial.
+syncVigilanceToDial :: (RandomGen g) => GameM g ()
+syncVigilanceToDial = do
+  dial <- use (#coreState . #vigilanceDial)
+  pool <- use (#coreState . #vigilancePool)
+  let curLen = length pool
+  if
+    | curLen < dial -> replicateM_ (dial - curLen) drawCardToVigilancePool
+    | curLen > dial -> do
+        let (excess, keep) = splitAt (curLen - dial) pool
+        modify $ #coreState . #vigilancePool .~ keep
+        modify $ #coreState . #discard %~ (excess ++)
+    | otherwise -> pure ()
+  where
+    drawCardToVigilancePool = do
+      curDeck <- use (#coreState . #deck)
+      case curDeck of
+        [] -> do
+          performFatigueCycle
+          drawCardToVigilancePool
+        (top : rest) -> do
+          modify $ #coreState . #deck .~ rest
+          modify $ #coreState . #vigilancePool %~ (top :)
+
+-- | Search deck for a card to place face-up in the Readied Card slot (costs 1 min in exploration).
+searchDeckForReadiedCard :: CardInstanceId -> GameM g (Either Text (CardInstance CoreCard))
+searchDeckForReadiedCard targetId = do
+  curDeck <- use (#coreState . #deck)
+  let (matches, remaining) = partition (\c -> c.id == targetId) curDeck
+  case matches of
+    [] -> pure $ Left "Card not found in deck"
+    (found : _) -> do
+      mExisting <- use (#coreState . #readiedCard)
+      case mExisting of
+        Just old -> modify $ #coreState . #discard %~ (old :)
+        Nothing -> pure ()
+      modify $ #coreState . #deck .~ remaining
+      modify $ #coreState . #readiedCard ?~ found
+      tell [CardReadied (Just found)]
+      pure $ Right found
+
+-- | Commit vigilance: moves face-down vigilance pool and readied card into hand during General Actions.
+commitVigilancePool :: GameM g ()
+commitVigilancePool = do
+  pool <- use (#coreState . #vigilancePool)
+  mReadied <- use (#coreState . #readiedCard)
+  let cardsToAdd = pool ++ maybeToList mReadied
+  modify $ #coreState . #hand %~ (cardsToAdd ++)
+  modify $ #coreState . #vigilancePool .~ []
+  modify $ #coreState . #readiedCard .~ Nothing
+  modify $ #coreState . #committedVigilance .~ True
+  tell [VigilanceCommitted]
+
+-- | Flush vigilance cycle: discards committed hand (or vigilance pool if uncommitted),
+-- optionally pays 2 deck cards to retain readied card, and redraws pool up to vigilance dial.
+flushVigilanceCycle :: (RandomGen g) => Bool -> GameM g ()
+flushVigilanceCycle retainReadied = do
+  isCommitted <- use (#coreState . #committedVigilance)
+  if isCommitted
+    then do
+      curHand <- use (#coreState . #hand)
+      modify $ #coreState . #discard %~ (curHand ++)
+      modify $ #coreState . #hand .~ []
+      modify $ #coreState . #committedVigilance .~ False
+    else do
+      pool <- use (#coreState . #vigilancePool)
+      modify $ #coreState . #discard %~ (pool ++)
+      modify $ #coreState . #vigilancePool .~ []
+
+  mReadied <- use (#coreState . #readiedCard)
+  case mReadied of
+    Just rc ->
+      if retainReadied
+        then discardFromDeck (2 :: Int)
+        else do
+          modify $ #coreState . #discard %~ (rc :)
+          modify $ #coreState . #readiedCard .~ Nothing
+          tell [CardReadied Nothing]
+    Nothing -> pure ()
+
+  syncVigilanceToDial
+  tell [VigilanceFlushed]
+  where
+    discardFromDeck :: (RandomGen g') => Int -> GameM g' ()
+    discardFromDeck 0 = pure ()
+    discardFromDeck n = do
+      curDeck <- use (#coreState . #deck)
+      case curDeck of
+        [] -> do
+          performFatigueCycle
+          discardFromDeck n
+        (top : rest) -> do
+          modify $ #coreState . #deck .~ rest
+          modify $ #coreState . #discard %~ (top :)
+          discardFromDeck (n - 1)

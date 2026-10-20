@@ -48,14 +48,8 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
     card3 = Identified c3Id dummyCard
 
     initialCore =
-      CoreCardState
-        { deck = []
-        , hand = [card1, card2, card3]
-        , discard = []
-        , defending = Nothing
-        , inPlay = Map.empty
-        , planned = Nothing
-        , revealed = Nothing
+      emptyCoreCardState
+        { hand = [card1, card2, card3]
         }
 
     initialActor =
@@ -84,12 +78,7 @@ test_resolutionCycle = testCase "Full Resolution Cycle" $ do
   -- 2. Defend with c3
   let cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
   let dummyChallenge =
-        ActiveChallenge
-          { id = cid
-          , source = CSAdHoc "Test Challenge" Nothing
-          , challengeStrength = 5
-          , challengeColor = Red
-          }
+        mkActiveChallenge cid (CSAdHoc "Test Challenge" Nothing) 5 Red
 
   let _defendAction = Logic.flipCardToDefense dummyChallenge :: GameM System.Random.StdGen ()
   -- TODO: check something about this defend action

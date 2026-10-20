@@ -52,14 +52,8 @@ mkActorState handCards =
     { name = "TestActor"
     , actorType = "Player"
     , coreState =
-        CoreCardState
-          { deck = []
-          , hand = handCards
-          , discard = []
-          , planned = Nothing
-          , defending = Nothing
-          , inPlay = Map.empty
-          , revealed = Nothing
+        emptyCoreCardState
+          { hand = handCards
           }
     , tableState = TableState Map.empty []
     , spatial = SpatialState 0 0 1 Nothing Nothing
@@ -292,7 +286,7 @@ test_defenseLogic :: TestTree
 test_defenseLogic =
   let
     cid = ChallengeId (read "00000000-0000-0000-0000-000000000099")
-    challenge = ActiveChallenge cid (CSAdHoc "test" Nothing) 3 Red
+    challenge = mkActiveChallenge cid (CSAdHoc "test" Nothing) 3 Red
     fatigueCard = emptyCoreCard (unsafeNonEmptyText "Fatigue") (Stats 0 0 0)
    in
     testGroup

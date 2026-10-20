@@ -4,6 +4,7 @@ module Core.Logic.Status
   ( addStatus
   , destroyStatus
   , addConsequence
+  , addConsequenceForChallenge
   , destroyConsequence
   , isDefeated
   ) where
@@ -13,6 +14,7 @@ import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (get, modify, put)
 import Control.Monad.Trans.Class (lift)
 import Data.Generics.Labels ()
+import Data.List.NonEmpty (toList)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -24,6 +26,7 @@ import Core.Card
   , CoreCard (..)
   , Identified (..)
   )
+import Core.Keyword (keywordToText)
 import Core.Logic.Combat (calculateResilience)
 import Core.Logic.Deck (createCards)
 import Core.Logic.Monad (GameM (..))
@@ -31,6 +34,7 @@ import Core.NonEmptyText (getRawText)
 import Core.Primitives (CardInstanceId, CardLocation (..))
 import Core.State
   ( ActionStack (..)
+  , ActiveChallenge (..)
   , ActorState (..)
   , CoreCardState (..)
   , GameEvent (..)
@@ -93,40 +97,72 @@ destroyStatus statusType maybeCardId = do
             Nothing -> return ()
 
 addConsequence :: (RandomGen g) => Maybe Int -> GameM g ()
-addConsequence maybeSeverity = do
-  finalSeverity <- case maybeSeverity of
-    Just s -> return s
-    Nothing -> do
-      res <- calculateResilience
-      tblSt <- use #tableState
-      let count = length (tblSt ^. #consequences)
-      return $ (count `div` res) + 1
+addConsequence = addConsequenceForChallenge Nothing
 
-  env <- ask
-  let candidates = filter (\c -> c.severity == finalSeverity) (Map.elems (env ^. #consequenceCardTemplates))
-
-  -- If no exact match for severity, maybe we should clamp or fallback?
-  -- For now, explicit filter as before.
-  case candidates of
-    [] -> return ()
+addConsequenceForChallenge
+  :: (RandomGen g)
+  => Maybe ActiveChallenge
+  -> Maybe Int
+  -> GameM g ()
+addConsequenceForChallenge mChallenge maybeSeverity = do
+  case mChallenge of
+    Just challenge
+      | Just pool <- challenge.consequencePool
+      , any (\p -> T.toLower (T.strip p) `elem` ["fatigue", "exhaustion"]) (toList pool) -> do
+          env <- ask
+          cards <- createCards (env ^. #fatigueCardTemplate) 1
+          case cards of
+            (card : _) -> do
+              modify $ #coreState . #discard %~ (card :)
+              tell [StatusAdded "Fatigue" LocationDiscard]
+            [] -> pure ()
     _ -> do
-      -- Pick random index
-      g <- GameM . lift $ get
-      let (idx, g') = uniformR (0, length candidates - 1) g
-      GameM . lift $ put g'
-      let template = candidates !! idx
+      finalSeverity <- case maybeSeverity of
+        Just s -> return s
+        Nothing -> do
+          res <- calculateResilience
+          tblSt <- use #tableState
+          let count = length (tblSt ^. #consequences)
+          return $ (count `div` res) + 1
 
-      -- Create a new ID
-      let (cid, g'') = uniform g'
-      GameM . lift $ put g''
+      env <- ask
+      let allTemplates = Map.elems (env ^. #consequenceCardTemplates)
+      let mPool = mChallenge >>= (.consequencePool)
+      let matchingTemplates = case mPool of
+            Nothing -> allTemplates
+            Just pool ->
+              let poolList = toList pool
+                  normPool = map (T.toLower . T.strip) poolList
+                  matchesCard c =
+                    let cName = T.toLower (getRawText c.name)
+                        cTags = maybe [] (map (T.toLower . keywordToText) . toList) c.tags
+                     in cName `elem` normPool || any (`elem` normPool) cTags
+                  poolMatches = filter matchesCard allTemplates
+               in if null poolMatches then allTemplates else poolMatches
 
-      let newConsequence = Identified cid template
+      let candidates = filter (\c -> c.severity == finalSeverity) matchingTemplates
+      let finalCandidates = if null candidates then matchingTemplates else candidates
 
-      -- Add to TableState list (no registry)
-      modify $ #tableState . #consequences %~ (newConsequence :)
+      case finalCandidates of
+        [] -> return ()
+        _ -> do
+          -- Pick random index
+          g <- GameM . lift $ get
+          let (idx, g') = uniformR (0, length finalCandidates - 1) g
+          GameM . lift $ put g'
+          let template = finalCandidates !! idx
 
-      tell [ConsequenceAdded newConsequence]
-      return ()
+          -- Create a new ID
+          let (cid, g'') = uniform g'
+          GameM . lift $ put g''
+
+          let newConsequence = Identified cid template
+
+          -- Add to TableState list (no registry)
+          modify $ #tableState . #consequences %~ (newConsequence :)
+
+          tell [ConsequenceAdded newConsequence]
+          return ()
 
 destroyConsequence :: CardInstanceId -> GameM g ()
 destroyConsequence cid = do

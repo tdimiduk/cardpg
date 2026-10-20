@@ -29,6 +29,9 @@ module Core.Logic.Exploration
   , extinguishLight
   , transitionViaExit
   , completeTravel
+  , startTeamworkChallenge
+  , contributeToTeamworkChallenge
+  , clearTeamworkChallenge
   ) where
 
 import Control.Monad.State (State)
@@ -39,6 +42,7 @@ import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import System.Random (StdGen)
 
+import Core.Card (CardInstance, CoreCard (..), Identified (..))
 import Core.Card.Exploration
   ( ChallengeModifier (..)
   , ClockConfig (..)
@@ -57,16 +61,18 @@ import Core.Card.Exploration
   , TravelRoute (..)
   )
 import Core.State
-  ( ActiveClockEffect (..)
+  ( ActiveChallenge (..)
+  , ActiveClockEffect (..)
   , ClockDeckState (..)
   , Direction (..)
   , ExplorationEvent (..)
   , ExplorationFocus (..)
   , LightSourceState (..)
   , LocationRuntimeState (..)
+  , TeamworkProgress (..)
   , WorldState (..)
   )
-import Core.Stats (ResourceType)
+import Core.Stats (ResourceType, getStat)
 import Core.Time
   ( Duration (..)
   , ExpeditionTime (..)
@@ -137,6 +143,7 @@ initWorldState manifest locCards travelCardsList clockCards =
         , locationStates = locStates
         , clockDecks = clockDeckStates
         , lightState = LightSourceState Nothing
+        , activeTeamworkChallenge = Nothing
         }
 
 --------------------------------------------------------------------------------
@@ -566,3 +573,60 @@ advanceTimeAndTriggerClocks
   -> WorldState
   -> State StdGen (WorldState, [ExplorationEvent])
 advanceTimeAndTriggerClocks delta tags = advanceTimeWithInterrupt delta tags Nothing
+
+-- | Initialize or register a shared teamwork challenge on the WorldState.
+startTeamworkChallenge :: ActiveChallenge -> WorldState -> WorldState
+startTeamworkChallenge ch ws =
+  let tp =
+        TeamworkProgress
+          { activeChallenge = ch
+          , totalStrengthContributed = 0
+          , totalCardsFlipped = 0
+          , totalImpactTimeAdded = Duration 0 Minute
+          , participatingActors = []
+          }
+   in ws{activeTeamworkChallenge = Just tp}
+
+-- | Clear any active teamwork challenge on the WorldState.
+clearTeamworkChallenge :: WorldState -> WorldState
+clearTeamworkChallenge ws = ws{activeTeamworkChallenge = Nothing}
+
+-- | Record card flips contributed by an actor toward the active teamwork challenge.
+-- Returns updated WorldState, whether the challenge strength target has been reached,
+-- and any additional time accumulated from timePerImpact.
+contributeToTeamworkChallenge
+  :: Text
+  -> [CardInstance CoreCard]
+  -> WorldState
+  -> (WorldState, Bool, Duration)
+contributeToTeamworkChallenge actorName flippedCards ws =
+  case ws.activeTeamworkChallenge of
+    Nothing -> (ws, False, Duration 0 Minute)
+    Just tp ->
+      let ch = tp.activeChallenge
+          color = ch.challengeColor
+          cardStrength (Identified _ cc) = getStat color cc.stats
+          addedStr = sum (map cardStrength flippedCards)
+          numCards = length flippedCards
+          extraMins = numCards * maybe 0 toMinutes ch.timePerImpact
+          extraDur = Duration extraMins Minute
+          currentExtra = toMinutes tp.totalImpactTimeAdded
+          newTotalExtra = Duration (currentExtra + extraMins) Minute
+
+          newStrength = tp.totalStrengthContributed + addedStr
+          newCardsFlipped = tp.totalCardsFlipped + numCards
+          newActors =
+            if actorName `elem` tp.participatingActors
+              then tp.participatingActors
+              else tp.participatingActors ++ [actorName]
+
+          tp' =
+            tp
+              { totalStrengthContributed = newStrength
+              , totalCardsFlipped = newCardsFlipped
+              , totalImpactTimeAdded = newTotalExtra
+              , participatingActors = newActors
+              }
+          isComplete = newStrength >= ch.challengeStrength
+          ws' = ws{activeTeamworkChallenge = Just tp'}
+       in (ws', isComplete, extraDur)

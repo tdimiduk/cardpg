@@ -23,6 +23,7 @@ import ReadmeExamplesTest (test_readmeExamples)
 import ResolutionTests (test_resolutionCycle)
 import StateTests (test_stateTests)
 import StatusParsingTest (test_statusParsing)
+import VigilanceAndDefenseLogicTest (test_vigilanceAndDefenseLogic)
 
 main :: IO ()
 main = do
@@ -48,6 +49,7 @@ tests cardTests explorationTests explorationLogicTests =
     , test_readmeExamples
     , test_stateTests
     , test_resolutionCycle
+    , test_vigilanceAndDefenseLogic
     , test_logic
     , test_planningLogic
     , cardTests

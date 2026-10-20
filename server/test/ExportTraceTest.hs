@@ -29,6 +29,7 @@ import Core.State
   , GameEvent (..)
   , PlannedAction (..)
   , RevealedEffect (..)
+  , mkActiveChallenge
   )
 import Core.Stats (ResourceType (..), StackPower (..))
 import Server.DB
@@ -93,7 +94,7 @@ test_export_trace =
             vallhachId = UUID.toText (mkId 2)
             wolfCard = Identified (CardInstanceId (mkId 10)) (mkCoreCard "Bite" (Stats 4 2 2))
             wolfPlan = PStandard (ActionStack wolfCard [])
-            wolfChal = ActiveChallenge (ChallengeId (mkId 100)) (CSCard (CardInstanceId (mkId 10))) 18 Red
+            wolfChal = mkActiveChallenge (ChallengeId (mkId 100)) (CSCard (CardInstanceId (mkId 10))) 18 Red
 
             events =
               [ GameEventRecord
@@ -152,7 +153,7 @@ test_export_trace =
             vallhachId = UUID.toText (mkId 2)
             wolfCard = Identified (CardInstanceId (mkId 10)) (mkCoreCard "Bite" (Stats 4 2 2))
             wolfPlan = PStandard (ActionStack wolfCard [])
-            wolfChal = ActiveChallenge (ChallengeId (mkId 100)) (CSCard (CardInstanceId (mkId 10))) 18 Red
+            wolfChal = mkActiveChallenge (ChallengeId (mkId 100)) (CSCard (CardInstanceId (mkId 10))) 18 Red
             defCard1 = Identified (CardInstanceId (mkId 20)) (mkCoreCard "Overheated" (Stats 5 2 2))
             defCard2 = Identified (CardInstanceId (mkId 21)) (mkCoreCard "Fireball" (Stats 3 1 4))
             consCard =
@@ -231,7 +232,7 @@ test_export_trace =
         let wolfId = UUID.toText (mkId 1)
             wolfCard = Identified (CardInstanceId (mkId 10)) (mkCoreCard "Bite" (Stats 4 2 2))
             wolfPlan = PStandard (ActionStack wolfCard [])
-            wolfChal = ActiveChallenge (ChallengeId (mkId 100)) (CSCard (CardInstanceId (mkId 10))) 10 Red
+            wolfChal = mkActiveChallenge (ChallengeId (mkId 100)) (CSCard (CardInstanceId (mkId 10))) 10 Red
 
             events =
               [ GameEventRecord

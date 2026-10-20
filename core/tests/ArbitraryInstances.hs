@@ -329,11 +329,19 @@ instance Arbitrary SpatialState where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
+instance Arbitrary ChallengeDomain where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
 instance Arbitrary ChallengeSource where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 
 instance Arbitrary ActiveChallenge where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary TeamworkProgress where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 

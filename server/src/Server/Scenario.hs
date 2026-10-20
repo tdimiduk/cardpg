@@ -182,14 +182,9 @@ instantiateActorWithCards def cards x y maybeHandSize = do
         | otherwise = "NPC"
 
   let coreSt =
-        State.CoreCardState
+        State.emptyCoreCardState
           { deck = remainingDeck
           , hand = initialHand
-          , discard = []
-          , defending = Nothing
-          , inPlay = Map.empty
-          , planned = Nothing
-          , revealed = Nothing
           }
 
   -- Process Table Cards (Items, Nature)
