@@ -1,14 +1,34 @@
 # Gameplay Traces & Empirical Benchmarks Sub-Index
 package:
   purpose: "Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing."
-  tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:exploration", "pillar:social"]
+  tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime"]
 
 documents:
   - path: "iteration/traces/README.md"
     purpose: "Orientation and operational conventions for gameplay traces and empirical benchmarks."
     tags: ["doc-type:meta", "audience:designer-facing"]
 
-  - path: "iteration/traces/non-combat-scenarios.md"
-    name: "Non-Combat Benchmark Scenarios"
-    purpose: "Canonical, rules-agnostic non-combat test scenarios across environmental, social, and analytical domains."
-    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "pillar:exploration", "pillar:social"]
+  - path: "iteration/traces/scenario-urban-debate-and-ambush.md"
+    name: "Benchmark Scenario: The Harbor Charter & The Cobblestone Ambush"
+    purpose: "Rules-agnostic urban scenario testing Crisis ↔ General Action coupling across Social debate, Combat ambush, Exploration infiltration, and Downtime recovery."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:harm", "core-concept:consequences", "pillar:social", "pillar:combat", "pillar:exploration", "pillar:downtime"]
+
+  - path: "iteration/traces/scenario-mountain-pass-and-ruin-delve.md"
+    name: "Benchmark Scenario: The Sunken Aqueduct & The Vault of Echoes"
+    purpose: "Rules-agnostic alpine delve scenario testing environmental harm bleed into combat, pre-crisis casing trade-offs, and post-crisis wounded extraction."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:harm", "core-concept:consequences", "pillar:exploration", "pillar:combat", "pillar:downtime"]
+
+  - path: "iteration/traces/scenario-border-keep-siege-and-rally.md"
+    name: "Benchmark Scenario: The Last Watch at Timber-Ford"
+    purpose: "Rules-agnostic border defense scenario testing physical labor prep, communal/environmental condition bleed, parley standoff, protracted combat, and spiritual convalescence."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:social", "pillar:exploration", "pillar:downtime"]
+
+  - path: "iteration/traces/scenario-arcane-plague-and-sanctuary.md"
+    name: "Benchmark Scenario: The Blighted Apothecary & The Quarantine Riot"
+    purpose: "Rules-agnostic arcane plague scenario testing cognitive/neurological condition bleed into precision tasks, voluntary sanity sacrifice, non-lethal crowd crisis, and mental convalescence."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:harm", "core-concept:consequences", "pillar:exploration", "pillar:social", "pillar:combat", "pillar:downtime"]
+
+  - path: "iteration/traces/scenario-borderland-pursuit-multi-day.md"
+    name: "Benchmark Scenario: Three Days on the Ash-Hound Trail"
+    purpose: "Rules-agnostic multi-day pursuit scenario testing overland macro attrition, camp recovery versus persistent injury, social blown cover propagating into tactical enemy readiness, and stealth assault transitions."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:harm", "core-concept:consequences", "pillar:exploration", "pillar:social", "pillar:combat", "pillar:downtime"]
