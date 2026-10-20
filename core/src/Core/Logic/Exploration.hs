@@ -605,8 +605,7 @@ contributeToTeamworkChallenge actorName flippedCards ws =
     Just tp ->
       let ch = tp.activeChallenge
           color = ch.challengeColor
-          cardStrength (Identified _ cc) = getStat color cc.stats
-          addedStr = sum (map cardStrength flippedCards)
+          addedStr = sum [getStat color c.content.stats | c <- flippedCards]
           numCards = length flippedCards
           extraMins = numCards * maybe 0 toMinutes ch.timePerImpact
           extraDur = Duration extraMins Minute

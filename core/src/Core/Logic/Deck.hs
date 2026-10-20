@@ -23,7 +23,7 @@ import Control.Monad.Trans.Class (lift)
 import Data.Generics.Labels ()
 import Data.List (partition)
 import Data.Map.Strict qualified as Map
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, maybeToList)
 import Data.Text (Text)
 import System.Random (RandomGen, uniform)
 
