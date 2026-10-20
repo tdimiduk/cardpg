@@ -4,7 +4,7 @@
 module ScenarioTest where
 
 import Data.Map.Strict qualified as Map
-import Data.Maybe (fromMaybe, isJust)
+import Data.Maybe (fromMaybe, isJust, isNothing)
 import System.Directory (doesDirectoryExist, doesFileExist)
 import System.Environment (lookupEnv)
 import System.FilePath ((</>))

@@ -4,6 +4,7 @@
 
 module Server.Scenario where
 
+import Control.Lens ((&), (.~))
 import Control.Monad (forM_)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.State
@@ -131,7 +132,7 @@ loadModuleScenarioWithCatalog catalog path maybeSeed = do
   -- For actors in ExplorationMode:
   -- Initialize Vigilance pool from deck (hand remains empty, dial = 2, pool has 2 cards)
   let explorationActors = Map.map initExplorationActor finalGameState.actors
-      gameWithVigilance = finalGameState{Server.Game.actors = explorationActors}
+      gameWithVigilance = finalGameState & #actors .~ explorationActors
 
   return (gameWithVigilance, finalRng)
 
