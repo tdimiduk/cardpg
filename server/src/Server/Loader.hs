@@ -1,6 +1,9 @@
 module Server.Loader
   ( loadLibrary
   , loadMasterCatalog
+  , loadModule
+  , loadModuleComponents
+  , parseAsListOrSingle
   ) where
 
 import Control.Monad (foldM, forM)
@@ -12,8 +15,8 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Data.Yaml (ParseException, decodeFileEither)
-import System.Directory (doesDirectoryExist, listDirectory)
-import System.FilePath (splitDirectories, takeBaseName, takeExtension, (</>))
+import System.Directory (doesDirectoryExist, doesFileExist, listDirectory)
+import System.FilePath (splitDirectories, takeBaseName, takeDirectory, takeExtension, (</>))
 
 import Core.Card
   ( ActorDefinition
@@ -23,6 +26,14 @@ import Core.Card
   , MasterCard (..)
   , NatureCard
   )
+import Core.Card.Exploration
+  ( ClockEventCard
+  , LocationCard
+  , ModuleManifest
+  , TravelCard
+  )
+import Core.Logic.Exploration (initWorldState)
+import Core.State (WorldState)
 import Server.Types (CardLibrary (..))
 
 -- | Recursively find all files in a directory
@@ -155,6 +166,9 @@ classifyAndParse acc@(a, s, c, i, n, m, errs) path
       case res of
         Right vals -> pure (a, s, c, i, vals ++ n, m, errs)
         Left e -> pure (a, s, c, i, n, m, (path <> ": " <> e) : errs)
+  | "/modules/" `isInfixOf` path = do
+      -- Modules are loaded separately per-module by loadModule / Server.Scenario
+      pure acc
   | otherwise = do
       -- Ignore manifests or other structural files silently if needed, or warn
       if "_manifest" `isInfixOf` path
@@ -182,3 +196,50 @@ parseAsListOrSingle path = do
       Success (x :: a) -> pure (Right [x])
       Error e -> pure (Left ("Object parse failed: " ++ e))
     Right _ -> pure (Left "Expected YAML Array or Object")
+
+-- | Load all components of an exploration module and initialize its WorldState.
+loadModule :: FilePath -> IO (Either String (ModuleManifest, WorldState))
+loadModule path = do
+  res <- loadModuleComponents path
+  case res of
+    Left err -> pure (Left err)
+    Right (manifest, locs, travels, clocks) ->
+      pure (Right (manifest, initWorldState manifest locs travels clocks))
+
+-- | Load the raw YAML components of an exploration module:
+-- the manifest, locations, optional travel edges, and optional clock event cards.
+loadModuleComponents
+  :: FilePath
+  -> IO (Either String (ModuleManifest, [LocationCard], [TravelCard], [ClockEventCard]))
+loadModuleComponents path = do
+  isDir <- doesDirectoryExist path
+  let modDir = if isDir then path else takeDirectory path
+      manifestPath = if isDir then path </> "module.yaml" else path
+      locsPath = modDir </> "locations.yaml"
+      travelPath = modDir </> "travel.yaml"
+      clocksPath = modDir </> "clocks.yaml"
+
+  manifestRes <- decodeFileEither manifestPath :: IO (Either ParseException ModuleManifest)
+  case manifestRes of
+    Left err -> pure (Left $ "Failed to parse module manifest " <> manifestPath <> ": " <> show err)
+    Right manifest -> do
+      locsRes <- parseAsListOrSingle locsPath :: IO (Either String [LocationCard])
+      case locsRes of
+        Left err -> pure (Left $ "Failed to parse locations in " <> locsPath <> ": " <> err)
+        Right locs -> do
+          hasTravel <- doesFileExist travelPath
+          travelRes <-
+            if hasTravel
+              then parseAsListOrSingle travelPath :: IO (Either String [TravelCard])
+              else pure (Right [])
+          case travelRes of
+            Left err -> pure (Left $ "Failed to parse travel routes in " <> travelPath <> ": " <> err)
+            Right travels -> do
+              hasClocks <- doesFileExist clocksPath
+              clocksRes <-
+                if hasClocks
+                  then parseAsListOrSingle clocksPath :: IO (Either String [ClockEventCard])
+                  else pure (Right [])
+              case clocksRes of
+                Left err -> pure (Left $ "Failed to parse clock events in " <> clocksPath <> ": " <> err)
+                Right clocks -> pure (Right (manifest, locs, travels, clocks))

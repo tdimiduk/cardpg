@@ -6,6 +6,7 @@ module Server.Game
 
 import Data.Map.Strict qualified as Map
 
+import Api.Types (PlayMode (..))
 import Core.Primitives (ActorId)
 import Core.State (ActorState (..), GameEnv, MapMode (..))
 import Server.Types (GameState (..), Phase (..))
@@ -19,6 +20,8 @@ emptyGame env =
     , history = []
     , mapMode = Just MapModeGrid
     , roundNumber = 1
+    , playMode = ModeCrisis
+    , worldState = Nothing
     }
 
 addActor :: ActorId -> ActorState -> GameState -> GameState

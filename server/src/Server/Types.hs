@@ -32,7 +32,7 @@ import Data.Aeson
   , (.:)
   , (.:?)
   )
-import Data.Aeson.TH (deriveJSON)
+import Data.Aeson.TH (deriveJSON, deriveToJSON)
 
 import Data.IORef (IORef)
 import Data.Map (Map)
@@ -53,6 +53,7 @@ import Api.Types
   , LogPayload (..)
   , LogSender (..)
   , Phase (..)
+  , PlayMode (..)
   , StateUpdate (..)
   )
 
@@ -66,7 +67,7 @@ import Core.Card
   )
 import Core.Json (cardpgJsonDef)
 import Core.Primitives (ActorId)
-import Core.State (ActorState, GameEnv, MapMode)
+import Core.State (ActorState, GameEnv, MapMode, WorldState)
 import Server.Config (Config (..))
 import Server.DB.Schema (Game, GameEventRecord)
 
@@ -78,10 +79,34 @@ data GameState = GameState
   , history :: [LogEntry]
   , mapMode :: Maybe MapMode
   , roundNumber :: Int
+  , playMode :: PlayMode
+  , worldState :: Maybe WorldState
   }
   deriving (Show, Generic)
 
-$(deriveJSON cardpgJsonDef ''GameState)
+$(deriveToJSON cardpgJsonDef ''GameState)
+
+instance FromJSON GameState where
+  parseJSON = withObject "GameState" $ \o -> do
+    env <- o .: "env"
+    actors <- o .: "actors"
+    phase <- o .: "phase"
+    history <- o .:? "history" .!= []
+    mapMode <- o .:? "mapMode"
+    roundNumber <- o .:? "roundNumber" .!= 1
+    playMode <- o .:? "playMode" .!= ModeCrisis
+    worldState <- o .:? "worldState"
+    pure
+      GameState
+        { env = env
+        , actors = actors
+        , phase = phase
+        , history = history
+        , mapMode = mapMode
+        , roundNumber = roundNumber
+        , playMode = playMode
+        , worldState = worldState
+        }
 
 appendHistoryEntry :: LogEntry -> GameState -> GameState
 appendHistoryEntry entry gs = gs{history = gs.history ++ [entry]}

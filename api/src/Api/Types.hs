@@ -3,6 +3,7 @@
 module Api.Types
   ( -- * Game State Types
     Phase (..)
+  , PlayMode (..)
   , StateUpdate (..)
   , ActorGameEvent (..)
   , ClientRole (..)
@@ -33,6 +34,12 @@ data Phase = Planning | Resolution
   deriving (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''Phase)
+
+-- | The overarching mode of play: exploratory graph traversal or tactical crisis rounds
+data PlayMode = ModeExploration | ModeCrisis
+  deriving (Show, Eq, Generic)
+
+$(deriveJSON cardpgJsonDef ''PlayMode)
 
 newtype LogId = LogId UUID
   deriving (Show, Eq, Ord, Generic)

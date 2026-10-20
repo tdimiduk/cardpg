@@ -40,7 +40,7 @@ mockGameState =
    in emptyGame env
 
 setRound :: Int -> GameState -> GameState
-setRound r (GameState e a p h m _) = GameState e a p h m r
+setRound r gs = gs{roundNumber = r}
 
 mockCard :: Text -> CoreCard
 mockCard _name' =

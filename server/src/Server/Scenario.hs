@@ -22,13 +22,14 @@ import Data.Map.Strict qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
-import Data.Yaml (decodeFileThrow)
+import Data.Yaml (ParseException, decodeFileEither, decodeFileThrow)
 import GHC.Generics (Generic)
-import System.Directory (doesDirectoryExist)
-import System.FilePath (takeDirectory, (</>))
+import System.Directory (doesDirectoryExist, doesFileExist)
+import System.FilePath (takeDirectory, takeFileName, (</>))
 import System.Random (StdGen, mkStdGen, newStdGen, uniform)
 import System.Random.Stateful (Uniform (..))
 
+import Api.Types (PlayMode (..))
 import Core.Card
   ( ActorDefinition (..)
   , CoreCard (..)
@@ -37,7 +38,7 @@ import Core.Card
   , MasterCard (..)
   , resolveActorDeck
   )
-import Core.Card.Exploration (ScenarioActor (..))
+import Core.Card.Exploration (ModuleManifest (..), ScenarioActor (..))
 import Core.Hardcoded (fatigueCard)
 import Core.Primitives (ActorId, CardInstanceId, EquipSlot (..))
 import Core.State
@@ -51,7 +52,7 @@ import Core.State
 import Core.State qualified as State
 import Server.Engine (autoPlanForNPCs)
 import Server.Game (GameState (..), addActor, emptyGame)
-import Server.Loader (loadMasterCatalog)
+import Server.Loader (loadMasterCatalog, loadModule)
 
 import Core.Util (shuffleListM)
 
@@ -64,16 +65,99 @@ data Scenario = Scenario
 
 instance FromJSON Scenario
 
--- | Load a scenario from a YAML file.
+-- | Check whether the given path targets an exploration module directory or manifest.
+isModuleTarget :: FilePath -> IO Bool
+isModuleTarget path = do
+  isDir <- doesDirectoryExist path
+  if isDir
+    then doesFileExist (path </> "module.yaml")
+    else
+      if takeFileName path == "module.yaml"
+        then pure True
+        else do
+          res <- decodeFileEither path :: IO (Either ParseException ModuleManifest)
+          case res of
+            Right _ -> pure True
+            Left _ -> pure False
+
+-- | Load a scenario or exploration module from a path or directory.
 -- This initializes the game state, loads all actors, and generates UUIDs.
 loadScenario :: FilePath -> Maybe Int -> IO (GameState, StdGen)
 loadScenario path maybeSeed = do
   catalog <- findMasterCatalog (takeDirectory path)
   loadScenarioWithCatalog catalog path maybeSeed
 
--- | Load a scenario with an explicit master card catalog.
+-- | Load a scenario or exploration module with an explicit master card catalog.
 loadScenarioWithCatalog :: Map Text MasterCard -> FilePath -> Maybe Int -> IO (GameState, StdGen)
 loadScenarioWithCatalog catalog path maybeSeed = do
+  isMod <- isModuleTarget path
+  if isMod
+    then loadModuleScenarioWithCatalog catalog path maybeSeed
+    else loadCombatScenarioWithCatalog catalog path maybeSeed
+
+-- | Load an exploration module directory, initializing WorldState and Vigilance pools.
+loadModuleScenarioWithCatalog
+  :: Map Text MasterCard -> FilePath -> Maybe Int -> IO (GameState, StdGen)
+loadModuleScenarioWithCatalog catalog path maybeSeed = do
+  isDir <- doesDirectoryExist path
+  let modDir = if isDir then path else takeDirectory path
+  modRes <- loadModule modDir
+  (manifest, worldSt) <- case modRes of
+    Left err -> ioError $ userError err
+    Right res -> pure res
+  rng <- case maybeSeed of
+    Just seed -> return $ mkStdGen seed
+    Nothing -> newStdGen
+
+  let env =
+        GameEnv
+          { fatigueCardTemplate = fatigueCard
+          , statusCardTemplates = Map.empty
+          , consequenceCardTemplates = Map.empty
+          }
+
+  let initialGame =
+        (emptyGame env)
+          { playMode = ModeExploration
+          , worldState = Just worldSt
+          , mapMode = Nothing
+          }
+
+  ((_, finalGameState), finalRng) <-
+    runStateT
+      (runStateT (loadScenarioActors catalog modDir (manifest.startingActors)) initialGame)
+      rng
+
+  -- For actors in ExplorationMode:
+  -- Initialize Vigilance pool from deck (hand remains empty, dial = 2, pool has 2 cards)
+  let explorationActors = Map.map initExplorationActor finalGameState.actors
+      gameWithVigilance = finalGameState{Server.Game.actors = explorationActors}
+
+  return (gameWithVigilance, finalRng)
+
+-- | Set up actor state for exploration mode: hand is emptied, vigilance dial defaults to 2,
+-- and cards are drawn into the face-down vigilance pool.
+initExplorationActor :: ActorState -> ActorState
+initExplorationActor st =
+  let cs = st.coreState
+      fullDeck = cs.hand ++ cs.deck
+      dial = cs.vigilanceDial
+      (pool, remDeck) = splitAt dial fullDeck
+   in st
+        { coreState =
+            cs
+              { hand = []
+              , deck = remDeck
+              , vigilancePool = pool
+              , readiedCard = Nothing
+              , committedVigilance = False
+              }
+        }
+
+-- | Load a combat-only scenario (e.g., starter.yaml), preserving backwards compatibility.
+loadCombatScenarioWithCatalog
+  :: Map Text MasterCard -> FilePath -> Maybe Int -> IO (GameState, StdGen)
+loadCombatScenarioWithCatalog catalog path maybeSeed = do
   scenario :: Scenario <- decodeFileThrow path
   rng <- case maybeSeed of
     Just seed -> return $ mkStdGen seed
@@ -104,6 +188,7 @@ findMasterCatalog baseDir = do
   let candidates =
         [ baseDir </> "../cards/master"
         , baseDir </> "cards/master"
+        , baseDir </> "../../cards/master"
         , "data/cards/master"
         , "../data/cards/master"
         ]

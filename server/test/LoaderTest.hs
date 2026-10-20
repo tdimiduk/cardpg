@@ -14,6 +14,7 @@ import Data.Text.Encoding qualified as TE
 import Data.Time.Clock (diffTimeToPicoseconds, getCurrentTime, utctDay, utctDayTime)
 import System.Directory
   ( createDirectoryIfMissing
+  , doesDirectoryExist
   , getTemporaryDirectory
   , removePathForcibly
   )
@@ -33,10 +34,11 @@ import Core.Card
   , Stats (..)
   , emptyCoreCard
   )
+import Core.Card.Exploration (LocationId (..), ModuleId (..), ModuleManifest (..))
 import Core.NonEmptyText (getRawText, unsafeNonEmptyText)
-import Core.State (ActorState (..), CoreCardState (..))
+import Core.State (ActorState (..), CoreCardState (..), WorldState (..))
 import Server.Game (GameState (..))
-import Server.Loader (loadLibrary, loadMasterCatalog)
+import Server.Loader (loadLibrary, loadMasterCatalog, loadModule)
 import Server.Scenario
   ( instantiateActor
   , loadAndInstantiateActor
@@ -219,6 +221,25 @@ test_loader =
             lib <- loadLibrary dir
             Map.size lib.masterCatalog @?= 1
             length lib.actors @?= 0
+        ]
+    , testGroup
+        "Module Loader"
+        [ testCase "Loads crag_gallows module components and initializes WorldState" $ do
+            let candidates = ["data/modules/crag_gallows", "../data/modules/crag_gallows"]
+            let findExisting [] = pure "data/modules/crag_gallows"
+                findExisting (c : cs) = do
+                  exists <- doesDirectoryExist c
+                  if exists then pure c else findExisting cs
+            modDir <- findExisting candidates
+            res <- loadModule modDir
+            case res of
+              Left err -> assertBool ("Failed to load module: " ++ err) False
+              Right (manifest, ws) -> do
+                manifest.id @?= ModuleId "crag_gallows"
+                manifest.startingLocation @?= LocationId "haven_crow_roost"
+                Map.size ws.locations @?= 4
+                Map.size ws.travelCards @?= 1
+                Map.size ws.clockDecks @?= 2
         ]
     , testGroup
         "Scenario & Actor Resolution"
