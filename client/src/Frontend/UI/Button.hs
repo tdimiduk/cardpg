@@ -11,8 +11,10 @@ module Frontend.UI.Button
   ) where
 
 import Data.Default (Default (..))
+import Data.Generics.Labels ()
 import Data.Map qualified as Map
 import Data.Text qualified as T
+import GHC.Generics (Generic)
 
 import Reflex.Dom.Core hiding (button)
 
@@ -57,6 +59,7 @@ data ButtonConfig t = ButtonConfig
   , attributes :: Map.Map T.Text T.Text
   -- ^ Arbitrary HTML attributes
   }
+  deriving stock (Generic)
 
 instance (Reflex t) => Default (ButtonConfig t) where
   def =

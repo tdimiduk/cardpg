@@ -8,6 +8,7 @@
 
 module Frontend.App (appWidget, headWidget, uiWidget) where
 
+import Control.Lens ((&), (.~))
 import Control.Monad.Fix (MonadFix)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Aeson (eitherDecode, encode)
@@ -393,12 +394,12 @@ setupOverlayWidget actorsMapDyn activeClientsDyn = componentS
 
           btnClick <-
             button
-              (def :: ButtonConfig t)
-                { variant = VariantPrimary
-                , fullWidth = True
-                , disabled = isSubmitDisabledDyn
-                , extraStyle = S.mt S.S4
-                }
+              ( (def :: ButtonConfig t)
+                  & #variant .~ VariantPrimary
+                  & #fullWidth .~ True
+                  & #disabled .~ isSubmitDisabledDyn
+                  & #extraStyle .~ S.mt S.S4
+              )
               $ text "Begin Adventure"
 
           let submitEvt = current ((,) <$> nameValDyn <*> selectedRoleDyn) <@ btnClick

@@ -6,6 +6,7 @@ module Frontend.Game.PhaseDisplay
   ( phaseDisplayWidget
   ) where
 
+import Control.Lens ((?~))
 import Control.Monad (when)
 import Control.Monad.Fix (MonadFix)
 import Reflex.Dom.Core hiding (button)
@@ -63,17 +64,20 @@ planningControls identityDyn = do
   divS (S.flex <> S.itemsCenter <> S.gap S.S2) $ do
     dyn_ $ ffor (zipDyn identityDyn canUndoDyn) $ \case
       (Just (_, RoleGM), canUndo) -> do
-        btnClick <- button (def :: ButtonConfig t){size = SizeSmall} $ text "Start Resolution"
+        btnClick <- button ((def :: ButtonConfig t) & #size .~ SizeSmall) $ text "Start Resolution"
         let req = Req.StartResolution <$ btnClick
         _ <- requestGame req
         when canUndo $ do
           undoClick <-
             button
-              (def :: ButtonConfig t)
-                { size = SizeSmall
-                , variant = VariantGhost
-                , testId = Just "undo-phase-btn"
-                }
+              ( (def :: ButtonConfig t)
+                  & #size
+                  .~ SizeSmall
+                  & #variant
+                  .~ VariantGhost
+                  & #testId
+                  ?~ "undo-phase-btn"
+              )
               $ text "Undo Phase"
           let undoReq = Req.UndoPhase <$ undoClick
           _ <- requestGame undoReq
@@ -97,21 +101,26 @@ resolutionControls identityDyn = do
       (Just (_, RoleGM), canUndo) -> do
         btnClick <-
           button
-            (def :: ButtonConfig t)
-              { size = SizeSmall
-              , variant = VariantSecondary
-              }
+            ( (def :: ButtonConfig t)
+                & #size
+                .~ SizeSmall
+                & #variant
+                .~ VariantSecondary
+            )
             $ text "End Round"
         let req = Req.EndRound <$ btnClick
         _ <- requestGame req
         when canUndo $ do
           undoClick <-
             button
-              (def :: ButtonConfig t)
-                { size = SizeSmall
-                , variant = VariantGhost
-                , testId = Just "undo-phase-btn"
-                }
+              ( (def :: ButtonConfig t)
+                  & #size
+                  .~ SizeSmall
+                  & #variant
+                  .~ VariantGhost
+                  & #testId
+                  ?~ "undo-phase-btn"
+              )
               $ text "Undo Phase"
           let undoReq = Req.UndoPhase <$ undoClick
           _ <- requestGame undoReq

@@ -5,6 +5,7 @@ module Frontend.Editor
   ( editorWidget
   ) where
 
+import Control.Lens ((&), (.~))
 import Control.Monad (join)
 import Control.Monad.Fix (MonadFix)
 import Data.Aeson (toJSON)
@@ -45,7 +46,7 @@ import Frontend.Style qualified as Style
 import Frontend.Style.Common (classNames, componentS, divS, elS)
 import Frontend.Style.DSL qualified as S
 import Frontend.Style.Layout (col, colWith, row)
-import Frontend.UI.Button (ButtonConfig (..), ButtonSize (..), ButtonVariant (..), button)
+import Frontend.UI.Button (ButtonConfig, ButtonSize (..), ButtonVariant (..), button)
 
 data CardCategory
   = CatCore
@@ -81,7 +82,7 @@ textField labelText placeholderVal = col $ do
     inputElement $
       def
         & initialAttributes
-        .~ ("class" =: classNames inputStyle <> "placeholder" =: placeholderVal)
+          .~ ("class" =: classNames inputStyle <> "placeholder" =: placeholderVal)
   return $ _inputElement_value ie
 
 textareaField :: (DomBuilder t m) => Text -> Text -> m (Dynamic t Text)
@@ -91,8 +92,8 @@ textareaField labelText placeholderVal = col $ do
     textAreaElement $
       def
         & textAreaElementConfig_elementConfig
-        . elementConfig_initialAttributes
-        .~ ("class" =: classNames textareaStyle <> "placeholder" =: placeholderVal <> "rows" =: "4")
+          . elementConfig_initialAttributes
+          .~ ("class" =: classNames textareaStyle <> "placeholder" =: placeholderVal <> "rows" =: "4")
   return $ _textAreaElement_value ta
 
 parseNum :: Text -> Int
@@ -145,7 +146,7 @@ editorWidget = componentS
           dropdown CatCore (constDyn categories) $
             def
               & dropdownConfig_attributes
-              .~ constDyn ("class" =: classNames inputStyle)
+                .~ constDyn ("class" =: classNames inputStyle)
         let catDyn = _dropdown_value catDropdown
 
         -- Common Fields
@@ -167,13 +168,13 @@ editorWidget = componentS
         -- Save Button
         saveClick <-
           button
-            (def :: ButtonConfig t)
-              { variant = VariantPrimary
-              , fullWidth = True
-              , size = SizeMedium
-              , extraStyle = S.mt S.S4
-              , disabled = hasErrorDyn
-              }
+            ( (def :: ButtonConfig t)
+                & #variant .~ VariantPrimary
+                & #fullWidth .~ True
+                & #size .~ SizeMedium
+                & #extraStyle .~ S.mt S.S4
+                & #disabled .~ hasErrorDyn
+            )
             $ text "Save Card to DB"
 
         let jsonCardDyn = fmap toJSON customCardDyn
