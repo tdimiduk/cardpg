@@ -44,6 +44,8 @@ library
     , core
     , dependent-sum
     , dependent-sum-template
+    , generic-lens
+    , lens
     , random
     , reflex-gadt-api
     , some

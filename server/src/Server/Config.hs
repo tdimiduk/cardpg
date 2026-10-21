@@ -5,21 +5,22 @@ import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
+import GHC.Generics (Generic)
 import System.Environment (lookupEnv)
 import System.FilePath (takeBaseName)
 import System.IO (hPutStrLn, stderr)
 
 data DBConfig = DBConfig
-  { dbHost :: String
-  , dbUser :: String
-  , dbPass :: String
-  , dbName :: String
+  { host :: String
+  , user :: String
+  , pass :: String
+  , name :: String
   }
-  deriving (Show, Eq)
+  deriving stock (Show, Eq, Generic)
 
 data Config = Config
   { dbConfig :: DBConfig
-  , serverPort :: Int
+  , port :: Int
   , cardsDir :: FilePath
   , scenarioFile :: FilePath
   , savedGameFile :: Maybe FilePath
@@ -28,16 +29,16 @@ data Config = Config
   , seed :: Maybe Int
   , gameId :: Text
   }
-  deriving (Show, Eq)
+  deriving stock (Show, Eq, Generic)
 
 loadDbConfig :: IO DBConfig
 loadDbConfig = do
   -- DB Config
-  host <- fromMaybe "localhost" <$> lookupEnv "CARDPG_DB_HOST"
-  user <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_USER"
-  pass <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_PASS"
-  name <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_NAME"
-  pure DBConfig{dbHost = host, dbUser = user, dbPass = pass, dbName = name}
+  h <- fromMaybe "localhost" <$> lookupEnv "CARDPG_DB_HOST"
+  u <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_USER"
+  p <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_PASS"
+  n <- fromMaybe "cardpg" <$> lookupEnv "CARDPG_DB_NAME"
+  pure DBConfig{host = h, user = u, pass = p, name = n}
 
 loadConfig :: IO Config
 loadConfig = do
@@ -77,7 +78,7 @@ loadConfig = do
   hPutStrLn stderr $ "  PORT: " ++ show port
   hPutStrLn stderr $ "  USE_IN_MEMORY_DB: " ++ show useInMem ++ " (env: " ++ show inMem ++ ")"
   hPutStrLn stderr $ "  USE_GARGOYLE: " ++ show useGargoyleVal ++ " (env: " ++ show gargoyle ++ ")"
-  hPutStrLn stderr $ "  DB_HOST: " ++ dbConfig.dbHost
+  hPutStrLn stderr $ "  DB_HOST: " ++ dbConfig.host
   hPutStrLn stderr $ "  SAVED_GAME_FILE: " ++ show savedGameFileVal
 
   -- Seed Config
@@ -87,7 +88,7 @@ loadConfig = do
   pure
     Config
       { dbConfig = dbConfig
-      , serverPort = port
+      , port = port
       , cardsDir = cDir
       , scenarioFile = sFile
       , savedGameFile = savedGameFileVal

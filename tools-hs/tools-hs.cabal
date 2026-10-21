@@ -11,6 +11,8 @@ common project-config
     DerivingStrategies
     DuplicateRecordFields
     MultiWayIf
+    NoFieldSelectors
+    OverloadedLabels
     OverloadedRecordDot
     OverloadedStrings
     RecordWildCards
@@ -48,6 +50,8 @@ library
     , core
     , directory
     , filepath
+    , generic-lens
+    , lens
     , megaparsec
     , optparse-applicative
     , process

@@ -266,7 +266,7 @@ test_game =
               Right u -> u
               Left _ -> []
         case updates of
-          [StateUpdate{updateActorId = uid}] -> uid @?= actorId
+          [u] -> u.actorId @?= actorId
           _ -> assertBool "Expected exactly one update" False
 
         -- Verify Actor State in Game
@@ -524,7 +524,7 @@ test_game =
         let cfg =
               Config
                 { dbConfig = DBConfig "" "" "" ""
-                , serverPort = 3004
+                , port = 3004
                 , cardsDir = "data/cards"
                 , scenarioFile = "data/scenarios/starter.yaml"
                 , savedGameFile = Nothing

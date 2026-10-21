@@ -5,9 +5,11 @@ module Server.ReflexConnection where
 
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, readMVar)
 import Control.Exception (SomeException, finally, try)
+import Control.Lens hiding (view)
 import Control.Monad (forM_, forever, unless, when)
 import Control.Monad.State (runState)
 import Data.Aeson (Result (..), decode, encode, fromJSON)
+import Data.Generics.Labels ()
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
@@ -106,7 +108,7 @@ application state pending = do
   (client, isNew) <- modifyMVar state $ \s -> do
     let (c, isNew) = case Map.lookup finalClientId (s.clients) of
           Just existing ->
-            (existing{clientConns = existing.clientConns ++ [connectedSocket]}, False)
+            (existing{conns = existing.conns ++ [connectedSocket]}, False)
           Nothing ->
             (Client finalClientId newName RoleUnassigned [connectedSocket], True)
     let s' = addClient c s
@@ -122,8 +124,8 @@ application state pending = do
   forM_ msgs $ \msg -> sendTextData conn (encode $ WsMsgPush msg)
 
   if isNew
-    then T.putStrLn $ "Client Joined: " <> (client.clientName)
-    else T.putStrLn $ "Client reconnected: " <> (client.clientName)
+    then T.putStrLn $ "Client Joined: " <> (client.name)
+    else T.putStrLn $ "Client reconnected: " <> (client.name)
 
   -- Broadcast update to others because activeClients changed
   readMVar state >>= \s -> do
@@ -150,15 +152,15 @@ broadcastReflex msg clients = do
   let msgBytes = encode (WsMsgPush msg)
   T.putStrLn $ "Broadcasting: " <> T.pack (take 100 $ BSL.unpack msgBytes)
   forM_ (Map.elems clients) $ \client ->
-    forM_ (client.clientConns) $ \socket -> do
-      result <- try (sendTextData (socket.socketConn) msgBytes) :: IO (Either ConnectionException ())
+    forM_ (client.conns) $ \socket -> do
+      result <- try (sendTextData (socket.conn) msgBytes) :: IO (Either ConnectionException ())
       case result of
         Left err -> T.putStrLn $ "Send failed: " <> T.pack (show err)
         Right _ -> return ()
 
 talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
 talk client socket state = forever $ do
-  msgBytes <- receiveData (socket.socketConn)
+  msgBytes <- receiveData (socket.conn)
   case decode msgBytes of
     Just taggedReq@(TaggedRequest _ _) -> do
       res <-
@@ -168,20 +170,20 @@ talk client socket state = forever $ do
         Left ex -> do
           T.putStrLn $ "CRITICAL ERROR in handleGameCommand: " <> T.pack (show ex)
           sendTextData
-            (socket.socketConn)
+            (socket.conn)
             (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack (show ex)) ErrorSystem))
-        Right (Right resp) -> sendTextData (socket.socketConn) (encode $ WsMsgResponse resp)
+        Right (Right resp) -> sendTextData (socket.conn) (encode $ WsMsgResponse resp)
         Right (Left err) ->
           sendTextData
-            (socket.socketConn)
+            (socket.conn)
             (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack err) ErrorSystem))
     Nothing ->
       sendTextData
-        (socket.socketConn)
+        (socket.conn)
         (encode $ WsMsgPush $ PushError (ErrorMessage "Invalid message" ErrorValidation))
 
 getClientInfoMap :: Map.Map UUID Client -> Map.Map UUID ClientInfo
-getClientInfoMap = Map.map (\c -> ClientInfo{name = c.clientName, role = c.clientRole})
+getClientInfoMap = Map.map (\c -> ClientInfo{name = c.name, role = c.role})
 
 makeGameView :: ServerState -> GameView
 makeGameView s =
@@ -195,8 +197,7 @@ makeGameView s =
 handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
 handleJoin client name state = do
   modifyMVar_ state $ \s -> do
-    let s' = s{clients = Map.adjust (\c -> c{clientName = name}) (client.clientId) (s.clients)}
-    pure s'
+    pure (s & #clients . at client.id . _Just . #name .~ name)
   T.putStrLn $ "Client renamed: " <> name
 
   -- Broadcast updated client list
@@ -204,14 +205,13 @@ handleJoin client name state = do
   let view = makeGameView s
   broadcastReflex (PushUpdate view Nothing) s.clients
 
-  pure (Right client.clientId)
+  pure (Right client.id)
 
 handleSetRole :: Client -> ClientRole -> MVar ServerState -> IO (Either Text ())
 handleSetRole client role state = do
   modifyMVar_ state $ \s -> do
-    let s' = s{clients = Map.adjust (\c -> c{clientRole = role}) (client.clientId) (s.clients)}
-    pure s'
-  T.putStrLn $ "Client " <> client.clientName <> " set role to: " <> T.pack (show role)
+    pure (s & #clients . at client.id . _Just . #role .~ role)
+  T.putStrLn $ "Client " <> client.name <> " set role to: " <> T.pack (show role)
 
   -- Broadcast updated client list
   s <- readMVar state
@@ -259,12 +259,12 @@ checkPermission role cmd =
 handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
 handleGameCommand client state cmd = do
   sCurrent <- readMVar state
-  let mClient = Map.lookup (client.clientId) (sCurrent.clients)
-      clientRole = maybe RoleUnassigned (.clientRole) mClient
+  let mClient = Map.lookup (client.id) (sCurrent.clients)
+      clientRole = maybe RoleUnassigned (.role) mClient
 
   if not (checkPermission clientRole cmd)
     then do
-      T.putStrLn $ "Permission denied for client " <> client.clientName <> " attempting GADT command."
+      T.putStrLn $ "Permission denied for client " <> client.name <> " attempting GADT command."
       case cmd of
         Req.Join _ -> pure (Left "Permission denied")
         Req.SetRole _ -> pure (Left "Permission denied")
@@ -296,7 +296,7 @@ handleGameCommand client state cmd = do
       Req.SaveCustomCard cardVal file -> do
         s <- readMVar state
         let backend = s.dbPool
-            author = client.clientName
+            author = client.name
         case fromJSON cardVal of
           Success card -> saveCustomCard backend card file author
           Error err -> return $ Left $ T.pack err

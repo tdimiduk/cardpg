@@ -113,20 +113,22 @@ appendHistoryEntry entry gs = gs{history = gs.history ++ [entry]}
 
 -- | A wrapper for a WebSocket connection with a unique ID for management
 data ConnectedSocket = ConnectedSocket
-  { socketId :: UUID
-  , socketConn :: WS.Connection
+  { id :: UUID
+  , conn :: WS.Connection
   }
+  deriving (Generic)
 
 instance Show ConnectedSocket where
   show (ConnectedSocket sid _) = "ConnectedSocket(" <> show sid <> ")"
 
 -- | A client connection with a unique ID and a name.
 data Client = Client
-  { clientId :: UUID
-  , clientName :: Text
-  , clientRole :: ClientRole
-  , clientConns :: [ConnectedSocket]
+  { id :: UUID
+  , name :: Text
+  , role :: ClientRole
+  , conns :: [ConnectedSocket]
   }
+  deriving (Show, Generic)
 
 -- | The library of all known cards/actors loaded from disk.
 data CardLibrary = CardLibrary
@@ -163,12 +165,14 @@ data ServerState = ServerState
   , gameId :: Text
   , checkpoints :: [GameState]
   }
+  deriving (Generic)
 
 data InMemoryStorage = InMemoryStorage
-  { inMemoryGames :: Map Text (GameState, Game)
-  , inMemoryEvents :: Map Text [GameEventRecord]
-  , inMemorySnapshots :: Map Text [GameState]
+  { games :: Map Text (GameState, Game)
+  , events :: Map Text [GameEventRecord]
+  , snapshots :: Map Text [GameState]
   }
+  deriving (Generic)
 
 data StorageBackend
   = PostgresBackend (Pool Pg.Connection)
@@ -195,16 +199,16 @@ clientExists cid state = Map.member cid (state.clients)
 addClient :: Client -> ServerState -> ServerState
 addClient client state =
   let clientMap = state.clients
-   in case Map.lookup (client.clientId) clientMap of
-        Nothing -> state{clients = Map.insert (client.clientId) client clientMap}
+   in case Map.lookup client.id clientMap of
+        Nothing -> state{clients = Map.insert client.id client clientMap}
         Just existing ->
           let merged =
                 existing
-                  { clientName = client.clientName
-                  , clientRole = client.clientRole
-                  , clientConns = existing.clientConns ++ client.clientConns
+                  { name = client.name
+                  , role = client.role
+                  , conns = existing.conns ++ client.conns
                   }
-           in state{clients = Map.insert (client.clientId) merged clientMap}
+           in state{clients = Map.insert client.id merged clientMap}
 
 -- | Removes a specific connection. If client has no more connections, removes the client.
 removeClient :: UUID -> UUID -> ServerState -> ServerState
@@ -213,9 +217,9 @@ removeClient clientId socketId state =
    in case Map.lookup clientId clientMap of
         Nothing -> state
         Just existing ->
-          let keptConns = filter (\s -> s.socketId /= socketId) (existing.clientConns)
+          let keptConns = filter (\s -> s.id /= socketId) existing.conns
            in if null keptConns
                 then state{clients = Map.delete clientId clientMap}
                 else
-                  let updated = existing{clientConns = keptConns}
+                  let updated = existing{conns = keptConns}
                    in state{clients = Map.insert clientId updated clientMap}

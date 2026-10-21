@@ -32,8 +32,8 @@ runServer = do
 
         state <- newMVar (newServerState backend gameGs gameRng config initialCheckpoints){library = lib}
 
-        T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show config.serverPort) <> "..."
-        WS.runServer "127.0.0.1" config.serverPort $ application state
+        T.putStrLn $ "Starting CardPG Server on port " <> T.pack (show config.port) <> "..."
+        WS.runServer "127.0.0.1" config.port $ application state
 
   if
     | config.useInMemoryDB -> do

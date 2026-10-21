@@ -170,7 +170,7 @@ runCli = do
 getEventCounts :: StorageBackend -> IO (Map Text Int)
 getEventCounts (InMemoryBackend ref) = do
   st <- readIORef ref
-  pure $ Map.map length st.inMemoryEvents
+  pure $ Map.map length st.events
 getEventCounts (PostgresBackend pool) = do
   withResource pool $ \conn -> do
     rows <- Pg.query_ conn "SELECT game_id, COUNT(*) FROM events GROUP BY game_id"

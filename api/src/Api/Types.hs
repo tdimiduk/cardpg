@@ -58,7 +58,7 @@ data LogPayload
       , plannedAction :: PlannedAction
       }
   | LogDefense
-      { defenseActorId :: ActorId
+      { actorId :: ActorId
       , defenseChallengeId :: ChallengeId
       , details :: Maybe DefenseDetails
       , cards :: Maybe [CardInstance CoreCard] -- Summary
@@ -107,8 +107,8 @@ $(deriveJSON cardpgJsonDef ''ActorGameEvent)
 
 -- | Updates to the authoritative state
 data StateUpdate = StateUpdate
-  { updateActorId :: ActorId
-  , updateActorState :: ActorState
+  { actorId :: ActorId
+  , state :: ActorState
   }
   deriving (Show, Eq, Generic)
 

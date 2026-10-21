@@ -21,8 +21,10 @@ module Server.DB
   , deleteLatestSnapshot
   ) where
 
+import Control.Lens ((%~), (&))
 import Control.Monad (forM_, unless)
 import Data.Aeson (Result (..), Value (..), fromJSON, toJSON)
+import Data.Generics.Labels ()
 import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Int (Int32)
 import Data.Map qualified as Map
@@ -52,15 +54,15 @@ import Gargoyle.PostgreSQL.Connect (withDb)
 -- | Helper Functions
 initDB :: DBConfig -> IO StorageBackend
 initDB cfg = do
-  let passStr = if null cfg.dbPass then "" else " password=" <> cfg.dbPass
+  let passStr = if null cfg.pass then "" else " password=" <> cfg.pass
       connStr =
         "host="
-          <> cfg.dbHost
+          <> cfg.host
           <> " user="
-          <> cfg.dbUser
+          <> cfg.user
           <> passStr
           <> " dbname="
-          <> cfg.dbName
+          <> cfg.name
   pool <- newPool $ defaultPoolConfig (connectPostgreSQL (encodeUtf8 $ T.pack connStr)) close 10 10
   withResource pool $ \conn ->
     Pg.withTransaction conn $
@@ -82,7 +84,7 @@ saveGame (InMemoryBackend ref) gId scenario gs = do
   now <- getCurrentTime
   let actNames = [a.name | a <- Map.elems gs.actors]
   modifyIORef' ref $ \st ->
-    let existingStartedAt = case Map.lookup gId st.inMemoryGames of
+    let existingStartedAt = case Map.lookup gId st.games of
           Just (_, g) -> g.gameStartedAt
           Nothing -> now
         gameRecord =
@@ -96,7 +98,7 @@ saveGame (InMemoryBackend ref) gId scenario gs = do
             , gameStartedAt = existingStartedAt
             , gameUpdatedAt = now
             }
-     in st{inMemoryGames = Map.insert gId (gs, gameRecord) st.inMemoryGames}
+     in st & #games %~ Map.insert gId (gs, gameRecord)
 saveGame (PostgresBackend pool) gId scenario gs = do
   now <- getCurrentTime
   let actNames = [a.name | a <- Map.elems gs.actors]
@@ -132,7 +134,7 @@ saveGame (PostgresBackend pool) gId scenario gs = do
 loadGame :: StorageBackend -> Text -> IO (Maybe GameState)
 loadGame (InMemoryBackend ref) gId = do
   st <- readIORef ref
-  return $ fmap fst (Map.lookup gId st.inMemoryGames)
+  return $ fmap fst (Map.lookup gId st.games)
 loadGame (PostgresBackend pool) gId = do
   withResource pool $ \conn -> do
     res <-
@@ -153,7 +155,7 @@ loadGame (PostgresBackend pool) gId = do
 loadGameRecord :: StorageBackend -> Text -> IO (Maybe Game)
 loadGameRecord (InMemoryBackend ref) gId = do
   st <- readIORef ref
-  return $ fmap snd (Map.lookup gId st.inMemoryGames)
+  return $ fmap snd (Map.lookup gId st.games)
 loadGameRecord (PostgresBackend pool) gId = do
   withResource pool $ \conn -> do
     runBeamPostgres conn $
@@ -164,7 +166,7 @@ loadGameRecord (PostgresBackend pool) gId = do
 listGames :: StorageBackend -> IO [Game]
 listGames (InMemoryBackend ref) = do
   st <- readIORef ref
-  return $ Map.elems (fmap snd st.inMemoryGames)
+  return $ Map.elems (fmap snd st.games)
 listGames (PostgresBackend pool) = do
   withResource pool $ \conn -> do
     runBeamPostgres conn $
@@ -221,7 +223,7 @@ saveGameEvents (InMemoryBackend ref) gId rNum events logs = do
   unless (null allRows) $ do
     let rNum32 = fromIntegral rNum :: Int32
     modifyIORef' ref $ \st ->
-      let existing = Map.findWithDefault [] gId st.inMemoryEvents
+      let existing = Map.findWithDefault [] gId st.events
           startId = fromIntegral (length existing) :: Int32
           newRecords =
             [ GameEventRecord
@@ -234,7 +236,7 @@ saveGameEvents (InMemoryBackend ref) gId rNum events logs = do
                 (PgJSONB val)
             | (idx, (mAid, eType, val)) <- zip [1 ..] allRows
             ]
-       in st{inMemoryEvents = Map.insert gId (existing ++ newRecords) st.inMemoryEvents}
+       in st & #events %~ Map.insert gId (existing ++ newRecords)
 saveGameEvents (PostgresBackend pool) gId rNum events logs = do
   now <- getCurrentTime
   let actorRows =
@@ -268,7 +270,7 @@ saveGameEvents (PostgresBackend pool) gId rNum events logs = do
 loadGameEvents :: StorageBackend -> Text -> IO [GameEventRecord]
 loadGameEvents (InMemoryBackend ref) gId = do
   st <- readIORef ref
-  return $ Map.findWithDefault [] gId st.inMemoryEvents
+  return $ Map.findWithDefault [] gId st.events
 loadGameEvents (PostgresBackend pool) gId = do
   withResource pool $ \conn -> do
     runBeamPostgres conn $
@@ -310,9 +312,9 @@ saveCustomCard (PostgresBackend pool) card sourceFile author = do
 saveSnapshot :: StorageBackend -> Text -> GameState -> IO ()
 saveSnapshot (InMemoryBackend ref) gId gs = do
   modifyIORef' ref $ \st ->
-    let existing = Map.findWithDefault [] gId st.inMemorySnapshots
+    let existing = Map.findWithDefault [] gId st.snapshots
         updated = take 20 (gs : existing)
-     in st{inMemorySnapshots = Map.insert gId updated st.inMemorySnapshots}
+     in st & #snapshots %~ Map.insert gId updated
 saveSnapshot (PostgresBackend pool) gId gs = do
   now <- getCurrentTime
   let rNum = fromIntegral gs.roundNumber :: Int32
@@ -345,7 +347,7 @@ saveSnapshot (PostgresBackend pool) gId gs = do
 loadSnapshots :: StorageBackend -> Text -> IO [GameState]
 loadSnapshots (InMemoryBackend ref) gId = do
   st <- readIORef ref
-  return $ Map.findWithDefault [] gId st.inMemorySnapshots
+  return $ Map.findWithDefault [] gId st.snapshots
 loadSnapshots (PostgresBackend pool) gId = do
   withResource pool $ \conn -> do
     records <-
@@ -365,11 +367,11 @@ loadSnapshots (PostgresBackend pool) gId = do
 deleteLatestSnapshot :: StorageBackend -> Text -> IO ()
 deleteLatestSnapshot (InMemoryBackend ref) gId = do
   modifyIORef' ref $ \st ->
-    let existing = Map.findWithDefault [] gId st.inMemorySnapshots
+    let existing = Map.findWithDefault [] gId st.snapshots
         updated = case existing of
           [] -> []
           (_ : rest) -> rest
-     in st{inMemorySnapshots = Map.insert gId updated st.inMemorySnapshots}
+     in st & #snapshots %~ Map.insert gId updated
 deleteLatestSnapshot (PostgresBackend pool) gId = do
   withResource pool $ \conn -> do
     mLatest <-
