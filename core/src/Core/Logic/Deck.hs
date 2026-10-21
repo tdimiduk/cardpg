@@ -27,7 +27,13 @@ import Data.Maybe (fromMaybe, maybeToList)
 import Data.Text (Text)
 import System.Random (RandomGen, uniform)
 
-import Core.Card (CardInstance, CoreCard, Identified (..))
+import Core.Card
+  ( CardInstance
+  , CoreCard
+  , DefenseProfile (..)
+  , Identified (..)
+  , ItemCard (..)
+  )
 import Core.Logic.Monad (GameM (..), liftRandom)
 import Core.Primitives (CardInstanceId)
 import Core.State
@@ -54,7 +60,7 @@ calculateTotalBurden = do
         [ item
         | (_, (Identified _ (TCItem item), Equipped _)) <- Map.toList (tblSt ^. #assets)
         ]
-  let burden = sum [b | item <- equippedItems, let b = fromMaybe 0 item.burden]
+  let burden = sum [b | item <- equippedItems, let b = fromMaybe 0 item.defenses.burden]
   return burden
 
 performFatigueCycle :: (RandomGen g) => GameM g ()

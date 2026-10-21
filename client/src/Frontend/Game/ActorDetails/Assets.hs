@@ -14,7 +14,7 @@ import Prelude hiding (filter, id, map)
 
 import Core.NonEmptyText (getRawText)
 import Core.Primitives (EquipSlot (..), Identified (..))
-import Core.State (ActorState (..), AssetState (..), TableCard (..), TableState (..))
+import Core.State (ActorState (..), AssetState (..), TableCard (..), TableState (..), tableCardName)
 import Core.Util (tshow)
 import Frontend.Style.Common
 import Frontend.Style.DSL qualified as S
@@ -89,7 +89,7 @@ assetSectionWidget headerText rowStyle itemsDyn renderDetail = do
                   let nameDyn = fmap fst itemDyn
                   divS (S.textXs <> S.px S.S1 <> S.fontBold) $
                     dynText $
-                      fmap (\c -> getRawText c.name) nameDyn
+                      fmap (getRawText . tableCardName) nameDyn
 
                   -- Display Detail (Slot or Type)
                   divS (S.textXs <> S.text S.Gray 4 <> S.italic) $

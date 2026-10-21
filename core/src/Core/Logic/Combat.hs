@@ -45,6 +45,9 @@ import Core.State
   , PlannedAction (..)
   , TableCard (..)
   , TableState (..)
+  , tableCardDefense
+  , tableCardResilience
+  , tableCardTags
   )
 import Core.Stats (ResourceType (..), StackPower (..), Stats (..), getStat)
 
@@ -111,7 +114,7 @@ getActiveTableCards tblSt =
 computeDefense :: TableState -> Int
 computeDefense tblSt =
   let activeCards = getActiveTableCards tblSt
-      maxDef = maximum (0 : map (fromMaybe 0 . (.defense)) activeCards)
+      maxDef = maximum (0 : map (fromMaybe 0 . tableCardDefense) activeCards)
    in max 1 maxDef
 
 -- | Pure function to compute defense from table state for an active challenge
@@ -134,14 +137,14 @@ computeTagDefense reqTags tblSt
             let cTags = cardTagTexts tc
              in any (\ct -> normalizeTag ct `elem` normReq) cTags
           matchingCards = filter cardMatches activeCards
-          maxMatching = maximum (0 : map (fromMaybe 0 . (.defense)) matchingCards)
+          maxMatching = maximum (0 : map (fromMaybe 0 . tableCardDefense) matchingCards)
        in max 1 maxMatching
 
 normalizeTag :: Text -> Text
 normalizeTag = T.toLower . T.filter (\c -> c /= '[' && c /= ']' && c /= ' ')
 
 cardTagTexts :: TableCard -> [Text]
-cardTagTexts tc = case tc.tags of
+cardTagTexts tc = case tableCardTags tc of
   Nothing -> []
   Just kws -> map keywordToText (toList kws)
 
@@ -149,7 +152,7 @@ cardTagTexts tc = case tc.tags of
 computeResilience :: TableState -> Int
 computeResilience tblSt =
   let activeCards = getActiveTableCards tblSt
-      maxRes = maximum (0 : map (fromMaybe 0 . (.resilience)) activeCards)
+      maxRes = maximum (0 : map (fromMaybe 0 . tableCardResilience) activeCards)
    in max 1 maxRes
 
 -- | Pure function to compute next consequence severity from table state

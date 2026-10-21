@@ -41,6 +41,7 @@ module Core.Card
   ) where
 
 import Control.Applicative ((<|>))
+import Control.Lens ((&), (.~), (?~))
 import Data.Aeson
   ( FromJSON (..)
   , ToJSON (..)
@@ -52,6 +53,7 @@ import Data.Aeson
 import Data.Aeson.KeyMap qualified as KM
 import Data.Aeson.TH (deriveJSON)
 import Data.Char (isAlphaNum, ord, toLower)
+import Data.Generics.Labels ()
 import Data.List (nub)
 import Data.List.NonEmpty (NonEmpty)
 import Data.List.NonEmpty qualified as NE
@@ -61,7 +63,6 @@ import Data.Maybe (catMaybes, fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as T
 import GHC.Generics (Generic)
-import GHC.Records qualified
 
 import Core.Json
 import Core.Keyword
@@ -181,7 +182,7 @@ emptyCoreCard n s =
     }
 
 withCost :: Int -> CoreCard -> CoreCard
-withCost c card = card{cost = Just c}
+withCost c card = card & (#cost ?~ c)
 
 -- | Represents Innate Characteristics (Species, Natural Resilience).
 data NatureCard = NatureCard
@@ -254,33 +255,6 @@ instance FromJSON TalentCard where
     passive <- o .:? "passive"
     flavor <- o .:? "flavor"
     pure $ TalentCard name tags defenses passive flavor
-
-instance GHC.Records.HasField "defense" ItemCard (Maybe Int) where
-  getField (ItemCard _ _ d _ _ _ _) = d.defense
-
-instance GHC.Records.HasField "resilience" ItemCard (Maybe Int) where
-  getField (ItemCard _ _ d _ _ _ _) = d.resilience
-
-instance GHC.Records.HasField "burden" ItemCard (Maybe Int) where
-  getField (ItemCard _ _ d _ _ _ _) = d.burden
-
-instance GHC.Records.HasField "defense" NatureCard (Maybe Int) where
-  getField (NatureCard _ _ d _ _) = d.defense
-
-instance GHC.Records.HasField "resilience" NatureCard (Maybe Int) where
-  getField (NatureCard _ _ d _ _) = d.resilience
-
-instance GHC.Records.HasField "burden" NatureCard (Maybe Int) where
-  getField (NatureCard _ _ d _ _) = d.burden
-
-instance GHC.Records.HasField "defense" TalentCard (Maybe Int) where
-  getField (TalentCard _ _ d _ _) = d.defense
-
-instance GHC.Records.HasField "resilience" TalentCard (Maybe Int) where
-  getField (TalentCard _ _ d _ _) = d.resilience
-
-instance GHC.Records.HasField "burden" TalentCard (Maybe Int) where
-  getField (TalentCard _ _ d _ _) = d.burden
 
 -- | Represents a General Action / Skill Check.
 data GeneralActionDef = GeneralActionDef
