@@ -46,7 +46,12 @@ data ButtonSize
     SizeLarge
   deriving (Eq, Show, Enum, Bounded)
 
--- | Configuration for the button widget
+-- | Configuration for the button widget.
+--
+-- Note on generic-lens updates: Because this record is parameterized by the
+-- higher-kinded reflex type variable @t@, updating @def@ via @generic-lens@
+-- requires explicit type-grounding (e.g., @(def :: ButtonConfig t) & #variant .~ VariantOutline@)
+-- to avoid GHC-18872 / GHC-64725 unification errors with polymorphic optics.
 data ButtonConfig t = ButtonConfig
   { variant :: ButtonVariant
   , size :: ButtonSize

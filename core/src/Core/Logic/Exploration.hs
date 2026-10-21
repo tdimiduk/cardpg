@@ -34,7 +34,9 @@ module Core.Logic.Exploration
   , clearTeamworkChallenge
   ) where
 
+import Control.Lens (at, ix, (%~), (&), (.~), (?~), _Just)
 import Control.Monad.State (State)
+import Data.Generics.Labels ()
 import Data.List (partition)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
@@ -120,10 +122,9 @@ initWorldState manifest locCards travelCardsList clockCards =
       locStates =
         Map.fromList
           [ ( loc.id
-            , (initLocationRuntimeState loc)
-                { spawnedActors =
-                    maybe [] (map (\(a :: ScenarioActor) -> a.name)) (Map.lookup loc.id manifest.locationEncounters)
-                }
+            , initLocationRuntimeState loc
+                & #spawnedActors
+                  .~ maybe [] (map (\(a :: ScenarioActor) -> a.name)) (Map.lookup loc.id manifest.locationEncounters)
             )
           | loc <- locCards
           ]
@@ -219,7 +220,7 @@ resolveEffectTarget targetText ws
 -- | Set or replenish the party's active light source.
 setLightSource :: Text -> Int -> WorldState -> (WorldState, [ExplorationEvent])
 setLightSource name mins ws =
-  let ws' = ws{lightState = LightSourceState (Just (name, mins))}
+  let ws' = ws & #lightState .~ LightSourceState (Just (name, mins))
    in (ws', [LightFuelDecreased (Just (name, mins))])
 
 -- | Manually extinguish the active light source.
@@ -228,7 +229,7 @@ extinguishLight ws =
   case ws.lightState.activeLight of
     Nothing -> (ws, [])
     Just (name, _) ->
-      let ws' = ws{lightState = LightSourceState Nothing}
+      let ws' = ws & #lightState .~ LightSourceState Nothing
        in (ws', [LightFuelDecreased Nothing, LightExtinguished name])
 
 -- | Consume minutes of light fuel, generating decrement and extinction events.
@@ -249,11 +250,10 @@ setExitStatus
   -> WorldState
   -> (WorldState, [ExplorationEvent])
 setExitStatus fromLoc toLoc status ws =
-  case Map.lookup fromLoc ws.locationStates of
+  case ws.locationStates Map.!? fromLoc of
     Nothing -> (ws, [])
-    Just locSt ->
-      let locSt' = locSt{exitStatuses = Map.insert toLoc status locSt.exitStatuses}
-          ws' = ws{locationStates = Map.insert fromLoc locSt' ws.locationStates}
+    Just _ ->
+      let ws' = ws & #locationStates . at fromLoc . _Just . #exitStatuses . at toLoc ?~ status
        in (ws', [ExitStatusChanged fromLoc toLoc status])
 
 -- | Unblock an exit from one location to another.
@@ -268,18 +268,12 @@ unlockFollowUpAction
   -> WorldState
   -> WorldState
 unlockFollowUpAction locId actionName mModStrength ws =
-  case Map.lookup locId ws.locationStates of
-    Nothing -> ws
-    Just locSt ->
-      let enabled' =
-            if actionName `elem` locSt.enabledActions
-              then locSt.enabledActions
-              else locSt.enabledActions ++ [actionName]
-          modStrengths' = case mModStrength of
-            Just delta -> Map.insert actionName delta locSt.modifiedStrengths
-            Nothing -> locSt.modifiedStrengths
-          locSt' = locSt{enabledActions = enabled', modifiedStrengths = modStrengths'}
-       in ws{locationStates = Map.insert locId locSt' ws.locationStates}
+  ws
+    & #locationStates . Control.Lens.ix locId %~ \locSt ->
+      locSt
+        & #enabledActions
+          %~ (\actions -> if actionName `elem` actions then actions else actions ++ [actionName])
+        & #modifiedStrengths %~ maybe id (Map.insert actionName) mModStrength
 
 -- | Remove expired timed effects across all location states.
 expireTimedEffects
@@ -298,7 +292,7 @@ expireTimedEffects currentMins =
                 )
                 locSt.activeEffects
             expiredEvs = [ClockEffectExpired locId eff | eff <- expired]
-            locSt' = locSt{activeEffects = retained}
+            locSt' = locSt & #activeEffects .~ retained
          in (Map.insert locId locSt' accStates, accEvs ++ expiredEvs)
     )
     (Map.empty, [])
@@ -319,7 +313,7 @@ applyClockEffectSingle eff mCardId ws =
         if eff.extinguishesLight
           then case ws.lightState.activeLight of
             Just (nm, _) ->
-              ( ws{lightState = LightSourceState Nothing}
+              ( ws & #lightState .~ LightSourceState Nothing
               , [LightFuelDecreased Nothing, LightExtinguished nm]
               )
             Nothing -> (ws, [])
@@ -338,12 +332,12 @@ applyClockEffectSingle eff mCardId ws =
                     , modifiedStrengths = Map.empty
                     , spawnedActors = []
                     }
-                  (Map.lookup locId wsWithLight.locationStates)
+                  (wsWithLight.locationStates Map.!? locId)
 
               -- Set exit status mutation
               (curLocSt1, exitEvs) = case eff.setExitStatus of
                 Just (SetExitStatus exitId newStatus) ->
-                  ( curLocSt{exitStatuses = Map.insert exitId newStatus curLocSt.exitStatuses}
+                  ( curLocSt & #exitStatuses . at exitId ?~ newStatus
                   , [ExitStatusChanged locId exitId newStatus]
                   )
                 Nothing -> (curLocSt, [])
@@ -351,7 +345,7 @@ applyClockEffectSingle eff mCardId ws =
               -- Spawn actors mutation
               (curLocSt2, spawnEvs) = case eff.spawnActors of
                 Just actors ->
-                  ( curLocSt1{spawnedActors = curLocSt1.spawnedActors ++ actors}
+                  ( curLocSt1 & #spawnedActors %~ (++ actors)
                   , [ActorsSpawned locId actors]
                   )
                 Nothing -> (curLocSt1, [])
@@ -363,7 +357,7 @@ applyClockEffectSingle eff mCardId ws =
                   , expiresAtMinute = mExpire
                   , sourceCard = mCardId
                   }
-              curLocSt3 = curLocSt2{activeEffects = curLocSt2.activeEffects ++ [activeEff]}
+              curLocSt3 = curLocSt2 & #activeEffects %~ (++ [activeEff])
 
               appliedEv = [ClockEffectApplied locId eff]
 
@@ -371,8 +365,8 @@ applyClockEffectSingle eff mCardId ws =
                 Just hDef -> [ClockHazardTriggered locId hDef]
                 Nothing -> []
 
-              updatedLocStates = Map.insert locId curLocSt3 wsWithLight.locationStates
-           in ( wsWithLight{locationStates = updatedLocStates}
+              wsUpdated = wsWithLight & #locationStates . at locId ?~ curLocSt3
+           in ( wsUpdated
               , exitEvs ++ spawnEvs ++ appliedEv ++ hazardEv
               )
    in (wsFinal, lightEvs ++ locEvs)
@@ -384,7 +378,7 @@ applyClockEffect
   -> Maybe ClockEventId
   -> WorldState
   -> (WorldState, [ExplorationEvent])
-applyClockEffect locId eff = applyClockEffectSingle (eff{target = locId.unLocationId})
+applyClockEffect locId eff = applyClockEffectSingle (eff & #target .~ locId.unLocationId)
 
 -- | Apply all structured effects from a drawn clock card.
 applyClockEventEffects :: ClockEventCard -> WorldState -> (WorldState, [ExplorationEvent])
@@ -402,16 +396,18 @@ drawClockCard
   :: ClockDeckId
   -> WorldState
   -> State StdGen (WorldState, Maybe ClockEventCard, [ExplorationEvent])
-drawClockCard cid ws = case Map.lookup cid ws.clockDecks of
+drawClockCard cid ws = case ws.clockDecks Map.!? cid of
   Nothing -> pure (ws, Nothing, [])
   Just deckSt -> case deckSt.drawPile of
     (c : cs) -> do
-      let deckSt' =
-            deckSt
-              { drawPile = cs
-              , discardPile = c : deckSt.discardPile
-              }
-          ws' = ws{clockDecks = Map.insert cid deckSt' ws.clockDecks}
+      let ws' =
+            ws
+              & #clockDecks . Control.Lens.ix cid
+                %~ ( \st ->
+                       st
+                         & #drawPile .~ cs
+                         & #discardPile %~ (c :)
+                   )
       pure (ws', Just c, [ClockCardDrawn cid c])
     [] -> case deckSt.discardPile of
       [] -> pure (ws, Nothing, [])
@@ -420,12 +416,14 @@ drawClockCard cid ws = case Map.lookup cid ws.clockDecks of
         case shuffled of
           [] -> pure (ws, Nothing, [])
           (c : cs) -> do
-            let deckSt' =
-                  deckSt
-                    { drawPile = cs
-                    , discardPile = [c]
-                    }
-                ws' = ws{clockDecks = Map.insert cid deckSt' ws.clockDecks}
+            let ws' =
+                  ws
+                    & #clockDecks . Control.Lens.ix cid
+                      %~ ( \st ->
+                             st
+                               & #drawPile .~ cs
+                               & #discardPile .~ [c]
+                         )
             pure (ws', Just c, [ClockDeckShuffled cid, ClockCardDrawn cid c])
 
 -- | Traverse an exit, either transitioning directly room-to-room or moving onto a TravelCard edge.
@@ -448,7 +446,7 @@ transitionViaExit exit ws = case ws.focus of
                     Nothing -> Left "Target location does not exist"
                     Just targetLoc ->
                       let newFocus = AtLocation exit.to
-                          ws' = ws{focus = newFocus}
+                          ws' = ws & #focus .~ newFocus
                           evs = [PartyMoved ws.focus newFocus]
                        in Right (ws', evs, targetLoc.baseTime)
                 Just trvId ->
@@ -460,7 +458,7 @@ transitionViaExit exit ws = case ws.focus of
                               then Forward
                               else Reverse
                           newFocus = OnTravel trvId dir
-                          ws' = ws{focus = newFocus}
+                          ws' = ws & #focus .~ newFocus
                           evs = [PartyMoved ws.focus newFocus]
                        in Right (ws', evs, Duration 0 Minute)
 
@@ -476,7 +474,7 @@ completeTravel ws = case ws.focus of
               Forward -> trv.route.to
               Reverse -> trv.route.from
             newFocus = AtLocation destId
-            ws' = ws{focus = newFocus}
+            ws' = ws & #focus .~ newFocus
             evs = [PartyMoved ws.focus newFocus]
          in Right (ws', evs)
 
@@ -529,10 +527,9 @@ advanceTimeWithInterrupt delta tags mExplicitInterrupt ws = do
 
   let ws1 =
         ws
-          { time = newTime
-          , lightState = lightSt'
-          , locationStates = locStates'
-          }
+          & #time .~ newTime
+          & #lightState .~ lightSt'
+          & #locationStates .~ locStates'
 
   -- 4. Immediate clock draw (Loud or explicit interrupt)
   let isLoud = any (\t -> t `elem` ["Loud", "[Loud]", "loud", "[loud]"]) tags
@@ -585,11 +582,11 @@ startTeamworkChallenge ch ws =
           , totalImpactTimeAdded = Duration 0 Minute
           , participatingActors = []
           }
-   in ws{activeTeamworkChallenge = Just tp}
+   in ws & #activeTeamworkChallenge ?~ tp
 
 -- | Clear any active teamwork challenge on the WorldState.
 clearTeamworkChallenge :: WorldState -> WorldState
-clearTeamworkChallenge ws = ws{activeTeamworkChallenge = Nothing}
+clearTeamworkChallenge ws = ws & #activeTeamworkChallenge .~ Nothing
 
 -- | Record card flips contributed by an actor toward the active teamwork challenge.
 -- Returns updated WorldState, whether the challenge strength target has been reached,
@@ -619,13 +616,15 @@ contributeToTeamworkChallenge actorName flippedCards ws =
               then tp.participatingActors
               else tp.participatingActors ++ [actorName]
 
-          tp' =
-            tp
-              { totalStrengthContributed = newStrength
-              , totalCardsFlipped = newCardsFlipped
-              , totalImpactTimeAdded = newTotalExtra
-              , participatingActors = newActors
-              }
+          ws' =
+            ws
+              & #activeTeamworkChallenge . _Just
+                %~ ( \t ->
+                       t
+                         & #totalStrengthContributed .~ newStrength
+                         & #totalCardsFlipped .~ newCardsFlipped
+                         & #totalImpactTimeAdded .~ newTotalExtra
+                         & #participatingActors .~ newActors
+                   )
           isComplete = newStrength >= ch.challengeStrength
-          ws' = ws{activeTeamworkChallenge = Just tp'}
        in (ws', isComplete, extraDur)

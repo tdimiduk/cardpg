@@ -8,7 +8,7 @@ module Server.Loader
 
 import Control.Monad (foldM, forM)
 import Data.Aeson (FromJSON, Result (..), Value (..), fromJSON)
-import Data.List (foldl', isInfixOf, isPrefixOf)
+import Data.List (isInfixOf, isPrefixOf)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)

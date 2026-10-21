@@ -2,8 +2,10 @@ module Server.Dispatch
   ( processCommand
   ) where
 
+import Control.Lens ((%~), (&), (.~), (?~))
 import Control.Monad.State (State, state)
 import Data.Bifunctor (first)
+import Data.Generics.Labels ()
 import Data.Map.Strict qualified as Map
 import System.Random (StdGen)
 import System.Random.Stateful (uniform)
@@ -54,26 +56,29 @@ processCommand cmd game =
   case cmd of
     StartResolution -> do
       (newGame, events) <- revealPlannedActions game
-      let newGameWithPhase = newGame{phase = Resolution}
+      let resolvedGame = newGame & #phase .~ Resolution
       let payloads =
             concatMap
-              (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGameWithPhase)
+              (\(ActorGameEvent aid evt) -> eventToLogs aid evt resolvedGame)
               events
       newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
-      let finalGame = newGameWithPhase{history = game.history ++ newLogs}
+      let finalGame = resolvedGame & #history %~ (++ newLogs)
       return (finalGame, Right [], events, newLogs)
     EndRound -> do
       (newGame, updates, roundEvents) <- concludeRound game
       (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
       let newRound = game.roundNumber + 1
-      let newGameWithPhase = gameWithPlan{phase = Planning, roundNumber = newRound}
+      let planningGame =
+            gameWithPlan
+              & #phase .~ Planning
+              & #roundNumber .~ newRound
       let roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
       let payloads =
             concatMap
-              (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGameWithPhase)
+              (\(ActorGameEvent aid evt) -> eventToLogs aid evt planningGame)
               (roundEvents ++ [roundStartEvent])
       newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
-      let finalGame = newGameWithPhase{history = game.history ++ newLogs}
+      let finalGame = planningGame & #history %~ (++ newLogs)
       return (finalGame, Right updates, planEvents ++ roundEvents ++ [roundStartEvent], newLogs)
     SendChat maybeAid content -> do
       case parseChatCommand content of
@@ -98,14 +103,17 @@ processCommand cmd game =
           let sender = resolveSender maybeAid game
           logEntry <- mkLogEntry sender logPayload
 
-          let newGame = game{phase = Resolution, history = game.history ++ [logEntry]}
+          let newGame =
+                game
+                  & #phase .~ Resolution
+                  & #history %~ (++ [logEntry])
           return (newGame, (), [], [logEntry])
         CmdText _ -> do
           -- Normal Chat
           let sender = resolveSender maybeAid game
           logEntry <- mkLogEntry sender (LogChat content)
           let newLogs = [logEntry]
-          let finalGame = game{history = game.history ++ newLogs}
+          let finalGame = game & #history %~ (++ newLogs)
           return (finalGame, (), [], newLogs)
     Join _ -> error "Join is handled by the connection layer" -- Should never be called here
     SetRole _ -> error "SetRole is handled by the connection layer" -- Should never be called here
@@ -129,10 +137,12 @@ processCommand cmd game =
     PlanMove tid x y -> runStandard tid (Logic.planMove x y)
     PlanRankMove tid rank cardId -> runStandard tid (Logic.planRankMove rank cardId)
     SetMapMode mode -> do
-      let newGame = game{mapMode = Just mode}
       let logPayload = LogInfo ("Map mode switched to " <> pack (show mode))
       logEntry <- mkLogEntry SenderSystem logPayload
-      let finalGame = newGame{history = game.history ++ [logEntry]}
+      let finalGame =
+            game
+              & (#mapMode ?~ mode)
+              & #history %~ (++ [logEntry])
       return (finalGame, Right [], [], [logEntry])
     PlanAction tid actionId resourceIds ->
       runStandard
@@ -174,7 +184,7 @@ processCommand cmd game =
 
           newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
 
-          let finalGame = newGame{history = game.history ++ newLogs}
+          let finalGame = newGame & #history %~ (++ newLogs)
 
           return (finalGame, Right stateUpdates, actorEvents, newLogs)
     DestroyConsequence tid cid -> runStandard tid (Logic.destroyConsequence cid)
@@ -203,7 +213,7 @@ processCommand cmd game =
 
           newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
 
-          let finalGame = newGame{history = game.history ++ newLogs}
+          let finalGame = newGame & #history %~ (++ newLogs)
 
           return (finalGame, Right stateUpdates, actorEvents, newLogs)
 
@@ -211,5 +221,5 @@ resolveSender :: Maybe ActorId -> GameState -> LogSender
 resolveSender Nothing _ = SenderGM -- Default to GM
 resolveSender (Just aid) game =
   case Map.lookup aid game.actors of
-    Just ActorState{name = n} -> SenderActor aid n
+    Just actor -> SenderActor aid actor.name
     Nothing -> SenderActor aid "Unknown"
