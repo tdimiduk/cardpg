@@ -35,8 +35,8 @@ NEEDS_BUILD=0
 if [ -z "$BIN" ] || [ ! -x "$BIN" ]; then
   NEEDS_BUILD=1
 else
-  # Check if any Haskell sources or cabal files in tools-hs or core are newer than the binary
-  if [ -n "$(find "$ROOT_DIR/tools-hs" "$ROOT_DIR/core/src" "$ROOT_DIR/core/core.cabal" \( -name "*.hs" -o -name "*.cabal" \) -newer "$BIN" -print -quit 2>/dev/null)" ]; then
+  # Check if relevant Haskell sources or cabal files in tools-hs or core are newer than the binary
+  if [ -n "$(find "$ROOT_DIR/tools-hs/src" "$ROOT_DIR/tools-hs/app/audit-index" "$ROOT_DIR/tools-hs/tools-hs.cabal" "$ROOT_DIR/core/src" "$ROOT_DIR/core/core.cabal" \( -name "*.hs" -o -name "*.cabal" \) -newer "$BIN" -print -quit 2>/dev/null)" ]; then
     NEEDS_BUILD=1
   fi
 fi
@@ -49,6 +49,7 @@ if [ "$NEEDS_BUILD" -eq 1 ]; then
     echo "Error: Failed to find built audit-index binary." >&2
     exit 1
   fi
+  touch "$BIN"
 fi
 
 exec "$BIN" "$@"
