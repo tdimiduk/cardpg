@@ -14,9 +14,20 @@
 # Define arguments to pass to extensions
 - arguments:
     [
-      -XTypeApplications,
-      -XOverloadedStrings,
-      -XRecursiveDo,
+      -XDefaultSignatures,
+      -XDerivingStrategies,
+      -XDuplicateRecordFields,
+      -XLambdaCase,
+      -XMultiWayIf,
+      -XNoFieldSelectors,
+      -XOverloadedLabels,
       -XOverloadedRecordDot,
+      -XOverloadedStrings,
+      -XQuantifiedConstraints,
+      -XRecordWildCards,
+      -XRecursiveDo,
+      -XTemplateHaskell,
+      -XTypeApplications,
+      -XTypeFamilies,
     ]
 #####################################################################
