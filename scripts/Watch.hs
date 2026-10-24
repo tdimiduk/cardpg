@@ -2,7 +2,7 @@ module Main where
 
 import Control.Concurrent (forkIO, threadDelay)
 import qualified Control.Exception as E
-import Control.Monad (forM)
+import Control.Monad (forM, forM_, void)
 import Data.Maybe (catMaybes)
 import Data.Time.Clock (UTCTime)
 import System.Directory
@@ -219,8 +219,18 @@ main = do
 
 data Mode = Client FilePath | Server
 
+cleanupLingering :: Mode -> IO ()
+cleanupLingering mode = do
+  let patterns = case mode of
+        Client _ -> ["Frontend.Devel.devMain", "client-0.1.0.0-inplace"]
+        Server -> ["server-devel"]
+  forM_ patterns $ \p ->
+    catchIOError (void $ rawSystem "pkill" ["-15", "-f", p]) (\_ -> return ())
+
 runWatch :: Mode -> IO ExitCode
-runWatch mode = rawSystem "ghciwatch" (getGhciWatchArgs mode)
+runWatch mode = do
+  cleanupLingering mode
+  rawSystem "ghciwatch" (getGhciWatchArgs mode) `E.finally` cleanupLingering mode
 
 getGhciWatchArgs :: Mode -> [String]
 getGhciWatchArgs mode =

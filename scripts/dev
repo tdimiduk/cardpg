@@ -32,10 +32,21 @@ if [ "$USE_COMPILED" -eq 1 ]; then
   export CARDPG_USE_COMPILED_SERVER=1
 fi
 
+cleanup_orphans() {
+  pkill -15 -f "server-devel" 2>/dev/null || true
+  pkill -15 -f "Frontend.Devel.devMain" 2>/dev/null || true
+  pkill -15 -f "client-0.1.0.0-inplace" 2>/dev/null || true
+}
+
 if pgrep -f "process-compose up" > /dev/null; then
   echo "Dev server is already running."
   exit 0
 fi
+
+# Clean up any lingering orphans from previous abnormal terminations
+cleanup_orphans
+
+trap cleanup_orphans EXIT INT TERM
 
 if command -v process-compose &> /dev/null; then
   process-compose up -f process-compose.yaml "${ARGS[@]}"
