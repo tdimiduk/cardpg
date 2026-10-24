@@ -65,7 +65,7 @@ widgetName config = componentS "widget-name" widgetContainer $ do
 - [ ] **Record Fields**: Use `DuplicateRecordFields` style (no prefixes).
 - [ ] **Constraint correctness**: Use `DomBuilder t m`, `PostBuild t m`, etc., instead of concrete monads.
 - [ ] **No `Promptly`**: Do NOT use `attachPromptlyDyn` or similar. Use `attach` or `tag` with `current`.
-- [ ] **`widgetHold`**: Use `widgetHold` for dynamic switching of content.
+- [ ] **Dynamic switching & static rendering**: Prefer `dyn` (or `dyn_`) when switching on a `Dynamic`. If using `widgetHold` directly to switch on `Dynamic` updates (`updated dyn`), sample the initial value first (`initialVal <- sample (current dyn); widgetHold (render initialVal) (render <$> updated dyn)`). In static rendering (`renderStatic`) and initial DOM mounting, `updated dyn` does not fire; omitting initial sampling leaves static tests and initial renders stuck on empty or default DOM.
 - [ ] **Test IDs**: Use `componentS "descriptive-name"` for top-level widget containers.
 - [ ] **Named styles**: Extract reusable style definitions (e.g., `widgetContainer :: Style`) rather than inlining long chains.
 - [ ] **Module registration**: Add the new module to `exposed-modules` in `client-reflex.cabal`.

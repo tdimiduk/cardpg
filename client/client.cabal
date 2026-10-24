@@ -84,10 +84,12 @@ library
     Frontend.Game.ActorDetails.Deck
     Frontend.Game.ActorDetails.DeckViewer
     Frontend.Game.ActorDetails.Stats
+    Frontend.Game.ChronometerBar
     Frontend.Game.Class
     Frontend.Game.Common
     Frontend.Game.Defense
     Frontend.Game.DefenseWidget
+    Frontend.Game.ExplorationBoard
     Frontend.Game.Hand
     Frontend.Game.MapBoard
     Frontend.Game.PhaseDisplay
@@ -96,6 +98,7 @@ library
     Frontend.Game.Sidebar
     Frontend.Game.SidebarRight
     Frontend.Game.Staging
+    Frontend.Game.VigilanceTableau
     Frontend.Icons
     Frontend.Render.Common
     Frontend.Render.Pandoc
@@ -169,11 +172,15 @@ test-suite client-test
   main-is:        Main.hs
   hs-source-dirs: tests
   other-modules:
+    ChronometerBarTest
+    ExplorationBoardTest
     PandocRenderTest
     PlanningTest
     RulesViewerTest
+    VigilanceAndDefenseWidgetTest
 
   build-depends:
+    , api
     , base
     , bytestring
     , client

@@ -29,7 +29,7 @@ import Reflex.Dom.GadtApi.WebSocket (TaggedResponse, tagRequests)
 
 import Api.Reflex (ClientInfo (..), GameView (..), ServerPush (..), WsMessage (..))
 import Api.Request qualified as Req
-import Api.Types (ClientRole (..), LogEntry, Phase (..))
+import Api.Types (ClientRole (..), LogEntry, Phase (..), PlayMode (..))
 import Core.Primitives (ActorId (..), Identified (..))
 import Core.State
   ( ActiveChallenge (..)
@@ -39,11 +39,14 @@ import Core.State
   , MapMode (..)
   , identifiedLookup
   )
+import Frontend.Game.ChronometerBar (chronometerBarWidget)
 import Frontend.Game.Class
 import Frontend.Game.Defense (DefenseAction (..), DefenseTarget (..))
 import Frontend.Game.DefenseWidget (defenseWidget)
+import Frontend.Game.ExplorationBoard (explorationBoardWidget)
 import Frontend.Game.Hand (handWidget)
 import Frontend.Game.MapBoard (mapBoardWidget)
+import Frontend.Game.VigilanceTableau (vigilanceTableauWidget)
 import Language.Javascript.JSaddle (eval, liftJSM, valToText)
 
 import Frontend.Game.Planning (StagingState)
@@ -237,8 +240,19 @@ makeSessionState pushEvt identityDyn = do
       )
   mapModeDyn <- holdDyn MapModeGrid (fmap (fromMaybe MapModeGrid . (.mapMode)) gameEvt)
   activeClientsDyn <- holdDyn Map.empty (fmap (.activeClients) gameEvt)
+  playModeDyn <- holdDyn ModeCrisis (fmap (.playMode) gameEvt)
+  worldStateDyn <- holdDyn Nothing (fmap (.worldState) gameEvt)
   pure $
-    SessionState actorsMapDyn logsDyn phaseDyn mapModeDyn activeClientsDyn identityDyn canUndoPhaseDyn
+    SessionState
+      actorsMapDyn
+      logsDyn
+      phaseDyn
+      mapModeDyn
+      activeClientsDyn
+      identityDyn
+      canUndoPhaseDyn
+      playModeDyn
+      worldStateDyn
 
 data ViewModeChange
   = UserChange ViewMode
@@ -496,7 +510,38 @@ mapWidget mStaging selectedActorId = do
 
   return mapChange
 
--- | Main content wrapper hosting card editor or map widget.
+-- | Exploration content wrapper hosting the exploration board and vigilance tableau.
+explorationWidget
+  :: (GameWidgetIO t m)
+  => Dynamic t (Maybe ActorId)
+  -> m (Event t (Maybe ActorId))
+explorationWidget selectedActorId = do
+  explorationBoardWidget selectedActorId
+
+  actorsMapDyn <- askActors
+  pb <- getPostBuild
+  let welcomeArrivalEvt = void (ffilter (not . Map.null) (updated actorsMapDyn))
+      triggerEvt =
+        attach (current actorsMapDyn) $
+          leftmost
+            [ updated selectedActorId
+            , current selectedActorId <@ welcomeArrivalEvt
+            , current selectedActorId <@ pb
+            ]
+  _ <- widgetHold (return ()) $ ffor triggerEvt $ \(actorsMap, mId) ->
+    case mId >>= \aid -> identifiedLookup aid actorsMap of
+      Nothing -> return ()
+      Just (Identified i c) -> do
+        let actorDyn = ffor actorsMapDyn $ \actors ->
+              fromMaybe (Identified i c) (identifiedLookup i actors)
+        vigilanceTableauWidget actorDyn
+
+  return never
+
+data ActivePlayView = ViewEditor | ViewCrisis | ViewExploration
+  deriving stock (Eq, Show)
+
+-- | Main content wrapper hosting card editor, crisis map, or exploration board.
 mainContentWidget
   :: (GameWidgetIO t m)
   => Maybe StagingState
@@ -505,6 +550,7 @@ mainContentWidget
   -> Dynamic t (Maybe (Text, ClientRole))
   -> m (Event t (Maybe ActorId))
 mainContentWidget mStaging selectedActorId currentViewModeDyn identityDyn = componentS "main-content" mainContent $ do
+  chronometerBarWidget
   let effectiveSelectedActorIdDyn =
         zipDynWith
           ( \mIdent userSel ->
@@ -514,21 +560,32 @@ mainContentWidget mStaging selectedActorId currentViewModeDyn identityDyn = comp
           )
           identityDyn
           selectedActorId
-      mapWidgetBranch = mapWidget mStaging effectiveSelectedActorIdDyn
+
+  playModeDyn <- askPlayMode
+  let activePlayViewDyn = ffor2 currentViewModeDyn playModeDyn $ \vm pm ->
+        case vm of
+          ViewCardEditor -> ViewEditor
+          _ -> case pm of
+            ModeCrisis -> ViewCrisis
+            ModeExploration -> ViewExploration
+
+  let crisisWidgetBranch = mapWidget mStaging effectiveSelectedActorIdDyn
+      explorationWidgetBranch = explorationWidget effectiveSelectedActorIdDyn
       editorWidgetBranch = do
         editorWidget
         return never
 
-  let viewSelectorDyn = (== ViewCardEditor) <$> currentViewModeDyn
-  initialViewIsEditor <- sample (current viewSelectorDyn)
-  let initialWidget = if initialViewIsEditor then editorWidgetBranch else mapWidgetBranch
+  let renderActiveView = \case
+        ViewEditor -> editorWidgetBranch
+        ViewCrisis -> crisisWidgetBranch
+        ViewExploration -> explorationWidgetBranch
+
+  uniqActivePlayViewDyn <- holdUniqDyn activePlayViewDyn
+  initialView <- sample (current uniqActivePlayViewDyn)
   widgetHoldDyn <-
     widgetHold
-      initialWidget
-      ( ffor (updated viewSelectorDyn) $ \case
-          True -> editorWidgetBranch
-          False -> mapWidgetBranch
-      )
+      (renderActiveView initialView)
+      (fmap renderActiveView (updated uniqActivePlayViewDyn))
   return (switch (current widgetHoldDyn))
 
 -- | Handles the defense modal overlay and maps defense actions to API requests.
@@ -542,7 +599,10 @@ defenseModalWidget
 defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEvt = do
   actorsMapDyn <- askActors
   logsDyn <- askLogs
-  rec let closePanelEvt = ffilter (\case ClosePanel -> True; EndDefense -> True; _ -> False) defenseWidgetEvt
+  rec let closePanelEvt =
+            ffilter
+              (\case ClosePanel -> True; EndDefense -> True; AbortChallengeAction _ -> True; _ -> False)
+              defenseWidgetEvt
 
       let actorSelectedEvt = updated selectedActorId
       pb <- getPostBuild
@@ -627,6 +687,10 @@ defenseModalWidget initialActorId selectedActorId resumeDefenseEvt openDefenseEv
         Just (Req.AddConsequence actorId mSev mCid)
       EndDefense ->
         Just (Req.EndDefense actorId)
+      CommitVigilanceAction ->
+        Just (Req.CommitVigilance actorId)
+      AbortChallengeAction cid ->
+        Just (Req.AbortExplorationChallenge cid)
       ClosePanel ->
         Nothing -- UI-only: no API call
 

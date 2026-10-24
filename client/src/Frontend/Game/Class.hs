@@ -36,9 +36,9 @@ import Unsafe.Coerce (unsafeCoerce)
 
 import Api.Reflex (ClientInfo)
 import Api.Request (ApiRequest)
-import Api.Types (ClientRole, LogEntry, Phase)
+import Api.Types (ClientRole, LogEntry, Phase, PlayMode)
 import Core.Primitives (ActorId)
-import Core.State (ActorState, MapMode, isActorPC, isActorReady)
+import Core.State (ActorState, MapMode, WorldState, isActorPC, isActorReady)
 import Data.UUID.Types (UUID)
 
 -- | SessionState packages all fine-grained Dynamics folded from WS events.
@@ -50,6 +50,8 @@ data SessionState t = SessionState
   , activeClients :: Dynamic t (Map.Map UUID ClientInfo)
   , identity :: Dynamic t (Maybe (Text, ClientRole))
   , canUndoPhase :: Dynamic t Bool
+  , playMode :: Dynamic t PlayMode
+  , worldState :: Dynamic t (Maybe WorldState)
   }
 
 -- | Type-safe context class that abstracts state reads and request dispatching.
@@ -61,6 +63,8 @@ class (Monad m) => MonadGame t m | m -> t where
   askActiveClients :: m (Dynamic t (Map.Map UUID ClientInfo))
   askIdentity :: m (Dynamic t (Maybe (Text, ClientRole)))
   askCanUndoPhase :: m (Dynamic t Bool)
+  askPlayMode :: m (Dynamic t PlayMode)
+  askWorldState :: m (Dynamic t (Maybe WorldState))
   requestGame :: Event t (ApiRequest a) -> m (Event t (Either Text a))
 
 type GameWidget t m = (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m, MonadGame t m)
@@ -157,4 +161,6 @@ instance
   askActiveClients = GameT $ asks (.activeClients)
   askIdentity = GameT $ asks (.identity)
   askCanUndoPhase = GameT $ asks (.canUndoPhase)
+  askPlayMode = GameT $ asks (.playMode)
+  askWorldState = GameT $ asks (.worldState)
   requestGame = lift . requesting

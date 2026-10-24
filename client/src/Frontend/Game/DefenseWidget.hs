@@ -10,24 +10,40 @@ module Frontend.Game.DefenseWidget
   ( defenseWidget
   ) where
 
+import Control.Monad (forM_)
 import Control.Monad.Fix (MonadFix)
+import Data.Foldable (toList)
+import Data.Maybe (isJust)
+import Data.Text (Text)
+import Data.Text qualified as T
+import Reflex.Dom.Core hiding (button)
+
+import Api.Types (PlayMode (..))
 import Core.Card (CardInstance, CoreCard (..), Identified (..))
+import Core.Keyword (keywordToText)
 import Core.Logic.Combat
-  ( computeDefense
+  ( computeDefenseForChallenge
   , computeNextSeverity
   , computeResilience
+  , getActiveTableCards
   )
 import Core.NonEmptyText (getRawText)
 import Core.State
   ( ActiveChallenge (..)
   , ActiveDefense (..)
   , ActorState (..)
+  , ChallengeDomain (..)
+  , ChallengeSource (..)
   , CoreCardState (..)
   , DefenseDetails (..)
+  , TableState (..)
+  , tableCardDefense
+  , tableCardName
+  , tableCardTags
   )
 import Core.Stats (Stats (..))
+import Core.Time (canonicalDurationText, fromMinutes, toMinutes)
 import Core.Util (tshow)
-import Reflex.Dom.Core hiding (button)
 
 import Frontend.Card (CardDisplayMode (..), CardSettings (..), renderCoreCardWith)
 import Frontend.Game.Class
@@ -46,6 +62,32 @@ import Frontend.Style.Common
   )
 import Frontend.Style.DSL qualified as S
 import Frontend.UI.Button
+
+-- ---------------------------------------------------------------------------
+-- Challenge Classification
+-- ---------------------------------------------------------------------------
+
+data ChallengeKind
+  = KindAttack
+  | KindObstacle
+  | KindTravel
+  | KindHazard
+  deriving stock (Eq, Show)
+
+classifyChallenge :: ActiveChallenge -> ChallengeKind
+classifyChallenge ch = case ch.challengeDomain of
+  CombatTrauma -> KindAttack
+  EnvironmentalHazard _ -> KindHazard
+  PhysicalLabor tags
+    | any (\t -> t `elem` ["Travel", "Pace", "March", "Paces"]) tags -> KindTravel
+    | otherwise -> KindObstacle
+
+challengeKindDetails :: ChallengeKind -> (Text, Style, Style)
+challengeKindDetails = \case
+  KindAttack -> ("Incoming Attack", S.bg S.Red 6, textCrimsonLight)
+  KindObstacle -> ("Obstacle Challenge", S.bg S.Yellow 6, textGoldBright)
+  KindTravel -> ("Travel Pace", S.bg S.Green 6, textEmerald)
+  KindHazard -> ("Environmental Hazard", S.bg S.Purple 6, S.text S.Purple 4)
 
 -- ---------------------------------------------------------------------------
 -- Styles
@@ -92,7 +134,7 @@ headerBar =
     <> S.border S.Gray 10
     <> S.shrink0
 
--- | Challenge context banner (shows the incoming attack).
+-- | Challenge context banner.
 challengeBanner :: Style
 challengeBanner =
   S.css "bg-obsidian-textbox" "background-color" "rgba(18, 16, 15, 0.85)"
@@ -101,15 +143,14 @@ challengeBanner =
     <> S.border S.Gray 10
     <> S.relative
 
--- | Red left-accent line on the challenge banner.
-attackAccent :: Style
-attackAccent =
+-- | Left-accent line base on the challenge banner.
+attackAccentBase :: Style
+attackAccentBase =
   S.absolute
     <> S.left0
     <> S.top S.S0
     <> S.bottom0
     <> S.w S.S1
-    <> S.bg S.Red 6
 
 -- | Defense stats panel.
 statsPanel :: Style
@@ -147,7 +188,7 @@ actionBar :: Style
 actionBar =
   S.css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
     <> S.p S.S3
-    <> S.flex
+    <> S.flexCol
     <> S.gap S.S2
     <> S.borderT
     <> S.border S.Gray 10
@@ -201,6 +242,7 @@ defenseWidget
   -- ^ The defending actor's live state
   -> m (Event t DefenseAction)
 defenseWidget targetDyn actorDyn = do
+  playModeDyn <- askPlayMode
   divS floatingContainer $ do
     divS widgetPanel $ do
       -- 1. Header
@@ -208,12 +250,14 @@ defenseWidget targetDyn actorDyn = do
 
       -- 2. Challenge Banner
       divS challengeBanner $ do
-        divS attackAccent blank
+        dyn_ $ ffor targetDyn $ \target -> do
+          let (_, accentStyle, _) = challengeKindDetails (classifyChallenge target.challenge)
+          divS (attackAccentBase <> accentStyle) blank
         challengeBannerContent targetDyn
 
       -- 3. Defense Stats
       divS statsPanel $
-        defenseStatsContent actorDyn
+        defenseStatsContent targetDyn actorDyn
 
       -- 4. Flipped Cards Strip
       divS cardsArea $
@@ -222,10 +266,10 @@ defenseWidget targetDyn actorDyn = do
       -- 5. Action Bar
       actionEvts <-
         divS actionBar $
-          defenseActionBar targetDyn actorDyn
+          defenseActionBar targetDyn actorDyn playModeDyn
 
       -- 6. Footer
-      endEvt <- defenseFooter
+      endEvt <- defenseFooter targetDyn playModeDyn
 
       return $ leftmost [ClosePanel <$ closeEvt, actionEvts, endEvt]
 
@@ -251,7 +295,7 @@ widgetHeader = divS headerBar $ do
       }
     $ divS (S.w S.S4 <> S.h S.S4) iconClose
 
--- | The challenge banner showing the incoming attack details.
+-- | The challenge banner showing incoming attack or obstacle details.
 challengeBannerContent
   :: (DomBuilder t m, PostBuild t m)
   => Dynamic t DefenseTarget
@@ -286,22 +330,39 @@ challengeBannerContent targetDyn = do
             )
             $ renderCoreCardWith (CardSettings CardFull) cardContent
 
-    -- VS Math: power + color
+    -- Header, tags, strength, source
     divS (S.flex1 <> S.flexCol <> S.gap S.S1) $ do
-      elS "span" (S.textXs <> S.uppercase <> S.text S.Gray 5 <> S.fontBold) $ text "Incoming Attack"
+      dyn_ $ ffor targetDyn $ \target -> do
+        let (kindLabel, _, _) = challengeKindDetails (classifyChallenge target.challenge)
+        divS (S.flex <> S.itemsCenter <> S.justifyBetween) $ do
+          elS "span" (S.textXs <> S.uppercase <> S.text S.Gray 5 <> S.fontBold) $ text kindLabel
+          case target.challenge.challengeDomain of
+            PhysicalLabor tags | not (null tags) ->
+              divS (S.flex <> S.gap S.S1) $
+                forM_ tags $ \tg ->
+                  elS "span" (S.textXs <> S.px S.S1 <> S.rounded <> S.bg S.Gray 9 <> S.text S.Gray 4) $
+                    text ("[" <> tg <> "]")
+            EnvironmentalHazard tags | not (null tags) ->
+              divS (S.flex <> S.gap S.S1) $
+                forM_ tags $ \tg ->
+                  elS "span" (S.textXs <> S.px S.S1 <> S.rounded <> S.bg S.Gray 9 <> S.text S.Gray 4) $
+                    text ("[" <> tg <> "]")
+            _ -> blank
+
       dyn_ $ ffor targetDyn $ \target -> do
         let challenge = target.challenge
+            (_, _, valColor) = challengeKindDetails (classifyChallenge challenge)
         divS (S.flex <> S.itemsEnd <> S.gap S.S1) $ do
           elS
             "span"
             ( S.css "text-3xl" "font-size" "1.875rem"
                 <> S.fontBold
-                <> textCrimsonLight
+                <> valColor
             )
             $ text (tshow challenge.challengeStrength)
           renderResourceType IconInline challenge.challengeColor Nothing
 
-      -- Resource count indicator
+      -- Resource count indicator if any
       dyn_ $ ffor targetDyn $ \target ->
         case drop 1 target.attackStack of
           [] -> blank
@@ -320,19 +381,66 @@ challengeBannerContent targetDyn = do
               )
               $ text ("+" <> tshow (length rs) <> " resource cards")
 
-      -- Attacker name
-      divS (S.textXs <> S.text S.Gray 5 <> S.mt S.S1) $ do
-        text "By: "
-        dynText $ ffor targetDyn $ \t -> t.attackerName
+      -- Source attribution
+      dyn_ $ ffor targetDyn $ \t -> do
+        case t.challenge.source of
+          CSAdHoc name mDesc -> do
+            divS (S.textXs <> S.text S.Gray 4 <> S.mt S.S1) $ do
+              elS "span" (S.text S.Gray 6) $ text "Action: "
+              text name
+            forM_ mDesc $ \desc ->
+              divS (S.textXs <> S.text S.Gray 5 <> S.italic) $ text desc
+          CSCard _ ->
+            divS (S.textXs <> S.text S.Gray 5 <> S.mt S.S1) $ do
+              text "By: "
+              text t.attackerName
+
+-- | Pure helper to compute defense breakdown description based on active challenge tags and gear.
+describeDefenseSource :: Maybe ActiveChallenge -> TableState -> (Int, Text)
+describeDefenseSource mChallenge tblSt =
+  let finalDef = computeDefenseForChallenge mChallenge tblSt
+      activeCards = getActiveTableCards tblSt
+   in case mChallenge of
+        Just ch -> case ch.challengeDomain of
+          CombatTrauma ->
+            let armorCards = filter (\c -> tableCardDefense c > Just 0) activeCards
+             in case armorCards of
+                  (c : _) -> (finalDef, "Armor: " <> getRawText (tableCardName c))
+                  [] -> (finalDef, "Innate Defense Baseline")
+          PhysicalLabor tags ->
+            describeTagDefense tags activeCards finalDef
+          EnvironmentalHazard tags ->
+            describeTagDefense tags activeCards finalDef
+        Nothing -> (finalDef, "Base Defense")
+  where
+    describeTagDefense reqTags activeCards finalDef
+      | null reqTags = (finalDef, "Innate Baseline (1)")
+      | otherwise =
+          let normReq = map normalizeTag reqTags
+              cardMatches tc =
+                case tableCardTags tc of
+                  Nothing -> False
+                  Just kws -> any (\ct -> normalizeTag (keywordToText ct) `elem` normReq) kws
+              matchingCards = filter cardMatches activeCards
+              matchingWithDef = filter (\c -> tableCardDefense c > Just 1) matchingCards
+           in case matchingWithDef of
+                (c : _) -> (finalDef, "Tool/Gear: " <> getRawText (tableCardName c))
+                [] -> (finalDef, "Innate Baseline: 1 (No matching tool tags)")
+
+    normalizeTag = T.toLower . T.filter (\c -> c /= '[' && c /= ']' && c /= ' ')
 
 -- | Defense stats breakdown panel, computed client-side from core logic.
 defenseStatsContent
   :: (DomBuilder t m, PostBuild t m)
-  => Dynamic t ActorState
+  => Dynamic t DefenseTarget
+  -> Dynamic t ActorState
   -> m ()
-defenseStatsContent actorDyn = do
+defenseStatsContent targetDyn actorDyn = do
   let detailsDyn = ffor actorDyn defensePreview
-      defenseDyn = ffor actorDyn (computeDefense . (.tableState))
+      breakdownDyn = ffor2 targetDyn actorDyn $ \target actor ->
+        describeDefenseSource (Just target.challenge) actor.tableState
+      defenseDyn = fmap fst breakdownDyn
+      defenseSourceTextDyn = fmap snd breakdownDyn
       resilienceDyn = ffor actorDyn (computeResilience . (.tableState))
 
   divS statsBreakdown $ do
@@ -411,6 +519,34 @@ defenseStatsContent actorDyn = do
                   $ text ("+" <> tshow d.consequencesFromDefense <> " Conseq")
               else blank
 
+    -- Active defense source indicator
+    divS (S.flex <> S.itemsCenter <> S.gap S.S1 <> S.textXs <> S.text S.Gray 5 <> S.pt S.S1) $ do
+      elS "span" (S.text S.Gray 6) $ text "Defense Mode: "
+      dynText defenseSourceTextDyn
+
+    -- Accumulated time per impact (if challenge has timePerImpact)
+    dyn_ $ ffor2 targetDyn detailsDyn $ \target details ->
+      case target.challenge.timePerImpact of
+        Nothing -> blank
+        Just tpi -> do
+          let elapsedMins = details.impact * toMinutes tpi
+              elapsedDur = fromMinutes elapsedMins
+          divS
+            ( S.flex
+                <> S.justifyBetween
+                <> S.itemsCenter
+                <> S.textXs
+                <> S.pt S.S1
+                <> S.mt S.S1
+                <> S.borderT
+                <> S.border S.Gray 10
+            )
+            $ do
+              elS "span" statLabel $ text "Accumulated Time"
+              divS (S.flex <> S.itemsCenter <> S.gap S.S1 <> textGoldBright) $ do
+                text (canonicalDurationText elapsedDur)
+                elS "span" (S.text S.Gray 5) $ text ("(" <> canonicalDurationText tpi <> " / flip)")
+
 -- | Strip of cards that have been flipped for defense.
 flippedCardsStrip
   :: (DomBuilder t m, PostBuild t m, MonadHold t m, MonadFix m)
@@ -450,72 +586,106 @@ renderDefenseCardChip (Identified _ card) =
     )
     $ text (getRawText card.name)
 
--- | Two-column action bar: Flip Card + Take Consequence.
+-- | Action bar: Commit Vigilance (Exploration) + Flip Card + Take Consequence.
 defenseActionBar
   :: (GameWidget t m)
   => Dynamic t DefenseTarget
   -> Dynamic t ActorState
+  -> Dynamic t PlayMode
   -> m (Event t DefenseAction)
-defenseActionBar targetDyn _actorDyn = do
-  let nextSevDyn = ffor _actorDyn (computeNextSeverity . (.tableState))
+defenseActionBar targetDyn actorDyn playModeDyn = do
+  let nextSevDyn = ffor actorDyn (computeNextSeverity . (.tableState))
       cidDyn = fmap (\t -> t.challenge.id) targetDyn
+      canCommitVigilanceDyn = ffor2 playModeDyn actorDyn $ \pm as ->
+        pm == ModeExploration
+          && (not (null as.coreState.vigilancePool) || isJust as.coreState.readiedCard)
+      vigilanceCountDyn = ffor actorDyn $ \as ->
+        length as.coreState.vigilancePool + maybe 0 (const 1) as.coreState.readiedCard
 
-  -- Flip Card button (primary defense action)
-  flipEvt <-
-    button
-      def
-        { variant = VariantPrimary
-        , extraStyle = S.flex1
-        , size = SizeSmall
-        }
-      $ divS (S.flex <> S.itemsCenter <> S.justifyCenter <> S.gap S.S1)
-      $ do
-        divS (S.w S.S4 <> S.h S.S4 <> S.text S.Blue 3) iconDefense
-        text "Flip Card"
+  -- Optional: Commit Vigilance Pool button when in Exploration Mode
+  commitEvts <-
+    dyn $ ffor canCommitVigilanceDyn $ \canCommit ->
+      if canCommit
+        then do
+          commitClick <-
+            button
+              def
+                { variant = VariantSecondary
+                , extraStyle = S.wFull <> S.mb S.S2
+                , size = SizeSmall
+                }
+              $ divS (S.flex <> S.itemsCenter <> S.justifyCenter <> S.gap S.S1)
+              $ do
+                divS (S.w S.S4 <> S.h S.S4 <> textGoldBright) iconDefense
+                text "Commit Vigilance ("
+                dynText (fmap tshow vigilanceCountDyn)
+                text " cards)"
+          return (CommitVigilanceAction <$ commitClick)
+        else return never
+  commitEvt <- switchHold never commitEvts
 
-  -- Consequence + severity overrides
-  conseqEvts <- divS (S.flex <> S.gap S.S1) $ do
-    -- Main "Take Consequence" button (auto-severity)
-    mainConsEvt <-
+  -- Flip Card + Consequence row
+  mainRowEvts <- divS (S.flex <> S.gap S.S2 <> S.wFull) $ do
+    -- Flip Card button (primary defense action)
+    flipEvt <-
       button
         def
-          { variant = VariantDestructive
-          , extraStyle = S.flex1 <> S.css "rounded-l" "border-radius" "var(--radius-2) 0 0 var(--radius-2)"
+          { variant = VariantPrimary
+          , extraStyle = S.flex1
           , size = SizeSmall
           }
-        $ divS (S.flexCol <> S.itemsCenter)
+        $ divS (S.flex <> S.itemsCenter <> S.justifyCenter <> S.gap S.S1)
         $ do
-          text "Take Conseq"
-          divS (S.textXs <> S.opacity50) $ do
-            text "Sev "
-            dynText (fmap tshow nextSevDyn)
+          divS (S.w S.S4 <> S.h S.S4 <> S.text S.Blue 3) iconDefense
+          text "Flip Card"
 
-    let takeAutoConsEvt = tagPromptlyDyn (fmap (TakeConsequence Nothing . Just) cidDyn) mainConsEvt
+    -- Consequence + severity overrides
+    conseqEvts <- divS (S.flex <> S.gap S.S1) $ do
+      -- Main "Take Consequence" button (auto-severity)
+      mainConsEvt <-
+        button
+          def
+            { variant = VariantDestructive
+            , extraStyle = S.flex1 <> S.css "rounded-l" "border-radius" "var(--radius-2) 0 0 var(--radius-2)"
+            , size = SizeSmall
+            }
+          $ divS (S.flexCol <> S.itemsCenter)
+          $ do
+            text "Take Conseq"
+            divS (S.textXs <> S.opacity50) $ do
+              text "Sev "
+              dynText (fmap tshow nextSevDyn)
 
-    -- Severity override mini-buttons [3, 2, 1]
-    sevEvts <- divS (S.flexCol <> S.w S.S5) $ do
-      evts <-
-        mapM
-          ( \sev -> do
-              (e, _) <-
-                elAttr'
-                  "button"
-                  ("class" =: classNames severityMiniBtn)
-                  $ text (tshow sev)
-              return (tagPromptlyDyn (fmap (TakeConsequence (Just sev) . Just) cidDyn) (domEvent Click e))
-          )
-          [3 :: Int, 2, 1]
-      return (leftmost evts)
+      let takeAutoConsEvt = tagPromptlyDyn (fmap (TakeConsequence Nothing . Just) cidDyn) mainConsEvt
 
-    return $ leftmost [takeAutoConsEvt, sevEvts]
+      -- Severity override mini-buttons [3, 2, 1]
+      sevEvts <- divS (S.flexCol <> S.w S.S5) $ do
+        evts <-
+          mapM
+            ( \sev -> do
+                (e, _) <-
+                  elAttr'
+                    "button"
+                    ("class" =: classNames severityMiniBtn)
+                    $ text (tshow sev)
+                return (tagPromptlyDyn (fmap (TakeConsequence (Just sev) . Just) cidDyn) (domEvent Click e))
+            )
+            [3 :: Int, 2, 1]
+        return (leftmost evts)
 
-  return $ leftmost [FlipCard <$ flipEvt, conseqEvts]
+      return $ leftmost [takeAutoConsEvt, sevEvts]
 
--- | Footer with "Clear / End" link.
+    return $ leftmost [FlipCard <$ flipEvt, conseqEvts]
+
+  return $ leftmost [commitEvt, mainRowEvts]
+
+-- | Footer with "Abort Action" (in exploration) and "Clear / End Defense".
 defenseFooter
   :: (GameWidget t m)
-  => m (Event t DefenseAction)
-defenseFooter = do
+  => Dynamic t DefenseTarget
+  -> Dynamic t PlayMode
+  -> m (Event t DefenseAction)
+defenseFooter targetDyn playModeDyn = do
   divS
     ( S.css "bg-stone-dark" "background-color" "var(--color-stone-dark)"
         <> S.pl (S.Rem 1.5)
@@ -524,8 +694,25 @@ defenseFooter = do
         <> S.pb (S.Rem 1.0)
         <> S.flex
         <> S.justifyBetween
+        <> S.itemsCenter
     )
     $ do
+      abortEvts <-
+        dyn $ ffor2 playModeDyn targetDyn $ \pm target ->
+          if pm == ModeExploration
+            then do
+              abClick <-
+                button
+                  def
+                    { variant = VariantGhost
+                    , size = SizeSmall
+                    , extraStyle = S.textXs <> textCrimsonLight <> S.hover (S.bg S.Red 9)
+                    }
+                  $ text "Abort Action"
+              return (AbortChallengeAction target.challenge.id <$ abClick)
+            else return never
+      abortEvt <- switchHold never abortEvts
+
       endEvt <-
         button
           def
@@ -534,4 +721,4 @@ defenseFooter = do
             , extraStyle = S.textXs <> S.text S.Gray 6 <> S.hover (S.text S.Gray 3)
             }
           $ text "Clear / End Defense"
-      return (EndDefense <$ endEvt)
+      return $ leftmost [abortEvt, EndDefense <$ endEvt]

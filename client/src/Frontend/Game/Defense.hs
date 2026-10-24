@@ -36,6 +36,11 @@ data DefenseAction
     EndDefense
   | -- | Close the panel UI without ending the defense
     ClosePanel
+  | -- | Commit vigilance pool into hand during exploration
+    CommitVigilanceAction
+  | -- | Abort the active exploration challenge
+    AbortChallengeAction ChallengeId
+  deriving stock (Show, Eq)
 
 -- | Compute live defense preview from the actor's current state.
 --
