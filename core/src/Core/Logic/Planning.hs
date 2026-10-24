@@ -12,6 +12,7 @@ module Core.Logic.Planning
   , revealPlannedActions
   , endDefense
   , passAction
+  , planExploration
   , PlanValidation (..)
   , validateStandardPlan
   , validateNarrativePlan
@@ -38,6 +39,7 @@ import Core.State
   , ActiveDefense (..)
   , BattleRank (..)
   , CoreCardState (..)
+  , ExplorationIntent (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
   , NarrativeStack (..)
@@ -237,3 +239,9 @@ passAction :: GameM g ()
 passAction = do
   modify $ #coreState . #planned ?~ PPass
   tell [ActionPlanned PPass]
+
+planExploration :: ExplorationIntent -> GameM g ()
+planExploration intent = do
+  let plan = PExploration intent
+  modify $ #coreState . #planned ?~ plan
+  tell [ActionPlanned plan]

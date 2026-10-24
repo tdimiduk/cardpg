@@ -3,6 +3,7 @@ module Server.Dispatch
   ) where
 
 import Control.Lens ((%~), (&), (.~), (?~))
+import Control.Monad (void)
 import Control.Monad.State (State, state)
 import Data.Bifunctor (first)
 import Data.Generics.Labels ()
@@ -191,6 +192,21 @@ processCommand cmd game =
     ReturnToDeck tid cids -> runStandard tid (Logic.returnCardsToDeck cids)
     Pass tid -> runStandard tid Logic.passAction
     DiscardCards tid cids -> runStandard tid (Logic.discardCards cids)
+    PlanExplorationIntent tid intent -> runStandard tid (Logic.planExploration intent)
+    SetVigilanceDial tid dial -> runStandard tid (Logic.setVigilanceDial dial)
+    SelectReadiedCard tid cid -> runStandard tid (void $ Logic.searchDeckForReadiedCard cid)
+    CommitVigilance tid -> runStandard tid Logic.commitVigilancePool
+    AbortExplorationChallenge _cid -> return (game, Right [], [], [])
+    AdvanceTimeManual _dur -> return (game, Right [], [], [])
+    DrawClockManual _cid -> return (game, Right [], [], [])
+    TransitionMode mode -> do
+      let logPayload = LogInfo ("Play mode switched to " <> pack (show mode))
+      logEntry <- mkLogEntry SenderSystem logPayload
+      let finalGame =
+            game
+              & (#playMode .~ mode)
+              & #history %~ (++ [logEntry])
+      return (finalGame, Right [], [], [logEntry])
   where
     runStandard
       :: ActorId

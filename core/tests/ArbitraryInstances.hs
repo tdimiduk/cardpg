@@ -15,6 +15,7 @@ import Generic.Random
 import Test.Tasty.QuickCheck
 
 import Core.Card
+import Core.Card.Exploration (LocationId (..))
 import Core.DSL (TextRep (toText))
 import Core.Language
   ( TextStyle (..)
@@ -310,6 +311,14 @@ instance Arbitrary ActionStack where
   shrink = genericShrink
 
 instance Arbitrary NarrativeStack where
+  arbitrary = genericArbitrary uniform
+  shrink = genericShrink
+
+instance Arbitrary LocationId where
+  arbitrary = LocationId <$> arbitrary
+  shrink (LocationId t) = LocationId <$> shrink t
+
+instance Arbitrary ExplorationIntent where
   arbitrary = genericArbitrary uniform
   shrink = genericShrink
 

@@ -7,13 +7,14 @@ import Data.GADT.Show.TH (deriveGShow)
 import Data.Text (Text)
 import Data.UUID.Types (UUID)
 
-import Core.Card (CustomCard)
+import Core.Card.Exploration (ClockDeckId)
 import Core.Primitives (ActorId, CardInstanceId, CardLocation, ChallengeId)
-import Core.State (BattleRank, MapMode)
+import Core.State (BattleRank, ExplorationIntent, MapMode)
 import Core.Stats (ResourceType)
+import Core.Time (Duration)
 import Data.Aeson (Value)
 
-import Api.Types (ClientRole, StateUpdate)
+import Api.Types (ClientRole, PlayMode, StateUpdate)
 
 data ApiRequest a where
   Join :: Text -> ApiRequest (Either Text UUID)
@@ -44,6 +45,16 @@ data ApiRequest a where
   UndoPhase :: ApiRequest (Either Text [StateUpdate])
   Pass :: ActorId -> ApiRequest (Either Text [StateUpdate])
   SaveCustomCard :: Value -> Text -> ApiRequest (Either Text ())
+  -- Exploration & Chronometer Actions
+  PlanExplorationIntent
+    :: ActorId -> ExplorationIntent -> ApiRequest (Either Text [StateUpdate])
+  SetVigilanceDial :: ActorId -> Int -> ApiRequest (Either Text [StateUpdate])
+  SelectReadiedCard :: ActorId -> CardInstanceId -> ApiRequest (Either Text [StateUpdate])
+  CommitVigilance :: ActorId -> ApiRequest (Either Text [StateUpdate])
+  AbortExplorationChallenge :: ChallengeId -> ApiRequest (Either Text [StateUpdate])
+  AdvanceTimeManual :: Duration -> ApiRequest (Either Text [StateUpdate])
+  DrawClockManual :: ClockDeckId -> ApiRequest (Either Text [StateUpdate])
+  TransitionMode :: PlayMode -> ApiRequest (Either Text [StateUpdate])
 
 deriveGShow ''ApiRequest
 deriveGEq ''ApiRequest

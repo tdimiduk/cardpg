@@ -37,7 +37,7 @@ $(deriveJSON cardpgJsonDef ''Phase)
 
 -- | The overarching mode of play: exploratory graph traversal or tactical crisis rounds
 data PlayMode = ModeExploration | ModeCrisis
-  deriving (Show, Eq, Generic)
+  deriving stock (Show, Eq, Ord, Generic, Enum, Bounded)
 
 $(deriveJSON cardpgJsonDef ''PlayMode)
 

@@ -81,6 +81,7 @@ attackAction cid matPlan = case matPlan of
           , timePerImpact = Nothing
           }
   PPass -> Left "pass action"
+  PExploration _ -> Left "exploration action"
   PNarrative (NarrativeStack{cards = cs, color = col}) ->
     -- Narrative Action Logic
     let

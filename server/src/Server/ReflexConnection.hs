@@ -192,6 +192,8 @@ makeGameView s =
     , mapMode = s.gameState.mapMode
     , activeClients = getClientInfoMap s.clients
     , canUndoPhase = not (null s.checkpoints)
+    , playMode = s.gameState.playMode
+    , worldState = s.gameState.worldState
     }
 
 handleJoin :: Client -> Text -> MVar ServerState -> IO (Either Text UUID)
@@ -250,11 +252,19 @@ checkPermission role cmd =
         Req.DiscardCards aid _ -> aid == actorId
         Req.ReturnToDeck aid _ -> aid == actorId
         Req.Pass aid -> aid == actorId
+        Req.PlanExplorationIntent aid _ -> aid == actorId
+        Req.SetVigilanceDial aid _ -> aid == actorId
+        Req.SelectReadiedCard aid _ -> aid == actorId
+        Req.CommitVigilance aid -> aid == actorId
+        Req.AbortExplorationChallenge _ -> True
         Req.SetMapMode _ -> False
         Req.StartResolution -> False
         Req.EndRound -> False
         Req.UndoPhase -> False
         Req.SaveCustomCard _ _ -> False
+        Req.AdvanceTimeManual _ -> False
+        Req.DrawClockManual _ -> False
+        Req.TransitionMode _ -> False
 
 handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
 handleGameCommand client state cmd = do
@@ -290,6 +300,14 @@ handleGameCommand client state cmd = do
         Req.UndoPhase -> pure (Left "Permission denied")
         Req.Pass _ -> pure (Left "Permission denied")
         Req.SaveCustomCard _ _ -> pure (Left "Permission denied")
+        Req.PlanExplorationIntent{} -> pure (Left "Permission denied")
+        Req.SetVigilanceDial{} -> pure (Left "Permission denied")
+        Req.SelectReadiedCard{} -> pure (Left "Permission denied")
+        Req.CommitVigilance{} -> pure (Left "Permission denied")
+        Req.AbortExplorationChallenge{} -> pure (Left "Permission denied")
+        Req.AdvanceTimeManual{} -> pure (Left "Permission denied")
+        Req.DrawClockManual{} -> pure (Left "Permission denied")
+        Req.TransitionMode{} -> pure (Left "Permission denied")
     else case cmd of
       Req.Join name -> handleJoin client name state
       Req.SetRole role -> handleSetRole client role state

@@ -92,10 +92,20 @@ data NarrativeStack = NarrativeStack
 
 $(deriveJSON cardpgJsonDef ''NarrativeStack)
 
+data ExplorationIntent
+  = IntentAction Int
+  | IntentPace Int
+  | IntentTraverseExit LocationId
+  | IntentPass
+  deriving stock (Show, Eq, Ord, Generic)
+
+$(deriveJSON cardpgJsonDef ''ExplorationIntent)
+
 data PlannedAction
   = PStandard ActionStack
   | PNarrative NarrativeStack
   | PPass
+  | PExploration ExplorationIntent
   deriving stock (Show, Eq, Generic)
 
 $(deriveJSON cardpgJsonDef ''PlannedAction)
@@ -104,6 +114,7 @@ plannedActionCards :: PlannedAction -> [CardInstance CoreCard]
 plannedActionCards (PStandard (ActionStack ac res)) = ac : res
 plannedActionCards (PNarrative (NarrativeStack cs _)) = toList cs
 plannedActionCards PPass = []
+plannedActionCards (PExploration _) = []
 
 data ChallengeSource
   = CSAdHoc {name :: Text, description :: Maybe Text}

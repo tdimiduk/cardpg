@@ -617,6 +617,7 @@ extractPlanCards = \case
           [] -> ("Narrative Action", [])
           (h : rest) -> (getRawText h.content.name, [getRawText r.content.name | r <- rest])
   PPass -> ("Passed", [])
+  PExploration _ -> ("Exploration Action", [])
 
 computeCumulativeFlips :: ResourceType -> [CardInstance CoreCard] -> [DefenseFlip]
 computeCumulativeFlips col cards =

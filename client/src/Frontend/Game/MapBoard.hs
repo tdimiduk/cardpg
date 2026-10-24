@@ -720,6 +720,7 @@ renderInteractiveRankBoard selectedActorId stagingStateDyn rankMoveStagingDyn ac
                           PStandard (ActionStack _ res) -> 1 + length (res :: [CardInstance CoreCard])
                           PNarrative (NarrativeStack cs _) -> length (cs :: NonEmpty (CardInstance CoreCard))
                           PPass -> 0
+                          PExploration _ -> 0
                    in if phase == Planning then handSize + plannedCount else handSize
 
             let tokenWrapperStyle =
@@ -841,6 +842,7 @@ renderInteractiveGridBoard selectedActorId actorsMapDyn phaseDyn = do
                     PStandard (ActionStack _ res) -> 1 + length (res :: [CardInstance CoreCard])
                     PNarrative (NarrativeStack cs _) -> length (cs :: NonEmpty (CardInstance CoreCard))
                     PPass -> 0
+                    PExploration _ -> 0
              in if phase == Planning then handSize + plannedCount else handSize
 
       let tokenAttrsDyn = (,,,) <$> spatialDyn <*> isSelectedDyn <*> isDefeatedDyn <*> actorDyn

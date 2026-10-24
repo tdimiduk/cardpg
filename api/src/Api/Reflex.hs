@@ -7,9 +7,9 @@ import Data.UUID.Types (UUID)
 import GHC.Generics (Generic)
 import Reflex.Dom.GadtApi.WebSocket (TaggedResponse)
 
-import Api.Types (ClientRole, LogEntry, Phase)
+import Api.Types (ClientRole, LogEntry, Phase, PlayMode)
 import Core.Primitives (ActorId)
-import Core.State (ActorState, MapMode)
+import Core.State (ActorState, MapMode, WorldState)
 
 data ClientInfo = ClientInfo
   { name :: Text
@@ -25,6 +25,8 @@ data GameView = GameView
   , mapMode :: Maybe MapMode
   , activeClients :: Map UUID ClientInfo
   , canUndoPhase :: Bool
+  , playMode :: PlayMode
+  , worldState :: Maybe WorldState
   }
   deriving (Show, Eq, Generic)
 

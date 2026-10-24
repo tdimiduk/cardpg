@@ -194,6 +194,10 @@ gameEventTypeName = \case
   ConsequenceAdded{} -> "ConsequenceAdded"
   ConsequenceRemoved{} -> "ConsequenceRemoved"
   RoundStarted{} -> "RoundStarted"
+  VigilanceDialSet{} -> "VigilanceDialSet"
+  CardReadied{} -> "CardReadied"
+  VigilanceCommitted{} -> "VigilanceCommitted"
+  VigilanceFlushed{} -> "VigilanceFlushed"
 
 logPayloadToEvent :: LogEntry -> Maybe (Maybe Text, Text, Value)
 logPayloadToEvent logEntry =
