@@ -488,7 +488,7 @@ renderClockPills clockDecksDyn = do
                     divS (progressBarFillStyle pct) blank
 
                   -- Remaining cards indicator
-                  elS "span" (S.textXs <> S.text S.Gray 5) $
+                  elS "span" (S.textXs <> S.text S.Gray 4) $
                     text ("(" <> tshow (length deckSt.drawPile) <> ")")
 
             let clickEvt = domEvent Click pillEl

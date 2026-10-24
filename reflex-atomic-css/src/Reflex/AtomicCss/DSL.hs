@@ -738,10 +738,10 @@ fontLora :: Style
 fontLora = css "font-lora" "font-family" "var(--font-text)"
 
 textSm :: Style
-textSm = css "text-sm" "font-size" "var(--font-size-0)"
+textSm = css "text-sm" "font-size" "var(--font-size-sm)"
 
 textXs :: Style
-textXs = css "text-xs" "font-size" "var(--font-size-00)"
+textXs = css "text-xs" "font-size" "var(--font-size-xs)"
 
 textXl :: Style
 textXl = css "text-xl" "font-size" "var(--font-size-3)"

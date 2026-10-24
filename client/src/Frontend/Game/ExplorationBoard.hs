@@ -188,7 +188,7 @@ sectionHeadingStyle =
 sectionSubtitleStyle :: Style
 sectionSubtitleStyle =
   S.textXs
-    <> S.text S.Gray 5
+    <> S.text S.Gray 4
 
 actionCardStyle :: Style
 actionCardStyle =
@@ -1169,7 +1169,7 @@ renderPassFooter actorsMapDyn effectiveActorIdDyn = do
         <> S.border S.Gray 10
     )
     $ do
-      divS (S.textXs <> S.text S.Gray 5) $
+      divS (S.textXs <> S.text S.Gray 4) $
         text "Need to wait while others resolve actions or keep watch? Declare Pass / Wait."
 
       let isPassingDyn = ffor2 actorsMapDyn effectiveActorIdDyn $ \actors mAid ->

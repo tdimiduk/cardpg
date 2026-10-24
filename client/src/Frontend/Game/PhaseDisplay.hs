@@ -83,7 +83,7 @@ planningControls identityDyn = do
           _ <- requestGame undoReq
           pure ()
       _ -> do
-        elS "span" (S.textXs <> S.text S.Gray 5 <> S.italic) $ text "Waiting for GM to start resolution..."
+        elS "span" (S.textXs <> S.text S.Gray 4 <> S.italic) $ text "Waiting for GM to start resolution..."
     -- Ready Count
     divS (S.text S.Gray 4) $ do
       text "Ready: "
@@ -126,4 +126,4 @@ resolutionControls identityDyn = do
           _ <- requestGame undoReq
           pure ()
       _ -> do
-        elS "span" (S.textXs <> S.text S.Gray 5 <> S.italic) $ text "Waiting for GM to end round..."
+        elS "span" (S.textXs <> S.text S.Gray 4 <> S.italic) $ text "Waiting for GM to end round..."

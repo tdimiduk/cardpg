@@ -7,11 +7,11 @@
   --color-stone-light: #26211f; /* Highlight stone */
 
   --color-gold-bright: #f59e0b; /* Lustrous amber/gold */
-  --color-gold-muted: #b45309; /* Antique weathered gold */
+  --color-gold-muted: #d97706; /* Antique weathered gold (brightened from #b45309 for readability) */
   --color-gold-glow: rgba(245, 158, 11, 0.15);
 
   --color-silver-bright: #cbd5e1; /* Platinum accent */
-  --color-silver-muted: #64748b; /* Weathered pewter */
+  --color-silver-muted: #94a3b8; /* Weathered pewter (brightened from #64748b for contrast) */
 
   --color-crimson: #991b1b; /* Cursed red / consequence */
   --color-crimson-glow: rgba(153, 27, 27, 0.25);
@@ -22,6 +22,10 @@
   /* Typography */
   --font-fantasy: "Cinzel", Georgia, "Times New Roman", serif;
   --font-text: "Lora", Garamond, "Book Antiqua", serif;
+
+  /* Typography Scale */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
 }
 
 *,
@@ -203,11 +207,11 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Glowing Aura for Traits */
 .mystic-traits-aura {
-  background: linear-gradient(135deg, #090910 0%, #111020 100%) !important;
-  border: 1px solid #4338ca !important;
+  background: linear-gradient(135deg, #0d0c18 0%, #17152d 100%) !important;
+  border: 1px solid #6366f1 !important;
   box-shadow:
-    0 0 12px rgba(67, 56, 202, 0.15),
-    inset 0 0 6px rgba(67, 56, 202, 0.2) !important;
+    0 0 12px rgba(99, 102, 241, 0.2),
+    inset 0 0 6px rgba(99, 102, 241, 0.25) !important;
 }
 
 /* Active Hand Selector Glow Ring */

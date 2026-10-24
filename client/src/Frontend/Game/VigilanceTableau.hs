@@ -210,7 +210,7 @@ renderVigilanceTableau actorDyn = mdo
             return (tagPromptlyDyn (ffor actorIdDyn (`Req.SetVigilanceDial` num)) btnDyn)
         let dialClickEvt = leftmost setDialEvts
 
-        divS (S.textXs <> S.text S.Gray 6) $ do
+        divS (S.textXs <> S.text S.Gray 4) $ do
           dynText $ ffor dialDyn $ \d -> tshow d <> " card target"
 
         return dialClickEvt
@@ -229,7 +229,7 @@ renderVigilanceTableau actorDyn = mdo
           dyn_ $ ffor poolDyn $ \cards ->
             if null cards
               then divS (emptySlotStyle <> S.w (S.Rem 4.5) <> S.h (S.Rem 6.5)) $ do
-                elS "span" (S.textXs <> S.text S.Gray 6 <> S.italic) $ text "Empty"
+                elS "span" (S.textXs <> S.text S.Gray 4 <> S.italic) $ text "Empty"
               else forM_ (zip [1 :: Int ..] cards) $ \(idx, _) ->
                 elAttr "div" ("class" =: classNames cardBackStyle <> testId ("vigilance-card-" <> tshow idx)) $ do
                   divS (S.w S.S4 <> S.h S.S4 <> S.text S.Amber 5) iconDeck
@@ -243,7 +243,7 @@ renderVigilanceTableau actorDyn = mdo
       openSlotClick <- divS (S.flexCol <> S.gap S.S1) $ do
         divS (S.flex <> S.itemsCenter <> S.justifyBetween) $ do
           elS "span" sectionLabel $ text "Readied Card"
-          elS "span" (S.textXs <> S.text S.Gray 6) $ text "1-min focus"
+          elS "span" (S.textXs <> S.text S.Gray 4) $ text "1-min focus"
 
         dynSlotEvts <-
           dyn $ ffor readiedDyn $ \case
@@ -257,7 +257,7 @@ renderVigilanceTableau actorDyn = mdo
                   $ do
                     divS (S.w S.S4 <> S.h S.S4 <> textGoldBright) iconDeck
                     elS "span" (S.textXs <> textGoldBright <> S.fontBold) $ text "+ Ready Card"
-                    elS "span" (S.textXs <> S.text S.Gray 6) $ text "(Focus 1 min)"
+                    elS "span" (S.textXs <> S.text S.Gray 4) $ text "(Focus 1 min)"
               return (domEvent Click e)
             Just (Identified _ cardContent) -> do
               elAttr "div" ("class" =: classNames readiedSlotFilled <> testId "readied-card-slot-filled") $ do

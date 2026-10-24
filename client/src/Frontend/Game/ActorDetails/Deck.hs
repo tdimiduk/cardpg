@@ -52,7 +52,7 @@ deckWidget actorId actorState = do
                 { variant = VariantGhost
                 , size = SizeSmall
                 , extraStyle =
-                    S.absolute <> S.top S.S1 <> S.right S.S1 <> S.text S.Gray 6 <> S.hover (S.text S.Indigo 5)
+                    S.absolute <> S.top S.S1 <> S.right S.S1 <> S.text S.Gray 4 <> S.hover (S.text S.Indigo 4)
                 }
               (divS (S.w S.S5 <> S.h S.S5) iconDeck)
 
