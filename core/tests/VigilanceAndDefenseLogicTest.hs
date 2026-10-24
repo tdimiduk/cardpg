@@ -396,6 +396,8 @@ test_vigilanceAndDefenseLogic =
                     , clockDecks = Map.empty
                     , lightState = LightSourceState Nothing
                     , activeTeamworkChallenge = Nothing
+                    , locationEncounters = Map.empty
+                    , actorTemplates = Map.empty
                     }
 
             -- 1. Start teamwork challenge

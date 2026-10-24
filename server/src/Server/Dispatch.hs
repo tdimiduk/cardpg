@@ -11,6 +11,7 @@ import Data.Map.Strict qualified as Map
 import System.Random (StdGen)
 import System.Random.Stateful (uniform)
 
+import Api.Types (PlayMode (..))
 import Core.Logic.Deck qualified as Logic
 import Core.Logic.Monad (GameM)
 import Core.Logic.Planning qualified as Logic
@@ -25,7 +26,14 @@ import Core.State
   )
 import Data.Text (Text, pack)
 import Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
-import Server.Engine (autoPlanForNPCs, concludeRound, revealPlannedActions, runActorAction)
+import Server.Engine
+  ( autoPlanForNPCs
+  , concludeRound
+  , revealPlannedActions
+  , runActorAction
+  , transitionToCrisis
+  , transitionToExploration
+  )
 import Server.Presenter (eventToLogs)
 import Server.Types
   ( ActorGameEvent (..)
@@ -67,20 +75,30 @@ processCommand cmd game =
       return (finalGame, Right [], events, newLogs)
     EndRound -> do
       (newGame, updates, roundEvents) <- concludeRound game
-      (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
-      let newRound = game.roundNumber + 1
-      let planningGame =
-            gameWithPlan
-              & #phase .~ Planning
-              & #roundNumber .~ newRound
-      let roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
-      let payloads =
-            concatMap
-              (\(ActorGameEvent aid evt) -> eventToLogs aid evt planningGame)
-              (roundEvents ++ [roundStartEvent])
-      newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
-      let finalGame = planningGame & #history %~ (++ newLogs)
-      return (finalGame, Right updates, planEvents ++ roundEvents ++ [roundStartEvent], newLogs)
+      let hostiles = filter (\a -> a.actorType /= "PC") (Map.elems newGame.actors)
+      if newGame.playMode == ModeCrisis && not (null hostiles) && all Logic.isDefeated hostiles
+        then do
+          (expGame, expUpdates, expEvents) <- transitionToExploration newGame
+          logEntry <- mkLogEntry SenderSystem (LogInfo "All hostiles defeated. Resuming exploration mode.")
+          let allUpdates = updates ++ expUpdates
+              allEvents = roundEvents ++ expEvents
+              finalGame = expGame & #history %~ (++ [logEntry])
+          return (finalGame, Right allUpdates, allEvents, [logEntry])
+        else do
+          (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
+          let newRound = game.roundNumber + 1
+          let planningGame =
+                gameWithPlan
+                  & #phase .~ Planning
+                  & #roundNumber .~ newRound
+          let roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
+          let payloads =
+                concatMap
+                  (\(ActorGameEvent aid evt) -> eventToLogs aid evt planningGame)
+                  (roundEvents ++ [roundStartEvent])
+          newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
+          let finalGame = planningGame & #history %~ (++ newLogs)
+          return (finalGame, Right updates, planEvents ++ roundEvents ++ [roundStartEvent], newLogs)
     SendChat maybeAid content -> do
       case parseChatCommand content of
         CmdChallenge (ChallengeDetails color val name desc) -> do
@@ -185,9 +203,18 @@ processCommand cmd game =
 
           newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
 
-          let finalGame = newGame & #history %~ (++ newLogs)
-
-          return (finalGame, Right stateUpdates, actorEvents, newLogs)
+          let hostiles = filter (\a -> a.actorType /= "PC") (Map.elems newGame.actors)
+          if newGame.playMode == ModeCrisis && not (null hostiles) && all Logic.isDefeated hostiles
+            then do
+              (expGame, expUpdates, expEvents) <- transitionToExploration newGame
+              logDefeated <- mkLogEntry SenderSystem (LogInfo "Hostiles defeated. Resuming exploration mode.")
+              let allUpdates = stateUpdates ++ expUpdates
+                  allEvents = actorEvents ++ expEvents
+                  finalGame = expGame & #history %~ (++ (newLogs ++ [logDefeated]))
+              return (finalGame, Right allUpdates, allEvents, newLogs ++ [logDefeated])
+            else do
+              let finalGame = newGame & #history %~ (++ newLogs)
+              return (finalGame, Right stateUpdates, actorEvents, newLogs)
     DestroyConsequence tid cid -> runStandard tid (Logic.destroyConsequence cid)
     ReturnToDeck tid cids -> runStandard tid (Logic.returnCardsToDeck cids)
     Pass tid -> runStandard tid Logic.passAction
@@ -200,13 +227,17 @@ processCommand cmd game =
     AdvanceTimeManual _dur -> return (game, Right [], [], [])
     DrawClockManual _cid -> return (game, Right [], [], [])
     TransitionMode mode -> do
-      let logPayload = LogInfo ("Play mode switched to " <> pack (show mode))
-      logEntry <- mkLogEntry SenderSystem logPayload
-      let finalGame =
-            game
-              & (#playMode .~ mode)
-              & #history %~ (++ [logEntry])
-      return (finalGame, Right [], [], [logEntry])
+      case mode of
+        ModeCrisis -> do
+          (newGame, updates, events) <- transitionToCrisis game
+          logEntry <- mkLogEntry SenderSystem (LogInfo "Play mode switched to ModeCrisis")
+          let finalGame = newGame & #history %~ (++ [logEntry])
+          return (finalGame, Right updates, events, [logEntry])
+        ModeExploration -> do
+          (newGame, updates, events) <- transitionToExploration game
+          logEntry <- mkLogEntry SenderSystem (LogInfo "Play mode switched to ModeExploration")
+          let finalGame = newGame & #history %~ (++ [logEntry])
+          return (finalGame, Right updates, events, [logEntry])
   where
     runStandard
       :: ActorId
@@ -229,9 +260,18 @@ processCommand cmd game =
 
           newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
 
-          let finalGame = newGame & #history %~ (++ newLogs)
-
-          return (finalGame, Right stateUpdates, actorEvents, newLogs)
+          let hostiles = filter (\a -> a.actorType /= "PC") (Map.elems newGame.actors)
+          if newGame.playMode == ModeCrisis && not (null hostiles) && all Logic.isDefeated hostiles
+            then do
+              (expGame, expUpdates, expEvents) <- transitionToExploration newGame
+              logDefeated <- mkLogEntry SenderSystem (LogInfo "Hostiles defeated. Resuming exploration mode.")
+              let allUpdates = stateUpdates ++ expUpdates
+                  allEvents = actorEvents ++ expEvents
+                  finalGame = expGame & #history %~ (++ (newLogs ++ [logDefeated]))
+              return (finalGame, Right allUpdates, allEvents, newLogs ++ [logDefeated])
+            else do
+              let finalGame = newGame & #history %~ (++ newLogs)
+              return (finalGame, Right stateUpdates, actorEvents, newLogs)
 
 resolveSender :: Maybe ActorId -> GameState -> LogSender
 resolveSender Nothing _ = SenderGM -- Default to GM

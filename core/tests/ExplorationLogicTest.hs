@@ -218,6 +218,9 @@ testLightFuelMechanics = do
           , locationStates = Map.empty
           , clockDecks = Map.empty
           , lightState = LightSourceState Nothing
+          , activeTeamworkChallenge = Nothing
+          , locationEncounters = Map.empty
+          , actorTemplates = Map.empty
           }
   let (wsLit, litEvs) = setLightSource "Torch" 30 emptyWorld
   litEvs @?= [LightFuelDecreased (Just ("Torch", 30))]
@@ -259,6 +262,9 @@ testClockEffectExpiration = do
           , locationStates = Map.singleton locId initialLocSt
           , clockDecks = Map.empty
           , lightState = LightSourceState Nothing
+          , activeTeamworkChallenge = Nothing
+          , locationEncounters = Map.empty
+          , actorTemplates = Map.empty
           }
 
   let unguardedEffect =
@@ -346,6 +352,9 @@ testClockTicksAndLoud = do
           , locationStates = Map.singleton locId initialLocSt
           , clockDecks = Map.singleton clockId clockDeck
           , lightState = LightSourceState Nothing
+          , activeTeamworkChallenge = Nothing
+          , locationEncounters = Map.empty
+          , actorTemplates = Map.empty
           }
 
   let gen = mkStdGen 999
@@ -414,6 +423,9 @@ testClockReshuffle = do
           , locationStates = Map.empty
           , clockDecks = Map.singleton clockId deckSt
           , lightState = LightSourceState Nothing
+          , activeTeamworkChallenge = Nothing
+          , locationEncounters = Map.empty
+          , actorTemplates = Map.empty
           }
 
   let gen = mkStdGen 777

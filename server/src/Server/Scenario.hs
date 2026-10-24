@@ -4,8 +4,8 @@
 
 module Server.Scenario where
 
-import Control.Lens ((&), (.~))
-import Control.Monad (forM_)
+import Control.Lens ((&), (.~), (?~))
+import Control.Monad (foldM, forM_)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.State
   ( StateT
@@ -129,12 +129,37 @@ loadModuleScenarioWithCatalog catalog path maybeSeed = do
       (runStateT (loadScenarioActors catalog modDir (manifest.startingActors)) initialGame)
       rng
 
+  -- Load encounter actor templates for all location encounters in manifest
+  let encounterActorsList = concat (Map.elems manifest.locationEncounters)
+  (templateMap, templateRng) <-
+    foldM
+      ( \(accMap, curRng) scAct ->
+          if Map.member scAct.name accMap
+            then pure (accMap, curRng)
+            else do
+              let actorPath = modDir </> scAct.file
+              (actSt, nextRng) <-
+                runStateT
+                  (loadAndInstantiateActor catalog actorPath scAct.x scAct.y scAct.initialHandSize)
+                  curRng
+              pure (Map.insert scAct.name actSt accMap, nextRng)
+      )
+      (Map.empty, finalRng)
+      encounterActorsList
+
   -- For actors in ExplorationMode:
   -- Initialize Vigilance pool from deck (hand remains empty, dial = 2, pool has 2 cards)
   let explorationActors = Map.map initExplorationActor finalGameState.actors
-      gameWithVigilance = finalGameState & #actors .~ explorationActors
+      worldWithTemplates =
+        worldSt
+          & #actorTemplates .~ templateMap
+          & #locationEncounters .~ manifest.locationEncounters
+      gameWithVigilance =
+        finalGameState
+          & #actors .~ explorationActors
+          & #worldState ?~ worldWithTemplates
 
-  return (gameWithVigilance, finalRng)
+  return (gameWithVigilance, templateRng)
 
 -- | Set up actor state for exploration mode: hand is emptied, vigilance dial defaults to 2,
 -- and cards are drawn into the face-down vigilance pool.

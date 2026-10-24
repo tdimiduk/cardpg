@@ -145,6 +145,8 @@ initWorldState manifest locCards travelCardsList clockCards =
         , clockDecks = clockDeckStates
         , lightState = LightSourceState Nothing
         , activeTeamworkChallenge = Nothing
+        , locationEncounters = manifest.locationEncounters
+        , actorTemplates = Map.empty
         }
 
 --------------------------------------------------------------------------------

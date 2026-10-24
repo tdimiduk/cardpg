@@ -31,6 +31,7 @@ import Core.Card.Exploration
   , LocationCard
   , LocationId
   , ModuleId
+  , ScenarioActor
   , TravelCard
   , TravelId
   )
@@ -411,6 +412,8 @@ data WorldState = WorldState
   , clockDecks :: Map ClockDeckId ClockDeckState
   , lightState :: LightSourceState
   , activeTeamworkChallenge :: Maybe TeamworkProgress
+  , locationEncounters :: Map LocationId [ScenarioActor]
+  , actorTemplates :: Map Text ActorState
   }
   deriving stock (Show, Eq, Generic)
 
@@ -427,6 +430,8 @@ instance FromJSON WorldState where
     clockDecks <- o .: "clockDecks"
     lightState <- o .: "lightState"
     activeTeamworkChallenge <- o .:? "activeTeamworkChallenge"
+    locationEncounters <- o .:? "locationEncounters" .!= M.empty
+    actorTemplates <- o .:? "actorTemplates" .!= M.empty
     pure WorldState{..}
 
 data ExplorationEvent

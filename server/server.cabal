@@ -123,6 +123,7 @@ test-suite server-test
     GameTest
     InMemoryTest
     LoaderTest
+    ModeTransitionTest
     ScenarioTest
 
   hs-source-dirs: test

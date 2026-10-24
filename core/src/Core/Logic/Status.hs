@@ -14,7 +14,7 @@ import Control.Monad.RWS (ask, tell)
 import Control.Monad.State (get, modify, put)
 import Control.Monad.Trans.Class (lift)
 import Data.Generics.Labels ()
-import Data.List.NonEmpty (toList)
+import Data.List.NonEmpty (NonEmpty (..), toList)
 import Data.Map.Strict qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -30,7 +30,7 @@ import Core.Keyword (keywordToText)
 import Core.Logic.Combat (calculateResilience)
 import Core.Logic.Deck (createCards)
 import Core.Logic.Monad (GameM (..))
-import Core.NonEmptyText (getRawText)
+import Core.NonEmptyText (getRawText, unsafeNonEmptyText)
 import Core.Primitives (CardInstanceId, CardLocation (..))
 import Core.State
   ( ActionStack (..)
@@ -143,26 +143,36 @@ addConsequenceForChallenge mChallenge maybeSeverity = do
       let candidates = filter (\c -> c.severity == finalSeverity) matchingTemplates
       let finalCandidates = if null candidates then matchingTemplates else candidates
 
-      case finalCandidates of
-        [] -> return ()
-        _ -> do
-          -- Pick random index
-          g <- GameM . lift $ get
-          let (idx, g') = uniformR (0, length finalCandidates - 1) g
-          GameM . lift $ put g'
-          let template = finalCandidates !! idx
+      let fallbackCard =
+            ConsequenceCard
+              { name = unsafeNonEmptyText "Injury"
+              , tags = Just ("Trauma" :| [])
+              , passive = Nothing
+              , effects = Nothing
+              , severity = finalSeverity
+              , notes = Nothing
+              , rules = Nothing
+              }
+      let effectiveCandidates = if null finalCandidates then [fallbackCard] else finalCandidates
 
-          -- Create a new ID
-          let (cid, g'') = uniform g'
-          GameM . lift $ put g''
+      do
+        -- Pick random index
+        g <- GameM . lift $ get
+        let (idx, g') = uniformR (0, length effectiveCandidates - 1) g
+        GameM . lift $ put g'
+        let template = effectiveCandidates !! idx
 
-          let newConsequence = Identified cid template
+        -- Create a new ID
+        let (cid, g'') = uniform g'
+        GameM . lift $ put g''
 
-          -- Add to TableState list (no registry)
-          modify $ #tableState . #consequences %~ (newConsequence :)
+        let newConsequence = Identified cid template
 
-          tell [ConsequenceAdded newConsequence]
-          return ()
+        -- Add to TableState list (no registry)
+        modify $ #tableState . #consequences %~ (newConsequence :)
+
+        tell [ConsequenceAdded newConsequence]
+        return ()
 
 destroyConsequence :: CardInstanceId -> GameM g ()
 destroyConsequence cid = do
