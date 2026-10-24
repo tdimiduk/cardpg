@@ -33,9 +33,12 @@ The scholar deciphers the geological stress lines and shifting wind shears off t
 - `Tread Lightly` ([[Yellow]] - Exploration): Crossing the narrow, frost-slick timber beam and crumbling ledge without slipping or triggering structural collapse.
 - `Break/Dismantle` ([[Red]] - Exploration): Forcibly wedging and prying free a dangerous overhanging keystone block to clear a secure anchor point.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. The party consists of seasoned mountain travelers with proper gear (pitons, ropes, woolens, crampons). Success in crossing is assumed; the resolution determines how much time and stamina the crossing demands, and whether anyone suffers physical harm or gear loss along the way.
+- **Pacing Mode:** `General Action (Adventuring Time)`. The party consists of seasoned mountain travelers with proper gear (pitons, ropes, woolens, crampons). Success in crossing is assumed; the resolution determines how much time and stamina the crossing demands, and whether anyone suffers physical harm or gear loss along the way.
+- **Friction Band:** `Taxing / Moderate Friction`
+- **Cost & Stamina Expectation:** Noticeable physical stamina drain under sub-zero wind and sleet. Specialists cross successfully but feel the weariness later; likely incurs 1–2 Severity 1 conditions (chilled limbs, shivering, minor rope strain).
+- **Abort & Failure Dynamic:** Pushing recklessly across frost-slick keystones risks Severity 2 physical trauma (cracked ribs, sprained shoulder). Players can abort a hazardous crossing attempt to set redundant pitons or wait out a wind gust at the cost of valuable time against the ritual clock.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -69,9 +72,12 @@ Rather than charging through the gates blind, the party spends half an hour esta
 - `Remote Sensing` ([[Blue]] - Exploration): Projecting magical awareness up into the vaulted shadows to scout the interior layout and detect arcane conduits.
 - `Read the Scars` ([[Blue]] - Exploration): Analyzing chisel marks, ancient impact fractures, and resonant acoustic grooves to deduce structural weak points and the ruin’s original defensive mechanisms.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time) / Pre-Crisis Setup`. Deliberate, methodical reconnaissance aimed at converting time, observation, and stamina into decisive tactical leverage before entering life-or-death confrontation.
+- **Pacing Mode:** `General Action (Adventuring Time) / Pre-Crisis Setup`. Deliberate, methodical reconnaissance aimed at converting time, observation, and stamina into decisive tactical leverage before entering life-or-death confrontation.
+- **Friction Band:** `Routine / Low Friction` (with opt-in push into `Taxing`)
+- **Cost & Stamina Expectation:** Minimal stamina burn for basic covert mapping from shadows; specialists locate blind spots cleanly. Opting to push into deep arcane resonance sensing burns focus and risks Severity 1 cognitive strain (`Strained Focus / Ringing Ears`).
+- **Abort & Failure Dynamic:** Methodical observation allows clean disengagement at any moment; pushing too aggressively into active ward fields risks triggering acoustic alarms.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -106,9 +112,12 @@ The stakes are absolute: if the ritual concludes, the colossus will rise and pul
 - `Command and Coordinate` ([[Blue]] - Combat): Analyzing the chamber’s acoustic vectors and shouting rapid tactical directions to guide the vanguard’s defensive pivots.
 - `Exploit a Weakness` ([[Blue]] - Combat): Identifying a fracture along the colossus’s left knee joint where ancient seismic damage can be leveraged to topple it.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Crisis (Crisis Time)`. High-tempo, simultaneous round-by-round combat and environmental disruption where every action must balance offensive pressure, defensive survival, and objective progress against the ritual’s impending completion.
+- **Pacing Mode:** `Crisis (Crisis Time)`. High-tempo, simultaneous round-by-round combat and environmental disruption where every action must balance offensive pressure, defensive survival, and objective progress against the ritual’s impending completion.
+- **Friction Band:** `Crisis / Lethal Crucible`
+- **Cost & Stamina Expectation:** Second-by-second life-or-death melee against cult champions and a 30-foot awakening colossus under a hard countdown. Massive physical exertion and high risk of Severity 3+ crushing trauma or internal hemorrhage.
+- **Abort & Failure Dynamic:** Aborting means fleeing the sanctum, yielding the pass, and permitting the colossus to awaken and devastate the region.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -140,9 +149,12 @@ The party’s victory has come at a brutal physical price. The vanguard’s leg 
 - `Create False Trail` ([[Yellow]] - Exploration): Laying broken tracks, scuff marks, and false rope anchors toward a dead-end ravine to mislead tracking mountain scouts.
 - `Set up Camp` ([[Yellow]] - Exploration): Finding a dry, defensible cave fissure, sealing the entrance against blizzard drafts, and kindling a hot, smokeless fire from alpine scrub and fatwood.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time) / Post-Crisis Extraction`. The immediate combat rounds have ended, but survival is more precarious than ever. Actions take hours, every mile requires physical grit, and mistakes carry lethal environmental consequences.
+- **Pacing Mode:** `General Action (Adventuring Time) / Post-Crisis Extraction`. The immediate combat rounds have ended, but survival is more precarious than ever. Actions take hours, every mile requires physical grit, and mistakes carry lethal environmental consequences.
+- **Friction Band:** `Taxing / Moderate Friction` (escalating to `Perilous / High Friction` under pursuit and blizzard exposure)
+- **Cost & Stamina Expectation:** Grinding physical endurance ordeal hauling an immobilized comrade down scree in a blizzard. Steady stamina burn; incurs multiple Severity 1–2 physical exhaustion conditions (`Severe Muscle Strain / Exhausted Shoulders`).
+- **Abort & Failure Dynamic:** Refusing to pace the travois or lighten loads risks hypothermic collapse. Players must make hard triage trade-offs (abandoning heavy packs or captured relics, seeking cold drafty shelter) to avoid lethal exposure.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -172,3 +184,4 @@ When validating a candidate resolution engine against this scenario, ensure it a
 | **Pacing Clock Pressure**     | Does taking extra time for safe travel or thorough casing meaningfully advance external threat clocks?                      | Do players feel the pressure of the impending ritual when deciding whether to place extra safety ropes?                 |
 | **Post-Crisis Burden Drag**   | Does severe combat trauma turn routine overland extraction into an agonizing, high-stakes endurance dilemma?                | Does hauling an incapacitated ally down a mountain blizzard demand agonizing resource and stamina sacrifices?           |
 | **Shared Physical Logistics** | Can physical burdens (litters, heavy salvage, lost gear) be shared, dropped, or distributed dynamically among allies?       | Can the scout take over pulling the sled when the scholar collapses from exhaustion?                                    |
+| **Friction & Abort Dynamic**  | Does the engine allow players to abort risky physical tasks (aqueduct crossing) to spend time rather than suffering trauma? | Can the vanguard choose to abort a hazardous leap to set a safety line at the cost of ritual time?                      |

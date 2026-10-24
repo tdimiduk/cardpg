@@ -33,9 +33,12 @@ Rather than kicking down doors or making premature accusations, the pair works t
 - `Find a Contact` ([[Yellow]] - Social): Navigating the waterfront network to locate the retired naval quartermaster.
 - `Acquire Asset` ([[Yellow]] - Downtime): Securing an official municipal transit seal and authenticated toll register.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. The characters are competent specialists performing methodical preparation over hours; the question is not whether they find anything, but how clean their intelligence is, how much stamina they burn doing so, and whether their inquiries tip off the syndicate.
+- **Pacing Mode:** `General Action (Adventuring Time)`. The characters are competent specialists performing methodical preparation over hours; the question is not whether they find anything, but how clean their intelligence is, how much stamina they burn doing so, and whether their inquiries tip off the syndicate.
+- **Friction Band:** `Routine / Low Friction`
+- **Cost & Stamina Expectation:** Minimal stamina burn across four hours of disciplined groundwork. Specialist competence carries intelligence gathering cleanly; consequences are rare and strictly fleeting friction (minor legwork fatigue, small tip bribes, mild clerk suspicion).
+- **Abort & Failure Dynamic:** Aborting is almost never necessary; character competence carries the scene smoothly. Pushing recklessly to squeeze a contact risks escalating attention.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -70,9 +73,12 @@ The envoy takes the floor to dismantle the syndicate's monopolistic tariffs, pre
 - `Maintain Composure` ([[Blue]] - Social): Resisting Vance’s vitriolic personal attacks and retaining absolute poise under intense public scrutiny.
 - `Engage in a Standoff` ([[Blue]] - Social): Staring down the syndicate's chief advocate across the clerk’s table during a tense procedural vote.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Crisis (Crisis Time)`. A high-tension, round-by-round social confrontation where momentum swings rapidly, stakes are immediate, and both sides deploy active rhetoric and psychological leverage to sway the bench before time expires.
+- **Pacing Mode:** `Crisis (Crisis Time)`. A high-tension, round-by-round social confrontation where momentum swings rapidly, stakes are immediate, and both sides deploy active rhetoric and psychological leverage to sway the bench before time expires.
+- **Friction Band:** `Perilous / High Friction (Social Crisis)`
+- **Cost & Stamina Expectation:** Heavy focus and mental stamina burn under intense public scrutiny and aggressive syndicate rhetoric. Success demands digging deep into mental reserves and deploying acquired leverage (seals, manifests). High risk of Severity 2 social/reputational consequences (formal reprimand, deadlock, compromise tariffs).
+- **Abort & Failure Dynamic:** Refusing to yield points or settle for compromise risks total public disgrace and procedural defeat. Characters can choose to abort aggressive lines of debate or concede non-essential points to preserve credibility and universal stamina.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -108,9 +114,12 @@ The bodyguard reacts with trained instinct, drawing steel before the nearest ruf
 - `Dirty Trick` ([[Yellow]] - Combat): Kicking a barrel of fish-brine into an attacker's knees and throwing soot into a cutthroat's eyes.
 - `Assess Fighting Style` ([[Blue]] - Combat): Recognizing the footpads' dockside brawling tells to predict and intercept a coordinated pincer maneuver.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Crisis (Crisis Time)`. High-lethality, second-by-second physical combat with severe stakes of life, limb, and permanent incapacitation.
+- **Pacing Mode:** `Crisis (Crisis Time)`. High-lethality, second-by-second physical combat with severe stakes of life, limb, and permanent incapacitation.
+- **Friction Band:** `Crisis / Lethal Crucible`
+- **Cost & Stamina Expectation:** Second-by-second life-or-death melee against six armed cutthroats. Direct physical bodily harm (cudgel contusions, blade lacerations, concussive trauma). Severe, rapid drain on physical stamina.
+- **Abort & Failure Dynamic:** Aborting requires an active fighting retreat, vaulting alley fences, or drawing city watch whistles to break contact while conceding ground or dropping dropped baggage.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -148,9 +157,12 @@ The party splits tasks to maximize their strengths. The envoy—nursing whatever
 - `Pick a lock` ([[Yellow]] - Exploration): Quietly manipulating the tumblers of the heavy oak-and-brass door to the private archives.
 - `Painstaking Search` ([[Blue]] - Exploration): Systematically inspecting bookshelves, hearth mantels, and desk moldings under a shielded candle to find the hidden lockbox.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. High tension and severe consequence potential, but operating over the course of an hour through parallel covert actions rather than round-by-round combat rounds.
+- **Pacing Mode:** `General Action (Adventuring Time)`. High tension and severe consequence potential, but operating over the course of an hour through parallel covert actions rather than round-by-round combat rounds.
+- **Friction Band:** `Perilous / High Friction`
+- **Cost & Stamina Expectation:** Parallel covert burglary and high-society distraction under active guard patrols. Heavy stamina drain and nerve tension. High risk of Severity 2 consequences (guard discovery, forced escape, alerted manor).
+- **Abort & Failure Dynamic:** Pushing through a stubborn vault lock risks raising the alarm; characters can abort the lockpick attempt and withdraw cleanly before guards enter the corridor, accepting an incomplete heist to avoid capture.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -184,9 +196,12 @@ The night is spent tending wounds, mending torn leather, bribing the safehouse k
 - `Indulge Vice (Speed / Intellect)` ([[Yellow]] / [[Blue]] - Downtime): Playing high-stakes cards or cataloging decrypted letters over mulled wine to shed the day's stress.
 - `Maintain Gear` ([[Yellow]] - Downtime): Hammering out pauldron dents, sharpening notched blades, and oiling rain-soaked leather harnesses.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Downtime`. Slow, restorative pacing where time is spent managing long-term consequences, recovering spent stamina, repairing gear, and mitigating faction heat before the next chapter begins.
+- **Pacing Mode:** `Downtime`. Slow, restorative pacing where time is spent managing long-term consequences, recovering spent stamina, repairing gear, and mitigating faction heat before the next chapter begins.
+- **Friction Band:** `Routine / Low Friction`
+- **Cost & Stamina Expectation:** Safehouse rest, wound treatment, gear repair, and bribing watchmen. Minimal stamina expenditure; primary function is flushing universal daily fatigue and stabilizing acute wounds.
+- **Abort & Failure Dynamic:** Standard restorative downtime; abort dynamics do not apply unless interrupted by syndicates.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -209,10 +224,11 @@ The night is spent tending wounds, mending torn leather, bribing the safehouse k
 
 When validating a candidate resolution engine against this scenario, ensure it answers these core design questions cleanly:
 
-| Invariant                    | Design Challenge                                                                                                      | Narrative Test                                                                                                                  |
-| :--------------------------- | :-------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Universal Fatigue**        | Do mental debate, physical combat, and stealth burglary draw upon a shared, understandable stamina pool?              | Does an envoy who argued passionately all morning feel genuinely weary when running across roofs that night?                    |
-| **No "Embarrassment Kills"** | Does suffering public humiliation or political reprimand in social debate avoid reducing physical survivability?      | When jumped by cutthroats, does the discredited envoy parry with full physical reflex, unaffected in their bones by the insult? |
-| **Downward Wound Bleed**     | Does physical bodily trauma suffered in combat realistically impair subsequent social and fine-motor tasks?           | Does a ringing concussion or slashed forearm make high-society conversation and lockpicking visibly harder and more perilous?   |
-| **Gear / Body Separation**   | Can damaged armor and shredded clothing be removed without penalizing social standing or unarmed agility?             | Does taking off a battered breastplate allow a hero to enter a formal banquet without being penalized by its dents?             |
-| **Mode Coupling**            | Does successful casing or leverage acquisition in General Actions create direct, intuitive advantages in Crisis Time? | Does the acquired harbor seal provide concrete defensive or tactical utility during the council debate?                         |
+| Invariant                    | Design Challenge                                                                                                        | Narrative Test                                                                                                                  |
+| :--------------------------- | :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| **Universal Fatigue**        | Do mental debate, physical combat, and stealth burglary draw upon a shared, understandable stamina pool?                | Does an envoy who argued passionately all morning feel genuinely weary when running across roofs that night?                    |
+| **No "Embarrassment Kills"** | Does suffering public humiliation or political reprimand in social debate avoid reducing physical survivability?        | When jumped by cutthroats, does the discredited envoy parry with full physical reflex, unaffected in their bones by the insult? |
+| **Downward Wound Bleed**     | Does physical bodily trauma suffered in combat realistically impair subsequent social and fine-motor tasks?             | Does a ringing concussion or slashed forearm make high-society conversation and lockpicking visibly harder and more perilous?   |
+| **Gear / Body Separation**   | Can damaged armor and shredded clothing be removed without penalizing social standing or unarmed agility?               | Does taking off a battered breastplate allow a hero to enter a formal banquet without being penalized by its dents?             |
+| **Mode Coupling**            | Does successful casing or leverage acquisition in General Actions create direct, intuitive advantages in Crisis Time?   | Does the acquired harbor seal provide concrete defensive or tactical utility during the council debate?                         |
+| **Friction & Abort Dynamic** | Does the engine support calibrated friction bands (Routine casing vs. Perilous infiltration) with viable player aborts? | Can a burglar abort a stubborn lockpick in Beat 4 to avoid triggering an alarm without suffering catastrophic failure?          |

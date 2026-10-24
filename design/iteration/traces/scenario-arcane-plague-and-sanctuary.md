@@ -37,9 +37,12 @@ The physician and abjurer don oiled leather coats, bronze beak-masks stuffed wit
 - `Comprehend the Alien` ([[Blue]] - Exploration): Focusing arcane perception to study the bizarre crystalline growth pattern of the spores, grasping a non-terrestrial biological logic without succumbing to horror.
 - `Endure Hardship` ([[Red]] - Downtime / Exploration): Breathing through suffocating, hot filtration masks for hours while handling toxic, bio-hazardous fungal fluids.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. Exhaustive, methodical investigative labor. The heroes possess the intellectual training and protective equipment to conduct the search safely; resolution determines the precision of their findings, the mental toll incurred, and whether their physical protections hold against contamination.
+- **Pacing Mode:** `General Action (Adventuring Time)`. Exhaustive, methodical investigative labor. The heroes possess the intellectual training and protective equipment to conduct the search safely; resolution determines the precision of their findings, the mental toll incurred, and whether their physical protections hold against contamination.
+- **Friction Band:** `Taxing / Moderate Friction`
+- **Cost & Stamina Expectation:** Bio-hazardous forensic dissection and cryptogram translation in suffocating protective suits. Noticeable intellectual and sensory stamina drain; risks Severity 1 respiratory irritation (`Singed Airways / Coughing Fits`) or ocular fatigue.
+- **Abort & Failure Dynamic:** Pushing too deeply into alien spore structures without sealing wards risks Severity 2 cognitive shock; investigators can abort an autopsy slice if gloves tear or protective seals slip, settling for partial analysis to preserve safety.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -75,9 +78,12 @@ When the glass distillation coil begins to rattle violently under immense supern
 - `Sacrifice Sanity` ([[Blue]] - Downtime): Deliberately opening one’s mind to the alien, maddening consciousness of the subterranean fungal spore to decipher its bonding frequency.
 - `Wrest Control` ([[Red]] - Combat / Downtime): Physically forcing shut a bucking, high-pressure brass valve on the boiling alembic to prevent an alchemical explosion.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action / Extended Task Under Clock Pressure (Adventuring Time)`. An extended laboratory synthesis where every minute counts, failure risks massive catastrophe, and success demands pushing mental and emotional limits to the edge.
+- **Pacing Mode:** `General Action / Extended Task Under Clock Pressure (Adventuring Time)`. An extended laboratory synthesis where every minute counts, failure risks massive catastrophe, and success demands pushing mental and emotional limits to the edge.
+- **Friction Band:** `Perilous / High Friction`
+- **Cost & Stamina Expectation:** Volatile laboratory synthesis under a hard deadline (wildfire cauldrons arriving at dusk) and unstable psychic flux. Heavy mental and willpower burn. High risk of Severity 2+ neurological trauma (`Arcane Migraine / Trembling Hands / Visual Hallucinations`) or acid burns.
+- **Abort & Failure Dynamic:** When distillation coils rattle violently or psychic backdraft hits, players can abort the batch or cut communion early to save their minds and flesh, yielding fewer canisters or an unstable counter-agent.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -118,9 +124,12 @@ They must deploy the vapor canisters, create disorienting non-lethal sonic barri
 - `Administer Aid` ([[Yellow]] - Combat / Exploration): Swiftly pulling trampled victims from beneath the mob’s boots and administering the vapor aerosol directly into their lungs.
 - `Command and Coordinate` ([[Blue]] - Combat / Social): Directing parish volunteers and lantern-bearers to form protective cordons around the distribution wagons and channel the crowd into orderly queues.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Crisis (Crisis Time)`. Fast, high-stakes tactical confrontation operating round-by-round. The challenge is uniquely non-lethal: the heroes must defeat panic, protect fragile medical gear, and absorb physical blows without killing their opponents.
+- **Pacing Mode:** `Crisis (Crisis Time)`. Fast, high-stakes tactical confrontation operating round-by-round. The challenge is uniquely non-lethal: the heroes must defeat panic, protect fragile medical gear, and absorb physical blows without killing their opponents.
+- **Friction Band:** `Crisis / Lethal Crucible (Non-Lethal Restraint)`
+- **Cost & Stamina Expectation:** Second-by-second tactical riot control under non-lethal constraints. Cobblestones, trampling, and fire arrows threaten bodily injury while heroes must deploy aerosol cures and acoustic charges without slaughtering innocents.
+- **Abort & Failure Dynamic:** Aborting means yielding the barricade gates to the mob, allowing the infected to spill into the city and triggering municipal archers to loose wildfire arrows.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -155,9 +164,12 @@ The physician brews willow-bark and valerian decoctions, lights soothing beeswax
 - `Heal a Spiritual Wound` ([[Blue]] - Downtime): Applying psychological grounding, empathetic conversation, and psychiatric herbalism to soothe a mind fractured by eldritch contact.
 - `Indulge Vice (Intellect)` ([[Blue]] - Downtime): Restoring equilibrium by engaging in rigorous, comforting logic: cataloging mundane chemical equations, reading classic poetry, or playing methodical chess games.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Downtime`. Deep, quiet psychological recuperation. Time spent tending to internal trauma rather than external threats.
+- **Pacing Mode:** `Downtime`. Deep, quiet psychological recuperation. Time spent tending to internal trauma rather than external threats.
+- **Friction Band:** `Routine / Low Friction` (with deep psychological convalescence)
+- **Cost & Stamina Expectation:** Restorative mental therapies, herbal sedatives, and meditative grounding in a quiet vestry. Low environmental friction; focuses on purging psychic contamination, soothing migraine, and resetting cognitive equilibrium.
+- **Abort & Failure Dynamic:** Standard restorative downtime; abort dynamics do not apply unless interrupted.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -184,3 +196,4 @@ When validating a candidate resolution engine against this scenario, ensure it a
 | **Non-Lethal Crisis Architecture** | Does the engine naturally accommodate high-stakes crisis scenarios where the primary objective is pacification and non-lethal crowd control?          | Can heroes win a crisis through tactical flash-powders, oration, and medicine without drawing lethal weapons?        |
 | **Voluntary Cognitive Sacrifice**  | Can players deliberately risk mental harm or sanity to beat external clocks or achieve miraculous alchemical breakthroughs?                           | Does opening one's mind to an alien spore feel like a meaningful, terrifying, and rewarding choice?                  |
 | **Psychological Recovery Paths**   | Does downtime offer dedicated, intuitive avenues for healing mental trauma and eldritch contamination?                                                | Can quiet meditation, herbal sedatives, and intellectual hobbies restore cognitive equilibrium after psychic trauma? |
+| **Friction & Abort Dynamic**       | Can researchers abort hazardous psychic communion (`Sacrifice Sanity`) to save their minds at the cost of cure volume?                                | When distillation bucking spikes, can the abjurer safely abort communion to avoid severe neurological burnout?       |

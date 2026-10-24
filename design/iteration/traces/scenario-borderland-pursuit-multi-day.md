@@ -45,9 +45,12 @@ As the sun sets, freezing desert winds sweep the flats. The pair halts at a shel
 - `Claim Territory` ([[Red]] - Exploration): Marking camp boundaries with scent and fire-brands to intimidate nocturnal desert ash-wolves into keeping their distance.
 - `Set up Camp` ([[Yellow]] - Exploration): Building a concealed, wind-sheltered bivouac in a dry wash, stringing perimeter warning bells and trip-wires.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. A full twelve-hour operational day broken into travel segments and an evening camp. Success in tracking is maintained through professional diligence; the resolution determines how much travel weariness accumulates on riders and mounts, how much water is preserved, and how restful the night camp proves to be.
+- **Pacing Mode:** `General Action (Adventuring Time)`. A full twelve-hour operational day broken into travel segments and an evening camp. Success in tracking is maintained through professional diligence; the resolution determines how much travel weariness accumulates on riders and mounts, how much water is preserved, and how restful the night camp proves to be.
+- **Friction Band:** `Taxing / Moderate Friction`
+- **Cost & Stamina Expectation:** Twelve hours of hard tracking, mount pacing, and desert navigation across caustic alkali pans. Noticeable physical stamina drain and mount weariness; incurs 1–2 Severity 1 conditions (`Irritated Eyes / Dust Cough`, saddle stiffness).
+- **Abort & Failure Dynamic:** Pushing mounts past safe limits risks Severity 2 consequences (`Lame Mount`, heatstroke). Pursuers can abort the aggressive pace to water horses and rest, losing hours against the quarry's head start.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -88,9 +91,12 @@ Barnaby’s men are armed with crossbows along the waystation roof. A frontal as
 - `Subtle Poisoning` ([[Yellow]] - Social): Tossing dried soporific tallow balls into the kennel pens to drug the vicious watchdog pack into silent sleep.
 - `Employ a Specific Bane` ([[Yellow]] - Exploration): Using sulfur smoke to drive nesting hornets into the roof-watchers' roost, creating chaos without drawing steel.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. High-tension covert and social infiltration. The characters are operating in plain sight under the noses of hostile cutthroats; the stakes are stealth, time, and avoiding an open firefight that would sever the cable.
+- **Pacing Mode:** `General Action (Adventuring Time)`. High-tension covert and social infiltration. The characters are operating in plain sight under the noses of hostile cutthroats; the stakes are stealth, time, and avoiding an open firefight that would sever the cable.
+- **Friction Band:** `Perilous / High Friction`
+- **Cost & Stamina Expectation:** Covert sabotage, delicate sleight of hand, and social deception in an armed hostile waystation. Heavy tension and stamina expenditure. High risk of Severity 2+ operational consequences (`Alerted Fortress`, carrier pigeon release, crossbow firefight).
+- **Abort & Failure Dynamic:** If Barnaby becomes suspicious, heroes can abort the winch sabotage and pay extortionate tolls or retreat to seek a dangerous ford leagues away rather than blowing cover into a shootout.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -132,9 +138,12 @@ The heroes utilize the morning glare and sandstone arroyos to slip past the oute
 - `Exploit a Weakness` ([[Blue]] - Combat): Recognizing that the ancient sandstone parapet is structurally undermined and toppling a heavy stone water-trough to crush the inner door barricade.
 - `Make a Last Stand` ([[Red]] - Combat): Throwing oneself between three charging raider champions and the bound hostages, holding the interior doorway with sword and buckler until help arrives.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Approach)` transitioning seamlessly into `Crisis (Crisis Time) (The Assault)`. A sequence demonstrating how an approach phase sets the initial tactical parameters of a life-or-death combat crisis.
+- **Pacing Mode:** `General Action (Approach)` transitioning seamlessly into `Crisis (Crisis Time) (The Assault)`. A sequence demonstrating how an approach phase sets the initial tactical parameters of a life-or-death combat crisis.
+- **Friction Band:** `Routine / Low Friction (Approach)` transitioning to `Crisis / Lethal Crucible (The Assault)`
+- **Cost & Stamina Expectation:** The gully crawl is low stamina friction (`Routine`) for veteran scouts; once breached, the assault is a second-by-second life-or-death crisis (`Crisis / Lethal Crucible`) against fortified raiders with hostages on the line. Severe physical danger and high risk of Severity 2+ combat wounds.
+- **Abort & Failure Dynamic:** In the approach, players can abort and reposition if sentinels look their way. During the assault, aborting means breaking off the breach and falling back under fire, leaving hostages and treaty scrolls behind.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -165,3 +174,4 @@ When validating a candidate resolution engine against this scenario, ensure it a
 | **External Consequence Tracking**  | Can the engine track consequences attached to the environment, enemies, or mounts rather than just player decks?              | Do `Alerted Fortress` or `Lame Mount` exist as clear, distinct operational conditions outside the PC's body?                |
 | **Pacing Handoff**                 | Does an exploration approach (`Move Unseen`) transition naturally into a fast, violent Crisis without awkward rules friction? | Does crawling up a gully cleanly establish the starting distance and surprise advantage of the subsequent assault?          |
 | **Mount and Vehicle Dependency**   | Does the engine treat mounts and transport as vital operational assets subject to stamina, trauma, and care?                  | Does losing a horse or having a mount tire out create real strategic tension in an overland chase?                          |
+| **Friction & Abort Dynamic**       | Can pursuers abort a forced march pace to preserve mount stamina at the cost of losing ground on the quarry?                  | Can the marshal abort a high-speed gallop to avoid laming their horse when rocky shale appears?                             |

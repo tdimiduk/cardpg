@@ -35,9 +35,12 @@ The captain and mystic take charge of the hamlet's remaining physical resources.
 - `Craft Intricate Items` ([[Yellow]] - Downtime): Assembling pressure-plate clay fire-pots, delayed fuses, and barbed chain tripwires.
 - `Set up Camp` ([[Yellow]] - Exploration): Laying out perimeter warning lines, trip-snare bells, and concealed archer pits along the river embankment.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action / Downtime (Adventuring Time)`. Strenuous, hours-long preparation. The heroes know how to build a barricade and rig a snare; the question is how thoroughly the bridgehead is fortified, how much universal stamina they burn during the work, and what minor physical strains they accumulate before battle begins.
+- **Pacing Mode:** `General Action / Downtime (Adventuring Time)`. Strenuous, hours-long preparation. The heroes know how to build a barricade and rig a snare; the question is how thoroughly the bridgehead is fortified, how much universal stamina they burn during the work, and what minor physical strains they accumulate before battle begins.
+- **Friction Band:** `Taxing / Moderate Friction`
+- **Cost & Stamina Expectation:** Six hours of heavy physical labor felling timber and driving stakes. Noticeable physical stamina drain; likely incurs 1–2 Severity 1 conditions (`Stiff Lower Back`, `Blistered Hands`) traded directly for fortified environmental assets.
+- **Abort & Failure Dynamic:** Players can abort construction early to preserve fresh muscles and stamina for combat, leaving the bridgehead defenses incomplete or missing auxiliary trip-snares.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -71,9 +74,12 @@ The captain and mystic must step into the center of the panicked crowd. The capt
 - `Make a moving Oration` ([[Red]] - Social): Delivering a heartfelt, stirring speech that binds the villagers’ love for their homes into fierce courage.
 - `Assess a Situation` ([[Yellow]] - Social): Scanning the crowd to identify ringleaders of cowardice, panic, or potential treachery before panic spreads.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action (Adventuring Time)`. An extended social and organizational effort spanning several hours. The goal is to forge a terrified mob into a functional defensive unit without fracturing community trust.
+- **Pacing Mode:** `General Action (Adventuring Time)`. An extended social and organizational effort spanning several hours. The goal is to forge a terrified mob into a functional defensive unit without fracturing community trust.
+- **Friction Band:** `Taxing / Moderate Friction`
+- **Cost & Stamina Expectation:** Extended social leadership and oration under high community anxiety. Drains emotional reserves and vocal cords; failure generates scene-level consequences (`Shaky Militia Morale`) rather than personal bodily wounds.
+- **Abort & Failure Dynamic:** Pushing frightened villagers too harshly with threats risks open mutiny and flight into the bog; leaders can abort aggressive coercion and settle for holding the core volunteers with modest morale.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -108,9 +114,12 @@ The captain confronts the warlord eye to eye. While the mystic watches the reave
 - `Issue a Challenge` ([[Red]] - Social): Publicly daring Kaelen to lead the bridge assault in person rather than sending his underlings to die on the stakes.
 - `Observe and Plan` ([[Blue]] - Social / Exploration): Cold-reading Kaelen’s retinue to spot wounded horses, frayed bowstrings, and signs of internal friction within the warband.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`General Action / High-Stakes Confrontation (Adventuring Time)`. A focused psychological standoff conducted under formal parley protocol. Minutes of quiet, lethal intensity that dictate the psychological momentum of the impending siege.
+- **Pacing Mode:** `General Action / High-Stakes Confrontation (Adventuring Time)`. A focused psychological standoff conducted under formal parley protocol. Minutes of quiet, lethal intensity that dictate the psychological momentum of the impending siege.
+- **Friction Band:** `Perilous / High Friction`
+- **Cost & Stamina Expectation:** Intense psychological confrontation under warlord Kaelen's intimidation. Demands spending poise or leverage to hold nerve. High risk of Severity 2 morale/psychological fallout (humiliated archers, surrendered hostages).
+- **Abort & Failure Dynamic:** A leader can abort the psychological standoff by rejecting terms flatly and retreating behind the barricade before tempers snap into an immediate uncoordinated melee.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -145,9 +154,12 @@ The fight is a grueling, multi-wave battle of endurance. When an enemy champion 
 - `Push Through Pain` ([[Red]] - Combat): Absorbing a staggering axe strike into armor and immediately striking back to disarm the enemy before collapsing.
 - `Disarm or Sunder` ([[Yellow]] - Combat): Targeting the heavy siege-axes of the vanguard to shatter their haft and prevent them from cutting down the abatis.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Crisis (Crisis Time)`. High-intensity, protracted multi-round combat crisis representing hours of brutal, wave-based defensive warfare.
+- **Pacing Mode:** `Crisis (Crisis Time)`. High-intensity, protracted multi-round combat crisis representing hours of brutal, wave-based defensive warfare.
+- **Friction Band:** `Crisis / Lethal Crucible`
+- **Cost & Stamina Expectation:** Hours of multi-wave melee and fire defense. Heavy bodily trauma (`Fractured Ribs`, `Singed Armor`, `Deep Blood Loss`) and severe depletion of physical stamina and sorcerous reserves.
+- **Abort & Failure Dynamic:** Aborting means collapsing the wooden span with fire, dumping defenders and attackers alike into the torrent, and conceding the outer hamlet to preserve lives behind the river.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -179,9 +191,12 @@ The immediate crisis is over, but the settlement is broken in spirit and body. T
 - `Maintain Purpose` ([[Blue]] - Downtime): Struggling through personal fever, physical agony, and survivor’s guilt to keep one's sense of duty and resolve intact.
 - `Provide for the Group` ([[Red]] - Downtime): Organizing the salvage of weapons, reclaiming abandoned rations from the battlefield, and butchering fallen draft animals to replenish the hamlet’s food stores.
 
-### Pacing Mode
+### Pacing Mode & Friction Band
 
-`Downtime`. Somber, restorative recovery where heroes and community begin the slow process of healing biological trauma, processing emotional shock, and rebuilding fortified stability.
+- **Pacing Mode:** `Downtime`. Somber, restorative recovery where heroes and community begin the slow process of healing biological trauma, processing emotional shock, and rebuilding fortified stability.
+- **Friction Band:** `Routine / Low Friction` (with deep spiritual recovery)
+- **Cost & Stamina Expectation:** Somber restorative medical care, grief counseling, salvage, and funeral rites. Minimal active friction; flushes fleeting daily exhaustion while initiating long-term clinical care for structural trauma and spiritual wounds (`Haunted Guilt`).
+- **Abort & Failure Dynamic:** Standard restorative downtime; abort dynamics do not apply unless interrupted by new threats.
 
 ### Plausible Narrative Fallout Spectrum
 
@@ -210,3 +225,4 @@ When validating a candidate resolution engine against this scenario, ensure it a
 | **Adrenaline vs. Aftermath**      | Do desperate feats of heroic willpower (`Push Through Pain`) carry severe biological bills that come due in downtime?       | Does ignoring a shattered arm to hold the bridge result in high fever and grueling recovery once the sun rises? |
 | **Protracted Defense Attrition**  | Can the engine sustain multi-wave siege combat without devolving into either trivial grinding or immediate character death? | Do heroes feel their options narrowing as the hours of combat drag on and stamina reserves deplete?             |
 | **Spiritual Convalescence**       | Does the engine provide meaningful mechanics for healing minds, grief, and purpose alongside broken bones?                  | Can an exhausted mystic spend downtime comforting a weeping elder to restore the community's resolve?           |
+| **Friction & Abort Dynamic**      | Can heroes abort labor or social coercion when stamina costs spike without suffering catastrophic failure?                  | Can the captain abort abatis construction early to preserve combat stamina, leaving defenses partial?           |

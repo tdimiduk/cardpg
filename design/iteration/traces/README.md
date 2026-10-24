@@ -29,7 +29,13 @@ Because _caRdPG_ models characters with stateful physical, mental, and logistica
      - _Neurological and cognitive trauma_ (e.g., an arcane migraine or sensory overload) selectively impairs fine-motor finesse, intellectual deciphering, and rhetorical debate while leaving raw brute-force muscle output relatively functional.
      - _Equipment degradation_ (e.g., a dented breastplate or shredded coat) can be shed or repaired without penalizing social standing or unarmed agility.
      - _Cover or social failure_ propagates forward into the environment as heightened enemy alertness and fortified defenses, rather than personal bodily damage.
-3. **Promotion to Canonical Golden Benchmarks:**
+3. **Relative Friction Bands & Cost Profiles:**
+   - Benchmark beats must define their friction and cost expectations using four standardized, rules-agnostic bands:
+     - **Routine / Low Friction:** Minimal stamina burn. Specialist competence carries the scene smoothly; consequences are rare and strictly fleeting friction (Severity 1 minor strain/delay). Aborting is rarely needed.
+     - **Taxing / Moderate Friction:** Noticeable stamina drain. Specialists succeed but feel the weariness later; likely incurs 1–2 Severity 1 conditions. Pushing recklessly risks Severity 2 consequences (sprained ankle, blistered hands, strained focus). Aborting is an active option if costs spike.
+     - **Perilous / High Friction:** Heavy stamina burn under active external pressure. Success requires digging deep into reserves or spending pre-existing leverage. High risk of Severity 2+ consequences. Outright failure or mission compromise threatens if the player refuses to abort or concede.
+     - **Crisis / Lethal Crucible:** Second-by-second struggle for survival where physical harm or catastrophic failure is actively inflicted. Aborting means a fighting retreat, yielding the objective, or making painful tactical sacrifices.
+4. **Promotion to Canonical Golden Benchmarks:**
    - As game systems solidify, verified traces that resolve cleanly against active core rules will graduate into permanent reference benchmarks for future rules tuning.
 
 ---
