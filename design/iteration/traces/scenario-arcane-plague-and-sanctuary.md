@@ -50,14 +50,11 @@ The physician and abjurer don oiled leather coats, bronze beak-masks stuffed wit
 - **Minor Friction:** Strained senses and physical discomfort. The suffocating masks and caustic alchemical fumes cause painful respiratory burning and throat irritation (`Singed Airways / Coughing Fits`); deciphering the alien script causes severe ocular fatigue; minor delay eating into the synthesis clock.
 - **Severe Consequence:** Spore breach and psychic contamination. The apothecary's journal carries a dormant psychic spore that bursts upon opening; the abjurer suffers violent mental backlash while staring into the crystalline structure (`Cognitive Shock / Dissonance`); the physician’s glove tears on a broken vial, requiring painful caustic cauterization to prevent infection (`Cauterized Hand`).
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Intellectual Strain as Universal Fatigue:**
-   - Hours of forensic dissection, microscopic inspection, and decoding cryptograms in a sweltering protective suit burns immense energy.
-   - Does intense intellectual labor contribute to the same universal fatigue that swing-swords or mountain climbs produce? When the physician leaves the lazaretto, are their legs heavy and their reaction times slowed simply from mental exhaustion?
-2. **Environmental Toxicity vs. Physical Armor:**
-   - Plate armor and shields provide zero protection against microscopic spores or airborne psychic resonance.
-   - How does the engine treat specialized protective gear (beak-masks, oiled robes, camphor seals) without inventing whole new subsystems for disease gear? Can tools and gear provide dedicated mitigation for environmental hazards just like armor does for swords?
+- **Unified Doom Avoidance:** Microscopic fungal spores and arcane cryptograms attack respiratory airways and psychic focus, not physical armor or weapon durability; protective gear mitigates toxic exposure without functioning as melee armor.
+- **Plausible Bleed & Friction:** Hours of forensic dissection in suffocating protective masks deplete universal physical and cognitive stamina, dulling reflexes and slowing the synthesis pace in Beat 2.
+- **Recovery Asymmetry:** Singed airways and eye fatigue ease with fresh air, mint water, and eye wash; dormant psychic spore contamination persists until purged through specialized wards.
 
 ---
 
@@ -91,18 +88,11 @@ When the glass distillation coil begins to rattle violently under immense supern
 - **Minor Friction:** Volatile batch with minor injuries. A glass tube cracks, spraying caustic acid onto the workbench; the physician burns hands and forearms while saving the flask (`Singed Flesh / Acid Burns`); the abjurer suffers a persistent ringing in their ears and visual halos (`Strained Synapses`); twenty canisters salvaged.
 - **Severe Consequence:** Catastrophic psychic and neurological burnout. The abjurer’s mental ward collapses during communion; alien fungal harmonics flood their consciousness, inflicting a devastating neurological condition (`Arcane Migraine / Trembling Hands / Visual Hallucinations`); the physician must smash the primary alembic to stop a lethal explosion, barely distilling fifteen unstable doses from the wreckage.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **The Crucial Neurological Asymmetric Bleed Principle:**
-   - If the abjurer suffers `Arcane Migraine`, `Trembling Hands`, and `Visual Hallucinations` in Beat 2, **how does this condition selectively bleed into subsequent actions?**
-   - **Selective Impairment:** An arcane migraine and shaking hands makes fine-motor and intellectual tasks agonizing:
-     - Trying to make a precision ranged shot (`Attack with Precision`) is severely penalized.
-     - Trying to decipher complex runes (`Interpret and Decipher`) or maintain an intricate social persona (`Master a Persona`) is nearly impossible.
-   - **Selective Independence:** But what about raw musculoskeletal or emotional actions?
-     - If the abjurer needs to brace a wooden beam to hold a barricade (`Hold a Position`) or drag a heavy cart of medicine (`Carry a Burden`), their muscles and skeleton are undamaged! Adrenaline and brute force can still push through a headache.
-   - How should an engine model conditions that cripple fine-motor finesse and intellectual focus while leaving brute-force physical endurance intact?
-2. **Voluntary Sacrifice for Clocks:**
-   - Actions like `Sacrifice Sanity` represent a character trading mental well-being to beat an external deadline. How does the engine encourage players to make these dramatic, self-sacrificing choices?
+- **Unified Doom Avoidance:** Crucial Neurological Bleed Invariant. Eldritch psychic backdraft (`Arcane Migraine`, `Trembling Hands`, `Visual Hallucinations`) selectively cripples fine-motor coordination and complex intellectual focus, but does NOT damage raw musculoskeletal force or gross physical durability (a scholar with an arcane migraine can still push a heavy wagon with full muscular power).
+- **Plausible Bleed & Friction:** Voluntary cognitive sacrifice (`Sacrifice Sanity`) successfully accelerates laboratory synthesis against the ticking wildfire clock, but immediately burdens the researcher with acute sensory distortions and tremors during the subsequent riot.
+- **Recovery Asymmetry:** Caustic acid splashes and singed skin demand physical salves and bandages; psychic dissonance and sensory hallucinations resist physical medicine, requiring mental grounding, sedatives, and meditative isolation.
 
 ---
 
@@ -137,14 +127,11 @@ They must deploy the vapor canisters, create disorienting non-lethal sonic barri
 - **Minor Friction:** Bruised and battered success. The crowd surges forward, smashing several vapor canisters and bruising the heroes with clubs and stones (`Bruised Ribs / Sprained Wrist`); the heroes pacify the crowd only after exhausting their voices and physical endurance; half the quarter receives the cure, halting the panic.
 - **Severe Consequence:** Tragic escalation and heavy trauma. The mob crushes the outer barricade; city archers fire a volley, killing three citizens; the heroes throw themselves into the line of fire to shield the crowd, taking non-lethal bludgeoning and arrow wounds (`Concussive Blunt Trauma / Arrow Grazes`); the mob scatters in horror, with many fleeing into alleys uncured.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Carrying Cognitive Impairment into Tactical Chaos:**
-   - If the abjurer entered this riot with `Arcane Migraine` and `Trembling Hands` from Beat 2, how does that manifest during the chaos of the riot?
-   - The abjurer cannot aim a precise spell without agonizing skull pain; their coordination (`Command and Coordinate`) is muddled by visual halos. Does the engine force them to rely on raw presence (`[[Red]]`) or physical resilience to contribute?
-2. **Non-Lethal Constraints in Crisis Time:**
-   - Most combat engines assume characters want to kill their enemies as efficiently as possible. In this scene, killing a rioter is an immediate moral and narrative failure.
-   - How does the engine reward or support non-lethal tactical options (`Overwhelm the Senses`, `Administer Aid`) during Crisis Time without making players feel artificially handcuffed?
+- **Unified Doom Avoidance:** Non-lethal tactical constraints (holding back lethal magic or steel against panicked townsfolk) ensure that moral restraint does not reduce the heroes' intrinsic physical resilience or defensive reaction speed against thrown cobblestones.
+- **Plausible Bleed & Friction:** Neurological conditions from Beat 2 (migraine, visual halos, trembling hands) severely penalize precision targeting (`Attack with Precision`) and tactical coordination, forcing reliance on broad sonic discharges (`Overwhelm the Senses`) or direct physical warding.
+- **Recovery Asymmetry:** Blunt contusions and bruises from mob trampling heal through physical rest and cold compresses; the moral relief or collective grief of mob pacification attaches to community and psychological ledgers.
 
 ---
 
@@ -177,23 +164,24 @@ The physician brews willow-bark and valerian decoctions, lights soothing beeswax
 - **Minor Friction:** Lingering psychic hangover. The migraine subsides into a dull, persistent ache; disturbing dreams disrupt sleep; the abjurer remains sensitive to loud noises and bright light into the following day.
 - **Severe Consequence:** Persistent psychic scarring. The alien consciousness leaves an indelible imprint (`Eldritch Phobia / Fragmented Memory`); the abjurer cannot sleep without nightmares; mental focus remains brittle, requiring weeks of quiet academic therapy to fully heal.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Downtime Healing for the Mind vs. the Body:**
-   - While broken bones heal with splints and time, how does an engine structure the healing of psychic and cognitive trauma?
-   - What makes `Heal a Spiritual Wound` or `Indulge Vice (Intellect)` mechanistically distinct from physical rest, and how do they interact with a character's long-term capabilities?
+- **Unified Doom Avoidance:** Physical rest does not automatically cleanse alien telepathic echoes, nor does mental meditation heal acid-burned hands; cognitive recovery vectors must operate independently of physical flesh healing.
+- **Plausible Bleed & Friction:** Profound mental and emotional exhaustion from alien communion demands specialized downtime actions (`Resist Mental Intrusion`, `Indulge Vice (Intellect)`), which restore intellectual sharpness.
+- **Recovery Asymmetry:** Mundane fatigue flushes with uninterrupted sleep; superficial burns heal over days with herbal poultices; deep eldritch psychic trauma requires weeks of grounding disciplines, logic games, and psychological therapy.
 
 ---
 
 ## Summary Evaluation Rubric for Engine Designers
 
-When validating a candidate resolution engine against this scenario, ensure it answers these core design questions cleanly:
+When validating a candidate resolution engine against this scenario, ensure it answers these core design checkpoints cleanly:
 
-| Invariant                          | Design Challenge                                                                                                                                      | Narrative Test                                                                                                       |
-| :--------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
-| **Cognitive Asymmetric Bleed**     | Do mental and neurological conditions (`Arcane Migraine`) selectively cripple fine-motor and intellectual tasks while leaving brute force functional? | Can an abjurer with a splitting psychic headache still help push a heavy wagon barricade with full muscular force?   |
-| **Intellectual Universal Fatigue** | Does intense mental and investigative effort draw from the same underlying stamina reserves as physical labor?                                        | Does a physician who spent six hours conducting autopsies feel genuinely fatigued when dodging stones in a riot?     |
-| **Non-Lethal Crisis Architecture** | Does the engine naturally accommodate high-stakes crisis scenarios where the primary objective is pacification and non-lethal crowd control?          | Can heroes win a crisis through tactical flash-powders, oration, and medicine without drawing lethal weapons?        |
-| **Voluntary Cognitive Sacrifice**  | Can players deliberately risk mental harm or sanity to beat external clocks or achieve miraculous alchemical breakthroughs?                           | Does opening one's mind to an alien spore feel like a meaningful, terrifying, and rewarding choice?                  |
-| **Psychological Recovery Paths**   | Does downtime offer dedicated, intuitive avenues for healing mental trauma and eldritch contamination?                                                | Can quiet meditation, herbal sedatives, and intellectual hobbies restore cognitive equilibrium after psychic trauma? |
-| **Friction & Abort Dynamic**       | Can researchers abort hazardous psychic communion (`Sacrifice Sanity`) to save their minds at the cost of cure volume?                                | When distillation bucking spikes, can the abjurer safely abort communion to avoid severe neurological burnout?       |
+| Checkpoint Category            | Invariant & Challenge                                                                                                                                                              | Falsifiable Verification Criterion                                                                                                                   |
+| :----------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Unified Doom Avoidance**     | **Cognitive Asymmetric Bleed:** Mental and neurological conditions (`Arcane Migraine`) selectively cripple fine-motor and intellectual tasks while leaving brute force functional. | An abjurer with a splitting psychic headache can still help push a heavy wagon barricade with full muscular force.                                   |
+| **Unified Doom Avoidance**     | **Domain-Specific Gear Mitigation:** Specialized protective gear (beak-masks, oiled robes) mitigates environmental toxins without functioning as melee armor.                      | Camphor masks prevent inhaled fungal infection without deflecting club strikes from rioters.                                                         |
+| **Plausible Bleed & Friction** | **Intellectual Universal Fatigue:** Intense mental and investigative effort draws from the same underlying stamina reserves as physical labor.                                     | A physician who spent six hours conducting autopsies feels genuinely fatigued and slow to react when dodging stones in a riot.                       |
+| **Plausible Bleed & Friction** | **Voluntary Cognitive Sacrifice:** Players can deliberately risk mental harm or sanity to beat external clocks or achieve miraculous alchemical breakthroughs.                     | Choosing to open one's mind to an alien spore entity accelerates the synthesis batch while immediately inflicting acute neurological trauma.         |
+| **Plausible Bleed & Friction** | **Non-Lethal Crisis Architecture:** The engine naturally supports high-stakes crises where the primary objective is non-lethal pacification.                                       | Heroes can resolve a chaotic riot through tactical flash-powders, medicine, and oration without drawing lethal weapons.                              |
+| **Recovery Asymmetry**         | **Psychological vs. Biological Convalescence:** Downtime offers dedicated, distinct avenues for healing mental trauma and eldritch contamination versus physical injuries.         | Quiet meditation, herbal sedatives, and intellectual hobbies restore cognitive equilibrium after psychic trauma, while acid burns require poultices. |
+| **Recovery Asymmetry**         | **Friction & Abort Dynamic:** Researchers can abort hazardous psychic communion (`Sacrifice Sanity`) to save their minds at the cost of cure volume.                               | When distillation coils rattle violently, the abjurer safely aborts communion to avoid permanent neurological burnout, yielding fewer doses.         |

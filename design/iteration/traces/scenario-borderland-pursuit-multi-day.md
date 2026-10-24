@@ -58,17 +58,11 @@ As the sun sets, freezing desert winds sweep the flats. The pair halts at a shel
 - **Minor Friction:** Arid travel friction. A horse throws an iron shoe, requiring field-nailing; alkali dust parches throats and irritates eyes (`Irritated Eyes / Dust Cough`); mounts are tired; sleep is restless due to howling ash-wolves; minor stiffness on waking.
 - **Severe Consequence:** Crippling overland setback. The gelding steps into a hidden sinkhole, wrenching its hock (`Lame Mount`); riders suffer agonizing chafing and back spasms from twelve hours of continuous hard riding (`Severe Saddle-Sore Exhaustion`); party loses the spoor in the dark, wasting hours refinding the trail at dawn.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **What Camp Cleanses vs. What Persists Across Days:**
-   - In a grounded heroic adventure, a night's sleep around a warm fire with hot rations flushes **routine universal fatigue** (the general tiredness of riding, watching, and worrying).
-   - But what about **structural and physiological conditions**?
-     - Does a night's sleep cure a horse's sprained hock (`Lame Mount`)? No.
-     - Does it cure raw, bleeding saddle-sores or a wrenched knee? No.
-     - Does it cure an exhausted watchman who stayed awake six hours because wolves circled the camp?
-   - How should an engine differentiate between **fleeting fatigue** (which flushes at every routine camp) and **persistent travel burdens** (which cling to riders and gear across multi-day journeys)?
-2. **Mount and Gear Degradation:**
-   - In wilderness pursuit, a hero’s capability is intimately tied to their mount. If a horse is lame, does the condition attach to the rider’s hand or to a dedicated mount card on the table? If the mount is slowed, how does that translate into lost ground against the quarry?
+- **Unified Doom Avoidance:** Hard overland riding depletes rider and mount stamina pools, but alkali dust and saddle-sores do not inflict internal bleeding or reduce core weapon lethality thresholds. Mount injuries attach to the mount's ledger, not the rider's personal hand.
+- **Plausible Bleed & Friction:** Continuous hard riding across caustic alkali pans accumulates weariness (`Irritated Eyes / Dust Cough`, back strain); pushing mounts excessively risks laming horses, directly slowing overland travel speed against the quarry.
+- **Recovery Asymmetry:** Macro-attrition invariant: a four-hour bivouac sleep and warm pemmican flushes routine daily fatigue and eye irritation, but does NOT heal structural trauma (lame hocks, severe saddle-sores) which persists across days.
 
 ---
 
@@ -104,19 +98,11 @@ Barnaby’s men are armed with crossbows along the waystation roof. A frontal as
 - **Minor Friction:** Costly bribery and heightened suspicion. Barnaby demands an outrageous toll in gold and the marshal’s spare horse; crossing takes two hours; Barnaby remains uneasy and posts a rider to watch the southern ridge.
 - **Severe Consequence:** Blown cover and alerted destination. Barnaby spots the sleight of hand at the winch; he realizes who they are and releases a carrier pigeon to the Watchtower before the scout can shoot it down; the heroes are forced to draw steel, fight their way onto the ferry, and winch themselves across under crossbow fire; they cross, but **the raiders at the watchtower now know pursuers are coming**.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **The Crucial Asymmetric Bleed Principle: Social/Cover Failure as Tactical Enemy Readiness:**
-   - If the heroes fail their deception in Beat 2 and blow their cover, **how should that consequence manifest in Day 3?**
-   - **What it does NOT do:**
-     - Blowing cover at the ferry does NOT break the marshal’s sword arm.
-     - It does NOT make the scout’s arrows fly crooked.
-     - It does NOT reduce their physical stamina, muscle power, or dodge speed.
-   - **What it DOES do:**
-     - The carrier pigeon reaches the Watchtower hours ahead of the heroes.
-     - When the heroes arrive in Day 3, the raiders have barricaded the iron doors, manned the arrow slits, set pitch cauldrons on the parapet, and tied the hostages to the outer wall as human shields.
-   - **The Engine Imperative:** The engine must clearly distinguish between **internal conditions** (wounds, exhaustion, mental shock) and **external environmental/tactical conditions** (enemy alertness, fortified positions, lost surprise).
-   - When social actions fail, the fallout should propagate into the world's tactical setup, not into personal bodily rot!
+- **Unified Doom Avoidance:** Crucial Operational Bleed Invariant ("Cover Blown $\ne$ Bodily Rot"). Failing deception at the ferry, alerting Barnaby, or having a carrier pigeon escape does NOT break the marshal's sword arm, make arrows fly crooked, or reduce physical wound boxes.
+- **Plausible Bleed & Friction:** Operational social failure propagates forward exclusively into the world's tactical setup: the carrier pigeon alerts the Watchtower, causing raiders on Day 3 to barricade iron doors, man arrow slits, and set pitch cauldrons.
+- **Recovery Asymmetry:** Lost operational cover and alerted enemies cannot be "rested away" or recovered at camp; they remain permanent external tactical disadvantages until outmaneuvered or overcome.
 
 ---
 
@@ -151,27 +137,23 @@ The heroes utilize the morning glare and sandstone arroyos to slip past the oute
 - **Minor Friction (Tense Breaching Action):** Hostages secured, but the chieftain rallies his veteran guard in the spiral stairwell; a brutal five-minute melee inflicts sharp cuts and bruises (`Lacerated Arm / Bruised Ribs`); the Treaty Scrolls are slightly scorched before being snatched from the hearth fire.
 - **Severe Consequence (Assault Against an Alerted Fortress):** (Direct result of Day 2’s Blown Cover). The raiders were waiting on the walls. The approach is met with crossbow fire; the marshal’s mount is killed beneath them; the heroes must breach under burning pitch; the marshal makes a desperate last stand taking grievous wounds (`Crossbow Bolt to the Shoulder / Severe Burns`); the hostages are saved by a hair's breadth as the tower catches fire.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Three Days of Cumulative Travel Attrition in Crisis:**
-   - The heroes have spent seventy-two hours in the saddle, sleeping on cold dirt, eating dry pemmican, and breathing alkali dust.
-   - When the adrenaline of the dawn assault hits, how does that accumulated multi-day fatigue manifest?
-   - Does it reduce their initial stamina pool? Does it mean that once the combat ends, they will immediately collapse from sheer exhaustion?
-2. **Seamless Transition from Stealth Approach to Violent Crisis:**
-   - The scene begins with `Move Unseen` (an exploration general action) and detonates into `Lead a Ferocious Charge` (a combat crisis).
-   - How does the resolution engine handle this transition? Does an exceptional stealth approach grant bonus momentum or surprise advantage in the opening combat round? Does blowing stealth automatically trigger Crisis Time with the enemies having higher defense?
+- **Unified Doom Avoidance:** Cumulative three-day travel weariness narrows stamina reserves without pre-injuring the heroes; taking cover or repositioning in sandstone gullies does not advance wound tracks.
+- **Plausible Bleed & Friction:** Accumulated multi-day fatigue and saddle-sore stiffness reduce reserve stamina when explosive combat begins; an undetected stealth approach (`Move Unseen`) grants surprise leverage and optimal breach positioning, while an alerted garrison imposes severe environmental hazards.
+- **Recovery Asymmetry:** The adrenaline of dawn assault masks minor travel fatigue, but once the crisis resolves, severe combat trauma (crossbow bolts, severe burns) requires full multi-day hospital convalescence, while victorious rescue flushes mission tension.
 
 ---
 
 ## Summary Evaluation Rubric for Engine Designers
 
-When validating a candidate resolution engine against this scenario, ensure it answers these core design questions cleanly:
+When validating a candidate resolution engine against this scenario, ensure it answers these core design checkpoints cleanly:
 
-| Invariant                          | Design Challenge                                                                                                              | Narrative Test                                                                                                              |
-| :--------------------------------- | :---------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
-| **Multi-Day Rest Differentiation** | Does camp rest clear routine universal fatigue while leaving bodily injuries and mount conditions persistent?                 | Does a night around the fire refresh a tired marshal's energy while leaving their gelding's sprained hock unhealed?         |
-| **Cover Blown $\ne$ Bodily Rot**   | Does failing a social deception at the ferry avoid penalizing the heroes' physical sword skill or health?                     | Does Barnaby spotting a fake pass result in alerted guards at the destination rather than making the heroes easier to stab? |
-| **External Consequence Tracking**  | Can the engine track consequences attached to the environment, enemies, or mounts rather than just player decks?              | Do `Alerted Fortress` or `Lame Mount` exist as clear, distinct operational conditions outside the PC's body?                |
-| **Pacing Handoff**                 | Does an exploration approach (`Move Unseen`) transition naturally into a fast, violent Crisis without awkward rules friction? | Does crawling up a gully cleanly establish the starting distance and surprise advantage of the subsequent assault?          |
-| **Mount and Vehicle Dependency**   | Does the engine treat mounts and transport as vital operational assets subject to stamina, trauma, and care?                  | Does losing a horse or having a mount tire out create real strategic tension in an overland chase?                          |
-| **Friction & Abort Dynamic**       | Can pursuers abort a forced march pace to preserve mount stamina at the cost of losing ground on the quarry?                  | Can the marshal abort a high-speed gallop to avoid laming their horse when rocky shale appears?                             |
+| Checkpoint Category            | Invariant & Challenge                                                                                                                         | Falsifiable Verification Criterion                                                                                                          |
+| :----------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Unified Doom Avoidance**     | **Cover Blown $\ne$ Bodily Rot:** Failing social deception at the ferry avoids penalizing heroes' physical sword skill or health.             | Barnaby spotting a fake pass results in alerted guards and fortified positions at the destination rather than making heroes easier to stab. |
+| **Unified Doom Avoidance**     | **External Consequence Tracking:** Operational conditions attach to the environment, enemies, or mounts rather than personal player decks.    | `Alerted Fortress` and `Lame Mount` exist as clear, distinct operational conditions outside the PC's body.                                  |
+| **Plausible Bleed & Friction** | **Pacing Handoff & Approach:** Exploration approach (`Move Unseen`) transitions naturally into violent Crisis without awkward rules friction. | Crawling up a gully cleanly establishes starting distance, surprise initiative, and breach advantages in the subsequent assault.            |
+| **Plausible Bleed & Friction** | **Mount & Transport Dependency:** Mounts and vehicles are vital operational assets subject to stamina, trauma, and care.                      | Losing a horse or having a mount lame out creates real strategic speed and navigation drag in an overland pursuit.                          |
+| **Recovery Asymmetry**         | **Multi-Day Rest Differentiation:** Camp rest clears routine universal fatigue while leaving bodily injuries and mount conditions persistent. | A night around the fire refreshes a tired marshal's energy while leaving their gelding's sprained hock unhealed.                            |
+| **Recovery Asymmetry**         | **Friction & Abort Dynamic:** Pursuers can abort a forced march pace to preserve mount stamina at the cost of losing ground on the quarry.    | The marshal can abort a high-speed gallop to avoid laming their horse when rocky shale appears.                                             |

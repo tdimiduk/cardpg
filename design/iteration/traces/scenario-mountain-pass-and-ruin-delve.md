@@ -46,14 +46,11 @@ The scholar deciphers the geological stress lines and shifting wind shears off t
 - **Minor Friction:** Costly physical exertion. Sleet drenches gloves and boots; the scout slips midway and dangles on the safety line, bruising shins and taking chilling cold (`Chilled Limbs / Shivering`); an iron piton shears off; crossing takes an extra hour, advancing the ritual clock in Beat 3.
 - **Severe Consequence:** Traumatic environmental hazard. The keystone shifts during the crossing; the vanguard leaps to catch the scout, catching the ledge hard and suffering a wrenching shoulder sprain or cracked ribs (`Bruised Ribs / Twisted Shoulder`); a pack containing spare climbing line is lost down the gorge; the party arrives at the vault entrance chilled, aching, and physically compromised.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **The Physical Bleed Principle (Environmental Harm Directly Degrades Combat):**
-   - In stark contrast to social embarrassment (which has no physical reality on bone and muscle), **environmental harm suffered on the mountain directly and violently impacts combat performance in Beat 3**.
-   - If the scout suffered a wrenched ankle on the frost-beam or the vanguard cracked a rib catching the rope, how does that physical trauma impair subsequent combat actions like `Avoid Harm` (dodging), `Land a Mighty Blow` (generating kinetic force), or `Hold a Position` (bracing against an impact)?
-   - Why must an engine allow biological trauma suffered during travel to penalize physical agility and defense in combat, while preventing non-physical complications from doing the same?
-2. **Time vs. Safety Trade-Offs:**
-   - Taking time to chip ice away, place double anchors, and build a windbreak ensures physical safety but consumes precious hours. If the cult ritual in Beat 3 is advancing on a real-time clock, how does the engine make players feel the tension between **spending time to preserve health** versus **rushing carelessly to arrive before the ritual completes**?
+- **Unified Doom Avoidance:** Environmental cold and footing hazards do not arbitrarily deplete intellectual spellcraft or non-physical attributes; a slipped piton or shivering chill burns stamina and agility without corrupting cognitive runic knowledge.
+- **Plausible Bleed & Friction:** Physical environmental harm (wrenched ankle, cracked rib, chilled limbs) directly degrades physical agility, kinetic force generation, and defensive reactions (`Avoid Harm`, `Hold a Position`) during the subsequent combat crisis in Beat 3.
+- **Recovery Asymmetry:** Minor hypothermic shivering clears with shelter, dry wool, and hot rations; structural musculoskeletal trauma (cracked ribs, sprained joint) persists across the entire delve without field chirurgery and immobilization.
 
 ---
 
@@ -85,13 +82,11 @@ Rather than charging through the gates blind, the party spends half an hour esta
 - **Minor Friction:** Partial discovery with strain. Projecting consciousness through the resonant stone causes an echoing headache (`Strained Focus / Ringing Ears`); casing takes longer than anticipated; a patrolling sentinel catches a glimpse of movement, raising the inner guard to a state of heightened suspicion.
 - **Severe Consequence:** Alarm triggered. The arcane scouting touches an ancient defensive ward, causing a resonant gong tone to chime through the chamber; the scholar suffers psychic backdraft (`Echoing Shock`); sentinels shout in warning and loose their beasts; the party is forced to charge into the sanctum immediately without tactical surprise and with enemies fully deployed.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Reconnaissance as Crisis Leverage:**
-   - How should an engine translate successful General Action casing into Crisis advantages?
-   - Does knowing the layout grant the party immediate initiative, lower enemy target numbers, create dedicated "tactical asset" cards on the table (e.g., `Elevated Perch`, `Identified Conduit`), or allow them to nullify enemy surprise rounds?
-2. **The Cost of Preparedness:**
-   - Casing the sanctum burns mental discipline, sensory focus, and daylight. If a scholar exhausts their deep intellectual focus (`[[Blue]]`) during reconnaissance, does that leave them with less mental endurance to cast complex spells during the melee? How does the engine prevent pre-crisis scouting from feeling like a mandatory chore or, conversely, a cost-free buff?
+- **Unified Doom Avoidance:** Arcane or acoustic detection wards triggered during reconnaissance alert sentinels or inflict psychic shock, but do not inflict crushing physical lacerations or consume the party's physical armor durability.
+- **Plausible Bleed & Friction:** Reconnaissance burns mental discipline and sensory focus, leaving less intellectual reserve for the upcoming crisis. Discovered structural flaws (crystal conduits, acoustic echo vectors) translate directly into tangible table assets and leverage to disrupt the ritual in Beat 3.
+- **Recovery Asymmetry:** Sensory strain and ringing ears from brief ward contact subside over a short breather; sentry alertness and raised alarms are permanent scene state changes that persist into the crisis.
 
 ---
 
@@ -125,12 +120,11 @@ The stakes are absolute: if the ritual concludes, the colossus will rise and pul
 - **Minor Friction:** Costly victory. The colossus partially awakens, lashing out with a massive stone arm that shatters a pillar before the ritual is severed; falling masonry strikes the vanguard (`Concussive Impact / Cracked Shield`); the scholar overextends their magical reserves (`Deep Arcane Burnout`); the cultists are slain, but the sanctum ceiling is unstable and raining dust.
 - **Severe Consequence:** Catastrophic near-failure. The colossus awakens enough to take several steps, stomping through the floor; the vanguard must throw themselves into a desperate last stand to hold the creature's foot while the scout severs the core crystal; the colossus collapses in a massive avalanche of stone that buries the vanguard, inflicting crushing trauma (`Crushed Leg / Internal Hemorrhage`); the temple is collapsing into the chasm.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Multi-Track Objectives in Crisis:**
-   - In a crisis that mixes martial combat with objective disruption (`Disrupt a Ritual`), how does the engine manage player attention? If one player is solely fighting for their life on the bridge while another is targeting ritual nodes, how do their cards or resolution mechanisms interact?
-2. **The Immediate Weight of Severe Trauma:**
-   - When the vanguard suffers a crushed leg or cracked ribs during this fight, how does the engine ensure the consequence is immediately felt in play without completely sidelining the player from the game?
+- **Unified Doom Avoidance:** Massive physical kinetic trauma (falling masonry, colossus sweeps) depletes physical wound capacity and armor integrity without corrupting the scholar's purely theoretical knowledge or uninjured party members' decks.
+- **Plausible Bleed & Friction:** Crushing trauma (fractured limb, concussive impact) immediately impacts movement, bracing, and offensive output in the fight; simultaneous multi-track objectives (martial defense vs. conduit disruption) create operational friction where protecting the ritual disruptor demands sacrificial positioning.
+- **Recovery Asymmetry:** Sorcerous exhaustion and minor bruises clear with emergency respite, but severe structural trauma (compound fracture, crushed limb) cannot be cured in the field and immediately turns the subsequent overland retreat into a high-stakes medical extraction.
 
 ---
 
@@ -162,26 +156,24 @@ The party’s victory has come at a brutal physical price. The vanguard’s leg 
 - **Minor Friction:** Exhausting endurance ordeal. Hauling the heavy sled through snowdrifts exhausts the scout and scholar, leaving them running on pure adrenaline (`Severe Muscle Strain / Exhausted Shoulders`); the storm intensifies, drenching firewood and requiring desperate effort to ignite; minor re-injury of the fracture from a sled jolt.
 - **Severe Consequence:** Desperate struggle against exposure and pursuit. The sled breaks on sharp scree; pursuers catch the scent and launch a harassing arrow volley; the party is forced to abandon heavy packs and captured relics to haul the vanguard on their shoulders through waist-deep snow; they reach a freezing, drafty shelter barely in time, with the vanguard slipping into hypothermic shock.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Trauma Inverting Routine General Actions:**
-   - On a clear morning, walking down an alpine path or pitching a tent is a trivial routine task requiring little thought. But with a bleeding companion on a makeshift sled, a broken limb, and a blizzard howling, **routine movement becomes the most dramatic and dangerous challenge of the expedition**.
-   - How does the engine ensure that post-crisis wounds transform ordinary exploration into tense, high-stakes trade-offs without needing a whole separate sub-system?
-2. **Burden Drag & Shared Exhaustion:**
-   - Carrying a wounded ally is not a personal state; it is a shared physical burden (`Carry a Burden`). How does the engine distribute this mechanical drag across the uninjured party members?
-   - Does hauling the sled drain the scout's agility or the scholar's concentration? If attacked during extraction, how does protecting an immobilized patient warp the defensive options available?
+- **Unified Doom Avoidance:** Hauling an immobilized comrade creates shared logistical drag across the team without transferring the underlying fracture or hemorrhage to the uninjured porters.
+- **Plausible Bleed & Friction:** Severe trauma inverts routine travel into an endurance ordeal: hauling a travois sled through snowdrifts imposes heavy stamina drain (`Carry a Burden`) and restricts tactical movement if ambushed by pursuers.
+- **Recovery Asymmetry:** Porters' exhausted shoulder muscles and labored breath flush after a night around a defensible hearth fire; the fractured limb remains completely immobilized and requires weeks of orthopedic recovery in a settlement.
 
 ---
 
 ## Summary Evaluation Rubric for Engine Designers
 
-When validating a candidate resolution engine against this scenario, ensure it answers these core design questions cleanly:
+When validating a candidate resolution engine against this scenario, ensure it answers these core design checkpoints cleanly:
 
-| Invariant                     | Design Challenge                                                                                                            | Narrative Test                                                                                                          |
-| :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| **Environmental Harm Bleed**  | Does physical trauma suffered during travel (twisted ankle, hypothermia) realistically degrade combat defense and mobility? | Does a vanguard who cracked a rib crossing an icy beam struggle to parry a heavy blow in the sanctum?                   |
-| **Reconnaissance Trade-Offs** | Does spending universal stamina to case an objective grant tangible, tactical advantages when the Crisis erupts?            | Does finding an acoustic flaw or structural fracture during exploration provide direct leverage to topple the colossus? |
-| **Pacing Clock Pressure**     | Does taking extra time for safe travel or thorough casing meaningfully advance external threat clocks?                      | Do players feel the pressure of the impending ritual when deciding whether to place extra safety ropes?                 |
-| **Post-Crisis Burden Drag**   | Does severe combat trauma turn routine overland extraction into an agonizing, high-stakes endurance dilemma?                | Does hauling an incapacitated ally down a mountain blizzard demand agonizing resource and stamina sacrifices?           |
-| **Shared Physical Logistics** | Can physical burdens (litters, heavy salvage, lost gear) be shared, dropped, or distributed dynamically among allies?       | Can the scout take over pulling the sled when the scholar collapses from exhaustion?                                    |
-| **Friction & Abort Dynamic**  | Does the engine allow players to abort risky physical tasks (aqueduct crossing) to spend time rather than suffering trauma? | Can the vanguard choose to abort a hazardous leap to set a safety line at the cost of ritual time?                      |
+| Checkpoint Category            | Invariant & Challenge                                                                                                                                                             | Falsifiable Verification Criterion                                                                                                        |
+| :----------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Unified Doom Avoidance**     | **Shared Burden Separation:** Shared physical burdens (litters, travois sleds, lost gear) distribute logistical strain without transferring biological wounds to allies.          | The scout can take over pulling the travois when the scholar collapses without the scholar's exhaustion becoming the scout's broken bone. |
+| **Unified Doom Avoidance**     | **Environmental Damage Decoupling:** Environmental cold and falls consume stamina and physical resilience without draining unrelated theoretical/magical knowledge.               | Sleet and footing slips chill limbs and sprain joints without wiping the scholar's memorized ritual wards.                                |
+| **Plausible Bleed & Friction** | **Environmental Harm Bleed:** Physical trauma suffered during travel (twisted ankle, hypothermia) realistically degrades combat defense and mobility.                             | A vanguard who cracked a rib crossing an icy beam struggles to parry a heavy blow in the sanctum.                                         |
+| **Plausible Bleed & Friction** | **Reconnaissance Trade-Offs:** Spending universal stamina to case an objective grants tangible, tactical advantages when the Crisis erupts.                                       | Finding an acoustic flaw or structural fracture during exploration provides direct leverage to topple the colossus.                       |
+| **Plausible Bleed & Friction** | **Post-Crisis Burden Drag:** Severe combat trauma turns routine overland extraction into an agonizing, high-stakes endurance dilemma.                                             | Hauling an incapacitated ally down a mountain blizzard demands agonizing resource, stamina, and route sacrifices.                         |
+| **Recovery Asymmetry**         | **Pacing Clock & Recovery Limits:** Taking extra time for safe travel or thorough casing meaningfully advances external threat clocks, while severe trauma resists field healing. | Pitching camp stabilizes hypothermia and flushes fatigue, but cannot knit a compound fracture without weeks of orthopedic convalescence.  |
+| **Recovery Asymmetry**         | **Friction & Abort Dynamic:** The engine allows players to abort risky physical tasks to spend time rather than suffering catastrophic trauma.                                    | The vanguard can choose to abort a hazardous leap to set a safety line at the cost of advancing the ritual countdown.                     |

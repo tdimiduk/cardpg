@@ -46,14 +46,11 @@ Rather than kicking down doors or making premature accusations, the pair works t
 - **Minor Friction:** Moderate effort expended. The seal requires an exorbitant gratuity or collateral promise; the customs clerk notices he is being watched and ducks into a guild office, putting Vance's staff on mild alert; the heroes burn significant morning focus and legwork.
 - **Severe Consequence:** Active complication. The quartermaster is frightened and demands physical protection; the tail is spotted by syndicate scouts; the acquired seal is flagged as missing by noon, forcing the envoys to enter the council hall knowing their opponents are forewarned and hostile.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Universal Effort vs. Reserved Focus:**
-   - Methodical footwork, discreet shadowing, and intense cross-referencing drain real biological stamina and mental sharpness. If the heroes push hard to acquire every piece of leverage, how does that universal effort limit their stamina in the high-pressure debate in Beat 2?
-   - Should an engine treat physical, social, and mental exertion as drawing from the same underlying well of endurance, or does casing a market only fatigue your legs while leaving your rhetoric entirely fresh?
-2. **Leverage as Narrative Table Assets:**
-   - When the heroes acquire an official seal or blackmail manifests through General Actions, how does the engine carry those assets into a subsequent Crisis?
-   - Does leverage simply act as narrative permission to make stronger arguments, or should it mechanically absorb friction and deflect rebuttals?
+- **Unified Doom Avoidance:** Casing complications (bribes, clerk suspicion, missing seal alert) must attach to scene friction or syndicate awareness. Morning legwork strain must not consume physical wound capacity, reduce armor protection, or lower bodily trauma thresholds in Beat 3.
+- **Plausible Bleed & Friction:** Strenuous investigative effort burns universal stamina, leaving less reserve focus for the midday debate. Acquired table assets (authentic transit seal, clerk manifests) convert into tangible tactical/rhetorical leverage or friction absorption in Beat 2.
+- **Recovery Asymmetry:** Fleeting investigative weariness and legwork fatigue clear with a brief midday rest or meal before the council convenes, whereas alerted syndicate suspicion persists into the afternoon.
 
 ---
 
@@ -86,15 +83,11 @@ The envoy takes the floor to dismantle the syndicate's monopolistic tariffs, pre
 - **Minor Friction:** Partial victory with costly compromises. The charter passes, but burdened with concessions and compromise tariffs; the debate is grueling and mentally exhausting; Vance loses the vote but retains enough standing to engineer immediate retribution.
 - **Severe Consequence:** Bitter procedural defeat or narrow victory accompanied by total public humiliation. Vance's advocates successfully smear the envoy’s credentials; the envoy is formally reprimanded for insolence; the council deadlocks; the envoys leave the hall publicly tainted and viewed with suspicion by the populace.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **The Crucial Decoupling Principle (Social Shame vs. Bodily Lethality):**
-   - If the envoy is thoroughly humiliated, outmaneuvered, and verbally disgraced in Beat 2, **why must this outcome NEVER make them physically fragile or easier to stab to death in Beat 3?**
-   - Having one's pride crushed, being mocked by dock elders, or suffering a reputational penalty does not soften a warrior’s bone structure, dull their parrying reflex, or reduce their physical hit capacity. An engine that naively reduces general "durability" or universal defense pools based on social failure creates absurd ludonarrative dissonance.
-2. **Universal Fatigue vs. Bodily Trauma:**
-   - While social defeat does not make your skin softer, spending two hours under relentless psychological pressure, screaming over hecklers, and maintaining a rigid poker face _does_ induce universal fatigue. How should an engine represent that the heroes are mentally drained and running low on universal stamina without making them trivially easy to kill in an ambush?
-3. **Psychological Momentum:**
-   - Does winning or losing a debate change a character’s stance? If humiliated, are they recklessly aggressive (`[[Red]]`), guarded and hesitant (`[[Blue]]`), or simply eager to put steel into anyone who looks at them sideways?
+- **Unified Doom Avoidance:** Crucial Decoupling Invariant ("No Embarrassment Kills"). Suffering public disgrace, council reprimand, or rhetorical defeat must NEVER reduce physical wound capacity, soften bone structure, dull parrying reflexes, or make heroes fewer blade-strikes away from death in Beat 3.
+- **Plausible Bleed & Friction:** Two hours of intense psychological confrontation and rhetorical defense deplete universal stamina and composure reserves, imparting tactical hesitation or reduced initiative in the alley without diminishing physical toughness.
+- **Recovery Asymmetry:** Lost composure and mental agitation can be refocused through tactical rallying, adrenaline, or a breath of fresh air; formal political censure and municipal deadlocks persist indefinitely until addressed through court maneuvers.
 
 ---
 
@@ -127,17 +120,11 @@ The bodyguard reacts with trained instinct, drawing steel before the nearest ruf
 - **Minor Friction:** Battered survival. The ambushers are driven off, but the bodyguard absorbs heavy blows: bruised ribs, a deep muscle contusion on the shield arm, a torn greatcoat, and dented armor. Both characters are winded and bleeding from minor scratches.
 - **Severe Consequence:** Grievous trauma. The envoy is struck hard with a bludgeon, suffering a ringing concussion (`Cranial Trauma / Concussion`); the bodyguard takes a deep blade slash to the thigh or forearm (`Lacerated Tendon / Severe Wound`); the bravos are repelled only after a desperate struggle that draws city watch whistles.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Asymmetric Bleed into the Next Scene (Physical Wounds Bleed Forward):**
-   - While social defeat from Beat 2 did not make the heroes easier to stab here, physical trauma suffered in this alley **heavily and directly impairs the subsequent social and infiltration scene in Beat 4**.
-   - If the envoy took a ringing concussion from a bludgeon, how does that brain trauma affect their ability to maintain charming dinner banter (`Navigate a Social Event`) or notice guards whispering (`Assess a Situation`) at the banquet two hours later?
-   - If the bodyguard has a sliced forearm, how does that hand tremor and pain bleed into delicate manual tasks like `Pick a lock` or `Painstaking Search`?
-2. **Equipment Decoupling vs. Bodily Damage:**
-   - If the bodyguard’s cuirass was hammered out of shape or their coat was slashed to ribbons, they can simply strip off the dented armor and change into a clean tunic before attending the Harbormaster's banquet.
-   - How should an engine distinguish between **gear degradation** (which can be shed or bypassed when changing contexts) and **bodily trauma** (which travels inescapably with the flesh)?
-3. **Compounded Daily Attrition:**
-   - The party has now resolved two intense Crises (one intellectual/social, one life-or-death physical). How does the engine signal that their reserves are severely depleted without locking them into an inescapable failure spiral for the evening?
+- **Unified Doom Avoidance:** Damaged armor, slashed cloaks, or dented gear must track as equipment degradation that can be shed, replaced, or repaired, rather than permanently burdening the hero's biological agility or social standing once removed.
+- **Plausible Bleed & Friction:** Physical bodily trauma bleeds downward heavily into subsequent non-combat pillars: a ringing concussion impairs charming banter (`Navigate a Social Event`) and vigilance (`Assess a Situation`) at the evening banquet; a sliced forearm or bruised ribs imposes tactile drag and elevated costs on delicate lockpicking (`Pick a lock`).
+- **Recovery Asymmetry:** Acute adrenaline and muscle strain subside over a short respite, but structural trauma (concussions, deep lacerations) cannot be flushed by a banquet glass of wine; they require clinical treatment, bandages, and splints to heal.
 
 ---
 
@@ -170,15 +157,11 @@ The party splits tasks to maximize their strengths. The envoy—nursing whatever
 - **Minor Friction:** Close call with complications. The lock is stubborn, forcing the bodyguard to force a secondary latch, leaving faint tool marks; the envoy is forced to drink heavily or make risky political commitments to keep the Harbormaster distracted; minor suspicion raised.
 - **Severe Consequence:** Alarm and hasty extraction. A patrol dog or wandering guard discovers the study door ajar; the bodyguard is forced to grab the ledger and dive out a second-story rain gutter into the garden; the envoy must cover the escape under intense social interrogation, barely avoiding immediate arrest while syndicate guards seal the exits.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Parallel Domains & Interlocking Fallout:**
-   - The two characters are operating in completely different domains simultaneously (one in high-society Social navigation, one in covert Exploration burglary).
-   - If the burglar makes noise or takes too long upstairs, how does that mechanical friction spill into the social room downstairs (e.g., guards whispering to the host, increased tension, sudden need for an emergency social distraction)?
-   - If the socialite slips up and loses the host's attention, how does that shorten the burglar's window or trigger an unexpected patrol?
-2. **The Price of Earlier Physical Harm:**
-   - If the burglar is suffering from `Bruised Ribs` or `Trembling Hands` from the alley brawl, how does the engine make picking the lock feel precarious and costly without simply saying "you automatically fail"?
-   - Does physical pain force higher stamina expenditure, burn extra time, or risk louder noise?
+- **Unified Doom Avoidance:** Parallel operational friction remains localized or environmental: burglary slip-ups or noise aloft manifest as heightened manor alert downstairs (whispering guards, suspicious host) rather than instantaneously inflicting bodily harm on the envoy in the ballroom.
+- **Plausible Bleed & Friction:** Lingering combat injuries from Beat 3 (bruised ribs, trembling hands) increase stamina costs and noise risks on delicate infiltration actions (`Pick a lock`), while social diversion downstairs directly purchases operational time and cover for the burglar upstairs.
+- **Recovery Asymmetry:** Manor alert levels, suspicious guards, and tool marks on vault locks cannot be "rested away"; they remain active scene conditions until the party vacates the manor.
 
 ---
 
@@ -209,26 +192,24 @@ The night is spent tending wounds, mending torn leather, bribing the safehouse k
 - **Minor Friction:** Scrutiny is only partially dampened; local watchmen remain suspicious of the district; medical supplies run low; some lingering physical aches persist into morning.
 - **Severe Consequence:** Syndicate informants track the courier used to bribe the watch; the safehouse is identified; the night's rest is cut short by shouts in the courtyard, forcing an early dawn escape with unrecovered wounds and lingering fatigue.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Asymmetric Downtime Recovery Rates:**
-   - In a grounded heroic world, what recovers overnight, and what persists?
-   - Routine universal fatigue (burning through physical and mental energy) should largely flush with a warm meal and a solid sleep. But what about a concussion? A cracked rib? A destroyed municipal reputation?
-   - How should an engine differentiate between **fleeting fatigue** (which flushes across a single good night's sleep) and **structural trauma / social infamy** (which requires dedicated clinical care, time, or political maneuvers to heal)?
-2. **Gear Maintenance as Decoupled Recovery:**
-   - Repairing armor requires oil, hammer, and time. If downtime is interrupted, does an unrepaired shield or notched blade carry mechanical friction forward, independent of the hero's biological health?
+- **Unified Doom Avoidance:** Safehouse rest must not conflate distinct recovery vectors into a single universal refill bar; resting does not automatically repair notched steel armor, nor does stitching a wound restore lost political standing in the guildhall.
+- **Plausible Bleed & Friction:** Exhausted daily stamina burns are relieved by shelter, hot rations, and sleep, returning baseline energy; unresolved physical injuries (concussions, rib fractures) continue to impose friction into the following day until professionally treated.
+- **Recovery Asymmetry:** Fleeting universal fatigue fully flushes across an uninterrupted night of sleep; structural bodily trauma requires medical supplies, bandages, and days of convalescence; municipal scrutiny and syndicate warrants require gold bribes, proxy contacts, and covert maneuvers to dampen.
 
 ---
 
 ## Summary Evaluation Rubric for Engine Designers
 
-When validating a candidate resolution engine against this scenario, ensure it answers these core design questions cleanly:
+When validating a candidate resolution engine against this scenario, ensure it answers these core design checkpoints cleanly:
 
-| Invariant                    | Design Challenge                                                                                                        | Narrative Test                                                                                                                  |
-| :--------------------------- | :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Universal Fatigue**        | Do mental debate, physical combat, and stealth burglary draw upon a shared, understandable stamina pool?                | Does an envoy who argued passionately all morning feel genuinely weary when running across roofs that night?                    |
-| **No "Embarrassment Kills"** | Does suffering public humiliation or political reprimand in social debate avoid reducing physical survivability?        | When jumped by cutthroats, does the discredited envoy parry with full physical reflex, unaffected in their bones by the insult? |
-| **Downward Wound Bleed**     | Does physical bodily trauma suffered in combat realistically impair subsequent social and fine-motor tasks?             | Does a ringing concussion or slashed forearm make high-society conversation and lockpicking visibly harder and more perilous?   |
-| **Gear / Body Separation**   | Can damaged armor and shredded clothing be removed without penalizing social standing or unarmed agility?               | Does taking off a battered breastplate allow a hero to enter a formal banquet without being penalized by its dents?             |
-| **Mode Coupling**            | Does successful casing or leverage acquisition in General Actions create direct, intuitive advantages in Crisis Time?   | Does the acquired harbor seal provide concrete defensive or tactical utility during the council debate?                         |
-| **Friction & Abort Dynamic** | Does the engine support calibrated friction bands (Routine casing vs. Perilous infiltration) with viable player aborts? | Can a burglar abort a stubborn lockpick in Beat 4 to avoid triggering an alarm without suffering catastrophic failure?          |
+| Checkpoint Category            | Invariant & Challenge                                                                                                                         | Falsifiable Verification Criterion                                                                                                                         |
+| :----------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Unified Doom Avoidance**     | **No "Embarrassment Kills":** Social humiliation or political reprimand must not advance physical lethality tracks.                           | When jumped by cutthroats in Beat 3, the discredited envoy parries with full physical reflex, completely unweakened in bone or flesh by the debate insult. |
+| **Unified Doom Avoidance**     | **Gear / Body Separation:** Damaged armor and torn clothing can be shed or repaired without penalizing biological agility or social standing. | Taking off a battered breastplate allows a hero to enter a formal banquet without being penalized by its dents.                                            |
+| **Plausible Bleed & Friction** | **Downward Wound Bleed:** Bodily trauma suffered in combat realistically impairs subsequent social and fine-motor tasks.                      | A ringing concussion or slashed forearm makes high-society banter and lockpicking visibly harder and more perilous in Beat 4.                              |
+| **Plausible Bleed & Friction** | **Universal Fatigue:** Mental debate, physical combat, and stealth burglary draw upon a shared, understandable well of stamina.               | An envoy who argued passionately all morning feels genuinely weary when coordinating covert actions that night.                                            |
+| **Plausible Bleed & Friction** | **Mode Coupling & Leverage:** Casing and asset acquisition in General Actions create direct advantages in Crisis Time.                        | The acquired harbor seal provides concrete defensive or tactical leverage during the council debate.                                                       |
+| **Recovery Asymmetry**         | **Asymmetric Downtime Vectors:** Daily fatigue, structural wounds, and municipal heat recover through fundamentally distinct channels.        | An overnight safehouse sleep flushes daily fatigue, but cracked ribs require bandages/triage and guildhall scrutiny requires bribes/maneuvers.             |
+| **Recovery Asymmetry**         | **Friction & Abort Dynamic:** Calibrated friction bands support viable player-governed aborts before catastrophic harm.                       | A burglar can abort a stubborn lockpick in Beat 4 to avoid triggering an alarm without suffering catastrophic failure.                                     |

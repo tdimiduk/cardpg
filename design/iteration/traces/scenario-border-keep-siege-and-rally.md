@@ -48,14 +48,11 @@ The captain and mystic take charge of the hamlet's remaining physical resources.
 - **Minor Friction:** Painful physical exertion. Timber beams slip during placement, straining the captain’s back (`Stiff Lower Back`); working without gloves raises raw blisters across the mystic's hands (`Blistered Hands`); supply shortages force the party to tear down an outbuilding for extra timber.
 - **Severe Consequence:** Construction mishap and overexertion. A heavy log collapses during rigging, crushing a young villager's foot and forcing the heroes to expend emergency medical supplies; time runs out before the western ford can be staked; the captain enters the afternoon physically worn down (`Exhausted Muscles / Back Strain`).
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Pre-Crisis Physical Investment vs. Melee Readiness:**
-   - Performing six hours of back-breaking physical labor (`Labor`) directly creates powerful environmental defensive assets (`Spiked Abatis`, `Concealed Caltrops`) for Beat 4.
-   - However, that heavy labor expends real biological stamina. How does an engine allow players to make the deliberate tactical choice to **tire their bodies out in the morning in order to have fortified cover at night**?
-   - If the captain starts the evening battle with `Blistered Hands` or a `Stiff Back`, how should those minor physical strains create tactile friction in swordplay without turning the hero into an incompetent cripple?
-2. **Environmental Assets on the Table:**
-   - When the heroes finish building a spiked log barrier, how should that structure exist mechanically in the subsequent combat crisis? Does it act as a barrier that enemy attacks must chew through, a zone that restricts enemy movement, or a pool of defense that the heroes can tap into while holding the bridge?
+- **Unified Doom Avoidance:** Strenuous carpentry and ditch-digging inflict superficial skin blisters and back stiffness, but do not consume core wound capacity or lower lethality thresholds in the evening battle.
+- **Plausible Bleed & Friction:** Physical labor trades morning stamina and muscle freshness for fortified scene assets (`Spiked Abatis`, `Concealed Caltrops`), which provide tangible defensive barriers and movement restrictions during the night combat.
+- **Recovery Asymmetry:** Blistered palms and back tightness can be partially soothed with lard, tea, and an hour's rest before the parley, while physical abatis fortifications remain on the map until destroyed.
 
 ---
 
@@ -87,14 +84,11 @@ The captain and mystic must step into the center of the panicked crowd. The capt
 - **Minor Friction:** Fragile consensus. The elder council agrees to hold the inner ditch, but several families pack their carts and flee into the forest anyway, leaving the defensive line short-handed; the militia's courage is tenuous and easily shaken.
 - **Severe Consequence:** Brittle and fractured morale. Open mutiny is prevented only by strict military threats and harsh coercion; the villagers are terrified of both the captain and the raiders (`Shaky Militia Morale`); the militia will break and flee at the first sight of enemy blood or fire.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Communal / Environmental Conditions vs. Bodily Conditions:**
-   - If the speech goes poorly and the villagers remain terrified, the resulting consequence is `Shaky Militia Morale`.
-   - **Crucial Distinction:** This condition does NOT attach to the captain’s body. The captain is not bruised, bleeding, or slower with a sword. The condition attaches to the **allied group / environment**.
-   - How should an engine model conditions that afflict the battle space or allied units rather than the hero’s personal card hand or body? When an enemy attacks in Beat 4, how does poor militia morale threaten the hero’s position without lowering the hero’s personal physical resilience?
-2. **Social Effort Bleeding into Stamina:**
-   - Shouting, arguing with panicked elders, and commanding crowds for three hours drains emotional reserves and vocal cords. Does intense social exertion contribute to the universal fatigue that characters carry into the night?
+- **Unified Doom Avoidance:** Crucial Communal Decoupling Invariant. Panicked villagers and failing oration result in `Shaky Militia Morale`; this communal condition attaches exclusively to the scene and allied unit ledger, NEVER polluting the captain's personal body or reducing personal combat prowess.
+- **Plausible Bleed & Friction:** Hours of shouting, crowd management, and emotional reassurance burn universal mental and emotional stamina, leaving the heroes weary and strained for the dusk parley.
+- **Recovery Asymmetry:** Shaken communal morale cannot be cured with bandages or physical rest; it requires leadership, tactical success, or solemn oaths to steady.
 
 ---
 
@@ -127,11 +121,11 @@ The captain confronts the warlord eye to eye. While the mystic watches the reave
 - **Minor Friction:** Stiff standoff. Neither side yields; Kaelen sees the bridge is fortified and plans a cautious, disciplined assault; the parley reveals the reavers possess incendiary arrows; terms are rejected cleanly.
 - **Severe Consequence:** Psychological blow. Kaelen notices the trembling hands of the militia archers in the ditch, openly mocking their cowardice; his words echo across the river, shattering what little confidence the villagers possessed; the parley ends with Kaelen sounding war-horns for an immediate, merciless charge while the defenders are shaken.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Psychological Momentum into Combat:**
-   - How should the outcome of a pre-battle social standoff translate into the opening round of a combat crisis?
-   - If the captain rattled Kaelen’s pride, does Kaelen charge recklessly into the fire-traps without checking for tripwires? If the militia was humiliated by Kaelen’s mockery, do they suffer hesitation on their opening volley?
+- **Unified Doom Avoidance:** Psychological intimidation and verbal mockery from Warlord Kaelen shake militia nerve and individual poise, but do not inflict physical trauma, reduce armor values, or damage weapons.
+- **Plausible Bleed & Friction:** Standoff outcomes establish tactical psychological momentum: rattling Kaelen's pride induces reckless enemy charge vectors into rigged traps, while showing weakness rattles militia arrow volleys.
+- **Recovery Asymmetry:** Shaken composure from a tense parley can be refocused by drawing steel and battle discipline; surrendered hostages or conceded terms are irreversible tactical losses.
 
 ---
 
@@ -167,13 +161,11 @@ The fight is a grueling, multi-wave battle of endurance. When an enemy champion 
 - **Minor Friction:** Battered survival. The outer abatis burns down, forcing a retreat to the stone tollhouse; several villagers fall wounded; the captain suffers heavy physical punishment (`Fractured Ribs`, `Singed Armor`, `Deep Blood Loss`); the mystic is drained of all magical vitality.
 - **Severe Consequence:** Agonizing near-ruin. The bridge is breached; the heroes must collapse the center wooden span with fire to save the village, dumping both friend and foe into the raging torrent; the captain survives by sheer miracle with crippling bodily trauma (`Severe Smoke Inhalation`, `Shattered Shield Arm`); half the village green is charred.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **The Cost of "Pushing Through Pain":**
-   - Actions like `Push Through Pain` and `Passionate Surge` allow heroic characters to temporarily defy biological injury and keep fighting.
-   - What is the bill that comes due when the adrenaline fades in Beat 5? How does an engine allow heroes to perform desperate, miraculous feats in Crisis Time without letting those feats be free of long-term biological consequence?
-2. **Protracted Defense & Deck Attrition:**
-   - A siege is not a 30-second duel; it is hours of repeated clashing. How does the engine model grinding physical fatigue across multiple waves of attackers? Does the player's universal stamina progressively dilute, forcing them to rely on risky, high-effort gambits as the night wears on?
+- **Unified Doom Avoidance:** Equipment degradation (splintered wooden shields, singed mail) must be detached from bodily trauma; an axe that sunders a shield destroys gear durability without automatically crushing the bearer's arm.
+- **Plausible Bleed & Friction:** Protracted multi-wave combat grinds down stamina reserves and dilutes player options; heroic actions (`Push Through Pain`, `Passionate Surge`) allow heroes to defy severe injuries in the moment, but convert that defiance into agonizing biological debits once combat terminates.
+- **Recovery Asymmetry:** Temporary adrenaline surges subside instantly when the clash ceases; fractured ribs, deep burns, and blood loss remain severe biological conditions requiring chirurgery and lengthy bedrest.
 
 ---
 
@@ -204,25 +196,24 @@ The immediate crisis is over, but the settlement is broken in spirit and body. T
 - **Minor Friction:** Somber endurance. Medical supplies are exhausted, forcing painful natural recovery; the captain remains bedridden for days with fever; the village will face a hard, lean winter.
 - **Severe Consequence:** Lingering spiritual desolation. Several wounded die of infection; the village elder hangs himself in despair; the captain suffers deep spiritual trauma (`Haunted Guilt / Crisis of Faith`), struggling to find meaning in the bloody survival.
 
-### Engine Brainstorming Prompts: Coupling & Cross-Domain Bleed
+### Calibrated Verification Rubric
 
-1. **Spiritual and Emotional Trauma as Distinct from Biological Wounds:**
-   - A crushed collarbone requires splints and bone-knitting; a shattered spirit (`Haunted Guilt`) requires fellowship, purpose, and time.
-   - How should an engine represent emotional and psychological trauma incurred during a massacre? How does it differ from physical wounds, and how does the downtime pillar provide distinct avenues (`Heal a Spiritual Wound`, `Maintain Purpose`) to heal it?
-2. **Community Gratitude as Systemic Recovery:**
-   - Grounded heroism emphasizes the contrast between dark peril and the warm hearth. How does the gratitude and hospitality of a saved community aid in the characters' recovery?
+- **Unified Doom Avoidance:** Spiritual and emotional grief (`Haunted Guilt`, `Crisis of Faith`) must not be conflated with physical wounds; spiritual desolation impairs resolve and purpose, but does not prevent bone fractures from knitting or physical stitches from holding.
+- **Plausible Bleed & Friction:** Surviving a bloody siege inflicts severe emotional fatigue and psychological shock; community gratitude and communal sanctuary provide essential social recovery vectors that restore purpose.
+- **Recovery Asymmetry:** Universal sleep flushes acute physical exhaustion; setting broken limbs and healing burns requires clinical triage and weeks of rest; spiritual wounds require compassion, grief rites, and communal renewal.
 
 ---
 
 ## Summary Evaluation Rubric for Engine Designers
 
-When validating a candidate resolution engine against this scenario, ensure it answers these core design questions cleanly:
+When validating a candidate resolution engine against this scenario, ensure it answers these core design checkpoints cleanly:
 
-| Invariant                         | Design Challenge                                                                                                            | Narrative Test                                                                                                  |
-| :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------- |
-| **Environmental Preparation**     | Does spending morning physical stamina on labor create tangible, persistent defensive assets on the battlefield?            | Does building an abatis provide real physical cover and tactical choke points during the midnight assault?      |
-| **Communal Condition Decoupling** | Do societal and morale conditions (shaky militia) attach to the scene/community rather than penalizing the hero's body?     | Does a terrified militia cause tactical chaos without making the captain's own parrying arm physically weaker?  |
-| **Adrenaline vs. Aftermath**      | Do desperate feats of heroic willpower (`Push Through Pain`) carry severe biological bills that come due in downtime?       | Does ignoring a shattered arm to hold the bridge result in high fever and grueling recovery once the sun rises? |
-| **Protracted Defense Attrition**  | Can the engine sustain multi-wave siege combat without devolving into either trivial grinding or immediate character death? | Do heroes feel their options narrowing as the hours of combat drag on and stamina reserves deplete?             |
-| **Spiritual Convalescence**       | Does the engine provide meaningful mechanics for healing minds, grief, and purpose alongside broken bones?                  | Can an exhausted mystic spend downtime comforting a weeping elder to restore the community's resolve?           |
-| **Friction & Abort Dynamic**      | Can heroes abort labor or social coercion when stamina costs spike without suffering catastrophic failure?                  | Can the captain abort abatis construction early to preserve combat stamina, leaving defenses partial?           |
+| Checkpoint Category            | Invariant & Challenge                                                                                                                                   | Falsifiable Verification Criterion                                                                                                                                   |
+| :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Unified Doom Avoidance**     | **Communal Condition Decoupling:** Societal and morale conditions (shaky militia) attach to the scene/community rather than penalizing the hero's body. | A terrified militia causes tactical chaos without making the captain's own parrying arm physically weaker.                                                           |
+| **Unified Doom Avoidance**     | **Gear Degradation Decoupling:** Sunder effects and shield breaks destroy equipment durability rather than directly transferring into bodily trauma.    | A sundered shield absorbs an axe blow and shatters, saving the wielder from bodily laceration.                                                                       |
+| **Plausible Bleed & Friction** | **Environmental Preparation:** Spending morning physical stamina on labor creates tangible, persistent defensive assets on the battlefield.             | Building an abatis provides real physical cover and tactical choke points during the midnight assault.                                                               |
+| **Plausible Bleed & Friction** | **Adrenaline vs. Aftermath:** Desperate feats of heroic willpower (`Push Through Pain`) carry severe biological bills that come due in downtime.        | Ignoring a shattered arm to hold the bridge results in high fever and grueling recovery once the sun rises.                                                          |
+| **Plausible Bleed & Friction** | **Protracted Defense Attrition:** Grinding multi-wave siege combat progressively narrows stamina reserves and options.                                  | Defenders feel their options narrowing as hours of combat drag on, forcing reliance on desperate high-effort gambits.                                                |
+| **Recovery Asymmetry**         | **Spiritual vs. Biological Healing:** The engine provides distinct mechanics for healing minds, grief, and purpose alongside broken bones.              | An exhausted mystic spends downtime comforting a weeping elder (`Heal a Spiritual Wound`) to restore community resolve, while broken bones require splints and rest. |
+| **Recovery Asymmetry**         | **Friction & Abort Dynamic:** Heroes can abort labor or social coercion when stamina costs spike without suffering catastrophic failure.                | The captain can abort abatis construction early to preserve combat stamina, leaving defenses partial.                                                                |
