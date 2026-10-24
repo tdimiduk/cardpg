@@ -474,13 +474,13 @@ tableCardDefenses = \case
   TCTalent TalentCard{defenses} -> defenses
 
 tableCardDefense :: TableCard -> Maybe Int
-tableCardDefense tc = tableCardDefenses tc.defense
+tableCardDefense = (.defense) . tableCardDefenses
 
 tableCardResilience :: TableCard -> Maybe Int
-tableCardResilience tc = tableCardDefenses tc.resilience
+tableCardResilience = (.resilience) . tableCardDefenses
 
 tableCardBurden :: TableCard -> Maybe Int
-tableCardBurden tc = tableCardDefenses tc.burden
+tableCardBurden = (.burden) . tableCardDefenses
 
 tableCardTags :: TableCard -> Maybe (NonEmpty Keyword)
 tableCardTags = \case

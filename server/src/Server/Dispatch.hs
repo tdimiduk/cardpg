@@ -1,3 +1,6 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedRecordDot #-}
+
 module Server.Dispatch
   ( processCommand
   ) where
@@ -8,22 +11,40 @@ import Control.Monad.State (State, state)
 import Data.Bifunctor (first)
 import Data.Generics.Labels ()
 import Data.Map.Strict qualified as Map
+import Data.Maybe (fromMaybe, isJust)
 import System.Random (StdGen)
 import System.Random.Stateful (uniform)
 
 import Api.Types (PlayMode (..))
+import Core.Card.Exploration
+  ( ClockDeckId (..)
+  , ClockEventCard (..)
+  , ClockNarrative (..)
+  )
+import Core.DSL (toText)
 import Core.Logic.Deck qualified as Logic
+import Core.Logic.Exploration qualified as LogicExpl
 import Core.Logic.Monad (GameM)
 import Core.Logic.Planning qualified as Logic
 import Core.Logic.Status qualified as Logic
+import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId)
 import Core.State
   ( ActiveChallenge (..)
+  , ActiveDefense (..)
   , ActorState (..)
+  , ChallengeDomain (..)
   , ChallengeSource (..)
+  , CoreCardState (..)
+  , ExplorationFocus (..)
   , GameEvent (..)
+  , LocationRuntimeState (..)
   , PlannedAction (PPass)
+  , RevealedEffect (..)
+  , TeamworkProgress (..)
+  , WorldState (..)
   )
+import Core.Time (formatExpeditionTime)
 import Data.Text (Text, pack)
 import Server.ChatParser (ChallengeDetails (..), ChatCommand (..), parseChatCommand)
 import Server.Engine
@@ -34,7 +55,7 @@ import Server.Engine
   , transitionToCrisis
   , transitionToExploration
   )
-import Server.Presenter (eventToLogs)
+import Server.Presenter (eventToLogs, explorationEventToLog)
 import Server.Types
   ( ActorGameEvent (..)
   , GameState (..)
@@ -74,31 +95,54 @@ processCommand cmd game =
       let finalGame = resolvedGame & #history %~ (++ newLogs)
       return (finalGame, Right [], events, newLogs)
     EndRound -> do
-      (newGame, updates, roundEvents) <- concludeRound game
-      let hostiles = filter (\a -> a.actorType /= "PC") (Map.elems newGame.actors)
-      if newGame.playMode == ModeCrisis && not (null hostiles) && all Logic.isDefeated hostiles
-        then do
-          (expGame, expUpdates, expEvents) <- transitionToExploration newGame
-          logEntry <- mkLogEntry SenderSystem (LogInfo "All hostiles defeated. Resuming exploration mode.")
-          let allUpdates = updates ++ expUpdates
-              allEvents = roundEvents ++ expEvents
-              finalGame = expGame & #history %~ (++ [logEntry])
-          return (finalGame, Right allUpdates, allEvents, [logEntry])
-        else do
-          (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
-          let newRound = game.roundNumber + 1
-          let planningGame =
-                gameWithPlan
-                  & #phase .~ Planning
-                  & #roundNumber .~ newRound
-          let roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
-          let payloads =
-                concatMap
-                  (\(ActorGameEvent aid evt) -> eventToLogs aid evt planningGame)
-                  (roundEvents ++ [roundStartEvent])
-          newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
-          let finalGame = planningGame & #history %~ (++ newLogs)
-          return (finalGame, Right updates, planEvents ++ roundEvents ++ [roundStartEvent], newLogs)
+      case game.playMode of
+        ModeExploration -> do
+          (newGame, updates, roundEvents, explPayloads) <- concludeRound game
+          if newGame.playMode == ModeCrisis
+            then do
+              logCrisis <- mkLogEntry SenderSystem (LogInfo "Encounter triggered! Transitioning to Crisis mode.")
+              explLogs <- mapM (mkLogEntry SenderSystem) explPayloads
+              let allLogs = explLogs ++ [logCrisis]
+                  finalGame = newGame & #history %~ (++ allLogs)
+              return (finalGame, Right updates, roundEvents, allLogs)
+            else do
+              let newRound = newGame.roundNumber
+                  roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
+                  payloads =
+                    concatMap
+                      (\(ActorGameEvent aid evt) -> eventToLogs aid evt newGame)
+                      (roundEvents ++ [roundStartEvent])
+              newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
+              explLogs <- mapM (mkLogEntry SenderSystem) explPayloads
+              let allLogs = newLogs ++ explLogs
+                  finalGame = newGame & #history %~ (++ allLogs)
+              return (finalGame, Right updates, roundEvents ++ [roundStartEvent], allLogs)
+        ModeCrisis -> do
+          (newGame, updates, roundEvents, _) <- concludeRound game
+          let hostiles = filter (\a -> a.actorType /= "PC") (Map.elems newGame.actors)
+          if not (null hostiles) && all Logic.isDefeated hostiles
+            then do
+              (expGame, expUpdates, expEvents) <- transitionToExploration newGame
+              logEntry <- mkLogEntry SenderSystem (LogInfo "All hostiles defeated. Resuming exploration mode.")
+              let allUpdates = updates ++ expUpdates
+                  allEvents = roundEvents ++ expEvents
+                  finalGame = expGame & #history %~ (++ [logEntry])
+              return (finalGame, Right allUpdates, allEvents, [logEntry])
+            else do
+              (gameWithPlan, planEvents) <- autoPlanForNPCs newGame
+              let newRound = game.roundNumber + 1
+              let planningGame =
+                    gameWithPlan
+                      & #phase .~ Planning
+                      & #roundNumber .~ newRound
+              let roundStartEvent = ActorGameEvent Nothing (RoundStarted newRound)
+              let payloads =
+                    concatMap
+                      (\(ActorGameEvent aid evt) -> eventToLogs aid evt planningGame)
+                      (roundEvents ++ [roundStartEvent])
+              newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
+              let finalGame = planningGame & #history %~ (++ newLogs)
+              return (finalGame, Right updates, planEvents ++ roundEvents ++ [roundStartEvent], newLogs)
     SendChat maybeAid content -> do
       case parseChatCommand content of
         CmdChallenge (ChallengeDetails color val name desc) -> do
@@ -112,6 +156,9 @@ processCommand cmd game =
                   , source = CSAdHoc name desc
                   , challengeStrength = val
                   , challengeColor = color
+                  , challengeDomain = CombatTrauma
+                  , consequencePool = Nothing
+                  , timePerImpact = Nothing
                   }
           let logPayload =
                 LogChallenge
@@ -150,7 +197,29 @@ processCommand cmd game =
 
           maybeChallenge = findChallenge game.history
       case maybeChallenge of
-        Just challenge -> runStandard tid (Logic.flipCardToDefense challenge)
+        Just challenge -> do
+          (maybeEvents, newGame) <- runActorAction tid (Logic.flipCardToDefense challenge) game
+          case maybeEvents of
+            Nothing -> return (game, Right [], [], [])
+            Just events -> do
+              let updatedActorState = case Map.lookup tid newGame.actors of
+                    Just a -> a
+                    Nothing -> error "Actor missing after update"
+                  actorEvents = map (ActorGameEvent (Just tid)) events
+                  stateUpdates = [StateUpdate tid updatedActorState]
+                  payloads = concatMap (\evt -> eventToLogs (Just tid) evt newGame) events
+              newLogs <- mapM (\(p, aid) -> mkLogEntry (resolveSender aid game) p) payloads
+              let finalWorldState = case newGame.worldState of
+                    Just ws
+                      | Just tp <- ws.activeTeamworkChallenge
+                      , tp.activeChallenge.id == cid ->
+                          let flippedCards = [c | CardDefended _ c <- events]
+                              (ws', _isComplete, _extraDur) =
+                                LogicExpl.contributeToTeamworkChallenge updatedActorState.name flippedCards ws
+                           in Just ws'
+                    other -> other
+                  finalGame = (newGame & #worldState .~ finalWorldState) & #history %~ (++ newLogs)
+              return (finalGame, Right stateUpdates, actorEvents, newLogs)
         Nothing -> runStandard tid (return ())
     EndDefense tid -> runStandard tid Logic.endDefense
     PlanMove tid x y -> runStandard tid (Logic.planMove x y)
@@ -182,7 +251,15 @@ processCommand cmd game =
     AddStatus tid st dest -> runStandard tid (Logic.addStatus st dest)
     DestroyStatus tid st cid -> runStandard tid (Logic.destroyStatus st cid)
     AddConsequence tid sev maybeCid -> do
-      (maybeEvents, newGame) <- runActorAction tid (Logic.addConsequence sev) game
+      let findChallenge [] = Nothing
+          findChallenge (logEntry : rest) = case logEntry.payload of
+            LogChallenge activeChallenge _ ->
+              if Just activeChallenge.id == maybeCid
+                then Just activeChallenge
+                else findChallenge rest
+            _ -> findChallenge rest
+          mChallenge = findChallenge game.history
+      (maybeEvents, newGame) <- runActorAction tid (Logic.addConsequenceForChallenge mChallenge sev) game
       case maybeEvents of
         Nothing -> return (game, Right [], [], []) -- Actor missing or no action
         Just events -> do
@@ -223,9 +300,99 @@ processCommand cmd game =
     SetVigilanceDial tid dial -> runStandard tid (Logic.setVigilanceDial dial)
     SelectReadiedCard tid cid -> runStandard tid (void $ Logic.searchDeckForReadiedCard cid)
     CommitVigilance tid -> runStandard tid Logic.commitVigilancePool
-    AbortExplorationChallenge _cid -> return (game, Right [], [], [])
-    AdvanceTimeManual _dur -> return (game, Right [], [], [])
-    DrawClockManual _cid -> return (game, Right [], [], [])
+    AbortExplorationChallenge cid -> do
+      let clearActor a =
+            let cs = a.coreState
+                matchesChal = case cs.revealed of
+                  Just (REChallenge ch) -> ch.id == cid
+                  _ -> False
+                clearedDef = case cs.defending of
+                  Just (ActiveDefense ch _) | ch.id == cid -> Nothing
+                  other -> other
+             in if matchesChal
+                  then
+                    a
+                      & #coreState . #revealed .~ Nothing
+                      & #coreState . #planned .~ Nothing
+                      & #coreState . #defending .~ clearedDef
+                  else a & #coreState . #defending .~ clearedDef
+          actors' = Map.map clearActor game.actors
+          ws' = case game.worldState of
+            Just ws
+              | Just tp <- ws.activeTeamworkChallenge
+              , tp.activeChallenge.id == cid ->
+                  ws & #activeTeamworkChallenge .~ Nothing
+            other -> fromMaybe (error "no world") other
+          newGame =
+            game
+              & #actors .~ actors'
+              & (if isJust game.worldState then #worldState ?~ ws' else id)
+      logEntry <- mkLogEntry SenderSystem (LogInfo "Challenge aborted.")
+      let finalGame = newGame & #history %~ (++ [logEntry])
+          updates = [StateUpdate aid act | (aid, act) <- Map.toList actors']
+      return (finalGame, Right updates, [], [logEntry])
+    AdvanceTimeManual dur -> do
+      case game.worldState of
+        Nothing -> return (game, Right [], [], [])
+        Just ws -> do
+          (ws', explEvs) <- LogicExpl.advanceTimeAndTriggerClocks dur [] ws
+          let newGame = game & #worldState ?~ ws'
+              logPayloads = map explorationEventToLog explEvs
+          logMain <-
+            mkLogEntry
+              SenderGM
+              (LogInfo $ "Advanced time by " <> pack (show dur) <> " (" <> formatExpeditionTime ws'.time <> ")")
+          subLogs <- mapM (mkLogEntry SenderSystem) logPayloads
+          let allLogs = logMain : subLogs
+              gameWithLogs = newGame & #history %~ (++ allLogs)
+          case ws'.focus of
+            AtLocation locId -> do
+              let scenarioEncounters = fromMaybe [] (Map.lookup locId ws'.locationEncounters)
+                  spawnedAtLoc = maybe [] (.spawnedActors) (Map.lookup locId ws'.locationStates)
+              if (not (null scenarioEncounters) || not (null spawnedAtLoc))
+                && gameWithLogs.playMode == ModeExploration
+                then do
+                  (crisisGame, cUpdates, cEvents) <- transitionToCrisis gameWithLogs
+                  logCrisis <- mkLogEntry SenderSystem (LogInfo "Encounter triggered! Transitioning to Crisis mode.")
+                  return (crisisGame & #history %~ (++ [logCrisis]), Right cUpdates, cEvents, allLogs ++ [logCrisis])
+                else
+                  return (gameWithLogs, Right [], [], allLogs)
+            _ -> return (gameWithLogs, Right [], [], allLogs)
+    DrawClockManual cid -> do
+      case game.worldState of
+        Nothing -> return (game, Right [], [], [])
+        Just ws -> do
+          (ws1, mCard, drawEvs) <- LogicExpl.drawClockCard cid ws
+          case mCard of
+            Nothing -> do
+              logEmpty <-
+                mkLogEntry SenderGM (LogInfo $ "Clock deck " <> cid.unClockDeckId <> " has no cards to draw.")
+              return (game & #history %~ (++ [logEmpty]), Right [], [], [logEmpty])
+            Just card -> do
+              let (ws2, effEvs) = LogicExpl.applyClockEventEffects card ws1
+                  newGame = game & #worldState ?~ ws2
+                  allEvs = drawEvs ++ effEvs
+                  logPayloads = map explorationEventToLog allEvs
+              logDrawn <-
+                mkLogEntry
+                  SenderGM
+                  (LogInfo $ "Drew clock card: " <> getRawText card.name <> " — " <> toText card.narrative.summary)
+              subLogs <- mapM (mkLogEntry SenderSystem) logPayloads
+              let allLogs = logDrawn : subLogs
+                  gameWithLogs = newGame & #history %~ (++ allLogs)
+              case ws2.focus of
+                AtLocation locId -> do
+                  let scenarioEncounters = fromMaybe [] (Map.lookup locId ws2.locationEncounters)
+                      spawnedAtLoc = maybe [] (.spawnedActors) (Map.lookup locId ws2.locationStates)
+                  if (not (null scenarioEncounters) || not (null spawnedAtLoc))
+                    && gameWithLogs.playMode == ModeExploration
+                    then do
+                      (crisisGame, cUpdates, cEvents) <- transitionToCrisis gameWithLogs
+                      logCrisis <- mkLogEntry SenderSystem (LogInfo "Encounter triggered! Transitioning to Crisis mode.")
+                      return (crisisGame & #history %~ (++ [logCrisis]), Right cUpdates, cEvents, allLogs ++ [logCrisis])
+                    else
+                      return (gameWithLogs, Right [], [], allLogs)
+                _ -> return (gameWithLogs, Right [], [], allLogs)
     TransitionMode mode -> do
       case mode of
         ModeCrisis -> do

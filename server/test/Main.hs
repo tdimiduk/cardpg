@@ -1,5 +1,6 @@
 module Main where
 
+import ExplorationWalkthroughTest qualified
 import ExportTraceTest qualified
 import GameTest qualified
 import InMemoryTest qualified
@@ -16,6 +17,7 @@ main =
       [ GameTest.test_game
       , ScenarioTest.test_scenario
       , ModeTransitionTest.test_mode_transition
+      , ExplorationWalkthroughTest.test_exploration_walkthrough
       , LoaderTest.test_loader
       , InMemoryTest.test_in_memory
       , ExportTraceTest.test_export_trace

@@ -1,24 +1,42 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 
 module Server.Presenter
   ( eventToLogs
+  , explorationEventToLog
   ) where
 
 import Data.Map qualified as Map
 import Data.Text qualified as T
 
+import Core.Card.Exploration
+  ( ClockDeckId (..)
+  , ClockEffect (..)
+  , ClockEventCard (..)
+  , ClockNarrative (..)
+  , ExitStatus (..)
+  , LocationId (..)
+  , TravelId (..)
+  )
+import Core.DSL (toText)
 import Core.Logic.Combat (computeDefenseDetails)
+import Core.NonEmptyText (getRawText)
 import Core.Primitives (ActorId (..))
 import Core.State
   ( ActiveChallenge (..)
+  , ActiveClockEffect (..)
   , ActiveDefense (..)
   , ActorState (..)
   , BattleRank (..)
   , CoreCardState (..)
+  , ExplorationEvent (..)
+  , ExplorationFocus (..)
   , GameEvent (..)
   , IllegalActionDetails (..)
   , RevealedEffect (..)
   )
+import Core.Time (formatExpeditionTime)
 import Server.Types
   ( GameState (..)
   , LogPayload (..)
@@ -85,3 +103,43 @@ eventToLogs maybeActorId event game =
         RoundStarted roundNum ->
           [mkSystemLog (LogInfo $ "Round " <> T.pack (show roundNum) <> " started.")]
         _ -> []
+
+explorationEventToLog :: ExplorationEvent -> LogPayload
+explorationEventToLog = \case
+  TimeAdvanced dur t ->
+    LogInfo $ "Time advanced by " <> T.pack (show dur) <> " (" <> formatExpeditionTime t <> ")"
+  LightFuelDecreased mLight -> case mLight of
+    Just (name, fuel) -> LogInfo $ "Light (" <> name <> ") fuel remaining: " <> T.pack (show fuel) <> " min"
+    Nothing -> LogInfo "Light fuel exhausted."
+  LightExtinguished name ->
+    LogInfo $ "Light extinguished: " <> name
+  ClockEffectExpired locId (ActiveClockEffect eff _ _) ->
+    LogInfo $ "Clock effect expired at " <> locId.unLocationId <> ": " <> toText eff.text
+  EffortCycleFlushed ->
+    LogInfo "Effort cycle flushed across scheduled boundary tick."
+  ClockCardDrawn deckId (ClockEventCard _ cName _ _ _ _ cNarr _) ->
+    LogInfo $
+      "Clock event ["
+        <> deckId.unClockDeckId
+        <> "]: "
+        <> getRawText cName
+        <> " — "
+        <> toText cNarr.summary
+  ClockDeckShuffled deckId ->
+    LogInfo $ "Clock deck reshuffled: " <> deckId.unClockDeckId
+  ClockEffectApplied locId (ClockEffect _ effText _ _ _ _ _ _ _) ->
+    LogInfo $ "Clock effect applied at " <> locId.unLocationId <> ": " <> toText effText
+  ClockHazardTriggered locId _ ->
+    LogInfo $ "Clock hazard triggered at " <> locId.unLocationId <> "!"
+  ActorsSpawned locId names ->
+    LogInfo $ "Actors spawned at " <> locId.unLocationId <> ": " <> T.intercalate ", " names
+  ExitStatusChanged fromLoc toLoc status ->
+    let statusText = case status of
+          ExitOpen -> "open"
+          ExitBlocked -> "blocked"
+     in LogInfo $
+          "Exit from " <> fromLoc.unLocationId <> " to " <> toLoc.unLocationId <> " is now " <> statusText
+  PartyMoved from to ->
+    let focusText (AtLocation (LocationId lid)) = lid
+        focusText (OnTravel (TravelId tid) dir) = tid <> " (" <> T.pack (show dir) <> ")"
+     in LogInfo $ "Party moved from " <> focusText from <> " to " <> focusText to

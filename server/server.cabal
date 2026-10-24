@@ -119,6 +119,7 @@ test-suite server-test
 
   -- cabal-fmt: expand test -Main
   other-modules:
+    ExplorationWalkthroughTest
     ExportTraceTest
     GameTest
     InMemoryTest
