@@ -193,7 +193,7 @@ newServerState backend gs rng cfg cps =
 
 -- | Helpers for managing server state
 clientExists :: UUID -> ServerState -> Bool
-clientExists cid state = Map.member cid (state.clients)
+clientExists cid state = Map.member cid state.clients
 
 -- | Adds a client or merges a new connection into an existing client
 addClient :: Client -> ServerState -> ServerState

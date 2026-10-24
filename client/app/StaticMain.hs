@@ -506,8 +506,8 @@ mockGameWidgetWithDeckView gameState = do
   do
     pb <- getPostBuild
     let coreState = actorState.coreState :: CoreCardState
-        realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
-        realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+        realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) coreState.deck
+        realHandCards = map (\x -> (x :: CardInstance CoreCard).content) coreState.hand
         viewCards = realDeckCards ++ realHandCards
         viewData = DeckViewData "Draw Pile" viewCards
     deckViewerModal (Just viewData <$ pb)
@@ -539,8 +539,8 @@ mockGameWidgetWithDiscardView gameState = do
   do
     pb <- getPostBuild
     let coreState = actorState.coreState :: CoreCardState
-        realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.deck)
-        realHandCards = map (\x -> (x :: CardInstance CoreCard).content) (coreState.hand)
+        realDeckCards = map (\x -> (x :: CardInstance CoreCard).content) coreState.deck
+        realHandCards = map (\x -> (x :: CardInstance CoreCard).content) coreState.hand
         viewCards = realDeckCards ++ realHandCards
         viewData = DeckViewData "Discard" viewCards
     deckViewerModal (Just viewData <$ pb)

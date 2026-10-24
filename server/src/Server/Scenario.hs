@@ -126,7 +126,7 @@ loadModuleScenarioWithCatalog catalog path maybeSeed = do
 
   ((_, finalGameState), finalRng) <-
     runStateT
-      (runStateT (loadScenarioActors catalog modDir (manifest.startingActors)) initialGame)
+      (runStateT (loadScenarioActors catalog modDir manifest.startingActors) initialGame)
       rng
 
   -- Load encounter actor templates for all location encounters in manifest
@@ -201,7 +201,7 @@ loadCombatScenarioWithCatalog catalog path maybeSeed = do
   -- We use StateT GameState (StateT StdGen IO) to accumulate actors into the game
   ((_, finalGameState), finalRng) <-
     runStateT
-      (runStateT (loadScenarioActors catalog (takeDirectory path) (scenario.actors)) initialGame)
+      (runStateT (loadScenarioActors catalog (takeDirectory path) scenario.actors) initialGame)
       rng
 
   -- Auto-plan for NPCs at start
@@ -286,7 +286,7 @@ instantiateActorWithCards def cards x y maybeHandSize = do
   let (initialHand, remainingDeck) = splitAt handSize shuffledDeck
 
   let nameVal = def.name
-  let tagsList = maybe [] toList (def.tags)
+  let tagsList = maybe [] toList def.tags
   let actorTypeVal
         | "pc" `elem` tagsList = "PC"
         | "monster" `elem` tagsList = "Monster"
@@ -299,8 +299,8 @@ instantiateActorWithCards def cards x y maybeHandSize = do
           }
 
   -- Process Table Cards (Items, Nature)
-  itemInstances <- processCards (def.items)
-  natureInstances <- processCards (def.nature)
+  itemInstances <- processCards def.items
+  natureInstances <- processCards def.nature
   -- TODO: Add talents logic when available in ActorDefinition if needed
 
   let itemAssets =

@@ -106,7 +106,7 @@ application state pending = do
   let connectedSocket = ConnectedSocket socketId conn
 
   (client, isNew) <- modifyMVar state $ \s -> do
-    let (c, isNew) = case Map.lookup finalClientId (s.clients) of
+    let (c, isNew) = case Map.lookup finalClientId s.clients of
           Just existing ->
             (existing{conns = existing.conns ++ [connectedSocket]}, False)
           Nothing ->
@@ -124,8 +124,8 @@ application state pending = do
   forM_ msgs $ \msg -> sendTextData conn (encode $ WsMsgPush msg)
 
   if isNew
-    then T.putStrLn $ "Client Joined: " <> (client.name)
-    else T.putStrLn $ "Client reconnected: " <> (client.name)
+    then T.putStrLn $ "Client Joined: " <> client.name
+    else T.putStrLn $ "Client reconnected: " <> client.name
 
   -- Broadcast update to others because activeClients changed
   readMVar state >>= \s -> do
@@ -152,15 +152,15 @@ broadcastReflex msg clients = do
   let msgBytes = encode (WsMsgPush msg)
   T.putStrLn $ "Broadcasting: " <> T.pack (take 100 $ BSL.unpack msgBytes)
   forM_ (Map.elems clients) $ \client ->
-    forM_ (client.conns) $ \socket -> do
-      result <- try (sendTextData (socket.conn) msgBytes) :: IO (Either ConnectionException ())
+    forM_ client.conns $ \socket -> do
+      result <- try (sendTextData socket.conn msgBytes) :: IO (Either ConnectionException ())
       case result of
         Left err -> T.putStrLn $ "Send failed: " <> T.pack (show err)
         Right _ -> return ()
 
 talk :: Client -> ConnectedSocket -> MVar ServerState -> IO ()
 talk client socket state = forever $ do
-  msgBytes <- receiveData (socket.conn)
+  msgBytes <- receiveData socket.conn
   case decode msgBytes of
     Just taggedReq@(TaggedRequest _ _) -> do
       res <-
@@ -170,16 +170,16 @@ talk client socket state = forever $ do
         Left ex -> do
           T.putStrLn $ "CRITICAL ERROR in handleGameCommand: " <> T.pack (show ex)
           sendTextData
-            (socket.conn)
+            socket.conn
             (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack (show ex)) ErrorSystem))
-        Right (Right resp) -> sendTextData (socket.conn) (encode $ WsMsgResponse resp)
+        Right (Right resp) -> sendTextData socket.conn (encode $ WsMsgResponse resp)
         Right (Left err) ->
           sendTextData
-            (socket.conn)
+            socket.conn
             (encode $ WsMsgPush $ PushError (ErrorMessage (T.pack err) ErrorSystem))
     Nothing ->
       sendTextData
-        (socket.conn)
+        socket.conn
         (encode $ WsMsgPush $ PushError (ErrorMessage "Invalid message" ErrorValidation))
 
 getClientInfoMap :: Map.Map UUID Client -> Map.Map UUID ClientInfo
@@ -269,7 +269,7 @@ checkPermission role cmd =
 handleGameCommand :: Client -> MVar ServerState -> Req.ApiRequest a -> IO a
 handleGameCommand client state cmd = do
   sCurrent <- readMVar state
-  let mClient = Map.lookup (client.id) (sCurrent.clients)
+  let mClient = Map.lookup client.id sCurrent.clients
       clientRole = maybe RoleUnassigned (.role) mClient
 
   if not (checkPermission clientRole cmd)
