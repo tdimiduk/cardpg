@@ -13,7 +13,7 @@ import System.Directory
   )
 import System.Environment (getArgs, lookupEnv, setEnv)
 import System.Exit (ExitCode (..))
-import System.FilePath ((</>))
+import System.FilePath (isAbsolute, (</>))
 import System.IO.Error (catchIOError)
 import System.Process
   ( callProcess
@@ -203,8 +203,14 @@ main = do
     ["client"] -> watchClient
     ["server"] -> do
       root <- getCurrentDirectory
-      setEnv "CARDPG_CARDS_DIR" (root </> "data/cards")
-      setEnv "CARDPG_SCENARIO_FILE" (root </> "data/scenarios/starter.yaml")
+      mCardsDir <- lookupEnv "CARDPG_CARDS_DIR"
+      case mCardsDir of
+        Just dir -> setEnv "CARDPG_CARDS_DIR" (if isAbsolute dir then dir else root </> dir)
+        Nothing -> setEnv "CARDPG_CARDS_DIR" (root </> "data/cards")
+      mScenario <- lookupEnv "CARDPG_SCENARIO_FILE"
+      case mScenario of
+        Just scen -> setEnv "CARDPG_SCENARIO_FILE" (if isAbsolute scen then scen else root </> scen)
+        Nothing -> setEnv "CARDPG_SCENARIO_FILE" (root </> "data/scenarios/starter.yaml")
       useCompiled <- lookupEnv "CARDPG_USE_COMPILED_SERVER"
       if useCompiled == Just "1"
         then watchCompiledServer serverWatchedPaths

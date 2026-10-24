@@ -6,6 +6,7 @@ processes:
     command: runghc scripts/Watch.hs server
     environment:
       - PORT=3004
+      - CARDPG_SCENARIO_FILE=data/modules/crag_gallows
       - CARDPG_DB_HOST=localhost
       - CARDPG_DB_NAME=cardpg
       - CARDPG_DB_USER=cardpg
