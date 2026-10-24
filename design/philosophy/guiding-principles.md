@@ -32,9 +32,15 @@ A character's 24-card deck is their sole resource, elegantly integrating three a
 - **Tactical Presence of Mind:** The hand of cards represents immediate focus—the fleeting opportunities, sudden openings, and split-second decisions a character can capitalize on in the heat of the moment.
 - **Endurance and Attrition:** The depth of the deck is the character's overall reserve. As they exert themselves, the deck degrades through the accumulation of Status Cards like [[Fatigue]] and `Minor Wound`.
 
-## Fail Forward & Narrative Momentum
+## Presumption of Competence & Consequence-Driven Failure
 
-The game's systems must always propel the story forward, never allowing it to stall due to a single outcome. A poor attempt should take extra time and effort or introduce a new complication or change the situation, not create a dead end. The narrative should always answer the question "What happens now?" rather than "Does it work?".
+The game's resolution systems start from an assumption of competence rather than arbitrary incompetence: trained specialists know how to practice their craft, pick a lock, ride a mount, or track quarry. Resolution flips the traditional script: characters begin on a trajectory to succeed, and the system measures the stamina, time, and physical resistance required to see it through.
+
+Crucially:
+
+- **Failure is Consequence-Driven, Not Arbitrary:** Characters do not fail because of a flat binary dice roll or an unflavored "check failed." Outright failure is a concrete **consequence** that triggers when the cost or danger exceeds what can be absorbed or mitigated—such as snapped tools, structural collapse, a severed cable, or an alerted sentry.
+- **Fail Forward & Narrative Momentum:** The game's systems must always propel the story forward, never allowing it to stall due to a single outcome. A compromised attempt changes the situation, burns scarce time, or introduces new complications rather than producing a dead-end stall. The narrative should always answer the question "What happens now?" rather than "Does it work?".
+- **The Right to Abort (Player-Governed Risk):** Players must never feel trapped on an inescapable conveyor belt of mandatory attrition. As costs escalate or complications surface during an attempt, the engine intends to provide mechanics that allow players to say, _"This isn't going well; I am not willing to pay this much cost."_ Players retain the agency to abort the task and accept a retreat, impasse, or delayed approach to avoid severe or catastrophic consequences.
 
 ## Tension Through Informed Risk
 

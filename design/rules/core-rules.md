@@ -97,7 +97,7 @@ _(To push beyond 4 cards into acute combat alertness at double the fatigue rate,
 
 ### General Actions
 
-Tasks with meaningful stakes outside combat (climbing a cliff, picking a lock, calming a beast) are resolved as [[General Actions]]. You face the obstacle using the steps in [Facing a Challenge](#2-facing-a-challenge), with one key assumption: success is the default; the resolution determines the physical and stamina _cost_ of that success.
+Tasks with meaningful stakes outside combat (climbing a cliff, picking a lock, calming a beast) are resolved as [[General Actions]]. You face the obstacle using the steps in [Facing a Challenge](#2-facing-a-challenge). Resolution starts from a **presumption of competence**: trained characters set out on a trajectory to succeed, and the resolution determines the stamina, time, and physical cost required to see it through. Failure is **consequence-driven rather than an arbitrary binary check**: an attempt fails when suffered consequences dictate that the effort was compromised, interrupted, or ruined (such as snapped tools, structural collapse, or an alerted sentry).
 
 The GM or challenge sets the [[Color]] and [[Strength]]:
 

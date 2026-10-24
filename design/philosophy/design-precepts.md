@@ -4,13 +4,13 @@
 
 These precepts define the fundamental user-facing experience of the game's resolution systems.
 
-### Default to Success at a Cost
+### Presumption of Competence & Consequence-Driven Failure
 
-**Core Principle:** Actions are presumed to succeed at their immediate goal. The core tension of the game does not come from asking "if" an action works, but "at what cost?" Outright failure is an exceptional outcome that must be explicitly stated on a `Consequence Card`.
+**Core Principle:** Actions start from a presumption of competence: trained characters are on a trajectory to succeed. The core tension of the game does not come from asking "if" an action works, but "at what cost?" Outright failure is consequence-driven: it occurs when mounting consequences or narrative fallout explicitly compromise the attempt (e.g., snapped lockpicks, structural collapse, or an alerted sentry).
 
-**Rationale:** This is the central mechanical implementation of our "Fail Forward & Narrative Momentum" guiding principle. It ensures the story never stalls on a single bad roll.
+**Rationale:** This is the central mechanical implementation of our "Presumption of Competence & Consequence-Driven Failure" guiding principle. It ensures the story never stalls on a single bad roll.
 
-**Design Nuance:** "Success at a cost" must never feel like a flat mechanical tax. The game must provide clear pathways for players to actively mitigate or bypass these costs through clever positioning, proactive planning, and tactical restraint. The cost should feel like a natural consequence of a deliberate choice, not an unavoidable punishment for playing.
+**Design Nuance:** "Presumption of competence" must never feel like a flat mechanical tax or an inescapable conveyor belt of attrition. The game must provide clear pathways for players to actively mitigate costs through preparation, leverage, and positioning. Furthermore, the design intends to support player-governed aborts: players can recognize an escalating cost spiral and choose to break off the attempt before suffering catastrophic consequences.
 
 Crucially, **do not reject a rule because it potentially allows success without significant cost.** The intent of this precept is that the rules offer complications rather than saying "No"—but the rules are fully allowed to say "Yes." If an action is sufficiently easy, routine, or efficiently executed that a character accomplishes it with minimal effort or a trivial resource spend, it is completely acceptable to "succeed fully" without collateral complications. In fact, if an action resolves without meaningful friction, it was borderline whether the GM even needed to call for a mechanical check at all rather than simply saying "yup" and moving the narrative forward. Complications are reserved for moments of genuine strain, high stakes, or active opposition.
 
