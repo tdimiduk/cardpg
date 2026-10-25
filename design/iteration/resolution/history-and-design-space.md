@@ -101,9 +101,9 @@ flowchart LR
 
 ### Axis 2: Where Defender Agency Lives
 
-- **Pre-Flip Agency:** Playing reactive `Defend` Action Stacks from hand or Vigilance (Settled Invariant).
-- **Post-Flip Consequence Selection:** _"How I Take the Blow"_—curating from a pool of candidate cards, trading positional footing or armor wear to protect vital anatomy.
-- **Mid-Flip Risk Management:** Sequential flips with push-your-luck buy-offs (requires careful anti-AP design).
+- **Pre-Flip Agency (Settled Baseline):** Playing reactive `Defend` Action Stacks from hand or committing Vigilance before flipping cards from the deck to generate `Impact`.
+- **Post-Impact Consequence Selection (Primary Exploration Space):** _"How I Take the Blow"_—curating from a pool of candidate cards or choosing how unmitigated `Impact` lands (e.g., trading positional footing or armor wear to protect vital anatomy).
+- **Defense / Impact-Determination Tweaks (High-Bar Exception Only):** Modifying the flip procedure itself is generally out of scope because prior attempts (`Declared Defense Effort`, `Push Your Luck`) introduced card-counting incentives and per-flip analysis paralysis. Only explore pre-Impact tweaks if a particularly elegant option grants defender agency without adding fiddly complexity or AP points.
 
 ### Axis 3: Harm Escalation & Domain Decoupling
 
