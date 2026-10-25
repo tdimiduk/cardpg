@@ -16,34 +16,26 @@ Under the Consequence Pool engine, the GM exercises narrative direction and tact
 
 ## 2. Antagonist Tactical Profiles: How Monsters "Cut"
 
-Different monster types and combat roles should spend their Impact and curate their pools according to distinct behavioral profiles:
+Under Layered Pool Fill, monster types naturally produce different threat profiles without requiring GM math:
 
 ### The Brute / Heavy Hitter (e.g., Ogre, Troll, Giant)
 
-- **High Impact, Low Multiplicity**: Brutes often land attacks that generate 3–4 Impact on their own.
-- **The Ceiling vs. Saturation Choice**:
-  - _Against Unarmored/Light Targets ($N \le 2$)_: Spend 3 to 4 Impact on high-tier cards (**Tier 2, 3, or 4**). A single devastating blow can break platforms (`Knocked Prone`), crack bones (`Cracked Ribs`), or knock out a fragile combatant.
-  - _Against Armored Tanks ($N \ge 3$)_: If the brute attacks alone, spending 4 Impact on a single Tier 4 card leaves multiple slots empty as "No Consequence" against a knight in full plate ($N = 5$). The knight will simply absorb the blow with their armor. The brute should instead spend Impact across multiple Tier 1 cards (e.g. four Tier 1 cards like `Rattled Guard`, `Off Balance`, and `Strained Offense`) to break the knight's stance and peel away armor thresholds.
+- **High Impact**: A single heavy blow generates 3–5 Impact.
+- **Natural Penetration**: Against unarmored targets ($N \le 2$), 4 Impact fills Tier 1 and Tier 2 completely, forcing guaranteed platform breaks (`Knocked Prone`) or trauma (`Cracked Ribs`). Against heavy armor ($N \ge 4$), a single 4-Impact strike saturates Tier 1, stripping clean soak blanks and landing punishing tactical locks (`Rattled Guard`, `Off Balance`) to soften the knight up.
 
 ### The Swarm / Pack (e.g., Goblins, Dire Wolves, Giant Rats)
 
-- **Low Impact, High Multiplicity**: Swarms generate 1–2 Impact across many simultaneous strikes.
-- **The Grinding Strategy**: Individual minions cannot purchase Tier 2 or 3 cards on their own. Instead, they flood the candidate pool with **Tier 1** cards.
-- **Intra-Tier Dynamic Range & The Cut**: When 4 goblins generate 1 Impact each, the GM draws 4 cards from Tier 1:
-  `[Slightly Battered (Priority 1), Winded (Priority 2), Off Balance (Priority 4), Afraid (Priority 4)]`.
-  - The GM curates out the softer, easily cleared options (`Slightly Battered` and `Winded`) and offers the sharp, punishing tactical locks (`Off Balance` and `Afraid`).
-  - Next round, the pack attacks again and targets those active tags, triggering **Tag Escalations** into Tier 2 (`Knocked Prone`) and Tier 3!
+- **Low Impact, High Multiplicity**: Swarms generate 1–2 Impact across multiple simultaneous strikes.
+- **Collective Escalation**: Swarm hits combine their Impact against the target. Three goblins generating 2 Impact each ($I = 6$) against an armored hero ($N = 3$) completely fill Tier 1 and Tier 2, guaranteeing Tier 2 trauma (`[Sev 2, Sev 2, Sev 2]`).
+- **Deck Drain**: Beyond consequences, defending against multiple attacks forces continuous card flips, rapidly exhausting the defender's draw deck toward Fatigue Cycles.
 
 ### The Combined Assault (Boss + Minions)
 
-When a heavy hitter and weak minions attack the same character in the same Crisis round:
+When a boss and minions attack the same character in a round:
 
-- The heavy hitter can spend Impact on Tier 2 cards (e.g., 2 Impact $\to$ Tier 2 `Knocked Prone`).
-- The minions spend their 1 Impact each on Tier 1 cards.
-- **The Curation Synergy**: The GM now holds candidate cards across both Tier 2 and Tier 1. Against a defender with Pool Size $N = 3$, the GM curates:
-  - One Tier 2 platform break (`Knocked Prone`).
-  - Two **hand-picked, sharp Tier 1 conditions** (filtering out the soft setbacks).
-- The player is faced with a compelling dilemma: take the dangerous Tier 2 platform break, or take the specially curated Tier 1 condition that actively sets up the enemies' next turn!
+- Minions contribute the base Impact that saturates Tier 1, eliminating clean soak blanks.
+- The boss's heavy blow pushes the total Impact straight into Tier 2 and Tier 3.
+- The GM curates the pool: presenting the boss's heavy trauma alongside the minions' sharpest tactical locks or active tag escalations.
 
 ---
 
@@ -88,8 +80,8 @@ If the fighter has Pool Size $N = 2$, the GM doesn't need to read the full text 
 
 Remember that minions have **Consequence Pool Size: 1** printed on their Nature card:
 
-- When a player generates 2 Impact against a minion, the player spends 2 Impact to draw 1 Tier 2 card.
-- There is **no curation step** and no second slot. The minion takes the card directly.
+- With $N = 1$, each tier has width 1: 1 Impact draws Tier 1; 2 Impact reaches Tier 2; 3 Impact reaches Tier 3; 4 Impact allocates Narrative Defeat.
+- There is **no curation step** and no second slot. The minion takes the top-tier card drawn directly.
 - If the card defeats the minion (or if the minion has a trait like _Fragile: Drops at Tier 2_), the minion is removed from play immediately. This keeps minion-cleaving fast, visceral, and satisfying.
 
 ---
@@ -102,7 +94,7 @@ Outside of Crisis Time, General Actions use the exact same consequence engine:
 flowchart LR
     A["Player Declares Task"] --> B["GM Sets Color & Strength"]
     B --> C["Player Flips to Meet Strength -> Tallies Impact"]
-    C --> D["GM Spends Impact to Draw Candidates (1 Impact = 1 Severity)"]
+    C --> D["GM Draws Candidates via Layered Fill (1 Impact = 1 Card)"]
     D --> E["GM Curates N Cards (Domain Pool Size, Fallback N = 2)"]
     E --> F["Player Selects 1 Consequence (or Blank 'No Consequence')"]
 ```

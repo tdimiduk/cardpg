@@ -15,18 +15,20 @@ The consequence system transforms action resolution from passive damage calculat
 
 ## 2. Attacker Strategy: Curating the Consequence Pool ("I Cut")
 
-When your attack forces an opponent to flip cards from their deck, each card flipped gives you **1 Impact** to spend as currency.
+Each card flipped by the defender gives the attacking side **1 Impact = 1 candidate card drawn**. Candidates fill rows of width $N$ (the defender's Pool Size) tier-by-tier from Severity 1 upward:
 
-### Allocation: High-Ceiling Strikes vs. Pool Saturation
+- The first $N$ Impact draws up to $N$ Severity 1 cards. (If total Impact is less than $N$, unfilled slots are implicit "No Consequence" blanks).
+- Once Tier 1 is full, the next $N$ Impact draws up to $N$ Severity 2 cards.
+- Once Tier 2 is full, the next $N$ Impact draws up to $N$ Severity 3 cards.
+- Once Tier 3 is full, subsequent Impact allocates Severity 4 (Taken Out) candidates.
 
-A critical tactical decision is how to spend your Impact when you generate a high number (such as 3, 4, or 5 Impact):
+### Curating Across Tiers: Bottlenecks & Escalations
 
-- **The High-Ceiling Strike (Concentrated Severity)**:
-  - _Example_: Spending 4 Impact to allocate a single **Severity 4 Narrative Defeat** candidate.
-  - _Tactical Value_: Enormous if the defender's pool is small or already filled by allies. However, against an armored defender with Pool Size $N = 3$ or higher, drawing only one card leaves the remaining slots implicitly filled with **"No Consequence"**—allowing the defender to simply ignore the blow!
-- **Pool Saturation (Guaranteed Floor)**:
-  - _Example_: An attacker who generated 4 Impact against an armored foe ($N = 3$) chooses to spend it as **$2 + 2$** (two Severity 2 cards) rather than a single Severity 4.
-  - _Tactical Value_: When combined with an ally's 1-Impact attack (drawing a Severity 1 card), the candidate pool now contains `{Sev 2, Sev 2, Sev 1}`. All 3 slots of the armor are filled. The defender cannot pick "No Consequence" and is forced to accept at least a tactical impairment.
+When your Impact spans multiple tiers (e.g., $N=3$ with 5 Impact: three Tier 1s and two Tier 2s), you select any $N=3$ cards from what you drew:
+
+1. **The Higher-Tier Foundation:** Include your highest-tier cards to force severe platform or structural trauma.
+2. **Curating the Bottleneck Slot:** If the higher tier isn't completely saturated, the remaining slot(s) must be filled from lower tiers. Because the defender will naturally seek to pick the lowest-tier option to survive, **use your surplus lower-tier draws to put the nastiest tactical lock or active tag-escalator into that bottleneck slot**!
+3. **Tag Hunting Trumps Raw Tier:** A Tier 1 card matching an active tag on the defender's table can upgrade an existing injury to Tier 2 or Tier 3. Often, curating a matching Tier 1 card is deadlier than an un-escalated Tier 2 card.
 
 ### Intra-Tier Curation: The Tapering Funnel
 
@@ -93,11 +95,11 @@ The primary engine of lethality in CardPG is not raw severity, but **Tag Escalat
 
 ### Coordinated Party Assaults
 
-Because each attacker spends their own Impact, party members should coordinate the types of candidate decks they draw from:
+When multiple party members attack the same foe in a round, their Impact combines into a single pool:
 
-- **The Vanguard (Heavy Strike)**: Generates 3–4 Impact, drawing Tier 2/3 cards or multiple Tier 1 cards to saturate armor.
-- **The Skirmisher / Flanker**: Generates 1–2 Impact, drawing from specialized condition decks (Positioning, Bleeding, Sensory).
-- **The Assembly**: Together, the party pools their drawn candidates and selects the exact $N$ cards that corner the boss into an inescapable tactical bind.
+- Probing hits from skirmishers saturate the target's Pool Size ($N$) at Tier 1, removing clean soak blanks.
+- Heavy strikes from frontliners push the combined Impact into Tier 2 and Tier 3.
+- Together, the party curates $N$ cards from the combined draw, hunting active tag matches and cornering the foe into an inescapable tactical dilemma.
 
 ---
 
@@ -140,13 +142,9 @@ When choosing between two conditions, evaluate whether your character has the to
 ```mermaid
 flowchart TD
     subgraph Attacker Decision ["Attacker ('I Cut')"]
-        A1["Attacks Resolve -> Note Individual Impact"] --> A2{"High Impact (3+)?"}
-        A2 -- Yes --> A3["Decide: 1 Heavy Ceiling vs Multiple Cards to Fill Pool"]
-        A2 -- No --> A4["Draw Candidate at Affordable Severity"]
-        A3 --> A5["Combine All Candidates Drawn by Allies"]
-        A4 --> A5
-        A5 --> A6["Inspect Defender's Active Conditions"]
-        A6 --> A7["Curate N Cards: Eliminate Soft Outs, Maximize Tag Synergy"]
+        A1["Attacks Resolve -> Tally Total Impact (I)"] --> A2["Deal Cards Tier-by-Tier into Rows of Width N"]
+        A2 --> A3["Inspect Defender's Active Conditions"]
+        A3 --> A4["Curate N Cards: Prioritize Escalation Tags, Squeeze Bottlenecks"]
     end
 
     subgraph Defender Decision ["Defender ('You Choose')"]

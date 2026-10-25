@@ -44,24 +44,26 @@
 ### 3. Resolution: Step 2 - Draw Candidate Consequences & Curate Pool
 
 - **Defender's Consequence Pool Size ($N$)**: **2** (Base unarmored).
-- **Attacker's Budget**: **3 Impact**.
+- **Total Impact**: **3 Impact**.
 
-#### Attacker's Spending & Candidate Draws
+#### Layered Candidate Draws (3 Impact against N = 2)
 
-The attacker has 3 Impact and decides to draw a spread of candidate consequences across Tier 2 and Tier 1:
+Candidates fill tiers of width $N = 2$ from the bottom up (1 Impact = 1 card):
 
-- **Candidate 1 (Spend 2 Impact | 1 remaining)**: Draws from the **Tier 2** deck $\to$ **`Knocked Prone`** (Tier 2, Tags: `positioning`, `combat`).
-  - _Passive_: You are prone. Crawl only; expend 1 card from hand to move or attack. Armor Pierce doubled.
-  - _Action_: Struggle to Feet (Tuck cards equal to Burden).
-- **Candidate 2 (Spend 1 Impact | 0 remaining)**: Draws from the **Tier 1** deck $\to$ **`Poor Footing`** (Tier 1, Tags: `positioning`, `physical`, Priority 2).
-  - _Passive_: The Impact of your defenses is increased by 1.
-  - _Action_: Regain Footing (Place a card from hand on top of this. When 2 cards are on top, expend them and remove this).
-  - _Escalate_: `if_suffer: positioning` $\to$ Replace with `Off Balance` (Tier 1).
+1. **Tier 1 (2 Impact)**: Fills Tier 1 completely, drawing 2 cards from the **Tier 1** deck:
+   - `Poor Footing` (Tier 1, Tags: `positioning`, `physical`, Priority 2)
+   - `Dust in Eyes` (Tier 1, Tags: `sensory`, Priority 3)
+2. **Tier 2 (1 Impact)**: Enters Tier 2, drawing 1 card from the **Tier 2** deck:
+   - `Knocked Prone` (Tier 2, Tags: `positioning`, `combat`)
+
+Total candidates drawn: **3 cards**.
 
 #### Curating the Pool (The "I Cut" Step)
 
-The defender's Pool Size is 2. The attacker has drawn exactly 2 candidate cards:
+The defender's Pool Size is 2. The attacker selects 2 cards from the 3 drawn candidates:
 
+- The attacker keeps **`Knocked Prone`** (Tier 2) to threaten a platform takedown.
+- For the second slot, the attacker curates **`Poor Footing`** over `Dust in Eyes` to establish an active `positioning` tag.
 - **Pool Presented to Defender**: `[Knocked Prone (Tier 2), Poor Footing (Tier 1)]`.
 
 ---

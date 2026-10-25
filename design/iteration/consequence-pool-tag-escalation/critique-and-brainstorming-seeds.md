@@ -18,7 +18,7 @@ This document outlines the active mechanical critiques, tabletop ergonomics tens
 
 ## 1. Active Systemic Critiques
 
-While the Consequence Pool engine successfully decouples harm from global hit points and introduces high player agency via "I Cut, You Choose" drafting, three major mechanical and ergonomic friction points remain under the baseline currency model. _(Note: Per [resolution-design-constraints.md](../resolution-design-constraints.md) §2.5, physical table ergonomics is a "nice to have" during near-term VTT playtesting, whereas fixing the Combinatorial "Noob Trap" of Impact currency is a top-priority mechanical goal)._
+While the Consequence Pool engine successfully decouples harm from global hit points and introduces high player agency via "I Cut, You Choose" drafting, two mechanical and ergonomic friction points remain under the multi-deck model. _(Note: Per [resolution-design-constraints.md](../resolution-design-constraints.md) §2.5, physical table ergonomics is a "nice to have" during near-term VTT playtesting, but streamlining table footprint remains a valuable long-term goal)._
 
 ### A. Physical Tabletop Ergonomics & Multi-Deck Drafting (VTT vs. Table)
 
@@ -27,23 +27,7 @@ While the Consequence Pool engine successfully decouples harm from global hit po
 3. **The "Phantom Card" Drafting Anomaly:** Because Tier 4 (Taken Out) has no physical card deck in the baseline rules, allocating a Tier 4 candidate when spending 4 Impact creates a physical disconnect: the attacker must introduce a proxy token, index card, or verbal declaration into an otherwise physical hand of drafted cards.
 4. **Pacing Drag:** Performing this multi-card reading, evaluating, and deck-sorting procedure multiple times per round violates the 10x Rule of Core Complexity and slows the tactile momentum of Crisis Time.
 
-### B. The Combinatorial "Noob Trap" of Impact Currency
-
-Step 2 allows an attacker to allocate generated Impact across any combination of severities they can afford (1 Impact = 1 Severity). However, Step 3 requires the pool to contain at least $N$ cards to prevent empty slots from becoming implicit "No Consequence" blanks.
-
-Under open currency spending, this creates an acute mathematical paradox: **spending all your currency on the most severe attack candidate you can afford guarantees zero harm against any defender with $N \ge 2$**:
-
-- **The Trap at Every Tier:**
-  - Spend 1 Impact on a **Severity 1** card against $N = 2 \implies$ Pool is `[Sev 1, Blank]`. Defender picks Blank (0 harm).
-  - Spend 2 Impact on a **Severity 2** card against $N = 2 \implies$ Pool is `[Sev 2, Blank]`. Defender picks Blank (0 harm).
-  - Spend 3 Impact on a **Severity 3** card against $N = 2 \implies$ Pool is `[Sev 3, Blank]`. Defender picks Blank (0 harm).
-  - Spend 4 Impact on a **Severity 4 (Taken Out)** candidate against $N = 2 \implies$ Pool is `[Tier 4, Blank]`. Defender picks Blank (0 harm).
-- **The Inverted Incentive:** To actually guarantee inflicting a consequence, an attacker is penalized for buying the highest-severity hit. Instead, they must know to solve an integer partition of their Impact that yields at least $N$ cards:
-  - Generating 4 Impact against an unarmored foe ($N = 2$): Spending it on a single Tier 4 "lethal strike" deals **0 harm** (defender picks the blank). But splitting it into $2 + 2$ (`[Sev 2, Sev 2]`) guarantees inflicting a severe trauma like `Knocked Prone` or `Cracked Ribs`!
-  - Generating 3 Impact against light armor ($N = 3$): Buying one Severity 3 (`Broken Arm`) yields `[Sev 3, Blank, Blank]` (defender picks Blank). Buying three Severity 1 cards ($1+1+1$) guarantees inflicting harm.
-- **The Cognitive Tax:** Players should not have to solve integer partition optimization problems mid-combat or risk completely invalidating their own successful attacks by falling into the single-card purchase trap.
-
-### C. Tag Dilution & Mid-Combat Deck Tutoring
+### B. Tag Dilution & Mid-Combat Deck Tutoring
 
 1. **Tag Dilution:** Severity 1 contains 12 cards with 18 distinct tags, and Severity 2 contains 7 cards with 15 tags. When drawing 1 or 2 random candidates, the probability of drawing a tag that matches an active condition already on the defender remains low (~15–20%). The intended downward spiral of contextual tag escalation frequently stalls due to draw variance unless candidate pools are exceptionally large.
 2. **Mid-Combat Deck Tutoring:** While treating Tier 4 as narrative Taken Out successfully eliminates deck-searching for final death/defeat, escalating conditions between Tiers 1, 2, and 3 still requires mid-fight deck tutoring:
@@ -90,35 +74,14 @@ Replace the separate physical severity decks with a **single Consequence Deck**.
 
 #### Mechanical & Ergonomic Benefits under 4 Tiers
 
-1. **High Graphical Feasibility (Enabled by Seed 4):** Fitting 3 tiers with full out-of-combat surgical tasks, tools, and convalescence rules is impossible on a standard poker card. However, by decoupling in-combat conditions from post-combat prognosis (detailed in Seed 4), each tier requires only 1–2 lines of passive/action text. At ~50–60 words total, fitting **3 tiers** on a single card is graphically clean, highly legible, and spacious.
+1. **High Graphical Feasibility (Enabled by Seed 3):** Fitting 3 tiers with full out-of-combat surgical tasks, tools, and convalescence rules is impossible on a standard poker card. However, by decoupling in-combat conditions from post-combat prognosis (detailed in Seed 3), each tier requires only 1–2 lines of passive/action text. At ~50–60 words total, fitting **3 tiers** on a single card is graphically clean, highly legible, and spacious.
 2. **Single Deck on Table:** Reduces physical deck clutter to exactly **one 15–20 card deck** for physical trauma.
 3. **Zero Mid-Combat Tutoring:** Escalating `Poor Footing` does not require searching any deck for `Off Balance` or `Knocked Prone`. The entire progression chain is already on the table in front of the player; the player simply advances an **escalation marker** (cube or clip) to the next printed tier.
 4. **Natural Tag Synergies:** Every card drawn inherently carries its full narrative and mechanical escalation arc without requiring cross-deck tag matching.
 
 ---
 
-### Seed 2: Fixed-Tier Threshold Drafting (Eliminating Partition Math)
-
-#### Concept
-
-Eliminate the open coin-change currency exchange. Instead, total Impact sets the **Severity Tier** of the draw directly:
-
-$$\text{Severity Tier} = \text{Lookup based on Impact and Armor}$$
-
-- The attacker draws $N$ candidate cards strictly from that determined tier (or from the single tiered deck, reading that specific tier).
-- The attacker curates the pool (e.g., offering 2 distinct tactical choices).
-- The defender selects their consequence.
-
-#### Mechanical Benefits
-
-1. **Completely Eliminates the Noob Trap:** Attackers never face the paradox where spending 4 Impact on a single Tier 4 candidate yields an empty blank slot that lets the defender escape. If 4 Impact (or the required threshold) is achieved, the attack delivers that tier directly.
-2. **No Integer Partitioning:** Attackers never have to calculate whether $2+2$ is mathematically superior to $3+1$ or $4+0$.
-3. **Seamless Armor Integration:** Armor Pool Size ($N$) directly sets the Impact threshold required to cross into each tier (e.g., $\text{Impact} < N \implies$ Clean Soak; $\text{Impact} \ge N \implies$ Tier 1; $\text{Impact} \ge 2N \implies$ Tier 2; $\text{Impact} \ge 3N \implies$ Tier 3; $\text{Impact} \ge 4N \implies$ Tier 4 Taken Out).
-4. **Fast Teaching:** Teachable in 30 seconds: _"Meet the threshold $\to$ draw candidates at that tier $\to$ cut to $N$ $\to$ target chooses 1."_
-
----
-
-### Seed 3: Persistent Condition Cards with Pip/Slider Tracks
+### Seed 2: Persistent Condition Cards with Pip/Slider Tracks
 
 #### Concept
 
@@ -139,7 +102,7 @@ When subsequent attacks target an active condition's tag, the card simply **tick
 
 ---
 
-### Seed 4: Decoupled Crisis Conditions & Post-Combat Prognosis Triage
+### Seed 3: Decoupled Crisis Conditions & Post-Combat Prognosis Triage
 
 #### Concept
 
@@ -174,9 +137,8 @@ Separate the mechanical and narrative lifecycle of harm into two distinct, dedic
 
 ### Synthesis: The Unified Alternative Architecture
 
-When combined, Seeds 1, 2, 3, and 4 form a coherent, elegant alternative to the multi-deck currency engine:
+When combined with **Layered Pool Filling**, Seeds 1, 2, and 3 form a coherent, highly streamlined evolution of the engine:
 
-1. **Single Combat Deck (Seed 1 & 4):** Exactly one deck of ~15–20 cards on the table, containing lean 3-tier escalation tracks (~55 words per card).
-2. **Threshold Drafting (Seed 2):** Total Impact maps directly to the appropriate tier, eradicating the combinatorial Noob Trap.
-3. **In-Place Pip Escalation (Seed 3):** Matching tags advance a tracker cube on active cards, completely eliminating mid-combat deck tutoring.
-4. **Post-Combat Triage (Seed 4):** Clinical surgery, convalescence, and permanent traits are resolved calmly after the fight via the Prognosis & Trauma system.
+1. **Single Combat Deck (Seed 1 & 3):** Exactly one deck of ~15–20 cards on the table, containing lean 3-tier escalation tracks (~55 words per card).
+2. **In-Place Pip Escalation (Seed 2):** Matching tags advance a tracker cube on active cards, completely eliminating mid-combat deck tutoring.
+3. **Post-Combat Triage (Seed 3):** Clinical surgery, convalescence, and permanent traits are resolved calmly after the fight via the Prognosis & Trauma system.

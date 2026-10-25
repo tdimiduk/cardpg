@@ -44,35 +44,36 @@ The defender has already sustained two tactical setbacks in earlier rounds:
 
 ---
 
-### 3. Draw Candidate Consequences
+### 3. Draw Candidate Consequences (Layered Pool Fill)
 
 - **Defender Consequence Pool Size ($N$)**: **2**.
-- **Attacker Budget**: **4 Impact**.
+- **Total Impact ($I$)**: **4 Impact**.
 
-The attacker spends 4 Impact directly to purchase candidate cards (1 Impact = 1 Tier):
+Candidates fill tiers of width $N = 2$ from the bottom up (1 Impact = 1 card):
 
-1. **Draw 1 (Spend 1 Impact | 3 remaining)**:
-   - Attacker draws from the **Tier 1** deck: **`Off Balance`** (Tier 1, Tags: `positioning`, `combat`, Priority 4).
-2. **Draw 2 (Spend 1 Impact | 2 remaining)**:
-   - Attacker draws from the **Tier 1** deck: **`Afraid`** (Tier 1, Tags: `fear`, `mental`, Priority 4).
-3. **Surplus Draws (Spend 2 Impact | 0 remaining)**:
-   - Attacker draws two additional Tier 1 cards to gain curation leverage, drawing **`Bleeding Cut`** and **`Dust in Eyes`**.
+1. **Tier 1 (2 Impact)**: Fills Tier 1 completely, drawing 2 cards from the **Tier 1** deck:
+   - `Off Balance` (Tier 1, Tags: `positioning`, `combat`, Priority 4)
+   - `Afraid` (Tier 1, Tags: `fear`, `mental`, Priority 4)
+2. **Tier 2 (2 Impact)**: Fills Tier 2 completely, drawing 2 cards from the **Tier 2** deck:
+   - `Knocked Prone` (Tier 2, Tags: `positioning`, `combat`, Priority 5)
+   - `Mild Concussion` (Tier 2, Tags: `head`, `trauma`, Priority 4)
+
+Total candidates drawn: **4 cards** (two Tier 2, two Tier 1).
 
 ---
 
 ### 4. Attacker Curates the Final Pool (The "I Cut" Step)
 
-The defender's Pool Size is **2**. The attacker holds 4 candidate cards:
+The defender's Pool Size is **2**. The attacker holds 4 candidates across Tier 1 and Tier 2.
 
-- `Off Balance` (Tier 1, `positioning`)
-- `Afraid` (Tier 1, `fear`)
-- `Bleeding Cut` (Tier 1, `bleeding`)
-- `Dust in Eyes` (Tier 1, `sensory`)
+While the attacker could present the two raw Tier 2 trauma cards (`[Knocked Prone, Mild Concussion]`), the attacker notices that the two Tier 1 draws match active tags on the defender:
 
-The attacker deliberately discards `Bleeding Cut` and `Dust in Eyes`, curating down to the two cards that match the defender's active conditions:
+- `Off Balance` (`positioning`) matches active `Poor Footing` (triggering an escalation upgrade to `Off Balance`).
+- `Afraid` (`fear`) matches active `Afraid` (triggering an escalation upgrade to `Terrified` [Tier 2]).
 
-- `Off Balance` (threatens to upgrade active `Poor Footing` $\to$ `Off Balance`)
-- `Afraid` (threatens to upgrade active `Afraid` $\to$ `Terrified` [Tier 2])
+The attacker intentionally passes up the raw Tier 2 cards and curates the **two tag-matching Tier 1 cards**:
+
+- **Pool Presented to Defender**: `[Off Balance (Tier 1), Afraid (Tier 1)]`.
 
 ---
 

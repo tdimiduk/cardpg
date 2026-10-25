@@ -6,9 +6,9 @@ This directory contains the settled design proposal, play traces, equipment arch
 
 In this new engine, resolution is reframed as an **"I Cut, You Choose" consequence drafting market**:
 
-1. **Impact is Currency**: $1\text{ Impact} = 1\text{ Severity Level}$ to purchase consequence card draws.
-2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine how many consequence slots the attackers must populate.
-3. **Implicit Blanks ("No Consequence")**: Unfilled pool slots become "No Consequence", creating an emergent armor soak threshold without requiring abstract sheet divisor stats.
+1. **Layered Pool Fill**: $1\text{ Impact} = 1\text{ Card Drawn}$. Cards fill tiers of width $N$ (the defender's Pool Size) from Severity 1 upward, procedurally building the pool without integer partition math.
+2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine the row width $N$ that attackers must saturate before breaking into higher severity tiers.
+3. **Implicit Blanks ("No Consequence")**: Unfilled Tier 1 slots ($I < N$) become "No Consequence", creating an emergent armor soak threshold without requiring abstract divisor stats.
 4. **Tag Escalations Replace Global Resilience**: Synergistic tags (`positioning`, `fatigue`, `injury`, `fear`, `armor`) drive the downward spiral contextually and realistically.
 
 ---
@@ -23,11 +23,11 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 | **[guide-to-writing-consequences.md](guide-to-writing-consequences.md)**             | **Authoring & Style Guide**: Rules for future agent runs (Continual Passives, Action vs. Task Duality, `Requires:` vs. `Cost:`, color qualifiers, ban on "damage" terminology).                       |
 | **[consequences.yaml](consequences.yaml)**                                           | **Prototype Card Database**: Fully drafted cards across Severities 1–3 (plus Tier 4 exit states) with rules, in-combat actions, downtime tasks, escalation clauses, and clinical/biomechanical notes. |
 | **[equipment.yaml](equipment.yaml)**                                                 | **Item & Armor Architecture**: Two-sided armor models (`Intact` vs. `Damaged`), 1–5 Pool Size spectrum, and stepped Pierce mechanics.                                                                 |
-| **[trace-1-unarmored-skirmish.md](trace-1-unarmored-skirmish.md)**                   | **Play Trace 1**: Unarmored duel (Pool Size 2) showing 3 Impact spend ($2+1$) and defender drafting.                                                                                                  |
+| **[trace-1-unarmored-skirmish.md](trace-1-unarmored-skirmish.md)**                   | **Play Trace 1**: Unarmored duel (Pool Size 2) showing 3 Impact Layered Fill and defender drafting.                                                                                                   |
 | **[trace-2-armored-knight-power-strike.md](trace-2-armored-knight-power-strike.md)** | **Play Trace 2**: Full Harness (Pool Size 5) vs. Pierce 4 and Pierce 8 heavy strikes.                                                                                                                 |
 | **[trace-3-tag-escalation-spiral.md](trace-3-tag-escalation-spiral.md)**             | **Play Trace 3**: Multi-round tag escalation cascade (`Poor Footing` + `Afraid` $\to$ Sev 3 $\to$ Tier 4 defeat).                                                                                     |
 | **[trace-4-mob-combat-multi-attacker.md](trace-4-mob-combat-multi-attacker.md)**     | **Play Trace 4**: 3 Goblins vs. Armored PC; demonstrates canonical Batched Round Consequence Pool resolution.                                                                                         |
-| **[critique-and-brainstorming-seeds.md](critique-and-brainstorming-seeds.md)**       | **Active Critiques & Brainstorming Seeds**: Analysis of the Integer Partition ("Noob Trap") paradox, deck tutoring, and candidate variations.                                                         |
+| **[critique-and-brainstorming-seeds.md](critique-and-brainstorming-seeds.md)**       | **Active Critiques & Brainstorming Seeds**: Tabletop ergonomics, tag dilution, and candidate consolidation seeds.                                                                                     |
 
 ---
 
@@ -36,43 +36,38 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 ```mermaid
 flowchart TD
     A["1. Incoming Attacks Declared (Simultaneous Resolve Step)"] --> B["2. Defender Meets Strength for Each Attack (Hand Defend + Deck Flips)"]
-    B --> C["3. Calculate Impact per Attack = Cards flipped for that attack"]
-    C --> D["4. Each Attacker Spends Their Own Impact to Draw Candidates (1 Impact = 1 Severity)"]
-    D --> E["5. Combine Drawn Candidates & Curate Final Pool (Pick N Cards)"]
-    E --> F["6. Defender Selects 1 Consequence -> Novel enters play; Matching Tag Upgrades/Stacks"]
+    B --> C["3. Tally Total Impact = Cards flipped for all attacks targeting defender"]
+    C --> D["4. Layered Draw: Fill Tiers of Width N from Bottom Up (1 Impact = 1 Card)"]
+    D --> E["5. Attackers Curate N Cards from All Drawn Candidates"]
+    E --> F["6. Defender Selects 1 Consequence (or Blank if I < N)"]
 ```
 
 ### Step 1: Meet Strength & Accumulate Impact
 
 1. **Reactive "Defend" Actions (Optional)**: For each incoming attack, the defender may play an applicable **Defend** card from hand as an [[Action Stack]] (paying its printed [[Cost]] in additional hand cards). The card's printed rules text defines how it modifies the resolution (commonly contributing its stack's Strength without generating Impact, allowing cross-color defense, or granting conditional avoidance).
 2. **Flip from Deck**: If the attack's Strength is not yet met, flip cards from the top of the deck one by one into a **flipped stack** until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
-3. **Accumulate Impact**: The number of cards in the **flipped stack** for that attack is its **`Impact`**.
+3. **Accumulate Impact**: The number of cards flipped across all attacks targeting the defender this round is the **Total Impact ($I$)**.
 
-### Step 2: Draw Candidate Consequences
+### Step 2: Draw Candidate Consequences (Layered Pool Fill)
 
-1. **Spend Impact as Currency**:
-   - Each attacker spends the Impact generated by their attack to draw candidate cards from the severity decks:
-     - **Severity 1** costs **1 Impact** (drawn from Severity 1 deck)
-     - **Severity 2** costs **2 Impact** (drawn from Severity 2 deck)
-     - **Severity 3** costs **3 Impact** (drawn from Severity 3 deck)
-     - **Severity 4 (Taken Out)** costs **4 Impact** (allocated as a Narrative Defeat candidate)
-   - Attackers may allocate their individual Impact across any combination of severities they can afford (e.g., 4 Impact can allocate one Severity 4 Narrative Defeat, draw two Sev 2s, or draw one Sev 3 + one Sev 1).
-   - If multiple attackers targeted the same defender, each spends their own impact; leftover impact cannot be merged across attackers. All drawn cards are combined into a single candidate hand before curation.
+Candidates are drawn from the severity decks by filling tiers of width $N$ (the defender's Pool Size) from the bottom up, with **1 Impact = 1 card drawn**:
+
+1. **Tier 1 (Severity 1)**: The first $N$ Impact draws up to $N$ cards from the **Severity 1** deck.
+   - If total Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak).
+2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
+3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
+4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
+
+> **Table Shortcut (Buried Tiers):** When total Impact is $\ge 2N$, attackers may skip drawing from fully saturated lower tiers unless actively fishing for lower-tier tag escalations.
 
 ### Step 3: Curate the Consequence Pool (The "I Cut" Step)
 
-1. **Check Pool Size ($N$)**:
-   - The defender's traits and equipped gear set the **Consequence Pool Size ($N$)** (typically 1 for minions, 2 for unarmored heroes, 3 for maille/brigandine, 4 for full plate; see Section 3 for full breakdown).
-2. **Pick $N$ Cards for the Final Pool**:
-   - The attackers select exactly $N$ cards from their candidate hand to present to the defender.
-   - **Intra-Tier Dynamic Range & Curation Leverage:** Tier 1 contains a calibrated spectrum from softer, clearable setbacks (Priority 1–3, e.g. `Poor Footing`, `Winded`, `Dust in Eyes`) to sharp tactical locks (Priority 4–5, e.g. `Off Balance`, `Afraid`, `Rattled Guard`). Generating Impact above $N$ gives attackers the leverage to filter out soft options and present inescapable vices. Playing Defend cards to shave Impact down to $N$ denies curation control to the attacker.
-   - **Targeting Active Vulnerabilities:** Attackers look at the conditions already in front of the defender and curate cards that match active tags to force a dangerous condition stack/upgrade.
+1. **Check Pool Size ($N$)**: The defender's traits and equipped gear set the **Consequence Pool Size ($N$)** (typically 1 for minions, 2 for unarmored heroes, 3 for maille/brigandine, 4 for full plate; see Section 3 for full breakdown).
+2. **Pick Any $N$ Cards**: The attackers select any $N$ cards from all candidates drawn across all active tiers to present to the defender.
+   - **Targeting Active Vulnerabilities:** Attackers examine the active conditions on the table. Cards matching an active condition's tag are prioritized to force an escalation upgrade.
+   - **The Bottleneck Slot:** When higher tiers are partially filled (e.g. $N=3$ with 5 Impact: two Sev 2s and three Sev 1s), attackers use their surplus Sev 1 draws to place the sharpest or tag-escalating card into the remaining slot.
    - Unselected candidate cards are returned to their decks.
-3. **Implicit "No Consequence" Blanks**:
-   - If attackers drew fewer than $N$ candidate cards, any unfilled slots in the pool of $N$ are **implicitly filled with "No Consequence"**.
-   - _Mathematical Formula to Guarantee Severity $S$_:
-     $$\text{Impact Required} = \text{Pool Size } (N) \times S$$
-     If total Impact falls below this threshold, at least one slot will contain a lower severity or "No Consequence", which the defender can choose.
+3. **Guaranteed Severity Formula**: Inflicting a guaranteed consequence of at least Tier $S$ requires $\mathbf{S \times N}$ Total Impact. If total Impact falls below this threshold, lower tiers or "No Consequence" blanks remain available.
 
 ### Step 4: Defender Suffers Exactly 1 Consequence (The "You Choose" Step)
 
@@ -177,17 +172,16 @@ When a player meets the required Strength with a **single card flip** ($\text{Im
 **Design Philosophy Alignment:**
 The core intent of "Success at a Cost" is that the system introduces complications rather than having the rules say "No"—but the rules are fully allowed to say "Yes." Resolving a check with a single card flip represents a character expending a tiny bit of energy to succeed fully without complications. In fact, if a player resolves a task in a single flip, it was borderline whether the GM even needed to call for a check at all versus simply saying "yup" and moving on. Complications are reserved for genuine strain or active opposition ($\text{Impact} \ge N$).
 
-## 6. Multi-Attacker Combat & Curation Leverage
+## 6. Multi-Attacker Combat & Swarm Scaling
 
 When multiple attackers target the same defender during Crisis Time, their actions resolve through **Batched Round Resolution**:
 
-### How It Works
-
-1. **Individual Spending:** Each attacker spends their own generated Impact to draw candidate cards into a single combined candidate hand.
-2. **Surplus Curation Leverage:** When multiple attackers hit a target, the combined candidate hand often exceeds the defender's Pool Size ($N$). The attacking side curates down to exactly $N$ cards:
-   - **Tag Synergy Hunting:** Surplus draws dramatically increase the probability of offering a consequence that matches an active condition on the defender, accelerating dangerous tag escalations.
-   - **Filtering Soft Options:** Attackers can discard transient or mild results (e.g., `Near Miss`) and populate the pool exclusively with high-priority, situationally crippling options.
-3. **Deck Attrition as Primary Mob Danger:** Even though the defender only selects one condition from the curated pool, they were forced to flip cards to meet the Strength of every incoming attack. Defending against a swarm of 3–5 foes expends a massive portion of the defender's 24-card deck in a single round, rapidly triggering Fatigue Cycles and pushing them toward Defensive Collapse.
+1. **Shared Round Impact**: The cards flipped by the defender to meet each incoming attack are summed into a single **Total Impact ($I$)** for the round.
+2. **Layered Fill as a Swarm**:
+   - Total Impact fills the defender's pool tiers from the bottom up.
+   - For example, against a knight in maille ($N=3$), three goblins generating 2 Impact each produce $I = 6$ Total Impact. This completely fills Tier 1 (3 cards) and Tier 2 (3 cards), guaranteeing Tier 2 harm (`[Sev 2, Sev 2, Sev 2]`).
+   - If the goblins generate 4 combined Impact, they draw three Tier 1 cards and one Tier 2 card. The knight can pick a Tier 1 card to avoid Tier 2 trauma, but the goblins curate the sharpest Tier 1 options.
+3. **Deck Attrition as Mob Danger**: Beyond condition drafting, defending against a swarm forces multiple flips in rapid succession, draining the defender's 24-card deck and accelerating Fatigue Cycles toward Defensive Collapse.
 
 ---
 

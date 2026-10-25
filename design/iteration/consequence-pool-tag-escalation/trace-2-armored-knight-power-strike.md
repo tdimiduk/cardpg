@@ -85,17 +85,20 @@ In the subsequent round, the Orc Chieftain commits everything to a specialized a
   - Pierce 8 meets both Passive 1 (Pierce 4) and Passive 2 (Pierce 8)! Both are ignored.
   - Passive 3 remains active (Pierce 8 < 12) -> **Defender Pool Size ($N$) drops to 3**.
 - **Attacker Budget**: **5 Impact**.
-- **Candidate Draws (Spend 5 Impact)**:
-  - The Orc Chieftain spends 2 Impact to draw a heavy **Tier 2** platform break, and spends 3 Impact to draw **Tier 1** candidates:
-    - Spend 2 Impact: Draws from **Tier 2** deck $\to$ **`Knocked Prone`** (Tier 2, Tags: `positioning`, `combat`, Priority 5).
-    - Spend 1 Impact: Draws from **Tier 1** deck $\to$ **`Rattled Guard`** (Tier 1, Tags: `combat`, `equipment`, `armor`, Priority 5).
-    - Spend 1 Impact: Draws from **Tier 1** deck $\to$ **`Strained Offense`** (Tier 1, Tags: `physical`, `arms`, `combat`, Priority 3).
-    - Spend 1 Impact: Draws from **Tier 1** deck $\to$ **`Slightly Battered`** (Tier 1, Tags: `physical`, `injury`, Priority 1).
+- **Candidate Draws (Layered Fill: 5 Impact against N = 3)**:
+  - Candidates fill tiers of width $N = 3$ from the bottom up (1 Impact = 1 card):
+    - **Tier 1 (3 Impact)**: Fills Tier 1 completely, drawing 3 cards from the **Tier 1** deck:
+      - `Rattled Guard` (Tier 1, Tags: `combat`, `equipment`, `armor`, Priority 5)
+      - `Strained Offense` (Tier 1, Tags: `physical`, `arms`, `combat`, Priority 3)
+      - `Slightly Battered` (Tier 1, Tags: `physical`, `injury`, Priority 1)
+    - **Tier 2 (2 Impact)**: Enters Tier 2, drawing 2 cards from the **Tier 2** deck:
+      - `Knocked Prone` (Tier 2, Tags: `positioning`, `combat`, Priority 5)
+      - `Cracked Ribs` (Tier 2, Tags: `physical`, `torso`, Priority 4)
 - **Pool Curation (The "I Cut" Step)**:
   - The defender requires $N = 3$ cards.
-  - The attacker holds 4 candidates and curates down to 3 cards:
-    - Orc drops the softest option (`Slightly Battered` [Priority 1]) and returns it to the Tier 1 deck.
-    - Orc presents the remaining 3 cards:
+  - The attacker holds 5 candidates and curates down to 3 cards:
+    - Orc keeps `Knocked Prone` (Tier 2) to threaten a platform takedown.
+    - Orc drops the softest Tier 1 option (`Slightly Battered` [Priority 1]) and keeps `Rattled Guard` (Priority 5) and `Strained Offense` (Priority 3).
     - **Pool Presented to Defender**: `[Knocked Prone (Tier 2), Rattled Guard (Tier 1), Strained Offense (Tier 1)]`.
 
 ### 4. Defender Suffers a Consequence (The "You Choose" Step)

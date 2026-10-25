@@ -33,35 +33,36 @@ The Squire has no active defense cards in hand and resolves each attack in seque
    - _Flipped_: 2 cards -> **2 Impact**.
 
 3. **Defending Goblin 3 (Str 5)**:
-   - Flip 1: {Red: 3} -> Cumulative: 3
-   - Flip 2: {Red: 3} -> Cumulative: 6 (Met: 6 >= 5).
-   - _Flipped_: 2 cards -> **2 Impact**.
+   - Flip 1: {Red: 5} -> Cumulative: 5 (Met: 5 >= 5).
+   - _Flipped_: 1 card -> **1 Impact**.
 
-### Impact by Attacker
+### Total Round Impact
 
-- **Total Flipped Cards**: 6 cards expended from deck.
-- **`Goblin 1 Impact`**: 2 cards flipped -> **2 Impact**.
-- **`Goblin 2 Impact`**: 2 cards flipped -> **2 Impact**.
-- **`Goblin 3 Impact`**: 2 cards flipped -> **2 Impact**.
+- **Total Flipped Cards**: 5 cards expended from deck.
+- **Combined Impact**: $2 + 2 + 1 =$ **5 Total Impact ($I$)**.
 
 ---
 
-## 3. Draw Candidate Consequences & Curate Pool (Individual Spend into Shared Pool)
+## 3. Draw Candidate Consequences (Layered Pool Fill)
 
-Because all three attacks targeted the Squire during the same Crisis round, their candidate draws are gathered into a single pool for curation. Each goblin spends its own individual Impact:
+Because all three attacks targeted the Squire during the same Crisis round, their Impact combines into a single pool to test the Squire's armor:
 
 - **Defender's Consequence Pool Size ($N$)**: **3** (set by Padded Gambeson).
-- **Individual Budgets**: Goblin 1 (2 Impact), Goblin 2 (2 Impact), Goblin 3 (2 Impact).
+- **Total Round Impact ($I$)**: **5 Impact**.
 
-### Candidate Draws
+### Layered Candidate Draws (5 Impact against N = 3)
 
-Each goblin spends its 2 Impact. In the 4-tier engine, 2 Impact can purchase a **Tier 2** platform break, or two **Tier 1** tactical cards:
+Candidates fill tiers of width $N = 3$ from the bottom up (1 Impact = 1 card):
 
-- **Goblin 1 (Spend 2 Impact)**: Draws one **Tier 2** candidate $\to$ **`Knocked Prone`** (Tier 2, Tags: `positioning`, `combat`, Priority 5).
-- **Goblin 2 (Spend 2 Impact)**: Draws two **Tier 1** candidates $\to$ **`Rattled Guard`** (Tier 1, Tags: `combat`, `armor`, Priority 5) and **`Winded`** (Tier 1, Tags: `fatigue`, Priority 2).
-- **Goblin 3 (Spend 2 Impact)**: Draws two **Tier 1** candidates $\to$ **`Strained Offense`** (Tier 1, Tags: `arms`, Priority 3) and **`Afraid`** (Tier 1, Tags: `fear`, Priority 4).
+1. **Tier 1 (3 Impact)**: Fills Tier 1 completely, drawing 3 cards from the **Tier 1** deck:
+   - `Rattled Guard` (Tier 1, Tags: `combat`, `armor`, Priority 5)
+   - `Afraid` (Tier 1, Tags: `fear`, Priority 4)
+   - `Winded` (Tier 1, Tags: `fatigue`, Priority 2)
+2. **Tier 2 (2 Impact)**: Enters Tier 2, drawing 2 cards from the **Tier 2** deck:
+   - `Knocked Prone` (Tier 2, Tags: `positioning`, `combat`, Priority 5)
+   - `Cracked Ribs` (Tier 2, Tags: `torso`, Priority 4)
 
-Total candidates in the combined hand: **5 cards** (one Tier 2, four Tier 1).
+Total candidates drawn: **5 cards** (two Tier 2, three Tier 1).
 
 ---
 
@@ -69,12 +70,13 @@ Total candidates in the combined hand: **5 cards** (one Tier 2, four Tier 1).
 
 The Squire's Consequence Pool Size ($N$) is **3** (set by Padded Gambeson).
 
-- The goblins hold 5 candidates and have **surplus curation leverage** (5 candidates for 3 slots).
-- The goblins curate away the softer, clearable option (`Winded` [Priority 2]) and one offensive tax (`Strained Offense` [Priority 3]).
-- They curate a lethal, punishing 3-card pool:
+- The goblins hold 5 candidates and must curate down to 3 cards.
+- They include **`Knocked Prone`** (Tier 2) to threaten a fatal knockdown.
+- In the remaining two slots, they curate away the soft `Winded` (Priority 2) and offer two punishing Tier 1 locks: **`Rattled Guard`** (Priority 5) and **`Afraid`** (Priority 4).
+- They curate a punishing 3-card pool:
   1. `Knocked Prone` (Tier 2 — doubled pierce and movement tax)
   2. `Rattled Guard` (Tier 1 — strips armor's first pierce threshold)
-  3. `Afraid` (Tier 1 — melee attack and approach tax)
+  3. `Afraid` (Tier 1 — approach and melee tax)
 
 ---
 
