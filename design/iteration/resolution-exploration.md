@@ -68,28 +68,23 @@ Still no defense or resilience, instead there was the armor tables of allowed se
 3. Extra fiddling with an extra deck of cards every action
 4. Specific constraints about how the consequence deck had to be structured (same number of cards at each severity)
 
-## Rules Substrate Context
+## Rules Substrate & Design Goals
 
-These explorations are built upon a set of core caRdPG baseline assumptions that are _not_ proposed for editing by this document:
+For the full architectural invariants, VTT-first ergonomics policy, and evaluation rubrics, see [resolution-design-constraints.md](resolution-design-constraints.md), [resolution-pitfalls.md](resolution-pitfalls.md), and [traces/README.md](traces/README.md). In brief:
 
-1. **Expending Cards & Fatigue:** Whether a card is played defensively from hand or flipped randomly from the deck, it is ultimately expended. Both methods carry a quantitative fatigue cost by draining your character's primary deck resource. Flipping is simply less efficient because you must accept random values rather than selecting optimal cards for the specific challenge.
-2. **Mid-Action Reshuffling:** In any flip-based system, a player low on deck resources may run out of cards and need to perform a Fatigue Cycle (reshuffle) in the middle of a defense or action resolution step. Rather than a mechanical failure, this is treated as a dramatic highlight of near-exhaustion under pressure, and triggering multiple cycles on a single defense is mathematically rare.
-
-## Goals
-
-1. Plays well at the table. Doesn't slow down play.
-   a. avoid excessive fiddly tracking, reshuffling, ...
-   b. avoid analysis paralysis (significant advantages to players from complex probability calculations in real time, detailed tracking of every card remaining in your deck, ...
-   c. respect physical realities of playing with cards in the real world
-2. Give defender enough agency that they feel like they are **defending themselves** not just being subject to an attack
-3. Require as little presence in the core rules as possible (keep complexity on cards if we can)
-4. Give us freedom to design consequences for different situations and have them interact well
+1. **Pacing & Low Cognitive Load:** Resolution must not stall play with per-flip probability calculations, deck card-counting incentives, or mid-turn integer partition "noob traps". Physical table ergonomics is a "nice to have" during VTT-first playtesting, provided the core rules remain simple (the 10x Rule).
+2. **Defender Agency ("Bonus Points"):** Reactive `Defend` cards (played as Action Stacks via printed card rules or committed via Vigilance) already provide pre-flip agency when held. Additional agency in the core resolution mechanic—either **post-flip consequence selection** ("how I take the blow") or **non-degenerate pre/mid-flip posture trade-offs**—is highly desirable if it avoids false dilemmas and analysis paralysis.
+3. **Bounded Asymmetric Bleed vs. Unified Doom:** Per [traces/README.md](traces/README.md), effort across all domains draws from the shared 24-card stamina deck and consequences bleed asymmetrically where plausible (e.g., bodily trauma penalizes stealth/mobility), but non-lethal domains (social humiliation, blown cover) should not effectively advance a physical "doom track".
+4. **Tier-Count Agnosticism:** General explorations remain decoupled from a fixed number of severity tiers (specific proposals may test 3, 4, or 5 tiers to balance authoring weight against escalation runway), while ensuring max severity triggers an actionable dying/crisis clock rather than instant death.
 
 ## Exploration
 
 ### Consequence Pool with Tag Escalation
 
-Full proposal in consequence-pool-tag-escalation
+Full proposal in [consequence-pool-tag-escalation/README.md](consequence-pool-tag-escalation/README.md) (and active critiques/seeds in [consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md](consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md)).
+
+- **Core Strengths:** Decouples domains cleanly via tag escalations; gives the defender meaningful post-flip agency ("I Cut, You Choose" consequence selection); models armor soak and minion fragility ($N=1$) symmetrically.
+- **Open Tension to Solve:** In its baseline currency form ($1\text{ Impact} = 1\text{ Severity}$, unfilled slots in $N$ become "No Consequence" blanks), it suffers from the **Integer Partition Trap** (Pitfall 8 in [resolution-pitfalls.md](resolution-pitfalls.md))—"hiding division in a noob trap" where buying a single high-severity consequence leaves a blank slot that deals zero harm.
 
 ### Declared Defense Effort
 

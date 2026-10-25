@@ -44,11 +44,12 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 
 ### Ideation Sketches
 
-| Document                                                                                                                                         | Summary                                                                                                                           |
-| :----------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
-| [Design Sketchbook](design-sketchbook.md)                                                                                                        | A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization.              |
-| [Brief: Inline Card Art Rendering & Embedding Pipeline](card-art-rendering-pipeline-brief.md)                                                    | Pipeline to embed live card layouts into rules documentation from data/cards/ YAML definitions using native Reflex components.    |
-| [Consequence Pool & Tag Escalation: Active Critiques & Brainstorming Seeds](consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md) | Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics. |
+| Document                                                                                                                                         | Summary                                                                                                                                                          |
+| :----------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Design Sketchbook](design-sketchbook.md)                                                                                                        | A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization.                                             |
+| [Brief: Inline Card Art Rendering & Embedding Pipeline](card-art-rendering-pipeline-brief.md)                                                    | Pipeline to embed live card layouts into rules documentation from data/cards/ YAML definitions using native Reflex components.                                   |
+| [Consequence Pool & Tag Escalation: Active Critiques & Brainstorming Seeds](consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md) | Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics.                                |
+| [Design Brief: Consequence Scaling, Progression, and Recovery Economics](consequence-scaling-and-recovery-brief.md)                              | Design brief exploring how consequence passive penalties, in-combat action recoveries, and out-of-combat task checks interact with character progression and ... |
 
 ### Macro Structure & Gameplay Traces
 

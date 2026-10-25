@@ -18,9 +18,9 @@ This document outlines the active mechanical critiques, tabletop ergonomics tens
 
 ## 1. Active Systemic Critiques
 
-While the Consequence Pool engine successfully decouples harm from global hit points and introduces high player agency via "I Cut, You Choose" drafting, three major mechanical and ergonomic friction points remain in physical tabletop play under the 4-tier model (Severities 1–3 physical decks + Tier 4 Narrative Taken Out):
+While the Consequence Pool engine successfully decouples harm from global hit points and introduces high player agency via "I Cut, You Choose" drafting, three major mechanical and ergonomic friction points remain under the baseline currency model. _(Note: Per [resolution-design-constraints.md](../resolution-design-constraints.md) §2.5, physical table ergonomics is a "nice to have" during near-term VTT playtesting, whereas fixing the Combinatorial "Noob Trap" of Impact currency is a top-priority mechanical goal)._
 
-### A. Tabletop Ergonomics & Multi-Deck Drafting
+### A. Physical Tabletop Ergonomics & Multi-Deck Drafting (VTT vs. Table)
 
 1. **Table Footprint (Improved but Persistent):** Consolidating down to 4 tiers—with Tier 4 handled narratively as Taken Out—successfully shrinks the table footprint from 5 physical decks down to **3 physical decks** (Severity 1: Tactical Impairments, Severity 2: Platform Ceilings/Moderate Trauma, Severity 3: Severe Structural Trauma). However, hosting 3 distinct trauma decks alongside character decks, hand cards, tableaus, and potential domain decks still occupies substantial table space.
 2. **The Draw-Read-Tuck Cycle:** Resolving an attack with Impact requires the attacker to calculate currency spending, draw 2–4 cards across up to 3 physical decks, read the rules text on all candidates, curate $N$ cards, and tuck unchosen cards back into their respective decks. The defender then reads the $N$ cards, chooses 1, and tucks the remaining $N-1$ cards back into the decks.
@@ -84,7 +84,7 @@ Replace the separate physical severity decks with a **single Consequence Deck**.
 |   Passive: Attacks against you gain +2 Impact.      |
 |   Action: Stand Up (Spend 1 Card + Suffer 1 Fatigue)|
 +-----------------------------------------------------+
-| Terminal: If escalated further -> Taken Out / Slain |
+| Terminal: If escalated further -> Taken Out / Crisis Clock |
 +-----------------------------------------------------+
 ```
 

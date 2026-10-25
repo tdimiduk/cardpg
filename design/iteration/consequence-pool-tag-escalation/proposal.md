@@ -15,9 +15,9 @@ Update to `design/rules/core-rules.md`. Replaces `## Defend Actions`.
 
 You must meet the `Strength` of each incoming attack declared against you:
 
-1. **Hand Defense**: You may play **Defend** cards from your hand. Defend cards contribute their printed value in the attack's `Color` without generating Impact and may have other rules affecting the attack's resolution.
-2. **Deck Flips**: If the attack's Strength is not fully met from hand, flip cards one by one from the top of your deck until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
-3. **Accumulate Impact**: The `Impact` of a defense is the number of cards you flipped from your deck for that specific attack.
+1. **Reactive "Defend" Actions (Optional)**: You may play a **Defend** card from your hand as an [[Action Stack]] (along with additional cards from hand equal to its printed [[Cost]]). The card's printed rules text defines how it modifies the resolution (commonly adding the stack's Strength without generating Impact, allowing cross-color defense, or granting conditional avoidance).
+2. **Deck Flips**: If the attack's Strength is not yet met, flip cards one by one from the top of your deck into a **flipped stack** until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
+3. **Accumulate Impact**: The `Impact` of a defense is the number of cards in your **flipped stack** for that specific attack.
 
 ---
 
@@ -76,16 +76,16 @@ If the attackers drew fewer than $N$ candidate cards (e.g., they could not affor
 4. **Applying the Consequence & Table Escalation:**
    - **Novel Condition:** If the defender has no active condition with an `escalate:` trigger matching the chosen card's leaf tags, place the card into play in front of the defender as a new active condition.
    - **Condition Escalation & Card Fallbacks:** If an active condition in play in front of the defender has an `escalate:` trigger matching the chosen card's leaf tag, follow the explicit instructions printed on the active card (upgrading to the indicated condition, entering play as an independent parallel condition, applying a setback to current mitigation progress, or resolving a kinetic overmatch wildcard if the track is already at its ceiling). When an upgrade occurs, discard the lower active condition and put the upgraded condition into play.
-   - **Tier 4 (Narrative Taken Out):** If the defender selects a Severity 4 consequence or an active Tier 3 condition escalates to Tier 4, the character is functionally out of the fight. The attacker (or GM narrative context) defines how the character is defeated (e.g., slain, knocked unconscious, pinned and captured). If escalating from an arterial bleed, it initiates an emergency 3-round hemostasis clock. No card is drawn from a physical deck.
+   - **Tier 4 (Taken Out / Crisis Clock):** If the defender selects a Severity 4 consequence or an active Tier 3 condition escalates to Tier 4, the character is functionally out of the fight (never instant death). The attacker or narrative context defines an actionable exit state or rescue clock (e.g., knocked `Unconscious`, `Pinned & Captured`, or placed on an emergency `3-Round Mortal Bleedout Clock` if escalating from an arterial bleed). No card is drawn from a physical deck.
 5. All unchosen cards in the pool are returned to their respective decks.
 
 ---
 
 ### 5. General Actions & Clean Success ("Saying Yes")
 
-General Actions (non-combat tasks and exploration challenges) resolve using the exact same consequence engine:
+General Actions (non-combat tasks and exploration challenges) resolve using the exact same consequence engine and Vigilance rules from `core-rules.md`:
 
-1. **Meet Strength:** The player flips cards to meet the challenge's declared Strength. The number of flipped cards equals the **Impact**.
+1. **Commit Vigilance & Meet Strength:** The player flips cards from their deck into a **flipped stack** to meet the challenge's declared Strength (optionally picking up their **[[Vigilance]]** pool first to play an applicable Action Stack modifier or insert high-value cards from hand directly into the flipped stack, then flushing remaining hand cards). The number of cards in the flipped stack equals the **Impact**.
 2. **Curate the Pool:** The GM spends that Impact (1 Impact = 1 Tier) to draw candidate consequences from the appropriate domain deck and forms a pool equal to the character's Pool Size ($N$, defaulting to 2 unless a domain-specific skill, tool, or table card applies).
 3. **Draft the Outcome:** The player selects exactly 1 consequence (or "No Consequence" if an empty slot remains).
 
@@ -109,4 +109,4 @@ This clean success is completely intentional. The design intent of "Success at a
 | **1** | **Tactical Impairments & Setbacks**     | Sparring band: clearable footing/sensory slips (Priority 1–3) to stiff action/movement/armor locks (Priority 4–5). Real table presence; kindling for tag escalation. | `Poor Footing`, `Dust in Eyes`, `Winded`, `Off Balance`, `Afraid`, `Rattled Guard`, `Bleeding Cut` |
 | **2** | **Platform Ceilings & Moderate Trauma** | Major tactical disruption, complete stance loss, concussive fog, cracked ribs, or deep lacerations. Operational divergence (Platform vs Biological vs Suppressive).  | `Knocked Prone`, `Mild Concussion`, `Cracked Ribs`, `Deep Laceration`, `Terrified`, `Hamstrung`    |
 | **3** | **Severe Structural Trauma**            | Structural failure of defense, bone fractures, arterial bleeding, sundered plate, severe clinical emergencies. Orthogonal pillar collapse; zero soft options.        | `Broken Arm`, `Severe Concussion`, `Sundered Armor`, `Arterial Hemorrhage`                         |
-| **4** | **Taken Out / Incapacitated**           | Incapacitated, unconscious, dying, or completely removed from the conflict. Resolved as **narrative dispatch** (specialized physical cards evaluated separately).    | Narrative: `Slain`, `Unconscious`, `Pinned & Captured`, or `3-Round Mortal Bleedout Clock`         |
+| **4** | **Taken Out / Incapacitated**           | Incapacitated, unconscious, dying, or completely removed from the conflict. Resolved as **actionable crisis clock / incapacitation** (never instant death).          | Narrative / Clock: `Unconscious`, `Pinned & Captured`, or `3-Round Mortal Bleedout Clock`          |

@@ -57,6 +57,10 @@ active_design_exploration:
       purpose: "Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics."
       tags: ["doc-type:iteration", "audience:designer-facing"]
 
+    - path: "iteration/consequence-scaling-and-recovery-brief.md"
+      purpose: "Design brief exploring how consequence passive penalties, in-combat action recoveries, and out-of-combat task checks interact with character progression and scale invariance."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:harm", "core-concept:action-resolution"]
+
   macro_structure_and_traces:
     - path: "iteration/macro-structure-and-gameplay-loop-brief.md"
       name: "Design Brief: Macro Structure, Session Cadence, and Campaign Roadmap"

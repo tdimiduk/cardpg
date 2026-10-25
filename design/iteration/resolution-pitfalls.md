@@ -57,16 +57,15 @@ _(Formerly referenced as GC2)_
 
 ---
 
-### Pitfall 3: The "Crack the Shell" Trap (Big Attack Dominance)
+### Pitfall 3: The "Hoard for the Alpha-Strike" Trap (Lack of Tactical Solutions to Heavy Defense)
 
 _(Formerly referenced as GC3)_
 
-- **The Anti-Pattern:** Requiring incoming attacks to exceed a high static threshold (e.g., Guard rating, Armor Soak, high Defense number) before any mechanical progress is made.
+- **The Anti-Pattern:** Designing high-armor or high-defense targets where the _only_ mechanically viable counterplay is doing nothing for multiple turns to hoard a massive hand and unleash a single overwhelming alpha-strike.
 - **How It Manifests:**
-  - **Invalidating Probing Attacks:** If an attack must exceed a threshold of 6 to do anything, an attack of Strength 4 or 5 bounces completely with zero effect. The attacker wasted cards and an entire turn.
-  - **The "Save for the Knockout" Meta:** When small attacks do nothing, players quickly realize that making probing attacks, feints, or minor strikes is mathematically suboptimal. The only viable strategy becomes hoarding cards across multiple turns to unleash one massive, overwhelming alpha-strike.
-  - **Armor as an Impenetrable Wall:** High armor turns combat into a binary state: complete immunity until someone hits an exorbitant number, at which point the armor wearer collapses instantly.
-- **The Audit Test:** _Does a minor, low-strength attack by a secondary combatant (like a goblin minion or an off-hand dagger jab) make tangible, incremental progress toward weakening the target, or does it completely bounce?_
+  - **Realism vs. Stagnation:** In grounded combat, it is completely realistic—and desirable—for a mundane sword swing against a knight in full plate harness to bounce off the armor, merely forcing 1–2 stamina flips with no lasting injury. The pitfall occurs when the system fails to provide **alternative tactical pathways** for normal-sized actions to create leverage.
+  - **The Pure Hoarding Meta:** When normal-sized actions cannot attack posture/footing (`Knocked Prone`), grapple, sunder or bypass armor (`Pierce`), set up tag escalations, or pressure the target's stamina/hand economy, players are forced into passive multi-turn card-hoarding until someone hits an exorbitant number and one-shots the target.
+- **The Audit Test:** _While heavy armor should realistically shrug off mundane strikes, do normal-sized tactical actions (tripping, grappling, sundering, armor-piercing, or coordinated pressure) provide viable ways to dismantle a heavily armored target without multi-turn card hoarding?_
 
 ---
 
@@ -127,14 +126,13 @@ _(Formerly referenced as GC4)_
 
 ---
 
-### Pitfall 9: Mid-Combat Tutoring & Multi-Deck Rifling (10x Rule Violation)
+### Pitfall 9: Physical Mid-Combat Tutoring & Multi-Deck Rifling (Ergonomics Tradeoff)
 
-- **The Anti-Pattern:** Requiring players to search through separate physical decks, card boxes, or lookup tables in the middle of Crisis Time to find specific upgraded conditions.
+- **The Anti-Pattern:** In physical tabletop play, requiring players to search through separate physical decks, card boxes, or lookup tables in the middle of Crisis Time to find specific upgraded conditions.
 - **How It Manifests:**
-  - Escalating a condition (e.g., `Off Balance` $\to$ `Knocked Prone` $\to$ `Sundered Armor`) forces players to halt combat, pick up separate Severity 1, 2, or 3 decks, rifle through them to find the named card, place it on the table, and reshuffle.
-  - Managing multiple trauma decks alongside character decks, hands, tableaus, and status decks clutters physical table space and shatters dramatic momentum.
-  - **The 10x Rule:** Complexity in the core rulebook costs 10x card complexity. Any resolution system that requires extensive procedural deck manipulation mid-round violates this precept.
-- **The Audit Test:** _Can condition escalation be resolved in place (via multi-tier cards, tracking clips, or simple status flips) without rifling through face-down decks during combat?_
+  - Escalating a condition (e.g., `Off Balance` $\to$ `Knocked Prone` $\to$ `Sundered Armor`) at a physical table forces players to halt combat, pick up separate Severity decks, rifle through them to find the named card, place it on the table, and reshuffle.
+  - **VTT Playtesting vs. Physical Streamlining:** Per [resolution-design-constraints.md](resolution-design-constraints.md) (§2.5), near-term playtesting happens in our custom VTT where automated tag filtering and card replacements are frictionless. Therefore, multi-deck/tutoring mechanics are **not a blocker for digital brainstorming**, but remain an ergonomic debt that must eventually be streamlined for physical play (e.g., via multi-tier cards, tracking clips, or digital companion apps).
+- **The Audit Test:** _If a mechanic relies on tutoring or multiple decks in the VTT, is there a plausible path to physical streamlining later (or does the rulebook complexity still respect the 10x Rule)?_
 
 ---
 
@@ -175,17 +173,17 @@ _(Formerly referenced as GC4)_
 
 Before any resolution mechanic is advanced to full proposal status, it must pass this 12-point audit:
 
-|   #    | Check                               | Key Question                                                                                 |
-| :----: | :---------------------------------- | :------------------------------------------------------------------------------------------- |
-| **1**  | **Decisive Conclusion**             | Does the mechanic cleanly drive to a conclusion without relying on infinite parry loops?     |
-| **2**  | **No Dominant Menus**               | Does it avoid offering "deck flips vs. real wounds" false dilemmas?                          |
-| **3**  | **Probing Attacks Matter**          | Do small attacks advance the combat state rather than bouncing off a static threshold?       |
-| **4**  | **Tri-Color Compliance**            | Does the mechanic respect that every card has Red, Yellow, and Blue values?                  |
-| **5**  | **Scale Invariance**                | Does the math hold if card numbers scale to double digits or army-level hundreds?            |
-| **6**  | **Equipment Decoupling**            | Can characters be disarmed or swap gear without breaking their deck's Action Cards?          |
-| **7**  | **Qualitative Harm**                | Does harm produce tangible, differentiated conditions rather than pseudo-HP counters?        |
-| **8**  | **No Combinatorial Traps**          | Does spending effort/impact avoid integer partition paradoxes where big hits deal 0 harm?    |
-| **9**  | **Zero Mid-Combat Tutoring**        | Can resolution proceed without rifling through separate card decks mid-round?                |
-| **10** | **Identity Preservation**           | Does the mechanic avoid locking or deleting a player's favorite cards on early random flips? |
-| **11** | **No Flowchart Bloat (10x Rule)**   | Can the procedure be taught in 30 seconds without a web of conditional exceptions?           |
-| **12** | **Universal Non-Combat Generality** | Does the exact same engine resolve social and hazard challenges without a parallel system?   |
+|   #    | Check                               | Key Question                                                                                                     |
+| :----: | :---------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| **1**  | **Decisive Conclusion**             | Does the mechanic cleanly drive to a conclusion without relying on infinite parry loops?                         |
+| **2**  | **No Dominant Menus**               | Does it avoid offering "deck flips vs. real wounds" false dilemmas?                                              |
+| **3**  | **Tactical Pathways vs. Armor**     | Are there viable non-hoarding ways to dismantle heavy armor (posture, Pierce, tags) even if mundane hits bounce? |
+| **4**  | **Tri-Color Compliance**            | Does the mechanic respect that every card has Red, Yellow, and Blue values?                                      |
+| **5**  | **Scale Invariance**                | Does the math hold if card numbers scale to double digits or army-level hundreds?                                |
+| **6**  | **Equipment Decoupling**            | Can characters be disarmed or swap gear without breaking their deck's Action Cards?                              |
+| **7**  | **Qualitative Harm**                | Does harm produce tangible, differentiated conditions rather than pseudo-HP counters?                            |
+| **8**  | **No Combinatorial Traps**          | Does spending effort/impact avoid integer partition paradoxes where big hits deal 0 harm?                        |
+| **9**  | **Streamlinable Ergonomics**        | Does it work cleanly in the VTT now, with a plausible path to physical streamlining later?                       |
+| **10** | **Identity Preservation**           | Does the mechanic avoid locking or deleting a player's favorite cards on early random flips?                     |
+| **11** | **No Flowchart Bloat (10x Rule)**   | Can the procedure be taught in 30 seconds without a web of conditional exceptions?                               |
+| **12** | **Universal Non-Combat Generality** | Does the exact same engine resolve social and hazard challenges without a parallel system?                       |
