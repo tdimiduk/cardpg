@@ -35,11 +35,12 @@ All mechanics must adhere to the following architectural patterns. Deviations ar
 
 - **Definition:** Avoid binary pass/fail mechanics. Outcomes should focus on the trade-offs of performance: _"What are you willing to pay to succeed?"_ or _"What is the cost of your success?"_
 
-### E. Physicality and Table constraints
+### E. Digital-First Playtesting & Physical Ergonomics
 
-- **Definition:** All game systems must be playable on a standard physical table surface.
-  - **Hidden Info:** Shuffled decks require identical card backs.
-  - **Tracking Overhead:** No complex token tracking. Avoid tracking more than 3 ongoing status tokens per player/NPC.
+- **Definition:** Near-term playtesting occurs primarily in our custom VTT. We are potentially tolerant of mechanics that are techincally playable without digital tooling but would play better with a digital companion.
+  - **Exploration Freedom:** We do not prematurely rule out mechanics merely because they would be fiddly at a physical table (e.g., multi-deck drafting, tag-based filtering, or dynamic candidate generation). Prioritize building and validating the richest, most expressive resolution and escalation engine in the VTT first.
+  - **Plausible Physical Streamlining:** While designing for the VTT, ensure there is a plausible path to physical streamlining later (e.g., consolidated multi-tier cards, pip/slider tracks, post-combat triage lookup charts, or companion tools).
+  - **Hard Limits:** Shuffled decks require identical card backs. Avoid arbitrary complexity that creates mental arithmetic or analysis paralysis. Tracking overhead should remain manageable (<3 ongoing status tokens per player/NPC in physical play).
 
 ### F. Scale-Invariance & Multi-Scale Resolution
 

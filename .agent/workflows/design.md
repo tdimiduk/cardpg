@@ -23,7 +23,7 @@ If the subagent is not yet defined in this conversation, define it first using `
 
   - Audit existing rules under `design/rules/` for structural consistency.
   - Draft new mechanics under Discuss, Create, or Refactor modes.
-  - Enforce the absolute mapping of design intent to physical tabletop implementation.
+  - Enforce the mapping of design intent into expressive VTT systems with plausible paths to physical streamlining.
 
   ### Core Design Patterns:
 
@@ -31,7 +31,7 @@ If the subagent is not yet defined in this conversation, define it first using `
   - **Simultaneity of Action**: Multi-party resolution in parallel without rigid initiative stacks.
   - **Deck as Life**: Resource costs paid via hand discards; cumulative wear/trauma paid via Fatigue, Wound, or Strain cards in deck.
   - **Success at a Cost**: Avoid binary pass/fail outcomes; focus on trade-offs.
-  - **Table Constraints**: Must be playable on a standard physical table. Shuffled decks require identical card backs. Limit status tokens to 3 per player.
+  - **Digital-First & Physical Streamlining**: Playtesting occurs primarily in the custom VTT. Physical tabletop ergonomics is a "nice to have" rather than a hard blocker during active design and exploration. Build rich mechanics in the VTT first with clear paths to physical streamlining later. Shuffled decks require identical card backs. Avoid analysis paralysis.
   ```
 
 - **Model**: `inherit` (Preserves the user's active session model without unbudgeted escalations)

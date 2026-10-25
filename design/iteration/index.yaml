@@ -9,27 +9,43 @@ active_design_exploration:
       purpose: "Orientation and operating conventions for active design exploration and proposals."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
+    - path: "iteration/resolution/README.md"
+      purpose: "Dedicated workshop, 5-step brainstorming protocol, and evaluation hub for candidate Core Resolution Mechanics."
+      tags: ["doc-type:meta", "audience:designer-facing", "core-concept:action-resolution", "core-concept:harm"]
+
   mechanical_constraints:
-    - path: "iteration/resolution-design-constraints.md"
+    - path: "iteration/resolution/constraints.md"
       purpose: "Authoritative reference for architectural constraints, tabletop ergonomics, and evaluation criteria that any proposed Core Resolution Mechanic must satisfy."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
 
-    - path: "iteration/resolution-pitfalls.md"
+    - path: "iteration/resolution/pitfalls.md"
       purpose: "Authoritative catalog of recurring mechanical failure modes, degenerate incentives, and tabletop friction points discovered across resolution iterations."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
 
   resolution_and_combat_proposals:
-    - path: "iteration/consequence-pool-tag-escalation/index.yaml"
+    - path: "iteration/resolution/candidates/README.md"
+      purpose: "Catalog and comparison overview of active candidate resolution mechanics."
+      tags: ["doc-type:meta", "audience:designer-facing", "core-concept:action-resolution"]
+
+    - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/index.yaml"
       purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
-    - path: "iteration/resolution-exploration.md"
-      purpose: "An honest critique of legacy resolution mechanics (Defense/Resilience) and exploration of alternatives, particularly 'Declared Defenses.'"
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:hand-management"]
+    - path: "iteration/resolution/candidates/consolidated-tiered-cards-and-triage.md"
+      purpose: "Candidate architecture featuring single-deck 3-tier cards, in-place pip escalation, and post-combat triage."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
-    - path: "iteration/defense-action.md"
-      purpose: "Exploration of active defense action mechanics and timing."
-      tags: ["doc-type:ideation", "audience:designer-facing", "core-concept:defense", "core-concept:action-resolution"]
+    - path: "iteration/resolution/candidates/declared-defense-effort.md"
+      purpose: "Candidate exploration: upfront declaration of defense flips with accepted costs and overage penalties."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:defense"]
+
+    - path: "iteration/resolution/candidates/push-your-luck-buyoff.md"
+      purpose: "Candidate exploration: sequential flips with consequence buy-offs."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:defense"]
+
+    - path: "iteration/resolution/history-and-design-space.md"
+      purpose: "Historical post-mortems of prior mechanics and taxonomy of open mechanical design axes."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:hand-management"]
 
   mechanics_and_resource_proposals:
     - path: "iteration/fatigue-change-proposal.md"
@@ -53,11 +69,11 @@ active_design_exploration:
       purpose: "Pipeline to embed live card layouts into rules documentation from data/cards/ YAML definitions using native Reflex components."
       tags: ["doc-type:iteration", "audience:designer-facing"]
 
-    - path: "iteration/consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md"
-      purpose: "Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics."
-      tags: ["doc-type:iteration", "audience:designer-facing"]
+    - path: "iteration/resolution/universal-consequence-authoring.md"
+      purpose: "Universal style and authoring guide for consequence and condition cards across all caRdPG resolution engines."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:harm"]
 
-    - path: "iteration/consequence-scaling-and-recovery-brief.md"
+    - path: "iteration/resolution/consequence-scaling-and-recovery.md"
       purpose: "Design brief exploring how consequence passive penalties, in-combat action recoveries, and out-of-combat task checks interact with character progression and scale invariance."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:harm", "core-concept:action-resolution"]
 
@@ -86,4 +102,3 @@ active_design_exploration:
       name: "Campaign Workshop: The Delve of Crag-Gallows"
       purpose: "Zero-GM benchmark scenario: a procedural dungeon and wilderness crawl testing fatigue accumulation, consequence escalation, push-your-luck retreat loops, and living clock decks using existing monster cards."
       tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:fatigue", "core-concept:consequences", "core-concept:pacing"]
-

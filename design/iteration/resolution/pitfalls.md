@@ -1,10 +1,20 @@
+---
+title: "Resolution System Pitfalls & Anti-Patterns"
+doc_type: iteration
+track: ludology
+origin: AI drafted
+epistemic_status:
+  confidence: high
+  vetted_by_human: false
+---
+
 # Resolution System Pitfalls & Anti-Patterns
 
 ## Document Purpose
 
 Authoritative catalog of recurring mechanical failure modes, degenerate incentives, and tabletop friction points discovered across _caRdPG_ resolution iterations (from legacy _Defend from Hand_ and _Allowed Severity Tables_, to canon _Defense + Resilience_, to _Consequence Pool / "I Cut, You Choose"_, and exploratory alternatives).
 
-This document serves as a companion to [resolution-design-constraints.md](resolution-design-constraints.md). While the constraints define what the engine must achieve, this catalog details the subtle, cascading ways mechanics break down when tested against real table play, card economy math, and player psychology. Any new resolution proposal must be audited against these pitfalls before adoption.
+This document serves as a companion to [constraints.md](constraints.md). While the constraints define what the engine must achieve, this catalog details the subtle, cascading ways mechanics break down when tested against real table play, card economy math, and player psychology. Any new resolution proposal must be audited against these pitfalls before adoption.
 
 ---
 
@@ -131,7 +141,7 @@ _(Formerly referenced as GC4)_
 - **The Anti-Pattern:** In physical tabletop play, requiring players to search through separate physical decks, card boxes, or lookup tables in the middle of Crisis Time to find specific upgraded conditions.
 - **How It Manifests:**
   - Escalating a condition (e.g., `Off Balance` $\to$ `Knocked Prone` $\to$ `Sundered Armor`) at a physical table forces players to halt combat, pick up separate Severity decks, rifle through them to find the named card, place it on the table, and reshuffle.
-  - **VTT Playtesting vs. Physical Streamlining:** Per [resolution-design-constraints.md](resolution-design-constraints.md) (§2.5), near-term playtesting happens in our custom VTT where automated tag filtering and card replacements are frictionless. Therefore, multi-deck/tutoring mechanics are **not a blocker for digital brainstorming**, but remain an ergonomic debt that must eventually be streamlined for physical play (e.g., via multi-tier cards, tracking clips, or digital companion apps).
+  - **VTT Playtesting vs. Physical Streamlining:** Per [constraints.md](constraints.md) (§2.5), near-term playtesting happens in our custom VTT where automated tag filtering and card replacements are frictionless. Therefore, multi-deck/tutoring mechanics are **not a blocker for digital brainstorming**, but remain an ergonomic debt that must eventually be streamlined for physical play (e.g., via multi-tier cards, tracking clips, or digital companion apps).
 - **The Audit Test:** _If a mechanic relies on tutoring or multiple decks in the VTT, is there a plausible path to physical streamlining later (or does the rulebook complexity still respect the 10x Rule)?_
 
 ---

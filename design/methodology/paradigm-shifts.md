@@ -83,6 +83,4 @@ In _caRdPG_, character advancement **explicitly embraces the numerical scaling o
 
 - [Guiding Principles](../philosophy/guiding-principles.md) — The ultimate authority on creative vision, core pillars, and design philosophy.
 - [Design Precepts](../philosophy/design-precepts.md) — Concrete design patterns and the "How-To" of system implementation.
-- [Resolution System Design Constraints](../iteration/resolution-design-constraints.md) — The master scorecard and technical constraints for evaluating resolution mechanics.
-- [Core Resolution Mechanic Exploration](../iteration/resolution-exploration.md) — Active critique and ongoing exploration of resolution alternatives.
 - [Core Rules](../rules/core-rules.md) — The baseline player-facing rules.

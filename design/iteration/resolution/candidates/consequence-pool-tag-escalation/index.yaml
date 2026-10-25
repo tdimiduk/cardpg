@@ -1,0 +1,41 @@
+# Consequence Pool & Tag Escalation Proposal Suite Index
+package:
+  purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
+  tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
+
+documents:
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/README.md"
+    purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/proposal.md"
+    purpose: "The core rules patch replacing Defend Actions in core-rules.md."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/proposal-long.md"
+    purpose: "Extended proposal document with full rationale and mechanical details."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/guide-to-writing-consequences.md"
+    purpose: "Style and authoring guide for consequence cards under the escalation engine."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/consequences.yaml"
+    purpose: "Prototype card database for consequence cards across Severities 1-3 (plus Tier 4 exit states)."
+    tags: ["doc-type:content-library", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/equipment.yaml"
+    purpose: "Prototype equipment and armor database for tag escalation items."
+    tags: ["doc-type:content-library", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/gamemaster-guide-patch.md"
+    purpose: "Proposed patch to gamemaster-guide.md integrating consequence pool tactics."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/players-guide-patch.md"
+    purpose: "Proposed patch to players-guide.md integrating consequence pool strategy."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md"
+    purpose: "Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics."
+    tags: ["doc-type:iteration", "audience:designer-facing"]

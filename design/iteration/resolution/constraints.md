@@ -1,3 +1,13 @@
+---
+title: "Resolution System Design Constraints & Evaluation Criteria"
+doc_type: iteration
+track: ludology
+origin: AI drafted
+epistemic_status:
+  confidence: high
+  vetted_by_human: false
+---
+
 # Resolution System Design Constraints & Evaluation Criteria
 
 ## Document Purpose
@@ -16,7 +26,6 @@ Resolution mechanics must build upon these foundational systems without redesign
 - **Tri-Color Anatomy:** Every card has numerical stats for all three Colors: `Red` (Force/Presence), `Yellow` (Speed/Finesse), and `Blue` (Intellect/Discipline).
 - **Cycling Cost:** Cards held in hand, tableaus, or attachments actively shrink the draw deck, accelerating fatigue. Do not remove cards from circulation as superficial bookkeeping.
 - **Fatigue Cycle:** Empty draw pile = add 2 `Fatigue` cards (+ total `Burden`) to discard, then reshuffle. Mid-action reshuffling is normal exertion, not an error.
-- **Dead-Card Rule:** Zero-stat cards (`0/0/0` like `Minor Wound`) must have built-in mechanics that force them out of hand (cannot be safely hoarded).
 
 ### 1.2. Action Generation & Input Stacking (Immutable Input)
 
@@ -208,6 +217,6 @@ Resolution mechanics must build upon these foundational systems without redesign
 - `design/rules/gamemaster-guide.md` (Adjudication formulas, Minions via core math, Non-action tactical pacing, Group actions)
 - `design/rules/reading-the-cards.md` (Action syntax, Defend mechanics, Task checks)
 - `design/iteration/traces/README.md` (Bounded Asymmetric Bleed vs. Unified Doom, friction bands, verification rubrics)
-- `design/iteration/resolution-exploration.md` (Critiques of prior mechanics, AP risks, Consequence Pool dynamics)
-- `design/iteration/resolution-pitfalls.md` (Systemic anti-patterns, stagnation traps, degenerate defensive choices, combinatorial traps)
+- `design/iteration/resolution/history-and-design-space.md` (Critiques of prior mechanics, AP risks, Consequence Pool dynamics)
+- `design/iteration/resolution/pitfalls.md` (Systemic anti-patterns, stagnation traps, degenerate defensive choices, combinatorial traps)
 - `data/cards/consequences/baseline.yaml` (Dual harm taxonomy: in-deck Status vs on-table Condition Cards with task-removal)

@@ -1,3 +1,13 @@
+---
+title: "Defense Action Exploration (Dec 2025)"
+doc_type: archive
+track: ludology
+origin: AI drafted
+epistemic_status:
+  confidence: high
+  vetted_by_human: false
+---
+
 # Defense Action
 
 This document is a rough draft, attempting to capture some of our thinking of how we want "Defend" actions on cards to work in the current defense mechanics. For context, see [legacy-rules.md](../../data/cards/legacy-rules.md) for the old system.

@@ -385,8 +385,11 @@ sub_indexes:
   - audience:designer-facing
 - aggregated_tags:
   - audience:designer-facing
+  - core-concept:action-resolution
   - core-concept:cards
+  - core-concept:defense
   - core-concept:npc-design
+  - doc-type:archive
   - doc-type:content-library
   - doc-type:meta
   - type:monster-deck

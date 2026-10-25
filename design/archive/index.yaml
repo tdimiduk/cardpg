@@ -10,6 +10,11 @@ archive_and_legacy_materials:
       purpose: "Orientation and context for the archived playtest content and legacy research."
       tags: ["doc-type:meta", "audience:designer-facing"]
 
+  archived_ideation:
+    - path: "archive/defense-action.md"
+      purpose: "Early scratch draft exploring reactive defend actions from hand, since canonized in core rules."
+      tags: ["doc-type:archive", "audience:designer-facing", "core-concept:defense", "core-concept:action-resolution"]
+
   archived_playtest_spreadsheets:
     - name: "Cards - v 0.0.4"
       path: "https://docs.google.com/spreadsheets/u/0/d/1w6SvDr2nwZcXQDvsZ97F5IUh3D7vcjAcf-V40NYrolM/edit"

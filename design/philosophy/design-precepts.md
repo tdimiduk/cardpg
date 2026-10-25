@@ -65,7 +65,7 @@ When our research describes a defense as "Functionally Immune," this is modeled 
 
 ### Design for Tabletop Ergonomics and Low Cognitive Load
 
-**Core Principle:** Resolution mechanics must be physically tactile and computationally lightweight at the table. Avoid mechanics that reward players for tracking the exact remaining card composition of their 24-card deck (card-counting), calculating complex probability curves during mid-turn choices (Anti-Analysis Paralysis), or converting multiple layers of fractional math and token currencies.
+**Core Principle:** Resolution mechanics must be computationally lightweight and minimize player cognitive drag. Near-term playtesting occurs primarily in our custom VTT, meaning physical tabletop ergonomics is a "nice to have" rather than a hard blocker during active exploration: we do not prematurely reject mechanics merely because physical drafting or card filtering would be fiddly at a physical table. Instead, build and validate the richest, most expressive resolution and escalation systems in the VTT first, keeping an eye on a plausible path to physical streamlining later. Across both media, strictly avoid mechanics that reward players for tracking the exact remaining card composition of their 24-card deck (card-counting), calculating complex probability curves during mid-turn choices, or converting multiple layers of fractional math and token currencies.
 
 **Rationale:** This directly supports our **Casual Realism** and **Fun** principles. It ensures that player attention stays focused on dramatic tactical choices and narrative stakes rather than mental arithmetic and procedural bookkeeping.
 

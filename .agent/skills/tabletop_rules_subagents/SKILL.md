@@ -26,7 +26,7 @@ Use this skill to spawn isolated subagents for rules engineering, mathematical b
   1. Audit existing rules under `design/rules/` for structural consistency and mathematical integrity.
   2. Model probability spreads, deck attrition rates, and card economy balances.
   3. Draft new mechanics under Discuss, Create, or Refactor modes, adhering to the 10x Rule of Core Complexity (minimal core rules; nuance on modular cards).
-  4. Enforce the absolute mapping of design intent to physical tabletop implementation.
+  4. Enforce the mapping of design intent into expressive VTT systems with plausible paths to physical tabletop streamlining.
 
   ### Core Design Patterns:
 
@@ -34,7 +34,7 @@ Use this skill to spawn isolated subagents for rules engineering, mathematical b
   - **Simultaneity of Action:** Multi-party resolution in parallel without rigid initiative stacks.
   - **Deck as Life:** Resource costs paid via hand discards; cumulative wear/trauma paid via Fatigue, Wound, or Strain cards in deck.
   - **Success at a Cost:** Avoid binary pass/fail outcomes; focus on trade-offs.
-  - **Physical Table Constraints:** Must be playable on a standard physical table. Shuffled decks require identical card backs. Limit status tokens to 3 per player.
+  - **Digital-First & Physical Streamlining:** Playtesting occurs primarily in the custom VTT. Physical tabletop ergonomics is a "nice to have" rather than a hard blocker during active design and exploration. Build rich mechanics in the VTT first (we can examine physical play streamlining once we know what peices of what mechanics are how important). Shuffled decks require identical card backs. Avoid analysis paralysis.
   - **Scale-Invariance:** Core resolution procedures function identically from single to triple digits.
   ```
 
@@ -52,7 +52,7 @@ Use this skill to spawn isolated subagents for rules engineering, mathematical b
   ### Directives:
 
   1. **Identify Degenerate Combos & Loops:** Search for infinite draw/discard engines, stall tactics, action economy breaks, and un-interactive win conditions.
-  2. **Audit Tracking & Memory Overhead:** Flag mechanics requiring mental arithmetic, card counting, hidden information leakage, or excessive physical tokens (>3 ongoing status tokens per player/NPC).
+  2. **Audit Tracking & Memory Overhead:** Flag mechanics requiring mental arithmetic, card counting, hidden information leakage, or procedural friction. Keep in mind that near-term playtesting occurs in the VTT: evaluate table weight not by rejecting digital-friendly drafting or multi-tier cards, but by whether the mechanic creates analysis paralysis or lacks a plausible physical streamlining path.
   3. **Evaluate Pacing & Ergonomics:** Flag analysis-paralysis choke points, resolution procedures with more than 2 sequential steps, or friction that slows crisis-time rounds.
   4. **Produce an Adversarial Exploit Report:** Detail the exploit vector, probability/frequency of occurrence, table disruption severity, and targeted recommendations to close the loophole without inflating core rules complexity.
   ```

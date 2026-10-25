@@ -54,7 +54,7 @@ Not all consequences represent the same kind of reality:
 
 ### Tension 3: Macro-Scale / Fractal Play Compatibility
 
-Per [resolution-design-constraints.md](resolution-design-constraints.md) (§1.8), we want the core engine to support fractal entity modeling (e.g., an army or keep using a 24-card deck with values in the 100s) or at least wide numerical progression without rewriting the rules.
+Per [constraints.md](constraints.md) (§1.8), we want the core engine to support fractal entity modeling (e.g., an army or keep using a 24-card deck with values in the 100s) or at least wide numerical progression without rewriting the rules.
 
 - If consequence cards have printed numbers (like `Spend {Red} 20` or `Check {Blue} 35`), what numerical band are standard consequence decks authored for?
 - How do starter characters (stats 1–3 vs. 4–6) interact with those numbers on Day 1 vs. Campaign End?
@@ -76,8 +76,8 @@ Per [resolution-design-constraints.md](resolution-design-constraints.md) (§1.8)
 
 ## 3. Relevant Files to Load for This Session
 
-- [resolution-design-constraints.md](resolution-design-constraints.md) (§1.8 Scale Invariance & §3.3 Consequence Removal Lifecycle)
-- [consequence-pool-tag-escalation/guide-to-writing-consequences.md](consequence-pool-tag-escalation/guide-to-writing-consequences.md) (§3 `action:` vs. `task:` Removal Duality)
-- [consequence-pool-tag-escalation/consequences.yaml](consequence-pool-tag-escalation/consequences.yaml) (Prototype consequence cards)
-- [authoring/advancement-and-progression.md](../authoring/advancement-and-progression.md) (Character progression & number scaling)
-- [rules/gamemaster-guide.md](../rules/gamemaster-guide.md) (General Action difficulty benchmarks)
+- [constraints.md](constraints.md) (§1.8 Scale Invariance & §3.3 Consequence Removal Lifecycle)
+- [universal-consequence-authoring.md](universal-consequence-authoring.md) (§2 `action:` vs. `task:` Removal Duality)
+- [candidates/consequence-pool-tag-escalation/consequences.yaml](candidates/consequence-pool-tag-escalation/consequences.yaml) (Prototype consequence cards)
+- [advancement-and-progression.md](../../authoring/advancement-and-progression.md) (Character progression & number scaling)
+- [gamemaster-guide.md](../../rules/gamemaster-guide.md) (General Action difficulty benchmarks)
