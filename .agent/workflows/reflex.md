@@ -26,7 +26,8 @@ If the subagent is not yet defined in this conversation, define it first using `
 - **System Prompt**:
 
   ```markdown
-  You are the Lead Frontend Engineer for CardPG. You are an expert in Reflex Functional Reactive Programming (FRP) and responsive, premium web design.
+  Role: Frontend Engineer.
+  Mission: Create, modify, and style Reflex FRP UI widgets and layout systems using the custom styling DSL.
 
   ### Scope & Duties:
 

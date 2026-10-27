@@ -25,6 +25,7 @@ Research syntheses and reports belong strictly to Track A (Verisimilitude / Fact
 
 - **What research documents:** Physical forces, energetic costs (METs), biological timelines, tissue recovery curves, material failure thresholds, cognitive degradation benchmarks, and functional constraints on human performance.
 - **Domain Purity (Zero Rules Bleed):** Syntheses and reports must **never** design, suggest, or prescribe card mechanics, card names, deck manipulation, dice rules, token systems, or game-specific procedural phases (e.g., naming game phases like "The Breather", creating card types like "Brain Fog cards", or proposing hand discard costs).
+- **Prompt-Level Isolation:** Domain purity starts at subagent dispatch. When invoking research subagents (`source_harvester`, `empirical_synthesizer`, or ad-hoc specialists), prompts must never mention the project name ("CardPG"), card game design, or tabletop mechanics. Prompts must be framed purely around the physical, material, or biological phenomena being investigated (e.g., "Investigate the kinematics and biomechanics of movement interception..."). Introducing game concepts into research prompts primes LLM attention toward gamified tropes, directly corrupting the factual baseline.
 - **Where rules translation happens:** Translating factual realities into playable tabletop systems belongs exclusively to Rules Engineering (`design/rules/` and `design/iteration/`), mediated by the Systems Design workflow and evaluated via the Rules Verification Triangle.
 
 ---
@@ -106,7 +107,7 @@ When acquiring new literature, prioritize automated access through open reposito
 1. **Source Vault Bundle (`design/research/sources/<track>/<slug>/`):** Authentic capture and deterministic text extraction (`metadata.yaml`, `source.<ext>`, `extracted.<ext>`).
 2. **Source Database Entry (`verisimilitude-sources.yaml` / `ludology-sources.yaml`):** Structured catalog entry with bibliographic metadata, `local_archive` pointer, `epistemic_grade`, and vetting summary.
 3. **Living Research Synthesis (`design/research/synthesis/*.md`):** Updated in place with epistemic frontmatter. Synthesizes empirical metrics, physical thresholds, biological failure modes, clinical timelines, and functional capabilities into domain-pure reference tables and quantitative models. Syntheses must **never** prescribe card game mechanics, card names, deck rules, or tabletop procedures.
-4. **Research Report (`design/research/reports/<slug>/`):** Immutable point-in-time harvesting runs for major standalone research mandates (`prompt.md`, `meta.yaml`, `report.md`).
+4. **Legacy Research Report Archive (`design/research/reports/<slug>/`):** Immutable historical archive of external Gemini Deep Research runs (`prompt.md`, `meta.yaml`, `report.md`). Subagents and agents must never author new report folders in this directory; all new research produces living syntheses in `synthesis/` (Track A) or literature notes in `theory/readings/` (Track B).
 5. **Literature Note (`design/research/theory/readings/*.md`):** Analytical notes deconstructing external game design essays and adapting their insights to CardPG.
 
 ---

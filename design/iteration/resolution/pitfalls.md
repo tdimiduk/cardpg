@@ -179,9 +179,19 @@ _(Formerly referenced as GC4)_
 
 ---
 
+### Pitfall 13: Flat Soak & Top-End Collapse (The "2 / 8 / 12" Curve Failure)
+
+- **The Anti-Pattern:** Treating armor or resilience as a flat, front-loaded subtraction (ignoring the first $K$ Impact or shifting severity down by a constant) that blocks small hits but fails to slow down high-Impact escalation—or fixing top-end spikes with a global cap that prevents one-shotting weak foes.
+- **How It Manifests:**
+  - **Front-Loaded Wall, Back-End Glass:** If War Armor only subtracts 2 Impact from the front of an attack, a massive spike (`Impact 12` from a heavy hit or defensive collapse) blows straight past it (`12 - 2 = 10`) and one-shots a fresh knight in full plate.
+  - **Global Cap Over-Correction:** If you add a universal rule that "one attack can only inflict 1 consequence or advance 1 tier" to save the knight from `Impact 12`, then a massive `Impact 8–12` strike can no longer dispatch a weaker monster in a single blow.
+- **The Audit Test (The 2 / 8 / 12 Benchmark):** _Does the scaling curve allow good armor to genuinely shrug off uncoordinated minor hits (`Impact 1–2`) AND survive a massive hit (`Impact 12`) from fresh, while still allowing `Impact 8–12` to dispatch a weaker monster in a single blow?_
+
+---
+
 ## 3. The Resolution Proposal Audit Checklist
 
-Before any resolution mechanic is advanced to full proposal status, it must pass this 12-point audit:
+Before any resolution mechanic is advanced to full proposal status, it must pass this audit checklist:
 
 |   #    | Check                               | Key Question                                                                                                     |
 | :----: | :---------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
@@ -197,3 +207,4 @@ Before any resolution mechanic is advanced to full proposal status, it must pass
 | **10** | **Identity Preservation**           | Does the mechanic avoid locking or deleting a player's favorite cards on early random flips?                     |
 | **11** | **No Flowchart Bloat (10x Rule)**   | Can the procedure be taught in 30 seconds without a web of conditional exceptions?                               |
 | **12** | **Universal Non-Combat Generality** | Does the exact same engine resolve social and hazard challenges without a parallel system?                       |
+| **13** | **The 2 / 8 / 12 Scaling Curve**    | Does good armor shrug off minor hits and survive `Impact 12` from fresh, while `Impact 8–12` drops a weak foe?   |

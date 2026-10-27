@@ -317,11 +317,14 @@ sub_indexes:
   - core-concept:armor
   - core-concept:consequences
   - core-concept:defense
+  - core-concept:disengagement
   - core-concept:encumbrance
   - core-concept:fatigue
   - core-concept:hand-management
   - core-concept:harm
+  - core-concept:movement
   - core-concept:pacing
+  - core-concept:spacing
   - core-concept:status-cards
   - doc-type:content-library
   - doc-type:ideation

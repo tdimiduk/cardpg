@@ -253,6 +253,63 @@ foundational_scientific_medical:
     These provide the core quantitative data for modeling physiology, trauma, and the physical costs of exertion.
   sources:
     - type: journal_article
+      title: "Pre-semantically defined temporal windows for cognitive processing"
+      author: "Pöppel, E."
+      year: 2009
+      doi_or_url: "https://doi.org/10.1098/rstb.2009.0015"
+      epistemic_grade: "primary_academic"
+      publication: "Philosophical Transactions of the Royal Society B: Biological Sciences"
+      description: >
+        Foundational cognitive neuroscience review detailing the 30-50 ms high-frequency neuronal oscillation threshold for temporal order and the 2.0 to 3.0 second automatic temporal integration window that defines the human "subjective present" and bounds conscious intentional action units.
+      vetting:
+        - date: "2026-10-26"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Peer-reviewed neurobiological treatise establishing the universal 2-3 second temporal chunking architecture of human consciousness."
+    - type: journal_article
+      title: "A universal constant in temporal segmentation of human short-term behavior"
+      author: "Schleidt, M., Eibl-Eibesfeldt, I., & Pöppel, E."
+      year: 1987
+      doi_or_url: "https://doi.org/10.1007/BF00366416"
+      epistemic_grade: "primary_academic"
+      publication: "Naturwissenschaften"
+      description: >
+        Landmark cross-cultural ethological study analyzing thousands of natural movement and behavioral units across diverse isolated indigenous populations (Himba, Yanomami, Eipo) and Western cohorts, demonstrating that 93% of spontaneous intentional behavioral units last 2.0 to 3.0 seconds.
+      vetting:
+        - date: "2026-10-26"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous empirical baseline establishing the universal cross-cultural duration of elementary human intentional actions."
+    - type: journal_article
+      title: "The point of no return in vetoing self-initiated movements"
+      author: "Schultze-Kraft, M., et al."
+      year: 2016
+      doi_or_url: "https://doi.org/10.1073/pnas.1513569112"
+      epistemic_grade: "primary_academic"
+      publication: "Proceedings of the National Academy of Sciences (PNAS)"
+      description: >
+        Controlled brain-computer interface and EEG readiness-potential study demonstrating that the motor commitment threshold ("point of no return") occurs approximately 200 ms prior to movement onset, after which a motor program cannot be vetoed.
+      vetting:
+        - date: "2026-10-26"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Definitive neurobiological experiment quantifying the motor point of no return for ballistic and self-initiated action."
+    - type: journal_article
+      title: "Does time really slow down during a frightening event?"
+      author: "Stetson, C., Fiesta, M. P., & Eagleman, D. M."
+      year: 2007
+      doi_or_url: "https://doi.org/10.1371/journal.pone.0001295"
+      epistemic_grade: "primary_academic"
+      publication: "PLoS ONE"
+      description: >
+        Controlled empirical trial using a free-fall tower and a wrist-mounted perceptual chronometer demonstrating that real-time visual temporal resolution (flicker fusion frequency) does not increase during acute fear; subjective time dilation (tachypsychia) is an illusion produced retrospectively by hyper-dense amygdalar memory encoding.
+      vetting:
+        - date: "2026-10-26"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous experimental psychophysics baseline debunking real-time perceptual speedups under combat terror."
+
+    - type: journal_article
       title: "Limitations imposed by wearing armour on Medieval soldiers' locomotor performance"
       author: "Askew, G. N., Formenti, F., & Minetti, A. E."
       year: 2012

@@ -26,7 +26,7 @@ When initiating a new design thread or evaluating a proposal, load the core work
 
 ```mermaid
 flowchart TD
-    A["1. constraints.md (Settled Invariants vs. Exploration Space)"] --> B["2. pitfalls.md (The 12 Failure Modes & Audit Checklist)"]
+    A["1. constraints.md (Settled Invariants vs. Exploration Space)"] --> B["2. pitfalls.md (Failure Modes & Audit Checklist)"]
     B --> C["3. history-and-design-space.md (Historical Post-Mortems & Open Axes)"]
     C --> D["4. Evaluate Candidates or Draft Proposal in candidates/"]
 ```
@@ -34,7 +34,7 @@ flowchart TD
 ### Core Resolution References
 
 1. **[constraints.md](constraints.md)** — **The Specification.** Defines what is fixed (the 24-card tri-color engine, Action Stacking input, Defender-Centric flips to generate `Impact`, reactive `Defend` cards, Vigilance, scale invariance) versus what is open for exploration.
-2. **[pitfalls.md](pitfalls.md)** — **The Linter.** Catalogs the 12 recurring mechanical failure modes (Stagnation Trap, False Dilemmas, Alpha-Strike Hoarding, Combinatorial Partition Traps, Analysis Paralysis, etc.) and provides the proposal audit checklist.
+2. **[pitfalls.md](pitfalls.md)** — **The Linter.** Catalogs recurring mechanical failure modes (Stagnation Trap, False Dilemmas, Alpha-Strike Hoarding, Flat-Soak Collapse, etc.) and provides the proposal audit checklist.
 3. **[history-and-design-space.md](history-and-design-space.md)** — **The Context.** Captures why prior mechanics were retired (Canon Defense+Resilience, Legacy Defend from Hand, Legacy Allowed Severity Tables) and outlines the open post-Impact design axes.
 
 ---
@@ -71,9 +71,9 @@ Walk through three concrete post-Impact exchanges using real numbers:
 2. **The Goblin Mob:** Three goblins attack a single hero in the same simultaneous round (generating e.g. `1–2 Impact` each). (Does it resolve cleanly without alpha-strike wipes or multi-phase procedural bottlenecks?)
 3. **Debate to Ambush:** A diplomat suffers a severe political rebuke in court (`Social`), then gets ambushed in an alleyway (`Combat`). (Does shaken composure create plausible friction without advancing the physical death track?)
 
-### Step 5: The 12-Point Pitfall Self-Audit
+### Step 5: Pitfall Self-Audit
 
-Explicitly audit the proposal against the 12 failure modes in [pitfalls.md](pitfalls.md#3-the-resolution-proposal-audit-checklist).
+Explicitly audit the proposal against the failure modes in [pitfalls.md](pitfalls.md#3-the-resolution-proposal-audit-checklist).
 
 ---
 

@@ -88,6 +88,21 @@ active_design_exploration:
       purpose: "Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel, Location Decks, and Effort Cycle pacing."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
 
+    - path: "iteration/crisis-round-duration-and-phrase-cadence-brief.md"
+      name: "Design Brief: Crisis Round Duration and Phrase Cadence"
+      purpose: "Finalizes the 2.0-3.0 second round duration, aligns deck cycle math with ATP-PCr energetics, and evaluates adopting the 'Phrase of Arms' concept."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:action-resolution"]
+
+    - path: "iteration/movement-area-control-and-reach-priority-brief.md"
+      name: "Design Brief: Movement, Area Control, and Reach Priority in Simultaneous Crisis Time"
+      purpose: "Deep dive on movement, spatial interception, area control, and reach priority in 2-3s simultaneous rounds without Attacks of Opportunity."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:disengagement"]
+
+    - path: "iteration/action-stack-accumulation-for-extended-actions-brief.md"
+      name: "Design Brief: Action Stack Accumulation for Extended Actions"
+      purpose: "Authoring framework and rules standard for multi-round Crisis Time actions via progressive Action Stack accumulation across Plan Steps."
+      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:action-resolution"]
+
     - path: "iteration/traces/index.yaml"
       name: "Gameplay Traces & Empirical Benchmarks"
       purpose: "Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing."

@@ -27,12 +27,19 @@ All AI agents must strictly respect the boundary between AI generation/auditing 
   - **Trigger Investigation:** Propose or dispatch an `EmpiricalResearcher` task to trace primary sources and replace speculative drafts with verified facts.
 - **Index vs. File:** If the files/filesystem conflict with the index, stop and ask for clarification.
 
-## 4. Agent Transparency
+## 4. Agent Transparency & Subagent Prompt Hygiene
 
 Agents are tools, not roleplayers.
 
 - **Voice:** Professional, concise, and objective.
 - **Direct Action:** Focus on the task at hand.
+- **No Persona Fluff:** Do not open subagent system prompts or invocation messages with identity boilerplate (e.g., `"You are the [Role] for CardPG..."`). Project branding adds zero semantic signal and wastes attention.
+- **Imperative Prompt Structure:** Frame subagent prompts around concrete execution boundaries:
+  - **Objective:** What specific question to answer or action to take.
+  - **Scope & Inputs:** Specific files, directories, or parameters to inspect.
+  - **Constraints:** Hard operational boundaries (e.g. read-only, domain purity, tool restrictions).
+  - **Deliverables:** Structured markdown table, diff, or factual summary expected.
+- **Empirical Research Isolation (Domain Purity at the Prompt Level):** When dispatching subagents for empirical research (literature harvesting, quantitative synthesis, biomechanical/clinical fact-finding), never mention the game title, card mechanics, deck systems, or tabletop procedures in the prompt. Framing research through the lens of a card game primes models toward gamified tropes and pop history, directly undermining Domain Purity.
 
 ## 5. Technical Proficiency
 

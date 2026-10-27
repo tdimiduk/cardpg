@@ -69,6 +69,7 @@ design_process_and_research:
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:armor", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/armor_effectiveness/report.md", meta_file: "research/reports/armor_effectiveness/meta.yaml", prompt_file: "research/reports/armor_effectiveness/prompt.md" }
 
+
   research_synthesis:
     - path: "research/synthesis/armor.md"
       purpose: "A synthesis of research on historical armor, analyzing the fundamental tradeoff between protection and the physiological costs of exertion (metabolic energy, mobility, and fatigue). It provides a factual basis for designing armor mechanics."
@@ -142,6 +143,14 @@ design_process_and_research:
       purpose: "A synthesis of subterranean gas behavior, mine damps, flame extinction thresholds, and hypoxic syncope timelines grounded in Haldane (1895)."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:consequences", "core-concept:verisimilitude"]
 
+    - path: "research/synthesis/action-duration-and-perceptual-present.md"
+      purpose: "An empirical cognitive neuroscience and motor control analysis of human action duration, the 2-3 second 'perceptual present', feed-forward vs. feedback motor programs, and simultaneous action limits under acute combat stress."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:perception", "core-concept:verisimilitude"]
+
+    - path: "research/synthesis/movement-interception-and-kinematics.md"
+      purpose: "A quantitative biomechanical and kinematic investigation into movement interception, reaction latencies, turning radiuses, weapon reach chords, historical counter-rush techniques, and collision mechanics within close proximity (1-4m)."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:reach", "core-concept:spacing", "core-concept:tempo", "core-concept:verisimilitude"]
+
   design_theory_and_readings:
     - path: "research/theory/readings/exploration-is-logistics.md"
       purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."
@@ -150,3 +159,7 @@ design_process_and_research:
     - path: "research/theory/readings/calibrating-your-expectations.md"
       purpose: "Analysis of Justin Alexander's Casual Realism, mortal power thresholds, and their application to CardPG's grounded heroism."
       tags: ["doc-type:literature-note", "audience:designer-facing", "core-concept:casual-realism", "core-concept:verisimilitude", "core-concept:progression", "core-concept:card-economy"]
+
+    - path: "research/theory/readings/temporal-spatial-card-mechanisms.md"
+      purpose: "A comparative ludological analysis of tabletop RPGs, wargames, and card systems modeling short round durations (1-3s), non-interrupt spatial engagement, and zero-token multi-round card tracking."
+      tags: ["doc-type:literature-note", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:movement", "core-concept:reach", "core-concept:ludology"]
