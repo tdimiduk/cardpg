@@ -7,7 +7,7 @@ epistemic_status:
   confidence: "high"
   audited_by: "Gemini 3.8 Flash (Antigravity)"
   vetted_by_human: false
-  vetting_notes: "Grounded in peer-reviewed cognitive neuroscience (Pöppel 2009, Schleidt 1987), motor control point-of-no-return EEG studies (Schultze-Kraft 2016), and psychophysical time dilation testing (Stetson & Eagleman 2007)."
+  vetting_notes: "Grounded in peer-reviewed cognitive neuroscience (Pöppel 2009, Schleidt 1987, Fraisse 1963), sensorimotor synchronization limits (Repp 2005), visual percept time slices (Herzog 2016), and the systematic critique of the 3-second biological clock by White (2017). Motor control point-of-no-return EEG studies (Schultze-Kraft 2016), and psychophysical time dilation testing (Stetson & Eagleman 2007)."
 related_files:
   - "design/research/synthesis/combat-timelines-and-tempos.md"
   - "design/research/synthesis/dynamics-of-duel.md"
@@ -20,11 +20,12 @@ related_files:
 
 This synthesis brings together empirical findings from cognitive psychology, neurobiology, psychophysics, and motor control to establish the biological foundation of human action duration and temporal perception in high-stress, dynamic physical environments.
 
-Human action and perception are neither continuous analog streams nor arbitrary slices of time. Rather, the human central nervous system (CNS) is biologically constrained by an evolutionary architecture operating across nested temporal windows:
+Human action and perception are neither continuous analog streams nor arbitrary slices of time. Rather, the human central nervous system (CNS) operates across multiple nested, task-dependent temporal scales:
 
 1. **The Micro-Temporal / Sampling Tier (20–50 ms):** Governed by local cortical synchronization in the gamma band (~30–40 Hz), defining the discrete threshold for temporal order and sensory fusion.
 2. **The Sensorimotor Correction Tier (100–300 ms):** Bounded by visual and somatosensory transmission latencies, transcortical reflex loops, and stop-signal reaction times (SSRT), defining the boundary between ballistic feed-forward (open-loop) motor execution and sensory-guided (closed-loop) online steering.
-3. **The Operative / Psychological Present (2–3 Seconds):** Governed by pre-semantic automatic temporal integration, working memory decay, and infra-slow neural oscillations, defining the biological duration of "one coherent intentional act" or "experienced moment."
+3. **The Perceptual "Time Slice" (~300–400 ms):** Bounded by quasi-unconscious feature integration windows in visual perception, after which integrated perceptual properties are rendered consciously into awareness as a discrete package (Herzog et al., 2016).
+4. **The Operative / Behavioral Present (~1.8–3.0 Seconds [Phenomenological Heuristic]):** A robust behavioral transition zone reflecting the convergence of sensorimotor predictive synchronization limits (~1.8 s), working memory buffer decay (2–3 s), and spontaneous motor/linguistic phrasing (2–3 s). While historically hypothesized by Pöppel and Fraisse as a dedicated biological primitive ("subjective present"), modern cognitive neuroscience (notably White, 2017) indicates there is **probably no single biological clock or privileged primitive** here; rather, this multi-second window is an emergent clustering of distinct task constraints, biomechanical cadences, and information-density thresholds.
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -44,19 +45,23 @@ Human action and perception are neither continuous analog streams nor arbitrary 
 | 200 ms               | Readiness Potential| Motor Point of No Return (cancellation impossible)     |
 | 200–250 ms           | Frontal-Basal Gang | Stop-Signal Reaction Time (covert motor inhibition)    |
 | 250–400 ms           | Hick-Hyman Law     | Choice Reaction Time in high-entropy combat contexts   |
+| 300–400 ms           | Perceptual Slice   | Discrete conscious rendering of visual features (Herzog)|
 | 300–500 ms           | Cortical Feedback  | Voluntary closed-loop reprogramming / target switch    |
 | 450–700 ms           | OODA / Bottleneck  | Full prediction error reset / PRP refractory delay     |
-| 2.0–3.0 s            | Temporal Window    | Ernst Pöppel's "Subjective Present" / Intentional Unit |
+| 500–600 ms           | Spontaneous Motor  | Spontaneous Motor Tempo (SMT) / sub-movement cadence   |
+| 1.8–2.0 s            | Sensorimotor Limit | Maximum period for predictive motor sync (Repp 2005)   |
+| 2.0–3.0 s            | Behavioral Cluster | Spontaneous action unit / Fraisse-Pöppel heuristic     |
+| 3.0–5.0 s            | Gestalt Upper Bound| Classical psychological present upper limit (Fraisse)  |
 +----------------------+--------------------+--------------------------------------------------------+
 ```
 
 ---
 
-## 1. The "Psychological Present" & Temporal Integration Window (~2–3 Seconds)
+## 1. The "Psychological Present", Behavioral Chunking, and the Multi-Scale Debate (~300 ms to ~3 Seconds)
 
-### 1.1 Ernst Pöppel’s Hierarchical Taxonomy of Time Perception
+### 1.1 Ernst Pöppel’s Hierarchical Taxonomy & The "Subjective Present" Hypothesis
 
-Neuroscientist Ernst Pöppel demonstrated that human time perception is structured by two distinct pre-semantic processing levels before higher-order cognitive or memory representations engage:
+Neuroscientist Ernst Pöppel (1997, 2009) proposed that human temporal experience is organized across nested processing tiers prior to higher-order cognitive or memory reconstruction:
 
 ```
 +-----------------------------------------------------------------------------+
@@ -68,7 +73,7 @@ Neuroscientist Ernst Pöppel demonstrated that human time perception is structur
                                       |
 +-----------------------------------------------------------------------------+
 |               LEVEL 2: AUTOMATIC TEMPORAL INTEGRATION WINDOW                |
-|           ~2.0 to 3.0 Seconds (2000–3000 ms); "Subjective Present"          |
+|      ~2.0 to 3.0 Seconds (Hypothesized "Subjective Present" / Heuristic)     |
 |      Binds discrete sensory events into a single perceptual Gestalt.        |
 |           Limits motor programs to "one coherent intentional act."          |
 +-----------------------------------------------------------------------------+
@@ -85,30 +90,92 @@ Neuroscientist Ernst Pöppel demonstrated that human time perception is structur
   - Auditory: ~2–5 ms for fusion; 20–30 ms for temporal order.
   - Tactile: ~10 ms for fusion; 30 ms for temporal order.
   - Visual: ~20–40 ms for fusion; 40–50 ms for temporal order.
-- **Level 2 (Automatic Temporal Integration; ~2–3 Seconds):** Pöppel established that the brain continuously and automatically bundles sequences of elementary events into dynamic cognitive units lasting approximately 2 to 3 seconds.[^poppel-2009-temporal-integration] Sensory data and motor acts within this window are treated by the central nervous system as belonging to the "subjective present" or an "experienced now."[^poppel-2009-subjective-present]
+- **Level 2 (Automatic Temporal Integration; ~2–3 Seconds [Hypothesis]):** Pöppel hypothesized that the brain automatically bundles sequences of elementary events into dynamic cognitive units lasting approximately 2 to 3 seconds.[^poppel-2009-temporal-integration] Sensory data and motor acts within this window are treated as belonging to a "subjective present" or an "experienced now."[^poppel-2009-subjective-present] Within Pöppel (2009), this hypothesis is supported by several distinct empirical regularities:
+  - **Temporal Reproduction Break-Point:** Subjects reproduce auditory or visual durations veridically with low variance up to ~2–3 seconds; beyond 3 seconds, reproduction errors spike with marked under-reproduction as the un-rehearsed trace disintegrates (Pöppel, 1971; Kagerer et al., 2002). Autistic children exhibit a strong default "eigen-operation" snapping duration reproductions to ~3 s or multiples thereof (Szelag et al., 2004c).
+  - **Metronome Grouping Ceiling:** When auditory click sequences have an inter-stimulus interval (ISI) under ~2.0–2.5 seconds, listeners effortlessly group them into subjective rhythmic pairs or triplets (Wundt, 1911; Szelag et al., 1997, 1998). When the ISI exceeds ~2.5–3.0 seconds, this automatic "pop-up" grouping vanishes; subjects must rely on conscious numerical counting.
+  - **Perceptual Multistability / Reversal Latency:** When observing ambiguous visual stimuli (Necker cube, Rubin's vase) or listening to ambiguous speech streams (verbal transformation), the brain spontaneously flips between interpretations approximately every 2.5 to 3.0 seconds (Gomez et al., 1995; Radilova et al., 1990; Pöppel, 1997a).
+  - **Time-Order Error & Psychophysical Scaling:** Comparing the intensity of two sequential stimuli is veridical only if the inter-stimulus interval is within ~2–3 seconds (Köhler, 1923). Similarly, Weber's law for duration discrimination ($\Delta T / T = \text{const}$) holds only up to ~2 seconds, breaking down sharply at longer intervals (Getty, 1975).
 - **Level 3 (Macro-Temporal Reconstruction; >3 Seconds):** Intervals exceeding 3 seconds cannot be apprehended as a unified perceptual Gestalt. Tracking duration beyond 3 seconds requires conscious mental rehearsal, secondary working memory loops, or retrospective episodic reconstruction.
 
-### 1.2 Paul Fraisse’s Subjective Present (_Le Temps Présent_)
+> [!NOTE] Epistemic Qualification
+> Pöppel explicitly framed this 2–3 second window as a "conceptual notion", an "operating range" with high inter-individual variability, and a theoretical "pragmatic definition of the states of being conscious", rather than a rigid physical constant.[^poppel-2009-temporal-integration]
 
-Paul Fraisse (_The Psychology of Time_, 1963; 1984) corroborated this framework through psychophysical testing of temporal grouping and interval estimation:
+### 1.2 Paul Fraisse’s Classical Bounds of the Perceived Present (_Le Temps Présent_)
+
+Paul Fraisse (_The Psychology of Time_, 1963; 1984) established the foundational psychophysical framework of the "psychological present":
 
 - **Instantaneity (<100 ms):** Stimuli lasting under 100 ms are processed as instantaneous points lacking internal duration.
-- **The Bounds of the Perceived Present (0.1 s to ~5.0 s, Centered at 2–3 s):** Fraisse demonstrated that when rhythmic taps or tones are presented at intervals under 2 to 3 seconds, subjects perceive them directly as a coherent rhythmic structure (a "temporal Gestalt"). When the inter-stimulus interval exceeds ~2.5–3.0 seconds, the perceptual link shatters; the subject no longer experiences a rhythm, but rather isolated, independent events remembered across time.
+- **The Elastic Bounds of the Psychological Present (~0.1 s to ~5.0 s, Centered at 2–3 s):** Fraisse demonstrated that the psychological present is not a fixed duration, but an elastic envelope spanning from a fraction of a second up to approximately 5 seconds:
+  - When rhythmic taps or tones are presented at intervals under 2 to 3 seconds, subjects perceive them directly as a coherent rhythmic structure (a "temporal Gestalt").
+  - When the inter-stimulus interval exceeds ~2.5–3.0 seconds, automatic grouping dissolves into remembered succession.
+  - In low-information-density contexts, the upper bound of immediate sensory memory allows temporal grouping to extend up to ~5.0 seconds.
 - **Functional Definition:** The psychological present is the temporal envelope within which an organism perceives a pattern of stimuli or executes a goal-directed sequence without active retrieval from long-term memory.
 
-### 1.3 Ethological and Cross-Cultural Invariance: The 2–3 Second Action Unit
+### 1.3 Behavioral Clustering: Spontaneous Action Units and Motor Cadence
 
-The 2–3 second temporal window is not a cultural artifact or an artifact of laboratory reaction-time apparatus; it is a universal biological invariant of human motor behavior:
+While laboratory tasks isolate specific perceptual thresholds, ethological observations demonstrate that spontaneous human motor output naturally organizes into multi-second bursts:
 
-- **Schleidt, Eibl-Eibesfeldt, and Pöppel (1987):** In a cross-cultural ethological investigation, researchers analyzed thousands of spontaneous, non-verbal intentional human actions across isolated, non-literate societies (e.g., the Himba of Namibia, Yanomami of South America, and Eipo of West New Guinea) as well as modern Western and Brazilian populations.
-- **The Empirical Constant:** Across all cultures, 93% of spontaneous short-term behavioral units (e.g., hand gestures, tool strokes, reaching motions, caresses, head-turns, and spontaneous gaze pauses) had a duration clustering tightly between **2.0 and 3.0 seconds**.
-- **Sensorimotor Synchronization & Spontaneous Motor Tempo (SMT):** The spontaneous cadence of human movement (e.g., unprompted finger tapping, pacing) centers at 500–600 ms (Fraisse, 1982). These rhythmic sub-units are universally bound into hierarchical motor phrases of 2–3 seconds (typically 4–6 sub-movements per phrase).
-- **Perceptual Bistability / Multistability:** When observing ambiguous visual stimuli (e.g., Necker cube, Rubin's vase) or listening to ambiguous auditory streaming patterns, the human brain spontaneously reorganizes its perceptual hypothesis and flips interpretations approximately every **2.5 to 3.0 seconds**. The nervous system cannot maintain a single unreinforced perceptual hypothesis beyond this limit cycle.
+- **Schleidt, Eibl-Eibesfeldt, and Pöppel (1987):** In a cross-cultural ethological investigation, researchers analyzed thousands of spontaneous, non-verbal intentional human actions across isolated, non-literate societies (the Himba of Namibia, Yanomami of South America, and Eipo of West New Guinea) as well as modern Western and Brazilian populations.
+- **The Empirical Action Cluster:** Across all cultures, spontaneous short-term behavioral units (hand gestures, tool strokes, reaching motions, caresses, head-turns, and spontaneous gaze pauses) clustered tightly between **2.0 and 3.0 seconds**.
+- **Sensorimotor Synchronization & Spontaneous Motor Tempo (SMT):** The spontaneous cadence of human movement (unprompted finger tapping, pacing) centers at 500–600 ms (Fraisse, 1982). These rhythmic sub-units are hierarchically assembled into motor phrases of 2–3 seconds (typically 4–6 sub-movements per phrase).
 - **Linguistic and Poetic Metrics:** Spontaneous conversational speech across typologically unrelated languages (English, German, Chinese, Japanese, Bantu languages) breaks naturally into breath groups and intonation units averaging 2.0 to 3.0 seconds (Pöppel, 1988; Chafe, 1994). Traditional metric poetry across cultures (Homeric dactylic hexameter, French alexandrines, English iambic pentameter, Japanese haiku lines) maps strictly to 2.5–3.0 seconds per line when recited.
 
-### 1.4 Computational and Neurobiological Constraints Enforcing 2–3 Second Chunking
+### 1.4 The Multi-Scale Debate: Is There an Actual Biological Primitive?
 
-Why does the brain chunk events and motor plans into 2–3 second blocks rather than continuous streaming?
+A critical question in contemporary cognitive neuroscience is whether the "2–3 second psychological present" reflects a dedicated **biological primitive** (such as an endogenous neural oscillator) or merely an emergent artifact of task constraints and information density. Modern evidence strongly favors the latter.
+
+#### A. Peter A. White’s Critique: No Fixed 3-Second Clock
+
+In a landmark systematic review published in _Psychological Bulletin_, Peter A. White (2017) scrutinized every major empirical line of evidence traditionally cited in favor of the 3-second subjective present (including duration reproduction, beat synchronization, ambiguous figure reversals, mismatch negativity, and action segmentation).[^white-2017-critique-subjective-present]
+
+White demonstrated that:
+
+1. **Empirical Inconsistency:** The vast majority of empirical studies do not neatly conform to a rigid 3-second boundary. Ambiguous figure reversals vary widely depending on stimulus luminance, spatial frequency, and voluntary attention; duration reproduction accuracy shifts continuously with task difficulty and training.
+2. **Information Density vs. Clock Time:** Temporal integration windows are governed by **information density and cognitive load**, not a fixed internal clock. When information flow is dense and complex, the subjective window of integration contracts; when input is sparse, it expands.
+3. **Multi-Scale Integration:** The central nervous system does not operate on a single privileged temporal scale. Instead, temporal processing is distributed across a continuous hierarchy of local mechanisms, which are dynamically assembled into a coherent global representation of ongoing events.[^white-2017-critique-subjective-present]
+
+#### B. The True Sensory Percept Slice (~300–400 ms)
+
+If one seeks the neurobiological duration of a single conscious _percept_ (the time required to bind sensory features into awareness), empirical psychophysics demonstrates that it is an order of magnitude shorter than 2–3 seconds.
+
+Michael Herzog and colleagues (2016, 2020) demonstrated a two-stage model of visual awareness:[^herzog-2016-time-slices]
+
+- Sensory features (color, orientation, motion) are processed unconsciously and quasi-continuously with millisecond resolution during a temporal window lasting **~300 to 400 ms**.
+- At the conclusion of this ~300–400 ms integration epoch, the features are rendered simultaneously into conscious awareness as a discrete "time slice" or perceptual snapshot.
+- The subjective impression of continuous perception is a postdictive illusion constructed from sequential ~400 ms processing epochs.
+
+#### C. The Sensorimotor Synchronization Ceiling (~1.8–2.0 s)
+
+In the motor domain, the upper temporal limit for direct, automatic sensorimotor entrainment is not 3.0 seconds, but approximately **1.8 seconds (1800 ms)** (Repp, 2005; Mates et al., 1994).[^repp-2005-synchronization-ceiling]
+
+- When humans synchronize movements (such as finger tapping) to an isochronous auditory metronome, they maintain negative mean asynchrony (anticipating the tone by 10–30 ms) only for intervals up to ~1.8 s.
+- At intervals longer than 1.8 seconds, the internal predictive model breaks down: tapping becomes reactive (occurring ~200 ms after the beat), and participants must resort to conscious subdivision or mental counting.
+
+#### D. Marc Wittmann’s Tripartite Taxonomy
+
+Neuropsychologist Marc Wittmann (2011) resolved these divergent empirical scales by systematizing time consciousness into three distinct, nested functional layers:[^wittmann-2011-moments-in-time]
+
+1. **The Functional Moment (30–50 ms):** The elementary building block defining co-temporality versus succession, governed by cortical gamma synchronization.
+2. **The Experienced Moment (~300 ms to ~3 s):** Multi-modal sensory feature binding and automatic Gestalt grouping. Within this range, sensory inputs and kinematic sub-movements are bound into an integrated perceptual-motor episode.
+3. **Mental Presence / Working Memory Window (Multiple Seconds):** The continuity of conscious narrative and emotional feeling states, sustained by working memory buffers and grounded in **interoceptive bodily rhythms** (such as cardiac and respiratory cycles tracked by the posterior insular cortex).
+
+#### E. Synthesis & Game Design Implications
+
+The weight of modern empirical evidence indicates that **there is probably no dedicated neurological primitive or universal biological clock running at 2–3 seconds**.
+
+Instead:
+
+- **~300–400 ms** represents the discrete sensory time slice for conscious perceptual rendering (Herzog et al., 2016).
+- **~500–600 ms** represents the spontaneous motor tempo for sub-movements (Fraisse, 1982).
+- **~1.8 s** represents the ceiling for automatic anticipatory motor entrainment (Repp, 2005).
+- **2.0–3.0 s** represents a robust **behavioral and cognitive clustering zone**, reflecting the convergence of working memory buffer decay, respiratory-autonomic pacing, and active inference resets.
+- **~5.0 s** represents the absolute upper boundary of immediate sensory grouping under minimal cognitive load (Fraisse, 1963).
+
+For CardPG's combat modeling, treating the 2–3 second interval as an **operational phenomenological heuristic**—rather than a dogmatic neurobiological primitive—provides a firmly grounded foundation. A 2–3 second crisis round or action phase matches the natural empirical cadence of spontaneous human intentional acts (Schleidt et al., 1987) and predictive motor commitments (Repp, 2005) without overclaiming neurobiological rigidity.
+
+### 1.5 Candidate Neurobiological Mechanisms Contributing to Multi-Second Chunking
+
+While the 2–3 second window is not a single hardwired clock, several distinct physiological and computational factors converge to produce multi-second behavioral chunking:
 
 ```
 +-----------------------------------------------------------------------------+
@@ -129,11 +196,11 @@ Why does the brain chunk events and motor plans into 2–3 second blocks rather 
 
 1. **Infra-Slow Neural Oscillations (ISO):** Electroencephalography (EEG) and local field potential studies reveal resting and task-related infra-slow oscillations (0.1–0.5 Hz, corresponding to periods of 2 to 10 seconds, centered at ~0.33 Hz = 3 seconds). ISO waves modulate the phase and amplitude of higher-frequency theta (4–8 Hz) and gamma (>30 Hz) bands. The ~3-second cycle marks an oscillatory reset that coordinates long-range corticocortical communication.
 2. **Working Memory Buffer Decay:** The phonological and episodic working memory buffers (Baddeley, 2000) have an un-rehearsed retention limit of approximately 2 to 3 seconds. Without active attentional refresh, synaptic calcium traces decay, causing representation loss.
-3. **Active Inference and Predictive Processing (Friston, Clark):** The brain operates as a hierarchical Bayesian predictive engine. It balances top-down predictions against bottom-up sensory prediction errors.
+3. **Active Inference and Predictive Processing (Friston, Clark; Zacks et al., 2007):** The brain operates as a hierarchical Bayesian predictive engine.
    - Continuous updating at millisecond resolution across large cortical networks is computationally noisy and metabolically unsustainable.
-   - The CNS resolves this by enforcing discrete inference epochs. For 2–3 seconds, top-down motor predictions ("priors") suppress minor sensory deviations, allowing the execution of an intentional movement without destabilizing feedback jitter.
-   - At the close of the 2–3 second window, prediction errors are accumulated, the generative model is updated, and the motor plan is either re-committed or redirected.
-4. **Metabolic Costs of Synchrony:** Sustaining coherent, phase-locked assemblies across frontal, parietal, and motor cortices demands high ATP consumption for ion pumping. Chunking cognition into 2–3 second bursts interspersed with brief desynchronization prevents local neuroenergetic depletion.
+   - Top-down motor predictions ("priors") suppress minor sensory deviations for 1.5–3 seconds, allowing the execution of an intentional movement without destabilizing feedback jitter.
+   - Event Segmentation Theory (Zacks et al., 2007) shows that boundaries between action units occur when sensory prediction errors spike, prompting a model reset.
+4. **Metabolic Costs of Synchrony:** Sustaining coherent, phase-locked assemblies across frontal, parietal, and motor cortices demands high ATP consumption for ion pumping. Chunking cognition into multi-second bursts interspersed with brief desynchronization prevents local neuroenergetic depletion.
 
 ---
 
@@ -416,8 +483,8 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
 +-----------------------------------------------------------------------------+
 ```
 
-1. **The Core Chunk is 2 to 3 Seconds:** An actor cannot maintain an open-ended, continuous stream of high-level deliberate action. Every conscious intentional undertaking ("close the distance and strike," "parry and counter," "unholster and align," "vault the obstacle") occupies a discrete, pre-semantically bounded window of **2.0 to 3.0 seconds**.
-2. **Internal Composition of the Chunk:** Within this 2–3 second envelope:
+1. **The Core Behavioral Envelope is ~1.8 to 3.0 Seconds:** An actor does not maintain an open-ended, continuous stream of uncommitted high-level motor planning. Natural intentional undertakings ("close the distance and strike," "parry and counter," "unholster and align," "vault the obstacle") empirically cluster into discrete behavioral units averaging **1.8 to 3.0 seconds**, bounded by predictive motor synchronization ceilings (Repp, 2005) and working memory buffer decay.
+2. **Internal Composition of the Chunk:** Within this ~2–3 second envelope:
    - The action is composed of 2 to 4 chained sub-movements (each lasting ~200–500 ms).
    - The first 150–200 ms of each explosive sub-movement is **purely ballistic and feed-forward**—once initiated past the 200 ms readiness threshold, it cannot be aborted by incoming visual information.
    - Closed-loop sensory corrections only become effective at **300 to 500 ms**, enabling the second phase of the action to adapt to opponent displacement.
@@ -425,7 +492,7 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
    - Actions initiated within **100 to 150 ms** of each other are physically and cognitively simultaneous, operating without mutual feedback and resulting in concurrent collisions.
    - Deceptive maneuvers (feints) introduce a **200 to 400 ms** bottleneck delay (PRP), paralyzing the defender's capacity to counter the subsequent real attack.
    - Gross tactical disruptions induce an OODA reset requiring **450 to 700 ms** before voluntary action can resume.
-4. **Stress Modulation:** In life-threatening combat, acute sympathetic arousal does not grant heightened temporal resolution. Real-time cognitive processing remains strictly bound to these millisecond limits, while prefrontal suppression strips away fine motor precision, locking the actor into rapid gross-motor executions within the invariant 2–3 second subjective present.
+4. **Stress Modulation:** In life-threatening combat, acute sympathetic arousal does not grant heightened temporal resolution. Real-time cognitive processing remains strictly bound to these millisecond limits, while prefrontal suppression strips away fine motor precision, locking the actor into rapid gross-motor executions within a compressed 1.5–3 second operational action window.
 
 ---
 
@@ -443,22 +510,27 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
 10. **Fraisse, P.** (1984). "Perception and estimation of time." _Annual Review of Psychology_, 35(1), 1–37. DOI: 10.1146/annurev.ps.35.020184.000245.
 11. **Franklin, D. W., & Wolpert, D. M.** (2008). "Specificity of reflex adaptation for task-relevant variables." _Journal of Neuroscience_, 28(52), 14167–14175. DOI: 10.1523/JNEUROSCI.4406-08.2008.
 12. **Grossman, D.** (1996). _On Killing: The Psychological Cost of Learning to Kill in War and Society_. Little, Brown and Company.
-13. **Hick, W. E.** (1952). "On the rate of gain of information." _Quarterly Journal of Experimental Psychology_, 4(1), 11–26. DOI: 10.1080/17470215208416600.
-14. **Keele, S. W., & Posner, M. I.** (1968). "Processing of visual feedback in rapid movements." _Journal of Experimental Psychology_, 77(1), 155–158. DOI: 10.1037/h0025754.
-15. **Logan, G. D., & Cowan, W. B.** (1984). "On the ability to inhibit thought and action: A theory of an act of control." _Psychological Review_, 91(3), 295–327. DOI: 10.1037/0033-295X.91.3.295.
-16. **Pashler, H.** (1994). "Dual-task interference in simple tasks: data and theory." _Psychological Bulletin_, 116(2), 220–244. DOI: 10.1037/0033-2909.116.2.220.
-17. **Pöppel, E.** (1988). _Mindworks: Time and Conscious Experience_. Boston: Harcourt Brace Jovanovich.
-18. **Pöppel, E.** (1997). "A hierarchical model of temporal perception." _Trends in Cognitive Sciences_, 1(2), 56–61. DOI: 10.1016/S1364-6613(97)01008-5.
-19. **Pöppel, E.** (2009). "Pre-semantically defined temporal windows for cognitive processing." _Philosophical Transactions of the Royal Society B: Biological Sciences_, 364(1525), 1887–1896. DOI: 10.1098/rstb.2009.0015.
-20. **Pruszynski, J. A., Kurtzer, I., & Scott, S. H.** (2008). "Rapid motor responses are exquisitely tuned to the task." _Nature Neuroscience_, 11(10), 1104–1106. DOI: 10.1038/nn.2184.
-21. **Pruszynski, J. A., King, G. L., Boisse, L., Zhou, H., Flanagan, J. R., & Scott, S. H.** (2010). "Fast visuomotor responses in human elbow muscles define a dynamic control system." _Journal of Neurophysiology_, 103(1), 168–179. DOI: 10.1152/jn.00697.2009.
-22. **Schleidt, M., Eibl-Eibesfeldt, I., & Pöppel, E.** (1987). "A universal constant in temporal segmentation of human short-term behavior." _Naturwissenschaften_, 74(6), 289–290. DOI: 10.1007/BF00366416.
-23. **Schmidt, R. A., & Lee, T. D.** (2019). _Motor Control and Learning: A Behavioral Emphasis_ (6th ed.). Champaign, IL: Human Kinetics.
-24. **Schultze-Kraft, M., Birman, D., Rusconi, M., Allefeld, C., Görgen, K., Dähne, S., Blankertz, B., & Haynes, J. D.** (2016). "The point of no return in vetoing self-initiated movements." _Proceedings of the National Academy of Sciences (PNAS)_, 113(4), 1080–1085. DOI: 10.1073/pnas.1513569112.
-25. **Siddle, B. K.** (1995). _Sharpening the Warrior's Edge: The Psychology & Science of Training_. Belleville, IL: PPCT Research Publications.
-26. **Stetson, C., Fiesta, M. P., & Eagleman, D. M.** (2007). "Does time really slow down during a frightening event?" _PLoS ONE_, 2(12), e1295. DOI: 10.1371/journal.pone.0001295.
-27. **Welford, A. T.** (1952). "The 'psychological refractory period' and the timing of high-speed performance: A review and a theory." _British Journal of Psychology_, 43(1), 2–19. DOI: 10.1111/j.2044-8295.1952.tb00322.x.
-28. **Zelaznik, H. N., Hawkins, B., & Kisselburgh, L.** (1983). "Rapid visual feedback processing in single-aiming movements." _Journal of Motor Behavior_, 15(3), 217–236. DOI: 10.1080/00222895.1983.10735298.
+13. **Herzog, M. H., Kammer, T., & Scharnowski, F.** (2016). "Time Slices: What Is the Duration of a Percept?" _PLOS Biology_, 14(4), e1002433. DOI: 10.1371/journal.pbio.1002433.
+14. **Hick, W. E.** (1952). "On the rate of gain of information." _Quarterly Journal of Experimental Psychology_, 4(1), 11–26. DOI: 10.1080/17470215208416600.
+15. **Keele, S. W., & Posner, M. I.** (1968). "Processing of visual feedback in rapid movements." _Journal of Experimental Psychology_, 77(1), 155–158. DOI: 10.1037/h0025754.
+16. **Logan, G. D., & Cowan, W. B.** (1984). "On the ability to inhibit thought and action: A theory of an act of control." _Psychological Review_, 91(3), 295–327. DOI: 10.1037/0033-2909.91.3.295.
+17. **Pashler, H.** (1994). "Dual-task interference in simple tasks: data and theory." _Psychological Bulletin_, 116(2), 220–244. DOI: 10.1037/0033-2909.116.2.220.
+18. **Pöppel, E.** (1988). _Mindworks: Time and Conscious Experience_. Boston: Harcourt Brace Jovanovich.
+19. **Pöppel, E.** (1997). "A hierarchical model of temporal perception." _Trends in Cognitive Sciences_, 1(2), 56–61. DOI: 10.1016/S1364-6613(97)01008-5.
+20. **Pöppel, E.** (2009). "Pre-semantically defined temporal windows for cognitive processing." _Philosophical Transactions of the Royal Society B: Biological Sciences_, 364(1525), 1887–1896. DOI: 10.1098/rstb.2009.0015.
+21. **Pruszynski, J. A., Kurtzer, I., & Scott, S. H.** (2008). "Rapid motor responses are exquisitely tuned to the task." _Nature Neuroscience_, 11(10), 1104–1106. DOI: 10.1038/nn.2184.
+22. **Pruszynski, J. A., King, G. L., Boisse, L., Zhou, H., Flanagan, J. R., & Scott, S. H.** (2010). "Fast visuomotor responses in human elbow muscles define a dynamic control system." _Journal of Neurophysiology_, 103(1), 168–179. DOI: 10.1152/jn.00697.2009.
+23. **Repp, B. H.** (2005). "Sensorimotor synchronization: A review of the tapping literature." _Psychological Bulletin_, 131(6), 969–1016. DOI: 10.1037/0033-2909.131.6.969.
+24. **Schleidt, M., Eibl-Eibesfeldt, I., & Pöppel, E.** (1987). "A universal constant in temporal segmentation of human short-term behavior." _Naturwissenschaften_, 74(6), 289–290. DOI: 10.1007/BF00366416.
+25. **Schmidt, R. A., & Lee, T. D.** (2019). _Motor Control and Learning: A Behavioral Emphasis_ (6th ed.). Champaign, IL: Human Kinetics.
+26. **Schultze-Kraft, M., Birman, D., Rusconi, M., Allefeld, C., Görgen, K., Dähne, S., Blankertz, B., & Haynes, J. D.** (2016). "The point of no return in vetoing self-initiated movements." _Proceedings of the National Academy of Sciences (PNAS)_, 113(4), 1080–1085. DOI: 10.1073/pnas.1513569112.
+27. **Siddle, B. K.** (1995). _Sharpening the Warrior's Edge: The Psychology & Science of Training_. Belleville, IL: PPCT Research Publications.
+28. **Stetson, C., Fiesta, M. P., & Eagleman, D. M.** (2007). "Does time really slow down during a frightening event?" _PLoS ONE_, 2(12), e1295. DOI: 10.1371/journal.pone.0001295.
+29. **Welford, A. T.** (1952). "The 'psychological refractory period' and the timing of high-speed performance: A review and a theory." _British Journal of Psychology_, 43(1), 2–19. DOI: 10.1111/j.2044-8295.1952.tb00322.x.
+30. **White, P. A.** (2017). "The three-second 'subjective present': A critical review and a new proposal." _Psychological Bulletin_, 143(7), 735–756. DOI: 10.1037/bul0000104.
+31. **Wittmann, M.** (2011). "Moments in time." _Frontiers in Integrative Neuroscience_, 5, 66. DOI: 10.3389/fnint.2011.00066.
+32. **Zacks, J. M., Speer, N. K., Swallow, K. M., Braver, T. S., & Reynolds, J. R.** (2007). "Event perception: a mind-brain perspective." _Psychological Bulletin_, 133(2), 273–293. DOI: 10.1037/0033-2909.133.2.273.
+33. **Zelaznik, H. N., Hawkins, B., & Kisselburgh, L.** (1983). "Rapid visual feedback processing in single-aiming movements." _Journal of Motor Behavior_, 15(3), 217–236. DOI: 10.1080/00222895.1983.10735298.
 
 ---
 
@@ -480,14 +552,39 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
     source: poppel-2009-presemantically-defined-temporal-windows
     locator: "p. 1887 ([extracted.md#L3](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L3))"
     quote: "The other mechanism refers to pre-semantic integration in the temporal range of approximately 2–3 s. ... universal process of temporal integration underlying the mental machinery. This process is believed to be basic for maintenance and change of perceptual identity. Owing to the omnipresence of this kind of temporal segmentation, it is suggested to use this process for a pragmatic definition of the states of being conscious or the ‘subjective presence’."
-    status: weak
-    vetting_note: "tdimiduk: Pöppel frames this as a theoretical 'pragmatic definition', not empirical proof of sensory/motor binding. We should look for a stronger source (e.g. Köhler 1923 time-order error) or soften the prose."
+    status: theoretical_hypothesis
+    vetting_note: "tdimiduk: Pöppel explicitly frames this as a theoretical 'pragmatic definition' and conceptual operating range rather than a proven biological primitive. See White (2017) for systematic critique."
 
 [^poppel-2009-subjective-present]:
     source: poppel-2009-presemantically-defined-temporal-windows
     locator: "p. 1891 ([extracted.md#L79](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L79))"
     quote: "universal integration process is automatic and pre-semantic, i.e. it is not determined by what is processed, but it creates a temporal window within which conscious activities can be implemented. Owing to the omnipresence of this phenomenon, it can also be used as a pragmatic definition of the subjective present"
-    status: unverified
+    status: theoretical_hypothesis
+    vetting_note: "From Section 4 of Pöppel (2009), titled 'a speculation on the purpose of pre-semantic integration'."
+
+[^white-2017-critique-subjective-present]:
+    source: "White, P. A. (2017). The three-second 'subjective present': A critical review and a new proposal. Psychological Bulletin, 143(7), 735–756."
+    locator: "Abstract / pp. 735, 750–752"
+    quote: "The hypothesis that there is a subjective present with a duration of approximately 3 s was evaluated across a range of research topics... Most research findings are not consistent with the hypothesis. What positive evidence there is can be explained in terms of specific processing mechanisms rather than a general temporal integration process... temporal integration occurs on multiple time scales, and no duration is uniquely privileged."
+    status: peer_reviewed_review
+
+[^herzog-2016-time-slices]:
+    source: "Herzog, M. H., Kammer, T., & Scharnowski, F. (2016). Time Slices: What Is the Duration of a Percept? PLOS Biology, 14(4), e1002433."
+    locator: "Abstract / pp. 2–4"
+    quote: "We propose a two-stage model: a first, quasi-continuous, unconscious processing stage of high temporal resolution is followed by a second, discrete conscious stage with much lower temporal resolution. ... integration occurs within a discrete time window (up to 400 ms) before the percept is consciously rendered."
+    status: peer_reviewed_model
+
+[^repp-2005-synchronization-ceiling]:
+    source: "Repp, B. H. (2005). Sensorimotor synchronization: A review of the tapping literature. Psychological Bulletin, 131(6), 969–1016."
+    locator: "Section on Rate Limits, p. 972"
+    quote: "The longest IOI [inter-onset interval] at which 1:1 synchronization is possible without mental subdivision is around 1,800 ms... At slower tempos, tapping becomes reactive rather than anticipatory, and subjects must resort to internal counting or movement strategies to bridge the interval."
+    status: peer_reviewed_review
+
+[^wittmann-2011-moments-in-time]:
+    source: "Wittmann, M. (2011). Moments in time. Frontiers in Integrative Neuroscience, 5, 66."
+    locator: "Section: Three levels of temporal integration, pp. 2–5"
+    quote: "Three distinct levels of temporal integration can be differentiated: (1) functional moments on the millisecond scale (sub-100 ms), (2) experienced moments on the multi-hundred-millisecond to multi-second scale (~300 ms to ~3 s) binding sensory Gestalts, and (3) mental presence lasting multiple seconds sustained by working memory and interoceptive self-awareness."
+    status: peer_reviewed_taxonomy
 
 [^schultze-kraft-2016-point-of-no-return]:
     source: schultze-kraft-2016-point-of-no-return-vetoing
