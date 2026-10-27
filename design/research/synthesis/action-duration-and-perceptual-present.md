@@ -81,11 +81,11 @@ Neuroscientist Ernst Pöppel demonstrated that human time perception is structur
 +-----------------------------------------------------------------------------+
 ```
 
-- **Level 1 (Elementary Temporal Events; ~30–50 ms):** Governed by high-frequency neuronal oscillations (30–40 Hz). Within an interval of 20–40 ms, two successive sensory stimuli are perceived as co-temporal or fused. The temporal order threshold—the minimum latency needed to reliably discern which of two stimuli occurred first—is modality-dependent:
+- **Level 1 (Elementary Temporal Events; ~30–50 ms):** Governed by high-frequency neuronal oscillations (30–40 Hz). Within an interval of 20–40 ms, two successive sensory stimuli are perceived as co-temporal or fused.[^poppel-2009-elementary-events] The temporal order threshold—the minimum latency needed to reliably discern which of two stimuli occurred first—is modality-dependent:
   - Auditory: ~2–5 ms for fusion; 20–30 ms for temporal order.
   - Tactile: ~10 ms for fusion; 30 ms for temporal order.
   - Visual: ~20–40 ms for fusion; 40–50 ms for temporal order.
-- **Level 2 (Automatic Temporal Integration; ~2–3 Seconds):** Pöppel established that the brain continuously and automatically bundles sequences of elementary events into dynamic cognitive units lasting approximately 2 to 3 seconds. Sensory data and motor acts within this window are treated by the central nervous system as belonging to the "subjective present" or an "experienced now."
+- **Level 2 (Automatic Temporal Integration; ~2–3 Seconds):** Pöppel established that the brain continuously and automatically bundles sequences of elementary events into dynamic cognitive units lasting approximately 2 to 3 seconds.[^poppel-2009-temporal-integration] Sensory data and motor acts within this window are treated by the central nervous system as belonging to the "subjective present" or an "experienced now."[^poppel-2009-subjective-present]
 - **Level 3 (Macro-Temporal Reconstruction; >3 Seconds):** Intervals exceeding 3 seconds cannot be apprehended as a unified perceptual Gestalt. Tracking duration beyond 3 seconds requires conscious mental rehearsal, secondary working memory loops, or retrospective episodic reconstruction.
 
 ### 1.2 Paul Fraisse’s Subjective Present (_Le Temps Présent_)
@@ -216,7 +216,7 @@ Can an actor abort a movement once it has been prepared?
 - **The Physical Point of No Return (Schultze-Kraft et al., PNAS 2016):**
   - Using real-time EEG brain-computer interfaces (BCIs), researchers monitored the readiness potential (Bereitschaftspotential) generated in the supplementary motor area as subjects prepared self-initiated movements.
   - Subjects were challenged with a sudden visual stop signal while their readiness potential was already peaking.
-  - **The Empirical Threshold:** The point of no return occurs approximately **200 ms before movement (EMG) onset**.
+  - **The Empirical Threshold:** The point of no return occurs approximately **200 ms before movement (EMG) onset**.[^schultze-kraft-2016-point-of-no-return]
   - If the stop signal appeared more than 200 ms before movement, the brain successfully vetoed the action. If the signal arrived within the final 200 ms, the motor command had already crossed into subcortical/spinal execution; the movement occurred involuntarily, even while the subject consciously attempted to stop.
 
 ---
@@ -343,7 +343,7 @@ A widespread anecdotal claim in combat, motor vehicle crashes, and falling accid
   - David Eagleman and colleagues evaluated whether human visual temporal resolution actually speeds up during terror.
   - Subjects were dropped backward from a 31-meter (100+ foot) tower into a Suspended Catch Air Device (SCAD) net in free fall (reaching speeds of 70 km/h under profound existential terror).
   - Subjects wore a wrist-mounted "perceptual chronometer" displaying alternating digital numerals flickering just beyond the critical flicker fusion frequency (CFF)—numbers that were impossible to read at normal frame rates.
-  - **Result:** Subjects plummeting in terror were **no better at reading the flickering digits than they were sitting safely in a laboratory chair**. Their real-time visual sampling rate did not increase by even a fraction of a millisecond.
+  - **Result:** Subjects plummeting in terror were **no better at reading the flickering digits than they were sitting safely in a laboratory chair**.[^stetson-2007-time-dilation] Their real-time visual sampling rate did not increase by even a fraction of a millisecond.
   - **The Mechanism of Temporal Dilation:** When participants landed, they retrospectively estimated their fall duration to be **36% longer** than identical falls observed from the ground.
   - **Conclusion:** Tachypsychia is a **retrospective memory illusion**, not a real-time perceptual alteration. Under severe survival threat, the basolateral amygdala hyper-activates, forcing memory storage into overdrive. The brain encodes sensory data with extraordinary density and vividness. When the cognitive system later interrogates that memory, the sheer density of stored data causes the retrospective heuristic: _"Because this memory contains vast detail, it must have lasted a long time."_
 
@@ -459,3 +459,37 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
 26. **Stetson, C., Fiesta, M. P., & Eagleman, D. M.** (2007). "Does time really slow down during a frightening event?" _PLoS ONE_, 2(12), e1295. DOI: 10.1371/journal.pone.0001295.
 27. **Welford, A. T.** (1952). "The 'psychological refractory period' and the timing of high-speed performance: A review and a theory." _British Journal of Psychology_, 43(1), 2–19. DOI: 10.1111/j.2044-8295.1952.tb00322.x.
 28. **Zelaznik, H. N., Hawkins, B., & Kisselburgh, L.** (1983). "Rapid visual feedback processing in single-aiming movements." _Journal of Motor Behavior_, 15(3), 217–236. DOI: 10.1080/00222895.1983.10735298.
+
+---
+
+## 6. Primary Evidence Anchors (Claim-Level Citations)
+
+[^poppel-2009-elementary-events]:
+    source: poppel-2009-presemantically-defined-temporal-windows
+    locator: "p. 1889"
+    quote: "processed information is temporally segmented into successive units of approximately 30–40 ms; these elementary processing units should not be understood as ‘physical constants’, but as operating ranges with some variability."
+    status: unverified
+
+[^poppel-2009-temporal-integration]:
+    source: poppel-2009-presemantically-defined-temporal-windows
+    locator: "p. 1887"
+    quote: "The other mechanism refers to pre-semantic integration in the temporal range of approximately 2–3 s. ... universal process of temporal integration underlying the mental machinery. This process is believed to be basic for maintenance and change of perceptual identity. Owing to the omnipresence of this kind of temporal segmentation, it is suggested to use this process for a pragmatic definition of the states of being conscious or the ‘subjective presence’."
+    status: unverified
+
+[^poppel-2009-subjective-present]:
+    source: poppel-2009-presemantically-defined-temporal-windows
+    locator: "p. 1891"
+    quote: "universal integration process is automatic and pre-semantic, i.e. it is not determined by what is processed, but it creates a temporal window within which conscious activities can be implemented. Owing to the omnipresence of this phenomenon, it can also be used as a pragmatic definition of the subjective present"
+    status: unverified
+
+[^schultze-kraft-2016-point-of-no-return]:
+    source: schultze-kraft-2016-point-of-no-return-vetoing
+    locator: "Discussion, p. 1083"
+    quote: "several aspects of our data suggest that subjects were able to cancel an upcoming movement until a point of no return was reached around 200 ms before movement onset. If the stop signal occurs later than 200 ms before EMG onset, the subject cannot avoid moving."
+    status: unverified
+
+[^stetson-2007-time-dilation]:
+    source: stetson-2007-time-dilation-frightening-event
+    locator: "Abstract / PLoS ONE 2(12): e1295"
+    quote: "We found no evidence of increased temporal resolution, in apparent conflict with the fact that participants retrospectively estimated their own fall to last 36% longer than others' falls. ... Our findings suggest that time-slowing is a function of recollection, not perception: a richer encoding of memory may cause a salient event to appear, retrospectively, as though it lasted longer."
+    status: unverified

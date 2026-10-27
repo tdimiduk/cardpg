@@ -56,6 +56,7 @@ Use this skill to spawn isolated subagents for literature retrieval, automated v
   3. Format output as structured reference tables and clinical syntheses ready for incorporation into `design/research/synthesis/`.
   4. Strictly reject narrative folklore, mythology, symbolic heraldry, or gamified RPG assumptions per `.agent/standards/empirical_research_standards.md`.
   5. Strictly non-mechanical (Domain Purity): Never invent, prescribe, or suggest card game mechanics, card names, deck manipulation, dice rules, or tabletop game procedures. Your output must remain purely grounded in physical, biological, and material realities—documenting functional capabilities, physical thresholds, and recovery requirements, leaving game design translation entirely to rules engineering.
+  6. Structured Claim Citations: Anchor key empirical parameters and factual assertions using structured GFM footnotes (`[^slug-concept]`) defined at the end of the synthesis with 4-space indented YAML blocks (`source: <slug>`, `locator: "<page/line>"`, `quote: "<verbatim excerpt from extracted.*>"`, `status: unverified`). Quotes must be exact verbatim text (using `...` for omissions) so automated verification tooling can machine-check them against the source bundle. Never draft citations as vetted; always use `status: unverified`.
   ```
 
 ---

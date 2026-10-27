@@ -257,6 +257,7 @@ foundational_scientific_medical:
       author: "Pöppel, E."
       year: 2009
       doi_or_url: "https://doi.org/10.1098/rstb.2009.0015"
+      local_archive: "sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows"
       epistemic_grade: "primary_academic"
       publication: "Philosophical Transactions of the Royal Society B: Biological Sciences"
       description: >
@@ -285,6 +286,7 @@ foundational_scientific_medical:
       author: "Schultze-Kraft, M., et al."
       year: 2016
       doi_or_url: "https://doi.org/10.1073/pnas.1513569112"
+      local_archive: "sources/verisimilitude/schultze-kraft-2016-point-of-no-return-vetoing"
       epistemic_grade: "primary_academic"
       publication: "Proceedings of the National Academy of Sciences (PNAS)"
       description: >
@@ -299,6 +301,7 @@ foundational_scientific_medical:
       author: "Stetson, C., Fiesta, M. P., & Eagleman, D. M."
       year: 2007
       doi_or_url: "https://doi.org/10.1371/journal.pone.0001295"
+      local_archive: "sources/verisimilitude/stetson-2007-time-dilation-frightening-event"
       epistemic_grade: "primary_academic"
       publication: "PLoS ONE"
       description: >
@@ -878,6 +881,7 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk"
           summary: "Empirical literature benchmark for Quantifying the Impact of Mounted Load Carrying on Equids: A Review."
+
 
 ---
 modeling_logistics_transport_materials:

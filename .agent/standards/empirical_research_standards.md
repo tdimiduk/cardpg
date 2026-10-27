@@ -143,3 +143,47 @@ When auditing game mechanics, cards, or rules modules, agents must distinguish b
 2. **Tactile Tabletop Compression:** Modeling complex biochemical or metabolic systems with intuitive physical card mechanics (e.g., paying physical exertion via card discards or taking Fatigue cards into the deck rather than tracking individual kilocalories).
 3. **Defender-Centric Pacing:** Abstracting multi-second duel exchanges into crisp simultaneous card plays to preserve tabletop tension and agency.
 4. **Heroic Dynamic Range:** Allowing protagonists to endure and overcome severe physical hardship at the upper limits of real human athletic and mental endurance, without reducing the game to a monotone grimdark death spiral.
+
+---
+
+## 7. Structured Claim Citations & Machine-Audited Verbatim Quotes
+
+To guarantee verisimilitude while avoiding brittle document-wide vetting resets, empirical syntheses in `design/research/synthesis/` anchor factual claims and quantitative parameters using in-file extended GFM footnotes.
+
+### A. Footnote Syntax & Structure
+
+Citations are placed inline via standard GFM footnote markers (e.g., `[^poppel-2009-temporal-integration]`) and defined in a dedicated section (e.g., `## Primary Evidence Anchors`) using 4-space indented YAML blocks:
+
+```markdown
+[^poppel-2009-temporal-integration]:
+    source: poppel-2009-presemantically-defined-temporal-windows
+    locator: "p. 1887"
+    quote: "The other mechanism refers to pre-semantic integration in the temporal range of approximately 2–3 s. ... universal process of temporal integration underlying the mental machinery."
+    status: unverified
+```
+
+### B. Required Fields
+
+- **`source`:** Exact kebab-case directory slug under `design/research/sources/<track>/<slug>`.
+- **`locator`:** Physical publication page number (e.g., `"p. 1887"`, `"pp. 1082–1083"`), section heading, or paragraph.
+- **`quote`:** Exact verbatim excerpt from the source's vaulted text (`extracted.md` or `extracted.txt`). Ellipses (`...`, `…`, or `[...]`) may be used to omit intervening text across sentences or paragraphs.
+- **`status`:** Epistemic verification state (`unverified` or `[vetted: <user> YYYY-MM-DD]`).
+
+### C. Epistemic Integrity Invariant
+
+1. **Agents Only Draft `unverified`:** AI agents must **never** draft citations marked as human-vetted (`status: confirmed`, `status: [vetted: ...]`). All agent-generated citations must strictly specify `status: unverified`.
+2. **Human Vetting Gate:** Only human reviewers may verify citations against source files and promote `status` to `[vetted: <user> YYYY-MM-DD]`.
+3. **Reset Invariant:** If an AI agent modifies a claim, alters referenced numbers, or updates a footnote definition, it must reset `status: unverified`.
+4. **No Inline Badges:** Verification status lives exclusively within the footnote definition block to minimize maintenance overhead in prose.
+
+### D. Automated Machine Verification
+
+All quotes are mechanically verified against primary vault text via the citation auditor:
+
+```bash
+./scripts/audit-citations
+# Or via sources management tool:
+python3 design/research/sources/scripts/archive_source.py check --citations
+```
+
+The tooling normalizes typographic differences (curly quotes, dashes, whitespace, line wraps) and verifies that every segment in a quote appears in proper sequence within the source text, providing instant assurance of quotation authenticity prior to human review.
