@@ -50,11 +50,30 @@ All literature and data must be vetted against this strict hierarchy to prevent 
 
 - **General Non-Fiction & Modern Overviews:** High-level history books or engineering overviews. Any concrete mechanical claim taken from Tier 3 must be traced back to its Tier 1 or Tier 2 citations.
 
+### Tier 4: Qualified Practitioner Observations & Gray Literature (Conditional Authority)
+
+When formal academic literature (Tier 1/2) is sparse or absent (e.g., historical martial arts grip speeds, traditional woodworking/blacksmithing tolerances, warbow loose rates), documented practitioner trials may be admitted into the vault (`design/research/sources/ephemera/` or `verisimilitude/`) with `epistemic_grade: practitioner_trial` or `experimental_archaeology`.
+
+To qualify, the source must pass the **4-Filter Gray Literature Rubric**:
+
+1. **Primary Observation vs. Hearsay:** Must document an actual physical trial or measurement (e.g., high-speed camera footage, calibrated load cells, chronographs, timed shooting sets). Unsourced opinions, forum assertions, or narrative essays summarizing folklore are rejected.
+2. **Apparatus Authenticity:** Equipment and technique must adhere to historical and material reality (e.g., a 100+ lb warbow drawn to proper draw length, an authentic 3–4 lb longsword, accurately articulated plate harness). Modern recreational sporting toys, fantasy stage props, or games with artificial non-combat rules fail this test.
+3. **Commercial / SEO Neutrality:** Must be motivated by historical inquiry, craft practice, or martial training—not commercial advertising (e.g., axe-throwing birthday venues, clickbait affiliate lists, SEO marketing blogs).
+4. **Methodological Transparency:** The practitioner must state or show conditions, repetitions, and limitations (e.g., _"We timed 10 reps across 3 trained fencers at 60 fps; average was 0.4 s"_ vs. _"It feels like under a second"_).
+
+**Synthesis and Citation Requirements for Tier 4:**
+
+- **Table Labeling:** Reference rows derived from Tier 4 must be tagged as `[Practitioner Observation]` or given a qualified confidence score.
+- **Prose Humility:** State the empirical boundary and sample size (e.g., _"Based on high-speed video analysis of 3 HEMA practitioners performing grip changes (0.3–0.5 s); formal kinematic laboratory studies are currently absent."_).
+- **Footnote YAML:** Include `epistemic_grade: practitioner_trial` alongside `status: unverified`.
+- **Open Research Gap:** Flag the parameter as a candidate for future academic replication.
+
 ### Disqualified Literature (Strictly Rejected)
 
 - **Tabletop RPG Tropes & Gamified Conventions:** "Studded leather armor," 10 lb swords, instantaneous recovery, hit point bloat, or treating rapiers as flimsy fencing foils.
-- **Pop-History Internet Summaries & Unsourced Wikis:** Unverified blog posts, YouTube video essays, and Wikipedia articles that synthesize unvetted folklore.
+- **Pop-History Internet Summaries, SEO Marketing & Unsourced Wikis:** Unverified blog posts, commercial marketing articles (e.g., escape rooms, commercial throwing bars), YouTube video essays with no primary physical tests, Reddit/Quora forum hearsay, and Wikipedia articles that synthesize unvetted folklore.
 - **Abstract Narrative Trivia:** Purely chronological timelines, dynastic genealogies, symbolic heraldry, or mythological folklore that do not explain what happens to a physical body, object, or system under stress.
+- **Zero-Evidence Fallback:** If a claim only exists in disqualified sources and lacks Tier 1–4 backing, **never invent fake numerical precision**. Convert the claim into a qualitative operational constraint or explicitly log it as an open research gap.
 
 ---
 
