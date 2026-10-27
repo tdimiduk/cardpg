@@ -81,7 +81,7 @@ Neuroscientist Ernst Pöppel demonstrated that human time perception is structur
 +-----------------------------------------------------------------------------+
 ```
 
-- **Level 1 (Elementary Temporal Events; ~30–50 ms):** Governed by high-frequency neuronal oscillations (30–40 Hz). Within an interval of 20–40 ms, two successive sensory stimuli are perceived as co-temporal or fused.[^poppel-2009-elementary-events] The temporal order threshold—the minimum latency needed to reliably discern which of two stimuli occurred first—is modality-dependent:
+- **Level 1 (Elementary Temporal Events; ~30–50 ms):** Governed by high-frequency neuronal oscillations (30–40 Hz). At the perceptual boundary, stimuli lasting $\le 40\text{ ms}$ possess no internal duration and are experienced as dimensionless "time points" (or fused into co-temporality).[^poppel-2009-mach-atemporal-point] In parallel, motor control chronometrics (saccades, pursuit eye movements, and choice RT) reveal multimodal response histograms with periodic peaks spaced 30–40 ms apart, demonstrating that central processing is discretized into 30–40 ms operational quanta.[^poppel-2009-elementary-events] The temporal order threshold—the minimum latency needed to reliably discern which of two stimuli occurred first—is modality-dependent:
   - Auditory: ~2–5 ms for fusion; 20–30 ms for temporal order.
   - Tactile: ~10 ms for fusion; 30 ms for temporal order.
   - Visual: ~20–40 ms for fusion; 40–50 ms for temporal order.
@@ -464,32 +464,39 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
 
 ## 6. Primary Evidence Anchors (Claim-Level Citations)
 
+[^poppel-2009-mach-atemporal-point]:
+    source: poppel-2009-presemantically-defined-temporal-windows
+    locator: "p. 1888 ([extracted.md#L11](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L11))"
+    quote: "in studying differential sensitivities in the auditory modality he observed that there is no experience of ‘duration’ for intervals that are shorter than 40 ms. Stimuli with 40 ms duration or shorter are experienced as ‘time points’. ... This time point can be conceived of as the ‘temporal window’ on a physical scale to construct primordial events"
+    status: [vetted: tdimiduk]
+
 [^poppel-2009-elementary-events]:
     source: poppel-2009-presemantically-defined-temporal-windows
-    locator: "p. 1889"
-    quote: "processed information is temporally segmented into successive units of approximately 30–40 ms; these elementary processing units should not be understood as ‘physical constants’, but as operating ranges with some variability."
-    status: unverified
+    locator: "p. 1889 ([extracted.md#L45](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L45))"
+    quote: "latency distributions of two types of eye movements and response histograms for choice reaction time show identical characteristics; in spite of the differences of average response time the modal distance in all cases is the same. This observation points to a common underlying temporal machinery, i.e. that processed information is temporally segmented into successive units of approximately 30–40 ms; these elementary processing units should not be understood as ‘physical constants’, but as operating ranges with some variability."
+    status: [vetted: tdimiduk]
 
 [^poppel-2009-temporal-integration]:
     source: poppel-2009-presemantically-defined-temporal-windows
-    locator: "p. 1887"
+    locator: "p. 1887 ([extracted.md#L3](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L3))"
     quote: "The other mechanism refers to pre-semantic integration in the temporal range of approximately 2–3 s. ... universal process of temporal integration underlying the mental machinery. This process is believed to be basic for maintenance and change of perceptual identity. Owing to the omnipresence of this kind of temporal segmentation, it is suggested to use this process for a pragmatic definition of the states of being conscious or the ‘subjective presence’."
-    status: unverified
+    status: weak
+    vetting_note: "tdimiduk: Pöppel frames this as a theoretical 'pragmatic definition', not empirical proof of sensory/motor binding. We should look for a stronger source (e.g. Köhler 1923 time-order error) or soften the prose."
 
 [^poppel-2009-subjective-present]:
     source: poppel-2009-presemantically-defined-temporal-windows
-    locator: "p. 1891"
+    locator: "p. 1891 ([extracted.md#L79](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L79))"
     quote: "universal integration process is automatic and pre-semantic, i.e. it is not determined by what is processed, but it creates a temporal window within which conscious activities can be implemented. Owing to the omnipresence of this phenomenon, it can also be used as a pragmatic definition of the subjective present"
     status: unverified
 
 [^schultze-kraft-2016-point-of-no-return]:
     source: schultze-kraft-2016-point-of-no-return-vetoing
-    locator: "Discussion, p. 1083"
+    locator: "Discussion, p. 1083 ([extracted.md#L55](../sources/verisimilitude/schultze-kraft-2016-point-of-no-return-vetoing/extracted.md#L55))"
     quote: "several aspects of our data suggest that subjects were able to cancel an upcoming movement until a point of no return was reached around 200 ms before movement onset. If the stop signal occurs later than 200 ms before EMG onset, the subject cannot avoid moving."
     status: unverified
 
 [^stetson-2007-time-dilation]:
     source: stetson-2007-time-dilation-frightening-event
-    locator: "Abstract / PLoS ONE 2(12): e1295"
+    locator: "Abstract / PLoS ONE 2(12): e1295 ([extracted.md#L3](../sources/verisimilitude/stetson-2007-time-dilation-frightening-event/extracted.md#L3))"
     quote: "We found no evidence of increased temporal resolution, in apparent conflict with the fact that participants retrospectively estimated their own fall to last 36% longer than others' falls. ... Our findings suggest that time-slowing is a function of recollection, not perception: a richer encoding of memory may cause a salient event to appear, retrospectively, as though it lasted longer."
     status: unverified
