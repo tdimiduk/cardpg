@@ -552,39 +552,40 @@ Synthesizing cognitive psychophysics and motor neurobiology establishes the empi
     source: poppel-2009-presemantically-defined-temporal-windows
     locator: "p. 1887 ([extracted.md#L3](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L3))"
     quote: "The other mechanism refers to pre-semantic integration in the temporal range of approximately 2–3 s. ... universal process of temporal integration underlying the mental machinery. This process is believed to be basic for maintenance and change of perceptual identity. Owing to the omnipresence of this kind of temporal segmentation, it is suggested to use this process for a pragmatic definition of the states of being conscious or the ‘subjective presence’."
-    status: theoretical_hypothesis
+    status: unverified
     vetting_note: "tdimiduk: Pöppel explicitly frames this as a theoretical 'pragmatic definition' and conceptual operating range rather than a proven biological primitive. See White (2017) for systematic critique."
 
 [^poppel-2009-subjective-present]:
     source: poppel-2009-presemantically-defined-temporal-windows
     locator: "p. 1891 ([extracted.md#L79](../sources/verisimilitude/poppel-2009-presemantically-defined-temporal-windows/extracted.md#L79))"
     quote: "universal integration process is automatic and pre-semantic, i.e. it is not determined by what is processed, but it creates a temporal window within which conscious activities can be implemented. Owing to the omnipresence of this phenomenon, it can also be used as a pragmatic definition of the subjective present"
-    status: theoretical_hypothesis
+    status: unverified
     vetting_note: "From Section 4 of Pöppel (2009), titled 'a speculation on the purpose of pre-semantic integration'."
 
 [^white-2017-critique-subjective-present]:
-    source: "White, P. A. (2017). The three-second 'subjective present': A critical review and a new proposal. Psychological Bulletin, 143(7), 735–756."
-    locator: "Abstract / pp. 735, 750–752"
-    quote: "The hypothesis that there is a subjective present with a duration of approximately 3 s was evaluated across a range of research topics... Most research findings are not consistent with the hypothesis. What positive evidence there is can be explained in terms of specific processing mechanisms rather than a general temporal integration process... temporal integration occurs on multiple time scales, and no duration is uniquely privileged."
-    status: peer_reviewed_review
+    source: white-2017-three-second-subjective-present-critique
+    locator: "Abstract, pp. 735, 750–752 ([extracted.txt#L53-L2863](../sources/verisimilitude/white-2017-three-second-subjective-present-critique/extracted.txt#L53-L2863))"
+    quote: "Most of the research findings were not consistent with the three-second window hypothesis. The small amount of supportive evidence is better interpreted as effects of specific processing mechanisms, not as showing general temporal integration. The evidence shows that temporal integration occurs on multiple time scales and no particular duration is special, and that windows of temporal integration are defined in terms of information density, not in terms of duration. The subjective present is constructed through local temporal integration on multiple time scales, further integrated into a coherent global representation of what is going on. ... At the supra-second scale as well as the sub-second scale, temporal integration is a local phenomenon, operating in different ways in different processes. ... The three main features of this proposal are that temporal integration operates in different ways in different processes, that temporal parameters of the \"subjective present\" are set by information density rather than time per se, and that there is some form of global integration of the products of local integration processes that is responsible for the subjective coherence of experience and the general sense of ongoing happening. ... Two conclusions can be drawn from this research. One is that there is no single time window defining the envelope of integration. Instead, there are multiple time windows of integration in perceptual processing and beyond, starting on the millisecond time scale and stretching out to the level of narrative on a time scale perhaps as much as hundreds of seconds ... The other is that each window of temporal integration should be conceptualised in terms of information capacity, not time scale. ... Thus, the envelope of integration is a spatially, temporally, and semantically organised and integrated representation of what is going on, combining local integration of all three kinds into a coherent overall representation. It is not defined in terms of time scales. ... The envelope of integration, then, is an integrated representation of the current percept (the experienced present) with information about the recent past, which is constructed on several time scales or levels of information processing, each of which involves its own internal temporal integration, and each of which is temporally integrated into a coherent representation of what is going on. ... There is no three-second subjective present or experienced moment. There is, instead, an envelope of integration in which there are multiple qualitatively different representations of what is going on, each occupying different and variable time scales of integration, and each integrated into an overall representation that has no fixed time limit, but in any case extends well beyond the three second mark. ... Instead, piecemeal updating is accompanied by integration processes that ensure that our perception of what is going on remains coherent."
+    status: unverified
+    vetting_note: "Systematic review dismantling the 3-second biological clock. Conclusions across Abstract (lines 53–67), p. 735 (lines 209–235), and pp. 750–752 (lines 2013–2863) demonstrate multi-scale temporal integration governed by task constraints and information density."
 
 [^herzog-2016-time-slices]:
-    source: "Herzog, M. H., Kammer, T., & Scharnowski, F. (2016). Time Slices: What Is the Duration of a Percept? PLOS Biology, 14(4), e1002433."
-    locator: "Abstract / pp. 2–4"
-    quote: "We propose a two-stage model: a first, quasi-continuous, unconscious processing stage of high temporal resolution is followed by a second, discrete conscious stage with much lower temporal resolution. ... integration occurs within a discrete time window (up to 400 ms) before the percept is consciously rendered."
-    status: peer_reviewed_model
+    source: herzog-2016-time-slices-percept-duration
+    locator: "pp. 2–4 ([extracted.md#L50-L92](../sources/verisimilitude/herzog-2016-time-slices-percept-duration/extracted.md#L50-L92))"
+    quote: "We propose a two-stage model, in which first visual information is unconsciously processed with relatively high temporal resolution ... conscious percepts occur at a much slower rate, at discrete moments, “representing” the output of unconscious processing. ... This experiment revealed that feature fusion is not completed before 400 ms, and consequently consciousness cannot occur beforehand. It thus provides a lower bound for the minimal duration of percepts in this paradigm."
+    status: unverified
 
 [^repp-2005-synchronization-ceiling]:
-    source: "Repp, B. H. (2005). Sensorimotor synchronization: A review of the tapping literature. Psychological Bulletin, 131(6), 969–1016."
-    locator: "Section on Rate Limits, p. 972"
-    quote: "The longest IOI [inter-onset interval] at which 1:1 synchronization is possible without mental subdivision is around 1,800 ms... At slower tempos, tapping becomes reactive rather than anticipatory, and subjects must resort to internal counting or movement strategies to bridge the interval."
-    status: peer_reviewed_review
+    source: repp-2005-sensorimotor-synchronization-review
+    locator: "Section 2 (Rate Limits), pp. 971–972 ([extracted.txt#L152-L244](../sources/verisimilitude/repp-2005-sensorimotor-synchronization-review/extracted.txt#L152-L244))"
+    quote: "There is also an upper IOI limit (or lower rate limit) for SMS with a metronome sequence, although it is less sharply defined. A crucial aspect of SMS is the prediction of future events: Although each tap may be regarded as the response to a preceding tone, it is a timed response that is delayed so as to coincide approximately with the next tone. ... When metronome IOIs exceed about 1.8 sec, prediction becomes increasingly difficult, and responses begin to lag behind their respective target events (Engström et al., 1996; Mates, Radil, Müller, & Pöppel, 1994; Y. Miyake, Onishi, & Pöppel, 2004). In other words, when responses can no longer be timed accurately enough to coincide with the next tone, some responses turn into simple reactions to that tone, and this results in a bimodal distribution of asynchronies. ... The upper IOI limit of about 1.8 sec has been related to the duration of the subjective present and the temporal capacity of working memory (Pöppel, 1997; Szelag, von Steinbüchel, Reiser, de Langen, & Pöppel, 1996; Wittmann & Pöppel, 1999/2000). More generally, the IOI limits for SMS coincide with those within which a sequence of events can be perceived to have rhythmic and metrical structure"
+    status: unverified
 
 [^wittmann-2011-moments-in-time]:
-    source: "Wittmann, M. (2011). Moments in time. Frontiers in Integrative Neuroscience, 5, 66."
-    locator: "Section: Three levels of temporal integration, pp. 2–5"
-    quote: "Three distinct levels of temporal integration can be differentiated: (1) functional moments on the millisecond scale (sub-100 ms), (2) experienced moments on the multi-hundred-millisecond to multi-second scale (~300 ms to ~3 s) binding sensory Gestalts, and (3) mental presence lasting multiple seconds sustained by working memory and interoceptive self-awareness."
-    status: peer_reviewed_taxonomy
+    source: wittmann-2011-moments-in-time
+    locator: "Sections: The Functional Moment, The Experienced Moment, Mental Presence ([extracted.md#L11-L39](../sources/verisimilitude/wittmann-2011-moments-in-time/extracted.md#L11-L39))"
+    quote: "Departing from the taxonomy by Pöppel () three different temporal processing levels will be discerned which are assumed to temporally integrate events on different time scales. ... temporal integration provides _functional moments_ of experienced co-temporality. ... Whereas the duration of the _functional moment_ is not perceived, an _experienced moment_ relates to the experience of an extended now. ... Whereas the _experienced moment_ forms an elementary unit, a temporally unified percept, _mental presence_ involves the experience of a perceiving and feeling agent ... within a window of extended presence, a phenomenon that is based on working memory function."
+    status: unverified
 
 [^schultze-kraft-2016-point-of-no-return]:
     source: schultze-kraft-2016-point-of-no-return-vetoing

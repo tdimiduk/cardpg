@@ -881,7 +881,91 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk"
           summary: "Empirical literature benchmark for Quantifying the Impact of Mounted Load Carrying on Equids: A Review."
-
+    - type: journal_article
+      title: "Time Slices: What Is the Duration of a Percept?"
+      author: "Michael H. Herzog, Thomas Kammer, Frank Scharnowski"
+      year: 2016
+      doi_or_url: "https://doi.org/10.1371/journal.pbio.1002433"
+      local_archive: "sources/verisimilitude/herzog-2016-time-slices-percept-duration"
+      epistemic_grade: "primary_academic"
+      description: >
+        Two-stage model of visual temporal processing proposing quasi-continuous
+        unconscious processing up to 400 ms followed by discrete conscious percept
+        rendering.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Time Slices: What Is the Duration of a Percept?."
+    - type: journal_article
+      title: "Moments in time"
+      author: "Marc Wittmann"
+      year: 2011
+      doi_or_url: "https://doi.org/10.3389/fnint.2011.00066"
+      local_archive: "sources/verisimilitude/wittmann-2011-moments-in-time"
+      epistemic_grade: "primary_academic"
+      description: >
+        Taxonomy of three distinct levels of temporal integration: functional
+        moments (sub-100 ms), experienced moments (multi-hundred ms to ~3 s), and
+        mental presence (multi-second).
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Moments in time."
+    - type: clinical_chapter
+      title: "Adult Dehydration"
+      author: "Harsimar Singh, Alok K. Tripathi"
+      year: 2023
+      doi_or_url: "https://www.ncbi.nlm.nih.gov/books/NBK555956/"
+      local_archive: "sources/verisimilitude/statpearls-2023-adult-dehydration-pathophysiology"
+      synthesis_reference: "synthesis/hydration-and-fluid-deficit-kinetics.md"
+      epistemic_grade: "primary_academic"
+      publication: "StatPearls Publishing"
+      description: >
+        Comprehensive clinical module on adult dehydration etiology, plasma
+        osmolality and urine concentration criteria, hypovolemic shock stages, fluid
+        deficit calculation, and oral vs intravenous rehydration protocols.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk (human)"
+          summary: "Authoritative clinical reference on physiological fluid volume loss, cellular dehydration mechanisms, and rehydration kinetics."
+    - type: journal_article
+      title: "The three-second 'subjective present': A critical review and a new proposal"
+      author: "Peter A. White"
+      year: 2017
+      doi_or_url: "https://doi.org/10.1037/bul0000104"
+      local_archive: "sources/verisimilitude/white-2017-three-second-subjective-present-critique"
+      epistemic_grade: "primary_academic"
+      publication: "Psychological Bulletin"
+      description: >
+        Comprehensive critical review evaluating behavioral and neurophysiological
+        evidence for the 3-second temporal window, demonstrating that temporal
+        integration operates dynamically across multiple time scales without a
+        privileged duration.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk (human)"
+          summary: "Authoritative critical review dismantling the universal 3-second temporal window hypothesis."
+    - type: journal_article
+      title: "Sensorimotor synchronization: A review of the tapping literature"
+      author: "Bruno H. Repp"
+      year: 2005
+      doi_or_url: "https://doi.org/10.3758/BF03206433"
+      local_archive: "sources/verisimilitude/repp-2005-sensorimotor-synchronization-review"
+      epistemic_grade: "primary_academic"
+      publication: "Psychonomic Bulletin & Review"
+      description: >
+        Comprehensive review of sensorimotor synchronization establishing the ~1,800
+        ms ceiling for 1:1 tapping synchronization without mental subdivision,
+        negative mean asynchrony, and phase correction dynamics.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk (human)"
+          summary: "Definitive empirical review of tapping literature and sensorimotor entrainment boundaries."
 
 ---
 modeling_logistics_transport_materials:

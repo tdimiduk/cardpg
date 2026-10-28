@@ -13,6 +13,7 @@ related_files:
   - "design/research/reports/exertion-recovery-dynamics/report.md"
   - "design/research/synthesis/consequences-exploration.md"
   - "design/research/synthesis/cold-water-immersion-and-hypothermia.md"
+  - "design/research/synthesis/hydration-and-fluid-deficit-kinetics.md"
 vault_sources:
   - "design/research/sources/verisimilitude/drain-2023-cognitive-performance-load-carriage"
   - "design/research/sources/verisimilitude/mattacola-2002-rehabilitation-ankle-sprain-instability"
@@ -23,6 +24,7 @@ vault_sources:
   - "design/research/sources/verisimilitude/thurber-2019-alimentary-limit-human-endurance"
   - "design/research/sources/verisimilitude/tornero-aguilera-2022-central-peripheral-fatigue-review"
   - "design/research/sources/verisimilitude/the-2021-brief-history-of-shigella"
+  - "design/research/sources/verisimilitude/statpearls-2023-adult-dehydration-pathophysiology"
   - "design/research/sources/verisimilitude/rushton-2024-friction-blister-causation"
 ---
 
@@ -122,7 +124,7 @@ Models fuel starvation during high-output travel and labor, dispelling common as
 
 ## Section 5: Waterborne Pathogens, Dehydration & Systemic Infection
 
-Models the debilitating physiological effects of contaminated water sources, fluid deficit, and wound complications in austere wilderness environments.
+Models the debilitating physiological effects of contaminated water sources, fluid deficit, and wound complications in austere wilderness environments. For the comprehensive physiological model, clinical grading, plasma osmolar thresholds, fluid deficit equations, and rehydration kinetics, see the dedicated synthesis in [`hydration-and-fluid-deficit-kinetics.md`](file:///home/tdimiduk/cardpg/cardpg/design/research/synthesis/hydration-and-fluid-deficit-kinetics.md).
 
 ### 5.1 Dehydration Kinetics Spectrum
 

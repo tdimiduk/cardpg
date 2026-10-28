@@ -151,6 +151,10 @@ design_process_and_research:
       purpose: "A quantitative biomechanical and kinematic investigation into movement interception, reaction latencies, turning radiuses, weapon reach chords, historical counter-rush techniques, and collision mechanics within close proximity (1-4m)."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:reach", "core-concept:spacing", "core-concept:tempo", "core-concept:verisimilitude"]
 
+    - path: "research/synthesis/hydration-and-fluid-deficit-kinetics.md"
+      purpose: "A quantitative clinical and physiological synthesis of adult dehydration grading (% total body water deficit), fluid loss etiology, plasma and urinary osmolar thresholds, multi-system functional degradation curves, and oral vs IV rehydration kinetics grounded in StatPearls (Singh & Tripathi 2023)."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:attrition", "core-concept:consequences", "core-concept:verisimilitude"]
+
   design_theory_and_readings:
     - path: "research/theory/readings/exploration-is-logistics.md"
       purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."
