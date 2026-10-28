@@ -49,10 +49,6 @@ design_process_and_research:
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/combat-locomotion/report.md", meta_file: "research/reports/combat-locomotion/meta.yaml", prompt_file: "research/reports/combat-locomotion/prompt.md" }
 
-    - purpose: "A quantitative lexicon of the time costs, in seconds, for discrete pre-modern combat actions, including ranged attacks, movement, and weapon handling. Used for designing the game's action economy and the pacing of Crisis Time."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:action-resolution", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/combat-action-time/report.md", meta_file: "research/reports/combat-action-time/meta.yaml", prompt_file: "research/reports/combat-action-time/prompt.md" }
-
     - purpose: "A deep-dive research report on the metabolic and biomechanical costs of wearing replica medieval armor, providing quantitative multipliers for plate and maille."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:armor", "core-concept:encumbrance", "core-concept:fatigue", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/metabolic-cost-of-armor/report.md", meta_file: "research/reports/metabolic-cost-of-armor/meta.yaml", prompt_file: "research/reports/metabolic-cost-of-armor/prompt.yaml" }

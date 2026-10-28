@@ -317,6 +317,7 @@ foundational_scientific_medical:
       author: "Askew, G. N., Formenti, F., & Minetti, A. E."
       year: 2012
       doi_or_url: "https://doi.org/10.1098/rspb.2011.0816"
+      local_archive: "sources/verisimilitude/askew-2012-armour-locomotor-performance"
       epistemic_grade: "primary_academic"
       publication: "Proceedings of the Royal Society B: Biological Sciences"
       description: >
@@ -354,6 +355,36 @@ foundational_scientific_medical:
           type: "quick scan"
           author: "tdimiduk"
           summary: "confirmed that the report exists at https://apps.dtic.mil/sti/tr/pdf/ADA504354.pdf and conclusions seem in line with what we derived"
+    - type: journal_article
+      title: "Three-Dimensional Kinematic Analysis of Elite Javelin Throwers at the World Athletics Championship 'Sevilla 99'"
+      author: "Campos, J., Brizuela, G., & Ramón, V."
+      year: 2004
+      doi_or_url: "https://www.uv.es/jcampos/Documentos/NEA_IAAF_MenJavelin.pdf"
+      local_archive: "sources/verisimilitude/campos-2004-javelin-kinematics"
+      epistemic_grade: "primary_academic"
+      publication: "New Studies in Athletics"
+      description: >
+        High-speed 3D photogrammetric kinematic study of elite javelin throwers quantifying preparatory phase duration (140-260 ms) and final release phase duration (100-140 ms), establishing the biomechanical baseline for human projectile delivery.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Peer-reviewed IAAF biomechanical study quantifying preparatory delivery phase and final release kinematics for human throwing."
+    - type: report
+      title: "The Sling and Its Place in the History of Weaponry"
+      author: "Harrison, C."
+      year: 2006
+      doi_or_url: "https://www.chrisharrison.net/index.php/Research/Sling"
+      local_archive: "sources/verisimilitude/harrison-2006-sling-weaponry"
+      epistemic_grade: "secondary_academic"
+      publication: "Bulletin of Primitive Technology / Chris Harrison Research"
+      description: >
+        Comprehensive historical and archaeological synthesis on projectile weapons in antiquity and medieval Europe, quantifying rate of fire benchmarks for slings (>12 rounds/min), longbows (10-12 un-aimed arrows/min), and crossbows (<2 bolts/min).
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "Gemini 3.8 Flash (Antigravity)"
+          summary: "Rigorous historical synthesis of archaeological and experimental literature on projectile weapons and delivery rates."
     - type: medical_textbook_chapter
       title: "Impact of Hemorrhage on Trauma Outcomes: An Overview of Epidemiology, Clinical Presentations, and Therapeutic Considerations"
       author: "Kauvar, D. S., Lefering, R., & Wade, C. E."
