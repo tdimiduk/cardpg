@@ -151,6 +151,10 @@ design_process_and_research:
       purpose: "A quantitative clinical and physiological synthesis of adult dehydration grading (% total body water deficit), fluid loss etiology, plasma and urinary osmolar thresholds, multi-system functional degradation curves, and oral vs IV rehydration kinetics grounded in StatPearls (Singh & Tripathi 2023)."
       tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:exploration", "core-concept:hardship", "core-concept:attrition", "core-concept:consequences", "core-concept:verisimilitude"]
 
+    - path: "research/synthesis/stress-induced-analgesia.md"
+      purpose: "A quantitative clinical and neurobiological synthesis of stress-induced analgesia (SIA), dual opioid and non-opioid (endocannabinoid/serotonergic) pathways, static threshold blunting vs. wind-up slope invariance, temporal decay kinetics, and the 'walking wounded' tissue dissociation."
+      tags: ["doc-type:research-synthesis", "audience:designer-facing", "pillar:combat", "core-concept:harm", "core-concept:injury", "core-concept:consequences", "core-concept:fatigue", "core-concept:verisimilitude"]
+
   design_theory_and_readings:
     - path: "research/theory/readings/exploration-is-logistics.md"
       purpose: "Analysis of OSR resource management and its application to CardPG's card economy and exploration pacing."

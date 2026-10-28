@@ -107,6 +107,7 @@ related_files:
 | [Action Duration, the Perceptual Present, and Motor Control](synthesis/action-duration-and-perceptual-present.md)        | An empirical cognitive neuroscience and motor control analysis of human action duration, the 2-3 second 'perceptual present', feed-forward vs.                   |
 | [Movement Interception, Kinematics, and Close-Proximity Engagement](synthesis/movement-interception-and-kinematics.md)   | A quantitative biomechanical and kinematic investigation into movement interception, reaction latencies, turning radiuses, weapon reach chords, historical co... |
 | [Hydration, Fluid Deficit Kinetics, and Clinical Dehydration Grading](synthesis/hydration-and-fluid-deficit-kinetics.md) | A quantitative clinical and physiological synthesis of adult dehydration grading (% total body water deficit), fluid loss etiology, plasma and urinary osmola... |
+| [Stress-Induced Analgesia and Acute Trauma Dissociation](synthesis/stress-induced-analgesia.md)                          | A quantitative clinical and neurobiological synthesis of stress-induced analgesia (SIA), dual opioid and non-opioid (endocannabinoid/serotonergic) pathways, ... |
 
 ### Empirical Reports (`reports/`)
 

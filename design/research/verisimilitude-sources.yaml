@@ -150,6 +150,23 @@ modeling_armor_weapons_combat:
             type: "empirical literature verification"
             author: "Gemini 3.8 Flash (Antigravity)"
             summary: "Definitive clinical and biomechanical treatise on cervical whiplash kinematic injury, delayed spasm onset, and progressive recovery."
+      - type: journal_article
+        title: "Temporal demands of elite fencing"
+        author: "Rafael Tarragó, Lindsay Bottoms, Xavier Iglesias"
+        year: 2023
+        doi_or_url: "https://doi.org/10.1371/journal.pone.0285033"
+        local_archive: "sources/verisimilitude/wylde-2023-temporal-demands-fencing"
+        epistemic_grade: "primary_academic"
+        description: >
+          Empirical time-motion analysis of work-to-rest ratios, action phase
+          durations, and temporal demands across elite épée, foil, and sabre fencing
+          competitions.
+        vetting:
+          - date: "2026-10-27"
+            type: "empirical literature verification"
+            author: "tdimiduk"
+            summary: "Empirical literature benchmark for Temporal demands of elite fencing."
+
 ---
 modeling_physical_costs_of_effort:
   description: >
@@ -997,6 +1014,37 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk (human)"
           summary: "Definitive empirical review of tapping literature and sensorimotor entrainment boundaries."
+    - type: journal_article
+      title: "Cannabinoid and Serotonergic Systems: Unraveling the Pathogenetic Mechanisms of Stress-Induced Analgesia"
+      author: "Marques et al."
+      year: 2024
+      doi_or_url: "https://doi.org/10.3390/biomedicines12010235"
+      local_archive: "sources/verisimilitude/marques-2024-cannabinoid-serotonergic-sia"
+      epistemic_grade: "primary_academic"
+      description: >
+        Review of non-opioid stress-induced analgesia mechanisms focusing on
+        endocannabinoid, serotonergic, and noradrenergic pathways in acute
+        antinociception.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Cannabinoid and Serotonergic Systems: Unraveling the Pathogenetic Mechanisms of Stress-Induced Analgesia."
+    - type: journal_article
+      title: "Stress-induced analgesia: an evaluation of effects on temporal summation of pain and the role of endogenous opioid mechanisms"
+      author: "Matre et al."
+      year: 2022
+      doi_or_url: "https://doi.org/10.1097/PR9.0000000000000987"
+      local_archive: "sources/verisimilitude/matre-2022-stress-induced-analgesia-temporal-summation"
+      epistemic_grade: "primary_academic"
+      description: >
+        Human experimental trial on stress-induced analgesia examining acute pain
+        rating reduction, temporal summation, and opioid blockade via naloxone.
+      vetting:
+        - date: "2026-10-27"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Stress-induced analgesia: an evaluation of effects on temporal summation of pain and the role of endogenous opioid mechanisms."
 
 ---
 modeling_logistics_transport_materials:
