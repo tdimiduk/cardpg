@@ -25,17 +25,25 @@ Under Layered Pool Fill, monster types naturally produce different threat profil
 
 ### The Swarm / Pack (e.g., Goblins, Dire Wolves, Giant Rats)
 
-- **Low Impact, High Multiplicity**: Swarms generate 1–2 Impact across multiple simultaneous strikes.
-- **Collective Escalation**: Swarm hits combine their Impact against the target. Three goblins generating 2 Impact each ($I = 6$) against an armored hero ($N = 3$) completely fill Tier 1 and Tier 2, guaranteeing Tier 2 trauma (`[Sev 2, Sev 2, Sev 2]`).
+- **Low Impact, High Multiplicity**: Swarms generate 1–2 Impact across multiple simultaneous strikes. Because each individual minion generates $I \le N$, each minion natively draws **Tier 1** cards during Step 2.
+- **Separate vs. Merged Pools**:
+  - **Against Lightly Armored / Unarmored Targets ($N = 2\text{–}3$):** When multiple minions generate enough Tier 1 cards to fill multiple pools of size $N$ (e.g., four goblins each generating 2 Impact against an unarmored $N=2$ skirmisher), the GM can keep their pools separate (`[Sev 1, Sev 1]` $\times 4$) to inflict **multiple Tier 1 consequences simultaneously** in a single round. Because all pools resolve simultaneously at the end of the round, these newly inflicted conditions do not promote each other on the round they land, but they bury the hero in tactical friction and expose `Vulnerable` tags for lethal Round 2 escalations.
+  - **Against Heavy Armor ($N = 4\text{–}5$):** When individual goblin hits ($I = 1\text{–}2$) would leave "No Consequence" blanks on their own, the GM **merges their drawn candidates into a shared pool** (e.g., three goblins generating `1, 2, 2` Impact merge their 5 Tier 1 cards to fill all 5 slots of a Full Plate knight's $N=5$ pool, stripping all blanks and forcing 1 Tier 1 consequence).
 - **Deck Drain**: Beyond consequences, defending against multiple attacks forces continuous card flips, rapidly exhausting the defender's draw deck toward Fatigue Cycles.
 
 ### The Combined Assault (Boss + Minions)
 
 When a boss and minions attack the same character in a round:
 
-- Minions contribute the base Impact that saturates Tier 1, eliminating clean soak blanks.
-- The boss's heavy blow pushes the total Impact straight into Tier 2 and Tier 3.
-- The GM curates the pool: presenting the boss's heavy trauma alongside the minions' sharpest tactical locks or active tag escalations.
+- The boss resolves their own Layered Fill (often reaching Tier 2 or Tier 3 natively on a heavy blow), while minions draw Tier 1 candidates from their probing strikes.
+- The GM can **merge the minions' Tier 1 draws into the boss's pool** to eliminate any remaining blanks, trigger `Vulnerable` promotions (Widen or Escalate) on the defender's existing conditions, and curate the sharpest tactical locks into the bottleneck slots alongside the boss's heavy trauma—or keep a full $N$-card minion pool separate to force the player to suffer two consequences at once.
+
+### Optional Rules Module: Surplus Crush (2-for-1 Merge Escalation)
+
+For tables that want large swarms or coordinated groups to be able to push directly into higher severity tiers on Round 1 without waiting for Round 2 tag promotions:
+
+- **Surplus Crush:** When multiple attackers merge their candidate cards into a shared pool, once a severity tier contains $N$ cards, the attackers may return **2 surplus candidate cards** of that tier to draw **1 card from the next higher severity tier ($K+1$)**.
+- _Scaling Effect:_ While a single heavy hitter reaches guaranteed Tier 2 against $N=3$ at $3 + 3 = \mathbf{6\text{ Impact}}$, a merged swarm of small hits needs $3 + (2 \times 3) = \mathbf{9\text{ Impact}}$ to crush three Tier 2 cards on a fresh target.
 
 ---
 
@@ -45,15 +53,16 @@ To prevent multi-attacker rounds from bogging down the table, use these GM pacin
 
 ### The Minion Batching Heuristic
 
-When a group of 3–5 identical mooks (e.g., kobolds or goblins) each generate 1 Impact:
+When a group of 3–5 identical mooks (e.g., kobolds or goblins) each generate 1–2 Impact ($I_i \le N$):
 
-1. **Do Not Make Micro-Decisions**: Do not deliberate over what each individual minion buys.
-2. **Batch Draw**: Count the total 1-Impact minions (e.g., 4) and draw that exact number of cards (4) straight off the **Tier 1** deck.
-3. **Five-Second Exploitation & Curation**:
-   - Glance at the target's active conditions starting at lowest severity. Does any drawn card match an active condition's `Vulnerable` tags? If yes, lay it sideways on that condition and choose:
-     - **If candidates < N:** **Widen** (draw 2 replacement cards from Tier 1 to eliminate a blank soak slot).
-     - **If candidates >= N:** **Escalate** (draw 1 replacement card from Tier 2 to force platform or biological trauma).
-   - Select the $N$ highest-threat cards (highest Severity, then highest Priority number) and present them to the player.
+1. **Do Not Make Micro-Decisions**: Since every minion has $I_i \le N$, every point of minion Impact simply draws 1 **Tier 1** card.
+2. **Batch Draw**: Count the total Impact across the minion pack (e.g., 5) and draw that exact number of cards (5) straight off the **Tier 1** deck.
+3. **Five-Second Grouping, Exploitation & Curation**:
+   - Group the drawn cards into full pools of size $N$ (or merge them into a single $N$-card pool against high-$N$ armor).
+   - For each pool, glance at the target's start-of-round active conditions starting at lowest severity. Each active condition may be exploited at most **once per pool**: if a drawn card in that pool matches an active condition's `Vulnerable` tags, lay it sideways and choose:
+     - **If candidates in pool < N:** **Widen** (draw 2 replacement cards from Tier 1 to eliminate a blank soak slot).
+     - **If candidates in pool >= N:** **Escalate** (draw 1 replacement card from Tier 2 to force platform or biological trauma).
+   - Select the $N$ highest-threat cards per pool (highest Severity, then highest Priority number) and present them to the player.
 4. **Return the Rest**: Return unchosen candidates and sideways-tucked cards to their respective decks.
 
 ### Priority Numbers & Default Curation (VTT and Zero-Friction Play)

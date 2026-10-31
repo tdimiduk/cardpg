@@ -32,60 +32,65 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 ```mermaid
 flowchart TD
     A["1. Incoming Attacks Declared (Simultaneous Resolve Step)"] --> B["2. Defender Meets Strength for Each Attack (Hand Defend + Deck Flips)"]
-    B --> C["3. Tally Total Impact = Cards flipped for all attacks targeting defender"]
-    C --> D["4. Layered Draw: Fill Tiers of Width N from Bottom Up (1 Impact = 1 Card)"]
-    D --> E["5. Vulnerability Exploitation: Lay matching Tier K <= S draw sideways on active Tier S condition -> Escalate (Tier K+1) or Widen (2x Tier K)"]
-    E --> F["6. Attackers Curate N Cards from All Active Candidates"]
-    F --> G["7. Defender Selects 1 Consequence (or Blank if Candidates < N)"]
+    B --> C["3. Count Impact (I) per Attack = Cards flipped for that attack"]
+    C --> D["4. Per-Attack Layered Draw & Optional Pool Merge: Draw tiers of width N; keep pools separate or merge"]
+    D --> E["5. Vulnerability Exploitation (Once per Condition per Pool): Lay matching Tier K <= S draw sideways -> Escalate (Tier K+1) or Widen (2x Tier K)"]
+    E --> F["6. Curate Pools: Attackers curate N cards per pool"]
+    F --> G["7. Defender Selects 1 Consequence per Pool (or Blank if Candidates < N)"]
 ```
 
-### Step 1: Meet Strength & Accumulate Impact
+### Step 1: Meet Strength & Count Impact
 
 1. **Reactive "Defend" Actions (Optional)**: For each incoming attack, the defender may play an applicable **Defend** card from hand as an [[Action Stack]] (paying its printed [[Cost]] in additional hand cards). The card's printed rules text defines how it modifies the resolution.
 2. **Flip from Deck**: If the attack's Strength is not yet met, flip cards from the top of the deck one by one into a **flipped stack** until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
-3. **Accumulate Impact**: The number of cards flipped across all attacks targeting the defender this round is the **Total Impact ($I$)**.
+3. **Count Impact**: The number of cards flipped for an attack is that attack's **Impact ($I$)**.
 
-### Step 2: Draw Candidate Consequences (Layered Pool Fill)
+### Step 2: Draw Candidate Consequences & Form Pools
 
-Candidates are drawn from the severity decks by filling tiers of width $N$ (the defender's Pool Size) from the bottom up, with **1 Impact = 1 card drawn**:
+Each attacker independently converts their attack's Impact ($I$) into candidate cards by filling tiers of width $N$ (the defender's Pool Size) from the bottom up, with **1 Impact = 1 card drawn**:
 
 1. **Tier 1 (Severity 1)**: The first $N$ Impact draws up to $N$ cards from the **Severity 1** deck.
-   - If total Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by widening during Step 3.
+   - If an attack's Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by merging pools or widening during Step 3.
 2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
 3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
 4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
 
+**Separate or Merged Pools:**
+
+- Each attacker may keep their drawn candidates as an independent Consequence Pool (allowing multiple attacks that each reach $\ge N$ cards to inflict multiple consequences simultaneously), **or** multiple attackers targeting the same defender this round may **merge their drawn candidate cards into a shared pool** before Step 3 (allowing smaller hits to fill $N$ slots together and eliminate blanks).
+
 ### Step 3: Exploit Active Vulnerabilities (Escalate vs. Widen)
 
-Active conditions in play in front of the defender list **`Vulnerable: [Tags]`**—specific openings created by that condition.
+Active conditions in play in front of the defender at the start of the round list **`Vulnerable: [Tags]`**—specific openings created by that condition.
 
-After drawing all base candidates, attackers evaluate the candidate pool against the defender's active conditions to either escalate severity or expand pool volume:
+Within each Consequence Pool (after any pool merging), attackers evaluate that pool's candidates against the defender's start-of-round active conditions to either escalate severity or expand pool volume:
 
-1. **Matching:** An active condition of **Severity $S$** can exploit any drawn candidate of **Severity $K \le S$** that matches one of its `Vulnerable` tags.
-2. **Tactile Exploitation (Escalate or Widen):** The attacker places the matching Tier $K$ candidate sideways across the exploited active condition and chooses one:
+1. **Matching:** An active condition of **Severity $S$** can exploit any drawn candidate in the pool of **Severity $K \le S$** that matches one of its `Vulnerable` tags.
+2. **Tactile Exploitation (Escalate or Widen):** The attacker places the matching Tier $K$ candidate sideways and chooses one:
    - **Escalate (Vertical):** Draw **1 replacement card from the Severity $K+1$ deck** (or allocate a Tier 4 Taken Out candidate when promoting a Tier 3 card via an active Tier 3 condition). Use this once the pool has enough cards to fill $N$, driving toward platform ceilings, broken limbs, and incapacitation.
    - **Widen (Horizontal):** Draw **2 replacement cards from the Severity $K$ deck** (adding +1 net candidate to the pool). Use this to crack heavy armor shells by converting implicit "No Consequence" blank slots into active consequences when $I < N$, or to expand curation choices within the tier.
-3. **Limit:** Each active condition can hold at most **1 sideways card** (exploiting at most 1 candidate) per resolution.
-4. **Chained Exploitation:** A newly drawn replacement card may be exploited again only if the defender has another unspent active condition of it's tier with a matching `Vulnerable` tag.
+3. **Limit (Once per Pool):** Each active condition on the defender can be exploited at most **once per Consequence Pool** (holding at most 1 sideways card per pool). Separate pools resolving in parallel may each independently exploit the defender's start-of-round active conditions once.
+4. **Chained Exploitation:** Within a pool, a newly drawn replacement card may be exploited again only if the defender has another unspent active condition (not yet exploited by that pool) of its tier with a matching `Vulnerable` tag.
 
-### Step 4: Curate the Consequence Pool (The "I Cut" Step)
+### Step 4: Curate Consequence Pools (The "I Cut" Step)
 
-From all active candidates the attackers **choose any $N$ cards** to form the final Consequence Pool:
+For each Consequence Pool, from the active candidates remaining after promotions and widening, attackers **choose any $N$ cards** to form the final curated pool:
 
 - **Check Pool Size ($N$)**: The defender's traits and equipped gear set the Consequence Pool Size ($N$) (typically 1 for minions, 2 for unarmored heroes, 3 for gambeson/leather, 4 for maille/brigandine, 5 for full plate; see Section 3 for full breakdown).
 - **The Consequence Pyramid:** Promoted higher-tier cards fill slots in the pool, squeezing out soft Tier 1 options first and, as active conditions accumulate, eventually saturating all $N$ slots with Tier 2 or Tier 3 traumas even against heavy armor ($N=4\text{–}5$).
 - **The Bottleneck Slot:** When higher tiers are partially filled, attackers use surplus lower-tier draws to place the sharpest tactical lock or vulnerability-enabler into the remaining lower-tier slot.
-- **Implicit Blanks:** If total active candidates (base draws plus net cards gained from widening) are less than $N$, unfilled slots are presented as "No Consequence" blanks. If candidates meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
+- **Implicit Blanks:** In any presented pool where total active candidates (base draws plus net cards gained from merging and widening) are less than $N$, unfilled slots are presented as "No Consequence" blanks. If candidates in a pool meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
 
-### Step 5: Defender Suffers a Consequence (The "You Choose" Step)
+### Step 5: Defender Suffers Consequences (The "You Choose" Step)
 
-1. The curated pool of $N$ cards (and any "No Consequence" blanks) is presented to the defender.
-2. The defender **chooses exactly 1 consequence** from the pool to suffer.
-3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped.
-4. **Applying the Consequence:**
-   - **Direct Placement:** Place the chosen card directly into play in front of the defender. If the card's text specifies that it replaces a weaker state on the same posture/mental track (e.g., `Knocked Prone` discarding `Poor Footing` or `Off Balance`), discard the superseded card.
+1. Each curated pool of $N$ cards (and any "No Consequence" blanks) is presented to the defender.
+2. For each presented pool, the defender **chooses exactly 1 consequence** to suffer.
+3. If "No Consequence" is in a pool, the defender may select it to suffer no additional harm from that pool beyond the stamina/fatigue cards already flipped.
+4. **Applying Consequences (Simultaneous):**
+   - All consequences suffered during the round enter play simultaneously at the end of the round (they cannot be exploited for Step 3 vulnerability promotions during the same round they are inflicted).
+   - **Direct Placement:** Place each chosen card directly into play in front of the defender. If the card's text specifies that it replaces a weaker state on the same posture/mental track (e.g., `Knocked Prone` discarding `Poor Footing` or `Off Balance`), discard the superseded card.
    - **Tier 4 (Taken Out / Crisis Clock):** If the defender selects a Severity 4 candidate, the character is functionally out of the fight (never instant death). The attacker or narrative context defines an actionable exit state or rescue clock (e.g., knocked `Unconscious`, `Pinned & Captured`, or placed on an emergency `3-Round Mortal Bleedout Clock` that allies must stabilize).
-5. **Clean Up:** All unchosen cards in the pool and all cards placed sideways on active conditions during Step 3 are returned to their respective decks.
+5. **Clean Up:** All unchosen cards in the pools and all cards placed sideways on active conditions during Step 3 are returned to their respective decks.
 
 ---
 
@@ -179,14 +184,21 @@ A single-card flip ($\text{Impact} = 1$) represents routine effort, allowing the
 
 ## 6. Multi-Attacker Combat & Swarm Scaling
 
-When multiple attackers target the same defender during Crisis Time, their actions resolve through **Batched Round Resolution**:
+When multiple attackers target the same defender during Crisis Time, resolution remains completely simultaneous and order-independent through **Per-Attack Draw & Optional Pool Merging**:
 
-1. **Shared Round Impact**: The cards flipped by the defender to meet each incoming attack are summed into a single **Total Impact ($I$)** for the round.
-2. **Layered Fill as a Swarm**:
-   - Total Impact fills the defender's pool tiers from the bottom up.
-   - For example, against an armored warrior in gambeson ($N=3$), three goblins generating 2 Impact each produce $I = 6$ Total Impact. This completely fills Tier 1 (3 cards) and Tier 2 (3 cards), guaranteeing Tier 2 harm (`[Sev 2, Sev 2, Sev 2]`).
-   - If the goblins generate 4 combined Impact, they draw three Tier 1 cards and one Tier 2 card. The knight can pick a Tier 1 card to avoid Tier 2 trauma, but the goblins curate the sharpest Tier 1 options.
-3. **Deck Attrition as Mob Danger**: Beyond condition drafting, defending against a swarm forces multiple flips in rapid succession, draining the defender's 24-card deck and accelerating Fatigue Cycles toward Defensive Collapse.
+1. **Per-Attack Impact & Candidate Draws**:
+   - The defender meets each incoming attack's `Strength` individually; the cards flipped for an attack equal that attack's **Impact ($I$)**.
+   - Each attacker independently converts their own attack's Impact into candidate cards by filling tiers of width $N$ (the defender's Pool Size) from the bottom up. Because individual minion hits usually generate $I \le N$, each minion natively draws **Tier 1** cards.
+2. **Simultaneous Vulnerability Exploitation (Once per Condition per Pool)**:
+   - After attackers decide whether to keep their drawn candidate pools separate or merge them, each Consequence Pool may exploit active conditions that were on the defender **at the start of the round** (at most 1 sideways card per active condition **per pool**) to **Widen** or **Escalate**.
+   - Separate pools resolving in parallel never compete over the defender's active conditions (each pool gets to exploit each active condition once), while a merged pool exploits each active condition once as a single combined pool.
+   - Consequences inflicted during the round enter play simultaneously at the end of the round, preventing same-round chain-promotion kills.
+3. **Separate vs. Merged Pools (Tactical Choice)**:
+   - **Separate Pools vs. Low-$N$ Targets:** Against an unarmored skirmisher ($N=2$), four goblins generating 2 Impact each draw 2 Tier 1 cards apiece. Because each goblin already fills an $N=2$ pool (`[Sev 1, Sev 1]`), they keep their 4 pools separate—forcing the skirmisher to suffer **4 Tier 1 consequences simultaneously** (burying them in tactical friction and exposing `Vulnerable` tags for Round 2 without one-shotting them on Round 1).
+   - **Merged Pools vs. Heavy Armor ($N=4\text{–}5$):** Against a knight in Full Plate ($N=5$), three goblins generating `1, 2, 2` Impact would each leave "No Consequence" blanks on their own. By **merging their drawn candidate cards into a single shared pool**, their 5 Tier 1 cards fill all 5 slots (`[Sev 1 x 5]`, zero blanks), forcing the knight to suffer **1 Tier 1 consequence**.
+4. **Deck Attrition as Mob Danger**: Beyond condition drafting, defending against a swarm forces multiple flips in rapid succession, draining the defender's 24-card deck and accelerating Fatigue Cycles toward Defensive Collapse.
+5. **Optional Rules Module — Surplus Crush (2-for-1 Merge Escalation)**:
+   - For tables that want large swarms or coordinated party strikes to be able to push directly into higher severity tiers on Round 1 against a fresh target: when multiple attackers merge their candidate cards into a shared pool, once a severity tier contains $N$ cards, the attackers may return **2 surplus candidate cards** of that tier to draw **1 card from the next higher severity tier ($K+1$)**.
 
 ---
 

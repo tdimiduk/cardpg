@@ -104,11 +104,10 @@ Against heavily armored foes ($N=4$ or $N=5$), you don't need to generate 12–1
 
 ### Coordinated Party Assaults
 
-When multiple party members attack the same foe in a round, their Impact combines into a single pool:
+When multiple party members attack the same foe in a round, each attacker first draws their own candidate cards independently against the target's Pool Size ($N$), and the party then decides whether to keep their pools separate or merge them before exploiting vulnerabilities:
 
-- Probing hits from skirmishers saturate the target's Pool Size ($N$) at Tier 1, removing clean soak blanks and triggering `Vulnerable` promotions across the target's active conditions.
-- Heavy strikes from frontliners push the combined Impact natively into Tier 2 and Tier 3.
-- Together, the party promotes matching candidates and curates $N$ cards from the combined draw, cornering the foe into an inescapable tactical dilemma.
+- **Splitting Pools (Piling On Conditions & Parallel Promotions):** Against low-$N$ targets (or when multiple attackers each generate $\ge N$ Impact), attackers can keep their pools separate to land **multiple consequences simultaneously** in a single round—and because vulnerability exploitation is limited to **once per condition per pool**, each separate pool can independently exploit the target's start-of-round active conditions without competing over them.
+- **Merging Pools (Cracking Heavy Armor):** Against high-$N$ targets ($N=4\text{–}5$), probing hits from skirmishers ($I < N$) that would otherwise leave "No Consequence" blanks can merge their drawn candidates together—or merge into a frontliner's heavy strike—to saturate all $N$ slots, exploit the target's active conditions once for the combined pool, and curate the sharpest $N$ cards from the combined hand.
 
 ---
 
@@ -117,15 +116,15 @@ When multiple party members attack the same foe in a round, their Impact combine
 ```mermaid
 flowchart TD
     subgraph Attacker Decision ["Attacker ('I Cut')"]
-        A1["Attacks Resolve -> Tally Total Impact (I)"] --> A2["Deal Cards Tier-by-Tier into Rows of Width N"]
-        A2 --> A3["Exploit Active Vulnerabilities (Lay matching Tier K <= S sideways -> Escalate Tier K+1 or Widen 2x Tier K)"]
-        A3 --> A4["Curate N Cards: Include Highest Tiers, Squeeze Bottlenecks"]
+        A1["Attacks Resolve -> Count Impact (I) per Attack"] --> A2["Each Attacker Deals Cards Tier-by-Tier into Rows of Width N (Keep Pools Separate or Merge)"]
+        A2 --> A3["Exploit Start-of-Round Vulnerabilities (Once per Condition per Pool -> Escalate Tier K+1 or Widen 2x Tier K)"]
+        A3 --> A4["Curate N Cards per Pool: Include Highest Tiers, Squeeze Bottlenecks"]
     end
 
     subgraph Defender Decision ["Defender ('You Choose')"]
-        D1["Inspect Curated Pool of N Cards"] --> D2{"Is 'No Consequence' Available?"}
+        D1["Inspect Each Curated Pool of N Cards"] --> D2{"Is 'No Consequence' Available?"}
         D2 -- Yes --> D3["Select 'No Consequence' (Soaked by Armor)"]
         D2 -- No --> D4["Weigh Immediate Passives, Vulnerable Tags Exposed, and Recovery Options"]
-        D4 --> D5["Select Exactly 1 Consequence to Suffer"]
+        D4 --> D5["Select 1 Consequence per Pool (Applied Simultaneously)"]
     end
 ```

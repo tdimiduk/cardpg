@@ -88,7 +88,7 @@ Resolution mechanics must build upon these foundational systems without redesign
 ### 2.3. Multi-Combatant & Dogpiling Scalability
 
 - **Asymmetric Skirmishes:** Must scale cleanly to 4 PCs vs. 6 Goblins, AoE attacks, and multi-attacker dogpiles without isolated 1-on-1 momentum tracks.
-- **Dogpiling Balance:** Multi-attacker focus-fire must not multiply lethal consequence steps to fatal extremes (e.g., 4 weak mooks attacking at once must not trigger 4 separate lethal consequence draws on a fresh hero), while avoiding multi-phase resolution bottlenecks that slow table play.
+- **Dogpiling Balance:** Multi-attacker focus-fire must not multiply lethal consequence steps to fatal extremes unfairly. It also needs to play cleanly with our bias towards simultaenous resolution and not bog down table play.
 
 ### 2.4. Symmetrical Design
 
