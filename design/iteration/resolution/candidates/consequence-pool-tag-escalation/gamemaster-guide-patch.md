@@ -8,7 +8,7 @@ Patch and companion guide for `design/rules/gamemaster-guide.md`, integrating th
 
 Under the Consequence Pool engine, the GM exercises narrative direction and tactical adjudication through the tactile mechanics of card drafting:
 
-1. **Curating for Antagonists ("I Cut")**: When monsters and NPCs attack player characters, the GM spends each attacker's generated Impact, builds a candidate hand, and curates an $N$-card pool to present to the player.
+1. **Curating for Antagonists ("I Cut")**: When monsters and NPCs attack player characters, the GM spends each attacker's generated Impact, builds a candidate hand, exploits active vulnerabilities, and curates an $N$-card pool to present to the player.
 2. **Suffering for Bosses ("You Choose")**: When players strike an elite antagonist or boss, the GM evaluates the players' curated pool and chooses the consequence that makes the most narrative and tactical sense for the creature.
 3. **Adjudicating General Actions**: In exploration and downtime challenges, the GM spends the player's flipped cards (Impact) to curate the collateral costs of success.
 
@@ -36,14 +36,7 @@ Under Layered Pool Fill, monster types naturally produce different threat profil
 When a boss and minions attack the same character in a round:
 
 - The boss resolves their own Layered Fill (often reaching Tier 2 or Tier 3 natively on a heavy blow), while minions draw Tier 1 candidates from their probing strikes.
-- The GM can **merge the minions' Tier 1 draws into the boss's pool** to eliminate any remaining blanks, trigger `Vulnerable` promotions (Widen or Escalate) on the defender's existing conditions, and curate the sharpest tactical locks into the bottleneck slots alongside the boss's heavy trauma—or keep a full $N$-card minion pool separate to force the player to suffer two consequences at once.
-
-### Optional Rules Module: Surplus Crush (2-for-1 Merge Escalation)
-
-For tables that want large swarms or coordinated groups to be able to push directly into higher severity tiers on Round 1 without waiting for Round 2 tag promotions:
-
-- **Surplus Crush:** When multiple attackers merge their candidate cards into a shared pool, once a severity tier contains $N$ cards, the attackers may return **2 surplus candidate cards** of that tier to draw **1 card from the next higher severity tier ($K+1$)**.
-- _Scaling Effect:_ While a single heavy hitter reaches guaranteed Tier 2 against $N=3$ at $3 + 3 = \mathbf{6\text{ Impact}}$, a merged swarm of small hits needs $3 + (2 \times 3) = \mathbf{9\text{ Impact}}$ to crush three Tier 2 cards on a fresh target.
+- The GM can **merge the minions' Tier 1 draws into the boss's pool** to eliminate any remaining blanks, trigger `Vulnerable` promotions on the defender's existing conditions, and curate the sharpest tactical locks into the bottleneck slots alongside the boss's heavy trauma—or keep a full $N$-card minion pool separate to force the player to suffer two consequences at once.
 
 ---
 
@@ -58,12 +51,10 @@ When a group of 3–5 identical mooks (e.g., kobolds or goblins) each generate 1
 1. **Do Not Make Micro-Decisions**: Since every minion has $I_i \le N$, every point of minion Impact simply draws 1 **Tier 1** card.
 2. **Batch Draw**: Count the total Impact across the minion pack (e.g., 5) and draw that exact number of cards (5) straight off the **Tier 1** deck.
 3. **Five-Second Grouping, Exploitation & Curation**:
-   - Group the drawn cards into full pools of size $N$ (or merge them into a single $N$-card pool against high-$N$ armor).
-   - For each pool, glance at the target's start-of-round active conditions starting at lowest severity. Each active condition may be exploited at most **once per pool**: if a drawn card in that pool matches an active condition's `Vulnerable` tags, lay it sideways and choose:
-     - **If candidates in pool < N:** **Widen** (draw 2 replacement cards from Tier 1 to eliminate a blank soak slot).
-     - **If candidates in pool >= N:** **Escalate** (draw 1 replacement card from Tier 2 to force platform or biological trauma).
-   - Select the $N$ highest-threat cards per pool (highest Severity, then highest Priority number) and present them to the player.
-4. **Return the Rest**: Return unchosen candidates and sideways-tucked cards to their respective decks.
+   - Group the drawn cards into full pools of size $N$ (or merge them into a single pool against high-$N$ armor).
+   - For each pool, glance at the target's start-of-round active conditions. Each active condition may be exploited at most **once per pool**: if an unplaced candidate in that pool (Tier $K \le S$) matches an active Tier $S$ condition's `Vulnerable` tags, place it on the condition and **draw +1 candidate from the Severity $K+1$ deck**.
+   - Scoop the placed cards back into the pool, select the $N$ highest-threat cards per pool (highest Severity, then highest Priority number), and present them to the player.
+4. **Return the Rest**: Return unchosen candidates to their respective decks.
 
 ### Priority Numbers & Default Curation (VTT and Zero-Friction Play)
 
@@ -71,11 +62,9 @@ Every consequence card features a printed **`Priority` rating (1 to 5)** represe
 
 When a GM is running combat without a strong tactical opinion, wants to keep the pace blistering, or is automating enemy turns via **Virtual Tabletop (VTT)** software, use the **Default Curation Algorithm**:
 
-1. **Vulnerability Exploitation First (Widen vs. Escalate)**: Check drawn candidates against the defender's active conditions (highest tier first). For each active Tier $S$ condition, if a drawn candidate of Tier $K \le S$ matches one of its `Vulnerable` tags, lay that candidate sideways on the active condition and choose:
-   - **If total active candidates < N:** **Widen** (draw 2 replacement cards from the Severity $K$ deck) to consume implicit blank slots and guarantee harm.
-   - **If total active candidates >= N:** **Escalate** (draw 1 replacement card from the Severity $K+1$ deck) to push candidates into higher severity tiers.
-2. **Highest Severity & Priority Fill the Pool**: Sort all active candidates by **Severity descending**, then **Priority descending**, and select the top $N$ cards. (If total candidates are still less than $N$, unfilled slots are presented as "No Consequence" blanks).
-3. **Drop the Lowest**: Return unselected candidates and sideways-tucked cards to their respective decks.
+1. **Vulnerability Exploitation First ("Place to Draw")**: Check drawn candidates against the defender's start-of-round active conditions (highest tier first). For each active Tier $S$ condition, if an unplaced candidate in the pool of Tier $K \le S$ matches one of its `Vulnerable` tags, place that candidate on the active condition and **draw +1 additional candidate from the Severity $K+1$ deck**.
+2. **Scoop & Sort by Severity and Priority**: Scoop all placed candidates back into the pool, sort all candidates in the pool by **Severity descending**, then **Priority descending**, and select the top $N$ cards. (If total candidates are still less than $N$, unfilled slots are presented as "No Consequence" blanks).
+3. **Drop the Lowest**: Return unselected candidates to their respective decks.
 
 #### Example at the Table:
 

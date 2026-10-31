@@ -11,7 +11,7 @@ Consequence cards are the mechanical engine of caRdPG's **"Default to Success at
 ### Golden Rules
 
 1. **Grounded Realism & Verisimilitude**: All consequences must be grounded in clinical medicine, biomechanics, material science, or historical research (refer to [consequence-database.md](../../research/synthesis/consequence-database.md)).
-2. **Never Use the Word "Damage" for Characters/Decks**: caRdPG uses explicit card-engine terminology: **`Expend X from the top of your deck`** or **`Expend X from hand`**. "Damaged" is reserved strictly for item and equipment states.
+2. **Never Use the Word "Damage" for Characters/Decks**: caRdPG uses explicit card-engine terminology: **`Expend X from the top of your deck`** or **`Expend X from hand`**.
 3. **All Cards Have All Colors**: Every card has printed {Red}, {Yellow}, and {Blue} values. Never write "a card with {Blue} stats". Qualify either by **Declared Action Color** (e.g., _"All {Blue} actions..."_) or by **Value Threshold** (e.g., _"Whenever you draw a card whose printed {Blue} value is 3 or greater..."_).
 4. **Continual Passives, Not One-Shot Triggers**: Consequences represent persistent conditions on the table. Never write "The next attack..." or "The next round...". Write continual states that apply until the card is actively cleared or mitigated.
 5. **No Redundant Turn Wording**: A character takes **1 action per round** in Crisis Time. Never write _"and take no other action this round"_. Declaring an `action:` is already their action for that round.
@@ -24,12 +24,12 @@ caRdPG uses a 4-tier severity scale calibrated against the **Consequence Pool Dr
 
 The table hosts **three physical consequence card decks** (Tiers 1–3), with Tier 4 functioning as an **Emergent Narrative Exit State**:
 
-| Tier  | Category                                | Typical In-Combat Effect                                                        | Narrative & Recovery Scope                                                               |
-| :---: | :-------------------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------- |
-| **1** | **Tactical Impairments & Setbacks**     | Sparring band: clearable footing slips (P1–3) to stiff tactical locks (P4–5).   | Easily shaken off; Routine out-of-combat fixes (seconds to minutes).                     |
-| **2** | **Platform Ceilings & Moderate Trauma** | Loss of stance (prone), mild concussive fog, cracked ribs, deep lacerations.    | Major tactical crisis; Challenging to Difficult clinical treatment (hours to days).      |
-| **3** | **Severe Structural Trauma**            | Complete bone fractures, severe concussions, sundered armor, arterial bleeding. | Catastrophic structural bodily/gear failure; Very Difficult clinical surgery (weeks).    |
-| **4** | **Taken Out / Incapacitation**          | Traumatic coma, arterial bleedout, catatonic panic, surrender/subdued.          | Incapacitating; removed from combat or dying on a crisis clock. Legendary care (months). |
+| Tier  | Category                                | Typical In-Combat Effect                                                               | Narrative & Recovery Scope                                                               |
+| :---: | :-------------------------------------- | :------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **1** | **Tactical Impairments & Setbacks**     | Sparring band: clearable footing slips (P1–3) to stiff tactical locks (P4–5).          | Easily shaken off; Routine out-of-combat fixes (seconds to minutes).                     |
+| **2** | **Platform Ceilings & Moderate Trauma** | Loss of stance (prone), mild concussive fog, cracked ribs, deep lacerations.           | Major tactical crisis; Challenging to Difficult clinical treatment (hours to days).      |
+| **3** | **Severe Structural Trauma**            | Complete bone fractures, severe concussions, thoracic/chest trauma, arterial bleeding. | Catastrophic structural bodily failure; Very Difficult clinical surgery (weeks).         |
+| **4** | **Taken Out / Incapacitation**          | Traumatic coma, arterial bleedout, catatonic panic, surrender/subdued.                 | Incapacitating; removed from combat or dying on a crisis clock. Legendary care (months). |
 
 ---
 
@@ -70,7 +70,7 @@ In combat, clearing a condition is hurried and dangerous. Design actions around 
     - _Example_: `action: Hold Direct Compression (Place 1 card from your hand on top of this to cover and suppress its passive. If you declare an Attack or Sprint, expend that card and resume the passive).`
   - _Note on Biological Trauma_: Pure bodily trauma at Tier 2 (`Cracked Ribs`, `Mild Concussion`, `Hamstrung`) has **no in-combat removal action**. It must be endured until downtime.
 - **Tier 3 (Zero Removal Actions)**:
-  - Severe structural trauma (`Broken Arm`, `Sundered Armor`, `Severe Concussion`) **cannot be removed or cured during combat**.
+  - Severe structural trauma (`Broken Arm`, `Sucking Chest Wound`, `Severe Concussion`) **cannot be removed or cured during combat**.
   - Only crisis-delay suppression exists for life-threatening conditions (e.g., `Hold Direct Pressure` on `Arterial Hemorrhage` requiring 2 cards held).
 - **Tier 4 (Ally Emergency Intervention Only)**:
   - If a Tier 4 condition features an action (such as `Ally Emergency Hemostasis` on `Mortal Bleedout`), it can **only be performed by an adjacent ally**, not the incapacitated defender.
@@ -100,46 +100,33 @@ Always maintain the semantic distinction between persistent equipment and consum
 
 ---
 
-## 5. Equipment & Armor Modification Rules
-
-Consequence cards must **never** narrate standalone modifications to a character's consequence pool size directly. Instead, they interact with the character's equipped gear:
-
-1. **Armor Cards are Two-Sided**:
-   Equipped armor on the table has an **Intact** side and a **Damaged** side (see [equipment.yaml](equipment.yaml)). The Intact side defines the pool size and Pierce thresholds; the Damaged side defines the degraded pool size and higher Burden.
-2. **Consequences Modify the Armor Item**:
-   - _Severity 1 (Rattled Guard)_: _"Place this card on your equipped armor. While on your armor, your armor's first Pierce threshold is ignored by all incoming attacks."_
-   - _Severity 3 (Sundered Armor)_: _"Flip your equipped armor to its Damaged side. (If your armor is already Damaged, expend it). Place this card on your armor."_
-
----
-
-## 6. Vulnerability Promotion Web & Harm Archetypes
+## 5. Vulnerability Promotion Web & Harm Archetypes
 
 CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web** during the Consequence Pool draw.
 
-### 6.1. How Vulnerability Exploitation Works
+### 5.1. How Vulnerability Exploitation Works
 
 1. **Card Tags (`tags:`) vs. Compromised Tags (`vulnerable:`)**:
    - **`tags:`** define what the consequence _is_ (e.g., `Winded` has `exertion`; `Dust in Eyes` has `sensory, eyes`; `Cracked Ribs` has `torso`).
    - **`vulnerable:`** lists **2 to 4 Leaf Tags** representing the anatomical, positional, or psychological openings that this active condition exposes on the defender.
-2. **Tier-Scoped Exploitation ($\text{Tier } K \le S$)**:
-   - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may exploit **at most 1** drawn candidate card of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
-   - **Tactile Choice (Escalate vs. Widen):** The attacker places the matching Tier $K$ candidate **sideways across the exploited active condition** and chooses one:
-     - **Escalate (Vertical):** Draw **1 replacement candidate from the Severity $K+1$ deck** (or allocate a **Tier 4 Taken Out** candidate when a Tier 3 card is promoted by an active Tier 3 condition). Used once the pool has enough cards to fill $N$, pushing harm into higher severity tiers.
-     - **Widen (Horizontal):** Draw **2 replacement candidates from the Severity $K$ deck** (adding $+1$ net candidate card to the active pool). Used to crack heavy armor shells by replacing implicit "No Consequence" blank slots when $I < N$, or to expand intra-tier curation options.
+2. **Tier-Scoped Exploitation ($\text{Tier } K \le S$) — "Place to Draw, Scoop to Curate"**:
+   - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may exploit **at most 1** unplaced candidate card in the pool of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
+   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 3) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (or allocates a **Tier 4 Taken Out** candidate when a Tier 3 card exploits an active Tier 3 condition).
+   - **Scoop to Curate (Step 4):** Once Step 3 finishes for the pool, the attacker scoops the placed candidate cards back off the defender's active conditions into the pool and curates any $N$ cards. Because each exploitation adds $+1$ net card at Tier $K+1$ while preserving the triggering Tier $K$ card, this single primitive both cracks heavy armor shells (replacing implicit "No Consequence" blank slots when $I < N$) and builds the Consequence Pyramid (squeezing out soft lower-tier options when $I \ge N$).
 3. **The Consequence Pyramid & Shell-Cracking**:
-   - A newly drawn candidate can itself be exploited further only if the defender has _another_ unspent active condition of Tier $\ge K_{new}$ with a matching `vulnerable:` tag.
-   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): Widening consumes clean soak blanks to establish an early foothold, while Escalating turns Tier 1 conditions into Tier 2 platform/biological trauma, which in turn promotes Tier 2 draws into Tier 3 structural failure.
+   - Because a newly drawn Tier $K+1$ candidate enters the hand unplaced, it can itself be placed onto _another_ unexploited active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag to chain into Tier $K+2$.
+   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): bonus draws consume clean soak blanks to establish an early foothold, and then turn Tier 1 conditions into Tier 2 platform/biological trauma, which in turn promotes Tier 2 draws into Tier 3 structural failure.
 
 ---
 
-### 6.2. The Four Harm Archetypes Under the Vulnerability Web
+### 5.2. The Four Harm Archetypes Under the Vulnerability Web
 
 1. **Discrete Anatomical & Structural Point-Failures (Standalone Traumas)**:
    - _Scope:_ `Cracked Ribs` (T2), `Hamstrung` (T2), `Broken Arm` (T3), `Sucking Chest Wound` (T3), `Gut Wound` (T3), `Ringing Ears` (T1), `Stiff Neck` (T1).
    - _Behavior:_ These injuries enter play directly when drawn (natively or via promotion) rather than evolving from lower-tier prerequisites. They expose realistic `vulnerable:` tags (e.g., `Cracked Ribs` exposes `torso, exertion, positioning`).
-2. **Platform & Gear States (Broad Vulnerability Multipliers)**:
-   - _Scope:_ `Poor Footing` (T1), `Off Balance` (T1), `Knocked Prone` (T2), `Rattled Guard` (T1), `Sundered Armor` (T3).
-   - _Behavior:_ Losing posture or armor integrity compromises multiple anatomical zones at once. `Knocked Prone` (Tier 2) lists a wide vulnerability web (`vulnerable: [positioning, limbs, torso, head, armor]`), promoting matching Tier 2 draws into the **Tier 3** deck.
+2. **Platform & Posture States (Broad Vulnerability Multipliers)**:
+   - _Scope:_ `Poor Footing` (T1), `Off Balance` (T1), `Knocked Prone` (T2).
+   - _Behavior:_ Losing dynamic posture compromises multiple anatomical zones at once. `Knocked Prone` (Tier 2) lists a wide vulnerability web (`vulnerable: [positioning, limbs, torso, head]`), promoting matching Tier 2 draws into the **Tier 3** deck.
    - _Superseding Lower States:_ When a stricter state on the same binary track enters play (e.g., `Off Balance` replacing `Poor Footing`, or `Knocked Prone` replacing `Poor Footing`/`Off Balance`), its rules text instructs the defender to discard the weaker state.
 3. **Cumulative Hemodynamic Loss (Bleeding & Vascular Trauma)**:
    - _Scope:_ `Bleeding Cut` (T1), `Deep Laceration` (T2), `Arterial Hemorrhage` (T3).
@@ -151,29 +138,28 @@ CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web
 
 ---
 
-### 6.3. Canonical Leaf Tags & Sample Vulnerability Wiring
+### 5.3. Canonical Leaf Tags & Sample Vulnerability Wiring
 
-Root tags (`physical`, `combat`, `injury`) are used strictly for domain classification. Both `tags:` (for matching) and `vulnerable:` must use the canonical Leaf Tags (`positioning`, `armor`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`):
+Root tags (`physical`, `combat`, `injury`) are used strictly for domain classification. Both `tags:` (for matching) and `vulnerable:` must use the canonical Leaf Tags (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`):
 
 | Consequence Card    | Tier | Card's Leaf Tags    | `vulnerable:` (Promotes Tier $\le S$ draws with these tags) | State / Redraw Rule                                 |
 | :------------------ | :--: | :------------------ | :---------------------------------------------------------- | :-------------------------------------------------- |
 | **Poor Footing**    |  1   | `positioning`       | `positioning`, `limbs`                                      | Non-stackable (redraw duplicate)                    |
 | **Off Balance**     |  1   | `positioning`       | `positioning`, `limbs`, `torso`                             | Replaces `Poor Footing`; redraw duplicate           |
 | **Winded**          |  1   | `exertion`          | `exertion`, `positioning`, `torso`                          | Non-stackable (redraw duplicate)                    |
-| **Dust in Eyes**    |  1   | `sensory`           | `sensory`, `head`, `positioning`, `armor`                   | Non-stackable (redraw duplicate)                    |
-| **Rattled Guard**   |  1   | `armor`             | `armor`, `torso`, `head`                                    | Non-stackable (redraw duplicate)                    |
+| **Dust in Eyes**    |  1   | `sensory`           | `sensory`, `head`, `positioning`                            | Non-stackable (redraw duplicate)                    |
 | **Afraid**          |  1   | `fear`, `mental`    | `fear`, `mental`, `positioning`                             | Replaces `Rattled Nerves`; redraw duplicate         |
 | **Bleeding Cut**    |  1   | `bleeding`          | `bleeding`, `exertion`                                      | Stacks in parallel                                  |
-| **Knocked Prone**   |  2   | `positioning`       | `positioning`, `limbs`, `torso`, `head`, `armor`            | Replaces T1 `positioning`; redraw any `positioning` |
+| **Knocked Prone**   |  2   | `positioning`       | `positioning`, `limbs`, `torso`, `head`                     | Replaces T1 `positioning`; redraw any `positioning` |
 | **Cracked Ribs**    |  2   | `torso`             | `torso`, `exertion`, `positioning`                          | Stacks in parallel                                  |
 | **Mild Concussion** |  2   | `head`, `sensory`   | `head`, `sensory`, `positioning`, `mental`                  | Non-stackable (redraw duplicate)                    |
 | **Hamstrung**       |  2   | `limbs`, `bleeding` | `limbs`, `positioning`                                      | Stacks in parallel (per leg)                        |
 
 ---
 
-### 6.4. Non-Stackable States & Same-Tier Redraws
+### 5.4. Non-Stackable States & Same-Tier Redraws
 
-Most physical injuries (`Bleeding Cut`, `Cracked Ribs`, `Strained Offense`) can be suffered more than once in parallel without issue. However, binary posture or mental states (`Knocked Prone`, `Off Balance`, `Poor Footing`, `Afraid`, `Terrified`, `Sundered Armor`) cannot logically stack with themselves.
+Most physical injuries (`Bleeding Cut`, `Cracked Ribs`, `Strained Offense`) can be suffered more than once in parallel without issue. However, binary posture or mental states (`Knocked Prone`, `Off Balance`, `Poor Footing`, `Afraid`, `Terrified`) cannot logically stack with themselves.
 
 - **Normally Promoted:** If a duplicate of an active binary state is drawn, the attacker will usually lay it sideways on that active condition to promote it to Tier $K+1$.
 - **Fallback Redraw Rule (When Promotion Already Used):** For binary state cards, include a concise redraw clause so they never become "free blank" picks if drawn after that condition's promotion was already spent:
@@ -182,7 +168,7 @@ Most physical injuries (`Bleeding Cut`, `Cracked Ribs`, `Strained Offense`) can 
 
 ---
 
-### 6.5. Resetting Mitigation Progress (The Setback Pattern)
+### 5.5. Resetting Mitigation Progress (The Setback Pattern)
 
 When a condition card uses multi-turn in-combat mitigation (such as tucking cards to regain footing or holding cards on `Arterial Hemorrhage` to suppress bleeding), jarring impacts can disrupt active progress:
 
@@ -193,48 +179,46 @@ When a condition card uses multi-turn in-combat mitigation (such as tucking card
 
 ---
 
-### 6.6. Transient Consequences
+### 5.6. Transient Consequences
 
 Transient consequences (if used in specialized domain decks) resolve immediately upon being selected and are returned to the deck. Because they do not remain in play as active conditions, they **never** have a `vulnerable:` list.
 
 ---
 
-## 7. The `priority:` Metric & The Tapering Funnel
+## 6. The `priority:` Metric & The Tapering Funnel
 
 Every consequence card includes an integer `priority:` rating (**1 to 5**). This number represents the designer's calibrated estimate of the consequence's **aggregate "badness" or tactical lethality within its severity tier**.
 
-### 7.1. Purpose & Use Cases
+### 6.1. Purpose & Use Cases
 
 1. **Fast-Paced GM Adjudication ("Without an Opinion")**:
-   When a GM draws several candidate cards within a tier and has no strong narrative or tactical preference, the GM first performs any available **Vulnerability Exploitations** (laying matching Tier $K \le S$ cards sideways on active Tier $S$ conditions to either **Widen** if candidates $< N$ or **Escalate** if candidates $\ge N$), and then simply compares printed `severity` and `priority` numbers to select the highest-priority cards in seconds.
+   When a GM draws several candidate cards within a tier and has no strong narrative or tactical preference, the GM first performs any available **Vulnerability Exploitations** (placing matching Tier $K \le S$ candidates onto active Tier $S$ conditions to draw $+1$ candidate from Tier $K+1$), scoops all candidates back into the pool, and then simply compares printed `severity` and `priority` numbers to select the highest-priority cards in seconds.
 2. **VTT, Digital Tools, and Solo AI Automation**:
    Automated curation scripts can execute deterministic, high-quality "I Cut" pool curation:
-   - _Step 1 (Vulnerability Exploitation)_: Check drawn candidates against active conditions (highest tier first). For each matching condition:
-     - If total active candidates $< N$, **Widen** (draw 2 replacements at Tier $K$).
-     - If total active candidates $\ge N$, **Escalate** (draw 1 replacement at Tier $K+1$).
-   - _Step 2 (Curation)_: Sort all active candidates by `severity` descending, then `priority` descending.
-   - _Step 3_: Present the top $N$ cards to the defender (unfilled slots are blanks if candidates $< N$).
+   - _Step 1 (Vulnerability Exploitation)_: Check drawn candidates against active conditions (highest tier first). For each matching condition, place a matching unplaced candidate (Tier $K \le S$) on the condition and draw 1 additional candidate from Tier $K+1$.
+   - _Step 2 (Scoop & Curation)_: Scoop all placed candidates back into the pool, and sort all candidates by `severity` descending, then `priority` descending.
+   - _Step 3_: Present the top $N$ cards to the defender (unfilled slots are blanks if total candidates $< N$).
 
-### 7.2. The Tapering Funnel Guidelines by Tier
+### 6.2. The Tapering Funnel Guidelines by Tier
 
 The dynamic range within a tier narrows as severity climbs:
 
 - **Tier 1 (The Sparring Band - Full Priority 1–5 Range)**:
   - _Priority 1–2 (Softer / Clearable)_: Footing slips, minor breath loss, transient singes. Easily cleared in 1 action or via card-tucking; exposes `vulnerable:` tags for future promotions.
   - _Priority 3 (Resource Friction)_: Moderate card taxes, minor status injections.
-  - _Priority 4–5 (Sharp Tactical Locks)_: Stiff action restrictions, fear lockouts, stripped armor Pierce thresholds (`Off Balance`, `Afraid`, `Rattled Guard`).
+  - _Priority 4–5 (Sharp Tactical Locks)_: Stiff action restrictions, fear lockouts (`Off Balance`, `Afraid`, `Strained Offense`).
 - **Tier 2 (Operational Divergence - Priority 3–5 Only)**:
   - All Tier 2 cards are serious; there are no "soft outs."
   - _Priority 3–4 (Chronic Biological Drag)_: Persistent neuro/tissue trauma (`Mild Concussion`, `Cracked Ribs`, `Deep Laceration`). Cannot be removed in combat; exposes Tier 2 `vulnerable:` tags that can promote Tier 2 draws into Tier 3.
-  - _Priority 5 (Platform Crisis)_: `Knocked Prone` (immediate doubled Pierce, $+1$ Impact on defenses, broad `vulnerable:` list; has active recovery pathways).
+  - _Priority 5 (Platform Crisis)_: `Knocked Prone` (crippled movement, $+1$ Impact on defenses, broad `vulnerable:` list; has active recovery pathways).
 - **Tier 3 (Orthogonal Pillar Collapse - Priority 4–5 Only)**:
-  - Zero soft options. Every card is an existential collapse of one core character pillar (`Broken Arm`, `Sundered Armor`, `Severe Concussion`, `Arterial Hemorrhage`) and exposes Tier 3 `vulnerable:` tags that promote matching Tier 3 draws directly to **Tier 4 (Taken Out)**.
+  - Zero soft options. Every card is an existential collapse of one core character pillar (`Broken Arm`, `Sucking Chest Wound`, `Severe Concussion`, `Arterial Hemorrhage`) and exposes Tier 3 `vulnerable:` tags that promote matching Tier 3 draws directly to **Tier 4 (Taken Out)**.
 - **Tier 4 (Narrative Taken Out)**:
   - Emergent terminal state; no physical card drafting required.
 
 ---
 
-## 8. Canonical YAML Card Template
+## 7. Canonical YAML Card Template
 
 When authoring cards in `consequences.yaml`, use the following exact structure:
 
@@ -249,7 +233,7 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
   vulnerable:
     - limbs
     - positioning
-    - armor
+    - exertion
   rules:
     # 1. Continual passive effect (plus any superseded lower state or non-stackable redraw rule)
     - passive: You must expend 1 card from hand whenever you declare an Attack action.
@@ -270,7 +254,7 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
 
 ---
 
-## 9. Checklist for Reviewing New Consequence Cards
+## 8. Checklist for Reviewing New Consequence Cards
 
 Before committing any consequence card, verify:
 
@@ -282,7 +266,7 @@ Before committing any consequence card, verify:
 - [ ] If Tier 2 or 3 bodily trauma, is an in-combat removal `action:` appropriately omitted (or limited strictly to temporary tactile suppression)?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier?
-- [ ] Does the card specify 2 to 4 realistic Leaf Tags under `vulnerable:` (`positioning`, `armor`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
+- [ ] Does the card specify 2 to 4 realistic Leaf Tags under `vulnerable:` (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
 - [ ] Does the card use `vulnerable:` tags for promotion rather than in-deck tutoring chains?
 - [ ] If the card represents a binary posture/mental state that cannot stack with itself (`Knocked Prone`, `Off Balance`, `Afraid`), does it include a same-tier redraw rule for duplicates (and superseded lower states)?
 - [ ] Does the `notes:` field articulate the physiological/biomechanical basis for both the passives and the `vulnerable:` tags?

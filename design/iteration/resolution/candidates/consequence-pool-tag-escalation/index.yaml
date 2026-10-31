@@ -25,7 +25,7 @@ documents:
     tags: ["doc-type:content-library", "audience:designer-facing"]
 
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/equipment.yaml"
-    purpose: "Prototype equipment and armor database for tag escalation items."
+    purpose: "Prototype armor and domain table cards establishing Consequence Pool Sizes."
     tags: ["doc-type:content-library", "audience:designer-facing"]
 
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/gamemaster-guide-patch.md"

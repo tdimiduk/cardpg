@@ -1,70 +1,34 @@
 # caRdPG Armor, Protective Gear & Domain Table Cards
-# Reference: design/iteration/consequence-pool-tag-escalation/proposal.md
+# Reference: design/iteration/resolution/candidates/consequence-pool-tag-escalation/proposal.md
 
 - name: Full Harness
-  intact:
-    burden: 2
-    tags:
-      - Equipped
-      - armored
-      - plate harness
-    rules:
-      - passive: Your consequence pool size against physical harm is 5. An attack with Pierce 4 or greater ignores this passive.
-      - passive: Your consequence pool size against physical harm is 4. An attack with Pierce 8 or greater ignores this passive.
-      - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 12 or greater ignores this passive.
-      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 2 or higher, flip this armor to its Damaged side instead and negate that consequence.
-  damaged:
-    burden: 3
-    tags:
-      - Equipped
-      - armored
-      - damaged
-    rules:
-      - passive: Your consequence pool size against physical harm is 3.
-      - task: Master Smith Repair (Check {Red} 60, Check {Blue} 45; Time 1 week; Requires Forge & Anvil; Cost Raw Steel & Replacement Rivets) -> Flip to Intact side.
+  burden: 2
+  tags:
+    - Equipped
+    - armored
+    - plate harness
+  rules:
+    - passive: Your consequence pool size against physical harm is 5.
 
 - name: Maille Hauberk and Brigandine
-  intact:
-    burden: 2
-    tags:
-      - Equipped
-      - armored
-      - war armor
-      - maille harness
-    rules:
-      - passive: Your consequence pool size against physical harm is 4. An attack with Pierce 4 or greater ignores this passive.
-      - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 8 or greater ignores this passive.
-      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 2 or higher, flip this armor to its Damaged side instead and negate that consequence.
-  damaged:
-    burden: 2
-    tags:
-      - Equipped
-      - armored
-      - damaged
-    rules:
-      - passive: Your consequence pool size against physical harm is 2.
-      - task: Armorer Repair (Check {Red} 45, Check {Yellow} 30; Time 3 days; Requires Repair Tools; Cost Replacement Rings & Leather) -> Flip to Intact side.
+  burden: 2
+  tags:
+    - Equipped
+    - armored
+    - war armor
+    - maille harness
+  rules:
+    - passive: Your consequence pool size against physical harm is 4.
 
 - name: Padded Gambeson
-  intact:
-    burden: 1
-    tags:
-      - Equipped
-      - armored
-      - light armor
-      - textile
-    rules:
-      - passive: Your consequence pool size against physical harm is 3. An attack with Pierce 4 or greater ignores this passive.
-      - passive: The first time a consequence pool forces you to suffer a consequence of Severity 2 or higher, flip this armor to its Damaged side instead and negate that consequence.
-  damaged:
-    burden: 1
-    tags:
-      - Equipped
-      - armored
-      - damaged
-    rules:
-      - passive: Your consequence pool size against physical harm is 2.
-      - task: Tailor & Patch (Check {Blue} 20, Check {Yellow} 15; Time 2 hours; Requires Sewing Needle; Cost Heavy Thread & Canvas) -> Flip to Intact side.
+  burden: 1
+  tags:
+    - Equipped
+    - armored
+    - light armor
+    - textile
+  rules:
+    - passive: Your consequence pool size against physical harm is 3.
 
 # ==============================================================================
 # NON-COMBAT & DOMAIN TABLE CARDS (EXAMPLE DOMAIN POOL EXPANSIONS)

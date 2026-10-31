@@ -1,14 +1,14 @@
 # Proposed New Action Resolution Mechanic
 
-Update to `design/rules/core-rules.md`. Replaces `## Defend Actions`.
+Update to `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Challenge` and updates `### Defend Actions` and `### General Actions`).
 
 ## Action Resolution
 
 1. **Determine Impact**: The defender meets each incoming attack's Strength; cards flipped from the deck for an attack equal that attack's Impact ($I$).
 2. **Draw Candidates & Form Pools**: Each attacker converts their Impact into candidate cards (`1 Impact = 1 card`), filling tiers of width $N$ (the defender's Pool Size) from Severity 1 upward. Attackers may keep their candidate pools separate or merge them into a shared pool.
-3. **Exploit Active Vulnerabilities (Escalate or Widen)**: Within each pool, attackers may exploit start-of-round active conditions on the defender (at most once per condition per pool) matching drawn candidate tags to either escalate candidates to the next higher severity tier ($K+1$) or widen the pool within the same tier (+1 net card to crack armor soak).
-4. **Curate the Pool**: For each pool, attackers choose any $N$ cards from its active candidates to present to the defender.
-5. **Defender Suffers Consequences**: For each presented pool, the defender selects and suffers 1 consequence (or a blank if remaining candidates in that pool are fewer than $N$). All consequences suffered this round enter play simultaneously.
+3. **Exploit Active Vulnerabilities**: Within each pool, attackers may exploit start-of-round active conditions on the defender (at most once per condition per pool): place a matching candidate of Severity $K \le S$ onto an active Severity $S$ condition to draw **+1 additional candidate from the Severity $K+1$ deck**.
+4. **Scoop & Curate the Pool**: For each pool, scoop any candidates placed on the defender's active conditions back into the pool and choose any $N$ cards from all candidates in that pool to present to the defender.
+5. **Defender Suffers Consequences**: For each presented pool, the defender selects and suffers 1 consequence (or a blank if total candidates in that pool are fewer than $N$). All consequences suffered this round enter play simultaneously.
 
 ---
 
@@ -33,7 +33,7 @@ The defender's equipped gear, traits, or table cards define their **Consequence 
 Each attacker independently converts the Impact ($I$) their attack generated into candidate cards: **1 Impact = 1 card drawn**. Candidates are drawn from the severity decks by filling tiers of width $N$ from the bottom up:
 
 1. **Tier 1 (Severity 1)**: The first $N$ Impact draws up to $N$ cards from the **Severity 1** deck.
-   - If an attack's Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by merging pools or widening during Step 3.
+   - If an attack's Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by merging pools or exploiting vulnerabilities during Step 3.
 2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
 3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
 4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
@@ -45,28 +45,29 @@ Each attacker independently converts the Impact ($I$) their attack generated int
 
 ---
 
-### 3. Exploit Active Vulnerabilities (Escalate or Widen)
+### 3. Exploit Active Vulnerabilities
 
 Active conditions in play in front of the defender at the start of the round list **`Vulnerable: [Tags]`**—specific openings created by that condition.
 
-Within each Consequence Pool (after any pool merging), attackers may exploit start-of-round active conditions on the defender to amplify or escalate that pool:
+Within each Consequence Pool (after any pool merging), attackers may exploit start-of-round active conditions on the defender to simultaneously expand and escalate that pool:
 
-1. **Matching:** An active condition of **Severity $S$** can exploit any drawn candidate in the pool of **Severity $K \le S$** whose tags match one of its `Vulnerable` tags.
-2. **Tactile Exploitation (Escalate vs. Widen):** Place the matching candidate sideways and choose one:
-   - **Escalate (Vertical):** Draw **1 replacement candidate from the Severity $K+1$ deck** (or allocate a **Tier 4 Taken Out** candidate if promoting a Tier 3 card via an active Tier 3 condition). Use this to push harm into higher severity tiers once the pool has enough cards to fill $N$.
-   - **Widen (Horizontal):** Draw **2 replacement candidates from the Severity $K$ deck** (adding +1 net candidate to the active pool). Use this to crack heavy armor shells by replacing an implicit "No Consequence" blank slot with an active consequence, or to gain extra curation options.
-3. **Limit (Once per Pool):** Each active condition on the defender may be exploited at most **once per Consequence Pool** (holding at most 1 sideways card per pool). When multiple pools resolve in parallel, each separate pool may independently exploit the defender's start-of-round active conditions once.
-4. **Chained Exploitation:** Within a pool, a newly drawn replacement card may be exploited again only if the defender has another unspent active condition (not yet exploited by that pool) of Tier $\ge K+1$ (for escalated draws) or Tier $\ge K$ (for widened draws) with a matching `Vulnerable` tag.
+1. **Matching:** An active condition of **Severity $S$** can exploit any unplaced candidate in the pool of **Severity $K \le S$** whose tags match one of its `Vulnerable` tags.
+2. **Place to Draw (+1 Candidate at Tier $K+1$):** Place the matching Tier $K$ candidate onto that active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your pool (or allocate a **Tier 4 Taken Out** candidate if exploiting a Tier 3 match on an active Tier 3 condition).
+   - Because this adds +1 net card to the pool while introducing a higher-tier threat, a single mechanic both cracks heavy armor shells (filling implicit "No Consequence" blank slots when $I < N$) and escalates pool severity (squeezing out softer options when $I \ge N$).
+3. **Limit (Once per Condition per Pool):** Each active condition on the defender may hold at most **1 candidate card per Consequence Pool** (meaning each active condition and each placed candidate card can be exploited at most once per pool). When multiple pools resolve in parallel, each separate pool may independently exploit the defender's start-of-round active conditions once.
+4. **Chained Exploitation:** Within a pool, because a newly drawn Tier $K+1$ candidate enters your hand unplaced, it may immediately be placed onto another unexploited active condition of Tier $\ge K+1$ with a matching `Vulnerable` tag to draw from Tier $K+2$.
 
 ---
 
-### 4. Curate Consequence Pools (The "I Cut" Step)
+### 4. Scoop & Curate Consequence Pools (The "I Cut" Step)
 
-For each Consequence Pool, from the active candidates remaining after promotions and widening, the attackers **choose any $N$ cards** to form the final curated pool:
+For each Consequence Pool, once all vulnerability exploitations for that pool are complete:
 
-- **Implicit Blanks:** In any presented pool where total active candidates (base draws plus net cards gained from merging and widening) are less than $N$, unfilled slots are presented as **"No Consequence" blanks**.
-- If active candidates in a pool meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
-- All unselected candidates are returned to their respective decks.
+1. **Scoop Placed Candidates:** Scoop all candidate cards placed onto the defender's active conditions during Step 3 back into your pool (clearing the defender's active conditions on the table).
+2. **Curate $N$ Cards:** From all candidates in the pool (both base draws and bonus cards drawn during Step 3), the attackers **choose any $N$ cards** to form the final curated pool:
+   - **Implicit Blanks:** In any presented pool where total candidates (base draws plus net cards gained from merging and vulnerability exploitation) are less than $N$, unfilled slots are presented as **"No Consequence" blanks**.
+   - If total candidates in a pool meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
+3. **Return Surplus:** All unselected candidates are returned to their respective decks.
 
 ---
 
@@ -79,4 +80,4 @@ For each Consequence Pool, from the active candidates remaining after promotions
    - All consequences suffered during the round enter play simultaneously at the end of the round (they cannot be exploited for Step 3 vulnerability promotions during the same round they are inflicted).
    - **Active Condition:** Place each chosen card into play in front of the defender. If the card specifies that it supersedes an existing condition, discard the superseded condition.
    - **Tier 4 (Taken Out / Crisis Clock):** If the defender selects a Severity 4 candidate, the character is out of the fight (never instant death). The attacker or narrative context defines an actionable exit state or rescue clock (e.g., knocked `Unconscious`, `Pinned & Captured`, or an emergency bleedout clock). No card is drawn from a physical deck.
-5. **Clean Up:** All unchosen cards in the pools and all cards laid sideways across active conditions are returned to their respective decks.
+5. **Clean Up:** All unchosen cards in the presented pools are returned to their respective decks.

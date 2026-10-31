@@ -82,7 +82,7 @@ Condition cards feature printed multi-pip escalation tracks (tracked with a wood
 
 - **Pip 1 (Severity 1):** Minor setback or clearable tactical impairment.
 - **Pip 2 (Severity 2):** Platform ceiling or moderate trauma.
-- **Pip 3 (Severity 3):** Severe structural trauma (broken limb, sundered armor, severe concussion).
+- **Pip 3 (Severity 3):** Severe structural trauma (broken limb, crushed chest, severe concussion).
 - **Pip 4 / Terminal:** Immediate **Narrative Taken Out** clause printed on the card (e.g., _"Unconscious / Slain / Pinned"_).
 
 When subsequent attacks target an active condition's tag, the card simply **ticks up +1 Pip**, unlocking the next harsher passive rule printed on the card.
