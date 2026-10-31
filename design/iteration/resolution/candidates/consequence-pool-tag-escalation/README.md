@@ -9,7 +9,7 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 1. **Layered Pool Fill**: $1\text{ Impact} = 1\text{ Card Drawn}$. Cards fill tiers of width $N$ (the defender's Pool Size) from Severity 1 upward, procedurally building the pool without integer partition math.
 2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine the row width $N$ that attackers must saturate before breaking into higher severity tiers.
 3. **Implicit Blanks ("No Consequence")**: Unfilled Tier 1 slots ($I < N$) become "No Consequence", creating an emergent armor soak threshold without requiring abstract divisor stats.
-4. **Tag Escalations Replace Global Resilience**: Synergistic tags (`positioning`, `fatigue`, `injury`, `fear`, `armor`) drive the downward spiral contextually and realistically.
+4. **Tag Vulnerability Promotion Replaces Global Resilience**: Active conditions expose specific **`Vulnerable: [Tags]`** (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching a drawn candidate to an active vulnerability allows the attacker to lay that card sideways over the active condition and promote the draw to the next higher Severity tier ($K+1$)—building an escalating **Consequence Pyramid**.
 
 ---
 
@@ -18,9 +18,9 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 | File                                                                           | Purpose & Contents                                                                                                                                                                                    |
 | :----------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **[proposal.md](proposal.md)**                                                 | **The Core Rules Patch**: The concise, focused replacement text for `## Defend Actions` in `core-rules.md`.                                                                                           |
-| **[players-guide-patch.md](players-guide-patch.md)**                           | **Player's Guide Patch**: Tactical strategy for consequence curation ("I Cut"), intra-tier evaluation, and defense ("You Choose").                                                                    |
+| **[players-guide-patch.md](players-guide-patch.md)**                           | **Player's Guide Patch**: Tactical strategy for consequence curation ("I Cut") and intra-tier evaluation.                                                                                             |
 | **[gamemaster-guide-patch.md](gamemaster-guide-patch.md)**                     | **Gamemaster's Guide Patch**: Antagonist curation tactics (brutes, swarms, combined assaults), minion batching, and General Actions calibration.                                                      |
-| **[guide-to-writing-consequences.md](guide-to-writing-consequences.md)**       | **Authoring & Style Guide**: Rules for future agent runs (Continual Passives, Action vs. Task Duality, `Requires:` vs. `Cost:`, color qualifiers, ban on "damage" terminology).                       |
+| **[guide-to-writing-consequences.md](guide-to-writing-consequences.md)**       | **Authoring & Style Guide**: Standards for writing consequence cards (Continual Passives, Action vs. Task Duality, `Requires:` vs. `Cost:`, color qualifiers, ban on "damage" terminology).           |
 | **[consequences.yaml](consequences.yaml)**                                     | **Prototype Card Database**: Fully drafted cards across Severities 1–3 (plus Tier 4 exit states) with rules, in-combat actions, downtime tasks, escalation clauses, and clinical/biomechanical notes. |
 | **[equipment.yaml](equipment.yaml)**                                           | **Item & Armor Architecture**: Two-sided armor models (`Intact` vs. `Damaged`), 1–5 Pool Size spectrum, and stepped Pierce mechanics.                                                                 |
 | **[critique-and-brainstorming-seeds.md](critique-and-brainstorming-seeds.md)** | **Active Critiques & Brainstorming Seeds**: Tabletop ergonomics, tag dilution, and candidate consolidation seeds.                                                                                     |
@@ -34,13 +34,14 @@ flowchart TD
     A["1. Incoming Attacks Declared (Simultaneous Resolve Step)"] --> B["2. Defender Meets Strength for Each Attack (Hand Defend + Deck Flips)"]
     B --> C["3. Tally Total Impact = Cards flipped for all attacks targeting defender"]
     C --> D["4. Layered Draw: Fill Tiers of Width N from Bottom Up (1 Impact = 1 Card)"]
-    D --> E["5. Attackers Curate N Cards from All Drawn Candidates"]
-    E --> F["6. Defender Selects 1 Consequence (or Blank if I < N)"]
+    D --> E["5. Vulnerability Promotion: Lay matching Tier K <= S draw sideways on active Tier S condition -> Draw Tier K+1"]
+    E --> F["6. Attackers Curate N Cards from All Active Candidates"]
+    F --> G["7. Defender Selects 1 Consequence (or Blank if I < N)"]
 ```
 
 ### Step 1: Meet Strength & Accumulate Impact
 
-1. **Reactive "Defend" Actions (Optional)**: For each incoming attack, the defender may play an applicable **Defend** card from hand as an [[Action Stack]] (paying its printed [[Cost]] in additional hand cards). The card's printed rules text defines how it modifies the resolution (commonly contributing its stack's Strength without generating Impact, allowing cross-color defense, or granting conditional avoidance).
+1. **Reactive "Defend" Actions (Optional)**: For each incoming attack, the defender may play an applicable **Defend** card from hand as an [[Action Stack]] (paying its printed [[Cost]] in additional hand cards). The card's printed rules text defines how it modifies the resolution.
 2. **Flip from Deck**: If the attack's Strength is not yet met, flip cards from the top of the deck one by one into a **flipped stack** until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
 3. **Accumulate Impact**: The number of cards flipped across all attacks targeting the defender this round is the **Total Impact ($I$)**.
 
@@ -54,27 +55,36 @@ Candidates are drawn from the severity decks by filling tiers of width $N$ (the 
 3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
 4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
 
-> **Table Shortcut (Buried Tiers):** When total Impact is $\ge 2N$, attackers may skip drawing from fully saturated lower tiers unless actively fishing for lower-tier tag escalations.
+### Step 3: Promote via Active Vulnerabilities
 
-### Step 3: Curate the Consequence Pool (The "I Cut" Step)
+Active conditions in play in front of the defender list **`Vulnerable: [Tags]`**—specific openings created by that condition.
 
-1. **Check Pool Size ($N$)**: The defender's traits and equipped gear set the **Consequence Pool Size ($N$)** (typically 1 for minions, 2 for unarmored heroes, 3 for maille/brigandine, 4 for full plate; see Section 3 for full breakdown).
-2. **Pick Any $N$ Cards**: The attackers select any $N$ cards from all candidates drawn across all active tiers to present to the defender.
-   - **Targeting Active Vulnerabilities:** Attackers examine the active conditions on the table. Cards matching an active condition's tag are prioritized to force an escalation upgrade.
-   - **The Bottleneck Slot:** When higher tiers are partially filled (e.g. $N=3$ with 5 Impact: two Sev 2s and three Sev 1s), attackers use their surplus Sev 1 draws to place the sharpest or tag-escalating card into the remaining slot.
-   - Unselected candidate cards are returned to their decks.
-3. **Guaranteed Severity Formula**: Inflicting a guaranteed consequence of at least Tier $S$ requires $\mathbf{S \times N}$ Total Impact. If total Impact falls below this threshold, lower tiers or "No Consequence" blanks remain available.
+After drawing all base candidates, attackers evaluate the candidate pool against the defender's active conditions to promote draws into higher severity tiers:
 
-### Step 4: Defender Suffers Exactly 1 Consequence (The "You Choose" Step)
+1. **Matching:** An active condition of **Severity $S$** can promote any drawn candidate of **Severity $K \le S$** that matches one of its `Vulnerable` tags.
+2. **Tactile Promotion:** The attacker places the matching Tier $K$ candidate sideways across the exploited active condition and draws **1 replacement card from the Severity $K+1$ deck** (or allocates a Tier 4 Taken Out candidate when promoting a Tier 3 card via an active Tier 3 condition).
+3. **Limit:** Each active condition can hold at most **1 sideways card** (promoting at most 1 candidate) per resolution.
+4. **Chained Promotion:** A newly drawn replacement card may be promoted again only if the defender has another unspent active condition of Tier $\ge K+1$ with a matching `Vulnerable` tag.
+
+### Step 4: Curate the Consequence Pool (The "I Cut" Step)
+
+From all active candidates remaining after promotions, the attackers **choose any $N$ cards** to form the final Consequence Pool:
+
+- **Check Pool Size ($N$)**: The defender's traits and equipped gear set the Consequence Pool Size ($N$) (typically 1 for minions, 2 for unarmored heroes, 3 for gambeson/leather, 4 for maille/brigandine, 5 for full plate; see Section 3 for full breakdown).
+- **The Consequence Pyramid:** Promoted higher-tier cards fill slots in the pool, squeezing out soft Tier 1 options first and, as active conditions accumulate, eventually saturating all $N$ slots with Tier 2 or Tier 3 traumas even against heavy armor ($N=4\text{–}5$).
+- **The Bottleneck Slot:** When higher tiers are partially filled, attackers use surplus lower-tier draws to place the sharpest tactical lock or vulnerability-enabler into the remaining lower-tier slot.
+- **Implicit Blanks:** If total Impact was less than $N$, unfilled slots are presented as "No Consequence" blanks.
+- **Guaranteed Severity Formula**: Inflicting a guaranteed consequence of at least Tier $S$ requires filling all $N$ slots with cards of Tier $\ge S$—either via raw Impact ($\mathbf{S \times N}$) or by promoting lower-tier draws via active vulnerabilities.
+
+### Step 5: Defender Suffers a Consequence (The "You Choose" Step)
 
 1. The curated pool of $N$ cards (and any "No Consequence" blanks) is presented to the defender.
 2. The defender **chooses exactly 1 consequence** from the pool to suffer.
 3. If "No Consequence" is in the pool, the defender may select it to suffer no additional harm beyond the stamina/fatigue cards already flipped.
-4. **Resolution & Table Escalation:**
-   - **Novel Condition:** If the defender has no active condition with an `escalate:` trigger matching the chosen card's leaf tags, place the chosen card into play as a new active condition.
-   - **Condition Escalation & Card Fallbacks:** If an active condition in play in front of the defender has an `escalate:` trigger matching the chosen card's leaf tag, follow the explicit instructions printed on the active card (upgrading to the indicated condition, entering play in parallel, applying a setback to current mitigation progress, or resolving a kinetic overmatch wildcard if the track is already at its ceiling). When an upgrade occurs, discard the lower active condition and put the upgraded condition into play.
-   - **Tier 4 (Taken Out / Crisis Clock):** If the defender selects a Severity 4 consequence or an active Tier 3 condition escalates to Tier 4, the character is functionally out of the fight (never instant death). The attacker or narrative context defines an actionable exit state or rescue clock (e.g., knocked `Unconscious`, `Pinned & Captured`, or placed on an emergency `3-Round Mortal Bleedout Clock` that allies must stabilize). Physical cards for Tier 4 are evaluated independently.
-5. All unchosen cards in the pool are returned to their decks.
+4. **Applying the Consequence:**
+   - **Direct Placement:** Place the chosen card directly into play in front of the defender. If the card's text specifies that it replaces a weaker state on the same posture/mental track (e.g., `Knocked Prone` discarding `Poor Footing` or `Off Balance`), discard the superseded card.
+   - **Tier 4 (Taken Out / Crisis Clock):** If the defender selects a Severity 4 candidate, the character is functionally out of the fight (never instant death). The attacker or narrative context defines an actionable exit state or rescue clock (e.g., knocked `Unconscious`, `Pinned & Captured`, or placed on an emergency `3-Round Mortal Bleedout Clock` that allies must stabilize).
+5. **Clean Up:** All unchosen cards in the pool and all cards placed sideways on active conditions during Step 3 are returned to their respective decks.
 
 ---
 
@@ -100,7 +110,7 @@ Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs a
 
 ---
 
-## 4. The 4-Tier Severity Scale & Downward Spiral Mathematics
+## 4. The Severity Scale & Downward Spiral Mathematics
 
 | Tier  | Category                                | Description & Gameplay Effect                                                                                                                                                                    | Examples / Manifestation                                                                           |
 | :---: | :-------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
@@ -118,12 +128,12 @@ Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Tier } (S)$ formul
 - **To One-Shot a Warrior in War Armor ($N=4$, Tier 4)**: Attackers need $4 \times 4 = \mathbf{16\text{ Impact}}$ (~35–40 unmet Strength).
 - **To One-Shot a Knight in Full Plate ($N=5$, Tier 4)**: Attackers need $5 \times 4 = \mathbf{20\text{ Impact}}$ (~45–50 unmet Strength).
 
-Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by compounding vulnerabilities:
+Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by the **Consequence Pyramid** (active `Vulnerable` tags promoting subsequent draws into higher tiers):
 
-- **Initial Foothold (Opening Exchanges)**: Attackers test defenses and search for openings. Early hits inflict or offer sharp Tier 1 friction (`Afraid`, `Off Balance`, `Poor Footing`) or exploit an unarmored defender's smaller pool size ($N=2$) to establish active tags on the table.
-- **Compounding Pressure & Tag Escalation**: Follow-up strikes exploit exposed tags and compromised positions (e.g., hitting an already `Afraid` defender to deliberately trigger fear tag escalation into Tier 2 `Terrified`), worsening the defender's resource drain or defensive capability.
-- **Defensive Breakdown & Structural Trauma**: As hand cards are expended and defenses fray, incoming attacks penetrate armor thresholds or exploit lost posture, landing Tier 3 structural trauma (`Sundered Armor` flipping armor to Damaged and reducing pool size $N$, or severe bodily injury like `Broken Arm`).
-- **Terminal Resolution**: Compounding trauma, stripped defenses, and exhausted draw piles culminate in decisive collapse or incapacitation (reaching Tier 4 exit states like `Mind Void` or `Unconscious`).
+- **Initial Foothold (Opening Exchanges)**: Attackers test defenses and search for openings. Early hits inflict Tier 1 friction (`Poor Footing`, `Winded`, `Dust in Eyes`, `Rattled Guard`) or exploit an unarmored defender's smaller pool size ($N=2$) to establish active `Vulnerable` tags on the table.
+- **Building the Consequence Pyramid (Vulnerability Promotion)**: Follow-up strikes draw candidate cards that match the defender's active `Vulnerable` tags. By laying a matching Tier 1 draw sideways across an active Tier 1 condition, the attacker promotes that slot into a **Tier 2** draw. Against heavy armor ($N=4\text{–}5$), these promoted Tier 2 cards initially act as anvils that consume safe slots—forcing the defender into harsher Tier 1 locks—and as Tier 1 conditions accumulate, saturate the pool to guarantee **Tier 2 trauma** (`Knocked Prone`, `Cracked Ribs`, `Mild Concussion`) without requiring impossible single-hit Impact spikes.
+- **Defensive Breakdown & Structural Trauma**: Once Tier 2 conditions are active on the table (often carrying broad `Vulnerable` lists like `Knocked Prone` compromising `positioning, limbs, torso, head, armor`), matching Tier 2 draws are promoted directly into **Tier 3 structural trauma** (`Sundered Armor` flipping armor to Damaged and shrinking $N$, or severe bodily injury like `Broken Arm` or `Severe Concussion`).
+- **Terminal Resolution**: Matching a Tier 3 draw against an active Tier 3 condition's `Vulnerable` tags promotes the candidate to **Tier 4 (Taken Out)**.
 
 ### The Tapering Funnel & Meaningful Escalation
 
@@ -139,11 +149,9 @@ Dynamic range within consequence decks does not repeat uniformly across tiers; i
      - **Offense:** `Broken Arm` (drops weapons, blocks 2-handed weapons/shields, $+2$ Fatigue on Red).
      - **Defense:** `Sundered Armor` (flips armor to Damaged, permanently shrinking Pool Size $N$).
      - **Planning & Hand:** `Severe Concussion` (hand size hard-capped at 3, blocks Blue actions).
-     - **Life Clock:** `Arterial Hemorrhage` (dilutes hand with `Blood Loss` cards each round).
+     - **Life Clock:** `Arterial Hemorrhage` (life-threatening vascular trauma and acute bleedout clock).
    - Drafting is a tragic triage: _"Which pillar of my character can I afford to lose to survive this round?"_
-4. **Meaningful Escalation (Avoid Wheel-Spinning Buffers):**
-   - Escalation tracks exist to drive tactical evolution and ratchet stakes, not to serve as mechanical padding that absorbs attacks without changing how the fight plays.
-   - Every escalation should tangibly alter the tactical situation, restrict options, or escalate immediate danger rather than absorbing hits without altering the player's choices or table state.
+4. **Meaningful Escalation:** Every consequence tangibly alters the tactical situation, restricts options, or ratchets immediate danger rather than absorbing hits as passive padding.
 
 ---
 
@@ -165,8 +173,7 @@ When a player meets the required Strength with a **single card flip** ($\text{Im
 - Against the baseline Pool Size ($N = 2$), the second slot is an **implicit "No Consequence" blank**.
 - The player selects "No Consequence," succeeding cleanly with zero complications beyond the single card expended from their deck.
 
-**Design Philosophy Alignment:**
-The core intent of "Success at a Cost" is that the system introduces complications rather than having the rules say "No"—but the rules are fully allowed to say "Yes." Resolving a check with a single card flip represents a character expending a tiny bit of energy to succeed fully without complications. In fact, if a player resolves a task in a single flip, it was borderline whether the GM even needed to call for a check at all versus simply saying "yup" and moving on. Complications are reserved for genuine strain or active opposition ($\text{Impact} \ge N$).
+A single-card flip ($\text{Impact} = 1$) represents routine effort, allowing the player to select the blank slot and succeed without complications. Complications emerge when tasks demand genuine strain or opposition ($\text{Impact} \ge N$).
 
 ## 6. Multi-Attacker Combat & Swarm Scaling
 
@@ -175,7 +182,7 @@ When multiple attackers target the same defender during Crisis Time, their actio
 1. **Shared Round Impact**: The cards flipped by the defender to meet each incoming attack are summed into a single **Total Impact ($I$)** for the round.
 2. **Layered Fill as a Swarm**:
    - Total Impact fills the defender's pool tiers from the bottom up.
-   - For example, against a knight in maille ($N=3$), three goblins generating 2 Impact each produce $I = 6$ Total Impact. This completely fills Tier 1 (3 cards) and Tier 2 (3 cards), guaranteeing Tier 2 harm (`[Sev 2, Sev 2, Sev 2]`).
+   - For example, against an armored warrior in gambeson ($N=3$), three goblins generating 2 Impact each produce $I = 6$ Total Impact. This completely fills Tier 1 (3 cards) and Tier 2 (3 cards), guaranteeing Tier 2 harm (`[Sev 2, Sev 2, Sev 2]`).
    - If the goblins generate 4 combined Impact, they draw three Tier 1 cards and one Tier 2 card. The knight can pick a Tier 1 card to avoid Tier 2 trauma, but the goblins curate the sharpest Tier 1 options.
 3. **Deck Attrition as Mob Danger**: Beyond condition drafting, defending against a swarm forces multiple flips in rapid succession, draining the defender's 24-card deck and accelerating Fatigue Cycles toward Defensive Collapse.
 
@@ -193,18 +200,6 @@ When multiple attackers target the same defender during Crisis Time, their actio
 ---
 
 ## 8. Suggested Next Steps for Future Threads
-
-### Settled Decisions from 4-Tier Migration
-
-- **4-Tier Severity Scale**: Firmly settled (1: Tactical Impairments & Setbacks, 2: Platform Ceilings & Moderate Trauma, 3: Severe Structural Trauma, 4: Taken Out / Incapacitation).
-- **Elimination of Fleeting No-Ops**: Unfilled consequence pools ($N$) already handle glancing blows and complete absorption via implicit blanks. Dedicated "Near Miss" cards and transient discard dumps are removed.
-- **Intra-Tier Dynamic Range in Tier 1**: Tier 1 contains clearable setbacks (Priority 1–3: `Poor Footing`, `Winded`, `Dust in Eyes`) and stiff tactical locks (Priority 4–5: `Off Balance`, `Afraid`, `Rattled Guard`). Surplus Impact gives attackers curation leverage to filter out soft options; defending from hand denies curation leverage.
-- **The Organic Asymmetry Standard**: Escalation tracks reflect clinical and mechanical reality. Platform tracks have ceilings at Tier 2 (`Knocked Prone`) and Tier 3 (`Sundered Armor`) triggering Anvil wildcards; vascular cuts coexist in parallel; head trauma follows clinical neurotrauma stages.
-- **Symmetrical Minions**: Minions with `Pool Size 1` are inherently fragile (no blank slots to dilute harm).
-
-### Open Questions for Exploration
-
-- **Tier 4 Implementation**: Does Tier 4 function best as a small physical candidate card deck drawn when spending 4 Impact, or as an emergent narrative exit state (_"describe how this foe is dispatched"_ when terminal conditions or compounded trauma trigger)?
 
 ### Next Action Priorities
 

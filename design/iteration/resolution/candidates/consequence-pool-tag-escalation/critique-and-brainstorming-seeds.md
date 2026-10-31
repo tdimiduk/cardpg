@@ -18,21 +18,14 @@ This document outlines the active mechanical critiques, tabletop ergonomics tens
 
 ## 1. Active Systemic Critiques
 
-While the Consequence Pool engine successfully decouples harm from global hit points and introduces high player agency via "I Cut, You Choose" drafting, two mechanical and ergonomic friction points remain under the multi-deck model. _(Note: Per [resolution-design-constraints.md](../resolution-design-constraints.md) §2.5, physical table ergonomics is a "nice to have" during near-term VTT playtesting, but streamlining table footprint remains a valuable long-term goal)._
+While the Consequence Pool engine successfully decouples harm from global hit points and introduces high player agency via "I Cut, You Choose" drafting, ergonomic friction points remain under the multi-deck model. _(Note: Per [resolution-design-constraints.md](../resolution-design-constraints.md) §2.5, physical table ergonomics is a "nice to have" during near-term VTT playtesting, but streamlining table footprint remains a valuable long-term goal)._
 
 ### A. Physical Tabletop Ergonomics & Multi-Deck Drafting (VTT vs. Table)
 
 1. **Table Footprint (Improved but Persistent):** Consolidating down to 4 tiers—with Tier 4 handled narratively as Taken Out—successfully shrinks the table footprint from 5 physical decks down to **3 physical decks** (Severity 1: Tactical Impairments, Severity 2: Platform Ceilings/Moderate Trauma, Severity 3: Severe Structural Trauma). However, hosting 3 distinct trauma decks alongside character decks, hand cards, tableaus, and potential domain decks still occupies substantial table space.
-2. **The Draw-Read-Tuck Cycle:** Resolving an attack with Impact requires the attacker to calculate currency spending, draw 2–4 cards across up to 3 physical decks, read the rules text on all candidates, curate $N$ cards, and tuck unchosen cards back into their respective decks. The defender then reads the $N$ cards, chooses 1, and tucks the remaining $N-1$ cards back into the decks.
+2. **The Draw-Read-Tuck Cycle:** Resolving an attack with Impact requires the attacker to draw cards across up to 3 physical decks, read the rules text on all candidates, curate $N$ cards, and tuck unchosen cards back into their respective decks. The defender then reads the $N$ cards, chooses 1, and tucks the remaining $N-1$ cards back into the decks.
 3. **The "Phantom Card" Drafting Anomaly:** Because Tier 4 (Taken Out) has no physical card deck in the baseline rules, allocating a Tier 4 candidate when spending 4 Impact creates a physical disconnect: the attacker must introduce a proxy token, index card, or verbal declaration into an otherwise physical hand of drafted cards.
 4. **Pacing Drag:** Performing this multi-card reading, evaluating, and deck-sorting procedure multiple times per round violates the 10x Rule of Core Complexity and slows the tactile momentum of Crisis Time.
-
-### B. Tag Dilution & Mid-Combat Deck Tutoring
-
-1. **Tag Dilution:** Severity 1 contains 12 cards with 18 distinct tags, and Severity 2 contains 7 cards with 15 tags. When drawing 1 or 2 random candidates, the probability of drawing a tag that matches an active condition already on the defender remains low (~15–20%). The intended downward spiral of contextual tag escalation frequently stalls due to draw variance unless candidate pools are exceptionally large.
-2. **Mid-Combat Deck Tutoring:** While treating Tier 4 as narrative Taken Out successfully eliminates deck-searching for final death/defeat, escalating conditions between Tiers 1, 2, and 3 still requires mid-fight deck tutoring:
-   - Intra-tier escalations in Tier 1 (e.g., `Poor Footing` $\to$ `Off Balance`, `Dust in Eyes` $\to$ `Dazed`) require searching through the 12-card Severity 1 deck.
-   - Cross-tier escalations (e.g., `Off Balance` $\to$ `Knocked Prone` in Severity 2; `Mild Concussion` $\to$ `Severe Concussion` or `Rattled Guard` $\to$ `Sundered Armor` in Severity 3) require players to halt the game, pick up the higher severity deck, rifle through it to find the specific named card, place it in play, and reshuffle.
 
 ---
 

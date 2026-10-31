@@ -1,6 +1,6 @@
 # Guide to Writing Consequence Cards
 
-A comprehensive reference manual and style guide for designers and AI agents authoring Consequence Cards for **caRdPG**.
+A comprehensive reference manual and style guide for designers authoring Consequence Cards for **caRdPG**.
 
 ---
 
@@ -112,120 +112,88 @@ Consequence cards must **never** narrate standalone modifications to a character
 
 ---
 
-## 6. Condition Escalation & Harm Archetypes
+## 6. Vulnerability Promotion Web & Harm Archetypes
 
-Escalation is the mechanical engine of the downward spiral and dynamic pool curation. Escalation occurs **when the defender selects and suffers a consequence** that interacts with an **active condition already in play** in front of them.
+CaRdPG drives the downward spiral through a **Tag Vulnerability Promotion Web** during the Consequence Pool draw.
 
-### 6.1. The Three Harm Archetypes
+### 6.1. How Vulnerability Promotion Works
 
-Consequences do not all behave as simple single-track state machines. Tabletop harm falls into three distinct archetypes:
-
-1. **Platform Vulnerabilities (Finite Ceilings)**:
-   - _Scope:_ Positional stability and physical armor integrity (`positioning`, `armor`).
-   - _Natural Ceilings:_ These tracks have distinct tactical floors: `positioning` peaks at Tier 2 (`Knocked Prone`), while `armor` peaks at Tier 3 (`Sundered Armor`). Taking another positioning hit cannot make a person "more prone."
-   - _External Escalation:_ The escalation of being prone or unarmored is not an artificial surrender clause—it is the **severe mechanical vulnerability it confers to other attacks** (doubled Pierce, $+1$ Impact on defenses, action taxes). Attackers exploit these vulnerabilities with standard weapon strikes to flip massive Impact and inflict lethal physical trauma.
-2. **Progressive Pathologies (Compounding Cascades)**:
-   - _Scope:_ Neurological trauma and acute psychological stress (`head`, `fear`).
-   - _Natural Cascade:_ Re-injuring the exact same physiological or cognitive system triggers compounding systemic breakdown:
-     - _Head Trauma:_ `Dazed` (T1) $\to$ `Mild Concussion` (T2) $\to$ `Severe Concussion` (T3) $\to$ `Unconscious (Traumatic Coma)` (T4 Narrative Taken Out).
-     - _Panic:_ `Rattled Nerves` (T1) $\to$ `Afraid` (T1) $\to$ `Terrified` (T2) $\to$ `Mind Void` (T4 Narrative Taken Out).
-3. **Cumulative & Attritional Harm (Flesh & Blood)**:
-   - _Scope:_ Lacerations, punctures, contusions, and soft-tissue wear (`bleeding`, `injury`).
-   - _Independent Coexistence:_ Cuts to different limbs exist in parallel; getting cut on the arm and cut on the leg does not morph into a puncture wound in the torso. Escalation occurs through **hemodynamic volume loss** (`Bleeding Cut` T1 $\to$ `Deep Laceration` T2 $\to$ `Arterial Hemorrhage` T3 $\to$ `Mortal Bleedout` T4) and deck saturation (`Minor Wound` and `Blood Loss` cards).
+1. **Card Tags (`tags:`) vs. Compromised Tags (`vulnerable:`)**:
+   - **`tags:`** define what the consequence _is_ (e.g., `Winded` has `exertion`; `Dust in Eyes` has `sensory, eyes`; `Cracked Ribs` has `torso`).
+   - **`vulnerable:`** lists **2 to 4 Leaf Tags** representing the anatomical, positional, or psychological openings that this active condition exposes on the defender.
+2. **Tier-Scoped Promotion ($\text{Tier } K \le S$)**:
+   - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may promote **at most 1** drawn candidate card of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
+   - **Tactile Table Procedure:** The attacker places the matching Tier $K$ candidate **sideways across the exploited active condition** and immediately **draws 1 replacement candidate from the Severity $K+1$ deck** (or allocates a **Tier 4 Taken Out** candidate when a Tier 3 card is promoted by an active Tier 3 condition).
+3. **The Consequence Pyramid**:
+   - A newly drawn Tier $K+1$ card can itself be promoted further only if the defender has _another_ unspent active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag.
+   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): Tier 1 conditions promote subsequent Tier 1 draws into Tier 2 candidates, which first squeeze out soft Tier 1 options in the pool and then saturate the pool to force Tier 2 trauma, which in turn promotes Tier 2 draws into Tier 3 structural trauma.
 
 ---
 
-### 6.2. The Inviolable Rules of Escalation Design
+### 6.2. The Four Harm Archetypes Under the Vulnerability Web
 
-To ensure clarity and strong table pacing, all `escalate:` clauses must satisfy four core criteria:
-
-1. **The Organic Asymmetry Standard (Ban on Forced Symmetry)**:
-   Escalation should **only occur if it makes sense mechanically and narratively**. It is completely fine for cards to have no printed escalation, or for chains to be different lengths.
-   > **A card track that mechanically forces a neat 1 $\to$ 2 $\to$ 3 $\to$ 4 progression is suspicious.**
-   > Human physiology and tabletop tactics are inherently asymmetric. Some tracks peak early (posture at Tier 2); some jump directly to emergency states upon re-injury; others exist purely as parallel symptoms.
-2. **Escalation Must Advance Stakes or Alter Tactics (Avoid Hit-Buffer Sponges)**:
-   - Escalation clauses exist to drive tactical evolution and ratchet stakes, not to serve as mechanical padding that absorbs attacks without changing how the fight plays.
-   - An escalation should tangibly alter the tactical situation, restrict options, or escalate immediate danger (e.g., converting a footing slip into being knocked prone, or a hairline crack into a structural fracture).
-   - Avoid authoring redundant, incremental sub-conditions that merely soak attacks without changing the player's choices or table state.
-3. **The Narrative Continuity Standard**:
-   An escalation must represent a direct progression of the **exact same underlying pathology**.
-   - _Forbidden:_ Morphing wound categories (e.g., a cut turning into a puncture; bruised ribs turning into a strained arm).
-   - _Forbidden:_ Anatomical teleportation (e.g., an arm injury causing a head coma).
-4. **The Mechanical Superset Standard**:
-   When a condition card escalates, the active card is discarded and replaced by the upgraded card. Therefore:
-   > **The upgraded card MUST mechanically include or strictly obsolete every restriction and penalty on the card it replaces.**
-   > If a lower card imposes $+1$ Impact on defenses, the upgraded card must either explicitly retain $+1$ Impact (as `Knocked Prone` does) or impose an absolute lockout (like `Unconscious` forbidding defense entirely). Upgrading must never grant a mechanical reprieve or cure a defensive penalty.
+1. **Discrete Anatomical & Structural Point-Failures (Standalone Traumas)**:
+   - _Scope:_ `Cracked Ribs` (T2), `Hamstrung` (T2), `Broken Arm` (T3), `Sucking Chest Wound` (T3), `Gut Wound` (T3), `Ringing Ears` (T1), `Stiff Neck` (T1).
+   - _Behavior:_ These injuries enter play directly when drawn (natively or via promotion) rather than evolving from lower-tier prerequisites. They expose realistic `vulnerable:` tags (e.g., `Cracked Ribs` exposes `torso, exertion, positioning`).
+2. **Platform & Gear States (Broad Vulnerability Multipliers)**:
+   - _Scope:_ `Poor Footing` (T1), `Off Balance` (T1), `Knocked Prone` (T2), `Rattled Guard` (T1), `Sundered Armor` (T3).
+   - _Behavior:_ Losing posture or armor integrity compromises multiple anatomical zones at once. `Knocked Prone` (Tier 2) lists a wide vulnerability web (`vulnerable: [positioning, limbs, torso, head, armor]`), promoting matching Tier 2 draws into the **Tier 3** deck.
+   - _Superseding Lower States:_ When a stricter state on the same binary track enters play (e.g., `Off Balance` replacing `Poor Footing`, or `Knocked Prone` replacing `Poor Footing`/`Off Balance`), its rules text instructs the defender to discard the weaker state.
+3. **Cumulative Hemodynamic Loss (Bleeding & Vascular Trauma)**:
+   - _Scope:_ `Bleeding Cut` (T1), `Deep Laceration` (T2), `Arterial Hemorrhage` (T3).
+   - _Behavior:_ Separate cuts on different parts of the body coexist in parallel rather than morphing into one another. Each exposes `bleeding` and related tags (`exertion`, `limbs`, `torso`) under `vulnerable:`, naturally promoting follow-up bleeding draws into higher severity tiers through the Vulnerability Promotion Web.
+   - _Ongoing Mechanics Tuning:_ The specific tracking mechanics for systemic volume loss (e.g., diluting the draw deck with unspendable stamina/fatigue cards vs. tactile suppression vs. crisis clocks) are being designed to avoid sudden-death hand-counting anomalies.
+4. **Progressive Neurotrauma & Acute Panic**:
+   - _Scope:_ `Dazed` (T1) / `Mild Concussion` (T2) / `Severe Concussion` (T3); `Rattled Nerves` (T1) / `Afraid` (T1) / `Terrified` (T2).
+   - _Behavior:_ Each condition exposes `head, sensory, positioning` or `fear, mental, positioning` in its `vulnerable:` list, naturally promoting subsequent hits to higher tiers and superseding lower states on the same track when a higher state enters play.
 
 ---
 
-### 6.3. Leaf Tags Only (Banning Root Taxonomic Triggers)
+### 6.3. Canonical Leaf Tags & Sample Vulnerability Wiring
 
-Root tags (`physical`, `combat`, `injury`, `mental`, `sensory`) exist strictly for deck classification, domain filtration, and gear resistances.
+Root tags (`physical`, `combat`, `injury`) are used strictly for domain classification. Both `tags:` (for matching) and `vulnerable:` must use the canonical Leaf Tags (`positioning`, `armor`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`):
 
-- **`escalate:` blocks may only match specific Leaf Tags**: `head`, `fear`, `bleeding`, `positioning`, `armor`, `burn`, `arms`, `legs`.
-- **Never** write `if_suffer: injury` or `if_suffer: physical` in an escalation block. Doing so causes unrelated weapon strikes (e.g. an arrow to the hip) to trigger localized trauma (e.g. an arm fracture).
+| Consequence Card    | Tier | Card's Leaf Tags    | `vulnerable:` (Promotes Tier $\le S$ draws with these tags) | State / Redraw Rule                                 |
+| :------------------ | :--: | :------------------ | :---------------------------------------------------------- | :-------------------------------------------------- |
+| **Poor Footing**    |  1   | `positioning`       | `positioning`, `limbs`                                      | Non-stackable (redraw duplicate)                    |
+| **Off Balance**     |  1   | `positioning`       | `positioning`, `limbs`, `torso`                             | Replaces `Poor Footing`; redraw duplicate           |
+| **Winded**          |  1   | `exertion`          | `exertion`, `positioning`, `torso`                          | Non-stackable (redraw duplicate)                    |
+| **Dust in Eyes**    |  1   | `sensory`           | `sensory`, `head`, `positioning`, `armor`                   | Non-stackable (redraw duplicate)                    |
+| **Rattled Guard**   |  1   | `armor`             | `armor`, `torso`, `head`                                    | Non-stackable (redraw duplicate)                    |
+| **Afraid**          |  1   | `fear`, `mental`    | `fear`, `mental`, `positioning`                             | Replaces `Rattled Nerves`; redraw duplicate         |
+| **Bleeding Cut**    |  1   | `bleeding`          | `bleeding`, `exertion`                                      | Stacks in parallel                                  |
+| **Knocked Prone**   |  2   | `positioning`       | `positioning`, `limbs`, `torso`, `head`, `armor`            | Replaces T1 `positioning`; redraw any `positioning` |
+| **Cracked Ribs**    |  2   | `torso`             | `torso`, `exertion`, `positioning`                          | Stacks in parallel                                  |
+| **Mild Concussion** |  2   | `head`, `sensory`   | `head`, `sensory`, `positioning`, `mental`                  | Non-stackable (redraw duplicate)                    |
+| **Hamstrung**       |  2   | `limbs`, `bleeding` | `limbs`, `positioning`                                      | Stacks in parallel (per leg)                        |
 
 ---
 
-### 6.4. The Anvil Principle & Resolution-Time Wildcards (Platform Ceilings)
+### 6.4. Non-Stackable States & Same-Tier Redraws
 
-When a defender suffers a consequence whose track is already at its ceiling (e.g., suffering a Tier 2 `Knocked Prone` while already prone, or Tier 3 `Sundered Armor` while armor is destroyed), the kinetic energy transfers directly into raw bodily trauma:
+Most physical injuries (`Bleeding Cut`, `Cracked Ribs`, `Strained Offense`) can be suffered more than once in parallel without issue. However, binary posture or mental states (`Knocked Prone`, `Off Balance`, `Poor Footing`, `Afraid`, `Terrified`, `Sundered Armor`) cannot logically stack with themselves.
 
-- **`Knocked Prone` (Tier 2 Ceiling):**
-  ```yaml
-  - if_suffer: positioning (Severity 2+):
-      text: >
-        You are already prone. The kinetic force slams you against the unyielding ground:
-        Draw and suffer 1 Severity 2 Physical Injury card from the deck.
-  ```
-- **`Sundered Armor` (Tier 3 Ceiling):**
-  ```yaml
-  - if_suffer: armor (Severity 3+):
-      text: >
-        Your armor is already ruined. The blow punches straight through the wreckage into bare flesh:
-        Draw and suffer 1 Severity 3 Physical Injury card from the deck.
-  ```
-  This makes redundant platform curation a high-stakes resolution-time gamble rather than a "free pick" exploit for the defender.
+- **Normally Promoted:** If a duplicate of an active binary state is drawn, the attacker will usually lay it sideways on that active condition to promote it to Tier $K+1$.
+- **Fallback Redraw Rule (When Promotion Already Used):** For binary state cards, include a concise redraw clause so they never become "free blank" picks if drawn after that condition's promotion was already spent:
+  - _Standard Binary State:_ `redraw: If you already have this condition (or a higher positioning/fear state) in play, the attacker may redraw this candidate at the same tier.`
+  - _Platform Ceiling (`Knocked Prone`):_ Because a prone character cannot be tripped into `Poor Footing` or `Off Balance`, `Knocked Prone` specifies: `While Knocked Prone, the attacker may redraw any positioning candidate drawn against you at the same tier.`
 
 ---
 
 ### 6.5. Resetting Mitigation Progress (The Setback Pattern)
 
-When a condition card uses multi-turn in-combat mitigation (such as tucking cards to regain footing or suppress bleeding), minor incoming disruptions (Tier 1) reset active progress:
+When a condition card uses multi-turn in-combat mitigation (such as tucking cards to regain footing or holding cards on `Arterial Hemorrhage` to suppress bleeding), jarring impacts can disrupt active progress:
 
-- **On `Knocked Prone`:**
-  ```yaml
-  - if_suffer: positioning (Severity 1):
-      text: >
-        You are kicked and pinned in the dirt:
-        Expend 1 card from hand, and discard all cards currently tucked under this card.
-  ```
 - **On `Arterial Hemorrhage`:**
   ```yaml
-  - if_suffer: positioning or physical:
-      text: >
-        Jarring impact breaks your compress:
-        Expend all cards currently tucked under this card and resume the bleeding passive immediately.
+  - setback: "If you suffer a positioning or physical consequence while cards are on top of this, jarring impact breaks your compress: expend those cards and resume the passive immediately."
   ```
 
 ---
 
-### 6.6. The "Parallel Second One" Engine (Head Trauma & Bleeding)
+### 6.6. Transient Consequences
 
-For conditions where lesser symptoms realistically coexist with major trauma, the lesser condition **enters play in parallel** rather than triggering an instant terminal collapse:
-
-- If a defender holds `Mild Concussion` (Tier 2) and suffers `Dazed` (Tier 1, `head`), `Dazed` enters play **alongside** `Mild Concussion`. The defender suffers both the card-cost cap and the draw degradation.
-- A terminal catastrophe (Tier 4 Narrative Taken Out) only triggers when **two major traumas of that track accumulate**:
-  - `Mild Concussion` escalates to `Severe Concussion` (Tier 3). If the defender _already_ has an active `Severe Concussion`, compounding trauma triggers Second Impact Syndrome: discard both and resolve **Tier 4 Narrative Taken Out (Traumatic Coma)**.
-  - Similarly, multiple cuts exist in parallel; if a second bleed escalates to `Arterial Hemorrhage` (Tier 3) while one is already active, systemic volume loss triggers **Tier 4 Narrative Taken Out (Mortal Bleedout Clock)**.
-
----
-
-### 6.7. Transient Consequences Must Never Escalate
-
-Transient consequences (e.g. status-injecting setbacks) resolve immediately upon being selected: they inject status cards into the deck or expended pile and are immediately returned.
-
-- Transient cards **must never have an `escalate:` block**. If a card is not persistent on the table, it cannot be triggered by subsequent attacks.
+Transient consequences (if used in specialized domain decks) resolve immediately upon being selected and are returned to the deck. Because they do not remain in play as active conditions, they **never** have a `vulnerable:` list.
 
 ---
 
@@ -236,11 +204,11 @@ Every consequence card includes an integer `priority:` rating (**1 to 5**). This
 ### 7.1. Purpose & Use Cases
 
 1. **Fast-Paced GM Adjudication ("Without an Opinion")**:
-   When a GM draws several candidate cards within a tier and has no strong narrative or tactical preference, the GM simply compares the printed priority numbers. Selecting the highest-priority cards ensures the most threatening options enter the pool in seconds.
+   When a GM draws several candidate cards within a tier and has no strong narrative or tactical preference, the GM first performs any available **Vulnerability Promotions** (laying matching Tier $K \le S$ cards sideways on active Tier $S$ conditions to draw from Tier $K+1$), and then simply compares printed `severity` and `priority` numbers to select the highest-priority cards in seconds.
 2. **VTT, Digital Tools, and Solo AI Automation**:
    Automated curation scripts can execute deterministic, high-quality "I Cut" pool curation:
-   - _Step 1_: Check for matching active condition tags on the defender (top priority to trigger escalations).
-   - _Step 2_: For remaining pool slots, sort candidate cards by `severity` descending, then `priority` descending.
+   - _Step 1 (Vulnerability Promotion)_: Check drawn candidates against active conditions (highest tier first). Promote up to 1 matching candidate per active condition by drawing from Tier $K+1$.
+   - _Step 2 (Curation)_: Sort all active candidates by `severity` descending, then `priority` descending.
    - _Step 3_: Present the top $N$ cards to the defender.
 
 ### 7.2. The Tapering Funnel Guidelines by Tier
@@ -248,19 +216,15 @@ Every consequence card includes an integer `priority:` rating (**1 to 5**). This
 The dynamic range within a tier narrows as severity climbs:
 
 - **Tier 1 (The Sparring Band - Full Priority 1–5 Range)**:
-  - _Priority 1–2 (Softer / Clearable)_: Footing slips, minor breath loss, transient singes. Easily cleared in 1 action or via card-tucking; kindling for tag escalation.
+  - _Priority 1–2 (Softer / Clearable)_: Footing slips, minor breath loss, transient singes. Easily cleared in 1 action or via card-tucking; exposes `vulnerable:` tags for future promotions.
   - _Priority 3 (Resource Friction)_: Moderate card taxes, minor status injections.
   - _Priority 4–5 (Sharp Tactical Locks)_: Stiff action restrictions, fear lockouts, stripped armor Pierce thresholds (`Off Balance`, `Afraid`, `Rattled Guard`).
 - **Tier 2 (Operational Divergence - Priority 3–5 Only)**:
   - All Tier 2 cards are serious; there are no "soft outs."
-  - _Priority 3–4 (Chronic Biological Drag)_: Persistent neuro/tissue trauma (`Mild Concussion`, `Cracked Ribs`, `Deep Laceration`). Cannot be removed in combat.
-  - _Priority 5 (Platform Crisis)_: `Knocked Prone` (immediate doubled Pierce, $+1$ Impact on defenses; has active recovery pathways).
+  - _Priority 3–4 (Chronic Biological Drag)_: Persistent neuro/tissue trauma (`Mild Concussion`, `Cracked Ribs`, `Deep Laceration`). Cannot be removed in combat; exposes Tier 2 `vulnerable:` tags that can promote Tier 2 draws into Tier 3.
+  - _Priority 5 (Platform Crisis)_: `Knocked Prone` (immediate doubled Pierce, $+1$ Impact on defenses, broad `vulnerable:` list; has active recovery pathways).
 - **Tier 3 (Orthogonal Pillar Collapse - Priority 4–5 Only)**:
-  - Zero soft options. Every card is an existential collapse of one core character pillar:
-    - _Offense:_ `Broken Arm` (Priority 4)
-    - _Defense:_ `Sundered Armor` (Priority 5)
-    - _Planning:_ `Severe Concussion` (Priority 5)
-    - _Life Clock:_ `Arterial Hemorrhage` (Priority 5)
+  - Zero soft options. Every card is an existential collapse of one core character pillar (`Broken Arm`, `Sundered Armor`, `Severe Concussion`, `Arterial Hemorrhage`) and exposes Tier 3 `vulnerable:` tags that promote matching Tier 3 draws directly to **Tier 4 (Taken Out)**.
 - **Tier 4 (Narrative Taken Out)**:
   - Emergent terminal state; no physical card drafting required.
 
@@ -276,10 +240,14 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
   priority: 4 # Integer 1 to 5 (threat ranking within tier)
   tags:
     - physical
-    - arms
+    - limbs
     - combat
+  vulnerable:
+    - limbs
+    - positioning
+    - armor
   rules:
-    # 1. Continual passive effect (must subsume lower tiers on the same track)
+    # 1. Continual passive effect (plus any superseded lower state or non-stackable redraw rule)
     - passive: You must expend 1 card from hand whenever you declare an Attack action.
 
     # 2. In-combat Action (Platform recovery, suppression, or tradeoff; omit for unfixable bodily trauma)
@@ -290,15 +258,10 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
     - task: First Aid & Muscle Wrap (Check {Blue} 25; Time 1 hour; Cost Bandage; Requires Splint) -> Remove this.
     - when removed: Place 1 Minor Wound in your expended pile.
 
-  # Explicit on-suffer escalation triggers (omit entirely for transient cards or peak-of-track conditions)
-  escalate:
-    - if_suffer: arms
-      replace_with: Broken Arm (Colles' Fracture)
-
   notes: >
     Physiological / Biomechanical Basis: Deep clinical description explaining why this tissue trauma
-    or cognitive shock produces the specific card taxes and passive constraints above.
-    Detail both the in-combat tactical urgency and out-of-combat recovery rationale.
+    or cognitive shock produces the specific card taxes, passive constraints, and anatomical/tactical
+    vulnerabilities (`vulnerable:`) listed above.
 ```
 
 ---
@@ -315,8 +278,7 @@ Before committing any consequence card, verify:
 - [ ] If Tier 2 or 3 bodily trauma, is an in-combat removal `action:` appropriately omitted (or limited strictly to temporary tactile suppression)?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier?
-- [ ] If the card has an `escalate:` block, does the escalation meaningfully raise stakes or alter tactics rather than just acting as a hit buffer?
-- [ ] Are `escalate:` triggers restricted strictly to Leaf Tags (e.g. `head`, `fear`, `bleeding`, `positioning`, `armor`), completely banning root tags (`injury`, `physical`, `combat`)?
-- [ ] If the card is a platform condition at its ceiling (`Knocked Prone`, `Sundered Armor`), does it define an Anvil Principle wildcard (drawing a fresh Physical Injury card) and a progress setback clause?
-- [ ] If the card is a transient Tier 1, does it resolve and discard immediately with NO `escalate:` block?
-- [ ] Does the `notes:` field articulate the physiological/biomechanical basis?
+- [ ] Does the card specify 2 to 4 realistic Leaf Tags under `vulnerable:` (`positioning`, `armor`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
+- [ ] Does the card use `vulnerable:` tags for promotion rather than in-deck tutoring chains?
+- [ ] If the card represents a binary posture/mental state that cannot stack with itself (`Knocked Prone`, `Off Balance`, `Afraid`), does it include a same-tier redraw rule for duplicates (and superseded lower states)?
+- [ ] Does the `notes:` field articulate the physiological/biomechanical basis for both the passives and the `vulnerable:` tags?
