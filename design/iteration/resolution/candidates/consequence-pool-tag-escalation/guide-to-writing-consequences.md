@@ -77,10 +77,21 @@ In combat, clearing a condition is hurried and dangerous. Design actions around 
 
 Out of combat, treatment is performed with care. Difficulty must strictly align with [gamemaster-guide.md](../../rules/gamemaster-guide.md):
 
-- **Routine (Strength 5–10 | Seconds to Minutes)**: _Tier 1_ (e.g., eye wash, catching balance, breathing recovery).
-- **Challenging to Difficult (Strength 20–35 | Hours to Days)**: _Tier 2_ (e.g., rib wraps, dark room rest for mild concussions, tendon suturing).
-- **Very Difficult to Severe (Strength 45–60 | Days to Weeks)**: _Tier 3_ (e.g., orthopedic bone setting, master forge reconstruction, deep arterial cavity packing, severe concussion management).
-- **Legendary / Emergency Resuscitation (Strength 80–100+ | Weeks to Months)**: _Tier 4_ (e.g., acute trauma resuscitation, planar mind-mending, life-support stabilization).
+- **Tier 1 (Tactical Setbacks & Friction)**:
+  - **Default: Time & Resources (No Check Required):** Transient physical or postural friction (`Poor Footing`, `Winded`, `Dust in Eyes`) clears with seconds to minutes of undisturbed time (`Time 1 min`) or simple supplies (`Requires Clean Water`). Do not require a check unless performing actual tissue treatment (such as `Bleeding Cut` or `Strained Offense`).
+  - **The "Paced vs. Pushed" Dual-Task Pattern:** For conditions where a character can naturally recover with calm composure or push through under immediate pressure (especially fear, cognitive shock, or disorientation), print **separate task lines** on the card:
+    - _Example:_
+      ```yaml
+      - task: Center Yourself (Time 5 min) -> Remove this.
+      - task: Shake Off Panic (Check {Blue} 15; Time 30 sec) -> Remove this.
+      ```
+    - _Why on the card? (10x Rule):_ By printing separate explicit task lines directly on the card, the table gets immediate, concrete operational choices without needing universal rules or GM adjudications for "rushing a task."
+- **Tier 2 (Moderate Trauma & Platform Collapse)**:
+  - **Mandatory Checks (Strength 20–35 | Hours to Days):** Rib wraps, tendon sutures, concussion observation. All Tier 2 physical conditions require a formal check, dedicated downtime, and tools/facilities (`Requires Splint`, `Requires Darkened Room`).
+- **Tier 3 (Severe Structural Trauma)**:
+  - **Severe Checks (Strength 45–60 | Days to Weeks):** Orthopedic surgery, arterial vessel repair, deep cavity packing. Requires master medical care, surgery kits, and clinical infirmaries.
+- **Tier 4 (Legendary / Incapacitation / Terminal)**:
+  - **Legendary Checks (Strength 80–100+ | Weeks to Months):** Acute trauma resuscitation, planar mind-mending, life-support stabilization.
 
 > [!NOTE]
 > The printed `task:` difficulty is the **unassisted General Action baseline**. In actual play, players will use specialized doctor/healer cards, medical toolkits (+20–30 Blue), or restorative magic to bypass or assist these checks.
@@ -263,7 +274,7 @@ Before committing any consequence card, verify:
 - [ ] Are color requirements qualified by declared action color or numerical threshold ({Blue} >= 3)?
 - [ ] If Tier 2 or 3 bodily trauma, is an in-combat removal `action:` appropriately omitted (or limited strictly to temporary tactile suppression)?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
-- [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier?
+- [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier (or omitted for simple Tier 1 time/resource tasks)?
 - [ ] Does the card specify 2 to 4 realistic Leaf Tags under `vulnerable:` (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
 - [ ] Does the card use `vulnerable:` tags for promotion rather than in-deck tutoring chains?
 - [ ] If the card represents a binary posture/mental state that cannot stack with itself (`Knocked Prone`, `Off Balance`, `Afraid`), does it include a same-tier redraw rule for duplicates (and superseded lower states)?

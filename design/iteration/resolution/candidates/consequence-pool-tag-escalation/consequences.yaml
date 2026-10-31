@@ -129,6 +129,7 @@
     - passive: Whenever you draw cards at the start of a round, expend 1 card from hand.
     - action: Steady Nerves (Spend {Blue} 15) -> Remove this.
     - task: Deep Breath (Time 1 min) -> Remove this.
+    - task: Rapid Composure Reset (Check {Blue} 10; Time 15 sec) -> Remove this.
   notes: >
     Psychological Basis: Sympathetic nervous surge and hand tremors after facing sudden lethality. Forces premature
     card expenditure during hand management.
@@ -193,7 +194,8 @@
   rules:
     - passive: You must expend 1 card from hand to make a melee attack or willingly move closer to a foe.
     - action: Martial Fury Surge (Spend {Red} 25) -> Remove this.
-    - task: Center Yourself (Check {Blue} 15; Time 5 min) -> Remove this.
+    - task: Center Yourself (Time 5 min) -> Remove this.
+    - task: Shake Off Panic (Check {Blue} 15; Time 30 sec) -> Remove this.
   notes: >
     Psychological Basis: Acute stress reaction. Amygdala activation suppresses offensive motor initiation, requiring
     a conscious expenditure of resolve (1 card from hand) to close the distance or strike.
@@ -256,6 +258,7 @@
     - passive: You cannot play cards with printed cost of 3 or higher.
     - action: Shake Head Clear (Spend {Red} 20) -> Remove this.
     - task: Rest & Regain Focus (Time 10 min) -> Remove this.
+    - task: Force Mental Clarity (Check {Blue} 15; Time 1 min) -> Remove this.
   notes: >
     Neurological Basis: Transient blunt force jar to the skull. Temporary disruption of vestibular and cognitive tracking
     prevents executing complex, multi-card combos until cleared. Can enter play in parallel alongside Mild Concussion.
