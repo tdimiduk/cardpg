@@ -35,7 +35,3 @@ documents:
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/players-guide-patch.md"
     purpose: "Proposed patch to players-guide.md integrating consequence pool strategy."
     tags: ["doc-type:iteration", "audience:designer-facing"]
-
-  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/critique-and-brainstorming-seeds.md"
-    purpose: "Outlines active mechanical critiques, tabletop ergonomics tensions, and targeted design seeds for candidate resolution mechanics."
-    tags: ["doc-type:iteration", "audience:designer-facing"]
