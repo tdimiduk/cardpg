@@ -9,7 +9,7 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 1. **Layered Pool Fill**: $1\text{ Impact} = 1\text{ Card Drawn}$. Cards fill tiers of width $N$ (the defender's Pool Size) from Severity 1 upward, procedurally building the pool without integer partition math.
 2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine the row width $N$ that attackers must saturate before breaking into higher severity tiers.
 3. **Implicit Blanks ("No Consequence")**: Unfilled Tier 1 slots ($I < N$) become "No Consequence", creating an emergent armor soak threshold without requiring abstract divisor stats.
-4. **Tag Vulnerability Promotion Replaces Global Resilience**: Active conditions expose specific **`Vulnerable: [Tags]`** (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching a drawn candidate to an active vulnerability allows the attacker to lay that card sideways over the active condition and promote the draw to the next higher Severity tier ($K+1$)—building an escalating **Consequence Pyramid**.
+4. **Tag Vulnerability Exploitation (Escalate or Widen) Replaces Global Resilience**: Active conditions expose specific **`Vulnerable: [Tags]`** (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching a drawn candidate to an active vulnerability allows the attacker to lay that card sideways over the active condition and choose either to **Escalate** (draw 1 replacement from Tier $K+1$) or **Widen** (draw 2 replacements from Tier $K$, adding +1 net candidate to consume blank soak slots)—building an escalating **Consequence Pyramid** and systematically cracking heavy armor shells.
 
 ---
 
@@ -34,9 +34,9 @@ flowchart TD
     A["1. Incoming Attacks Declared (Simultaneous Resolve Step)"] --> B["2. Defender Meets Strength for Each Attack (Hand Defend + Deck Flips)"]
     B --> C["3. Tally Total Impact = Cards flipped for all attacks targeting defender"]
     C --> D["4. Layered Draw: Fill Tiers of Width N from Bottom Up (1 Impact = 1 Card)"]
-    D --> E["5. Vulnerability Promotion: Lay matching Tier K <= S draw sideways on active Tier S condition -> Draw Tier K+1"]
+    D --> E["5. Vulnerability Exploitation: Lay matching Tier K <= S draw sideways on active Tier S condition -> Escalate (Tier K+1) or Widen (2x Tier K)"]
     E --> F["6. Attackers Curate N Cards from All Active Candidates"]
-    F --> G["7. Defender Selects 1 Consequence (or Blank if I < N)"]
+    F --> G["7. Defender Selects 1 Consequence (or Blank if Candidates < N)"]
 ```
 
 ### Step 1: Meet Strength & Accumulate Impact
@@ -50,31 +50,32 @@ flowchart TD
 Candidates are drawn from the severity decks by filling tiers of width $N$ (the defender's Pool Size) from the bottom up, with **1 Impact = 1 card drawn**:
 
 1. **Tier 1 (Severity 1)**: The first $N$ Impact draws up to $N$ cards from the **Severity 1** deck.
-   - If total Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak).
+   - If total Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by widening during Step 3.
 2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
 3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
 4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
 
-### Step 3: Promote via Active Vulnerabilities
+### Step 3: Exploit Active Vulnerabilities (Escalate vs. Widen)
 
 Active conditions in play in front of the defender list **`Vulnerable: [Tags]`**—specific openings created by that condition.
 
-After drawing all base candidates, attackers evaluate the candidate pool against the defender's active conditions to promote draws into higher severity tiers:
+After drawing all base candidates, attackers evaluate the candidate pool against the defender's active conditions to either escalate severity or expand pool volume:
 
-1. **Matching:** An active condition of **Severity $S$** can promote any drawn candidate of **Severity $K \le S$** that matches one of its `Vulnerable` tags.
-2. **Tactile Promotion:** The attacker places the matching Tier $K$ candidate sideways across the exploited active condition and draws **1 replacement card from the Severity $K+1$ deck** (or allocates a Tier 4 Taken Out candidate when promoting a Tier 3 card via an active Tier 3 condition).
-3. **Limit:** Each active condition can hold at most **1 sideways card** (promoting at most 1 candidate) per resolution.
-4. **Chained Promotion:** A newly drawn replacement card may be promoted again only if the defender has another unspent active condition of Tier $\ge K+1$ with a matching `Vulnerable` tag.
+1. **Matching:** An active condition of **Severity $S$** can exploit any drawn candidate of **Severity $K \le S$** that matches one of its `Vulnerable` tags.
+2. **Tactile Exploitation (Escalate or Widen):** The attacker places the matching Tier $K$ candidate sideways across the exploited active condition and chooses one:
+   - **Escalate (Vertical):** Draw **1 replacement card from the Severity $K+1$ deck** (or allocate a Tier 4 Taken Out candidate when promoting a Tier 3 card via an active Tier 3 condition). Use this once the pool has enough cards to fill $N$, driving toward platform ceilings, broken limbs, and incapacitation.
+   - **Widen (Horizontal):** Draw **2 replacement cards from the Severity $K$ deck** (adding +1 net candidate to the pool). Use this to crack heavy armor shells by converting implicit "No Consequence" blank slots into active consequences when $I < N$, or to expand curation choices within the tier.
+3. **Limit:** Each active condition can hold at most **1 sideways card** (exploiting at most 1 candidate) per resolution.
+4. **Chained Exploitation:** A newly drawn replacement card may be exploited again only if the defender has another unspent active condition of it's tier with a matching `Vulnerable` tag.
 
 ### Step 4: Curate the Consequence Pool (The "I Cut" Step)
 
-From all active candidates remaining after promotions, the attackers **choose any $N$ cards** to form the final Consequence Pool:
+From all active candidates the attackers **choose any $N$ cards** to form the final Consequence Pool:
 
 - **Check Pool Size ($N$)**: The defender's traits and equipped gear set the Consequence Pool Size ($N$) (typically 1 for minions, 2 for unarmored heroes, 3 for gambeson/leather, 4 for maille/brigandine, 5 for full plate; see Section 3 for full breakdown).
 - **The Consequence Pyramid:** Promoted higher-tier cards fill slots in the pool, squeezing out soft Tier 1 options first and, as active conditions accumulate, eventually saturating all $N$ slots with Tier 2 or Tier 3 traumas even against heavy armor ($N=4\text{–}5$).
 - **The Bottleneck Slot:** When higher tiers are partially filled, attackers use surplus lower-tier draws to place the sharpest tactical lock or vulnerability-enabler into the remaining lower-tier slot.
-- **Implicit Blanks:** If total Impact was less than $N$, unfilled slots are presented as "No Consequence" blanks.
-- **Guaranteed Severity Formula**: Inflicting a guaranteed consequence of at least Tier $S$ requires filling all $N$ slots with cards of Tier $\ge S$—either via raw Impact ($\mathbf{S \times N}$) or by promoting lower-tier draws via active vulnerabilities.
+- **Implicit Blanks:** If total active candidates (base draws plus net cards gained from widening) are less than $N$, unfilled slots are presented as "No Consequence" blanks. If candidates meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
 
 ### Step 5: Defender Suffers a Consequence (The "You Choose" Step)
 
@@ -128,10 +129,11 @@ Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Tier } (S)$ formul
 - **To One-Shot a Warrior in War Armor ($N=4$, Tier 4)**: Attackers need $4 \times 4 = \mathbf{16\text{ Impact}}$ (~35–40 unmet Strength).
 - **To One-Shot a Knight in Full Plate ($N=5$, Tier 4)**: Attackers need $5 \times 4 = \mathbf{20\text{ Impact}}$ (~45–50 unmet Strength).
 
-Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by the **Consequence Pyramid** (active `Vulnerable` tags promoting subsequent draws into higher tiers):
+Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by the **Consequence Pyramid** and **Tag Vulnerability Exploitation (Escalate vs. Widen)**:
 
 - **Initial Foothold (Opening Exchanges)**: Attackers test defenses and search for openings. Early hits inflict Tier 1 friction (`Poor Footing`, `Winded`, `Dust in Eyes`, `Rattled Guard`) or exploit an unarmored defender's smaller pool size ($N=2$) to establish active `Vulnerable` tags on the table.
-- **Building the Consequence Pyramid (Vulnerability Promotion)**: Follow-up strikes draw candidate cards that match the defender's active `Vulnerable` tags. By laying a matching Tier 1 draw sideways across an active Tier 1 condition, the attacker promotes that slot into a **Tier 2** draw. Against heavy armor ($N=4\text{–}5$), these promoted Tier 2 cards initially act as anvils that consume safe slots—forcing the defender into harsher Tier 1 locks—and as Tier 1 conditions accumulate, saturate the pool to guarantee **Tier 2 trauma** (`Knocked Prone`, `Cracked Ribs`, `Mild Concussion`) without requiring impossible single-hit Impact spikes.
+- **Cracking the Armor Shell via Widening ($I < N$)**: Against heavily armored combatants ($N=4\text{–}5$), moderate strikes generating $I < N$ would normally leave "No Consequence" blanks. However, matching drawn Tier 1 candidates against the defender's active `Vulnerable` tags allows attackers to **Widen** (laying the card sideways to draw 2 replacement cards at the same tier). This adds +1 net candidate to the pool, consuming the blank soak slots and ensuring that even a 3- or 4-Impact strike penetrates a knight's heavy harness once their posture or guard is compromised.
+- **Building the Consequence Pyramid (Vertical Escalation)**: Once the candidate pool has enough cards to fill all $N$ slots, attackers switch to **Escalate** (laying matching candidates sideways to draw from Tier $K+1$). Promoted higher-tier cards consume safe slots—forcing the defender into harsher Tier 1 locks—and as active conditions accumulate, saturate the pool to guarantee **Tier 2 platform/biological trauma** (`Knocked Prone`, `Cracked Ribs`, `Mild Concussion`) without requiring impossible single-hit Impact spikes.
 - **Defensive Breakdown & Structural Trauma**: Once Tier 2 conditions are active on the table (often carrying broad `Vulnerable` lists like `Knocked Prone` compromising `positioning, limbs, torso, head, armor`), matching Tier 2 draws are promoted directly into **Tier 3 structural trauma** (`Sundered Armor` flipping armor to Damaged and shrinking $N$, or severe bodily injury like `Broken Arm` or `Severe Concussion`).
 - **Terminal Resolution**: Matching a Tier 3 draw against an active Tier 3 condition's `Vulnerable` tags promotes the candidate to **Tier 4 (Taken Out)**.
 

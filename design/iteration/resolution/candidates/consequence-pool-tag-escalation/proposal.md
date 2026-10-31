@@ -6,9 +6,9 @@ Update to `design/rules/core-rules.md`. Replaces `## Defend Actions`.
 
 1. **Determine Impact**: The defender meets incoming attack Strength; total cards flipped from the deck equal Total Impact ($I$).
 2. **Draw Candidates (Layered Fill)**: Each point of Impact draws 1 candidate card, filling tiers of width $N$ (the defender's Pool Size) from Severity 1 upward.
-3. **Promote Vulnerabilities**: Attackers may exploit active conditions on the defender matching drawn candidate tags to promote candidates to the next higher severity tier ($K+1$).
-4. **Curate the Pool**: Attackers choose any $N$ cards from the candidate pool to present to the defender.
-5. **Defender Suffers a Consequence**: The defender selects and suffers 1 consequence from the pool (or a blank if Impact $< N$).
+3. **Exploit Active Vulnerabilities (Escalate or Widen)**: Attackers may exploit active conditions on the defender matching drawn candidate tags to either escalate candidates to the next higher severity tier ($K+1$) or widen the pool within the same tier (+1 net card to crack armor soak).
+4. **Curate the Pool**: Attackers choose any $N$ cards from all active candidates to present to the defender.
+5. **Defender Suffers a Consequence**: The defender selects and suffers 1 consequence from the pool (or a blank if remaining candidates are fewer than $N$).
 
 ---
 
@@ -33,31 +33,34 @@ The defender's equipped gear, traits, or table cards define their **Consequence 
 Total Impact ($I$) generated against the defender is converted into candidate cards: **1 Impact = 1 card drawn**. Candidates are drawn from the severity decks by filling tiers of width $N$ from the bottom up:
 
 1. **Tier 1 (Severity 1)**: The first $N$ Impact draws up to $N$ cards from the **Severity 1** deck.
-   - If total Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak).
+   - If total Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by widening during Step 3.
 2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
 3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
 4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
 
 ---
 
-### 3. Promote via Active Vulnerabilities
+### 3. Exploit Active Vulnerabilities (Escalate or Widen)
 
 Active conditions in play in front of the defender list **`Vulnerable: [Tags]`**—specific openings created by that condition.
 
-After drawing all base candidates, attackers may exploit active conditions on the defender to promote drawn candidates into higher severity tiers:
+After drawing all base candidates, attackers may exploit active conditions on the defender to amplify or escalate the candidate pool:
 
-1. **Matching:** An active condition of **Severity $S$** can promote any drawn candidate of **Severity $K \le S$** whose tags match one of its `Vulnerable` tags.
-2. **Promotion:** Place the matching candidate sideways across the exploited condition and immediately draw 1 replacement candidate from the **Severity $K+1$** deck (or allocate a **Tier 4 Taken Out** candidate if promoting a Tier 3 card via an active Tier 3 condition).
-3. **Limit:** Each active condition on the defender may hold at most 1 sideways card (promoting at most 1 candidate) per resolution.
-4. **Chained Promotion:** A newly drawn replacement card may be promoted again only if the defender has another unspent active condition of Tier $\ge K+1$ with a matching `Vulnerable` tag.
+1. **Matching:** An active condition of **Severity $S$** can exploit any drawn candidate of **Severity $K \le S$** whose tags match one of its `Vulnerable` tags.
+2. **Tactile Exploitation (Escalate vs. Widen):** Place the matching candidate sideways across the exploited condition and choose one:
+   - **Escalate (Vertical):** Draw **1 replacement candidate from the Severity $K+1$ deck** (or allocate a **Tier 4 Taken Out** candidate if promoting a Tier 3 card via an active Tier 3 condition). Use this to push harm into higher severity tiers once the pool has enough cards to fill $N$.
+   - **Widen (Horizontal):** Draw **2 replacement candidates from the Severity $K$ deck** (adding +1 net candidate to the active pool). Use this to crack heavy armor shells by replacing an implicit "No Consequence" blank slot with an active consequence, or to gain extra curation options.
+3. **Limit:** Each active condition on the defender may hold at most 1 sideways card (exploiting at most 1 candidate) per resolution.
+4. **Chained Exploitation:** A newly drawn replacement card may be exploited again only if the defender has another unspent active condition of Tier $\ge K+1$ (for escalated draws) or Tier $\ge K$ (for widened draws) with a matching `Vulnerable` tag.
 
 ---
 
 ### 4. Curate the Consequence Pool (The "I Cut" Step)
 
-From all active candidates remaining after promotions, the attackers **choose any $N$ cards** to form the final Consequence Pool:
+From all active candidates remaining after promotions and widening, the attackers **choose any $N$ cards** to form the final Consequence Pool:
 
-- If total Impact was less than $N$, unfilled slots are presented as **"No Consequence" blanks**.
+- If total active candidates (base draws plus net cards gained from widening) are less than $N$, unfilled slots are presented as **"No Consequence" blanks**.
+- If total active candidates meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
 - All unselected candidates are returned to their respective decks.
 
 ---

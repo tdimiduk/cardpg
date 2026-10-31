@@ -22,13 +22,16 @@ Each card flipped by the defender gives the attacking side **1 Impact = 1 candid
 - Once Tier 2 is full, the next $N$ Impact draws up to $N$ Severity 3 cards.
 - Once Tier 3 is full, subsequent Impact allocates Severity 4 (Taken Out) candidates.
 
-### Step 3A: Vulnerability Promotion
+### Step 3A: Vulnerability Exploitation: Escalate vs. Widen
 
 Once all candidate cards are drawn, attackers evaluate the entire candidate pool against the defender's active conditions:
 
-- **Exploit Active Vulnerabilities:** An active condition of **Severity $S$** can promote one matching candidate of **Severity $K \le S$** whose tags match the condition's `Vulnerable` list.
-- **Promotion Action:** Place the matching Tier $K$ card **sideways across the exploited condition** and draw **1 replacement card from the Severity $K+1$ deck**.
-- **Pool-Wide Evaluation:** Because promotion is its own substep after all draws are on the table, you evaluate the full candidate pool at once to decide which promotions create the strongest tactical leverage.
+- **Exploit Active Vulnerabilities:** An active condition of **Severity $S$** can exploit one matching candidate of **Severity $K \le S$** whose tags match the condition's `Vulnerable` list.
+- **Tactile Choice (Escalate vs. Widen):** Place the matching Tier $K$ card **sideways across the exploited condition** and choose one:
+  - **Widen (Horizontal — Shell-Cracking):** Draw **2 replacement cards from the Severity $K$ deck** (net $+1$ candidate card).
+    - _When to use:_ Use this whenever the candidate pool is smaller than the defender's Pool Size ($I < N$). Adding $+1$ net candidate eliminates an implicit "No Consequence" blank slot, preventing heavily armored defenders from simply taking a free soak! Widening can also be used at Tier 1 to create surplus draws for curating punishing tactical locks.
+  - **Escalate (Vertical — The Pyramid):** Draw **1 replacement card from the Severity $K+1$ deck** (or allocate a Tier 4 Taken Out candidate if promoting a Tier 3 card via an active Tier 3 condition).
+    - _When to use:_ Use this once your candidate pool already has enough cards to fill all $N$ slots. Escalating gives much more punishing options to threaten the defender with.
 
 ### Step 3B: Curating the Consequence Pool
 
@@ -115,7 +118,7 @@ When multiple party members attack the same foe in a round, their Impact combine
 flowchart TD
     subgraph Attacker Decision ["Attacker ('I Cut')"]
         A1["Attacks Resolve -> Tally Total Impact (I)"] --> A2["Deal Cards Tier-by-Tier into Rows of Width N"]
-        A2 --> A3["Promote via Active Vulnerabilities (Lay matching Tier K <= S sideways -> Draw Tier K+1)"]
+        A2 --> A3["Exploit Active Vulnerabilities (Lay matching Tier K <= S sideways -> Escalate Tier K+1 or Widen 2x Tier K)"]
         A3 --> A4["Curate N Cards: Include Highest Tiers, Squeeze Bottlenecks"]
     end
 

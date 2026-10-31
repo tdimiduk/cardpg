@@ -114,19 +114,21 @@ Consequence cards must **never** narrate standalone modifications to a character
 
 ## 6. Vulnerability Promotion Web & Harm Archetypes
 
-CaRdPG drives the downward spiral through a **Tag Vulnerability Promotion Web** during the Consequence Pool draw.
+CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web** during the Consequence Pool draw.
 
-### 6.1. How Vulnerability Promotion Works
+### 6.1. How Vulnerability Exploitation Works
 
 1. **Card Tags (`tags:`) vs. Compromised Tags (`vulnerable:`)**:
    - **`tags:`** define what the consequence _is_ (e.g., `Winded` has `exertion`; `Dust in Eyes` has `sensory, eyes`; `Cracked Ribs` has `torso`).
    - **`vulnerable:`** lists **2 to 4 Leaf Tags** representing the anatomical, positional, or psychological openings that this active condition exposes on the defender.
-2. **Tier-Scoped Promotion ($\text{Tier } K \le S$)**:
-   - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may promote **at most 1** drawn candidate card of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
-   - **Tactile Table Procedure:** The attacker places the matching Tier $K$ candidate **sideways across the exploited active condition** and immediately **draws 1 replacement candidate from the Severity $K+1$ deck** (or allocates a **Tier 4 Taken Out** candidate when a Tier 3 card is promoted by an active Tier 3 condition).
-3. **The Consequence Pyramid**:
-   - A newly drawn Tier $K+1$ card can itself be promoted further only if the defender has _another_ unspent active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag.
-   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): Tier 1 conditions promote subsequent Tier 1 draws into Tier 2 candidates, which first squeeze out soft Tier 1 options in the pool and then saturate the pool to force Tier 2 trauma, which in turn promotes Tier 2 draws into Tier 3 structural trauma.
+2. **Tier-Scoped Exploitation ($\text{Tier } K \le S$)**:
+   - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may exploit **at most 1** drawn candidate card of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
+   - **Tactile Choice (Escalate vs. Widen):** The attacker places the matching Tier $K$ candidate **sideways across the exploited active condition** and chooses one:
+     - **Escalate (Vertical):** Draw **1 replacement candidate from the Severity $K+1$ deck** (or allocate a **Tier 4 Taken Out** candidate when a Tier 3 card is promoted by an active Tier 3 condition). Used once the pool has enough cards to fill $N$, pushing harm into higher severity tiers.
+     - **Widen (Horizontal):** Draw **2 replacement candidates from the Severity $K$ deck** (adding $+1$ net candidate card to the active pool). Used to crack heavy armor shells by replacing implicit "No Consequence" blank slots when $I < N$, or to expand intra-tier curation options.
+3. **The Consequence Pyramid & Shell-Cracking**:
+   - A newly drawn candidate can itself be exploited further only if the defender has _another_ unspent active condition of Tier $\ge K_{new}$ with a matching `vulnerable:` tag.
+   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): Widening consumes clean soak blanks to establish an early foothold, while Escalating turns Tier 1 conditions into Tier 2 platform/biological trauma, which in turn promotes Tier 2 draws into Tier 3 structural failure.
 
 ---
 
@@ -204,12 +206,14 @@ Every consequence card includes an integer `priority:` rating (**1 to 5**). This
 ### 7.1. Purpose & Use Cases
 
 1. **Fast-Paced GM Adjudication ("Without an Opinion")**:
-   When a GM draws several candidate cards within a tier and has no strong narrative or tactical preference, the GM first performs any available **Vulnerability Promotions** (laying matching Tier $K \le S$ cards sideways on active Tier $S$ conditions to draw from Tier $K+1$), and then simply compares printed `severity` and `priority` numbers to select the highest-priority cards in seconds.
+   When a GM draws several candidate cards within a tier and has no strong narrative or tactical preference, the GM first performs any available **Vulnerability Exploitations** (laying matching Tier $K \le S$ cards sideways on active Tier $S$ conditions to either **Widen** if candidates $< N$ or **Escalate** if candidates $\ge N$), and then simply compares printed `severity` and `priority` numbers to select the highest-priority cards in seconds.
 2. **VTT, Digital Tools, and Solo AI Automation**:
    Automated curation scripts can execute deterministic, high-quality "I Cut" pool curation:
-   - _Step 1 (Vulnerability Promotion)_: Check drawn candidates against active conditions (highest tier first). Promote up to 1 matching candidate per active condition by drawing from Tier $K+1$.
+   - _Step 1 (Vulnerability Exploitation)_: Check drawn candidates against active conditions (highest tier first). For each matching condition:
+     - If total active candidates $< N$, **Widen** (draw 2 replacements at Tier $K$).
+     - If total active candidates $\ge N$, **Escalate** (draw 1 replacement at Tier $K+1$).
    - _Step 2 (Curation)_: Sort all active candidates by `severity` descending, then `priority` descending.
-   - _Step 3_: Present the top $N$ cards to the defender.
+   - _Step 3_: Present the top $N$ cards to the defender (unfilled slots are blanks if candidates $< N$).
 
 ### 7.2. The Tapering Funnel Guidelines by Tier
 

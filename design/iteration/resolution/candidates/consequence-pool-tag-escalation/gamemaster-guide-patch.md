@@ -49,8 +49,10 @@ When a group of 3–5 identical mooks (e.g., kobolds or goblins) each generate 1
 
 1. **Do Not Make Micro-Decisions**: Do not deliberate over what each individual minion buys.
 2. **Batch Draw**: Count the total 1-Impact minions (e.g., 4) and draw that exact number of cards (4) straight off the **Tier 1** deck.
-3. **Five-Second Promotion & Curation**:
-   - Glance at the target's active conditions. Does any drawn card match an active condition's `Vulnerable` tags? If yes, lay it sideways on that condition and draw 1 replacement card from the next higher Severity deck.
+3. **Five-Second Exploitation & Curation**:
+   - Glance at the target's active conditions starting at lowest severity. Does any drawn card match an active condition's `Vulnerable` tags? If yes, lay it sideways on that condition and choose:
+     - **If candidates < N:** **Widen** (draw 2 replacement cards from Tier 1 to eliminate a blank soak slot).
+     - **If candidates >= N:** **Escalate** (draw 1 replacement card from Tier 2 to force platform or biological trauma).
    - Select the $N$ highest-threat cards (highest Severity, then highest Priority number) and present them to the player.
 4. **Return the Rest**: Return unchosen candidates and sideways-tucked cards to their respective decks.
 
@@ -60,8 +62,10 @@ Every consequence card features a printed **`Priority` rating (1 to 5)** represe
 
 When a GM is running combat without a strong tactical opinion, wants to keep the pace blistering, or is automating enemy turns via **Virtual Tabletop (VTT)** software, use the **Default Curation Algorithm**:
 
-1. **Vulnerability Promotions First**: Check drawn candidates against the defender's active conditions (highest tier first). For each active Tier $S$ condition, if a drawn candidate of Tier $K \le S$ matches one of its `Vulnerable` tags, lay that candidate sideways on the active condition and draw 1 replacement card from the Severity $K+1$ deck.
-2. **Highest Severity & Priority Fill the Pool**: Sort all active candidates by **Severity descending**, then **Priority descending**, and select the top $N$ cards.
+1. **Vulnerability Exploitation First (Widen vs. Escalate)**: Check drawn candidates against the defender's active conditions (highest tier first). For each active Tier $S$ condition, if a drawn candidate of Tier $K \le S$ matches one of its `Vulnerable` tags, lay that candidate sideways on the active condition and choose:
+   - **If total active candidates < N:** **Widen** (draw 2 replacement cards from the Severity $K$ deck) to consume implicit blank slots and guarantee harm.
+   - **If total active candidates >= N:** **Escalate** (draw 1 replacement card from the Severity $K+1$ deck) to push candidates into higher severity tiers.
+2. **Highest Severity & Priority Fill the Pool**: Sort all active candidates by **Severity descending**, then **Priority descending**, and select the top $N$ cards. (If total candidates are still less than $N$, unfilled slots are presented as "No Consequence" blanks).
 3. **Drop the Lowest**: Return unselected candidates and sideways-tucked cards to their respective decks.
 
 #### Example at the Table:
