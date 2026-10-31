@@ -91,7 +91,7 @@ Before querying external search engines or downloading remote files, agents must
 
 ### B. Automated Ingestion Hierarchy (Open-Access Tiers)
 
-When acquiring new literature, prioritize automated access through open repositories:
+When acquiring new literature, prioritize automated access through open repositories. When literature is available in dual format, prefer HTML (via `trafilatura`) because its layout extracts more cleanly; use PDF only if it is the sole available full-text format:
 
 1. **Internet Archive (`archive.org`):** Direct PDF downloads for public-domain historical manuals, early craft treatises, and legal history.
 2. **University Agricultural & Veterinary Extension Bulletins:** Open-access PDFs via `curl` or HTML via `trafilatura -u`.

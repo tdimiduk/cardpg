@@ -39,7 +39,7 @@ modeling_armor_weapons_combat:
         author: "Fiore dei Liberi"
         title: '"Il Fior di Battaglia" (The Flower of Battle)'
         description: >
-          A foundational early 15th-century Italian manual detailing a complete, integrated martial arts system. It is an invaluable source for modeling a holistic approach to combat, covering abrazare (grappling), dagger, longsword, poleaxe, and mounted combat, both in and out of armor.
+          A foundational early 15th-century Italian manual detailing a complete, integrated martial arts system. It is an invaluable source for modeling a holistic approach to combat, distinguishing Zogho Largo (wide play at distance) and Zogho Stretto (close play at crossed swords), covering abrazare (grappling), dagger, longsword, poleaxe, and mounted combat, both in and out of armor.
         vetting:
           - date: "2025-09-05"
             type: "confirmation"
@@ -52,9 +52,9 @@ modeling_armor_weapons_combat:
           A mid-15th-century Italian manual that builds upon the work of Fiore dei Liberi. It provides another key reference for the Italian school of arms, with a particular focus on the theory, geometry, and principles of the longsword.
       - type: manual_tradition
         tradition: "German School (Liechtenauer Tradition)"
-        title: "Various Fechtbücher (e.g., MS 3227a, Hans Talhoffer, Joachim Meyer)"
+        title: "Various Fechtbücher (e.g., MS 3227a, Sigmund Ringeck, Peter von Danzig, Joachim Meyer)"
         description: >
-          A vast body of work from the 14th to 16th centuries based on the mnemonic verses of Johannes Liechtenauer. These manuals are our primary source for tactical concepts like the Vor, Nach, and Indes, the five "master cuts" (Meisterhäue), and the importance of the bind (Winden).
+          A vast body of work from the 14th to 16th centuries based on the mnemonic verses (Zettel) of Johannes Liechtenauer (e.g., MS 3227a Nuremberg Hausbuch, Sigmund Ringeck MS Dresd. C 487, Peter von Danzig MS 44 A 8). These manuals are our primary source for tactical concepts like the initiative trio (Vor, Nach, Indes), the five master cuts (Meisterhäue), tactile sensitivity at the bind (am Schwert, Fühlen), winding (Winden), and wrestling at the sword (Ringen am Schwert).
           - **Joachim Meyer (c. 1570):** A key late-period source notable for its systematic and pedagogical approach, providing a highly detailed lexicon of actions for longsword, dussack, and rapier.
       - type: manual
         author: "George Silver"
@@ -166,6 +166,40 @@ modeling_armor_weapons_combat:
             type: "empirical literature verification"
             author: "tdimiduk"
             summary: "Empirical literature benchmark for Temporal demands of elite fencing."
+      - type: journal_article
+        title: "Comparisons of Pacing Strategy and Technical-Tactical Behaviors in Female Mixed Martial Arts Rounds"
+        author: "Bianca Miarka, Gustavo Nascimento de Carvalho, Diego Ignácio Valenzuela Pérez, Esteban Aedo-Muñoz, Carlos José Brito"
+        year: 2020
+        doi_or_url: "https://doi.org/10.3389/fpsyg.2020.548546"
+        local_archive: "sources/verisimilitude/miarka-2020-pacing-tactical-mma"
+        epistemic_grade: "primary_academic"
+        publication: "Frontiers in Psychology"
+        description: >
+          Time-motion analysis and pacing strategy of mixed martial arts (MMA) bouts
+          across rounds, quantifying standing and ground combat durations, preparatory
+          phases, and high-intensity actions.
+        vetting:
+          - date: "2026-10-28"
+            type: "empirical literature verification"
+            author: "tdimiduk"
+            summary: "Empirical literature benchmark for Comparisons of Pacing Strategy and Technical-Tactical Behaviors in Female Mixed Martial Arts Rounds."
+      - type: journal_article
+        title: "Time–Motion Analysis of the 2023 Women's World Boxing Championships Finals"
+        author: "Francesca Martusciello, Andrea Perazzetti, Arben Kaçurri, Marco Consolati, Antonio Tessitore"
+        year: 2025
+        doi_or_url: "https://doi.org/10.3390/sports13060187"
+        local_archive: "sources/verisimilitude/martusciello-2025-boxing-time-motion"
+        epistemic_grade: "primary_academic"
+        publication: "Sports"
+        description: >
+          Empirical time-motion analysis of elite boxing finals quantifying work-to-
+          rest, fighting, non-fighting, clinching, and referee interruption durations
+          across rounds and weight classes.
+        vetting:
+          - date: "2026-10-28"
+            type: "empirical literature verification"
+            author: "tdimiduk"
+            summary: "Empirical literature benchmark for Time–Motion Analysis of the 2023 Women's World Boxing Championships Finals."
 
 ---
 modeling_physical_costs_of_effort:
@@ -240,6 +274,41 @@ modeling_injury_damage_harm:
       - type: analogue
         title: "Faraday Cages"
         description: "Used to explain the protective effect of metal armor against lightning strikes."
+      - type: journal_article
+        title: "Assessing Postural Stability in the Concussed Athlete: What to Do, What to Expect, and When"
+        author: "Tamara C. Valovich McLeod, Carrie L. Snyder"
+        year: 2014
+        doi_or_url: "https://doi.org/10.1177/1941738114541238"
+        local_archive: "sources/verisimilitude/mcleod-2014-concussion-postural-stability"
+        epistemic_grade: "clinical_dataset"
+        publication: "Journal of Athletic Training"
+        description: >
+          Clinical assessment and pathophysiology of postural stability deficits,
+          acute balance disruption, and recovery timelines following sports-related
+          concussion.
+        vetting:
+          - date: "2026-10-28"
+            type: "empirical literature verification"
+            author: "tdimiduk"
+            summary: "Empirical literature benchmark for Assessing Postural Stability in the Concussed Athlete: What to Do, What to Expect, and When."
+      - type: journal_article
+        title: "A Systematic Review of Center of Mass as a Measure of Dynamic Postural Control Following Concussion"
+        author: "Shane Patejak, Mitchell Stephenson, Nicole Rendos, Scott Bruce"
+        year: 2021
+        doi_or_url: "https://doi.org/10.26603/001c.27983"
+        local_archive: "sources/verisimilitude/patejak-2021-concussion-center-of-mass"
+        epistemic_grade: "primary_academic"
+        publication: "International Journal of Sports Physical Therapy"
+        description: >
+          Systematic review of center of mass displacement and dynamic postural
+          instability kinetics during walking and movement following sports
+          concussion.
+        vetting:
+          - date: "2026-10-28"
+            type: "empirical literature verification"
+            author: "tdimiduk"
+            summary: "Empirical literature benchmark for A Systematic Review of Center of Mass as a Measure of Dynamic Postural Control Following Concussion."
+
 ---
 weaponry_and_armaments:
   historical_reproductions_and_testing:
@@ -1045,6 +1114,23 @@ foundational_scientific_medical:
           type: "empirical literature verification"
           author: "tdimiduk"
           summary: "Empirical literature benchmark for Stress-induced analgesia: an evaluation of effects on temporal summation of pain and the role of endogenous opioid mechanisms."
+    - type: journal_article
+      title: "Preferential processing of tactile events under conditions of divided attention"
+      author: "Jon V. M. Hanson, David Whitaker, James Heron"
+      year: 2009
+      doi_or_url: "https://doi.org/10.1097/WNR.0b013e3283319e25"
+      local_archive: "sources/verisimilitude/hanson-2009-tactile-divided-attention"
+      epistemic_grade: "primary_academic"
+      publication: "NeuroReport"
+      description: >
+        Neurobiological psychophysics experiment quantifying simple reaction times
+        and sensory transduction latencies across tactile, auditory, and visual
+        channels under focused and divided attention.
+      vetting:
+        - date: "2026-10-28"
+          type: "empirical literature verification"
+          author: "tdimiduk"
+          summary: "Empirical literature benchmark for Preferential processing of tactile events under conditions of divided attention."
 
 ---
 modeling_logistics_transport_materials:

@@ -37,10 +37,6 @@ design_process_and_research:
       tags: ["doc-type:research-report", "audience:designer-facing", "core-concept:harm", "core-concept:lethality", "core-concept:consequences", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/catastrophic-trauma-timelines/report.md", meta_file: "research/reports/catastrophic-trauma-timelines/meta.yaml", prompt_file: "research/reports/catastrophic-trauma-timelines/prompt.md" }
 
-    - purpose: "A detailed biomechanical and tactical analysis of pre-modern combat, focusing on physiological energy systems, fatigue, and the rhythm of a one-on-one engagement. Used for designing the pacing of Crisis Time."
-      tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:fatigue", "core-concept:verisimilitude"]
-      components: { report_file: "research/reports/dynamics-of-the-duel/report.md", meta_file: "research/reports/dynamics-of-the-duel/meta.yaml", prompt_file: "research/reports/dynamics-of-the-duel/prompt.md" }
-
     - purpose: "A detailed tactical and mechanical analysis of pre-modern combat. Note: Its data on armor's metabolic cost and mobility penalties has been superseded by the more detailed 'report-combat-locomotion'."
       tags: ["doc-type:research-report", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:tempo", "core-concept:reach", "core-concept:spacing", "core-concept:armor", "core-concept:verisimilitude"]
       components: { report_file: "research/reports/combat-dynamics-analysis/report.md", meta_file: "research/reports/combat-dynamics-analysis/meta.yaml", prompt_file: "research/reports/combat-dynamics-analysis/prompt.md" }
