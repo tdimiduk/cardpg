@@ -36,7 +36,7 @@ Each attacker independently converts the Impact ($I$) their attack generated int
    - If an attack's Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by merging pools or exploiting vulnerabilities during Step 3.
 2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
 3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
-4. **Tier 4 (Taken Out)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) allocates one **Severity 4 (Taken Out)** candidate.
+4. **Tier 4 (Defeat / Climax)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) draws 1 card from the **Severity 4** deck.
 
 **Separate or Merged Pools (Multi-Attacker):**
 
@@ -52,7 +52,7 @@ Active conditions in play in front of the defender at the start of the round lis
 Within each Consequence Pool (after any pool merging), attackers may exploit start-of-round active conditions on the defender to simultaneously expand and escalate that pool:
 
 1. **Matching:** An active condition of **Severity $S$** can exploit any unplaced candidate in the pool of **Severity $K \le S$** whose tags match one of its `Vulnerable` tags.
-2. **Place to Draw (+1 Candidate at Tier $K+1$):** Place the matching Tier $K$ candidate onto that active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your pool (or allocate a **Tier 4 Taken Out** candidate if exploiting a Tier 3 match on an active Tier 3 condition).
+2. **Place to Draw (+1 Candidate at Tier $K+1$):** Place the matching Tier $K$ candidate onto that active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your pool (drawing from the **Severity 4 deck** if exploiting a Tier 3 match on an active Tier 3 condition).
    - Because this adds +1 net card to the pool while introducing a higher-tier threat, a single mechanic both cracks heavy armor shells (filling implicit "No Consequence" blank slots when $I < N$) and escalates pool severity (squeezing out softer options when $I \ge N$).
 3. **Limit (Once per Condition per Pool):** Each active condition on the defender may hold at most **1 candidate card per Consequence Pool** (meaning each active condition and each placed candidate card can be exploited at most once per pool). When multiple pools resolve in parallel, each separate pool may independently exploit the defender's start-of-round active conditions once.
 4. **Chained Exploitation:** Within a pool, because a newly drawn Tier $K+1$ candidate enters your hand unplaced, it may immediately be placed onto another unexploited active condition of Tier $\ge K+1$ with a matching `Vulnerable` tag to draw from Tier $K+2$.
@@ -79,5 +79,5 @@ For each Consequence Pool, once all vulnerability exploitations for that pool ar
 4. **Applying Consequences (Simultaneous):**
    - All consequences suffered during the round enter play simultaneously at the end of the round (they cannot be exploited for Step 3 vulnerability promotions during the same round they are inflicted).
    - **Active Condition:** Place each chosen card into play in front of the defender. If the card specifies that it supersedes an existing condition, discard the superseded condition.
-   - **Tier 4 (Taken Out / Crisis Clock):** If the defender selects a Severity 4 candidate, the character is out of the fight (never instant death). The attacker or narrative context defines an actionable exit state or rescue clock (e.g., knocked `Unconscious`, `Pinned & Captured`, or an emergency bleedout clock). No card is drawn from a physical deck.
+   - **Tier 4 (Defeat / Climax):** If the defender selects a Severity 4 consequence, the card enters play and the character is taken out of the fight or placed on an active crisis clock (e.g., `Mortal Bleedout`). The card defines immediate exit rules, ally intervention actions (such as emergency hemostasis to pause a bleedout timer), and post-combat resuscitation tasks.
 5. **Clean Up:** All unchosen cards in the presented pools are returned to their respective decks.

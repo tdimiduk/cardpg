@@ -22,10 +22,9 @@ While the Consequence Pool engine successfully decouples harm from global hit po
 
 ### A. Physical Tabletop Ergonomics & Multi-Deck Drafting (VTT vs. Table)
 
-1. **Table Footprint (Improved but Persistent):** Consolidating down to 4 tiers—with Tier 4 handled narratively as Taken Out—successfully shrinks the table footprint from 5 physical decks down to **3 physical decks** (Severity 1: Tactical Impairments, Severity 2: Platform Ceilings/Moderate Trauma, Severity 3: Severe Structural Trauma). However, hosting 3 distinct trauma decks alongside character decks, hand cards, tableaus, and potential domain decks still occupies substantial table space.
-2. **The Draw-Read-Tuck Cycle:** Resolving an attack with Impact requires the attacker to draw cards across up to 3 physical decks, read the rules text on all candidates, curate $N$ cards, and tuck unchosen cards back into their respective decks. The defender then reads the $N$ cards, chooses 1, and tucks the remaining $N-1$ cards back into the decks.
-3. **The "Phantom Card" Drafting Anomaly:** Because Tier 4 (Taken Out) has no physical card deck in the baseline rules, allocating a Tier 4 candidate when spending 4 Impact creates a physical disconnect: the attacker must introduce a proxy token, index card, or verbal declaration into an otherwise physical hand of drafted cards.
-4. **Pacing Drag:** Performing this multi-card reading, evaluating, and deck-sorting procedure multiple times per round violates the 10x Rule of Core Complexity and slows the tactile momentum of Crisis Time.
+1. **Table Footprint & Multi-Deck Management:** The engine hosts **4 physical decks** (Severity 1: Tactical Impairments, Severity 2: Platform Ceilings/Moderate Trauma, Severity 3: Severe Structural Trauma, Severity 4: Climax & Defeat). While Tier 4 is a compact, low-churn deck (~8–12 cards) that sits off to the side until lethal thresholds are reached, maintaining 3 active trauma decks alongside character decks, hand cards, tableaus, and potential domain decks still occupies substantial table space.
+2. **The Draw-Read-Tuck Cycle:** Resolving an attack with Impact requires the attacker to draw cards across up to 3–4 physical decks, read the rules text on all candidates, curate $N$ cards, and tuck unchosen cards back into their respective decks. The defender then reads the $N$ cards, chooses 1, and tucks the remaining $N-1$ cards back into the decks.
+3. **Pacing Drag:** Performing multi-card reading, evaluating, and deck-sorting multiple times per round violates the 10x Rule of Core Complexity and slows the tactile momentum of Crisis Time.
 
 ---
 

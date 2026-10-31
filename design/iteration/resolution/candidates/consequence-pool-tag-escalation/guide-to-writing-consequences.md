@@ -22,14 +22,12 @@ Consequence cards are the mechanical engine of caRdPG's **"Default to Success at
 
 caRdPG uses a 4-tier severity scale calibrated against the **Consequence Pool Drafting Engine** ($\text{Impact Required} = \text{Pool Size} \times \text{Severity}$).
 
-The table hosts **three physical consequence card decks** (Tiers 1–3), with Tier 4 functioning as an **Emergent Narrative Exit State**:
-
-| Tier  | Category                                | Typical In-Combat Effect                                                               | Narrative & Recovery Scope                                                               |
-| :---: | :-------------------------------------- | :------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
-| **1** | **Tactical Impairments & Setbacks**     | Sparring band: clearable footing slips (P1–3) to stiff tactical locks (P4–5).          | Easily shaken off; Routine out-of-combat fixes (seconds to minutes).                     |
-| **2** | **Platform Ceilings & Moderate Trauma** | Loss of stance (prone), mild concussive fog, cracked ribs, deep lacerations.           | Major tactical crisis; Challenging to Difficult clinical treatment (hours to days).      |
-| **3** | **Severe Structural Trauma**            | Complete bone fractures, severe concussions, thoracic/chest trauma, arterial bleeding. | Catastrophic structural bodily failure; Very Difficult clinical surgery (weeks).         |
-| **4** | **Taken Out / Incapacitation**          | Traumatic coma, arterial bleedout, catatonic panic, surrender/subdued.                 | Incapacitating; removed from combat or dying on a crisis clock. Legendary care (months). |
+| Tier  | Category                              | Typical In-Combat Effect                                                               | Narrative & Recovery Scope                                                               |
+| :---: | :------------------------------------ | :------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **1** | **Tactical Impairments & Setbacks**   | Sparring band: clearable footing slips (P1–3) to stiff tactical locks (P4–5).          | Easily shaken off; Routine out-of-combat fixes (seconds to minutes).                     |
+| **2** | **Moderate Trauma & Severe setbacks** | Loss of stance (prone), mild concussive fog, cracked ribs, deep lacerations.           | Major tactical crisis; Challenging to Difficult clinical treatment (hours to days).      |
+| **3** | **Severe Structural Trauma**          | Complete bone fractures, severe concussions, thoracic/chest trauma, arterial bleeding. | Catastrophic structural bodily failure; Very Difficult clinical surgery (weeks).         |
+| **4** | **Taken Out / Incapacitation**        | Traumatic coma, arterial bleedout, catatonic panic, surrender/subdued.                 | Incapacitating; removed from combat or dying on a crisis clock. Legendary care (months). |
 
 ---
 
@@ -111,7 +109,7 @@ CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web
    - **`vulnerable:`** lists **2 to 4 Leaf Tags** representing the anatomical, positional, or psychological openings that this active condition exposes on the defender.
 2. **Tier-Scoped Exploitation ($\text{Tier } K \le S$) — "Place to Draw, Scoop to Curate"**:
    - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may exploit **at most 1** unplaced candidate card in the pool of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
-   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 3) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (or allocates a **Tier 4 Taken Out** candidate when a Tier 3 card exploits an active Tier 3 condition).
+   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 3) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (drawing from the **Severity 4 deck** when a Tier 3 card exploits an active Tier 3 condition).
    - **Scoop to Curate (Step 4):** Once Step 3 finishes for the pool, the attacker scoops the placed candidate cards back off the defender's active conditions into the pool and curates any $N$ cards. Because each exploitation adds $+1$ net card at Tier $K+1$ while preserving the triggering Tier $K$ card, this single primitive both cracks heavy armor shells (replacing implicit "No Consequence" blank slots when $I < N$) and builds the Consequence Pyramid (squeezing out soft lower-tier options when $I \ge N$).
 3. **The Consequence Pyramid & Shell-Cracking**:
    - Because a newly drawn Tier $K+1$ candidate enters the hand unplaced, it can itself be placed onto _another_ unexploited active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag to chain into Tier $K+2$.
@@ -224,7 +222,7 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
 
 ```yaml
 - name: Example Persistent Condition
-  severity: 2 # Integer 1 to 3 (Physical Decks); 4 is Narrative Exit State
+  severity: 2 # Integer 1 to 4 (Physical Decks)
   priority: 4 # Integer 1 to 5 (threat ranking within tier)
   tags:
     - physical
@@ -258,7 +256,7 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
 
 Before committing any consequence card, verify:
 
-- [ ] Is the severity accurately calibrated (Tier 1, 2, or 3 for card decks; Tier 4 for narrative exit)?
+- [ ] Is the severity accurately calibrated (Tier 1, 2, 3, or 4)?
 - [ ] Is the `priority:` rating (1 to 5) assigned according to the Tapering Funnel guidelines?
 - [ ] Are all passives written as continual states (no "the next...")?
 - [ ] Is the word "damage" completely avoided for characters/decks? (Used "expend from deck/hand" instead?)

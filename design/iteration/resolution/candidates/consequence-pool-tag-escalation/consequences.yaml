@@ -25,7 +25,7 @@
 #   9. Priority Ratings: Every card includes an integer 'priority: 1-5' representing aggregate threat/badness within its tier for fast default curation and VTT automation.
 
 # ==============================================================================
-# TIER 1: TACTICAL IMPAIRMENTS & SETBACKS (Cost: 1 Impact)
+# TIER 1: TACTICAL IMPAIRMENTS & SETBACKS
 # Dynamic range from clearable friction (Priority 1-3) to stiff tactical locks (Priority 4-5)
 # ==============================================================================
 
@@ -262,7 +262,7 @@
     Vulnerability: Disoriented tracking and compromised guard leave head and sensory zones vulnerable to Tier 2 concussion.
 
 # ==============================================================================
-# TIER 2: PLATFORM CEILINGS & MODERATE BODILY TRAUMA (Cost: 2 Impact)
+# TIER 2: PLATFORM CEILINGS & MODERATE BODILY TRAUMA
 # ==============================================================================
 
 - name: Knocked Prone
@@ -432,7 +432,7 @@
     Vulnerability: Thermal nerve damage exposes hands and arcane manipulation to further escalation.
 
 # ==============================================================================
-# TIER 3: SEVERE STRUCTURAL TRAUMA & CRITICAL EMERGENCIES (Cost: 3 Impact)
+# TIER 3: SEVERE STRUCTURAL TRAUMA & CRITICAL EMERGENCIES
 # ==============================================================================
 
 - name: Broken Arm (Colles' Fracture)
@@ -511,10 +511,10 @@
     Tier 4 Unconscious (Traumatic Coma).
 
 # ==============================================================================
-# TIER 4: TAKEN OUT / DEFEAT (Cost: 4 Impact)
-# In baseline core rules, Tier 4 is resolved as Narrative Taken Out (slain,
-# unconscious, pinned/captured, or 3-round hemostasis clock). The prototype cards
-# below are exploratory reference states for optional high-stakes PC trauma/care.
+# TIER 4: CLIMAX & DEFEAT 
+# The Tier 4 physical deck hosts definitive combat exit states, trauma comas,
+# and high-tension emergency crisis clocks (e.g. Mortal Bleedout) with ally
+# intervention actions and legendary clinical resuscitation tasks.
 # ==============================================================================
 
 - name: Unconscious (Traumatic Coma)

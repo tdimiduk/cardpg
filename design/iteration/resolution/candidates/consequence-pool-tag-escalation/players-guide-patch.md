@@ -20,13 +20,13 @@ Each card flipped by the defender gives the attacking side **1 Impact = 1 candid
 - The first $N$ Impact draws up to $N$ Severity 1 cards. (If total Impact is less than $N$, unfilled slots are implicit "No Consequence" blanks).
 - Once Tier 1 is full, the next $N$ Impact draws up to $N$ Severity 2 cards.
 - Once Tier 2 is full, the next $N$ Impact draws up to $N$ Severity 3 cards.
-- Once Tier 3 is full, subsequent Impact allocates Severity 4 (Taken Out) candidates.
+- Once Tier 3 is full, each additional point of Impact draws 1 card from the Severity 4 deck.
 
 ### Step 3A: Vulnerability Exploitation ("Place to Draw")
 
 Once base candidate cards are drawn (and after any optional pool merging), attackers evaluate the pool against the defender's start-of-round active conditions:
 
-- **Match & Place:** An active condition of **Severity $S$** can exploit one unplaced candidate in your pool of **Severity $K \le S$** whose tags match the condition's `Vulnerable` list. Place that matching Tier $K$ candidate onto the active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your hand (or allocate a Tier 4 Taken Out candidate when exploiting a Tier 3 match on an active Tier 3 condition).
+- **Match & Place:** An active condition of **Severity $S$** can exploit one unplaced candidate in your pool of **Severity $K \le S$** whose tags match the condition's `Vulnerable` list. Place that matching Tier $K$ candidate onto the active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your hand (drawing from the Severity 4 deck when exploiting a Tier 3 match on an active Tier 3 condition).
 - **Dual Effect (Shell-Cracking + Pyramid Escalation):**
   - **When $I < N$ (Cracking Heavy Armor):** Because you scoop the placed Tier $K$ card back into your pool at Step 4 alongside the newly drawn Tier $K+1$ card, each exploited vulnerability adds **+1 net candidate** to your pool—consuming an implicit "No Consequence" blank slot and preventing heavily armored defenders from taking a free soak!
   - **When $I \ge N$ (Squeezing the Pool):** Adding a Tier $K+1$ card while retaining all of your Tier $K$ draws gives you surplus candidates for Step 4, allowing you to include the higher-tier card and curate out your softest lower-tier draw.
@@ -77,6 +77,10 @@ At Tier 3, curate candidates specifically to dismantle the opponent's core arche
 - Against spellcasters or commanders $\to$ force **`Severe Concussion`** (caps hand size at 3).
 - Against defensive tanks $\to$ force **`Arterial Hemorrhage`** (acute bleedout clock).
 
+#### Tier 4: Terminal Climax & Rescue Clocks
+
+At Tier 4, the character faces defeat or fatal trauma. However, choices still matter: curating between immediate coma (safe, stable incapacitation like `Unconscious [Traumatic Coma]`) and acute hemorrhagic shock (`Mortal Bleedout`, which starts a 3-round emergency clock allowing allies to intervene with in-combat hemostasis) presents the defender with an agonizing trade-off between immediate loss of agency and high-stakes survival.
+
 #### Defensive Hand Strategy: Severity Suppression & Curation Denial
 
 Playing **Defend** cards from hand is valuable even when an attack cannot be fully soaked:
@@ -98,7 +102,7 @@ Against heavily armored foes ($N=4$ or $N=5$), you don't need to generate 12–1
 
 1. **Establish the Base (Tier 1 Vulnerabilities):** Early hits land Tier 1 conditions (`Poor Footing`, `Winded`, `Dust in Eyes`, `Rattled Guard`), each exposing 2–4 `Vulnerable` tags (`positioning`, `limbs`, `torso`, `head`, `armor`).
 2. **Exploit Vulnerabilities to Crack Blanks & Squeeze the Pool:** On subsequent hits, whenever you draw a Tier 1 card matching an active Tier 1 condition's `Vulnerable` tags, place it on that condition to draw **+1 Tier 2 card** (then scoop all candidates to curate $N$). When $I < N$, that bonus card consumes a blank soak slot so moderate hits penetrate heavy armor; when $I \ge N$, it squeezes out soft Tier 1 options and builds toward saturating all $N$ slots with Tier 2 trauma.
-3. **Climb to Tier 3 & Finish:** Once a Tier 2 condition (like `Knocked Prone` or `Cracked Ribs`) is in play, matching Tier 2 candidates can be placed on it to draw **Tier 3 structural trauma** (`Sundered Armor`, `Broken Arm`, `Severe Concussion`), and from an active Tier 3 condition into **Tier 4 (Taken Out)**.
+3. **Climb to Tier 3 & Finish:** Once a Tier 2 condition (like `Knocked Prone` or `Cracked Ribs`) is in play, matching Tier 2 candidates can be placed on it to draw **Tier 3 structural trauma** (`Sundered Armor`, `Broken Arm`, `Severe Concussion`), and from an active Tier 3 condition into the **Tier 4 Climax Deck** (inflicting fatal trauma, emergency bleedout clocks, or incapacitation).
 
 ### Coordinated Party Assaults
 

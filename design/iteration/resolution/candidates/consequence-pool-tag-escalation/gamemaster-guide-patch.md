@@ -82,7 +82,7 @@ If the fighter has Pool Size $N = 2$, the GM doesn't need to read the full text 
 
 Remember that minions have **Consequence Pool Size: 1** printed on their Nature card:
 
-- With $N = 1$, each tier has width 1: 1 Impact draws Tier 1; 2 Impact reaches Tier 2; 3 Impact reaches Tier 3; 4 Impact allocates Narrative Defeat.
+- With $N = 1$, each tier has width 1: 1 Impact draws Tier 1; 2 Impact reaches Tier 2; 3 Impact reaches Tier 3; 4 Impact draws from the Tier 4 deck.
 - There is **no curation step** and no second slot. The minion takes the top-tier card drawn directly.
 - If the card defeats the minion (or if the minion has a trait like _Fragile: Drops at Tier 2_), the minion is removed from play immediately. This keeps minion-cleaving fast, visceral, and satisfying.
 
