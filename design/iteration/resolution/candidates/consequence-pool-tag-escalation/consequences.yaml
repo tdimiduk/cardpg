@@ -49,7 +49,7 @@
     Physiological / Biomechanical Basis: Center-of-mass displacement and base-of-support disruption.
     Unstable footing increases reaction latency and forces compensatory muscular effort, inflating defensive Impact.
     In combat, clearing requires spending 2 cards of deliberate footwork; out of combat, simple balance recovery is trivial.
-    Vulnerability: Compromised stance exposes positioning and limbs, allowing matching attacks to promote into Tier 2 trauma.
+    Vulnerability: Compromised stance exposes positioning and limbs, allowing matching candidate cards to escalate into Tier 2 draws.
 
 - name: Winded
   severity: 1
@@ -265,7 +265,7 @@
     Vulnerability: Disoriented tracking and compromised guard leave head and sensory zones vulnerable to Tier 2 concussion.
 
 # ==============================================================================
-# TIER 2: PLATFORM CEILINGS & MODERATE BODILY TRAUMA
+# TIER 2: MODERATE TRAUMA & POSTURE COLLAPSE
 # ==============================================================================
 
 - name: Knocked Prone
@@ -282,7 +282,7 @@
   supersedes:
     - Poor Footing
     - Off Balance
-  redraw: While Knocked Prone, the attacker may redraw any positioning candidate drawn against you at the same tier.
+  redraw: If you already have this condition in play, the attacker may redraw this candidate at the same tier.
   rules:
     - passive: You are prone. You can only crawl; you must expend 1 card from hand to move or attack.
     - passive: The Impact of your defenses is increased by 1.
@@ -292,10 +292,7 @@
     - task: Stand Up (Time 5 seconds) -> Remove this.
   notes: >
     Biomechanical Basis: Total loss of upright stance under heavy kinetic impact. Subsumes +1 Impact from prior positioning wear.
-    In combat, getting up in heavy gear requires building mechanical leverage (tucking cards equal to Burden)
-    or executing an explosive Yellow 30 acrobatic leap. Out of combat, standing up is instantaneous.
-    Vulnerability Multiplier: Grounded immobility completely exposes positioning, limbs, torso, and head. Under the Anvil Principle,
-    matching Tier 2 attacks promote directly into Tier 3 structural bodily trauma.
+    In combat, getting up in heavy gear requires building mechanical leverage.
 
 - name: Mild Concussion
   severity: 2

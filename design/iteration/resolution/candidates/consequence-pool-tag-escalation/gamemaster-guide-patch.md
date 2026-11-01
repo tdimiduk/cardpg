@@ -40,21 +40,9 @@ When a boss and minions attack the same character in a round:
 
 ---
 
-## 3. Tabletop Ergonomics: Fast Minion Adjudication
+## 3. Tabletop Ergonomics: Priority Numbers & Fast Adjudication
 
-To prevent multi-attacker rounds from bogging down the table, use these GM pacing heuristics:
-
-### The Minion Batching Heuristic
-
-When a group of 3–5 identical mooks (e.g., kobolds or goblins) each generate 1–2 Impact ($I_i \le N$):
-
-1. **Do Not Make Micro-Decisions**: Since every minion has $I_i \le N$, every point of minion Impact simply draws 1 **Tier 1** card.
-2. **Batch Draw**: Count the total Impact across the minion pack (e.g., 5) and draw that exact number of cards (5) straight off the **Tier 1** deck.
-3. **Five-Second Grouping, Exploitation & Curation**:
-   - Group the drawn cards into full pools of size $N$ (or merge them into a single pool against high-$N$ armor).
-   - For each pool, glance at the target's start-of-round active conditions. Each active condition may be exploited at most **once per pool**: if an unplaced candidate in that pool (Tier $K \le S$) matches an active Tier $S$ condition's `Vulnerable` tags, place it on the condition and **draw +1 candidate from the Severity $K+1$ deck**.
-   - Scoop the placed cards back into the pool, select the $N$ highest-threat cards per pool (highest Severity, then highest Priority number), and present them to the player.
-4. **Return the Rest**: Return unchosen candidates to their respective decks.
+To keep multi-attacker combat and antagonist turns moving fast, use the printed Priority ratings to automate curation:
 
 ### Priority Numbers & Default Curation (VTT and Zero-Friction Play)
 

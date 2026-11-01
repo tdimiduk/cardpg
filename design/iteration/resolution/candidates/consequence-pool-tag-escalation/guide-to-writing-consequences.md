@@ -124,7 +124,7 @@ CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web
    - **Scoop to Curate (Step 4):** Once Step 3 finishes for the pool, the attacker scoops the placed candidate cards back off the defender's active conditions into the pool and curates any $N$ cards. Because each exploitation adds $+1$ net card at Tier $K+1$ while preserving the triggering Tier $K$ card, this single primitive both cracks heavy armor shells (replacing implicit "No Consequence" blank slots when $I < N$) and builds the Consequence Pyramid (squeezing out soft lower-tier options when $I \ge N$).
 3. **The Consequence Pyramid & Shell-Cracking**:
    - Because a newly drawn Tier $K+1$ candidate enters the hand unplaced, it can itself be placed onto _another_ unexploited active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag to chain into Tier $K+2$.
-   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): bonus draws consume clean soak blanks to establish an early foothold, and then turn Tier 1 conditions into Tier 2 platform/biological trauma, which in turn promotes Tier 2 draws into Tier 3 structural failure.
+   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): bonus draws consume clean soak blanks to establish an early foothold, and then escalate the pool into Tier 2 candidates, which in turn allow subsequent hits to draw Tier 3 structural trauma.
 
 ---
 
@@ -151,18 +151,18 @@ CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web
 
 Root tags (`physical`, `combat`, `injury`) are used strictly for domain classification. Both `tags:` (for matching) and `vulnerable:` must use the canonical Leaf Tags (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`):
 
-| Consequence Card    | Tier | Card's Leaf Tags    | `vulnerable:` (Promotes Tier $\le S$ draws with these tags) | State / Redraw Rule                                 |
-| :------------------ | :--: | :------------------ | :---------------------------------------------------------- | :-------------------------------------------------- |
-| **Poor Footing**    |  1   | `positioning`       | `positioning`, `limbs`                                      | Non-stackable (redraw duplicate)                    |
-| **Off Balance**     |  1   | `positioning`       | `positioning`, `limbs`, `torso`                             | Replaces `Poor Footing`; redraw duplicate           |
-| **Winded**          |  1   | `exertion`          | `exertion`, `positioning`, `torso`                          | Non-stackable (redraw duplicate)                    |
-| **Dust in Eyes**    |  1   | `sensory`           | `sensory`, `head`, `positioning`                            | Non-stackable (redraw duplicate)                    |
-| **Afraid**          |  1   | `fear`, `mental`    | `fear`, `mental`, `positioning`                             | Replaces `Rattled Nerves`; redraw duplicate         |
-| **Bleeding Cut**    |  1   | `bleeding`          | `bleeding`, `exertion`                                      | Stacks in parallel                                  |
-| **Knocked Prone**   |  2   | `positioning`       | `positioning`, `limbs`, `torso`, `head`                     | Replaces T1 `positioning`; redraw any `positioning` |
-| **Cracked Ribs**    |  2   | `torso`             | `torso`, `exertion`, `positioning`                          | Stacks in parallel                                  |
-| **Mild Concussion** |  2   | `head`, `sensory`   | `head`, `sensory`, `positioning`, `mental`                  | Non-stackable (redraw duplicate)                    |
-| **Hamstrung**       |  2   | `limbs`, `bleeding` | `limbs`, `positioning`                                      | Stacks in parallel (per leg)                        |
+| Consequence Card    | Tier | Card's Leaf Tags    | `vulnerable:` (Promotes Tier $\le S$ draws with these tags) | State / Redraw Rule                         |
+| :------------------ | :--: | :------------------ | :---------------------------------------------------------- | :------------------------------------------ |
+| **Poor Footing**    |  1   | `positioning`       | `positioning`, `limbs`                                      | Non-stackable (redraw duplicate)            |
+| **Off Balance**     |  1   | `positioning`       | `positioning`, `limbs`, `torso`                             | Replaces `Poor Footing`; redraw duplicate   |
+| **Winded**          |  1   | `exertion`          | `exertion`, `positioning`, `torso`                          | Non-stackable (redraw duplicate)            |
+| **Dust in Eyes**    |  1   | `sensory`           | `sensory`, `head`, `positioning`                            | Non-stackable (redraw duplicate)            |
+| **Afraid**          |  1   | `fear`, `mental`    | `fear`, `mental`, `positioning`                             | Replaces `Rattled Nerves`; redraw duplicate |
+| **Bleeding Cut**    |  1   | `bleeding`          | `bleeding`, `exertion`                                      | Stacks in parallel                          |
+| **Knocked Prone**   |  2   | `positioning`       | `positioning`, `limbs`, `torso`, `head`                     | Replaces T1 `positioning`; redraw duplicate |
+| **Cracked Ribs**    |  2   | `torso`             | `torso`, `exertion`, `positioning`                          | Stacks in parallel                          |
+| **Mild Concussion** |  2   | `head`, `sensory`   | `head`, `sensory`, `positioning`, `mental`                  | Non-stackable (redraw duplicate)            |
+| **Hamstrung**       |  2   | `limbs`, `bleeding` | `limbs`, `positioning`                                      | Stacks in parallel (per leg)                |
 
 ---
 
@@ -170,10 +170,9 @@ Root tags (`physical`, `combat`, `injury`) are used strictly for domain classifi
 
 Most physical injuries (`Bleeding Cut`, `Cracked Ribs`, `Strained Offense`) can be suffered more than once in parallel without issue. However, binary posture or mental states (`Knocked Prone`, `Off Balance`, `Poor Footing`, `Afraid`, `Terrified`) cannot logically stack with themselves.
 
-- **Normally Promoted:** If a duplicate of an active binary state is drawn, the attacker will usually lay it sideways on that active condition to promote it to Tier $K+1$.
+- **Normally Promoted:** If a duplicate of an active binary state is drawn, the attacker will usually place it onto that active condition to draw 1 candidate from Tier $K+1$.
 - **Fallback Redraw Rule (When Promotion Already Used):** For binary state cards, include a concise redraw clause so they never become "free blank" picks if drawn after that condition's promotion was already spent:
   - _Standard Binary State:_ `redraw: If you already have this condition (or a higher positioning/fear state) in play, the attacker may redraw this candidate at the same tier.`
-  - _Platform Ceiling (`Knocked Prone`):_ Because a prone character cannot be tripped into `Poor Footing` or `Off Balance`, `Knocked Prone` specifies: `While Knocked Prone, the attacker may redraw any positioning candidate drawn against you at the same tier.`
 
 ---
 
@@ -222,8 +221,8 @@ The dynamic range within a tier narrows as severity climbs:
   - _Priority 5 (Platform Crisis)_: `Knocked Prone` (crippled movement, $+1$ Impact on defenses, broad `vulnerable:` list; has active recovery pathways).
 - **Tier 3 (Orthogonal Pillar Collapse - Priority 4–5 Only)**:
   - Zero soft options. Every card is an existential collapse of one core character pillar (`Broken Arm`, `Sucking Chest Wound`, `Severe Concussion`, `Arterial Hemorrhage`) and exposes Tier 3 `vulnerable:` tags that promote matching Tier 3 draws directly to **Tier 4 (Taken Out)**.
-- **Tier 4 (Narrative Taken Out)**:
-  - Emergent terminal state; no physical card drafting required.
+- **Tier 4 (Climax & Terminal Trauma Deck)**:
+  - Physical cards representing traumatic coma, arterial bleedout clocks, or limb amputation. Cards define immediate exit rules, emergency ally stabilization actions (e.g., pausing a bleedout timer), and long-term resuscitation tasks.
 
 ---
 
@@ -276,6 +275,6 @@ Before committing any consequence card, verify:
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier (or omitted for simple Tier 1 time/resource tasks)?
 - [ ] Does the card specify 2 to 4 realistic Leaf Tags under `vulnerable:` (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
-- [ ] Does the card use `vulnerable:` tags for promotion rather than in-deck tutoring chains?
+- [ ] Does the card use `vulnerable:` tags for pool escalation?
 - [ ] If the card represents a binary posture/mental state that cannot stack with itself (`Knocked Prone`, `Off Balance`, `Afraid`), does it include a same-tier redraw rule for duplicates (and superseded lower states)?
 - [ ] Does the `notes:` field articulate the physiological/biomechanical basis for both the passives and the `vulnerable:` tags?

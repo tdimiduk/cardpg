@@ -33,12 +33,10 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 
 ```mermaid
 flowchart TD
-    A["1. Incoming Attacks Declared (Simultaneous Resolve Step)"] --> B["2. Defender Meets Strength for Each Attack (Hand Defend + Deck Flips)"]
-    B --> C["3. Count Impact (I) per Attack = Cards flipped for that attack"]
-    C --> D["4. Per-Attack Layered Draw & Optional Pool Merge: Draw tiers of width N; keep pools separate or merge"]
-    D --> E["5. Exploit Vulnerabilities (Once per Condition per Pool): Place matching Tier K <= S card on condition -> Draw +1 Tier K+1 card"]
-    E --> F["6. Scoop & Curate Pools: Scoop cards off conditions and curate N cards per pool"]
-    F --> G["7. Defender Selects 1 Consequence per Pool (or Blank if Candidates < N)"]
+    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I)"] --> B["2. Draw Candidates & Form Pools: 1 Impact = 1 card in rows of width N (Keep Separate or Merge)"]
+    B --> C["3. Exploit Active Vulnerabilities: Place matching Tier K <= S card on condition -> Draw +1 Tier K+1 card"]
+    C --> D["4. Scoop & Curate Consequence Pools (I Cut): Scoop cards off conditions and curate N cards per pool"]
+    D --> E["5. Defender Suffers Consequences (You Choose): Select 1 consequence per presented pool (or blank)"]
 ```
 
 ### Tactile Tracking: Why "Place to Draw, Scoop to Curate" Works
@@ -74,12 +72,12 @@ Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs a
 
 ## 4. The Severity Scale & Downward Spiral Mathematics
 
-| Tier  | Category                                | Description & Gameplay Effect                                                                                                                                                                    | Examples / Manifestation                                                                        |
-| :---: | :-------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
-| **1** | **Tactical Impairments & Setbacks**     | Sparring band: clearable friction (Priority 1–3) to stiff action/movement locks (Priority 4–5). Real table presence; kindling for tag escalation.                                                | `Poor Footing`, `Dust in Eyes`, `Winded`, `Off Balance`, `Afraid`, `Bleeding Cut`               |
-| **2** | **Platform Ceilings & Moderate Trauma** | Major tactical disruption, stance loss, concussive fog, cracked ribs, or deep lacerations. Operational divergence (Platform vs Biological vs Suppressive).                                       | `Knocked Prone`, `Mild Concussion`, `Cracked Ribs`, `Deep Laceration`, `Terrified`, `Hamstrung` |
-| **3** | **Severe Structural Trauma**            | Structural failure of bodily integrity, bone fractures, arterial bleeding, chest trauma, severe concussion. Orthogonal pillar collapse; zero soft options.                                       | `Broken Arm`, `Severe Concussion`, `Sucking Chest Wound`, `Arterial Hemorrhage`                 |
-| **4** | **Taken Out / Incapacitated**           | Incapacitated, unconscious, dying, or completely removed from the conflict. Resolved as **actionable crisis clock / incapacitation** (never instant death; physical cards evaluated separately). | Narrative / Clock: `Unconscious`, `Pinned & Captured`, or `3-Round Mortal Bleedout Clock`       |
+| Tier  | Category                               | Description & Gameplay Effect                                                                                                                                                                    | Examples / Manifestation                                                                        |
+| :---: | :------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
+| **1** | **Tactical Impairments & Setbacks**    | Sparring band: clearable friction (Priority 1–3) to stiff action/movement locks (Priority 4–5). Real table presence; kindling for tag escalation.                                                | `Poor Footing`, `Dust in Eyes`, `Winded`, `Off Balance`, `Afraid`, `Bleeding Cut`               |
+| **2** | **Moderate Trauma & Posture Collapse** | Major tactical disruption, stance loss, concussive fog, cracked ribs, or deep lacerations. Operational divergence (Platform vs Biological vs Suppressive).                                       | `Knocked Prone`, `Mild Concussion`, `Cracked Ribs`, `Deep Laceration`, `Terrified`, `Hamstrung` |
+| **3** | **Severe Structural Trauma**           | Structural failure of bodily integrity, bone fractures, arterial bleeding, chest trauma, severe concussion. Orthogonal pillar collapse; zero soft options.                                       | `Broken Arm`, `Severe Concussion`, `Sucking Chest Wound`, `Arterial Hemorrhage`                 |
+| **4** | **Taken Out / Incapacitated**          | Incapacitated, unconscious, dying, or completely removed from the conflict. Resolved as **actionable crisis clock / incapacitation** (never instant death; physical cards evaluated separately). | Narrative / Clock: `Unconscious`, `Pinned & Captured`, or `3-Round Mortal Bleedout Clock`       |
 
 ### Anti-Alpha Strike & Downward Spiral Mathematics
 
@@ -146,7 +144,7 @@ When multiple attackers target the same defender during Crisis Time, resolution 
 
 1. **Per-Attack Impact & Candidate Draws**:
    - The defender meets each incoming attack's `Strength` individually; the cards flipped for an attack equal that attack's **Impact ($I$)**.
-   - Each attacker independently converts their own attack's Impact into candidate cards by filling tiers of width $N$ (the defender's Pool Size) from the bottom up. Because individual minion hits usually generate $I \le N$, each minion natively draws **Tier 1** cards from its own consequence deck without cross-deck ordering issues.
+   - Each attacker independently converts their own attack's Impact into candidate cards by filling tiers of width $N$ (the defender's Pool Size) from the bottom up. Because individual minion hits usually generate $I \le N$, each minion natively draws **Tier 1** cards from the Severity 1 consequence deck without cross-deck ordering issues.
 2. **Simultaneous Vulnerability Exploitation ("Place to Draw, Scoop to Curate")**:
    - After attackers decide whether to keep their drawn candidate pools separate or merge them, each Consequence Pool may exploit active conditions that were on the defender **at the start of the round** (at most 1 placed candidate per active condition **per pool**) to draw $+1$ candidate from Tier $K+1$.
    - Because placed candidates are scooped back into their pool at the start of Step 4, separate pools resolving in parallel never collide physically on the defender's tableau or compete over the defender's active conditions.

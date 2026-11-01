@@ -9,11 +9,7 @@ documents:
     tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/proposal.md"
-    purpose: "The core rules patch replacing Defend Actions in core-rules.md."
-    tags: ["doc-type:iteration", "audience:designer-facing"]
-
-  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/proposal-long.md"
-    purpose: "Extended proposal document with full rationale and mechanical details."
+    purpose: "The core rules patch replacing Action Resolution in core-rules.md."
     tags: ["doc-type:iteration", "audience:designer-facing"]
 
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/guide-to-writing-consequences.md"
@@ -21,7 +17,7 @@ documents:
     tags: ["doc-type:iteration", "audience:designer-facing"]
 
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/consequences.yaml"
-    purpose: "Prototype card database for consequence cards across Severities 1-3 (plus Tier 4 exit states)."
+    purpose: "Prototype card database for consequence cards across Severities 1-4."
     tags: ["doc-type:content-library", "audience:designer-facing"]
 
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/equipment.yaml"

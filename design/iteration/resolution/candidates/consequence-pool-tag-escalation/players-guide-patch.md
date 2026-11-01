@@ -22,7 +22,7 @@ Each card flipped by the defender gives the attacking side **1 Impact = 1 candid
 - Once Tier 2 is full, the next $N$ Impact draws up to $N$ Severity 3 cards.
 - Once Tier 3 is full, each additional point of Impact draws 1 card from the Severity 4 deck.
 
-### Step 3A: Vulnerability Exploitation ("Place to Draw")
+### Step 3: Vulnerability Exploitation ("Place to Draw")
 
 Once base candidate cards are drawn (and after any optional pool merging), attackers evaluate the pool against the defender's start-of-round active conditions:
 
@@ -31,7 +31,7 @@ Once base candidate cards are drawn (and after any optional pool merging), attac
   - **When $I < N$ (Cracking Heavy Armor):** Because you scoop the placed Tier $K$ card back into your pool at Step 4 alongside the newly drawn Tier $K+1$ card, each exploited vulnerability adds **+1 net candidate** to your pool—consuming an implicit "No Consequence" blank slot and preventing heavily armored defenders from taking a free soak!
   - **When $I \ge N$ (Squeezing the Pool):** Adding a Tier $K+1$ card while retaining all of your Tier $K$ draws gives you surplus candidates for Step 4, allowing you to include the higher-tier card and curate out your softest lower-tier draw.
 
-### Step 3B: Scooping & Curating the Consequence Pool
+### Step 4: Scooping & Curating the Consequence Pool
 
 Once all vulnerability exploitations for the pool are complete, **scoop the candidate cards placed on the defender's active conditions back into your pool** and curate the final $N$-card pool:
 
