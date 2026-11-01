@@ -95,55 +95,7 @@ Always maintain the semantic distinction between persistent equipment and consum
 
 ---
 
-## 4. Inviolable Rules of Escalation Design
-
-Escalation is the mechanical engine of the downward spiral. All `escalate:` clauses must satisfy five core criteria:
-
-1. **The Organic Asymmetry Standard (Ban on Forced Symmetry)**:
-   Escalation should **only occur if it makes sense mechanically and narratively**. It is completely fine for cards to have no printed escalation, or for chains to be different lengths.
-   > _A card track that mechanically forces a neat 1 $\to$ 2 $\to$ 3 $\to$ 4 progression is suspicious._
-   > Human physiology and tabletop tactics are inherently asymmetric. Some tracks peak early (posture at Tier 2); some jump directly to emergency states upon re-injury; others exist purely as parallel symptoms.
-2. **Escalation Must Advance Stakes or Alter Tactics (Avoid Hit-Buffer Sponges)**:
-   - Escalation clauses exist to drive tactical evolution and ratchet stakes, not to serve as mechanical padding that absorbs attacks without changing how the fight plays.
-   - An escalation should tangibly alter the tactical situation, restrict options, or escalate immediate danger.
-3. **The Narrative Continuity Standard**:
-   An escalation must represent a direct progression of the **exact same underlying pathology**.
-   - _Forbidden:_ Morphing wound categories (a cut turning into a puncture; bruised ribs turning into a strained arm).
-   - _Forbidden:_ Anatomical teleportation (an arm injury causing a head coma).
-4. **The Mechanical Superset Standard**:
-   When a condition card escalates, the active card is replaced by the upgraded card. Therefore:
-   > _The upgraded card MUST mechanically include or strictly obsolete every restriction and penalty on the card it replaces._
-   > Upgrading must never grant a mechanical reprieve or cure a defensive penalty.
-5. **Leaf Tags Only (Banning Root Taxonomic Triggers)**:
-   Root tags (`physical`, `combat`, `injury`, `mental`) exist strictly for deck classification, domain filtration, and gear resistances.
-   - **`escalate:` blocks may only match specific Leaf Tags**: `head`, `fear`, `bleeding`, `positioning`, `armor`, `burn`, `arms`, `legs`.
-   - **Never** write `if_suffer: injury` or `if_suffer: physical` in an escalation block.
-
----
-
-## 5. Platform Ceilings & The Anvil Principle
-
-When a defender suffers a consequence whose track is already at its ceiling (e.g., suffering a Tier 2 `Knocked Prone` while already prone, or Tier 3 `Sundered Armor` while armor is destroyed), the kinetic energy transfers directly into raw bodily trauma:
-
-- **`Knocked Prone` (Tier 2 Ceiling):**
-  ```yaml
-  - if_suffer: positioning (Severity 2+):
-      text: >
-        You are already prone. The kinetic force slams you against the unyielding ground:
-        Draw and suffer 1 Severity 2 Physical Injury card from the deck.
-  ```
-- **`Sundered Armor` (Tier 3 Ceiling):**
-  ```yaml
-  - if_suffer: armor (Severity 3+):
-      text: >
-        Your armor is already ruined. The blow punches straight through the wreckage into bare flesh:
-        Draw and suffer 1 Severity 3 Physical Injury card from the deck.
-  ```
-  This makes redundant platform curation a high-stakes tactical gamble rather than a "free pick" exploit for the defender.
-
----
-
-## 6. Review Checklist for New Consequence Cards
+## 4. Review Checklist for New Consequence Cards
 
 Before committing any consequence card to `data/cards/consequences/` or an iteration proposal, verify:
 
@@ -154,8 +106,4 @@ Before committing any consequence card to `data/cards/consequences/` or an itera
 - [ ] If Tier 2 or 3 bodily trauma, is an in-combat removal `action:` appropriately omitted (or limited strictly to temporary tactile suppression)?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with GM Guide benchmarks for that tier?
-- [ ] If the card has an `escalate:` block, does the escalation meaningfully raise stakes or alter tactics rather than just acting as a hit buffer?
-- [ ] Are `escalate:` triggers restricted strictly to Leaf Tags (e.g. `head`, `fear`, `bleeding`, `positioning`, `armor`), completely banning root tags (`injury`, `physical`, `combat`)?
-- [ ] If the card is a platform condition at its ceiling (`Knocked Prone`, `Sundered Armor`), does it define an Anvil Principle wildcard?
-- [ ] If the card is a transient Tier 1, does it resolve and discard immediately with NO `escalate:` block?
 - [ ] Does the `notes:` field articulate the physiological/biomechanical basis?
