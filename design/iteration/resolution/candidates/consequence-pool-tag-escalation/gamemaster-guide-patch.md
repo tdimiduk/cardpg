@@ -21,14 +21,14 @@ Under Layered Pool Fill, monster types naturally produce different threat profil
 ### The Brute / Heavy Hitter (e.g., Ogre, Troll, Giant)
 
 - **High Impact**: A single heavy blow generates 3–5 Impact.
-- **Natural Penetration**: Against unarmored targets ($N \le 2$), 4 Impact fills Tier 1 and Tier 2 completely, forcing guaranteed platform breaks (`Knocked Prone`) or trauma (`Cracked Ribs`). Against heavy armor ($N \ge 4$), a single 4-Impact strike saturates Tier 1, stripping clean soak blanks and landing punishing tactical locks (`Rattled Guard`, `Off Balance`) to soften the knight up.
+- **Natural Penetration**: Against unarmored targets ($N \le 2$), 4 Impact fills Tier 1 and Tier 2 completely, forcing guaranteed platform breaks (`Knocked Prone`) or trauma (`Cracked Ribs`). Against heavy armor ($N \ge 4$), a single 4-Impact strike saturates Tier 1, penetrating the armor threshold and landing punishing tactical locks (`Rattled Guard`, `Off Balance`) to soften the knight up.
 
 ### The Swarm / Pack (e.g., Goblins, Dire Wolves, Giant Rats)
 
 - **Low Impact, High Multiplicity**: Swarms generate 1–2 Impact across multiple simultaneous strikes. Because each individual minion generates $I \le N$, each minion natively draws **Tier 1** cards during Step 2.
 - **Separate vs. Merged Pools**:
   - **Against Lightly Armored / Unarmored Targets ($N = 2\text{–}3$):** When multiple minions generate enough Tier 1 cards to fill multiple pools of size $N$ (e.g., four goblins each generating 2 Impact against an unarmored $N=2$ skirmisher), the GM can keep their pools separate (`[Sev 1, Sev 1]` $\times 4$) to inflict **multiple Tier 1 consequences simultaneously** in a single round. Because all pools resolve simultaneously at the end of the round, these newly inflicted conditions do not promote each other on the round they land, but they bury the hero in tactical friction and expose `Vulnerable` tags for lethal Round 2 escalations.
-  - **Against Heavy Armor ($N = 4\text{–}5$):** When individual goblin hits ($I = 1\text{–}2$) would leave "No Consequence" blanks on their own, the GM **merges their drawn candidates into a shared pool** (e.g., three goblins generating `1, 2, 2` Impact merge their 5 Tier 1 cards to fill all 5 slots of a Full Plate knight's $N=5$ pool, stripping all blanks and forcing 1 Tier 1 consequence).
+  - **Against Heavy Armor ($N = 4\text{–}5$):** When individual goblin hits ($I = 1\text{–}2$) fail to meet the pool threshold ($I < N$) on their own, the GM draws candidate cards from Tier 1 for each hit and **merges their drawn candidates into a single shared pool** (e.g., three goblins generating `1, 2, 2` Impact each draw Tier 1 cards, merging into a 5-card pool of Tier 1 cards). Because the merged pool reaches $N=5$, the GM curates 5 cards from those Tier 1 candidates to force 1 Tier 1 consequence—without escalating to Tier 2.
 - **Deck Drain**: Beyond consequences, defending against multiple attacks forces continuous card flips, rapidly exhausting the defender's draw deck toward Fatigue Cycles.
 
 ### The Combined Assault (Boss + Minions)
@@ -36,7 +36,7 @@ Under Layered Pool Fill, monster types naturally produce different threat profil
 When a boss and minions attack the same character in a round:
 
 - The boss resolves their own Layered Fill (often reaching Tier 2 or Tier 3 natively on a heavy blow), while minions draw Tier 1 candidates from their probing strikes.
-- The GM can **merge the minions' Tier 1 draws into the boss's pool** to eliminate any remaining blanks, trigger `Vulnerable` promotions on the defender's existing conditions, and curate the sharpest tactical locks into the bottleneck slots alongside the boss's heavy trauma—or keep a full $N$-card minion pool separate to force the player to suffer two consequences at once.
+- The GM can **merge the minions' drawn candidate cards into the boss's candidate pool** to add surplus Tier 1 candidates, trigger `Vulnerable` promotions on the defender's existing conditions, and curate the sharpest tactical locks into the bottleneck slots alongside the boss's heavy trauma—or keep a full $N$-card minion pool separate to force the player to suffer two consequences at once. Crucially, **merging candidate pools never escalates card severity**: the minions provide additional Tier 1 cards and curation leverage, but cannot push the boss's attack into higher severity tiers (only an attack's own individual Impact can natively draw higher-tier cards).
 
 ---
 
@@ -51,7 +51,7 @@ Every consequence card features a printed **`Priority` rating (1 to 5)** represe
 When a GM is running combat without a strong tactical opinion, wants to keep the pace blistering, or is automating enemy turns via **Virtual Tabletop (VTT)** software, use the **Default Curation Algorithm**:
 
 1. **Vulnerability Exploitation First ("Place to Draw")**: Check drawn candidates against the defender's start-of-round active conditions (highest tier first). For each active Tier $S$ condition, if an unplaced candidate in the pool of Tier $K \le S$ matches one of its `Vulnerable` tags, place that candidate on the active condition and **draw +1 additional candidate from the Severity $K+1$ deck**.
-2. **Scoop & Sort by Severity and Priority**: Scoop all placed candidates back into the pool, sort all candidates in the pool by **Severity descending**, then **Priority descending**, and select the top $N$ cards. (If total candidates are still less than $N$, unfilled slots are presented as "No Consequence" blanks).
+2. **Scoop & Sort by Severity and Priority**: Scoop all placed candidates back into the pool, sort all candidates in the pool by **Severity descending**, then **Priority descending**, and select the top $N$ cards. Surplus candidates return to their respective decks.
 3. **Drop the Lowest**: Return unselected candidates to their respective decks.
 
 #### Example at the Table:
@@ -86,7 +86,7 @@ flowchart LR
     B --> C["Player Flips to Meet Strength -> Tallies Impact"]
     C --> D["GM Draws Candidates via Layered Fill (1 Impact = 1 Card)"]
     D --> E["GM Curates N Cards (Domain Pool Size, Fallback N = 2)"]
-    E --> F["Player Selects 1 Consequence (or Blank 'No Consequence')"]
+    E --> F["Player Selects 1 Consequence from Curated N-Card Pool"]
 ```
 
 ### Domain Pool Sizes & The Universal Fallback
@@ -103,15 +103,14 @@ In non-combat scenes, draw from domain-appropriate consequence decks rather than
 - **Social & Intrigue**: `Suspicion`, `Slighted Honor`, `Rumor Spread`, `Exposed Lie`, `Blackmail Marker`.
 - **Arcane & Crafting**: `Mana Burn`, `Ruined Tool`, `Crystalline Resonance`, `Volatile Residue`.
 
-### Single-Card Flips, Clean Success, and Saying "Yes"
+### Sub-Threshold Flips, Clean Success, and Saying "Yes"
 
 Under a baseline Pool Size of $N = 2$, meeting a challenge's Strength with a **single card flip** produces **1 Impact**:
 
-1. The GM spends 1 Impact to draw 1 candidate card from the appropriate Tier 1 deck.
-2. The remaining slot in the pool of 2 is an **implicit "No Consequence" blank**.
-3. The player selects "No Consequence," taking no complications beyond the single card expended from their deck.
+1. Because Impact is less than the Pool Size ($I = 1 < N = 2$), the challenge fails to reach the consequence threshold.
+2. **Zero cards are drawn.** The player succeeds cleanly with zero complications beyond the single card expended from their deck.
 
 #### GM Adjudication Heuristic: When to Check vs. When to Say "Yes"
 
-- **Single Flips Mean Clean Success:** Resolving a task with a single flip ($\text{Impact} = 1$) allows the player to select the blank slot and succeed without complications.
-- **Reserve Checks for Meaningful Friction:** Only call for General Action flips when the task carries real opposition, environmental friction, or genuine stakes where multiple flips ($\text{Impact} \ge 2$) threaten to fill both pool slots with complications. If an action is simple enough to pass on a single card, consider saying "yes" without calling for a flip.
+- **Single Flips Mean Clean Success:** Resolving a task with a single flip ($\text{Impact} = 1$) never draws consequence cards and succeeds cleanly.
+- **Reserve Checks for Meaningful Friction:** Only call for General Action flips when the task carries real opposition, environmental friction, or genuine stakes where multiple flips ($\text{Impact} \ge 2$) threaten to reach the threshold and draw complications. If an action is simple enough to pass on a single card, consider saying "yes" without calling for a flip.

@@ -2,82 +2,45 @@
 
 Update to `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Challenge` and updates `### Defend Actions` and `### General Actions`).
 
+---
+
 ## Action Resolution
 
-1. **Determine Impact**: The defender meets each incoming attack's Strength; cards flipped from the deck for an attack equal that attack's Impact ($I$).
-2. **Draw Candidates & Form Pools**: Each attacker converts their Impact into candidate cards (`1 Impact = 1 card`), filling tiers of width $N$ (the defender's Pool Size) from Severity 1 upward. Attackers may keep their candidate pools separate or merge them into a shared pool.
-3. **Exploit Active Vulnerabilities**: Within each pool, attackers may exploit start-of-round active conditions on the defender (at most once per condition per pool): place a matching candidate of Severity $K \le S$ onto an active Severity $S$ condition to draw **+1 additional candidate from the Severity $K+1$ deck**.
-4. **Scoop & Curate the Pool**: For each pool, scoop any candidates placed on the defender's active conditions back into the pool and choose any $N$ cards from all candidates in that pool to present to the defender.
-5. **Defender Suffers Consequences**: For each presented pool, the defender selects and suffers 1 consequence (or a blank if total candidates in that pool are fewer than $N$). All consequences suffered this round enter play simultaneously.
+When an attack or obstacle targets you, resolve in five steps:
+
+1. **Determine Impact:** Meet the incoming `Strength` with Defend cards from hand and/or flipping cards from the top of your deck into a flipped stack. For each incoming attack, the attack's **Impact ($I$)** equals the number of cards in its flipped stack.
+2. **Draw Candidates (Per Attack):** Your **Consequence Pool Size ($N$)** is 2, unless modified by table cards. Each attacker draws candidate consequence cards based on their attack's individual Impact (`1 Impact = 1 card drawn`), filling tiers of width $N$ from Severity 1 upward:
+   - The first $N$ Impact of an attack draws cards from the **Severity 1** deck.
+   - Additional Impact draws from higher severity decks only if that _individual attack's Impact_ exceeds $N$: cards from $N+1$ to $2N$ draw from **Severity 2**; cards from $2N+1$ to $3N$ draw from **Severity 3**; cards beyond $3N$ draw from **Severity 4**.
+   - _Severity is determined strictly per attack, never by combining Impact across attacks._
+3. **Form Pools (Separate or Merged):** Attackers targeting the same defender in the same round choose whether to keep their candidate pools separate or merge them:
+   - **The Pool Threshold ($N$):** A Consequence Pool must contain **at least $N$ candidate cards** to be presented to the defender. If an attack has fewer than $N$ candidates ($I < N$) and is not merged, it fails to penetrate armor or poise—no consequences are suffered (an isolated attacker generating $I < N$ does not need to draw cards).
+   - **Merging Candidate Pools:** Multiple attackers targeting the same defender may **merge their drawn candidate cards** into a shared pool. This allows multiple sub-threshold attacks to combine their Tier 1 cards to reach $N$, or combines surplus candidates for curation. Merging pools combines drawn cards—it **never increases the severity tier** of the cards drawn.
+4. **Exploit Active Vulnerabilities:** If the defender has active conditions from earlier rounds matching a candidate card's tags:
+   - Place a matching candidate of Severity $K \le S$ onto an active Severity $S$ condition to draw **+1 additional candidate from the Severity $K+1$ deck** into the pool (at most once per active condition per pool).
+5. **Curate and Suffer:**
+   - **Curate $N$ Cards ("I Cut"):** Scoop any candidates placed on active conditions back into the pool. The attacker(s) choose **exactly $N$ cards** from all candidates in that pool to present to the defender. Surplus candidates return to their decks.
+   - **Suffer 1 Consequence ("You Choose"):** The defender selects and suffers **exactly 1 consequence** from each presented $N$-card pool. All consequences enter play simultaneously at the end of the round. (Discard any condition superseded by the chosen card as stated on its rules text).
 
 ---
 
-### 1. Determine Impact
+### Defend Actions (Updated)
 
-You must meet the `Strength` of each incoming attack declared against you:
+When targeted by an attack during Crisis Time, you face the strike by meeting its Strength:
 
-1. **Reactive "Defend" Actions (Optional)**: You may play an applicable **Defend** card from your hand as an [[Action Stack]] (along with additional cards from hand equal to its printed [[Cost]]). The card's printed rules text defines how it modifies the resolution.
-2. **Deck Flips**: If the attack's Strength is not yet met, flip cards one by one from the top of your deck into a **flipped stack** until the cumulative value in the attack's Color meets or exceeds the attack's Strength.
-3. **Count Impact**: The `Impact` ($I$) of an attack is the number of cards in your **flipped stack** for that attack.
-
----
-
-### 2. Draw Candidate Consequences & Form Pools
-
-The defender's equipped gear, traits, or table cards define their **Consequence Pool Size ($N$)**:
-
-- **Armor defines Pool Size for Physical Harm:** Equipped armor cards specify pool size against physical trauma (e.g., 3 for light armor/padded gambeson, 4 for war armor/maille, 5 for full plate harness).
-- **Domain Cards & Traits:** Non-physical domains derive pool sizes from applicable training or table cards (e.g., _Silver Tongue_ provides Pool Size 3 for social debate; _Iron Will_ provides Pool Size 3 for mental composure).
-- **Universal Baseline Fallback ($N = 2$):** For any challenge or domain without specialized gear or traits, Pool Size defaults to **2**. (Minions have an inherent Pool Size of **1** across all domains).
-
-Each attacker independently converts the Impact ($I$) their attack generated into candidate cards: **1 Impact = 1 card drawn**. Candidates are drawn from the severity decks by filling tiers of width $N$ from the bottom up:
-
-1. **Tier 1 (Severity 1)**: The first $N$ Impact draws up to $N$ cards from the **Severity 1** deck.
-   - If an attack's Impact is less than $N$, remaining unfilled slots are implicit **"No Consequence" blanks** (clean armor soak) unless filled by merging pools or exploiting vulnerabilities during Step 3.
-2. **Tier 2 (Severity 2)**: Once Tier 1 has $N$ cards, each additional point of Impact (from $N+1$ to $2N$) draws 1 card from the **Severity 2** deck.
-3. **Tier 3 (Severity 3)**: Once Tier 2 has $N$ cards, each additional point of Impact (from $2N+1$ to $3N$) draws 1 card from the **Severity 3** deck.
-4. **Tier 4 (Defeat / Climax)**: Once Tier 3 has $N$ cards, each additional point of Impact (from $3N+1$ to $4N$) draws 1 card from the **Severity 4** deck.
-
-**Separate or Merged Pools (Multi-Attacker):**
-
-- **Keep Separate:** Each attacker may resolve their drawn candidates as their own independent Consequence Pool (allowing multiple attacks that each reach $\ge N$ cards to inflict multiple consequences simultaneously in the same round).
-- **Merge Pools (Optional):** Multiple attackers targeting the same defender this round may **combine their drawn candidate cards into a shared pool** before Step 3. Merging allows multiple smaller hits ($I < N$) to fill the defender's $N$ slots together and eliminate **"No Consequence" blanks**.
+1. **Defend from Hand (Optional):** Play an applicable Defend Action Stack from hand (paying printed Cost). The card's rules text modifies the defense or adds Strength.
+2. **Flip from Deck:** If Strength is not yet met, flip cards from your deck one by one into a flipped stack until cumulative Color value meets or exceeds the attack's Strength.
+3. **Count Impact:** The number of cards in your flipped stack is the attack's Impact.
+4. **Resolve Consequences:** Resolve the attack's Impact against your Consequence Pool Size ($N$) using the 5-step Action Resolution above.
 
 ---
 
-### 3. Exploit Active Vulnerabilities
+### General Actions (Updated)
 
-Active conditions in play in front of the defender at the start of the round list **`Vulnerable: [Tags]`**—specific openings created by that condition.
+Outside Crisis Time, tasks with meaningful stakes resolve as General Actions:
 
-Within each Consequence Pool (after any pool merging), attackers may exploit start-of-round active conditions on the defender to simultaneously expand and escalate that pool:
-
-1. **Matching:** An active condition of **Severity $S$** can exploit any unplaced candidate in the pool of **Severity $K \le S$** whose tags match one of its `Vulnerable` tags.
-2. **Place to Draw (+1 Candidate at Tier $K+1$):** Place the matching Tier $K$ candidate onto that active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your pool (drawing from the **Severity 4 deck** if exploiting a Tier 3 match on an active Tier 3 condition).
-   - Because this adds +1 net card to the pool while introducing a higher-tier threat, a single mechanic both cracks heavy armor shells (filling implicit "No Consequence" blank slots when $I < N$) and escalates pool severity (squeezing out softer options when $I \ge N$).
-3. **Limit (Once per Condition per Pool):** Each active condition on the defender may hold at most **1 candidate card per Consequence Pool** (meaning each active condition and each placed candidate card can be exploited at most once per pool). When multiple pools resolve in parallel, each separate pool may independently exploit the defender's start-of-round active conditions once.
-4. **Chained Exploitation:** Within a pool, because a newly drawn Tier $K+1$ candidate enters your hand unplaced, it may immediately be placed onto another unexploited active condition of Tier $\ge K+1$ with a matching `Vulnerable` tag to draw from Tier $K+2$.
-
----
-
-### 4. Scoop & Curate Consequence Pools (The "I Cut" Step)
-
-For each Consequence Pool, once all vulnerability exploitations for that pool are complete:
-
-1. **Scoop Placed Candidates:** Scoop all candidate cards placed onto the defender's active conditions during Step 3 back into your pool (clearing the defender's active conditions on the table).
-2. **Curate $N$ Cards:** From all candidates in the pool (both base draws and bonus cards drawn during Step 3), the attackers **choose any $N$ cards** to form the final curated pool:
-   - **Implicit Blanks:** In any presented pool where total candidates (base draws plus net cards gained from merging and vulnerability exploitation) are less than $N$, unfilled slots are presented as **"No Consequence" blanks**.
-   - If total candidates in a pool meet or exceed $N$, all $N$ slots are filled with consequence cards (zero blanks).
-3. **Return Surplus:** All unselected candidates are returned to their respective decks.
-
----
-
-### 5. Defender Suffers Consequences (The "You Choose" Step)
-
-1. Each curated pool of $N$ cards (along with any "No Consequence" blanks) is presented to the defender.
-2. For each presented pool, the defender **chooses exactly 1 option** to suffer.
-3. If "No Consequence" is in a pool, the defender may select it to suffer no additional harm from that pool beyond the stamina/fatigue cards already flipped from their deck.
-4. **Applying Consequences (Simultaneous):**
-   - All consequences suffered during the round enter play simultaneously at the end of the round (they cannot be exploited for Step 3 vulnerability promotions during the same round they are inflicted).
-   - **Active Condition:** Place each chosen card into play in front of the defender. If the card specifies that it supersedes an existing condition, discard the superseded condition.
-   - **Tier 4 (Defeat / Climax):** If the defender selects a Severity 4 consequence, the card enters play and the character is taken out of the fight or placed on an active crisis clock (e.g., `Mortal Bleedout`). The card defines immediate exit rules, ally intervention actions (such as emergency hemostasis to pause a bleedout timer), and post-combat resuscitation tasks.
-5. **Clean Up:** All unchosen cards in the presented pools are returned to their respective decks.
+1. The GM declares the challenge's Color and Strength.
+2. **Commit Vigilance (Optional):** You may resolve using deck flips alone or pick up your Vigilance pool to play a relevant Action Stack or substitute high-value cards from hand into the flipped stack.
+3. **Meet Strength & Count Impact:** Flip cards from your deck to meet the Strength. The count of cards flipped is your Impact.
+4. **Resolve Consequences:** If your Impact is less than your domain Pool Size ($N=2$ baseline), you succeed cleanly with zero complications (**0 cards drawn**). If Impact reaches or exceeds $N$, the GM draws and curates an $N$-card pool from the appropriate domain consequence deck; you select and suffer 1 consequence.
+5. **Flush:** If you picked up your Vigilance pool, discard remaining hand cards and flush back to your chosen Vigilance level.

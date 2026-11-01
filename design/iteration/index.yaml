@@ -31,6 +31,10 @@ active_design_exploration:
       purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
+    - path: "iteration/resolution/candidates/tag-escalation-resilience.md"
+      purpose: "Candidate proposal isolating localized tag escalation to replace the global Resilience row without pool drafting."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:harm"]
+
     - path: "iteration/resolution/candidates/consolidated-tiered-cards-and-triage.md"
       purpose: "Candidate architecture featuring single-deck 3-tier cards, in-place pip escalation, and post-combat triage."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
@@ -76,6 +80,14 @@ active_design_exploration:
     - path: "iteration/resolution/consequence-scaling-and-recovery.md"
       purpose: "Design brief exploring how consequence passive penalties, in-combat action recoveries, and out-of-combat task checks interact with character progression and scale invariance."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:harm", "core-concept:action-resolution"]
+
+    - path: "iteration/resolution/incremental-impact-mechanics.md"
+      purpose: "Design space exploration evaluating mechanics to make incremental Impact matter without drawing 1 card per Impact."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:harm"]
+
+    - path: "iteration/resolution/card-delegated-tag-escalation.md"
+      purpose: "Architectural exploration delegating harm escalation to condition passives, weapon keywords, and pip tracks per the 10x Rule."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:harm"]
 
   macro_structure_and_traces:
     - path: "iteration/macro-structure-and-gameplay-loop-brief.md"

@@ -7,9 +7,9 @@ This directory contains the settled design proposal, play traces, equipment arch
 In this new engine, resolution is reframed as an **"I Cut, You Choose" consequence drafting market**:
 
 1. **Layered Pool Fill**: $1\text{ Impact} = 1\text{ Card Drawn}$. Cards fill tiers of width $N$ (the defender's Pool Size) from Severity 1 upward, procedurally building the pool without integer partition math.
-2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine the row width $N$ that attackers must saturate before breaking into higher severity tiers.
-3. **Implicit Blanks ("No Consequence")**: Unfilled Tier 1 slots ($I < N$) become "No Consequence", creating an emergent armor soak threshold without requiring abstract divisor stats.
-4. **Tag Vulnerability Exploitation ("Place to Draw, Scoop to Curate") Replaces Global Resilience**: Active conditions expose specific **`Vulnerable: [Tags]`** (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching an unplaced candidate (Tier $K \le S$) to an active condition (Tier $S$) lets the attacker place that candidate onto the condition to **draw +1 additional card from Tier $K+1$**, then scoop all candidates back into the pool in Step 4 to curate $N$ cards—simultaneously adding $+1$ net candidate to crack heavy armor shells ($I < N$) and building an escalating **Consequence Pyramid** when $I \ge N$.
+2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine the pool threshold $N$ that attackers must reach before they can present consequences.
+3. **Clean Soak Threshold ($< N$ Candidates)**: To present a Consequence Pool to a defender, the pool must reach the defender's Pool Size $N$. If an attack generates fewer candidates than $N$ ($I < N$) and is not merged, it fails to penetrate armor or poise—no consequences are suffered (an isolated attacker generating $I < N$ does not need to draw cards). Multiple attackers can merge their drawn candidates into a shared pool to reach $N$ without escalating card severity.
+4. **Tag Vulnerability Exploitation ("Place to Draw, Scoop to Curate") Replaces Global Resilience**: Active conditions expose specific **`Vulnerable: [Tags]`** (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching an unplaced candidate (Tier $K \le S$) to an active condition (Tier $S$) lets the attacker place that candidate onto the condition to **draw +1 additional card from Tier $K+1$**, then scoop all candidates back into the pool in Step 5 to curate $N$ cards—building an escalating **Consequence Pyramid** when $I \ge N$.
 
 ---
 
@@ -33,18 +33,18 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 
 ```mermaid
 flowchart TD
-    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I)"] --> B["2. Draw Candidates & Form Pools: 1 Impact = 1 card in rows of width N (Keep Separate or Merge)"]
-    B --> C["3. Exploit Active Vulnerabilities: Place matching Tier K <= S card on condition -> Draw +1 Tier K+1 card"]
-    C --> D["4. Scoop & Curate Consequence Pools (I Cut): Scoop cards off conditions and curate N cards per pool"]
-    D --> E["5. Defender Suffers Consequences (You Choose): Select 1 consequence per presented pool (or blank)"]
+    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I) per attack"] --> B["2. Draw Candidates per Attack: 1 Impact = 1 card; severity set by attack Impact"]
+    B --> C["3. Form Pools: Keep Separate or Merge Drawn Candidates (Must reach >= N cards)"]
+    C --> D["4. Exploit Active Vulnerabilities: Place matching Tier K <= S card on condition -> Draw +1 Tier K+1 card"]
+    D --> E["5. Curate & Suffer: Scoop and curate N cards per pool ('I Cut'); defender chooses 1 ('You Choose')"]
 ```
 
 ### Tactile Tracking: Why "Place to Draw, Scoop to Curate" Works
 
-During Step 3, placing the matching Tier $K$ candidate directly onto the defender's active condition card solves two tracking problems with a single physical gesture:
+During Step 4, placing the matching Tier $K$ candidate directly onto the defender's active condition card solves two tracking problems with a single physical gesture:
 
-1. **In-Step Tracking (Zero Tokens):** While checking tags and chaining draws in Step 3, any active condition with a card on it is visibly spent for that pool, and the triggering candidate card is out of your hand so it cannot accidentally be used twice to trigger a second condition. Meanwhile, the newly drawn Tier $K+1$ card enters your hand unplaced, so it can immediately be placed onto a second empty active condition (Severity $\ge K+1$) to chain into Tier $K+2$.
-2. **Clean Table Handoff in Step 4:** As soon as Step 3 finishes for a pool, the attacker **scoops the placed candidate cards back off the defender's conditions** into their pool to select the final $N$ cards. This gives the pool $+1$ net card per exploited condition (filling blank soak slots when $I < N$ and preserving sharp Tier $K$ cards for curation when $I \ge N$) while leaving the defender's tableau completely clear for Step 5 and for any parallel pools.
+1. **In-Step Tracking:** While checking tags and chaining draws in Step 4, any active condition with a card on it is visibly spent for that pool, and the triggering candidate card is out of your hand so it cannot accidentally be used twice to trigger a second condition. Meanwhile, the newly drawn Tier $K+1$ card enters your hand unplaced, so it can immediately be placed onto a second empty active condition (Severity $\ge K+1$) to chain into Tier $K+2$.
+2. **Clean Table Handoff in Step 5:** As soon as Step 4 finishes for a pool, the attacker **scoops the placed candidate cards back off the defender's conditions** into their pool to select the final $N$ cards. This preserves the triggering Tier $K$ cards alongside the bonus Tier $K+1$ cards for curation when $I \ge N$, while leaving the defender's tableau completely clear for Step 5 and for any parallel pools.
 
 ---
 
@@ -66,7 +66,7 @@ An entity's **Consequence Pool Size ($N$)** defines the number of consequence sl
 
 ### Symmetrical Minion Design
 
-Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs attack a minion and generate 2 Impact, the attacker simply spends 2 Impact to draw 1 Severity 2 card. There is no second slot. The minion takes the card. Because minions have no blank slots to dilute incoming harm, even moderate attacks inflict immediate, unavoidable consequences. When an attack reaches terminal severity or compounded trauma overwhelms them, they drop cleanly. This eliminates GM drafting overhead while making mook-cleaving fast and satisfying.
+Minions have `Consequence Pool Size: 1` printed on their Nature card. When PCs attack a minion and generate 2 Impact, the attacker simply spends 2 Impact to draw 1 Severity 2 card. There is no second slot. The minion takes the card. Because minions have Pool Size 1, even moderate attacks inflict immediate, unavoidable consequences. When an attack reaches terminal severity or compounded trauma overwhelms them, they drop cleanly. This eliminates GM drafting overhead while making mook-cleaving fast and satisfying.
 
 ---
 
@@ -90,9 +90,9 @@ Under the $\text{Impact} = \text{Pool Size } (N) \times \text{Tier } (S)$ formul
 
 Combatants rarely reach Tier 4 via a single massive direct purchase. Instead, combat follows an accelerating, non-linear downward spiral driven by the **Consequence Pyramid** and **Tag Vulnerability Exploitation**:
 
-- **Initial Foothold (Opening Exchanges)**: Attackers test defenses and search for openings. Early hits inflict Tier 1 friction (`Poor Footing`, `Winded`, `Dust in Eyes`, `Off Balance`) or use merged pools to establish active `Vulnerable` tags on the table.
-- **Cracking the Armor Shell ($I < N$)**: Against heavily armored combatants ($N=4\text{–}5$), moderate strikes generating $I < N$ would normally leave "No Consequence" blanks. However, matching drawn Tier 1 candidates against the defender's active `Vulnerable` tags adds **+1 net card at Tier 2** per exploited condition while retaining the matching Tier 1 card when scooped in Step 4—consuming blank soak slots and ensuring that even a 3- or 4-Impact strike penetrates a knight's heavy harness once their posture or guard is compromised.
-- **Building the Consequence Pyramid (Vertical Escalation)**: When the pool already has enough cards to fill all $N$ slots ($I \ge N$), each bonus Tier $K+1$ card drawn from exploiting an active vulnerability occupies a slot in the curated $N$-card pool, allowing the attacker to curate out soft lower-tier options and eventually saturate all $N$ slots with **Tier 2 platform/biological trauma** (`Knocked Prone`, `Cracked Ribs`, `Mild Concussion`) without requiring impossible single-hit Impact spikes.
+- **Initial Foothold (Opening Exchanges)**: Attackers test defenses and search for openings. Early hits reaching $I \ge N$ inflict Tier 1 friction (`Poor Footing`, `Winded`, `Dust in Eyes`, `Off Balance`) or use merged pools to establish active `Vulnerable` tags on the table.
+- **Cracking the Armor Shell**: Against heavily armored combatants ($N=4\text{–}5$), individual minor strikes generating $I < N$ fail to reach the threshold on their own—so attackers must coordinate attacks (merging drawn candidate pools to reach $\ge N$ cards) or exploit active vulnerabilities to escalate draws into higher tiers.
+- **Building the Consequence Pyramid (Vertical Escalation)**: When the pool reaches $N$ cards ($I \ge N$), each bonus Tier $K+1$ card drawn from exploiting an active vulnerability allows the attacker to curate out softer lower-tier options and eventually saturate all $N$ slots with **Tier 2 platform/biological trauma** (`Knocked Prone`, `Cracked Ribs`, `Mild Concussion`) without requiring impossible single-hit Impact spikes.
 - **Defensive Breakdown & Structural Trauma**: Once Tier 2 conditions are active on the table (often carrying broad `Vulnerable` lists like `Knocked Prone` compromising `positioning, limbs, torso, head`), matching Tier 2 draws are promoted directly into **Tier 3 structural trauma** (severe bodily injury like `Broken Arm`, `Sucking Chest Wound`, or `Severe Concussion`).
 - **Terminal Resolution**: Matching a Tier 3 draw against an active Tier 3 condition's `Vulnerable` tags draws a **Tier 4 (Taken Out)** candidate.
 
@@ -124,17 +124,14 @@ General Actions resolve using the exact same core engine and Vigilance mechanics
 2. **Commit Vigilance (Optional):** Per [core-rules.md](../../rules/core-rules.md), the player may resolve the task using deck flips alone, or pick up their **[[Vigilance]]** pool to either play an applicable reactive/mitigation Action Stack (e.g., a skill or tool modifier) or substitute high-value cards from hand directly into the flipped stack (counting as flips toward Impact, then flushing remaining hand cards afterward).
 3. **Meet Strength & Count Impact:** The player flips cards (and/or inserts committed Vigilance cards) into their **flipped stack** to meet the Strength. The number of cards in the flipped stack equals the **Impact**.
 4. The GM spends the Impact to build a Consequence Pool of the player's domain Pool Size (fallback 2, or modified by relevant skills/tools).
-5. The player drafts 1 consequence (or "No Consequence" if an empty slot remains).
+5. If Impact is at least $N$, the player drafts 1 consequence from the curated $N$-card pool.
 
-### Single-Card Flips and Clean Success ("Saying Yes")
+### Sub-Threshold Flips and Clean Success ("Saying Yes")
 
-When a player meets the required Strength with a **single card flip** ($\text{Impact} = 1$):
+When a player meets the required Strength with a single card flip ($\text{Impact} = 1$), against the baseline Pool Size ($N = 2$), Impact is less than Pool Size ($I < N$):
 
-- The GM draws 1 candidate card from the appropriate domain Severity 1 deck.
-- Against the baseline Pool Size ($N = 2$), the second slot is an **implicit "No Consequence" blank**.
-- The player selects "No Consequence," succeeding cleanly with zero complications beyond the single card expended from their deck.
-
-A single-card flip ($\text{Impact} = 1$) represents routine effort, allowing the player to select the blank slot and succeed without complications. Complications emerge when tasks demand genuine strain or opposition ($\text{Impact} \ge N$).
+- **No cards are drawn.** The player succeeds cleanly with zero complications beyond the single card expended from their deck.
+- Complications emerge when tasks demand genuine strain or opposition ($\text{Impact} \ge N$).
 
 ---
 
@@ -144,14 +141,14 @@ When multiple attackers target the same defender during Crisis Time, resolution 
 
 1. **Per-Attack Impact & Candidate Draws**:
    - The defender meets each incoming attack's `Strength` individually; the cards flipped for an attack equal that attack's **Impact ($I$)**.
-   - Each attacker independently converts their own attack's Impact into candidate cards by filling tiers of width $N$ (the defender's Pool Size) from the bottom up. Because individual minion hits usually generate $I \le N$, each minion natively draws **Tier 1** cards from the Severity 1 consequence deck without cross-deck ordering issues.
-2. **Simultaneous Vulnerability Exploitation ("Place to Draw, Scoop to Curate")**:
-   - After attackers decide whether to keep their drawn candidate pools separate or merge them, each Consequence Pool may exploit active conditions that were on the defender **at the start of the round** (at most 1 placed candidate per active condition **per pool**) to draw $+1$ candidate from Tier $K+1$.
-   - Because placed candidates are scooped back into their pool at the start of Step 4, separate pools resolving in parallel never collide physically on the defender's tableau or compete over the defender's active conditions.
-   - Consequences inflicted during the round enter play simultaneously at the end of the round, preventing same-round chain-promotion kills.
-3. **Separate vs. Merged Pools (Tactical Choice)**:
+   - Each attacker independently converts their own attack's Impact into candidate cards by filling tiers of width $N$ (the defender's Pool Size) from the bottom up. Because individual minion hits usually generate $I \le N$, each minion natively draws **Tier 1** cards from the Severity 1 consequence deck without cross-deck ordering issues. Severity is strictly determined per attack, never by combining Impact across attacks.
+2. **Form Pools (Separate vs. Merged Tactical Choice)**:
    - **Separate Pools vs. Low-$N$ Targets:** Against an unarmored skirmisher ($N=2$), four goblins generating 2 Impact each draw 2 Tier 1 cards apiece. Because each goblin already fills an $N=2$ pool (`[Sev 1, Sev 1]`), they keep their 4 pools separate—forcing the skirmisher to suffer **4 Tier 1 consequences simultaneously** (burying them in tactical friction and exposing `Vulnerable` tags for Round 2 without one-shotting them on Round 1).
-   - **Merged Pools vs. Heavy Armor ($N=4\text{–}5$):** Against a knight in Full Plate ($N=5$), three goblins generating `1, 2, 2` Impact would each leave "No Consequence" blanks on their own. By **merging their drawn candidate cards into a single shared pool**, their 5 Tier 1 cards fill all 5 slots (`[Sev 1 x 5]`, zero blanks), forcing the knight to suffer **1 Tier 1 consequence**.
+   - **Merged Pools vs. Heavy Armor ($N=4\text{–}5$):** Against a knight in Full Plate ($N=5$), three goblins generating `1, 2, 2` Impact would each fail to meet the pool threshold ($I < N$) on their own. Each goblin draws Tier 1 cards for their attack, and by **merging their drawn candidates into a single shared pool** ($1 + 2 + 2 = 5\text{ cards}$), they reach the $N=5$ threshold to present a full 5-card pool and force the knight to suffer **1 Tier 1 consequence**. Crucially, merging pools combines drawn cards; it **never increases the severity tier** of the drawn cards.
+3. **Simultaneous Vulnerability Exploitation ("Place to Draw, Scoop to Curate")**:
+   - After attackers decide whether to keep their drawn candidate pools separate or merge them, each Consequence Pool may exploit active conditions that were on the defender **at the start of the round** (at most 1 placed candidate per active condition **per pool**) to draw $+1$ candidate from Tier $K+1$.
+   - Because placed candidates are scooped back into their pool at the start of Step 5, separate pools resolving in parallel never collide physically on the defender's tableau or compete over the defender's active conditions.
+   - Consequences inflicted during the round enter play simultaneously at the end of the round, preventing same-round chain-promotion kills.
 4. **Deck Attrition as Mob Danger**: Beyond condition drafting, defending against a swarm forces multiple flips in rapid succession, draining the defender's 24-card deck and accelerating Fatigue Cycles toward Defensive Collapse.
 
 ---

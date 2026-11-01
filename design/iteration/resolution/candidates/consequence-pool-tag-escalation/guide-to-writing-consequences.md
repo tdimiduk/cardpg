@@ -119,12 +119,12 @@ CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web
    - **`tags:`** define what the consequence _is_ (e.g., `Winded` has `exertion`; `Dust in Eyes` has `sensory, eyes`; `Cracked Ribs` has `torso`).
    - **`vulnerable:`** lists **2 to 4 Leaf Tags** representing the anatomical, positional, or psychological openings that this active condition exposes on the defender.
 2. **Tier-Scoped Exploitation ($\text{Tier } K \le S$) — "Place to Draw, Scoop to Curate"**:
-   - During Step 3 of resolution (after base candidates are drawn), an active condition of **Severity $S$** may exploit **at most 1** unplaced candidate card in the pool of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
-   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 3) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (drawing from the **Severity 4 deck** when a Tier 3 card exploits an active Tier 3 condition).
-   - **Scoop to Curate (Step 4):** Once Step 3 finishes for the pool, the attacker scoops the placed candidate cards back off the defender's active conditions into the pool and curates any $N$ cards. Because each exploitation adds $+1$ net card at Tier $K+1$ while preserving the triggering Tier $K$ card, this single primitive both cracks heavy armor shells (replacing implicit "No Consequence" blank slots when $I < N$) and builds the Consequence Pyramid (squeezing out soft lower-tier options when $I \ge N$).
+   - During Step 4 of resolution (after base candidates are drawn and pools are formed), an active condition of **Severity $S$** may exploit **at most 1** unplaced candidate card in the pool of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
+   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 4) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (drawing from the **Severity 4 deck** when a Tier 3 card exploits an active Tier 3 condition).
+   - **Scoop to Curate (Step 5):** Once Step 4 finishes for the pool, the attacker scoops the placed candidate cards back off the defender's active conditions into the pool and curates any $N$ cards. Because each exploitation adds $+1$ net card at Tier $K+1$ while preserving the triggering Tier $K$ card, this builds the Consequence Pyramid by squeezing out soft lower-tier options when $I \ge N$.
 3. **The Consequence Pyramid & Shell-Cracking**:
    - Because a newly drawn Tier $K+1$ candidate enters the hand unplaced, it can itself be placed onto _another_ unexploited active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag to chain into Tier $K+2$.
-   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): bonus draws consume clean soak blanks to establish an early foothold, and then escalate the pool into Tier 2 candidates, which in turn allow subsequent hits to draw Tier 3 structural trauma.
+   - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): bonus draws escalate the pool into Tier 2 candidates, which in turn allow subsequent hits to draw Tier 3 structural trauma.
 
 ---
 
@@ -205,7 +205,7 @@ Every consequence card includes an integer `priority:` rating (**1 to 5**). This
    Automated curation scripts can execute deterministic, high-quality "I Cut" pool curation:
    - _Step 1 (Vulnerability Exploitation)_: Check drawn candidates against active conditions (highest tier first). For each matching condition, place a matching unplaced candidate (Tier $K \le S$) on the condition and draw 1 additional candidate from Tier $K+1$.
    - _Step 2 (Scoop & Curation)_: Scoop all placed candidates back into the pool, and sort all candidates by `severity` descending, then `priority` descending.
-   - _Step 3_: Present the top $N$ cards to the defender (unfilled slots are blanks if total candidates $< N$).
+   - _Step 3_: Present the top $N$ cards to the defender.
 
 ### 6.2. The Tapering Funnel Guidelines by Tier
 
