@@ -1,14 +1,24 @@
 ---
-title: "Candidate Architecture: Consolidated 3-Tier Cards, Pip Tracks & Post-Combat Triage"
+title: "Post-Mortem: Consolidated 3-Tier Cards & Pip Escalation"
 doc_type: iteration
 track: ludology
+status: retired
 origin: AI drafted
 epistemic_status:
-  confidence: medium
+  confidence: high
   vetted_by_human: false
 ---
 
-# Candidate Architecture: Consolidated 3-Tier Cards, Pip Tracks & Post-Combat Triage
+# Post-Mortem: Consolidated 3-Tier Cards, Pip Tracks & Post-Combat Triage
+
+## Status: Retired / Non-Viable
+
+> **Core Post-Mortem Finding:**
+>
+> 1. **Card Text Density & Nuance Loss:** Printing 3 distinct severity rules, passives, and tactical recoveries on a single card face quickly becomes overwhelmingly text-heavy. To fit standard card layouts, nuance and specific narrative flavor must be aggressively streamlined out.
+> 2. **Ludonarrative Mismatch (The Procrustean Bed):** Not every consequence we want to write naturally has meaningful manifestations at every severity level. The 3-tier card requirement forced designers to mash loosely related concepts together just to fill the spectrum (e.g. stretching transient tactical penalties across three artificial tiers).
+
+---
 
 ## Concept Overview
 

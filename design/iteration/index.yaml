@@ -27,29 +27,37 @@ active_design_exploration:
       purpose: "Catalog and comparison overview of active candidate resolution mechanics."
       tags: ["doc-type:meta", "audience:designer-facing", "core-concept:action-resolution"]
 
+    - path: "iteration/resolution/open-design-space.md"
+      purpose: "Generative canvas mapping the 4 open post-Impact design axes for candidate brainstorming."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:armor", "core-concept:consequences"]
+
+    - path: "iteration/resolution/discarded-ideas.md"
+      purpose: "Master clearinghouse of discarded resolution mechanics, candidate post-mortems, and napkin sketches with quick pitches and fatal flaws."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences"]
+
+    - path: "iteration/resolution/history.md"
+      purpose: "Historical post-mortems and chronicle of playtested engine generations (Defend from Hand, Allowed Severity Tables, Canon Defense+Resilience)."
+      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:hand-management"]
+
     - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/index.yaml"
       purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
       tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
-    - path: "iteration/resolution/candidates/tag-escalation-resilience.md"
-      purpose: "Candidate proposal isolating localized tag escalation to replace the global Resilience row without pool drafting."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:harm"]
+    - path: "iteration/resolution/candidates/retired/tag-escalation-resilience.md"
+      purpose: "Post-mortem evaluating standalone tag escalation; retired due to extreme bimodal variance (spikes and drag)."
+      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:consequences"]
 
-    - path: "iteration/resolution/candidates/consolidated-tiered-cards-and-triage.md"
-      purpose: "Candidate architecture featuring single-deck 3-tier cards, in-place pip escalation, and post-combat triage."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
+    - path: "iteration/resolution/candidates/retired/consolidated-tiered-cards-and-triage.md"
+      purpose: "Post-mortem evaluating consolidated 3-tier cards; retired due to card text density and ludonarrative mismatch."
+      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
-    - path: "iteration/resolution/candidates/declared-defense-effort.md"
-      purpose: "Candidate exploration: upfront declaration of defense flips with accepted costs and overage penalties."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:defense"]
+    - path: "iteration/resolution/candidates/retired/declared-defense-effort.md"
+      purpose: "Post-mortem exploration: upfront declaration of defense flips; retired due to card-counting AP and stagnation."
+      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:defense"]
 
-    - path: "iteration/resolution/candidates/push-your-luck-buyoff.md"
-      purpose: "Candidate exploration: sequential flips with consequence buy-offs."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:defense"]
-
-    - path: "iteration/resolution/history-and-design-space.md"
-      purpose: "Historical post-mortems of prior mechanics and taxonomy of open mechanical design axes."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:hand-management"]
+    - path: "iteration/resolution/candidates/retired/push-your-luck-buyoff.md"
+      purpose: "Post-mortem exploration: sequential flips with consequence buy-offs; retired due to mid-flip halts and severity distortion."
+      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:defense"]
 
   mechanics_and_resource_proposals:
     - path: "iteration/fatigue-change-proposal.md"

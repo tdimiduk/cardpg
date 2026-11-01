@@ -334,6 +334,7 @@ sub_indexes:
   - pillar:downtime
   - pillar:exploration
   - pillar:social
+  - status:retired
   - track:verisimilitude
   path: iteration/index.yaml
   purpose: Sub-index for active design explorations, mechanical constraints, proposals,

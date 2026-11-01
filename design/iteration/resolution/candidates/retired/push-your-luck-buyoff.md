@@ -1,14 +1,24 @@
 ---
-title: "Candidate Resolution Mechanic: Push Your Luck & The Consequence Buy-Off"
+title: "Post-Mortem: Push Your Luck & Consequence Buy-Off"
 doc_type: iteration
 track: ludology
+status: retired
 origin: AI drafted
 epistemic_status:
-  confidence: medium
+  confidence: high
   vetted_by_human: false
 ---
 
-# Candidate Resolution Mechanic: Push Your Luck & Consequence Buy-Off
+# Post-Mortem: Push Your Luck & Consequence Buy-Off
+
+## Status: Retired / Cautionary Note
+
+> **Core Post-Mortem Finding:**
+>
+> 1. **Per-Flip Halts & Slowdown:** Pausing after every single card flip to evaluate buy-off options destroys the 2–3 second phrase cadence of Crisis Time rounds.
+> 2. **Severity Ladder Distortion:** The "+1 Severity bump for free choice" mechanic strained the lean 3-to-4 tier severity ladder, making minor attacks artificially lethal when players attempted tactical steering.
+
+---
 
 ## Concept Overview
 

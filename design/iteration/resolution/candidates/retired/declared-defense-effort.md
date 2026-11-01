@@ -1,14 +1,25 @@
 ---
-title: "Candidate Resolution Mechanic: Declared Defense Effort"
+title: "Post-Mortem: Declared Defense Effort"
 doc_type: iteration
 track: ludology
+status: retired
 origin: AI drafted from Anh's proposal
 epistemic_status:
-  confidence: medium
+  confidence: high
   vetted_by_human: false
 ---
 
-# Candidate Resolution Mechanic: Declared Defense Effort
+# Post-Mortem: Declared Defense Effort
+
+## Status: Retired / Cautionary Note
+
+> **Core Post-Mortem Finding:**
+> While declaring $K$ cards upfront introduces dramatic tension, it triggers fatal table ergonomics issues:
+>
+> 1. **Card-Counting Incentives & AP:** Players pause to calculate exact deck composition ratios before declaring $K$, grinding fast-paced Crisis Time to a halt.
+> 2. **Stagnation / Over-Declaration:** If uncapped, high-armor combatants routinely over-declare to guarantee zero consequences, dragging combats into the Stagnation Trap ([Pitfall 1](../../pitfalls.md#pitfall-1-the-stagnation-trap-the-fight-that-never-ends)).
+
+---
 
 ## Concept Overview
 

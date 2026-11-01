@@ -70,7 +70,7 @@ This document tracks the advantages, disadvantages, invariants, and open design 
 
 1. **Does replacing Resilience with Tag Escalation work without the pool mechanics?**
    - _Status:_ Yes, completely separable.
-   - _Forked Proposal:_ See [candidates/tag-escalation-resilience.md](../tag-escalation-resilience.md) for a standalone proposal applying Tag Escalation to a streamlined engine without pool drafting.
+   - _Forked Proposal:_ See [tag-escalation-resilience.md](../retired/tag-escalation-resilience.md) for a post-mortem on applying Tag Escalation without pool drafting (retired due to bimodal variance).
 
 2. **Is there sensible design space that lets incremental Impact matter without drawing one card per Impact?**
    - _Status:_ Yes. Threshold remainders, curation shifts, and stamina spillover can make every point of Impact count while drawing $\le 2$ cards total.
@@ -81,4 +81,4 @@ This document tracks the advantages, disadvantages, invariants, and open design 
    - _Exploration Document:_ See [card-delegated-tag-escalation.md](../../card-delegated-tag-escalation.md).
 
 4. **Can we simplify the proposal while keeping its core benefits?**
-   - _Status:_ Addressed by scrapping the "blank" / "no consequence" rule in favor of a clean threshold ($I < N \implies$ 0 cards drawn). Further simplification can merge with the Consolidated 3-Tier Deck architecture ([consolidated-tiered-cards-and-triage.md](../consolidated-tiered-cards-and-triage.md)).
+   - _Status:_ Addressed by scrapping the "blank" / "no consequence" rule in favor of a clean threshold ($I < N \implies$ 0 cards drawn). Further simplification previously explored the Consolidated 3-Tier Deck architecture ([consolidated-tiered-cards-and-triage.md](../retired/consolidated-tiered-cards-and-triage.md), since retired).

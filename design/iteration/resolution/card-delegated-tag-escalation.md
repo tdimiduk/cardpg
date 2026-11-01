@@ -119,7 +119,7 @@ In martial reality, escalation is often driven by the **attacker actively exploi
 
 ### Pattern 3: In-Place Pip Tracks on Consolidated Cards
 
-As detailed in [consolidated-tiered-cards-and-triage.md](candidates/consolidated-tiered-cards-and-triage.md), condition cards feature a printed 3-tier escalation track:
+As explored in [consolidated-tiered-cards-and-triage.md](candidates/retired/consolidated-tiered-cards-and-triage.md), condition cards feature a printed 3-tier escalation track:
 
 ```
 +-----------------------------------------------------+
