@@ -162,6 +162,24 @@ When multiple attackers target the same defender during Crisis Time, resolution 
 | **Ludonarrative Harmony**        | **Contextual & Thematic**. Wounds compound contextually via tags rather than through an arbitrary global counter. Armored fighters absorb diffuse blows; targeted tags cause realistic collapse. |
 | **Player Agency**                | **Very High**. Both attacker (allocating impact and hunting tag synergies) and defender (choosing the manageable penalty) make active, high-stakes decisions every turn.                         |
 
+### Architectural Strengths & Known Friction Points
+
+#### Why `1 Impact = 1 Card` Pulls Multi-Duty Weight
+
+In this proposal, drawing 1 candidate card per point of Impact into tiers of width $N$ functions as a **physical analog state computer** that solves five problems with a single primitive:
+
+1. **Clean Soak Threshold:** Attacks generating $I < N$ fail to fill a pool, bouncing off without subtraction math.
+2. **Multiplicative Top-End Scaling (The 2 / 8 / 12 Curve):** Tier thresholds scale proportionally ($N, 2N, 3N, 4N$), allowing `Impact 8` to drop a fragile minion ($N=1\text{–}2$) while a knight in plate ($N=5$) survives `Impact 12` from fresh.
+3. **Continuous Intra-Tier Leverage:** Surplus Impact ($I = N+1 \dots 2N-1$) is never wasted remainder; every extra card gives the attacker sharper curation (`"I Cut"`) and more opportunities to match active vulnerability tags.
+4. **Safe Swarm Merging:** Multiple attackers can merge sub-threshold Tier 1 draws into a shared pool to reach $N$ against heavy armor without promoting those cards to lethal higher tiers.
+5. **Variance Dampening:** Defender choice (`"You Choose"` 1 of $N$) absorbs early RNG spikes, while Attacker curation (`"I Cut"` down to $N$) prevents late-combat tag starvation.
+
+#### Known Friction Points (Targets for Further Iteration or Alternative Primitives)
+
+1. **The 5-Step Core Rules Ceremony:** While each gesture is tactile, the full loop (Determine Impact $\to$ Draw per Attack $\to$ Form/Merge Pools $\to$ Place on Conditions to Draw Bonus $\to$ Scoop, Cut $N$, and Pick 1) introduces noticeable procedural ceremony into `core-rules.md`, particularly around Step 4 (`"Place to Draw, Scoop to Curate"`).
+2. **Hard Initial Shell on Heavy Armor ($I < N$):** Against high Pool Size ($N=4\text{–}5$), an isolated attack generating $I < N$ bounces off completely (`0 cards drawn`) unless merged with allies or bypassed via specialized card text (`Pierce`), offering no native incremental foothold on its own.
+3. **High-Impact Card Draw Volume:** Heavy hits against armored targets ($I=6\text{–}10$) require drawing, inspecting, curating, and returning a relatively large number of physical cards across multiple severity decks.
+
 ---
 
 ## 8. Suggested Next Steps for Promotion
