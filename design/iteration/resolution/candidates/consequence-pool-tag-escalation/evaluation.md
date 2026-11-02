@@ -77,8 +77,7 @@ This document tracks the advantages, disadvantages, invariants, and open design 
    - _Exploration Document:_ See [incremental-impact-mechanics.md](../../incremental-impact-mechanics.md).
 
 3. **Can tag-based escalation be delegated to card rules instead of living in the core rules?**
-   - _Status:_ Yes. Pushing escalation into condition `Passive:` text, attack keywords, and pip tracks keeps the core rulebook under 1 page per the 10x Rule.
-   - _Exploration Document:_ See [card-delegated-tag-escalation.md](../../card-delegated-tag-escalation.md).
+   - _Status:_ Evaluated and rejected as a complexity shell game. Moving procedural tag-matching chains onto condition passive text or card keywords redistributes cognitive load rather than eliminating it, resulting in card text bloat and hidden board-state triggers. While scalar input modifiers like `+1 Impact` or threshold shifts remain cleanly on cards, core escalation logic belongs in procedural rules.
 
 4. **Can we simplify the proposal while keeping its core benefits?**
    - _Status:_ Addressed by scrapping the "blank" / "no consequence" rule in favor of a clean threshold ($I < N \implies$ 0 cards drawn). Further simplification previously explored the Consolidated 3-Tier Deck architecture ([consolidated-tiered-cards-and-triage.md](../retired/consolidated-tiered-cards-and-triage.md), since retired).

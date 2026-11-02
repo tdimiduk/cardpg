@@ -57,7 +57,6 @@ This directory serves as the active workshop and incubation space for **caRdPG**
 | [Universal Guide to Writing Consequence & Condition Cards](resolution/universal-consequence-authoring.md)                | Universal style and authoring guide for consequence and condition cards across all caRdPG resolution engines.                                                    |
 | [Design Brief: Consequence Scaling, Progression, and Recovery Economics](resolution/consequence-scaling-and-recovery.md) | Design brief exploring how consequence passive penalties, in-combat action recoveries, and out-of-combat task checks interact with character progression and ... |
 | [Exploration: Incremental Impact Design Space](resolution/incremental-impact-mechanics.md)                               | Design space exploration evaluating mechanics to make incremental Impact matter without drawing 1 card per Impact.                                               |
-| [Exploration: Delegating Tag Escalation to Card Text](resolution/card-delegated-tag-escalation.md)                       | Architectural exploration delegating harm escalation to condition passives, weapon keywords, and pip tracks per the 10x Rule.                                    |
 
 ### Macro Structure & Gameplay Traces
 
