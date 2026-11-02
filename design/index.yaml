@@ -161,6 +161,16 @@ game_system_and_rules:
     tags:
     - doc-type:guide
     - audience:designer-facing
+  - path: architecture/consequence-ecosystem.md
+    purpose: The foundational architecture of the 10+ Multi-Deck Consequence Library,
+      Active Scene Decks (2-5 per scene), Severity Sub-Stacks, and Tag-Driven routing.
+    tags:
+    - doc-type:architecture
+    - audience:designer-facing
+    - audience:gm-facing
+    - core-concept:consequences
+    - core-concept:harm
+    - core-concept:action-resolution
   lexicons:
   - path: rules/colors-of-action.md
     purpose: An extensive lexicon to guide classifying in-game actions into Red, Yellow,

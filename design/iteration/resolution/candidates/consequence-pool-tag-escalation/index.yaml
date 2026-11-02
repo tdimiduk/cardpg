@@ -35,3 +35,7 @@ documents:
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/evaluation.md"
     purpose: "Evaluation scorecard of advantages, disadvantages, invariants, and open design questions."
     tags: ["doc-type:iteration", "audience:designer-facing"]
+
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/multi-deck-integration.md"
+    purpose: "Details integration between Consequence Pool drafting and the 10+ Multi-Deck Consequence Ecosystem."
+    tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:action-resolution"]
