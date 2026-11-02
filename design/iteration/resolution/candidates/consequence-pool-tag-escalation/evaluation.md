@@ -73,8 +73,8 @@ This document tracks the advantages, disadvantages, invariants, and open design 
    - _Forked Proposal:_ See [tag-escalation-resilience.md](../retired/tag-escalation-resilience.md) for a post-mortem on applying Tag Escalation without pool drafting (retired due to bimodal variance).
 
 2. **Is there sensible design space that lets incremental Impact matter without drawing one card per Impact?**
-   - _Status:_ Yes. Threshold remainders, curation shifts, and stamina spillover can make every point of Impact count while drawing $\le 2$ cards total.
-   - _Exploration Document:_ See [incremental-impact-mechanics.md](../../incremental-impact-mechanics.md).
+   - _Status:_ Evaluated and retired. Replacing $1\text{ Impact} = 1\text{ Card Drawn}$ with remainder math, stamina spillover, or fixed 2-card draws was explored but failed under adversarial stress-testing. Capped draws trigger the 2-card escalation catch-22 (attacker curation bypasses armor width into 3-hit sudden deaths, while defender choice renders single-tag escalation a solved false dilemma), suffer modulo resets and interval collapse at low Defense ($D \le 3$), and break emergent swarm merging—ultimately requiring more special-case exception rules than the full Consequence Pool engine.
+   - _Post-Mortem:_ See [incremental-impact-mechanics.md](../retired/incremental-impact-mechanics.md).
 
 3. **Can tag-based escalation be delegated to card rules instead of living in the core rules?**
    - _Status:_ Evaluated and rejected as a complexity shell game. Moving procedural tag-matching chains onto condition passive text or card keywords redistributes cognitive load rather than eliminating it, resulting in card text bloat and hidden board-state triggers. While scalar input modifiers like `+1 Impact` or threshold shifts remain cleanly on cards, core escalation logic belongs in procedural rules.

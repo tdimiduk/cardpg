@@ -4,132 +4,284 @@
 # and ideation sketches. Documents here represent unsettled ideas under active exploration.
 
 active_design_exploration:
-  orientation:
-    - path: "iteration/README.md"
-      purpose: "Orientation and operating conventions for active design exploration and proposals."
-      tags: ["doc-type:meta", "audience:designer-facing"]
-
-    - path: "iteration/resolution/README.md"
-      purpose: "Dedicated workshop, 5-step brainstorming protocol, and evaluation hub for candidate Core Resolution Mechanics."
-      tags: ["doc-type:meta", "audience:designer-facing", "core-concept:action-resolution", "core-concept:harm"]
-
-  mechanical_constraints:
-    - path: "iteration/resolution/constraints.md"
-      purpose: "Authoritative reference for architectural constraints, tabletop ergonomics, and evaluation criteria that any proposed Core Resolution Mechanic must satisfy."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
-
-    - path: "iteration/resolution/pitfalls.md"
-      purpose: "Authoritative catalog of recurring mechanical failure modes, degenerate incentives, and tabletop friction points discovered across resolution iterations."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:hand-management", "core-concept:fatigue", "core-concept:harm"]
-
-  resolution_and_combat_proposals:
-    - path: "iteration/resolution/candidates/README.md"
-      purpose: "Catalog and comparison overview of active candidate resolution mechanics."
-      tags: ["doc-type:meta", "audience:designer-facing", "core-concept:action-resolution"]
-
-    - path: "iteration/resolution/open-design-space.md"
-      purpose: "Generative canvas mapping the 4 open post-Impact design axes for candidate brainstorming."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:armor", "core-concept:consequences"]
-
-    - path: "iteration/resolution/discarded-ideas.md"
-      purpose: "Master clearinghouse of discarded resolution mechanics, candidate post-mortems, and napkin sketches with quick pitches and fatal flaws."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences"]
-
-    - path: "iteration/resolution/history.md"
-      purpose: "Historical post-mortems and chronicle of playtested engine generations (Defend from Hand, Allowed Severity Tables, Canon Defense+Resilience)."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:hand-management"]
-
-    - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/index.yaml"
-      purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
-
-    - path: "iteration/resolution/candidates/retired/tag-escalation-resilience.md"
-      purpose: "Post-mortem evaluating standalone tag escalation; retired due to extreme bimodal variance (spikes and drag)."
-      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:consequences"]
-
-    - path: "iteration/resolution/candidates/retired/consolidated-tiered-cards-and-triage.md"
-      purpose: "Post-mortem evaluating consolidated 3-tier cards; retired due to card text density and ludonarrative mismatch."
-      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
-
-    - path: "iteration/resolution/candidates/retired/declared-defense-effort.md"
-      purpose: "Post-mortem exploration: upfront declaration of defense flips; retired due to card-counting AP and stagnation."
-      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:defense"]
-
-    - path: "iteration/resolution/candidates/retired/push-your-luck-buyoff.md"
-      purpose: "Post-mortem exploration: sequential flips with consequence buy-offs; retired due to mid-flip halts and severity distortion."
-      tags: ["doc-type:iteration", "audience:designer-facing", "status:retired", "core-concept:action-resolution", "core-concept:defense"]
-
-  mechanics_and_resource_proposals:
-    - path: "iteration/fatigue-change-proposal.md"
-      purpose: "A proposal to change fatigue from 'add cards to deck' to 'overlay cards in deck' using physical card sleeves, keeping deck size constant."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:fatigue", "core-concept:status-cards"]
-
-    - path: "iteration/carrying-capacity-proposal.md"
-      purpose: "High-level design proposal for the Carrying Capacity module: Load = Weight + Awkwardness, container transformations, Frame + Conditioning Load Increment, and Averaged Burden."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:pacing"]
-
-    - path: "iteration/carrying-capacity-benchmarks.md"
-      purpose: "Empirically calibrated benchmark dataset for weapons, armor, containers, delving gear, trade goods, and pack creatures, with stress-test evaluations of Candidate A, B, and C capacity formulas across Tiers 1 and 3."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:exploration", "pillar:combat", "core-concept:fatigue", "core-concept:encumbrance", "core-concept:pacing"]
-
   ideation_and_sketches:
-    - path: "iteration/design-sketchbook.md"
-      purpose: "A collection of specific mechanic ideas and explorations; look here to see if an idea exists prior to formalization."
-      tags: ["doc-type:ideation", "audience:designer-facing"]
-
-    - path: "iteration/card-art-rendering-pipeline-brief.md"
-      purpose: "Pipeline to embed live card layouts into rules documentation from data/cards/ YAML definitions using native Reflex components."
-      tags: ["doc-type:iteration", "audience:designer-facing"]
-
-    - path: "iteration/resolution/universal-consequence-authoring.md"
-      purpose: "Universal style and authoring guide for consequence and condition cards across all caRdPG resolution engines."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:harm"]
-
-    - path: "iteration/resolution/consequence-scaling-and-recovery.md"
-      purpose: "Design brief exploring how consequence passive penalties, in-combat action recoveries, and out-of-combat task checks interact with character progression and scale invariance."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:consequences", "core-concept:harm", "core-concept:action-resolution"]
-
-    - path: "iteration/resolution/incremental-impact-mechanics.md"
-      purpose: "Design space exploration evaluating mechanics to make incremental Impact matter without drawing 1 card per Impact."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:harm"]
-
+  - path: iteration/design-sketchbook.md
+    purpose: A collection of specific mechanic ideas and explorations; look here to
+      see if an idea exists prior to formalization.
+    tags:
+    - doc-type:ideation
+    - audience:designer-facing
+  - path: iteration/card-art-rendering-pipeline-brief.md
+    purpose: Pipeline to embed live card layouts into rules documentation from data/cards/
+      YAML definitions using native Reflex components.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+  - path: iteration/resolution/universal-consequence-authoring.md
+    purpose: Universal style and authoring guide for consequence and condition cards
+      across all caRdPG resolution engines.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:consequences
+    - core-concept:harm
+  - path: iteration/resolution/consequence-scaling-and-recovery.md
+    purpose: Design brief exploring how consequence passive penalties, in-combat action
+      recoveries, and out-of-combat task checks interact with character progression
+      and scale invariance.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:consequences
+    - core-concept:harm
+    - core-concept:action-resolution
   macro_structure_and_traces:
-    - path: "iteration/macro-structure-and-gameplay-loop-brief.md"
-      name: "Design Brief: Macro Structure, Session Cadence, and Campaign Roadmap"
-      purpose: "Articulates and formalizes the macro-level gameplay loop, session cadence, and campaign lifecycle connecting crisis resolution and exploration."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration", "pillar:downtime"]
-
-    - path: "iteration/exploration-decks-and-dungeon-clocks-brief.md"
-      name: "Design Brief: Exploration Procedures, Dungeon Clocks, and Location Decks"
-      purpose: "Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel, Location Decks, and Effort Cycle pacing."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:pacing", "pillar:exploration"]
-
-    - path: "iteration/crisis-round-duration-and-phrase-cadence-brief.md"
-      name: "Design Brief: Crisis Round Duration and Phrase Cadence"
-      purpose: "Finalizes the 2.0-3.0 second round duration, aligns deck cycle math with ATP-PCr energetics, and evaluates adopting the 'Phrase of Arms' concept."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:pacing", "core-concept:action-resolution"]
-
-    - path: "iteration/movement-area-control-and-reach-priority-brief.md"
-      name: "Design Brief: Movement, Area Control, and Reach Priority in Simultaneous Crisis Time"
-      purpose: "Deep dive on movement, spatial interception, area control, and reach priority in 2-3s simultaneous rounds without Attacks of Opportunity."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:movement", "core-concept:spacing", "core-concept:disengagement"]
-
-    - path: "iteration/action-stack-accumulation-for-extended-actions-brief.md"
-      name: "Design Brief: Action Stack Accumulation for Extended Actions"
-      purpose: "Authoring framework and rules standard for multi-round Crisis Time actions via progressive Action Stack accumulation across Plan Steps."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "core-concept:action-resolution"]
-
-    - path: "iteration/traces/index.yaml"
-      name: "Gameplay Traces & Empirical Benchmarks"
-      purpose: "Multi-resolution gameplay traces, character ledgers, and empirical benchmark scenarios testing combat, fatigue, and expedition pacing."
-      tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:fatigue", "core-concept:pacing", "core-concept:harm", "core-concept:consequences", "pillar:combat", "pillar:exploration", "pillar:social"]
-
-    - path: "iteration/campaign-weeping-fen/index.yaml"
-      name: "Campaign Workshop: The Outlaw of Weeping Fen"
-      purpose: "Development benchmark scenario: a short, complete campaign arc testing travel, non-combat general actions, tactical combat, persistent harm, and the living world clock in the Grounded Heroism setting."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:pacing"]
-
-    - path: "iteration/campaign-crag-gallows/index.yaml"
-      name: "Campaign Workshop: The Delve of Crag-Gallows"
-      purpose: "Zero-GM benchmark scenario: a procedural dungeon and wilderness crawl testing fatigue accumulation, consequence escalation, push-your-luck retreat loops, and living clock decks using existing monster cards."
-      tags: ["doc-type:iteration", "audience:designer-facing", "pillar:combat", "pillar:exploration", "pillar:social", "pillar:downtime", "core-concept:fatigue", "core-concept:consequences", "core-concept:pacing"]
+  - name: 'Design Brief: Macro Structure, Session Cadence, and Campaign Roadmap'
+    path: iteration/macro-structure-and-gameplay-loop-brief.md
+    purpose: Articulates and formalizes the macro-level gameplay loop, session cadence,
+      and campaign lifecycle connecting crisis resolution and exploration.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:pacing
+    - pillar:exploration
+    - pillar:downtime
+  - name: 'Design Brief: Exploration Procedures, Dungeon Clocks, and Location Decks'
+    path: iteration/exploration-decks-and-dungeon-clocks-brief.md
+    purpose: Table procedures for Adventuring Time, formalizing the 6-Tick Turn Wheel,
+      Location Decks, and Effort Cycle pacing.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:pacing
+    - pillar:exploration
+  - name: 'Design Brief: Crisis Round Duration and Phrase Cadence'
+    path: iteration/crisis-round-duration-and-phrase-cadence-brief.md
+    purpose: Finalizes the 2.0-3.0 second round duration, aligns deck cycle math with
+      ATP-PCr energetics, and evaluates adopting the 'Phrase of Arms' concept.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:combat
+    - core-concept:pacing
+    - core-concept:action-resolution
+  - name: 'Design Brief: Movement, Area Control, and Reach Priority in Simultaneous
+      Crisis Time'
+    path: iteration/movement-area-control-and-reach-priority-brief.md
+    purpose: Deep dive on movement, spatial interception, area control, and reach
+      priority in 2-3s simultaneous rounds without Attacks of Opportunity.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:combat
+    - core-concept:movement
+    - core-concept:spacing
+    - core-concept:disengagement
+  - name: 'Design Brief: Action Stack Accumulation for Extended Actions'
+    path: iteration/action-stack-accumulation-for-extended-actions-brief.md
+    purpose: Authoring framework and rules standard for multi-round Crisis Time actions
+      via progressive Action Stack accumulation across Plan Steps.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:combat
+    - core-concept:action-resolution
+  - name: Gameplay Traces & Empirical Benchmarks
+    path: iteration/traces/index.yaml
+    purpose: Multi-resolution gameplay traces, character ledgers, and empirical benchmark
+      scenarios testing combat, fatigue, and expedition pacing.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:fatigue
+    - core-concept:pacing
+    - core-concept:harm
+    - core-concept:consequences
+    - pillar:combat
+    - pillar:exploration
+    - pillar:social
+  - name: 'Campaign Workshop: The Outlaw of Weeping Fen'
+    path: iteration/campaign-weeping-fen/index.yaml
+    purpose: 'Development benchmark scenario: a short, complete campaign arc testing
+      travel, non-combat general actions, tactical combat, persistent harm, and the
+      living world clock in the Grounded Heroism setting.'
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:combat
+    - pillar:exploration
+    - pillar:social
+    - pillar:downtime
+    - core-concept:pacing
+  - name: 'Campaign Workshop: The Delve of Crag-Gallows'
+    path: iteration/campaign-crag-gallows/index.yaml
+    purpose: 'Zero-GM benchmark scenario: a procedural dungeon and wilderness crawl
+      testing fatigue accumulation, consequence escalation, push-your-luck retreat
+      loops, and living clock decks using existing monster cards.'
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:combat
+    - pillar:exploration
+    - pillar:social
+    - pillar:downtime
+    - core-concept:fatigue
+    - core-concept:consequences
+    - core-concept:pacing
+  mechanical_constraints:
+  - path: iteration/resolution/constraints.md
+    purpose: Authoritative reference for architectural constraints, tabletop ergonomics,
+      and evaluation criteria that any proposed Core Resolution Mechanic must satisfy.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:hand-management
+    - core-concept:fatigue
+    - core-concept:harm
+  - path: iteration/resolution/pitfalls.md
+    purpose: Authoritative catalog of recurring mechanical failure modes, degenerate
+      incentives, and tabletop friction points discovered across resolution iterations.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:hand-management
+    - core-concept:fatigue
+    - core-concept:harm
+  mechanics_and_resource_proposals:
+  - path: iteration/fatigue-change-proposal.md
+    purpose: A proposal to change fatigue from 'add cards to deck' to 'overlay cards
+      in deck' using physical card sleeves, keeping deck size constant.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:fatigue
+    - core-concept:status-cards
+  - path: iteration/carrying-capacity-proposal.md
+    purpose: 'High-level design proposal for the Carrying Capacity module: Load =
+      Weight + Awkwardness, container transformations, Frame + Conditioning Load Increment,
+      and Averaged Burden.'
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:exploration
+    - pillar:combat
+    - core-concept:fatigue
+    - core-concept:encumbrance
+    - core-concept:pacing
+  - path: iteration/carrying-capacity-benchmarks.md
+    purpose: Empirically calibrated benchmark dataset for weapons, armor, containers,
+      delving gear, trade goods, and pack creatures, with stress-test evaluations
+      of Candidate A, B, and C capacity formulas across Tiers 1 and 3.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - pillar:exploration
+    - pillar:combat
+    - core-concept:fatigue
+    - core-concept:encumbrance
+    - core-concept:pacing
+  orientation:
+  - path: iteration/README.md
+    purpose: Orientation and operating conventions for active design exploration and
+      proposals.
+    tags:
+    - doc-type:meta
+    - audience:designer-facing
+  - path: iteration/resolution/README.md
+    purpose: Dedicated workshop, 5-step brainstorming protocol, and evaluation hub
+      for candidate Core Resolution Mechanics.
+    tags:
+    - doc-type:meta
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:harm
+  resolution_and_combat_proposals:
+  - path: iteration/resolution/candidates/README.md
+    purpose: Catalog and comparison overview of active candidate resolution mechanics.
+    tags:
+    - doc-type:meta
+    - audience:designer-facing
+    - core-concept:action-resolution
+  - path: iteration/resolution/open-design-space.md
+    purpose: Generative canvas mapping the 4 open post-Impact design axes for candidate
+      brainstorming.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:armor
+    - core-concept:consequences
+  - path: iteration/resolution/discarded-ideas.md
+    purpose: Master clearinghouse of discarded resolution mechanics, candidate post-mortems,
+      and napkin sketches with quick pitches and fatal flaws.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:consequences
+  - path: iteration/resolution/history.md
+    purpose: Historical post-mortems and chronicle of playtested engine generations
+      (Defend from Hand, Allowed Severity Tables, Canon Defense+Resilience).
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:consequences
+    - core-concept:hand-management
+  - path: iteration/resolution/candidates/consequence-pool-tag-escalation/index.yaml
+    purpose: Comprehensive proposal suite replacing legacy Defense/Resilience with
+      a Consequence Pool and Tag Escalation drafting engine.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - core-concept:action-resolution
+    - core-concept:consequences
+    - core-concept:armor
+  - path: iteration/resolution/candidates/retired/tag-escalation-resilience.md
+    purpose: Post-mortem evaluating standalone tag escalation; retired due to extreme
+      bimodal variance (spikes and drag).
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - status:retired
+    - core-concept:action-resolution
+    - core-concept:consequences
+  - path: iteration/resolution/candidates/retired/consolidated-tiered-cards-and-triage.md
+    purpose: Post-mortem evaluating consolidated 3-tier cards; retired due to card
+      text density and ludonarrative mismatch.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - status:retired
+    - core-concept:action-resolution
+    - core-concept:consequences
+    - core-concept:armor
+  - path: iteration/resolution/candidates/retired/declared-defense-effort.md
+    purpose: 'Post-mortem exploration: upfront declaration of defense flips; retired
+      due to card-counting AP and stagnation.'
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - status:retired
+    - core-concept:action-resolution
+    - core-concept:defense
+  - path: iteration/resolution/candidates/retired/push-your-luck-buyoff.md
+    purpose: 'Post-mortem exploration: sequential flips with consequence buy-offs;
+      retired due to mid-flip halts and severity distortion.'
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - status:retired
+    - core-concept:action-resolution
+    - core-concept:defense
+  - path: iteration/resolution/candidates/retired/incremental-impact-mechanics.md
+    purpose: Post-mortem evaluating remainder math, stamina spillover, and fixed 2-card pools; retired due to the 2-card escalation catch-22, interval collapse at low Defense, and loss of swarm merging.
+    tags:
+    - doc-type:iteration
+    - audience:designer-facing
+    - status:retired
+    - core-concept:action-resolution
+    - core-concept:consequences

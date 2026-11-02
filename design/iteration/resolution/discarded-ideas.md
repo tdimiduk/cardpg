@@ -51,6 +51,12 @@ Before designing or prototyping a new resolution mechanic, scan this catalog to 
 - **The Fatal Flaw:** Creates a degenerate mono-tag tunnel-vision meta where players sculpt decks to spam the exact same weapon attack 4 times in a row for guaranteed terminal escalation.
 - **Deep Dive:** [candidates/retired/tag-escalation-resilience.md §2](candidates/retired/tag-escalation-resilience.md#2-why-lightweight-patches-failed)
 
+### 1.5. Remainder Mechanics & Fixed 2-Card Curation Pools
+
+- **The Pitch:** Cap consequence draws at $\le 2$ cards and let leftover Impact remainders ($I \pmod D$) or fixed brackets determine curation agency (attacker vs. defender choice) or stamina spillover, eliminating high-volume card drawing.
+- **The Fatal Flaw:** Triggers the 2-card escalation catch-22 (attacker curation + tag upgrades bypasses armor width into instant-kill spikes, while defender choice renders tag upgrades a solved false dilemma), mathematical interval collapse at low Defense ($D \le 3$), and breaks swarm merging.
+- **Deep Dive:** [candidates/retired/incremental-impact-mechanics.md](candidates/retired/incremental-impact-mechanics.md)
+
 ---
 
 ## 2. Defense Flip & Pre-Impact Agency
