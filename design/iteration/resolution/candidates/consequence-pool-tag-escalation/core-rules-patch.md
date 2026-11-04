@@ -1,6 +1,6 @@
-# Proposed New Action Resolution Mechanic
+# Core Rules Patch: Action Resolution Engine
 
-Update to `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Challenge` and updates `### Defend Actions`, `### General Actions`, and `### Keywords and Timing`).
+Patch for `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Challenge` and updates `### Defend Actions`, `### General Actions`, and `### Keywords and Timing`), integrating the **Consequence Pool & Tag Escalation Engine**.
 
 ---
 

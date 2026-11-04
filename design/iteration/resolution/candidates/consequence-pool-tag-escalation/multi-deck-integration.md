@@ -8,7 +8,7 @@ epistemic_status:
   vetted_by_human: false
 related_files:
   - "design/architecture/consequence-ecosystem.md"
-  - "design/iteration/resolution/candidates/consequence-pool-tag-escalation/proposal.md"
+  - "design/iteration/resolution/candidates/consequence-pool-tag-escalation/core-rules-patch.md"
   - "design/iteration/resolution/candidates/consequence-pool-tag-escalation/guide-to-writing-consequences.md"
 ---
 

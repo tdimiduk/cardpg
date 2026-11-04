@@ -17,7 +17,7 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 
 | File                                                                     | Purpose & Contents                                                                                                                                                                          |
 | :----------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **[proposal.md](proposal.md)**                                           | **The Core Rules Patch**: The normative replacement text for `design/rules/core-rules.md` (`## 2. Facing a Challenge`, `### Defend Actions`, and `### General Actions`).                    |
+| **[core-rules-patch.md](core-rules-patch.md)**                           | **The Core Rules Patch**: The normative replacement text for `design/rules/core-rules.md` (`## 2. Facing a Challenge`, `### Defend Actions`, and `### General Actions`).                    |
 | **[keyword-glossary-patch.md](keyword-glossary-patch.md)**               | **Keyword Glossary Patch**: Updates `design/rules/keyword-glossary.md` with Pool terminology and the evergreen `Vulnerable` keyword.                                                        |
 | **[players-guide-patch.md](players-guide-patch.md)**                     | **Player's Guide Patch**: Tactical strategy for consequence curation ("I Cut") and intra-tier evaluation.                                                                                   |
 | **[gamemaster-guide-patch.md](gamemaster-guide-patch.md)**               | **Gamemaster's Guide Patch**: Antagonist curation tactics (brutes, swarms, combined assaults), minion batching, and General Actions calibration.                                            |
@@ -30,7 +30,7 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 ## 2. Core Resolution Loop Overview
 
 > [!IMPORTANT]
-> **Normative Rules Specification:** Read **[proposal.md](proposal.md)** for the exact rules text to be promoted into `design/rules/core-rules.md`. The sections below provide the visual summary, mathematical rationale, and design discussion for evaluating the proposal.
+> **Normative Rules Specification:** Read **[core-rules-patch.md](core-rules-patch.md)** for the exact rules text to be promoted into `design/rules/core-rules.md`. The sections below provide the visual summary, mathematical rationale, and design discussion for evaluating the proposal.
 
 ```mermaid
 flowchart TD
@@ -195,7 +195,7 @@ In this proposal, drawing 1 candidate card per point of Impact into tiers of wid
 ## 8. Suggested Next Steps for Promotion
 
 1. **Core Rules Integration**:
-   - Promote [proposal.md](proposal.md) into `design/rules/core-rules.md` (updating `## 2. Facing a Challenge`, `### Defend Actions`, and `### General Actions`).
+   - Promote [core-rules-patch.md](core-rules-patch.md) into `design/rules/core-rules.md` (updating `## 2. Facing a Challenge`, `### Defend Actions`, and `### General Actions`).
    - Apply [players-guide-patch.md](players-guide-patch.md) and [gamemaster-guide-patch.md](gamemaster-guide-patch.md) to `design/rules/players-guide.md` and `design/rules/gamemaster-guide.md`.
 2. **Consequence & Equipment YAML Schema Upgrade**:
    - Update [consequences.yaml](consequences.yaml) and `data/cards/consequences/*.yaml` to use `vulnerable: [Tags]` and `priority:` ratings per [guide-to-writing-consequences.md](guide-to-writing-consequences.md).

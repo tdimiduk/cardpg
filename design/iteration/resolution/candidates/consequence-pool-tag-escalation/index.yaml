@@ -8,7 +8,7 @@ documents:
     purpose: "Comprehensive proposal suite replacing legacy Defense/Resilience with a Consequence Pool and Tag Escalation drafting engine."
     tags: ["doc-type:iteration", "audience:designer-facing", "core-concept:action-resolution", "core-concept:consequences", "core-concept:armor"]
 
-  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/proposal.md"
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/core-rules-patch.md"
     purpose: "The core rules patch replacing Action Resolution in core-rules.md."
     tags: ["doc-type:iteration", "audience:designer-facing"]
 

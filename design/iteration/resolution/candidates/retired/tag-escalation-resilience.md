@@ -21,7 +21,7 @@ This document records the design evaluation and retirement of the **Standalone T
 
 > **Core Finding:** Simplifications of tag escalation designed to avoid extended card drawing and drafting curation all fall into **extreme variance issues** (unpredictable lethality spikes on one end, and tedious combat drag on the other).
 >
-> The Consequence Pool and _"I Cut, You Choose"_ drafting market from the [mature proposal](../consequence-pool-tag-escalation/proposal.md) are not extraneous bloat; they are the **necessary stabilizing governor** that makes tag-based anatomical escalation mathematically and tactically viable.
+> The Consequence Pool and _"I Cut, You Choose"_ drafting market from the [mature candidate / core rules patch](../consequence-pool-tag-escalation/core-rules-patch.md) are not extraneous bloat; they are the **necessary stabilizing governor** that makes tag-based anatomical escalation mathematically and tactically viable.
 
 ---
 
