@@ -34,10 +34,12 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 
 ```mermaid
 flowchart TD
-    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I) per attack"] --> B["2. Draw Candidates & Pool Triggers: 1 Impact = 1 card; resolve POOL rules (e.g. Vulnerable tags)"]
-    B --> C["3. Form Pools: Keep Separate or Merge Drawn Candidates (Must reach >= N cards)"]
-    C --> D["4. Curate & Suffer: Curate N cards per pool ('I Cut'); defender chooses 1 ('You Choose')"]
+    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I)"] --> B["2. Draw Candidates: Check threshold (I >= N); 1 Impact = 1 card across severity tiers; check POOL rules"]
+    B --> C["3. Curate Pool: Attacker curates exactly N cards to present ('I Cut')"]
+    C --> D["4. Suffer Consequence: Defender selects 1 consequence to suffer ('You Choose')"]
 ```
+
+_(When multiple attackers target the same defender in the same round, attackers may keep pools separate or merge drawn candidates; see [Section 6](#6-multi-attacker-combat--swarm-scaling) and [core-rules-patch.md Appendix](core-rules-patch.md#appendix-multiple-attackers-and-merged-pools))._
 
 ### The Single-Touchpoint `POOL:` Architecture & Table Glanceability
 

@@ -27,19 +27,14 @@ Each card flipped by the defender gives the attacking side **1 Impact = 1 candid
 
 While drawing candidates, attackers check the **`POOL:`** block on the defender's active conditions (such as `Vulnerable: [Tags]`). Stacking [[Vulnerable]] conditions on a target gives you an option to add additional higher severity consequences to consequence pools. This kind of escalation is a key component of how you take down tougher foes.
 
-### Step 3: Forming Pools (Separate or Merged)
+### Step 3: Curating the Consequence Pool ("I Cut")
 
-Attackers targeting the same defender choose whether to keep their drawn candidates as separate pools or merge them into a shared pool:
-
-- **Separate Pools:** Each attack with $\ge N$ candidates forms its own pool, forcing the defender to suffer multiple consequences simultaneously.
-- **Merged Pools:** Attackers merge their drawn candidate cards into a shared pool. This lets sub-threshold attacks combine their Tier 1 cards to reach $N$, or combines surplus candidates for curation. Merging pools combines drawn cards—it **never increases card severity**.
-
-### Step 4: Scooping & Curating the Consequence Pool ("I Cut, You Choose")
-
-Once candidate draws and pool merging are complete, **scoop the candidate cards placed on the defender's active conditions back into your pool** and curate the final $N$-card pool:
+Once candidate draws are complete, curate the final $N$-card pool to present to the defender:
 
 1. **The Higher-Tier Foundation:** Include your highest-tier cards (native and bonus draws) to occupy slots in the pool and force severe platform or structural trauma once all $N$ slots are saturated.
 2. **Curating the Bottleneck Slot:** If higher tiers do not yet fill all $N$ slots, the remaining slot(s) must be filled from lower tiers. Because the defender will naturally pick the lowest-tier option to survive, **use your surplus lower-tier candidates to place the sharpest tactical lock or a key `Vulnerable`-enabler into that bottleneck slot**.
+
+_(When multiple allies attack the same target, you may coordinate to keep pools separate or merge drawn candidates before curating; see [Coordinated Party Assaults](#coordinated-party-assaults) below)._
 
 ### Intra-Tier Curation: The Tapering Funnel
 
@@ -121,13 +116,14 @@ When multiple party members attack the same foe in a round, each attacker first 
 ```mermaid
 flowchart TD
     subgraph Attacker Decision ["Attacker ('I Cut')"]
-        A1["1. Attacks Resolve -> Count Impact (I) per Attack"] --> A2["2. Draw Candidates & Resolve POOL Triggers (Place Matching Tier K <= S Card -> Draw +1 Tier K+1 Card)"]
-        A2 --> A3["3. Form Pools: Keep Separate or Merge Drawn Candidates (Must Reach >= N Cards)"]
-        A3 --> A4["4. Scoop Placed Cards & Curate N Cards per Pool: Include Highest Tiers, Squeeze Bottlenecks"]
+        A1["1. Attack Resolves -> Count Impact (I)"] --> A2["2. Draw Candidates (I >= N) & Resolve POOL Triggers (Place Matching Tier K <= S Card -> Draw +1 Tier K+1 Card)"]
+        A2 --> A3["3. Scoop Placed Cards & Curate N Cards: Include Highest Tiers, Squeeze Bottlenecks"]
     end
 
     subgraph Defender Decision ["Defender ('You Choose')"]
-        D1["Inspect Each Curated Pool of N Cards"] --> D2["Weigh Immediate Passives, Vulnerable Tags Exposed, and Recovery Options"]
-        D2 --> D3["Select 1 Consequence per Pool (Applied Simultaneously)"]
+        D1["Inspect Curated Pool of N Cards"] --> D2["Weigh Immediate Passives, Vulnerable Tags Exposed, and Recovery Options"]
+        D2 --> D3["Select 1 Consequence (Enters Play at Round End)"]
     end
 ```
+
+_(When multiple attackers target the same defender, see [Coordinated Party Assaults](#coordinated-party-assaults) for rules on keeping pools separate or merging candidates)._

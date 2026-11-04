@@ -1,6 +1,6 @@
 # Core Rules Patch: Action Resolution Engine
 
-Patch for `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Challenge` and updates `### Defend Actions`, `### General Actions`, and `### Keywords and Timing`), integrating the **Consequence Pool & Tag Escalation Engine**.
+Patch for `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Challenge`, updates `### Defend Actions`, `### General Actions`, and `### Keywords and Timing`, and adds `## Appendix: Multiple Attackers and Merged Pools`), integrating the **Consequence Pool & Tag Escalation Engine**.
 
 ---
 
@@ -8,18 +8,19 @@ Patch for `design/rules/core-rules.md` (replaces Step 3 of `## 2. Facing a Chall
 
 When an attack or obstacle targets you, resolve in four steps:
 
-1. **Determine Impact:** Meet the incoming `Strength` with Defend cards from hand and/or flipping cards from the top of your deck into a flipped stack. For each incoming attack, the attack's **Impact ($I$)** equals the number of cards in its flipped stack.
-2. **Draw Candidates (Per Attack):** Your **Consequence Pool Size ($N$)** is 2, unless modified by table cards. Each attacker draws candidate consequence cards based on their attack's individual Impact (`1 Impact = 1 card drawn`), filling tiers of width $N$ from Severity 1 upward:
-   - The first $N$ Impact of an attack draws cards from the **Severity 1** deck.
-   - Additional Impact draws from higher severity decks only if that _individual attack's Impact_ exceeds $N$: cards from $N+1$ to $2N$ draw from **Severity 2**; cards from $2N+1$ to $3N$ draw from **Severity 3**; cards beyond $3N$ draw from **Severity 4**.
-   - _Severity is determined strictly per attack, never by combining Impact across attacks._
-   - _Pool Clauses:_ If the defender has active cards with `[[POOL]]` clauses on their tableau (such as `[[Vulnerable]]`), attackers may exploit them to enhance the consequence pool (see [Keywords and Timing](#keywords-and-timing)).
-3. **Form Pools (Separate or Merged):** Attackers targeting the same defender in the same round choose whether to keep their candidate pools separate or merge them:
-   - **The Pool Threshold ($N$):** A Consequence Pool must contain **at least $N$ candidate cards** to be presented to the defender. If an attack has fewer than $N$ candidates ($I < N$) and is not merged, it fails to penetrate armor or poise—no consequences are suffered (an isolated attacker generating $I < N$ does not need to draw cards).
-   - **Merging Candidate Pools:** Multiple attackers targeting the same defender may **merge their drawn candidate cards** into a shared pool. This allows multiple sub-threshold attacks to combine their Tier 1 cards to reach $N$, or combines surplus candidates for curation. Merging pools combines drawn cards—it **never increases the severity tier** of the cards drawn.
-4. **Curate and Suffer:**
-   - **Curate $N$ Cards:** The attacker(s) choose **exactly $N$ cards** from all candidates in that pool to present to the defender. Surplus candidates return to their decks.
-   - **Suffer 1 Consequence:** The defender selects and suffers **exactly 1 consequence** from each presented $N$-card pool. All consequences enter play simultaneously at the end of the round.
+1. **Determine Impact:** Meet the incoming `Strength` with Defend cards from hand and/or flipping cards from the top of your deck into a flipped stack. The attack's **Impact ($I$)** equals the number of cards in your flipped stack.
+2. **Draw Candidates:** Your **Consequence Pool Size ($N$)** is 2, unless modified by table cards (such as armor).
+   - **The Pool Threshold ($N$):** If an attack generates fewer than $N$ Impact ($I < N$), it fails to penetrate armor or poise—no consequences are suffered (**0 cards drawn**).
+   - **Draw by Severity Tier ($I \ge N$):** If Impact reaches or exceeds $N$, draw candidate consequence cards equal to the Impact (`1 Impact = 1 card drawn`), filling tiers of width $N$ from Severity 1 upward:
+     - The first $N$ Impact draws cards from the **Severity 1** deck.
+     - Impact from $N+1$ to $2N$ draws from **Severity 2**.
+     - Impact from $2N+1$ to $3N$ draws from **Severity 3**.
+     - Impact beyond $3N$ draws from **Severity 4**.
+   - _Pool Clauses:_ If the defender has active cards with `[[POOL]]` clauses on their tableau (such as `[[Vulnerable]]`), the attacker may exploit them to enhance candidate draws (see [Keywords and Timing](#keywords-and-timing)).
+3. **Curate Pool:** The attacker chooses **exactly $N$ cards** from the drawn candidates to present to the defender. Surplus candidates return to their decks.
+4. **Suffer Consequence:** The defender selects and suffers **exactly 1 consequence** from the curated pool.
+
+_(When multiple attackers target the same defender in a single round, see [Appendix: Multiple Attackers and Merged Pools](#appendix-multiple-attackers-and-merged-pools))._
 
 ---
 
@@ -51,3 +52,15 @@ Outside Crisis Time, tasks with meaningful stakes resolve as General Actions:
 Add
 
 - **`POOL:` (Card Block):** A dedicated area on consequence cards, weapons, or attack actions that specifies rules modifying candidate card draws during Step 2 of Action Resolution.
+
+---
+
+## Appendix: Multiple Attackers and Merged Pools
+
+When multiple attackers strike the same target in the same round during Crisis Time, each attack is faced individually, but attackers may coordinate how their consequences are formed:
+
+1. **Draw Candidates Per Attack:** Each attacker determines Impact and draws candidates strictly based on their individual attack's Impact. Severity tiers are determined per attack, never by combining Impact: an individual attack must generate $I > N$ on its own to draw Severity 2+ cards.
+2. **Form Pools (Separate or Merged):** Attackers targeting the same defender choose whether to keep their candidate pools separate or merge them:
+   - **Separate Pools:** Each attack with at least $N$ candidates may form its own pool, forcing the defender to curate and suffer multiple separate consequences.
+   - **Merged Pools:** Multiple attackers may merge their drawn candidate cards into a shared pool. This allows multiple sub-threshold attacks ($I < N$) to combine their Tier 1 cards to reach the threshold $N$, or combines surplus candidates for sharper curation. Merging pools combines drawn cards—it **never increases the severity tier** of the cards drawn.
+3. **Curate and Suffer:** For each presented pool, the attacking side curates exactly $N$ cards, and the defender selects and suffers exactly 1 consequence. All suffered consequences enter play simultaneously at the end of the round.
