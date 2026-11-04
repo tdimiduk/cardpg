@@ -118,10 +118,9 @@ CaRdPG drives the downward spiral through a **Tag Vulnerability Exploitation Web
 1. **Card Tags (`tags:`) vs. Compromised Tags (`vulnerable:`)**:
    - **`tags:`** define what the consequence _is_ (e.g., `Winded` has `exertion`; `Dust in Eyes` has `sensory, eyes`; `Cracked Ribs` has `torso`).
    - **`vulnerable:`** lists **2 to 4 Leaf Tags** representing the anatomical, positional, or psychological openings that this active condition exposes on the defender.
-2. **Tier-Scoped Exploitation ($\text{Tier } K \le S$) — "Place to Draw, Scoop to Curate"**:
-   - During Step 4 of resolution (after base candidates are drawn and pools are formed), an active condition of **Severity $S$** may exploit **at most 1** unplaced candidate card in the pool of **Severity $K \le S$** whose `tags:` match one of the active condition's `vulnerable:` tags.
-   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 4) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (drawing from the **Severity 4 deck** when a Tier 3 card exploits an active Tier 3 condition).
-   - **Scoop to Curate (Step 5):** Once Step 4 finishes for the pool, the attacker scoops the placed candidate cards back off the defender's active conditions into the pool and curates any $N$ cards. Because each exploitation adds $+1$ net card at Tier $K+1$ while preserving the triggering Tier $K$ card, this builds the Consequence Pyramid by squeezing out soft lower-tier options when $I \ge N$.
+2. **Exploitation**:
+   - During Step 2 of resolution (Draw Candidates & POOL Triggers), an active condition of **Severity $S$** may exploit **at most 1** unplaced candidate card in the pool of **Severity $K \le S$** whose `tags:` match one of the active condition's `pool: vulnerable:` tags.
+   - **Tactile Exploitation (+1 Candidate at Tier $K+1$):** The attacker places the matching Tier $K$ candidate **onto the exploited active condition** (marking both the condition and that candidate as spent for Step 2) and **draws 1 additional candidate from the Severity $K+1$ deck** into their hand/pool (drawing from the **Severity 4 deck** when a Tier 3 card exploits an active Tier 3 condition). Placed candidates return to the pool before curation in Step 4.
 3. **The Consequence Pyramid & Shell-Cracking**:
    - Because a newly drawn Tier $K+1$ candidate enters the hand unplaced, it can itself be placed onto _another_ unexploited active condition of Tier $\ge K+1$ with a matching `vulnerable:` tag to chain into Tier $K+2$.
    - This prevents lucky Turn 1 draw cascades while allowing attackers to systematically dismantle heavily armored foes ($N=4\text{–}5$): bonus draws escalate the pool into Tier 2 candidates, which in turn allow subsequent hits to draw Tier 3 structural trauma.
@@ -238,10 +237,11 @@ When authoring cards in `consequences.yaml`, use the following exact structure:
     - physical
     - limbs
     - combat
-  vulnerable:
-    - limbs
-    - positioning
-    - exertion
+  pool:
+    vulnerable:
+      - limbs
+      - positioning
+      - exertion
   rules:
     # 1. Continual passive effect (plus any superseded lower state or non-stackable redraw rule)
     - passive: You must expend 1 card from hand whenever you declare an Attack action.
@@ -274,7 +274,7 @@ Before committing any consequence card, verify:
 - [ ] If Tier 2 or 3 bodily trauma, is an in-combat removal `action:` appropriately omitted (or limited strictly to temporary tactile suppression)?
 - [ ] Does the out-of-combat `task:` specify realistic time, `Requires:` (tools/facilities), and `Cost:` (consumables)?
 - [ ] Is the `task:` check difficulty aligned with the GM Guide benchmarks for that tier (or omitted for simple Tier 1 time/resource tasks)?
-- [ ] Does the card specify 2 to 4 realistic Leaf Tags under `vulnerable:` (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
-- [ ] Does the card use `vulnerable:` tags for pool escalation?
+- [ ] Does the card specify 2 to 4 realistic Leaf Tags under `pool: vulnerable:` (`positioning`, `exertion`, `head`, `torso`, `limbs`, `bleeding`, `sensory`, `fear`, `mental`) with zero root tags (`injury`, `physical`, `combat`)?
+- [ ] Does the card use the single-touchpoint `pool:` block for pool escalation?
 - [ ] If the card represents a binary posture/mental state that cannot stack with itself (`Knocked Prone`, `Off Balance`, `Afraid`), does it include a same-tier redraw rule for duplicates (and superseded lower states)?
 - [ ] Does the `notes:` field articulate the physiological/biomechanical basis for both the passives and the `vulnerable:` tags?

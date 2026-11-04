@@ -20,15 +20,14 @@ This document details how the **Consequence Pool & Tag Escalation** resolution c
 
 ## 1. Resolution Flow
 
-When an attack lands and generates Impact, the 5-step Action Resolution integrates with the active decks as follows:
+When an attack lands and generates Impact, the 4-step Action Resolution integrates with the active decks as follows:
 
 ```mermaid
 flowchart TD
     A["Attack Lands & Generates Impact (I)"] --> B["Identify Attack Damage Tags (e.g. Cut, Blunt)"]
-    B --> C["Step 2: Draw Candidates across Matching Active Sub-Stacks"]
+    B --> C["Step 2: Draw Candidates across Active Sub-Stacks & Resolve POOL Triggers"]
     C --> D["Step 3: Merge Pools if Multiple Attackers Dogpile"]
-    D --> E["Step 4: Exploit Vulnerabilities (Cross-Deck Tag Escalation)"]
-    E --> F["Step 5: Curate N Cards ('I Cut') -> Defender Chooses 1 ('You Choose')"]
+    D --> E["Step 4: Curate N Cards ('I Cut') -> Defender Chooses 1 ('You Choose')"]
 ```
 
 ---
@@ -39,7 +38,7 @@ flowchart TD
 
 The defender meets incoming `Strength` with Defend cards from hand and/or flips from the deck into a flipped stack. The number of cards in the flipped stack is the attack's **Impact ($I$)**.
 
-### Step 2: Draw Candidates across Active Damage Decks
+### Step 2: Draw Candidates across Active Damage Decks & Resolve POOL Triggers
 
 The defender's **Consequence Pool Size ($N$)** is determined by their armor/poise (baseline $N=2$).
 
@@ -56,6 +55,18 @@ The defender's **Consequence Pool Size ($N$)** is determined by their armor/pois
 - **Multi-Tag Attack:** If the weapon or spell features multiple tags (e.g., a Morningstar with `[Blunt, Pierce]`, or a Flaming Greatsword with `[Cut, Burn]`), the attacker distributes their candidate draws among the matching active decks as they see fit.
   - _Example:_ An attack with a Flaming Greatsword generates $I = 3$ against a defender with $N = 2$. The attacker must draw two Tier 1 cards and one Tier 2 card. They may choose to draw **1 Tier 1 Slashing**, **1 Tier 1 Burning**, and **1 Tier 2 Burning** card into their candidate pool.
 
+#### Cross-Deck Tag Vulnerability Escalation
+
+The Tag Vulnerability Web connects all consequence decks together through standardized anatomical and positional **Leaf Tags**:
+`[positioning]`, `[exertion]`, `[head]`, `[torso]`, `[limbs]`, `[bleeding]`, `[sensory]`, `[fear]`, `[mental]`
+
+- **The Rule:** If an active condition on the defender has an exposed tag in its `pool: vulnerable:` list, any candidate card in the pool of Severity $K \le S$ carrying that leaf tag in its `tags:` may be placed onto that condition to draw **+1 additional candidate from the Severity $K+1$ sub-stack of the attacker's weapon**.
+- **Cross-Deck Synergy:** Vulnerability exploitation works seamlessly across different damage types:
+  1. Round 1: A warhammer blow inflicts **Cracked Ribs** (Tier 2, from the `Crushing` deck), exposing `pool: vulnerable: [torso, positioning, exertion]`.
+  2. Round 2: An ally strikes with a spear (`[Pierce]`), generating $I=2$ ($N=2$) and drawing two Tier 1 piercing candidates, one of which is **Chest Graze** (`tags: [torso, limbs]`).
+  3. The attacker places the Tier 1 **Chest Graze** onto the active Tier 2 **Cracked Ribs** (matching `[torso]`) and draws **+1 candidate from the Tier 2 Piercing sub-stack** (`Punctured Intercostal`).
+  4. _Ludonarrative Result:_ Blunt trauma structurally weakened the torso; subsequent piercing thrusts effortlessly penetrate deeper.
+
 ### Step 3: Merging Candidate Pools Across Attackers
 
 When multiple attackers targeting the same defender choose to merge candidate pools:
@@ -64,19 +75,7 @@ When multiple attackers targeting the same defender choose to merge candidate po
 - The drawn cards are physically pooled together.
 - _Result:_ A defender facing a goblin with a short sword (`[Cut]`) and a goblin with a club (`[Blunt]`) will see a curated pool containing both cutting lacerations and blunt contusions.
 
-### Step 4: Cross-Deck Tag Vulnerability Escalation
-
-The Tag Vulnerability Web connects all consequence decks together through standardized anatomical and positional **Leaf Tags**:
-`[positioning]`, `[exertion]`, `[head]`, `[torso]`, `[limbs]`, `[bleeding]`, `[sensory]`, `[fear]`, `[mental]`
-
-- **The Rule:** If an active condition on the defender has an exposed tag in its `vulnerable:` list, any candidate card in the pool of Severity $K \le S$ carrying that leaf tag in its `tags:` may be placed onto that condition to draw **+1 additional candidate from the Severity $K+1$ sub-stack of the attacker's weapon**.
-- **Cross-Deck Synergy:** Vulnerability exploitation works seamlessly across different damage types:
-  1. Round 1: A warhammer blow inflicts **Cracked Ribs** (Tier 2, from the `Crushing` deck), exposing `vulnerable: [torso, positioning, exertion]`.
-  2. Round 2: An ally strikes with a spear (`[Pierce]`), generating $I=2$ ($N=2$) and drawing two Tier 1 piercing candidates, one of which is **Chest Graze** (`tags: [torso, limbs]`).
-  3. The attacker places the Tier 1 **Chest Graze** onto the active Tier 2 **Cracked Ribs** (matching `[torso]`) and draws **+1 candidate from the Tier 2 Piercing sub-stack** (`Punctured Intercostal`).
-  4. _Ludonarrative Result:_ Blunt trauma structurally weakened the torso; subsequent piercing thrusts effortlessly penetrate deeper.
-
-### Step 5: Curate ("I Cut") and Suffer ("You Choose")
+### Step 4: Curate ("I Cut") and Suffer ("You Choose")
 
 The attacker scoops all placed candidates back into the pool, selects exactly $N$ cards to present, and the defender chooses and suffers exactly 1 consequence.
 
@@ -122,7 +121,7 @@ In playtests and systemic evaluations, the Consequence Pool engine creates signi
 To support this draw volume without running out of cards or feeling repetitive:
 
 1. **Tier 1 Depth Requirement:** Each active damage deck must provide **12 to 16 distinct Tier 1 cards** (as specified in [consequence-ecosystem.md](../../../architecture/consequence-ecosystem.md)).
-2. **Rapid Recycle:** Surplus candidates returned to the deck during Step 5 ("I Cut") return immediately to the bottom of their sub-stacks, ensuring the deck stays replenished during extended fights.
+2. **Rapid Recycle:** Surplus candidates returned to the deck during Step 4 ("I Cut") return immediately to the bottom of their sub-stacks, ensuring the deck stays replenished during extended fights.
 3. **Minion Threshold Optimization:** Minions or sub-threshold attacks that fail to meet $N$ generate **0 card draws** unless merged. This is critical: isolated weak hits ($I < N$) do not touch the consequence decks, preventing unnecessary physical churn.
 
 ---

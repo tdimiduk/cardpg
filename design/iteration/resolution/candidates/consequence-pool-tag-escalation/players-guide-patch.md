@@ -15,6 +15,8 @@ The consequence system transforms action resolution from passive damage calculat
 
 ## 2. Attacker Strategy: Curating the Consequence Pool ("I Cut")
 
+### Step 2: Candidate Draws & POOL Triggers ("Place to Draw")
+
 Each card flipped by the defender gives the attacking side **1 Impact = 1 candidate card drawn**. Candidates fill rows of width $N$ (the defender's Pool Size) tier-by-tier from Severity 1 upward:
 
 - The first $N$ Impact of an attack draws up to $N$ Severity 1 cards. (If an isolated attack's Impact is less than $N$, it fails to reach the pool threshold—no consequences are suffered unless merged with allies' candidates).
@@ -23,6 +25,8 @@ Each card flipped by the defender gives the attacking side **1 Impact = 1 candid
 - Once Tier 3 is full, each additional point of Impact draws 1 card from the Severity 4 deck.
 - _Severity is determined strictly per attack, never by combining Impact across attacks._
 
+While drawing candidates, attackers check the **`POOL:`** block on the defender's active conditions (such as `Vulnerable: [Tags]`). Stacking [[Vulnerable]] conditions on a target gives you an option to add additional higher severity consequences to consequence pools. This kind of escalation is a key component of how you take down tougher foes.
+
 ### Step 3: Forming Pools (Separate or Merged)
 
 Attackers targeting the same defender choose whether to keep their drawn candidates as separate pools or merge them into a shared pool:
@@ -30,18 +34,9 @@ Attackers targeting the same defender choose whether to keep their drawn candida
 - **Separate Pools:** Each attack with $\ge N$ candidates forms its own pool, forcing the defender to suffer multiple consequences simultaneously.
 - **Merged Pools:** Attackers merge their drawn candidate cards into a shared pool. This lets sub-threshold attacks combine their Tier 1 cards to reach $N$, or combines surplus candidates for curation. Merging pools combines drawn cards—it **never increases card severity**.
 
-### Step 4: Vulnerability Exploitation ("Place to Draw")
+### Step 4: Scooping & Curating the Consequence Pool ("I Cut, You Choose")
 
-Once candidate cards are drawn and pools are formed, attackers evaluate each pool against the defender's start-of-round active conditions:
-
-- **Match & Place:** An active condition of **Severity $S$** can exploit one unplaced candidate in your pool of **Severity $K \le S$** whose tags match the condition's `Vulnerable` list. Place that matching Tier $K$ candidate onto the active condition and **draw 1 additional candidate from the Severity $K+1$ deck** into your hand (drawing from the Severity 4 deck when exploiting a Tier 3 match on an active Tier 3 condition).
-- **Dual Effect (Pyramid Escalation & Curation Squeeze):**
-  - **Squeezing the Pool:** Adding a Tier $K+1$ card while retaining all of your Tier $K$ draws gives you surplus candidates for Step 5, allowing you to include the higher-tier card and curate out your softest lower-tier draw.
-  - **Reaching Platform Saturation:** By stacking multiple tag promotions across rounds, an attacker can curate an entire $N$-card pool filled exclusively with Tier 2 or Tier 3 trauma.
-
-### Step 5: Scooping & Curating the Consequence Pool
-
-Once all vulnerability exploitations for the pool are complete, **scoop the candidate cards placed on the defender's active conditions back into your pool** and curate the final $N$-card pool:
+Once candidate draws and pool merging are complete, **scoop the candidate cards placed on the defender's active conditions back into your pool** and curate the final $N$-card pool:
 
 1. **The Higher-Tier Foundation:** Include your highest-tier cards (native and bonus draws) to occupy slots in the pool and force severe platform or structural trauma once all $N$ slots are saturated.
 2. **Curating the Bottleneck Slot:** If higher tiers do not yet fill all $N$ slots, the remaining slot(s) must be filled from lower tiers. Because the defender will naturally pick the lowest-tier option to survive, **use your surplus lower-tier candidates to place the sharpest tactical lock or a key `Vulnerable`-enabler into that bottleneck slot**.
@@ -114,9 +109,9 @@ Against heavily armored foes ($N=4$ or $N=5$), you don't need to generate 12–1
 
 ### Coordinated Party Assaults
 
-When multiple party members attack the same foe in a round, each attacker first draws candidate cards independently based on their own attack's Impact against the target's Pool Size ($N$). The party then decides whether to keep their candidate pools separate or merge them before exploiting vulnerabilities:
+When multiple party members attack the same foe in a round, each attacker first draws candidate cards and resolves pool triggers independently based on their own attack's Impact against the target's Pool Size ($N$). The party then decides whether to keep their candidate pools separate or merge them:
 
-- **Splitting Pools (Piling On Conditions & Parallel Promotions):** Against low-$N$ targets (or when multiple attackers each generate $\ge N$ Impact), attackers can keep their pools separate to land **multiple consequences simultaneously** in a single round—and because vulnerability exploitation is limited to **once per condition per pool** (with placed cards scooped back in Step 5), each separate pool can independently exploit the target's start-of-round active conditions without competing over them.
+- **Splitting Pools (Piling On Conditions & Parallel Promotions):** Against low-$N$ targets (or when multiple attackers each generate $\ge N$ Impact), attackers can keep their pools separate to land **multiple consequences simultaneously** in a single round—and because vulnerability exploitation is limited to **once per condition per pool** (with placed cards scooped back in Step 4), each separate pool can independently exploit the target's start-of-round active conditions without competing over them.
 - **Merging Pools (Cracking Heavy Armor & Curation Leverage):** Against high-$N$ targets ($N=4\text{–}5$), probing hits from skirmishers ($I < N$) cannot penetrate armor on their own. However, each skirmisher draws candidate cards from Tier 1 for their attack, and attackers can **merge their drawn candidates into a shared pool** (or merge them into a frontliner's pool). Once the combined candidates reach at least $N$, the pool can be presented to the defender. Crucially, **merging pools combines drawn cards; it never escalates card severity**. Two Tier 1 attacks merged together provide surplus Tier 1 candidates to curate the sharpest locks—they never generate a Tier 2 card. Only a single attack whose individual Impact exceeds $N$ draws from higher severity decks natively.
 
 ---
@@ -126,10 +121,9 @@ When multiple party members attack the same foe in a round, each attacker first 
 ```mermaid
 flowchart TD
     subgraph Attacker Decision ["Attacker ('I Cut')"]
-        A1["1. Attacks Resolve -> Count Impact (I) per Attack"] --> A2["2. Draw Candidates per Attack (1 Impact = 1 Card; Severity Determined per Attack)"]
+        A1["1. Attacks Resolve -> Count Impact (I) per Attack"] --> A2["2. Draw Candidates & Resolve POOL Triggers (Place Matching Tier K <= S Card -> Draw +1 Tier K+1 Card)"]
         A2 --> A3["3. Form Pools: Keep Separate or Merge Drawn Candidates (Must Reach >= N Cards)"]
-        A3 --> A4["4. Exploit Start-of-Round Vulnerabilities (Once per Condition per Pool: Place Matching Tier K <= S Card -> Draw +1 Tier K+1 Card)"]
-        A4 --> A5["5. Scoop Placed Cards & Curate N Cards per Pool: Include Highest Tiers, Squeeze Bottlenecks"]
+        A3 --> A4["4. Scoop Placed Cards & Curate N Cards per Pool: Include Highest Tiers, Squeeze Bottlenecks"]
     end
 
     subgraph Defender Decision ["Defender ('You Choose')"]

@@ -9,7 +9,7 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 1. **Layered Pool Fill**: $1\text{ Impact} = 1\text{ Card Drawn}$. Cards fill tiers of width $N$ (the defender's Pool Size) from Severity 1 upward, procedurally building the pool without integer partition math.
 2. **Pool Size is the Soak Multiplier**: The defender's gear and nature determine the pool threshold $N$ that attackers must reach before they can present consequences.
 3. **Clean Soak Threshold ($< N$ Candidates)**: To present a Consequence Pool to a defender, the pool must reach the defender's Pool Size $N$. If an attack generates fewer candidates than $N$ ($I < N$) and is not merged, it fails to penetrate armor or poise—no consequences are suffered (an isolated attacker generating $I < N$ does not need to draw cards). Multiple attackers can merge their drawn candidates into a shared pool to reach $N$ without escalating card severity.
-4. **Tag Vulnerability Exploitation ("Place to Draw, Scoop to Curate") Replaces Global Resilience**: Active conditions expose specific **`Vulnerable: [Tags]`** (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching an unplaced candidate (Tier $K \le S$) to an active condition (Tier $S$) lets the attacker place that candidate onto the condition to **draw +1 additional card from Tier $K+1$**, then scoop all candidates back into the pool in Step 5 to curate $N$ cards—building an escalating **Consequence Pyramid** when $I \ge N$.
+4. **Single-Touchpoint `POOL:` Triggers & Tag Vulnerabilities**: Escalation hooks are consolidated into a single touchpoint in Step 2 (Draw Candidates). The prototypical hook is an evergreen **`POOL: Vulnerable: [Tags]`** block (`positioning`, `limbs`, `torso`, `head`, `armor`, `exertion`, `fear`). Matching an unplaced candidate (Tier $K \le S$) to an active condition (Tier $S$) lets the attacker place that candidate onto the condition to **draw +1 additional card from Tier $K+1$**, then scoop all candidates back into the pool in Step 4 to curate $N$ cards—building an escalating **Consequence Pyramid** when $I \ge N$.
 
 ---
 
@@ -18,6 +18,7 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 | File                                                                     | Purpose & Contents                                                                                                                                                                          |
 | :----------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **[proposal.md](proposal.md)**                                           | **The Core Rules Patch**: The normative replacement text for `design/rules/core-rules.md` (`## 2. Facing a Challenge`, `### Defend Actions`, and `### General Actions`).                    |
+| **[keyword-glossary-patch.md](keyword-glossary-patch.md)**               | **Keyword Glossary Patch**: Updates `design/rules/keyword-glossary.md` with Pool terminology and the evergreen `Vulnerable` keyword.                                                        |
 | **[players-guide-patch.md](players-guide-patch.md)**                     | **Player's Guide Patch**: Tactical strategy for consequence curation ("I Cut") and intra-tier evaluation.                                                                                   |
 | **[gamemaster-guide-patch.md](gamemaster-guide-patch.md)**               | **Gamemaster's Guide Patch**: Antagonist curation tactics (brutes, swarms, combined assaults), minion batching, and General Actions calibration.                                            |
 | **[guide-to-writing-consequences.md](guide-to-writing-consequences.md)** | **Authoring & Style Guide**: Standards for writing consequence cards (Continual Passives, Action vs. Task Duality, `Requires:` vs. `Cost:`, color qualifiers, ban on "damage" terminology). |
@@ -33,18 +34,27 @@ In this new engine, resolution is reframed as an **"I Cut, You Choose" consequen
 
 ```mermaid
 flowchart TD
-    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I) per attack"] --> B["2. Draw Candidates per Attack: 1 Impact = 1 card; severity set by attack Impact"]
+    A["1. Determine Impact: Defender meets Strength; cards flipped = Impact (I) per attack"] --> B["2. Draw Candidates & Pool Triggers: 1 Impact = 1 card; resolve POOL rules (e.g. Vulnerable tags)"]
     B --> C["3. Form Pools: Keep Separate or Merge Drawn Candidates (Must reach >= N cards)"]
-    C --> D["4. Exploit Active Vulnerabilities: Place matching Tier K <= S card on condition -> Draw +1 Tier K+1 card"]
-    D --> E["5. Curate & Suffer: Scoop and curate N cards per pool ('I Cut'); defender chooses 1 ('You Choose')"]
+    C --> D["4. Curate & Suffer: Curate N cards per pool ('I Cut'); defender chooses 1 ('You Choose')"]
 ```
 
-### Tactile Tracking: Why "Place to Draw, Scoop to Curate" Works
+### The Single-Touchpoint `POOL:` Architecture & Table Glanceability
 
-During Step 4, placing the matching Tier $K$ candidate directly onto the defender's active condition card solves two tracking problems with a single physical gesture:
+Rather than embedding escalation logic into a dedicated procedural phase of the core rules, caRdPG localizes all pool modifiers into a **single touchpoint in Step 2 (Draw Candidates)**, referenced on cards via a dedicated **`POOL:`** block.
 
-1. **In-Step Tracking:** While checking tags and chaining draws in Step 4, any active condition with a card on it is visibly spent for that pool, and the triggering candidate card is out of your hand so it cannot accidentally be used twice to trigger a second condition. Meanwhile, the newly drawn Tier $K+1$ card enters your hand unplaced, so it can immediately be placed onto a second empty active condition (Severity $\ge K+1$) to chain into Tier $K+2$.
-2. **Clean Table Handoff in Step 5:** As soon as Step 4 finishes for a pool, the attacker **scoops the placed candidate cards back off the defender's conditions** into their pool to select the final $N$ cards. This preserves the triggering Tier $K$ cards alongside the bonus Tier $K+1$ cards for curation when $I \ge N$, while leaving the defender's tableau completely clear for Step 5 and for any parallel pools.
+#### 1. Glanceability on the Tableau
+
+During Crisis Time, condition cards contain dense text describing in-combat actions, downtime clinical tasks, and continual passive penalties affecting the defender's turn.
+
+By isolating pool rules into a dedicated `POOL:` block (rendered at the bottom of the card with a distinct border or color to pop visually):
+
+- **Attacker focus:** When drawing candidates in Step 2, the attacker scans _only_ the `POOL:` area on active table cards. If no cards have a `POOL:` clause, they skip it entirely.
+- **Defender focus:** `PASSIVE:` defense modifiers (e.g., _Defenses suffer +1 Impact_) affect the defense resolution and impact determination in step 1.
+
+#### 2. Open Design Runway (Beyond Tags)
+
+While `Vulnerable: [Tags]` is the universal baseline used by physical injuries, having a single `POOL:` hook in Step 2 cleanly hosts future mechanics without altering the core rules.
 
 ---
 
@@ -146,8 +156,8 @@ When multiple attackers target the same defender during Crisis Time, resolution 
    - **Separate Pools vs. Low-$N$ Targets:** Against an unarmored skirmisher ($N=2$), four goblins generating 2 Impact each draw 2 Tier 1 cards apiece. Because each goblin already fills an $N=2$ pool (`[Sev 1, Sev 1]`), they keep their 4 pools separate—forcing the skirmisher to suffer **4 Tier 1 consequences simultaneously** (burying them in tactical friction and exposing `Vulnerable` tags for Round 2 without one-shotting them on Round 1).
    - **Merged Pools vs. Heavy Armor ($N=4\text{–}5$):** Against a knight in Full Plate ($N=5$), three goblins generating `1, 2, 2` Impact would each fail to meet the pool threshold ($I < N$) on their own. Each goblin draws Tier 1 cards for their attack, and by **merging their drawn candidates into a single shared pool** ($1 + 2 + 2 = 5\text{ cards}$), they reach the $N=5$ threshold to present a full 5-card pool and force the knight to suffer **1 Tier 1 consequence**. Crucially, merging pools combines drawn cards; it **never increases the severity tier** of the drawn cards.
 3. **Simultaneous Vulnerability Exploitation ("Place to Draw, Scoop to Curate")**:
-   - After attackers decide whether to keep their drawn candidate pools separate or merge them, each Consequence Pool may exploit active conditions that were on the defender **at the start of the round** (at most 1 placed candidate per active condition **per pool**) to draw $+1$ candidate from Tier $K+1$.
-   - Because placed candidates are scooped back into their pool at the start of Step 5, separate pools resolving in parallel never collide physically on the defender's tableau or compete over the defender's active conditions.
+   - Each Consequence Pool may exploit active conditions that were on the defender **at the start of the round** via printed `POOL:` triggers in Step 2 (at most 1 placed candidate per active condition **per pool**) to draw $+1$ candidate from Tier $K+1$.
+   - Because placed candidates are scooped back into their pool before Step 4 curation, separate pools resolving in parallel never collide physically on the defender's tableau or compete over the defender's active conditions.
    - Consequences inflicted during the round enter play simultaneously at the end of the round, preventing same-round chain-promotion kills.
 4. **Deck Attrition as Mob Danger**: Beyond condition drafting, defending against a swarm forces multiple flips in rapid succession, draining the defender's 24-card deck and accelerating Fatigue Cycles toward Defensive Collapse.
 
@@ -176,7 +186,7 @@ In this proposal, drawing 1 candidate card per point of Impact into tiers of wid
 
 #### Known Friction Points (Targets for Further Iteration or Alternative Primitives)
 
-1. **The 5-Step Core Rules Ceremony:** While each gesture is tactile, the full loop (Determine Impact $\to$ Draw per Attack $\to$ Form/Merge Pools $\to$ Place on Conditions to Draw Bonus $\to$ Scoop, Cut $N$, and Pick 1) introduces noticeable procedural ceremony into `core-rules.md`, particularly around Step 4 (`"Place to Draw, Scoop to Curate"`).
+1. **Resolution Ceremony & Step Count:** The core procedure in `core-rules.md` is still a bit of an increase from the legacy system with 4 stages and two decision points.
 2. **Hard Initial Shell on Heavy Armor ($I < N$):** Against high Pool Size ($N=4\text{–}5$), an isolated attack generating $I < N$ bounces off completely (`0 cards drawn`) unless merged with allies or bypassed via specialized card text (`Pierce`), offering no native incremental foothold on its own.
 3. **High-Impact Card Draw Volume:** Heavy hits against armored targets ($I=6\text{–}10$) require drawing, inspecting, curating, and returning a relatively large number of physical cards across multiple severity decks.
 

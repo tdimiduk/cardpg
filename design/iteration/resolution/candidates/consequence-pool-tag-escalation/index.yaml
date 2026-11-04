@@ -12,6 +12,10 @@ documents:
     purpose: "The core rules patch replacing Action Resolution in core-rules.md."
     tags: ["doc-type:iteration", "audience:designer-facing"]
 
+  - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/keyword-glossary-patch.md"
+    purpose: "Proposed patch to keyword-glossary.md updating terminology and evergreen keywords."
+    tags: ["doc-type:iteration", "audience:designer-facing"]
+
   - path: "iteration/resolution/candidates/consequence-pool-tag-escalation/guide-to-writing-consequences.md"
     purpose: "Style and authoring guide for consequence cards under the escalation engine."
     tags: ["doc-type:iteration", "audience:designer-facing"]
